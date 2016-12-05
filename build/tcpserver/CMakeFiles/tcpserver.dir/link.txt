@@ -1,0 +1,1 @@
+/usr/bin/g++    -std=c++11   CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o CMakeFiles/tcpserver.dir/main.cpp.o  -o ../../bin/tcpserver  -L/usr/local/lib  -L/home/dguco/data/cpppro/server/lib ../../lib/libcommon.a -lpthread -lprotobuf -Wl,-rpath,/usr/local/lib:/home/dguco/data/cpppro/server/lib 

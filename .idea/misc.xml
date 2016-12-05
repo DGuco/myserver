@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
+  <component name="CidrRootsConfiguration">
+    <sourceRoots>
+      <file path="$PROJECT_DIR$/common" />
+      <file path="$PROJECT_DIR$/common/message" />
+      <file path="$PROJECT_DIR$/common/mytimer" />
+      <file path="$PROJECT_DIR$/common/tools" />
+      <file path="$PROJECT_DIR$/proxyserver" />
+      <file path="$PROJECT_DIR$/shareread" />
+      <file path="$PROJECT_DIR$/sharewrite" />
+      <file path="$PROJECT_DIR$/tcpserver" />
+    </sourceRoots>
+    <libraryRoots>
+      <file path="$PROJECT_DIR$/lib" />
+    </libraryRoots>
+    <excludeRoots>
+      <file path="$PROJECT_DIR$/bin" />
+    </excludeRoots>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+</project>
