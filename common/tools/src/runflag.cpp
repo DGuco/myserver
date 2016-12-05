@@ -11,7 +11,6 @@ CRunFlag::~CRunFlag()
 
 }
 
-
 void CRunFlag::SetRunFlag(ERunFlag eRunFlag)
 {
 	mRunFlag = eRunFlag;
