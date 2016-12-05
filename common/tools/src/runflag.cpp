@@ -16,7 +16,6 @@ void CRunFlag::SetRunFlag(ERunFlag eRunFlag)
 	mRunFlag = eRunFlag;
 }
 
-
 bool CRunFlag::CheckRunFlag(ERunFlag eRunFlag)
 {
 	return (eRunFlag == mRunFlag);
