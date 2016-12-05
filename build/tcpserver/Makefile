@@ -48,10 +48,10 @@ RM = /usr/local/cmake-3.6.1-Linux-x86_64/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/dguco/data/cpppro/server
+CMAKE_SOURCE_DIR = /home/dguco/data/cpppro/myserver
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/dguco/data/cpppro/server/build
+CMAKE_BINARY_DIR = /home/dguco/data/cpppro/myserver/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/dguco/data/cpppro/server/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/dguco/data/cpppro/server/build/CMakeFiles /home/dguco/data/cpppro/server/build/tcpserver/CMakeFiles/progress.marks
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f CMakeFiles/Makefile2 tcpserver/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/dguco/data/cpppro/server/build/CMakeFiles 0
+	cd /home/dguco/data/cpppro/myserver/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/dguco/data/cpppro/myserver/build/CMakeFiles /home/dguco/data/cpppro/myserver/build/tcpserver/CMakeFiles/progress.marks
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f CMakeFiles/Makefile2 tcpserver/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dguco/data/cpppro/myserver/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f CMakeFiles/Makefile2 tcpserver/clean
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f CMakeFiles/Makefile2 tcpserver/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f CMakeFiles/Makefile2 tcpserver/preinstall
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f CMakeFiles/Makefile2 tcpserver/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f CMakeFiles/Makefile2 tcpserver/preinstall
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f CMakeFiles/Makefile2 tcpserver/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/dguco/data/cpppro/server/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/dguco/data/cpppro/myserver/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 tcpserver/CMakeFiles/tcpserver.dir/rule:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f CMakeFiles/Makefile2 tcpserver/CMakeFiles/tcpserver.dir/rule
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f CMakeFiles/Makefile2 tcpserver/CMakeFiles/tcpserver.dir/rule
 .PHONY : tcpserver/CMakeFiles/tcpserver.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ tcpserver: tcpserver/CMakeFiles/tcpserver.dir/rule
 
 # fast build rule for target.
 tcpserver/fast:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/build
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/build
 .PHONY : tcpserver/fast
 
 main.o: main.cpp.o
@@ -131,7 +131,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -140,7 +140,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/main.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -149,35 +149,35 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/main.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-src/clienthandle.o: src/clienthandle.cpp.o
+src/commdef.o: src/commdef.cpp.o
 
-.PHONY : src/clienthandle.o
+.PHONY : src/commdef.o
 
 # target to build an object file
-src/clienthandle.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o
-.PHONY : src/clienthandle.cpp.o
+src/commdef.cpp.o:
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o
+.PHONY : src/commdef.cpp.o
 
-src/clienthandle.i: src/clienthandle.cpp.i
+src/commdef.i: src/commdef.cpp.i
 
-.PHONY : src/clienthandle.i
+.PHONY : src/commdef.i
 
 # target to preprocess a source file
-src/clienthandle.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.i
-.PHONY : src/clienthandle.cpp.i
+src/commdef.cpp.i:
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.i
+.PHONY : src/commdef.cpp.i
 
-src/clienthandle.s: src/clienthandle.cpp.s
+src/commdef.s: src/commdef.cpp.s
 
-.PHONY : src/clienthandle.s
+.PHONY : src/commdef.s
 
 # target to generate assembly for a file
-src/clienthandle.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.s
-.PHONY : src/clienthandle.cpp.s
+src/commdef.cpp.s:
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.s
+.PHONY : src/commdef.cpp.s
 
 # Help Target
 help:
@@ -191,9 +191,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... src/clienthandle.o"
-	@echo "... src/clienthandle.i"
-	@echo "... src/clienthandle.s"
+	@echo "... src/commdef.o"
+	@echo "... src/commdef.i"
+	@echo "... src/commdef.s"
 .PHONY : help
 
 
@@ -205,6 +205,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/dguco/data/cpppro/server/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/dguco/data/cpppro/myserver/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

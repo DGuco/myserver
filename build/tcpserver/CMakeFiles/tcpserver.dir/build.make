@@ -43,10 +43,10 @@ RM = /usr/local/cmake-3.6.1-Linux-x86_64/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/dguco/data/cpppro/server
+CMAKE_SOURCE_DIR = /home/dguco/data/cpppro/myserver
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/dguco/data/cpppro/server/build
+CMAKE_BINARY_DIR = /home/dguco/data/cpppro/myserver/build
 
 # Include any dependencies generated for this target.
 include tcpserver/CMakeFiles/tcpserver.dir/depend.make
@@ -57,42 +57,42 @@ include tcpserver/CMakeFiles/tcpserver.dir/progress.make
 # Include the compile flags for this target's objects.
 include tcpserver/CMakeFiles/tcpserver.dir/flags.make
 
-tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o: tcpserver/CMakeFiles/tcpserver.dir/flags.make
-tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o: ../tcpserver/src/clienthandle.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/tcpserver && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o -c /home/dguco/data/cpppro/server/tcpserver/src/clienthandle.cpp
+tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o: tcpserver/CMakeFiles/tcpserver.dir/flags.make
+tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o: ../tcpserver/src/commdef.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/tcpserver && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tcpserver.dir/src/commdef.cpp.o -c /home/dguco/data/cpppro/myserver/tcpserver/src/commdef.cpp
 
-tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tcpserver.dir/src/clienthandle.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/tcpserver && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/tcpserver/src/clienthandle.cpp > CMakeFiles/tcpserver.dir/src/clienthandle.cpp.i
+tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tcpserver.dir/src/commdef.cpp.i"
+	cd /home/dguco/data/cpppro/myserver/build/tcpserver && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/tcpserver/src/commdef.cpp > CMakeFiles/tcpserver.dir/src/commdef.cpp.i
 
-tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tcpserver.dir/src/clienthandle.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/tcpserver && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/tcpserver/src/clienthandle.cpp -o CMakeFiles/tcpserver.dir/src/clienthandle.cpp.s
+tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tcpserver.dir/src/commdef.cpp.s"
+	cd /home/dguco/data/cpppro/myserver/build/tcpserver && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/tcpserver/src/commdef.cpp -o CMakeFiles/tcpserver.dir/src/commdef.cpp.s
 
-tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o.requires:
+tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o.requires:
 
-.PHONY : tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o.requires
+.PHONY : tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o.requires
 
-tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o.provides: tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o.requires
-	$(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o.provides.build
-.PHONY : tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o.provides
+tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o.provides: tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o.requires
+	$(MAKE) -f tcpserver/CMakeFiles/tcpserver.dir/build.make tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o.provides.build
+.PHONY : tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o.provides
 
-tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o.provides.build: tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o
+tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o.provides.build: tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o
 
 
 tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o: tcpserver/CMakeFiles/tcpserver.dir/flags.make
 tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o: ../tcpserver/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/tcpserver && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tcpserver.dir/main.cpp.o -c /home/dguco/data/cpppro/server/tcpserver/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/tcpserver && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tcpserver.dir/main.cpp.o -c /home/dguco/data/cpppro/myserver/tcpserver/main.cpp
 
 tcpserver/CMakeFiles/tcpserver.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tcpserver.dir/main.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/tcpserver && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/tcpserver/main.cpp > CMakeFiles/tcpserver.dir/main.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/tcpserver && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/tcpserver/main.cpp > CMakeFiles/tcpserver.dir/main.cpp.i
 
 tcpserver/CMakeFiles/tcpserver.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tcpserver.dir/main.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/tcpserver && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/tcpserver/main.cpp -o CMakeFiles/tcpserver.dir/main.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/tcpserver && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/tcpserver/main.cpp -o CMakeFiles/tcpserver.dir/main.cpp.s
 
 tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o.requires:
 
@@ -107,35 +107,35 @@ tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o.provides.build: tcpserver/CMakeFil
 
 # Object files for target tcpserver
 tcpserver_OBJECTS = \
-"CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o" \
+"CMakeFiles/tcpserver.dir/src/commdef.cpp.o" \
 "CMakeFiles/tcpserver.dir/main.cpp.o"
 
 # External object files for target tcpserver
 tcpserver_EXTERNAL_OBJECTS =
 
-../bin/tcpserver: tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o
+../bin/tcpserver: tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o
 ../bin/tcpserver: tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o
 ../bin/tcpserver: tcpserver/CMakeFiles/tcpserver.dir/build.make
 ../bin/tcpserver: ../lib/libcommon.a
 ../bin/tcpserver: tcpserver/CMakeFiles/tcpserver.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ../../bin/tcpserver"
-	cd /home/dguco/data/cpppro/server/build/tcpserver && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tcpserver.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ../../bin/tcpserver"
+	cd /home/dguco/data/cpppro/myserver/build/tcpserver && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tcpserver.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 tcpserver/CMakeFiles/tcpserver.dir/build: ../bin/tcpserver
 
 .PHONY : tcpserver/CMakeFiles/tcpserver.dir/build
 
-tcpserver/CMakeFiles/tcpserver.dir/requires: tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o.requires
+tcpserver/CMakeFiles/tcpserver.dir/requires: tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o.requires
 tcpserver/CMakeFiles/tcpserver.dir/requires: tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o.requires
 
 .PHONY : tcpserver/CMakeFiles/tcpserver.dir/requires
 
 tcpserver/CMakeFiles/tcpserver.dir/clean:
-	cd /home/dguco/data/cpppro/server/build/tcpserver && $(CMAKE_COMMAND) -P CMakeFiles/tcpserver.dir/cmake_clean.cmake
+	cd /home/dguco/data/cpppro/myserver/build/tcpserver && $(CMAKE_COMMAND) -P CMakeFiles/tcpserver.dir/cmake_clean.cmake
 .PHONY : tcpserver/CMakeFiles/tcpserver.dir/clean
 
 tcpserver/CMakeFiles/tcpserver.dir/depend:
-	cd /home/dguco/data/cpppro/server/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/dguco/data/cpppro/server /home/dguco/data/cpppro/server/tcpserver /home/dguco/data/cpppro/server/build /home/dguco/data/cpppro/server/build/tcpserver /home/dguco/data/cpppro/server/build/tcpserver/CMakeFiles/tcpserver.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/dguco/data/cpppro/myserver/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/dguco/data/cpppro/myserver /home/dguco/data/cpppro/myserver/tcpserver /home/dguco/data/cpppro/myserver/build /home/dguco/data/cpppro/myserver/build/tcpserver /home/dguco/data/cpppro/myserver/build/tcpserver/CMakeFiles/tcpserver.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : tcpserver/CMakeFiles/tcpserver.dir/depend
 

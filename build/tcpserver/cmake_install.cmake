@@ -1,4 +1,4 @@
-# Install script for directory: /home/dguco/data/cpppro/server/tcpserver
+# Install script for directory: /home/dguco/data/cpppro/myserver/tcpserver
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

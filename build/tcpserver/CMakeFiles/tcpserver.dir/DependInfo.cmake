@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/dguco/data/cpppro/server/tcpserver/main.cpp" "/home/dguco/data/cpppro/server/build/tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o"
-  "/home/dguco/data/cpppro/server/tcpserver/src/clienthandle.cpp" "/home/dguco/data/cpppro/server/build/tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o"
+  "/home/dguco/data/cpppro/myserver/tcpserver/main.cpp" "/home/dguco/data/cpppro/myserver/build/tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o"
+  "/home/dguco/data/cpppro/myserver/tcpserver/src/commdef.cpp" "/home/dguco/data/cpppro/myserver/build/tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -16,7 +16,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/dguco/data/cpppro/server/build/common/CMakeFiles/common.dir/DependInfo.cmake"
+  "/home/dguco/data/cpppro/myserver/build/common/CMakeFiles/common.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

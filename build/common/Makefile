@@ -48,10 +48,10 @@ RM = /usr/local/cmake-3.6.1-Linux-x86_64/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/dguco/data/cpppro/server
+CMAKE_SOURCE_DIR = /home/dguco/data/cpppro/myserver
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/dguco/data/cpppro/server/build
+CMAKE_BINARY_DIR = /home/dguco/data/cpppro/myserver/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/dguco/data/cpppro/server/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/dguco/data/cpppro/server/build/CMakeFiles /home/dguco/data/cpppro/server/build/common/CMakeFiles/progress.marks
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f CMakeFiles/Makefile2 common/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/dguco/data/cpppro/server/build/CMakeFiles 0
+	cd /home/dguco/data/cpppro/myserver/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/dguco/data/cpppro/myserver/build/CMakeFiles /home/dguco/data/cpppro/myserver/build/common/CMakeFiles/progress.marks
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f CMakeFiles/Makefile2 common/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dguco/data/cpppro/myserver/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f CMakeFiles/Makefile2 common/clean
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f CMakeFiles/Makefile2 common/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f CMakeFiles/Makefile2 common/preinstall
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f CMakeFiles/Makefile2 common/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f CMakeFiles/Makefile2 common/preinstall
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f CMakeFiles/Makefile2 common/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/dguco/data/cpppro/server/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/dguco/data/cpppro/myserver/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 common/CMakeFiles/common.dir/rule:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f CMakeFiles/Makefile2 common/CMakeFiles/common.dir/rule
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f CMakeFiles/Makefile2 common/CMakeFiles/common.dir/rule
 .PHONY : common/CMakeFiles/common.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ common: common/CMakeFiles/common.dir/rule
 
 # fast build rule for target.
 common/fast:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/build
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/build
 .PHONY : common/fast
 
 message/configure.pb.o: message/configure.pb.cc.o
@@ -131,7 +131,7 @@ message/configure.pb.o: message/configure.pb.cc.o
 
 # target to build an object file
 message/configure.pb.cc.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/configure.pb.cc.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/configure.pb.cc.o
 .PHONY : message/configure.pb.cc.o
 
 message/configure.pb.i: message/configure.pb.cc.i
@@ -140,7 +140,7 @@ message/configure.pb.i: message/configure.pb.cc.i
 
 # target to preprocess a source file
 message/configure.pb.cc.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/configure.pb.cc.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/configure.pb.cc.i
 .PHONY : message/configure.pb.cc.i
 
 message/configure.pb.s: message/configure.pb.cc.s
@@ -149,7 +149,7 @@ message/configure.pb.s: message/configure.pb.cc.s
 
 # target to generate assembly for a file
 message/configure.pb.cc.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/configure.pb.cc.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/configure.pb.cc.s
 .PHONY : message/configure.pb.cc.s
 
 message/message.pb.o: message/message.pb.cc.o
@@ -158,7 +158,7 @@ message/message.pb.o: message/message.pb.cc.o
 
 # target to build an object file
 message/message.pb.cc.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/message.pb.cc.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/message.pb.cc.o
 .PHONY : message/message.pb.cc.o
 
 message/message.pb.i: message/message.pb.cc.i
@@ -167,7 +167,7 @@ message/message.pb.i: message/message.pb.cc.i
 
 # target to preprocess a source file
 message/message.pb.cc.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/message.pb.cc.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/message.pb.cc.i
 .PHONY : message/message.pb.cc.i
 
 message/message.pb.s: message/message.pb.cc.s
@@ -176,7 +176,7 @@ message/message.pb.s: message/message.pb.cc.s
 
 # target to generate assembly for a file
 message/message.pb.cc.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/message.pb.cc.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/message.pb.cc.s
 .PHONY : message/message.pb.cc.s
 
 message/proxymessage.pb.o: message/proxymessage.pb.cc.o
@@ -185,7 +185,7 @@ message/proxymessage.pb.o: message/proxymessage.pb.cc.o
 
 # target to build an object file
 message/proxymessage.pb.cc.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/proxymessage.pb.cc.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/proxymessage.pb.cc.o
 .PHONY : message/proxymessage.pb.cc.o
 
 message/proxymessage.pb.i: message/proxymessage.pb.cc.i
@@ -194,7 +194,7 @@ message/proxymessage.pb.i: message/proxymessage.pb.cc.i
 
 # target to preprocess a source file
 message/proxymessage.pb.cc.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/proxymessage.pb.cc.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/proxymessage.pb.cc.i
 .PHONY : message/proxymessage.pb.cc.i
 
 message/proxymessage.pb.s: message/proxymessage.pb.cc.s
@@ -203,7 +203,7 @@ message/proxymessage.pb.s: message/proxymessage.pb.cc.s
 
 # target to generate assembly for a file
 message/proxymessage.pb.cc.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/proxymessage.pb.cc.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/proxymessage.pb.cc.s
 .PHONY : message/proxymessage.pb.cc.s
 
 message/tcpmessage.pb.o: message/tcpmessage.pb.cc.o
@@ -212,7 +212,7 @@ message/tcpmessage.pb.o: message/tcpmessage.pb.cc.o
 
 # target to build an object file
 message/tcpmessage.pb.cc.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.o
 .PHONY : message/tcpmessage.pb.cc.o
 
 message/tcpmessage.pb.i: message/tcpmessage.pb.cc.i
@@ -221,7 +221,7 @@ message/tcpmessage.pb.i: message/tcpmessage.pb.cc.i
 
 # target to preprocess a source file
 message/tcpmessage.pb.cc.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.i
 .PHONY : message/tcpmessage.pb.cc.i
 
 message/tcpmessage.pb.s: message/tcpmessage.pb.cc.s
@@ -230,7 +230,7 @@ message/tcpmessage.pb.s: message/tcpmessage.pb.cc.s
 
 # target to generate assembly for a file
 message/tcpmessage.pb.cc.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.s
 .PHONY : message/tcpmessage.pb.cc.s
 
 tools/src/base.o: tools/src/base.cpp.o
@@ -239,7 +239,7 @@ tools/src/base.o: tools/src/base.cpp.o
 
 # target to build an object file
 tools/src/base.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/base.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/base.cpp.o
 .PHONY : tools/src/base.cpp.o
 
 tools/src/base.i: tools/src/base.cpp.i
@@ -248,7 +248,7 @@ tools/src/base.i: tools/src/base.cpp.i
 
 # target to preprocess a source file
 tools/src/base.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/base.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/base.cpp.i
 .PHONY : tools/src/base.cpp.i
 
 tools/src/base.s: tools/src/base.cpp.s
@@ -257,7 +257,7 @@ tools/src/base.s: tools/src/base.cpp.s
 
 # target to generate assembly for a file
 tools/src/base.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/base.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/base.cpp.s
 .PHONY : tools/src/base.cpp.s
 
 tools/src/client_comm_engine.o: tools/src/client_comm_engine.cpp.o
@@ -266,7 +266,7 @@ tools/src/client_comm_engine.o: tools/src/client_comm_engine.cpp.o
 
 # target to build an object file
 tools/src/client_comm_engine.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o
 .PHONY : tools/src/client_comm_engine.cpp.o
 
 tools/src/client_comm_engine.i: tools/src/client_comm_engine.cpp.i
@@ -275,7 +275,7 @@ tools/src/client_comm_engine.i: tools/src/client_comm_engine.cpp.i
 
 # target to preprocess a source file
 tools/src/client_comm_engine.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.i
 .PHONY : tools/src/client_comm_engine.cpp.i
 
 tools/src/client_comm_engine.s: tools/src/client_comm_engine.cpp.s
@@ -284,7 +284,7 @@ tools/src/client_comm_engine.s: tools/src/client_comm_engine.cpp.s
 
 # target to generate assembly for a file
 tools/src/client_comm_engine.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.s
 .PHONY : tools/src/client_comm_engine.cpp.s
 
 tools/src/clock.o: tools/src/clock.cpp.o
@@ -293,7 +293,7 @@ tools/src/clock.o: tools/src/clock.cpp.o
 
 # target to build an object file
 tools/src/clock.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/clock.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/clock.cpp.o
 .PHONY : tools/src/clock.cpp.o
 
 tools/src/clock.i: tools/src/clock.cpp.i
@@ -302,7 +302,7 @@ tools/src/clock.i: tools/src/clock.cpp.i
 
 # target to preprocess a source file
 tools/src/clock.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/clock.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/clock.cpp.i
 .PHONY : tools/src/clock.cpp.i
 
 tools/src/clock.s: tools/src/clock.cpp.s
@@ -311,7 +311,7 @@ tools/src/clock.s: tools/src/clock.cpp.s
 
 # target to generate assembly for a file
 tools/src/clock.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/clock.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/clock.cpp.s
 .PHONY : tools/src/clock.cpp.s
 
 tools/src/code_queue.o: tools/src/code_queue.cpp.o
@@ -320,7 +320,7 @@ tools/src/code_queue.o: tools/src/code_queue.cpp.o
 
 # target to build an object file
 tools/src/code_queue.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/code_queue.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/code_queue.cpp.o
 .PHONY : tools/src/code_queue.cpp.o
 
 tools/src/code_queue.i: tools/src/code_queue.cpp.i
@@ -329,7 +329,7 @@ tools/src/code_queue.i: tools/src/code_queue.cpp.i
 
 # target to preprocess a source file
 tools/src/code_queue.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/code_queue.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/code_queue.cpp.i
 .PHONY : tools/src/code_queue.cpp.i
 
 tools/src/code_queue.s: tools/src/code_queue.cpp.s
@@ -338,7 +338,7 @@ tools/src/code_queue.s: tools/src/code_queue.cpp.s
 
 # target to generate assembly for a file
 tools/src/code_queue.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/code_queue.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/code_queue.cpp.s
 .PHONY : tools/src/code_queue.cpp.s
 
 tools/src/config.o: tools/src/config.cpp.o
@@ -347,7 +347,7 @@ tools/src/config.o: tools/src/config.cpp.o
 
 # target to build an object file
 tools/src/config.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/config.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/config.cpp.o
 .PHONY : tools/src/config.cpp.o
 
 tools/src/config.i: tools/src/config.cpp.i
@@ -356,7 +356,7 @@ tools/src/config.i: tools/src/config.cpp.i
 
 # target to preprocess a source file
 tools/src/config.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/config.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/config.cpp.i
 .PHONY : tools/src/config.cpp.i
 
 tools/src/config.s: tools/src/config.cpp.s
@@ -365,7 +365,7 @@ tools/src/config.s: tools/src/config.cpp.s
 
 # target to generate assembly for a file
 tools/src/config.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/config.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/config.cpp.s
 .PHONY : tools/src/config.cpp.s
 
 tools/src/daemon.o: tools/src/daemon.cpp.o
@@ -374,7 +374,7 @@ tools/src/daemon.o: tools/src/daemon.cpp.o
 
 # target to build an object file
 tools/src/daemon.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/daemon.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/daemon.cpp.o
 .PHONY : tools/src/daemon.cpp.o
 
 tools/src/daemon.i: tools/src/daemon.cpp.i
@@ -383,7 +383,7 @@ tools/src/daemon.i: tools/src/daemon.cpp.i
 
 # target to preprocess a source file
 tools/src/daemon.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/daemon.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/daemon.cpp.i
 .PHONY : tools/src/daemon.cpp.i
 
 tools/src/daemon.s: tools/src/daemon.cpp.s
@@ -392,7 +392,7 @@ tools/src/daemon.s: tools/src/daemon.cpp.s
 
 # target to generate assembly for a file
 tools/src/daemon.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/daemon.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/daemon.cpp.s
 .PHONY : tools/src/daemon.cpp.s
 
 tools/src/dirtyword.o: tools/src/dirtyword.cpp.o
@@ -401,7 +401,7 @@ tools/src/dirtyword.o: tools/src/dirtyword.cpp.o
 
 # target to build an object file
 tools/src/dirtyword.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.o
 .PHONY : tools/src/dirtyword.cpp.o
 
 tools/src/dirtyword.i: tools/src/dirtyword.cpp.i
@@ -410,7 +410,7 @@ tools/src/dirtyword.i: tools/src/dirtyword.cpp.i
 
 # target to preprocess a source file
 tools/src/dirtyword.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.i
 .PHONY : tools/src/dirtyword.cpp.i
 
 tools/src/dirtyword.s: tools/src/dirtyword.cpp.s
@@ -419,7 +419,7 @@ tools/src/dirtyword.s: tools/src/dirtyword.cpp.s
 
 # target to generate assembly for a file
 tools/src/dirtyword.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.s
 .PHONY : tools/src/dirtyword.cpp.s
 
 tools/src/log.o: tools/src/log.cpp.o
@@ -428,7 +428,7 @@ tools/src/log.o: tools/src/log.cpp.o
 
 # target to build an object file
 tools/src/log.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/log.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/log.cpp.o
 .PHONY : tools/src/log.cpp.o
 
 tools/src/log.i: tools/src/log.cpp.i
@@ -437,7 +437,7 @@ tools/src/log.i: tools/src/log.cpp.i
 
 # target to preprocess a source file
 tools/src/log.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/log.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/log.cpp.i
 .PHONY : tools/src/log.cpp.i
 
 tools/src/log.s: tools/src/log.cpp.s
@@ -446,7 +446,7 @@ tools/src/log.s: tools/src/log.cpp.s
 
 # target to generate assembly for a file
 tools/src/log.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/log.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/log.cpp.s
 .PHONY : tools/src/log.cpp.s
 
 tools/src/message_interface.o: tools/src/message_interface.cpp.o
@@ -455,7 +455,7 @@ tools/src/message_interface.o: tools/src/message_interface.cpp.o
 
 # target to build an object file
 tools/src/message_interface.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/message_interface.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/message_interface.cpp.o
 .PHONY : tools/src/message_interface.cpp.o
 
 tools/src/message_interface.i: tools/src/message_interface.cpp.i
@@ -464,7 +464,7 @@ tools/src/message_interface.i: tools/src/message_interface.cpp.i
 
 # target to preprocess a source file
 tools/src/message_interface.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/message_interface.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/message_interface.cpp.i
 .PHONY : tools/src/message_interface.cpp.i
 
 tools/src/message_interface.s: tools/src/message_interface.cpp.s
@@ -473,7 +473,7 @@ tools/src/message_interface.s: tools/src/message_interface.cpp.s
 
 # target to generate assembly for a file
 tools/src/message_interface.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/message_interface.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/message_interface.cpp.s
 .PHONY : tools/src/message_interface.cpp.s
 
 tools/src/nethead.o: tools/src/nethead.cpp.o
@@ -482,7 +482,7 @@ tools/src/nethead.o: tools/src/nethead.cpp.o
 
 # target to build an object file
 tools/src/nethead.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/nethead.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/nethead.cpp.o
 .PHONY : tools/src/nethead.cpp.o
 
 tools/src/nethead.i: tools/src/nethead.cpp.i
@@ -491,7 +491,7 @@ tools/src/nethead.i: tools/src/nethead.cpp.i
 
 # target to preprocess a source file
 tools/src/nethead.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/nethead.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/nethead.cpp.i
 .PHONY : tools/src/nethead.cpp.i
 
 tools/src/nethead.s: tools/src/nethead.cpp.s
@@ -500,7 +500,7 @@ tools/src/nethead.s: tools/src/nethead.cpp.s
 
 # target to generate assembly for a file
 tools/src/nethead.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/nethead.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/nethead.cpp.s
 .PHONY : tools/src/nethead.cpp.s
 
 tools/src/object.o: tools/src/object.cpp.o
@@ -509,7 +509,7 @@ tools/src/object.o: tools/src/object.cpp.o
 
 # target to build an object file
 tools/src/object.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/object.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/object.cpp.o
 .PHONY : tools/src/object.cpp.o
 
 tools/src/object.i: tools/src/object.cpp.i
@@ -518,7 +518,7 @@ tools/src/object.i: tools/src/object.cpp.i
 
 # target to preprocess a source file
 tools/src/object.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/object.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/object.cpp.i
 .PHONY : tools/src/object.cpp.i
 
 tools/src/object.s: tools/src/object.cpp.s
@@ -527,7 +527,7 @@ tools/src/object.s: tools/src/object.cpp.s
 
 # target to generate assembly for a file
 tools/src/object.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/object.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/object.cpp.s
 .PHONY : tools/src/object.cpp.s
 
 tools/src/oi_tea.o: tools/src/oi_tea.cpp.o
@@ -536,7 +536,7 @@ tools/src/oi_tea.o: tools/src/oi_tea.cpp.o
 
 # target to build an object file
 tools/src/oi_tea.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.o
 .PHONY : tools/src/oi_tea.cpp.o
 
 tools/src/oi_tea.i: tools/src/oi_tea.cpp.i
@@ -545,7 +545,7 @@ tools/src/oi_tea.i: tools/src/oi_tea.cpp.i
 
 # target to preprocess a source file
 tools/src/oi_tea.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.i
 .PHONY : tools/src/oi_tea.cpp.i
 
 tools/src/oi_tea.s: tools/src/oi_tea.cpp.s
@@ -554,7 +554,7 @@ tools/src/oi_tea.s: tools/src/oi_tea.cpp.s
 
 # target to generate assembly for a file
 tools/src/oi_tea.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.s
 .PHONY : tools/src/oi_tea.cpp.s
 
 tools/src/performance.o: tools/src/performance.cpp.o
@@ -563,7 +563,7 @@ tools/src/performance.o: tools/src/performance.cpp.o
 
 # target to build an object file
 tools/src/performance.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/performance.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/performance.cpp.o
 .PHONY : tools/src/performance.cpp.o
 
 tools/src/performance.i: tools/src/performance.cpp.i
@@ -572,7 +572,7 @@ tools/src/performance.i: tools/src/performance.cpp.i
 
 # target to preprocess a source file
 tools/src/performance.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/performance.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/performance.cpp.i
 .PHONY : tools/src/performance.cpp.i
 
 tools/src/performance.s: tools/src/performance.cpp.s
@@ -581,7 +581,7 @@ tools/src/performance.s: tools/src/performance.cpp.s
 
 # target to generate assembly for a file
 tools/src/performance.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/performance.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/performance.cpp.s
 .PHONY : tools/src/performance.cpp.s
 
 tools/src/protoconfig.o: tools/src/protoconfig.cpp.o
@@ -590,7 +590,7 @@ tools/src/protoconfig.o: tools/src/protoconfig.cpp.o
 
 # target to build an object file
 tools/src/protoconfig.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.o
 .PHONY : tools/src/protoconfig.cpp.o
 
 tools/src/protoconfig.i: tools/src/protoconfig.cpp.i
@@ -599,7 +599,7 @@ tools/src/protoconfig.i: tools/src/protoconfig.cpp.i
 
 # target to preprocess a source file
 tools/src/protoconfig.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.i
 .PHONY : tools/src/protoconfig.cpp.i
 
 tools/src/protoconfig.s: tools/src/protoconfig.cpp.s
@@ -608,7 +608,7 @@ tools/src/protoconfig.s: tools/src/protoconfig.cpp.s
 
 # target to generate assembly for a file
 tools/src/protoconfig.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.s
 .PHONY : tools/src/protoconfig.cpp.s
 
 tools/src/runflag.o: tools/src/runflag.cpp.o
@@ -617,7 +617,7 @@ tools/src/runflag.o: tools/src/runflag.cpp.o
 
 # target to build an object file
 tools/src/runflag.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/runflag.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/runflag.cpp.o
 .PHONY : tools/src/runflag.cpp.o
 
 tools/src/runflag.i: tools/src/runflag.cpp.i
@@ -626,7 +626,7 @@ tools/src/runflag.i: tools/src/runflag.cpp.i
 
 # target to preprocess a source file
 tools/src/runflag.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/runflag.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/runflag.cpp.i
 .PHONY : tools/src/runflag.cpp.i
 
 tools/src/runflag.s: tools/src/runflag.cpp.s
@@ -635,7 +635,7 @@ tools/src/runflag.s: tools/src/runflag.cpp.s
 
 # target to generate assembly for a file
 tools/src/runflag.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/runflag.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/runflag.cpp.s
 .PHONY : tools/src/runflag.cpp.s
 
 tools/src/server_comm_engine.o: tools/src/server_comm_engine.cpp.o
@@ -644,7 +644,7 @@ tools/src/server_comm_engine.o: tools/src/server_comm_engine.cpp.o
 
 # target to build an object file
 tools/src/server_comm_engine.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.o
 .PHONY : tools/src/server_comm_engine.cpp.o
 
 tools/src/server_comm_engine.i: tools/src/server_comm_engine.cpp.i
@@ -653,7 +653,7 @@ tools/src/server_comm_engine.i: tools/src/server_comm_engine.cpp.i
 
 # target to preprocess a source file
 tools/src/server_comm_engine.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.i
 .PHONY : tools/src/server_comm_engine.cpp.i
 
 tools/src/server_comm_engine.s: tools/src/server_comm_engine.cpp.s
@@ -662,7 +662,7 @@ tools/src/server_comm_engine.s: tools/src/server_comm_engine.cpp.s
 
 # target to generate assembly for a file
 tools/src/server_comm_engine.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.s
 .PHONY : tools/src/server_comm_engine.cpp.s
 
 tools/src/servertool.o: tools/src/servertool.cpp.o
@@ -671,7 +671,7 @@ tools/src/servertool.o: tools/src/servertool.cpp.o
 
 # target to build an object file
 tools/src/servertool.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/servertool.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/servertool.cpp.o
 .PHONY : tools/src/servertool.cpp.o
 
 tools/src/servertool.i: tools/src/servertool.cpp.i
@@ -680,7 +680,7 @@ tools/src/servertool.i: tools/src/servertool.cpp.i
 
 # target to preprocess a source file
 tools/src/servertool.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/servertool.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/servertool.cpp.i
 .PHONY : tools/src/servertool.cpp.i
 
 tools/src/servertool.s: tools/src/servertool.cpp.s
@@ -689,7 +689,7 @@ tools/src/servertool.s: tools/src/servertool.cpp.s
 
 # target to generate assembly for a file
 tools/src/servertool.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/servertool.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/servertool.cpp.s
 .PHONY : tools/src/servertool.cpp.s
 
 tools/src/sharemem.o: tools/src/sharemem.cpp.o
@@ -698,7 +698,7 @@ tools/src/sharemem.o: tools/src/sharemem.cpp.o
 
 # target to build an object file
 tools/src/sharemem.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/sharemem.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/sharemem.cpp.o
 .PHONY : tools/src/sharemem.cpp.o
 
 tools/src/sharemem.i: tools/src/sharemem.cpp.i
@@ -707,7 +707,7 @@ tools/src/sharemem.i: tools/src/sharemem.cpp.i
 
 # target to preprocess a source file
 tools/src/sharemem.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/sharemem.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/sharemem.cpp.i
 .PHONY : tools/src/sharemem.cpp.i
 
 tools/src/sharemem.s: tools/src/sharemem.cpp.s
@@ -716,7 +716,7 @@ tools/src/sharemem.s: tools/src/sharemem.cpp.s
 
 # target to generate assembly for a file
 tools/src/sharemem.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/sharemem.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/sharemem.cpp.s
 .PHONY : tools/src/sharemem.cpp.s
 
 tools/src/shm.o: tools/src/shm.cpp.o
@@ -725,7 +725,7 @@ tools/src/shm.o: tools/src/shm.cpp.o
 
 # target to build an object file
 tools/src/shm.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/shm.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/shm.cpp.o
 .PHONY : tools/src/shm.cpp.o
 
 tools/src/shm.i: tools/src/shm.cpp.i
@@ -734,7 +734,7 @@ tools/src/shm.i: tools/src/shm.cpp.i
 
 # target to preprocess a source file
 tools/src/shm.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/shm.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/shm.cpp.i
 .PHONY : tools/src/shm.cpp.i
 
 tools/src/shm.s: tools/src/shm.cpp.s
@@ -743,7 +743,7 @@ tools/src/shm.s: tools/src/shm.cpp.s
 
 # target to generate assembly for a file
 tools/src/shm.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/shm.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/shm.cpp.s
 .PHONY : tools/src/shm.cpp.s
 
 tools/src/statistics.o: tools/src/statistics.cpp.o
@@ -752,7 +752,7 @@ tools/src/statistics.o: tools/src/statistics.cpp.o
 
 # target to build an object file
 tools/src/statistics.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/statistics.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/statistics.cpp.o
 .PHONY : tools/src/statistics.cpp.o
 
 tools/src/statistics.i: tools/src/statistics.cpp.i
@@ -761,7 +761,7 @@ tools/src/statistics.i: tools/src/statistics.cpp.i
 
 # target to preprocess a source file
 tools/src/statistics.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/statistics.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/statistics.cpp.i
 .PHONY : tools/src/statistics.cpp.i
 
 tools/src/statistics.s: tools/src/statistics.cpp.s
@@ -770,7 +770,7 @@ tools/src/statistics.s: tools/src/statistics.cpp.s
 
 # target to generate assembly for a file
 tools/src/statistics.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/statistics.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/statistics.cpp.s
 .PHONY : tools/src/statistics.cpp.s
 
 tools/src/thread.o: tools/src/thread.cpp.o
@@ -779,7 +779,7 @@ tools/src/thread.o: tools/src/thread.cpp.o
 
 # target to build an object file
 tools/src/thread.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/thread.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/thread.cpp.o
 .PHONY : tools/src/thread.cpp.o
 
 tools/src/thread.i: tools/src/thread.cpp.i
@@ -788,7 +788,7 @@ tools/src/thread.i: tools/src/thread.cpp.i
 
 # target to preprocess a source file
 tools/src/thread.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/thread.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/thread.cpp.i
 .PHONY : tools/src/thread.cpp.i
 
 tools/src/thread.s: tools/src/thread.cpp.s
@@ -797,7 +797,7 @@ tools/src/thread.s: tools/src/thread.cpp.s
 
 # target to generate assembly for a file
 tools/src/thread.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/thread.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/thread.cpp.s
 .PHONY : tools/src/thread.cpp.s
 
 tools/src/timer.o: tools/src/timer.cpp.o
@@ -806,7 +806,7 @@ tools/src/timer.o: tools/src/timer.cpp.o
 
 # target to build an object file
 tools/src/timer.cpp.o:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/timer.cpp.o
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/timer.cpp.o
 .PHONY : tools/src/timer.cpp.o
 
 tools/src/timer.i: tools/src/timer.cpp.i
@@ -815,7 +815,7 @@ tools/src/timer.i: tools/src/timer.cpp.i
 
 # target to preprocess a source file
 tools/src/timer.cpp.i:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/timer.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/timer.cpp.i
 .PHONY : tools/src/timer.cpp.i
 
 tools/src/timer.s: tools/src/timer.cpp.s
@@ -824,7 +824,7 @@ tools/src/timer.s: tools/src/timer.cpp.s
 
 # target to generate assembly for a file
 tools/src/timer.cpp.s:
-	cd /home/dguco/data/cpppro/server/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/timer.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build && $(MAKE) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/tools/src/timer.cpp.s
 .PHONY : tools/src/timer.cpp.s
 
 # Help Target
@@ -925,6 +925,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/dguco/data/cpppro/server/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/dguco/data/cpppro/myserver/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

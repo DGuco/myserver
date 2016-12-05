@@ -1,4 +1,4 @@
-# Install script for directory: /home/dguco/data/cpppro/server/proxyserver
+# Install script for directory: /home/dguco/data/cpppro/myserver/proxyserver
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

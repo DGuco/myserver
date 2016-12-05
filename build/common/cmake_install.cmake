@@ -1,4 +1,4 @@
-# Install script for directory: /home/dguco/data/cpppro/server/common
+# Install script for directory: /home/dguco/data/cpppro/myserver/common
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

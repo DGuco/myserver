@@ -43,10 +43,10 @@ RM = /usr/local/cmake-3.6.1-Linux-x86_64/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/dguco/data/cpppro/server
+CMAKE_SOURCE_DIR = /home/dguco/data/cpppro/myserver
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/dguco/data/cpppro/server/build
+CMAKE_BINARY_DIR = /home/dguco/data/cpppro/myserver/build
 
 # Include any dependencies generated for this target.
 include common/CMakeFiles/common.dir/depend.make
@@ -59,16 +59,16 @@ include common/CMakeFiles/common.dir/flags.make
 
 common/CMakeFiles/common.dir/tools/src/base.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/base.cpp.o: ../common/tools/src/base.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object common/CMakeFiles/common.dir/tools/src/base.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/base.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/base.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object common/CMakeFiles/common.dir/tools/src/base.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/base.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/base.cpp
 
 common/CMakeFiles/common.dir/tools/src/base.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/base.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/base.cpp > CMakeFiles/common.dir/tools/src/base.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/base.cpp > CMakeFiles/common.dir/tools/src/base.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/base.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/base.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/base.cpp -o CMakeFiles/common.dir/tools/src/base.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/base.cpp -o CMakeFiles/common.dir/tools/src/base.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/base.cpp.o.requires:
 
@@ -83,16 +83,16 @@ common/CMakeFiles/common.dir/tools/src/base.cpp.o.provides.build: common/CMakeFi
 
 common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o: ../common/tools/src/client_comm_engine.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/client_comm_engine.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/client_comm_engine.cpp
 
 common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/client_comm_engine.cpp > CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/client_comm_engine.cpp > CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/client_comm_engine.cpp -o CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/client_comm_engine.cpp -o CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o.requires:
 
@@ -107,16 +107,16 @@ common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o.provides.build: 
 
 common/CMakeFiles/common.dir/tools/src/clock.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/clock.cpp.o: ../common/tools/src/clock.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object common/CMakeFiles/common.dir/tools/src/clock.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/clock.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/clock.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object common/CMakeFiles/common.dir/tools/src/clock.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/clock.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/clock.cpp
 
 common/CMakeFiles/common.dir/tools/src/clock.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/clock.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/clock.cpp > CMakeFiles/common.dir/tools/src/clock.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/clock.cpp > CMakeFiles/common.dir/tools/src/clock.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/clock.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/clock.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/clock.cpp -o CMakeFiles/common.dir/tools/src/clock.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/clock.cpp -o CMakeFiles/common.dir/tools/src/clock.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/clock.cpp.o.requires:
 
@@ -131,16 +131,16 @@ common/CMakeFiles/common.dir/tools/src/clock.cpp.o.provides.build: common/CMakeF
 
 common/CMakeFiles/common.dir/tools/src/code_queue.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/code_queue.cpp.o: ../common/tools/src/code_queue.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object common/CMakeFiles/common.dir/tools/src/code_queue.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/code_queue.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/code_queue.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object common/CMakeFiles/common.dir/tools/src/code_queue.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/code_queue.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/code_queue.cpp
 
 common/CMakeFiles/common.dir/tools/src/code_queue.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/code_queue.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/code_queue.cpp > CMakeFiles/common.dir/tools/src/code_queue.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/code_queue.cpp > CMakeFiles/common.dir/tools/src/code_queue.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/code_queue.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/code_queue.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/code_queue.cpp -o CMakeFiles/common.dir/tools/src/code_queue.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/code_queue.cpp -o CMakeFiles/common.dir/tools/src/code_queue.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/code_queue.cpp.o.requires:
 
@@ -155,16 +155,16 @@ common/CMakeFiles/common.dir/tools/src/code_queue.cpp.o.provides.build: common/C
 
 common/CMakeFiles/common.dir/tools/src/config.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/config.cpp.o: ../common/tools/src/config.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object common/CMakeFiles/common.dir/tools/src/config.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/config.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/config.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object common/CMakeFiles/common.dir/tools/src/config.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/config.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/config.cpp
 
 common/CMakeFiles/common.dir/tools/src/config.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/config.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/config.cpp > CMakeFiles/common.dir/tools/src/config.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/config.cpp > CMakeFiles/common.dir/tools/src/config.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/config.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/config.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/config.cpp -o CMakeFiles/common.dir/tools/src/config.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/config.cpp -o CMakeFiles/common.dir/tools/src/config.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/config.cpp.o.requires:
 
@@ -179,16 +179,16 @@ common/CMakeFiles/common.dir/tools/src/config.cpp.o.provides.build: common/CMake
 
 common/CMakeFiles/common.dir/tools/src/daemon.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/daemon.cpp.o: ../common/tools/src/daemon.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object common/CMakeFiles/common.dir/tools/src/daemon.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/daemon.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/daemon.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object common/CMakeFiles/common.dir/tools/src/daemon.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/daemon.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/daemon.cpp
 
 common/CMakeFiles/common.dir/tools/src/daemon.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/daemon.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/daemon.cpp > CMakeFiles/common.dir/tools/src/daemon.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/daemon.cpp > CMakeFiles/common.dir/tools/src/daemon.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/daemon.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/daemon.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/daemon.cpp -o CMakeFiles/common.dir/tools/src/daemon.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/daemon.cpp -o CMakeFiles/common.dir/tools/src/daemon.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/daemon.cpp.o.requires:
 
@@ -203,16 +203,16 @@ common/CMakeFiles/common.dir/tools/src/daemon.cpp.o.provides.build: common/CMake
 
 common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.o: ../common/tools/src/dirtyword.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/dirtyword.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/dirtyword.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/dirtyword.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/dirtyword.cpp
 
 common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/dirtyword.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/dirtyword.cpp > CMakeFiles/common.dir/tools/src/dirtyword.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/dirtyword.cpp > CMakeFiles/common.dir/tools/src/dirtyword.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/dirtyword.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/dirtyword.cpp -o CMakeFiles/common.dir/tools/src/dirtyword.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/dirtyword.cpp -o CMakeFiles/common.dir/tools/src/dirtyword.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.o.requires:
 
@@ -227,16 +227,16 @@ common/CMakeFiles/common.dir/tools/src/dirtyword.cpp.o.provides.build: common/CM
 
 common/CMakeFiles/common.dir/tools/src/log.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/log.cpp.o: ../common/tools/src/log.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object common/CMakeFiles/common.dir/tools/src/log.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/log.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/log.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object common/CMakeFiles/common.dir/tools/src/log.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/log.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/log.cpp
 
 common/CMakeFiles/common.dir/tools/src/log.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/log.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/log.cpp > CMakeFiles/common.dir/tools/src/log.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/log.cpp > CMakeFiles/common.dir/tools/src/log.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/log.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/log.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/log.cpp -o CMakeFiles/common.dir/tools/src/log.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/log.cpp -o CMakeFiles/common.dir/tools/src/log.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/log.cpp.o.requires:
 
@@ -251,16 +251,16 @@ common/CMakeFiles/common.dir/tools/src/log.cpp.o.provides.build: common/CMakeFil
 
 common/CMakeFiles/common.dir/tools/src/message_interface.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/message_interface.cpp.o: ../common/tools/src/message_interface.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object common/CMakeFiles/common.dir/tools/src/message_interface.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/message_interface.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/message_interface.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object common/CMakeFiles/common.dir/tools/src/message_interface.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/message_interface.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/message_interface.cpp
 
 common/CMakeFiles/common.dir/tools/src/message_interface.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/message_interface.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/message_interface.cpp > CMakeFiles/common.dir/tools/src/message_interface.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/message_interface.cpp > CMakeFiles/common.dir/tools/src/message_interface.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/message_interface.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/message_interface.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/message_interface.cpp -o CMakeFiles/common.dir/tools/src/message_interface.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/message_interface.cpp -o CMakeFiles/common.dir/tools/src/message_interface.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/message_interface.cpp.o.requires:
 
@@ -275,16 +275,16 @@ common/CMakeFiles/common.dir/tools/src/message_interface.cpp.o.provides.build: c
 
 common/CMakeFiles/common.dir/tools/src/nethead.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/nethead.cpp.o: ../common/tools/src/nethead.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object common/CMakeFiles/common.dir/tools/src/nethead.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/nethead.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/nethead.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object common/CMakeFiles/common.dir/tools/src/nethead.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/nethead.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/nethead.cpp
 
 common/CMakeFiles/common.dir/tools/src/nethead.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/nethead.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/nethead.cpp > CMakeFiles/common.dir/tools/src/nethead.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/nethead.cpp > CMakeFiles/common.dir/tools/src/nethead.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/nethead.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/nethead.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/nethead.cpp -o CMakeFiles/common.dir/tools/src/nethead.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/nethead.cpp -o CMakeFiles/common.dir/tools/src/nethead.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/nethead.cpp.o.requires:
 
@@ -299,16 +299,16 @@ common/CMakeFiles/common.dir/tools/src/nethead.cpp.o.provides.build: common/CMak
 
 common/CMakeFiles/common.dir/tools/src/object.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/object.cpp.o: ../common/tools/src/object.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object common/CMakeFiles/common.dir/tools/src/object.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/object.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/object.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object common/CMakeFiles/common.dir/tools/src/object.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/object.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/object.cpp
 
 common/CMakeFiles/common.dir/tools/src/object.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/object.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/object.cpp > CMakeFiles/common.dir/tools/src/object.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/object.cpp > CMakeFiles/common.dir/tools/src/object.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/object.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/object.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/object.cpp -o CMakeFiles/common.dir/tools/src/object.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/object.cpp -o CMakeFiles/common.dir/tools/src/object.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/object.cpp.o.requires:
 
@@ -323,16 +323,16 @@ common/CMakeFiles/common.dir/tools/src/object.cpp.o.provides.build: common/CMake
 
 common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.o: ../common/tools/src/oi_tea.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/oi_tea.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/oi_tea.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/oi_tea.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/oi_tea.cpp
 
 common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/oi_tea.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/oi_tea.cpp > CMakeFiles/common.dir/tools/src/oi_tea.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/oi_tea.cpp > CMakeFiles/common.dir/tools/src/oi_tea.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/oi_tea.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/oi_tea.cpp -o CMakeFiles/common.dir/tools/src/oi_tea.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/oi_tea.cpp -o CMakeFiles/common.dir/tools/src/oi_tea.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.o.requires:
 
@@ -347,16 +347,16 @@ common/CMakeFiles/common.dir/tools/src/oi_tea.cpp.o.provides.build: common/CMake
 
 common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.o: ../common/tools/src/protoconfig.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/protoconfig.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/protoconfig.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/protoconfig.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/protoconfig.cpp
 
 common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/protoconfig.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/protoconfig.cpp > CMakeFiles/common.dir/tools/src/protoconfig.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/protoconfig.cpp > CMakeFiles/common.dir/tools/src/protoconfig.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/protoconfig.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/protoconfig.cpp -o CMakeFiles/common.dir/tools/src/protoconfig.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/protoconfig.cpp -o CMakeFiles/common.dir/tools/src/protoconfig.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.o.requires:
 
@@ -371,16 +371,16 @@ common/CMakeFiles/common.dir/tools/src/protoconfig.cpp.o.provides.build: common/
 
 common/CMakeFiles/common.dir/tools/src/performance.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/performance.cpp.o: ../common/tools/src/performance.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object common/CMakeFiles/common.dir/tools/src/performance.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/performance.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/performance.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object common/CMakeFiles/common.dir/tools/src/performance.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/performance.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/performance.cpp
 
 common/CMakeFiles/common.dir/tools/src/performance.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/performance.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/performance.cpp > CMakeFiles/common.dir/tools/src/performance.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/performance.cpp > CMakeFiles/common.dir/tools/src/performance.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/performance.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/performance.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/performance.cpp -o CMakeFiles/common.dir/tools/src/performance.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/performance.cpp -o CMakeFiles/common.dir/tools/src/performance.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/performance.cpp.o.requires:
 
@@ -395,16 +395,16 @@ common/CMakeFiles/common.dir/tools/src/performance.cpp.o.provides.build: common/
 
 common/CMakeFiles/common.dir/tools/src/runflag.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/runflag.cpp.o: ../common/tools/src/runflag.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object common/CMakeFiles/common.dir/tools/src/runflag.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/runflag.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/runflag.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object common/CMakeFiles/common.dir/tools/src/runflag.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/runflag.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/runflag.cpp
 
 common/CMakeFiles/common.dir/tools/src/runflag.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/runflag.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/runflag.cpp > CMakeFiles/common.dir/tools/src/runflag.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/runflag.cpp > CMakeFiles/common.dir/tools/src/runflag.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/runflag.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/runflag.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/runflag.cpp -o CMakeFiles/common.dir/tools/src/runflag.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/runflag.cpp -o CMakeFiles/common.dir/tools/src/runflag.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/runflag.cpp.o.requires:
 
@@ -419,16 +419,16 @@ common/CMakeFiles/common.dir/tools/src/runflag.cpp.o.provides.build: common/CMak
 
 common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.o: ../common/tools/src/server_comm_engine.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/server_comm_engine.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/server_comm_engine.cpp
 
 common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/server_comm_engine.cpp > CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/server_comm_engine.cpp > CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/server_comm_engine.cpp -o CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/server_comm_engine.cpp -o CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.o.requires:
 
@@ -443,16 +443,16 @@ common/CMakeFiles/common.dir/tools/src/server_comm_engine.cpp.o.provides.build: 
 
 common/CMakeFiles/common.dir/tools/src/servertool.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/servertool.cpp.o: ../common/tools/src/servertool.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object common/CMakeFiles/common.dir/tools/src/servertool.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/servertool.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/servertool.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object common/CMakeFiles/common.dir/tools/src/servertool.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/servertool.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/servertool.cpp
 
 common/CMakeFiles/common.dir/tools/src/servertool.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/servertool.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/servertool.cpp > CMakeFiles/common.dir/tools/src/servertool.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/servertool.cpp > CMakeFiles/common.dir/tools/src/servertool.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/servertool.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/servertool.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/servertool.cpp -o CMakeFiles/common.dir/tools/src/servertool.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/servertool.cpp -o CMakeFiles/common.dir/tools/src/servertool.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/servertool.cpp.o.requires:
 
@@ -467,16 +467,16 @@ common/CMakeFiles/common.dir/tools/src/servertool.cpp.o.provides.build: common/C
 
 common/CMakeFiles/common.dir/tools/src/sharemem.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/sharemem.cpp.o: ../common/tools/src/sharemem.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object common/CMakeFiles/common.dir/tools/src/sharemem.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/sharemem.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/sharemem.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object common/CMakeFiles/common.dir/tools/src/sharemem.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/sharemem.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/sharemem.cpp
 
 common/CMakeFiles/common.dir/tools/src/sharemem.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/sharemem.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/sharemem.cpp > CMakeFiles/common.dir/tools/src/sharemem.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/sharemem.cpp > CMakeFiles/common.dir/tools/src/sharemem.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/sharemem.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/sharemem.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/sharemem.cpp -o CMakeFiles/common.dir/tools/src/sharemem.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/sharemem.cpp -o CMakeFiles/common.dir/tools/src/sharemem.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/sharemem.cpp.o.requires:
 
@@ -491,16 +491,16 @@ common/CMakeFiles/common.dir/tools/src/sharemem.cpp.o.provides.build: common/CMa
 
 common/CMakeFiles/common.dir/tools/src/shm.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/shm.cpp.o: ../common/tools/src/shm.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object common/CMakeFiles/common.dir/tools/src/shm.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/shm.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/shm.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object common/CMakeFiles/common.dir/tools/src/shm.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/shm.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/shm.cpp
 
 common/CMakeFiles/common.dir/tools/src/shm.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/shm.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/shm.cpp > CMakeFiles/common.dir/tools/src/shm.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/shm.cpp > CMakeFiles/common.dir/tools/src/shm.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/shm.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/shm.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/shm.cpp -o CMakeFiles/common.dir/tools/src/shm.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/shm.cpp -o CMakeFiles/common.dir/tools/src/shm.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/shm.cpp.o.requires:
 
@@ -515,16 +515,16 @@ common/CMakeFiles/common.dir/tools/src/shm.cpp.o.provides.build: common/CMakeFil
 
 common/CMakeFiles/common.dir/tools/src/statistics.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/statistics.cpp.o: ../common/tools/src/statistics.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object common/CMakeFiles/common.dir/tools/src/statistics.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/statistics.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/statistics.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object common/CMakeFiles/common.dir/tools/src/statistics.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/statistics.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/statistics.cpp
 
 common/CMakeFiles/common.dir/tools/src/statistics.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/statistics.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/statistics.cpp > CMakeFiles/common.dir/tools/src/statistics.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/statistics.cpp > CMakeFiles/common.dir/tools/src/statistics.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/statistics.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/statistics.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/statistics.cpp -o CMakeFiles/common.dir/tools/src/statistics.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/statistics.cpp -o CMakeFiles/common.dir/tools/src/statistics.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/statistics.cpp.o.requires:
 
@@ -539,16 +539,16 @@ common/CMakeFiles/common.dir/tools/src/statistics.cpp.o.provides.build: common/C
 
 common/CMakeFiles/common.dir/tools/src/thread.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/thread.cpp.o: ../common/tools/src/thread.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object common/CMakeFiles/common.dir/tools/src/thread.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/thread.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/thread.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object common/CMakeFiles/common.dir/tools/src/thread.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/thread.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/thread.cpp
 
 common/CMakeFiles/common.dir/tools/src/thread.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/thread.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/thread.cpp > CMakeFiles/common.dir/tools/src/thread.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/thread.cpp > CMakeFiles/common.dir/tools/src/thread.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/thread.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/thread.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/thread.cpp -o CMakeFiles/common.dir/tools/src/thread.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/thread.cpp -o CMakeFiles/common.dir/tools/src/thread.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/thread.cpp.o.requires:
 
@@ -563,16 +563,16 @@ common/CMakeFiles/common.dir/tools/src/thread.cpp.o.provides.build: common/CMake
 
 common/CMakeFiles/common.dir/tools/src/timer.cpp.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/tools/src/timer.cpp.o: ../common/tools/src/timer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object common/CMakeFiles/common.dir/tools/src/timer.cpp.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/timer.cpp.o -c /home/dguco/data/cpppro/server/common/tools/src/timer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object common/CMakeFiles/common.dir/tools/src/timer.cpp.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/tools/src/timer.cpp.o -c /home/dguco/data/cpppro/myserver/common/tools/src/timer.cpp
 
 common/CMakeFiles/common.dir/tools/src/timer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/tools/src/timer.cpp.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/tools/src/timer.cpp > CMakeFiles/common.dir/tools/src/timer.cpp.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/tools/src/timer.cpp > CMakeFiles/common.dir/tools/src/timer.cpp.i
 
 common/CMakeFiles/common.dir/tools/src/timer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/tools/src/timer.cpp.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/tools/src/timer.cpp -o CMakeFiles/common.dir/tools/src/timer.cpp.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/tools/src/timer.cpp -o CMakeFiles/common.dir/tools/src/timer.cpp.s
 
 common/CMakeFiles/common.dir/tools/src/timer.cpp.o.requires:
 
@@ -587,16 +587,16 @@ common/CMakeFiles/common.dir/tools/src/timer.cpp.o.provides.build: common/CMakeF
 
 common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.o: ../common/message/tcpmessage.pb.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/message/tcpmessage.pb.cc.o -c /home/dguco/data/cpppro/server/common/message/tcpmessage.pb.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/message/tcpmessage.pb.cc.o -c /home/dguco/data/cpppro/myserver/common/message/tcpmessage.pb.cc
 
 common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/message/tcpmessage.pb.cc.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/message/tcpmessage.pb.cc > CMakeFiles/common.dir/message/tcpmessage.pb.cc.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/message/tcpmessage.pb.cc > CMakeFiles/common.dir/message/tcpmessage.pb.cc.i
 
 common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/message/tcpmessage.pb.cc.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/message/tcpmessage.pb.cc -o CMakeFiles/common.dir/message/tcpmessage.pb.cc.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/message/tcpmessage.pb.cc -o CMakeFiles/common.dir/message/tcpmessage.pb.cc.s
 
 common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.o.requires:
 
@@ -611,16 +611,16 @@ common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.o.provides.build: common/C
 
 common/CMakeFiles/common.dir/message/message.pb.cc.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/message/message.pb.cc.o: ../common/message/message.pb.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object common/CMakeFiles/common.dir/message/message.pb.cc.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/message/message.pb.cc.o -c /home/dguco/data/cpppro/server/common/message/message.pb.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object common/CMakeFiles/common.dir/message/message.pb.cc.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/message/message.pb.cc.o -c /home/dguco/data/cpppro/myserver/common/message/message.pb.cc
 
 common/CMakeFiles/common.dir/message/message.pb.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/message/message.pb.cc.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/message/message.pb.cc > CMakeFiles/common.dir/message/message.pb.cc.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/message/message.pb.cc > CMakeFiles/common.dir/message/message.pb.cc.i
 
 common/CMakeFiles/common.dir/message/message.pb.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/message/message.pb.cc.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/message/message.pb.cc -o CMakeFiles/common.dir/message/message.pb.cc.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/message/message.pb.cc -o CMakeFiles/common.dir/message/message.pb.cc.s
 
 common/CMakeFiles/common.dir/message/message.pb.cc.o.requires:
 
@@ -635,16 +635,16 @@ common/CMakeFiles/common.dir/message/message.pb.cc.o.provides.build: common/CMak
 
 common/CMakeFiles/common.dir/message/proxymessage.pb.cc.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/message/proxymessage.pb.cc.o: ../common/message/proxymessage.pb.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object common/CMakeFiles/common.dir/message/proxymessage.pb.cc.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/message/proxymessage.pb.cc.o -c /home/dguco/data/cpppro/server/common/message/proxymessage.pb.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object common/CMakeFiles/common.dir/message/proxymessage.pb.cc.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/message/proxymessage.pb.cc.o -c /home/dguco/data/cpppro/myserver/common/message/proxymessage.pb.cc
 
 common/CMakeFiles/common.dir/message/proxymessage.pb.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/message/proxymessage.pb.cc.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/message/proxymessage.pb.cc > CMakeFiles/common.dir/message/proxymessage.pb.cc.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/message/proxymessage.pb.cc > CMakeFiles/common.dir/message/proxymessage.pb.cc.i
 
 common/CMakeFiles/common.dir/message/proxymessage.pb.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/message/proxymessage.pb.cc.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/message/proxymessage.pb.cc -o CMakeFiles/common.dir/message/proxymessage.pb.cc.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/message/proxymessage.pb.cc -o CMakeFiles/common.dir/message/proxymessage.pb.cc.s
 
 common/CMakeFiles/common.dir/message/proxymessage.pb.cc.o.requires:
 
@@ -659,16 +659,16 @@ common/CMakeFiles/common.dir/message/proxymessage.pb.cc.o.provides.build: common
 
 common/CMakeFiles/common.dir/message/configure.pb.cc.o: common/CMakeFiles/common.dir/flags.make
 common/CMakeFiles/common.dir/message/configure.pb.cc.o: ../common/message/configure.pb.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object common/CMakeFiles/common.dir/message/configure.pb.cc.o"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/message/configure.pb.cc.o -c /home/dguco/data/cpppro/server/common/message/configure.pb.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object common/CMakeFiles/common.dir/message/configure.pb.cc.o"
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/common.dir/message/configure.pb.cc.o -c /home/dguco/data/cpppro/myserver/common/message/configure.pb.cc
 
 common/CMakeFiles/common.dir/message/configure.pb.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/common.dir/message/configure.pb.cc.i"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/server/common/message/configure.pb.cc > CMakeFiles/common.dir/message/configure.pb.cc.i
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dguco/data/cpppro/myserver/common/message/configure.pb.cc > CMakeFiles/common.dir/message/configure.pb.cc.i
 
 common/CMakeFiles/common.dir/message/configure.pb.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/common.dir/message/configure.pb.cc.s"
-	cd /home/dguco/data/cpppro/server/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/server/common/message/configure.pb.cc -o CMakeFiles/common.dir/message/configure.pb.cc.s
+	cd /home/dguco/data/cpppro/myserver/build/common && /usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dguco/data/cpppro/myserver/common/message/configure.pb.cc -o CMakeFiles/common.dir/message/configure.pb.cc.s
 
 common/CMakeFiles/common.dir/message/configure.pb.cc.o.requires:
 
@@ -741,9 +741,9 @@ common_EXTERNAL_OBJECTS =
 ../lib/libcommon.a: common/CMakeFiles/common.dir/message/configure.pb.cc.o
 ../lib/libcommon.a: common/CMakeFiles/common.dir/build.make
 ../lib/libcommon.a: common/CMakeFiles/common.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/dguco/data/cpppro/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Linking CXX static library ../../lib/libcommon.a"
-	cd /home/dguco/data/cpppro/server/build/common && $(CMAKE_COMMAND) -P CMakeFiles/common.dir/cmake_clean_target.cmake
-	cd /home/dguco/data/cpppro/server/build/common && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/common.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/dguco/data/cpppro/myserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Linking CXX static library ../../lib/libcommon.a"
+	cd /home/dguco/data/cpppro/myserver/build/common && $(CMAKE_COMMAND) -P CMakeFiles/common.dir/cmake_clean_target.cmake
+	cd /home/dguco/data/cpppro/myserver/build/common && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/common.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 common/CMakeFiles/common.dir/build: ../lib/libcommon.a
@@ -780,10 +780,10 @@ common/CMakeFiles/common.dir/requires: common/CMakeFiles/common.dir/message/conf
 .PHONY : common/CMakeFiles/common.dir/requires
 
 common/CMakeFiles/common.dir/clean:
-	cd /home/dguco/data/cpppro/server/build/common && $(CMAKE_COMMAND) -P CMakeFiles/common.dir/cmake_clean.cmake
+	cd /home/dguco/data/cpppro/myserver/build/common && $(CMAKE_COMMAND) -P CMakeFiles/common.dir/cmake_clean.cmake
 .PHONY : common/CMakeFiles/common.dir/clean
 
 common/CMakeFiles/common.dir/depend:
-	cd /home/dguco/data/cpppro/server/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/dguco/data/cpppro/server /home/dguco/data/cpppro/server/common /home/dguco/data/cpppro/server/build /home/dguco/data/cpppro/server/build/common /home/dguco/data/cpppro/server/build/common/CMakeFiles/common.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/dguco/data/cpppro/myserver/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/dguco/data/cpppro/myserver /home/dguco/data/cpppro/myserver/common /home/dguco/data/cpppro/myserver/build /home/dguco/data/cpppro/myserver/build/common /home/dguco/data/cpppro/myserver/build/common/CMakeFiles/common.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : common/CMakeFiles/common.dir/depend
 
