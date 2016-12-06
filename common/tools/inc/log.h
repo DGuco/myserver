@@ -1,18 +1,5 @@
 #ifndef _LOG_H_
 #define _LOG_H_
-// ***************************************************************
-//  File:	log.h   version:  1.0
-//	Date:	05/23/2008
-// 	Desc:	log的实现基于开源软件Log4Cpp-1.0, 在之上进行了封装和宏开关.
-//			可以实现服务器常用的回卷文件格式的日志文件,支持日志分级.
-//			对所有类型的日志进行统一管理,用名称进行
-//  
-//  Copyright (C) 2008 - YQ Entertainment Technology Co.,Ltd
-//						All Rights Reserved 
-// ***************************************************************
-
-// 日志系统开关
-
 #include <stdarg.h>
 
 #ifdef USE_LOG4CPP

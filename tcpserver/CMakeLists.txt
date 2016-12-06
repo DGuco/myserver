@@ -4,14 +4,15 @@ project(tcpserver)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES
-        inc/commdef.h
-        src/commdef.cpp
         main.cpp
+        inc/commdef.h
+        inc/tcpctrl.h
+        src/tcpctrl.cpp
         )
 
 include_directories(
         /usr/local/include
-        ${CMAKE_SOURCE_DIR/common/message}
+        ${CMAKE_SOURCE_DIR/common/message/inc}
         ${CMAKE_SOURCE_DIR/common/mytimer}
         ${CMAKE_SOURCE_DIR/common/tools/inc}
 )
