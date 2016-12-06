@@ -17,17 +17,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d069f017-acfa-4319-a930-9c3a45d30834" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/tools/inc/json.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tcpserver/inc/tcpctrl.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeCache.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/3.6.1/CMakeCCompiler.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/3.6.1/CMakeCXXCompiler.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/3.6.1/CMakeDetermineCompilerABI_C.bin" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/3.6.1/CMakeDetermineCompilerABI_CXX.bin" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/3.6.1/CMakeSystem.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/3.6.1/CompilerIdC/CMakeCCompilerId.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/3.6.1/CompilerIdC/a.out" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/3.6.1/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/3.6.1/CompilerIdCXX/a.out" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/CMakeDirectoryInformation.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/CMakeOutput.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/Makefile.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/Makefile2" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/TargetDirectories.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/cmake.check_cache" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/feature_tests.bin" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/feature_tests.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/feature_tests.cxx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/CMakeFiles/progress.marks" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/cmake_install.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/CMakeDirectoryInformation.cmake" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/CXX.includecache" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/DependInfo.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/build.make" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/cmake_clean.cmake" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/cmake_clean_target.cmake" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/depend.internal" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/depend.make" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/flags.make" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/link.txt" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/message/configure.pb.cc.o" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/message/message.pb.cc.o" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/message/proxymessage.pb.cc.o" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/message/tcpmessage.pb.cc.o" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/progress.make" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/tools/src/base.cpp.o" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/tools/src/client_comm_engine.cpp.o" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/tools/src/clock.cpp.o" afterPath="" />
@@ -50,48 +76,30 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/tools/src/statistics.cpp.o" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/tools/src/thread.cpp.o" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/tools/src/timer.cpp.o" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/progress.marks" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/common/cmake_install.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/proxyserver/CMakeFiles/CMakeDirectoryInformation.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/proxyserver/CMakeFiles/progress.marks" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/proxyserver/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/proxyserver/cmake_install.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/CMakeDirectoryInformation.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/progress.marks" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/CXX.includecache" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/DependInfo.cmake" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/build.make" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/cmake_clean.cmake" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/depend.internal" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/depend.make" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/flags.make" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/link.txt" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/main.cpp.o" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/progress.make" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/src/clienthandle.cpp.o" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/src/commdef.cpp.o" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/timer.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/yq_assert.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/yq_hashmap.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/yq_hashmap_mod.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/yq_queue.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/yq_random.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/yq_set.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/yq_sharedhashmap.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/yq_sharedvector.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/yq_string.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/yq_vector.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/timer.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/tcpserver/src/commdef.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/tcpserver/cmake_install.cmake" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/CMakeFiles/CMakeOutput.log" afterPath="$PROJECT_DIR$/build/CMakeFiles/CMakeOutput.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/CMakeFiles/Makefile2" afterPath="$PROJECT_DIR$/build/CMakeFiles/Makefile2" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/CMakeFiles/progress.marks" afterPath="$PROJECT_DIR$/build/CMakeFiles/progress.marks" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/DependInfo.cmake" afterPath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/DependInfo.cmake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/build.make" afterPath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/build.make" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/cmake_clean.cmake" afterPath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/cmake_clean.cmake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/depend.make" afterPath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/depend.make" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/flags.make" afterPath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/flags.make" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/progress.make" afterPath="$PROJECT_DIR$/build/common/CMakeFiles/common.dir/progress.make" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/common/CMakeFiles/progress.marks" afterPath="$PROJECT_DIR$/build/common/CMakeFiles/progress.marks" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/common/Makefile" afterPath="$PROJECT_DIR$/build/common/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/progress.marks" afterPath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/progress.marks" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/DependInfo.cmake" afterPath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/DependInfo.cmake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/build.make" afterPath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/build.make" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/cmake_clean.cmake" afterPath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/cmake_clean.cmake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/depend.make" afterPath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/depend.make" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/link.txt" afterPath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/link.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/progress.make" afterPath="$PROJECT_DIR$/build/tcpserver/CMakeFiles/tcpserver.dir/progress.make" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/tcpserver/Makefile" afterPath="$PROJECT_DIR$/build/tcpserver/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/CMakeLists.txt" afterPath="$PROJECT_DIR$/common/CMakeLists.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/tools/inc/log.h" afterPath="$PROJECT_DIR$/common/tools/inc/log.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tcpserver/CMakeLists.txt" afterPath="$PROJECT_DIR$/tcpserver/CMakeLists.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tcpserver/inc/commdef.h" afterPath="$PROJECT_DIR$/tcpserver/inc/commdef.h" />
     </list>
     <ignored path="sharedemo.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -111,6 +119,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tcpserver/main.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="162">
+              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="log.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/tools/inc/log.h">
           <provider selected="true" editor-type-id="text-editor">
@@ -177,11 +195,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config_data.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="config_data.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/tools/src/config_data.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
+            <state relative-caret-position="288">
+              <caret line="16" column="57" selection-start-line="16" selection-start-column="57" selection-end-line="16" selection-end-column="57" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -206,16 +224,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-17982">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="yq_assert.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/tools/inc/yq_assert.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="40" column="52" selection-start-line="40" selection-start-column="52" selection-end-line="40" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -664,12 +672,12 @@
       <workItem from="1480949816233" duration="484000" />
       <workItem from="1480950325741" duration="280000" />
       <workItem from="1480950630784" duration="357000" />
-      <workItem from="1481028952699" duration="5894000" />
+      <workItem from="1481028952699" duration="6035000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55907000" />
+    <option name="totallyTimeSpent" value="56048000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -691,7 +699,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32838038" sideWeight="0.50336134" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33083832" sideWeight="0.49663866" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33083832" sideWeight="0.49663866" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34131736" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -969,14 +977,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tcpserver/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" column="1" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/tools/inc/json.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4536">
@@ -1122,11 +1122,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/common/tools/src/config_data.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
+        <state relative-caret-position="288">
+          <caret line="16" column="57" selection-start-line="16" selection-start-column="57" selection-end-line="16" selection-end-column="57" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tcpserver/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
