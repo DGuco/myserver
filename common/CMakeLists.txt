@@ -28,17 +28,9 @@ set(COMMON
         tools/inc/statistics.h
         tools/inc/tcp_conn.h
         tools/inc/thread.h
-        tools/inc/timer.h
+        tools/inc/json.h
         tools/inc/yq_assert.h
-        tools/inc/yq_hashmap.h
-        tools/inc/yq_hashmap_mod.h
-        tools/inc/yq_queue.h
-        tools/inc/yq_random.h
-        tools/inc/yq_set.h
-        tools/inc/yq_sharedhashmap.h
-        tools/inc/yq_sharedvector.h
-        tools/inc/yq_string.h
-        tools/inc/yq_vector.h
+        tools/inc/config_data.h
         tools/src/base.cpp
         tools/src/client_comm_engine.cpp
         tools/src/clock.cpp
@@ -60,7 +52,8 @@ set(COMMON
         tools/src/shm.cpp
         tools/src/statistics.cpp
         tools/src/thread.cpp
-        tools/src/timer.cpp
+        tools/src/json.cpp
+        tools/src/config_data.cpp
         message/message.pb.h
         message/tcpmessage.pb.h
         message/tcpmessage.pb.cc
