@@ -11,6 +11,8 @@
 #include <time.h>
 #include <string.h>
 
+#define MEDIUM_SIZE
+
 #ifdef SMALL_SIZE
 #define MAX_SOCKET_NUM				500					// 单个TCPCtrl支持的连接数
 #endif
@@ -113,38 +115,38 @@ typedef struct _TTime
 // 程序的配置信息
 typedef struct _TConfig
 {
-    int          m_iSocketTimeOut;						// socket的超时时间
-    int          m_iConnTimeOut;						// socket的超时时间
-    int          m_iCheckTimeGap;
-    int          m_iListenPortNum;						// 保存端口信息
-    int          m_iListenPorts[MAX_PORT_NUM];			// 保存端口信息
-    int          m_iTcpBufLen;							// tcp发送缓冲区大小
-    int          m_iMaxLogCount;
-    int          m_iWriteStatGap;						// log服务器状态的间隔
-    int          m_iShmMax;								// 共享内存最大数(size)
-    int          m_iOpenFileMax;						// 文件句柄最大数
-    int          m_iCoreFileSize;						// core文件大小
+    int          miSocketTimeOut;						// socket的超时时间
+    int          miConnTimeOut;						// socket的超时时间
+    int          miCheckTimeGap;
+    int          miListenPortNum;						// 保存端口信息
+    int          miListenPorts[MAX_PORT_NUM];			// 保存端口信息
+    int          miTcpBufLen;							// tcp发送缓冲区大小
+    int          miMaxLogCount;
+    int          miWriteStatGap;						// log服务器状态的间隔
+    int          miShmMax;								// 共享内存最大数(size)
+    int          miOpenFileMax;						// 文件句柄最大数
+    int          miCoreFileSize;						// core文件大小
 } TConfig;
 
 
 // 和客户端通讯的socket结构
 typedef struct _TSocketInfo
 {
-    int		m_iSocket;									// socket句柄
-    int		m_iSocketType;								// socket类型：监听socket、连接socket
-    int		m_iSocketFlag;								// socket标志：是否收包
-    int		m_iRecvBytes;								// 接收的字节数
-    char		m_szClientIP[IP_LENGTH];			// 客户端IP地址
-    char		m_szMsgBuf[RECV_BUF_LEN];		// 存储发送给gamesvrd的消息
-    time_t	m_tCreateTime;							// socket的创建时间
-    int		m_iSrcIP;										// 由tcpsvrd发给gamesvrd，记录了该socket的创建时间
-    int		m_iDstIP;										// 由gamesvrd返回给tcpsvrd，值和m_iSrcIP相同
-    short	m_nSrcPort;									// 由tcpsvrd发给gamesvrd，记录了该socket在数组中的位置
-    short	m_nDstPort;									// 由gamesvrd返回给tcpsvrd，值和m_iSrcPort
-    time_t	m_tStamp;									// 接收到数据包的时间戳
-    int		m_iSendFlag;								// 标识mainsvrd是否向其发送了包
-    int		m_iConnectedPort;
-    int		m_iUin;											// 用户唯一标识
+    int		miSocket;									// socket句柄
+    int		miSocketType;								// socket类型：监听socket、连接socket
+    int		miSocketFlag;								// socket标志：是否收包
+    int		miRecvBytes;								// 接收的字节数
+    char	mszClientIP[IP_LENGTH];			// 客户端IP地址
+    char	mszMsgBuf[RECV_BUF_LEN];		// 存储发送给gamesvrd的消息
+    time_t	mtCreateTime;							// socket的创建时间
+    int		miSrcIP;										// 由tcpsvrd发给gamesvrd，记录了该socket的创建时间
+    int		miDstIP;										// 由gamesvrd返回给tcpsvrd，值和m_iSrcIP相同
+    short	mnSrcPort;									// 由tcpsvrd发给gamesvrd，记录了该socket在数组中的位置
+    short	mnDstPort;									// 由gamesvrd返回给tcpsvrd，值和m_iSrcPort
+    time_t	mtStamp;									// 接收到数据包的时间戳
+    int		miSendFlag;								// 标识mainsvrd是否向其发送了包
+    int		miConnectedPort;
+    int		miUin;											// 用户唯一标识
 } TSocketInfo;
 
 #endif // __TCPDEF_H__
