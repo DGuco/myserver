@@ -23,7 +23,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <netinet/tcp.h>
-
 #include "../inc/tcpctrl.h"
 #include "../../common/tools/inc/client_comm_engine.h"
 
@@ -93,7 +92,7 @@ int CTcpCtrl::Run()
     return 0;
 }
 
-int CTCPCtrl::SetRunFlag(int iRunFlag)
+int CTcpCtrl::SetRunFlag(int iRunFlag)
 {
     return 0;
 }
@@ -103,14 +102,14 @@ int CTCPCtrl::SetRunFlag(int iRunFlag)
   * 功能描述        : 初始化Epoll socket
   * 返回值          ：void 
 **/
-int CTCPCtrl::InitEpollSocket(short shTmpport)
+int CTcpCtrl::InitEpollSocket(short shTmpport)
 {
     int iTmpRet = 0;
     socklen_t iOptval = 0;
     //兼容不同的平台系统
-    int iOpenLen = sizeof(int)
-    int iTmpFlags = 0；
-    struct linger = {0,0}
+    int iOpenLen = sizeof(int);
+    int iTmpFlags = 0;
+    struct linger ling = {0,0};
     struct sockaddr_in addr;
     memset(&addr,0,sizeof(struct sockaddr_in));
 
@@ -119,7 +118,7 @@ int CTCPCtrl::InitEpollSocket(short shTmpport)
         return 2;
     }
 
-    if ((miSocket = EphSocket(AF_INET,SOCKET_STREAM,0)) == -1)
+    if ((miSocket = EphSocket(AF_INET,SOCK_STREAM,0)) == -1)
     {
         EphCleanUp();
         return 3;
@@ -134,7 +133,7 @@ int CTCPCtrl::InitEpollSocket(short shTmpport)
     setsockopt(miSocket,SOL_SOCKET,SO_REUSEADDR,&iTmpFlags,sizeof(iTmpFlags));
     setsockopt(miSocket,SOL_SOCKET,SO_KEEPALIVE,&iTmpFlags,sizeof(iTmpFlags));
     //close()立刻返回，底层将未发送完的数据发送完成后再释放资源，即优雅退出。
-    setsockopt(miSocket,SOL_SOCKET,SO_LINGER,&linger,sizeof(linger));
+    setsockopt(miSocket,SOL_SOCKET,SO_LINGER,&ling,sizeof(linger));
     //禁止Nagle’s Algorithm延时算法，立刻发送
     setsockopt(miSocket,IPPROTO_TCP,TCP_NODELAY,&iTmpFlags,sizeof(iTmpFlags));
 
@@ -152,13 +151,13 @@ int CTCPCtrl::InitEpollSocket(short shTmpport)
 
     int iTmpOptLen = sizeof(socklen_t);
     int iTmpOptval = TCP_BUFFER_LEN;
-    if (!setsockopt(miSocket,SOL_SOCKET,SO_RCVBUF,(const void)&iTmpOptval),iTmpOptLen)
+    if (!setsockopt(miSocket,SOL_SOCKET,SO_RCVBUF,(const void*)&iTmpOptval,iTmpOptLen))
     {
         LOG_ERROR("default","Set Recv buffer size to %d failed",iTmpOptval);
         return -1;
     }
 
-    if (!getsockopt(miSocket,SOL_SOCKET,SO_RCVBUF,(void*)&iTmpOptval),(socklen_t*)& iTmpOptLen)
+    if (!getsockopt(miSocket,SOL_SOCKET,SO_RCVBUF,(void*)&iTmpOptval,(socklen_t*)&iTmpOptLen))
     {
         LOG_INFO("default","Set Recv buffer size to %d",iTmpOptval); 
     }
@@ -184,7 +183,7 @@ int CTCPCtrl::InitEpollSocket(short shTmpport)
   * 功能描述        : 初始化Epoll event
   * 返回值          ：void 
 **/
-int CTCPCtrl::EphInit()
+int CTcpCtrl::EphInit()
 {
     //已经设置
     if (NULL != mpEpollevents)
@@ -195,10 +194,10 @@ int CTCPCtrl::EphInit()
     memset(&mstEpollEvent,0,sizeof(struct epoll_event));
     mstEpollEvent.events = EPOLLIN | EPOLLERR | EPOLLHUP; //epoll监听 可读，错误，和挂起事件
     //初始化event触发事件信息
-    mstEpollEvent.Data.ptr = NULL;
-    mstEpollEvent.Data.fd = -1;
+    mstEpollEvent.data.ptr = NULL;
+    mstEpollEvent.data.fd = -1;
 
-    mpEpollevents = (struct epoll_event*)malloc((MAX_SOCKET_NUM) * sizeof(struct epoll_event))
+    mpEpollevents = (struct epoll_event*)malloc((MAX_SOCKET_NUM) * sizeof(struct epoll_event));
     if (NULL == mpEpollevents)
     {
         LOG_ERROR("default","malloc mpEpollevents Error!");
@@ -219,9 +218,9 @@ int CTCPCtrl::EphInit()
   * 功能描述        : 初始化Epoll socket
   * 返回值          ：void 
 **/
-int CTCPCtrl::EphSocket(int iDomain,int iType,int iProtocol)
+int CTcpCtrl::EphSocket(int iDomain,int iType,int iProtocol)
 {
-    int iTmpSfd = socket(iDomain,type,iProtocol);
+    int iTmpSfd = socket(iDomain,iType,iProtocol);
     int iTmpFlags = 1;
 
     if (iTmpSfd == -1)
@@ -257,7 +256,7 @@ int CTcpCtrl::EphClose(int iSocketFd)
   * 功能描述        : 清除epoll
   * 返回值          ：void 
 **/
-int CTCPCtrl::EphCleanUp()
+int CTcpCtrl::EphCleanUp()
 {
     free(mpEpollevents);
     close(miKdpfd);
@@ -269,7 +268,7 @@ int CTCPCtrl::EphCleanUp()
   * 功能描述        : 创建连接
   * 返回值          ：void 
 **/
-int CTCPCtrl::EphNewConn(int iSocketFd)
+int CTcpCtrl::EphNewConn(int iSocketFd)
 {
     mstEpollEvent.data.fd = iSocketFd;
     if (epoll_ctl(miKdpfd,EPOLL_CTL_ADD,iSocketFd,&mstEpollEvent) < 0)
@@ -279,3 +278,53 @@ int CTCPCtrl::EphNewConn(int iSocketFd)
     }
     return 0;
 }
+
+/**
+  * 函数名          : CTCPCtrl::RecvClientData
+  * 功能描述        : 接客户端的数据
+  * 返回值          ：void
+**/
+int CTcpCtrl::RecvClientData(short shIndex)
+{
+    int iTmpRet = 0;
+    int iTmpRecvBytes = 0;
+    int iTempRet;
+    int iRecvBytes;
+    int iOffset;
+    char* pTemp;
+    char* pTemp1;
+    unsigned short unRecvLen;
+    int nRecvAllLen;
+    time_t tTempTime;
+    int iSocket = mpSocketInfo->miSocket;
+    unsigned short unLength = 0;
+    iOffset = mpSocketInfo->miRecvBytes;
+}
+
+/**
+  * 函数名          : CTCPCtrl::TcpRead
+  * 功能描述        : 读取tcp数据
+  * 返回值          ：void
+**/
+int CTcpCtrl::TcpRead(int iSocket, char *pBuf, int iLen)
+{
+    int iTmpRecvBytes = 0;
+    while(1)
+    {
+        iTmpRecvBytes = read(iSocket,pBuf,iLen);
+        //读取成功
+        if (iTmpRecvBytes > 0)
+        {
+            return iTmpRecvBytes;
+        }
+        else
+        {
+            if (iTmpRecvBytes < 0 && errno == EINTR)
+            {
+                continue;
+            }
+            return iTmpRecvBytes;
+        }
+    }
+}
+

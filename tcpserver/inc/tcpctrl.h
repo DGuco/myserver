@@ -36,17 +36,22 @@ public:
     CTcpCtrl();
     ~CTcpCtrl();
     int Initialize();		// 初始化
-    int PrepareToRun();
     int Run();
     int SetRunFlag(int iRunFlag);
 
 public:
-    int InitEpollSocket(short shPort);                  //初始化Epoll socket
+
+    //*****************Epoll***********************/
+    int InitEpollSocket(short shPort);
     int EphInit();
     int EphSocket(int iDomain,int iType,int iProtocol);
     int EphNewConn(int iSocketFd);
     int EphClose(int iSocketFd);
     int EphCleanUp();
+
+    //******************数据处理**********************/
+    int RecvClientData(short shIndex);
+    int TcpRead(int iSocket, char *pBuf, int iLen);
 
 private:
 

@@ -13,7 +13,7 @@
 
 /******************************************/
 //配置信息暂时写死 以后加上配置
-const int port = 13000        //tcpserver 端口
+const int port = 13000;        //tcpserver 端口
 
 /******************************************/
 
@@ -75,8 +75,8 @@ const int port = 13000        //tcpserver 端口
 
 #define RcMutex                     pthread_mutex_t           // 线程锁
 #define ThreadType                  void*                     // 线程类型
-typedef void                        *(*ThreadFunc )(void *);  // 线程函数指针
 
+typedef void                        *(*ThreadFunc )(void *);  // 线程函数指针
 
 typedef enum _EnRunFlag
 {
