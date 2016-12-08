@@ -41,6 +41,12 @@ public:
     int SetRunFlag(int iRunFlag);
 
 public:
+    int InitEpollSocket(short shPort);                  //初始化Epoll socket
+    int EphInit();
+    int EphSocket(int iDomain,int iType,int iProtocol);
+    int EphNewConn(int iSocketFd);
+    int EphClose(int iSocketFd);
+    int EphCleanUp();
 
 private:
 
@@ -63,13 +69,13 @@ private:
     TTcpStat            mstTcpStat;
     int                 miWriteStatCount;
     char                mszWriteStatBuf[1024];
-    struct epoll_event* mpEpollevents;
-    int                 miKdpfd;
+    struct epoll_event* mpEpollevents;                      //客户端event数组(大小MAX_SOCKET_NUM)
+    int                 miKdpfd;                            //epoll描述符
     int                 miMaxfds;
     struct epoll_event  mstEpollEvent;
 
     unsigned char 		mszSCMsgBuf[MAX_BUF_LEN]; 		 	// 发送消息缓冲区
-    unsigned short 		miSCIndex; 					 	// 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
+    unsigned short 		miSCIndex; 					 	    // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
     short 				mnSCLength; 					 	// 实际发送的数据长度
 
 //    CGateClient		mGateClient;

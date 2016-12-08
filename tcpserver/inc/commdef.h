@@ -11,6 +11,15 @@
 #include <time.h>
 #include <string.h>
 
+/******************************************/
+//配置信息暂时写死 以后加上配置
+const int port = 13000        //tcpserver 端口
+
+/******************************************/
+
+#define TCP_BUFFER_LEN             300000               //TCP接收缓冲区大小
+#define RECV_QUEUQ_MAX             1024                 //接收队列大小
+
 #define MEDIUM_SIZE
 
 #ifdef SMALL_SIZE
