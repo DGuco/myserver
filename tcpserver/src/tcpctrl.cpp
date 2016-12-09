@@ -54,7 +54,6 @@ int CTcpCtrl::Initialize()
     int iTmpI;
     int iTmpRet;
     BYTE* pbTmp;
-    int iTmpIndex;
 
     mLastKeepaliveTime = 0;
     miRunFlag = 0;
@@ -68,6 +67,7 @@ int CTcpCtrl::Initialize()
     //初始化客户端socket数组信息
     for (int i = 0; i < MAX_SOCKET_NUM; ++i)
     {
+        memset(&mastSocketInfo[i],0,sizeof(TSocketInfo));
         memset(&mastSocketInfo[i],0,sizeof(TSocketInfo));
         //把socket句柄设为无效句柄
         mastSocketInfo[i].miSocket = INVALID_SOCKET;
@@ -83,6 +83,12 @@ int CTcpCtrl::Initialize()
         return iTmpRet;   
     }
     LOG_INFO("default","InitEpollSocket successed! TCPserver init failed. ReusltCode = %d!",iTmpRet);
+
+    mastSocketInfo[miSocket].miSocket = miSocket;
+    mastSocketInfo[miSocket].miSocketType = LISTEN_SOCKET;
+    mastSocketInfo[miSocket].miSocketFlag = RECV_DATA;
+    mastSocketInfo[miSocket].miConnectedPort = port;
+    miMaxfds = miSocket++;
 
     return 0;
 }
@@ -260,6 +266,7 @@ int CTcpCtrl::EphCleanUp()
 {
     free(mpEpollevents);
     close(miKdpfd);
+    mpEpollevents = NULL;
     return 0;
 }
 
@@ -280,6 +287,81 @@ int CTcpCtrl::EphNewConn(int iSocketFd)
 }
 
 /**
+  * 函数名          : CTCPCtrl::GetExMessage
+  * 功能描述        : 接收外部数据
+  * 返回值          ：void
+**/
+int CTcpCtrl::GetExMessage()
+{
+    int  iTmpRet = 0;
+    socklen_t iTmpSocketAddrSize;
+    int iTmpNewSocket;
+    int iTmpFd;
+    int iTmpfdNum;
+    int iTmpFlags;
+    struct epoll_event* pTmpevents;
+    iTmpFlags = 1;
+    iTmpSocketAddeSize = sizeof(mstSockAddr);
+    iTmpfdNum = epoll_wait(miKdpfd,mpEpollevents,MAX_SOCKET_NUM,miTimeout);
+    if (-1 == iTmpfdNum)
+    {
+        LOG_ERROR("default","Epoll wait error,return -1");
+        return 0;
+    }
+
+    for (int i = 0,pTmpevents = mpEpollevents; i < iTmpfdNum,pTmpevents++)
+    {
+        iTmpFd = pTmpevents.data.fd;
+        mpSocketInfo = &mastSocketInfo[iTmpFd];
+        //无效文件描述符
+        if (iTmpFd <= 0)
+        {
+            LOG_ERROR("default","Epoll event->data.fd = %d ,error",pTmpevents.data.fd);
+            continue;
+        }
+
+        //epoll错误（注：同或运算）
+        if ((EPOLLERR & pTmpevents->events) != 0)
+        {
+            LOG_ERROR("default","Epoll event->data.fd = %d ,error",pTmpevents.data.fd);
+            continue;
+        }
+
+        //epoll没有监听可写事件
+        if ((EPOLLIN & pTmpevents->events) == 0)
+        {
+            LOG_ERROR("default","Epoll dosen't listen input event");
+            continue;            
+        }
+        
+        if (pTmpevents->miSocketType == LISTEN_SOCKET)
+        {
+            LOG_NOTICE("default","recv events:%d fd:%d",iTmpfdNum,iTmpFd);
+            //accept 一个tcp连接
+            iTmpNewSocket = accept(iTmpfd,(struct sockaddr*) &mstSockAddr,(socklen_t*) &iTmpSocketAddrSize);
+            //客户端主动关闭了连接
+            if (iTmpNewSocket <= 0)
+            {
+                LOG_NOTICE("default","client canncled connection: port %d fd:%d,errno(%d : %s)",
+                            mpSocketInfo->miConnectedPort,iTmpNewSocket,errno,strerror(errno));
+                continue;
+            }
+            mstTcpStat.m_iConnIncoming ++;
+            if (iTmpNewSocket >= MAX_SOCKET_NUM)
+            {
+                LOG_ERROR("default","socket is too big %d",iTmpNewSocket);
+            }
+        }
+        else      //接收客户端数据
+        {
+            mpSocketInfo = &mastSocketInfo[iTmpFd];
+            RecvClientData(iTmpFd);
+        }
+
+    }
+}
+
+/**
   * 函数名          : CTCPCtrl::RecvClientData
   * 功能描述        : 接客户端的数据
   * 返回值          ：void
@@ -290,15 +372,25 @@ int CTcpCtrl::RecvClientData(short shIndex)
     int iTmpRecvBytes = 0;
     int iTempRet;
     int iRecvBytes;
-    int iOffset;
+    int iTmpOffset;
     char* pTemp;
     char* pTemp1;
     unsigned short unRecvLen;
     int nRecvAllLen;
     time_t tTempTime;
-    int iSocket = mpSocketInfo->miSocket;
+    int iTmpSocket = mpSocketInfo->miSocket;
     unsigned short unLength = 0;
-    iOffset = mpSocketInfo->miRecvBytes;
+    iTmpOffset = mpSocketInfo->miRecvBytes; 
+    
+    //读取tcp数据
+    iTmpRecvBytes = TcpRead(iTmpSocket,mpSocketInfo->mszMsgBuf + iTmpOffset,sizeof(mpSocketInfo->mszMsgBuf) - iTmpOffset); 
+    //客户端关闭连接
+    if (iTmpRecvBytes <= 0)
+    {
+        LOG_ERROR("default","Client[%s] close the tcp connection,socket id = %d,the client's port = ",
+            mpSocketInfo->mszClientIP,mpSocketInfo->miSocket,mpSocketInfo->miConnectedPort);
+        ClearSo
+    }
 }
 
 /**
@@ -328,3 +420,20 @@ int CTcpCtrl::TcpRead(int iSocket, char *pBuf, int iLen)
     }
 }
 
+/**
+  * 函数名          : CTCPCtrl::TcpRead
+  * 功能描述        : 读取tcp数据
+  * 返回值          ：void
+**/
+void CTcpCtrl::ClearSocketInfo(short enError)
+{
+    int iTmpRet;
+    if ( TCP_SUCCESS == enError)
+    {}
+
+    //关闭socket
+    if (mpSocketInfo->miSocket > 0)
+    {
+        mstEpollEvent.data.fd = 
+    }
+}

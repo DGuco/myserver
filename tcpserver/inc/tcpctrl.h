@@ -20,16 +20,6 @@
 #define READSTAT      0
 #define WRITESTAT     1
 
-typedef struct
-{
-    int     m_iConnIncoming;
-    int     m_iConnTotal;
-    int		m_iPkgRecv;
-    int		m_iPkgSend;
-    int		m_iPkgSizeRecv;
-    int		m_iPkgSizeSend;
-} TTcpStat;
-
 class CTcpCtrl
 {
 public:
@@ -50,8 +40,10 @@ public:
     int EphCleanUp();
 
     //******************数据处理**********************/
+    int GetExMessage();
     int RecvClientData(short shIndex);
     int TcpRead(int iSocket, char *pBuf, int iLen);
+    void ClearSocketInfo(short enError);
 
 private:
 
@@ -70,8 +62,8 @@ private:
     char                mszSCPipeFile[100];             	// 本地文件
 
     char                mszMsgBuf[MAX_BUF_LEN]; 		 	// 消息包缓冲(加大是为了防止game过来的消息过大)
-    int                 timeout;
-    TTcpStat            mstTcpStat;
+    int                 miTimeout;
+    TTcpStat            mstTcpStat;                         // 当前tcp连接信息
     int                 miWriteStatCount;
     char                mszWriteStatBuf[1024];
     struct epoll_event* mpEpollevents;                      //客户端event数组(大小MAX_SOCKET_NUM)

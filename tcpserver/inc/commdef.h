@@ -158,4 +158,14 @@ typedef struct _TSocketInfo
     int		miUin;											// 用户唯一标识
 } TSocketInfo;
 
+typedef struct
+{
+    int     m_iConnIncoming;
+    int     m_iConnTotal;
+    int		m_iPkgRecv;
+    int		m_iPkgSend;
+    int		m_iPkgSizeRecv;
+    int		m_iPkgSizeSend;
+} TTcpStat;
+
 #endif // __TCPDEF_H__
