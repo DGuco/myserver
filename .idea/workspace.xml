@@ -19,7 +19,6 @@
     <list default="true" id="d069f017-acfa-4319-a930-9c3a45d30834" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tcpserver/inc/commdef.h" afterPath="$PROJECT_DIR$/tcpserver/inc/commdef.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tcpserver/inc/tcpctrl.h" afterPath="$PROJECT_DIR$/tcpserver/inc/tcpctrl.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" afterPath="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" />
     </list>
     <ignored path="sharedemo.iws" />
@@ -43,7 +42,7 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tcpserver/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="125">
+            <state relative-caret-position="18">
               <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
               <folding>
                 <element signature="e#636#682#0" expanded="true" />
@@ -55,8 +54,8 @@
       <file leaf-file-name="tcpctrl.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tcpserver/inc/tcpctrl.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="292">
-              <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+            <state relative-caret-position="347">
+              <caret line="57" column="31" selection-start-line="57" selection-start-column="31" selection-end-line="57" selection-end-column="31" />
               <folding>
                 <element signature="e#164#186#0" expanded="true" />
               </folding>
@@ -67,8 +66,8 @@
       <file leaf-file-name="commdef.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tcpserver/inc/commdef.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="146" column="23" selection-start-line="146" selection-start-column="12" selection-end-line="146" selection-end-column="23" />
+            <state relative-caret-position="199">
+              <caret line="46" column="24" selection-start-line="46" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding>
                 <element signature="e#163#180#0" expanded="true" />
                 <element signature="e#532#584#0" expanded="true" />
@@ -81,8 +80,8 @@
       <file leaf-file-name="tcpctrl.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="310">
-              <caret line="313" column="39" selection-start-line="313" selection-start-column="39" selection-end-line="313" selection-end-column="39" />
+            <state relative-caret-position="-3500">
+              <caret line="273" column="3" selection-start-line="273" selection-start-column="3" selection-end-line="273" selection-end-column="3" />
               <folding>
                 <element signature="e#119#138#0" expanded="true" />
               </folding>
@@ -146,8 +145,8 @@
         <option value="$PROJECT_DIR$/common/tools/src/config_data.cpp" />
         <option value="$PROJECT_DIR$/tcpserver/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/tcpserver/main.cpp" />
-        <option value="$PROJECT_DIR$/tcpserver/inc/commdef.h" />
         <option value="$PROJECT_DIR$/tcpserver/inc/tcpctrl.h" />
+        <option value="$PROJECT_DIR$/tcpserver/inc/commdef.h" />
         <option value="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" />
       </list>
     </option>
@@ -478,11 +477,13 @@
       <workItem from="1481028952699" duration="6467000" />
       <workItem from="1481112937877" duration="7966000" />
       <workItem from="1481200997142" duration="3670000" />
+      <workItem from="1481291225189" duration="3408000" />
+      <workItem from="1481295342519" duration="1924000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="68116000" />
+    <option name="totallyTimeSpent" value="73448000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -497,15 +498,15 @@
     <frame x="64" y="-7" width="1217" height="808" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22689076" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19579832" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32986626" sideWeight="0.4932773" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38772455" sideWeight="0.48991597" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16467066" sideWeight="0.48991597" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.08383234" sideWeight="0.4932773" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32838038" sideWeight="0.50336134" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33083832" sideWeight="0.49663866" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24401198" sideWeight="0.49663866" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34131736" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26047903" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14670658" sideWeight="0.49663866" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -803,7 +804,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tcpserver/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
+        <state relative-caret-position="18">
           <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding>
             <element signature="e#636#682#0" expanded="true" />
@@ -811,20 +812,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tcpserver/inc/tcpctrl.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="292">
-          <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
-          <folding>
-            <element signature="e#164#186#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tcpserver/inc/commdef.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="146" column="23" selection-start-line="146" selection-start-column="12" selection-end-line="146" selection-end-column="23" />
+        <state relative-caret-position="199">
+          <caret line="46" column="24" selection-start-line="46" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding>
             <element signature="e#163#180#0" expanded="true" />
             <element signature="e#532#584#0" expanded="true" />
@@ -833,10 +824,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tcpserver/inc/tcpctrl.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="57" column="31" selection-start-line="57" selection-start-column="31" selection-end-line="57" selection-end-column="31" />
+          <folding>
+            <element signature="e#164#186#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
-          <caret line="313" column="39" selection-start-line="313" selection-start-column="39" selection-end-line="313" selection-end-column="39" />
+        <state relative-caret-position="-3500">
+          <caret line="273" column="3" selection-start-line="273" selection-start-column="3" selection-end-line="273" selection-end-column="3" />
           <folding>
             <element signature="e#119#138#0" expanded="true" />
           </folding>

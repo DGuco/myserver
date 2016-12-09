@@ -25,6 +25,7 @@
 #include <netinet/tcp.h>
 #include "../inc/tcpctrl.h"
 #include "../../common/tools/inc/client_comm_engine.h"
+#include "../inc/commdef.h"
 
 /**
   * 函数名          : CTcpCtrl::CTcpCtrl
@@ -293,52 +294,52 @@ int CTcpCtrl::EphNewConn(int iSocketFd)
 **/
 int CTcpCtrl::GetExMessage()
 {
-    int  iTmpRet = 0;
+    int  iTmpRet;
     socklen_t iTmpSocketAddrSize;
     int iTmpNewSocket;
     int iTmpFd;
     int iTmpfdNum;
     int iTmpFlags;
-    struct epoll_event* pTmpevents;
-    iTmpFlags = 1;
-    iTmpSocketAddeSize = sizeof(mstSockAddr);
+    struct epoll_event* pevents;
+    iTmpSocketAddrSize = sizeof(mstSockAddr);
     iTmpfdNum = epoll_wait(miKdpfd,mpEpollevents,MAX_SOCKET_NUM,miTimeout);
+    iTmpFlags = 1;
     if (-1 == iTmpfdNum)
     {
         LOG_ERROR("default","Epoll wait error,return -1");
         return 0;
     }
-
-    for (int i = 0,pTmpevents = mpEpollevents; i < iTmpfdNum,pTmpevents++)
+    int i,j;
+    for (i = 0,pevents = mpEpollevents; i < iTmpfdNum;i++ ,pevents++)
     {
-        iTmpFd = pTmpevents.data.fd;
+        iTmpFd = pevents->data.fd;
         mpSocketInfo = &mastSocketInfo[iTmpFd];
         //无效文件描述符
         if (iTmpFd <= 0)
         {
-            LOG_ERROR("default","Epoll event->data.fd = %d ,error",pTmpevents.data.fd);
+            LOG_ERROR("default","Epoll event->data.fd = %d ,error",pevents->data.fd);
             continue;
         }
 
         //epoll错误（注：同或运算）
-        if ((EPOLLERR & pTmpevents->events) != 0)
+        if ((EPOLLERR & pevents->events) != 0)
         {
-            LOG_ERROR("default","Epoll event->data.fd = %d ,error",pTmpevents.data.fd);
+            LOG_ERROR("default","Epoll event->data.fd = %d ,error",pevents->data.fd);
             continue;
         }
 
         //epoll没有监听可写事件
-        if ((EPOLLIN & pTmpevents->events) == 0)
+        if ((EPOLLIN & pevents->events) == 0)
         {
             LOG_ERROR("default","Epoll dosen't listen input event");
             continue;            
         }
         
-        if (pTmpevents->miSocketType == LISTEN_SOCKET)
+        if (mpSocketInfo->miSocketType == LISTEN_SOCKET)
         {
             LOG_NOTICE("default","recv events:%d fd:%d",iTmpfdNum,iTmpFd);
             //accept 一个tcp连接
-            iTmpNewSocket = accept(iTmpfd,(struct sockaddr*) &mstSockAddr,(socklen_t*) &iTmpSocketAddrSize);
+            iTmpNewSocket = accept(iTmpFd,(struct sockaddr*) &mstSockAddr,(socklen_t*) &iTmpSocketAddrSize);
             //客户端主动关闭了连接
             if (iTmpNewSocket <= 0)
             {
@@ -346,11 +347,56 @@ int CTcpCtrl::GetExMessage()
                             mpSocketInfo->miConnectedPort,iTmpNewSocket,errno,strerror(errno));
                 continue;
             }
+
             mstTcpStat.m_iConnIncoming ++;
             if (iTmpNewSocket >= MAX_SOCKET_NUM)
             {
                 LOG_ERROR("default","socket is too big %d",iTmpNewSocket);
+                //关闭socket连接
+                closesocket(iTmpNewSocket);
+                continue;
             }
+
+            //设置socket为非阻塞
+            if (ioctl(iTmpNewSocket, FIONBIO, &iTmpFlags) &&
+                ((iTmpFlags = fcntl(iTmpNewSocket, F_GETFL, 0)) < 0 ||
+                 fcntl(iTmpNewSocket, F_SETFL, iTmpFlags | O_NONBLOCK) < 0))
+            {
+                LOG_ERROR("default","operate on socket %d error connect port %d!", iTmpNewSocket, mpSocketInfo->miConnectedPort);
+                closesocket(iTmpNewSocket);
+                continue;
+            }
+            //把socket 添加到epoll event 监听集合中，监听可读事件（这里只监听可读事件）
+            iTmpRet = EphNewConn(iTmpNewSocket);
+            if (iTmpRet != 0)
+            {
+                LOG_ERROR("default","add to epoll failed [socket %d connect port %d]!", iTmpNewSocket,mpSocketInfo->miConnectedPort);
+                closesocket(iTmpNewSocket);
+                continue;
+            }
+
+            //更改当前的最大socket
+            if (iTmpNewSocket > miMaxfds)
+            {
+                miMaxfds = iTmpNewSocket;
+            }
+            // 总连接数加1
+            mstTcpStat.m_iConnTotal ++;
+
+            //生成一个socket结构
+            j = iTmpNewSocket;
+            char* pTmpIp = inet_ntoa(mstSockAddr.sin_addr);
+            mastSocketInfo[j].miSrcIP = mstSockAddr.sin_addr.s_addr;
+            mastSocketInfo[j].mnSrcPort = mstSockAddr.sin_port;
+            strncpy(mastSocketInfo[j].mszClientIP,pTmpIp,sizeof(mpSocketInfo[j].mszClientIP) -1);
+            time(&(mastSocketInfo[j].mtCreateTime));
+            mastSocketInfo[j].mtStamp = mastSocketInfo[j].mtCreateTime;
+            mastSocketInfo[j].miSocketType = CONNECT_SOCKET;
+            mastSocketInfo[j].miSocket = iTmpNewSocket;
+            mastSocketInfo[j].miSocketFlag = RECV_DATA;
+            mastSocketInfo[j].miConnectedPort  = mpSocketInfo->miConnectedPort;
+            mastSocketInfo[j].miUin = 0;
+            LOG_NOTICE("default","%s connected port %d, socket id = %d.", pTmpIp, mpSocketInfo->miConnectedPort, iTmpNewSocket);
         }
         else      //接收客户端数据
         {
@@ -389,7 +435,7 @@ int CTcpCtrl::RecvClientData(short shIndex)
     {
         LOG_ERROR("default","Client[%s] close the tcp connection,socket id = %d,the client's port = ",
             mpSocketInfo->mszClientIP,mpSocketInfo->miSocket,mpSocketInfo->miConnectedPort);
-        ClearSo
+        ClearSocketInfo(Err_ClientClose);
     }
 }
 
@@ -434,6 +480,6 @@ void CTcpCtrl::ClearSocketInfo(short enError)
     //关闭socket
     if (mpSocketInfo->miSocket > 0)
     {
-        mstEpollEvent.data.fd = 
+        mstEpollEvent.data.fd = 0;
     }
 }

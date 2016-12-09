@@ -145,17 +145,17 @@ typedef struct _TSocketInfo
     int		miSocketType;								// socket类型：监听socket、连接socket
     int		miSocketFlag;								// socket标志：是否收包
     int		miRecvBytes;								// 接收的字节数
-    char	mszClientIP[IP_LENGTH];			// 客户端IP地址
-    char	mszMsgBuf[RECV_BUF_LEN];		// 存储发送给gamesvrd的消息
-    time_t	mtCreateTime;							// socket的创建时间
-    int		miSrcIP;										// 由tcpsvrd发给gamesvrd，记录了该socket的创建时间
-    int		miDstIP;										// 由gamesvrd返回给tcpsvrd，值和m_iSrcIP相同
+    char	mszClientIP[IP_LENGTH];			            // 客户端IP地址
+    char	mszMsgBuf[RECV_BUF_LEN];		            // 存储发送给gamesvrd的消息
+    time_t	mtCreateTime;							    // socket的创建时间
+    int		miSrcIP;									// 由tcpsvrd发给gamesvrd，记录了该socket的创建时间
+    int		miDstIP;									// 由gamesvrd返回给tcpsvrd，值和m_iSrcIP相同
     short	mnSrcPort;									// 由tcpsvrd发给gamesvrd，记录了该socket在数组中的位置
     short	mnDstPort;									// 由gamesvrd返回给tcpsvrd，值和m_iSrcPort
     time_t	mtStamp;									// 接收到数据包的时间戳
-    int		miSendFlag;								// 标识mainsvrd是否向其发送了包
+    int		miSendFlag;								    // 标识mainsvrd是否向其发送了包
     int		miConnectedPort;
-    int		miUin;											// 用户唯一标识
+    int		miUin;										// 用户唯一标识
 } TSocketInfo;
 
 typedef struct
