@@ -348,7 +348,7 @@ int CTcpCtrl::GetExMessage()
                 continue;
             }
 
-            mstTcpStat.m_iConnIncoming ++;
+            mstTcpStat.miConnIncoming ++;
             if (iTmpNewSocket >= MAX_SOCKET_NUM)
             {
                 LOG_ERROR("default","socket is too big %d",iTmpNewSocket);
@@ -381,7 +381,7 @@ int CTcpCtrl::GetExMessage()
                 miMaxfds = iTmpNewSocket;
             }
             // 总连接数加1
-            mstTcpStat.m_iConnTotal ++;
+            mstTcpStat.miConnTotal ++;
 
             //生成一个socket结构
             j = iTmpNewSocket;
@@ -412,7 +412,7 @@ int CTcpCtrl::GetExMessage()
   * 功能描述        : 接客户端的数据
   * 返回值          ：void
 **/
-int CTcpCtrl::RecvClientData(short shIndex)
+int CTcpCtrl::RecvClientData(int iSocketFd)
 {
     int iTmpRet = 0;
     int iTmpRecvBytes = 0;
@@ -436,6 +436,140 @@ int CTcpCtrl::RecvClientData(short shIndex)
         LOG_ERROR("default","Client[%s] close the tcp connection,socket id = %d,the client's port = ",
             mpSocketInfo->mszClientIP,mpSocketInfo->miSocket,mpSocketInfo->miConnectedPort);
         ClearSocketInfo(Err_ClientClose);
+        return -1;
+    }
+
+    //统计接受信息
+    mstTcpStat.miPkgSizeRecv += iTmpRecvBytes;
+    //增加收到的总字节数
+    mpSocketInfo->miRecvBytes = mpSocketInfo->miRecvBytes + iTmpRecvBytes;
+    //记录消息起始地址
+    pTemp1 = mpSocketInfo->mszMsgBuf;
+    nRecvAllLen = mpSocketInfo->miRecvBytes;
+
+    // 记录该socket接收客户端数据的时间
+    time(&tTempTime);
+    mpSocketInfo->mtStamp = tTempTime;
+
+    while(1)
+    {
+        if ( nRecvAllLen < MSG_BASE_LEN)
+        {
+            LOG_ERROR("default","the package len is less than base len ,receive len %d",nRecvAllLen);
+            // 最小接受到的客户端的消息字节数不会小于8字节
+            // 这里之所以是8字节不是2字节不是因为消息会超过2字节大小
+            //主要是因为做了8字节对齐
+            break;
+        }
+
+        //取出包的总长度
+        memcpy(&unRecvLen,(void*)pTemp1,sizeof(unsigned short));
+        if (unRecvLen < MSG_BASE_LEN || unRecvLen > MSG_OPT_LEN)
+        {
+            LOG_ERROR("default","the package len is illegal",nRecvAllLen);
+            ClearSocketInfo(Err_PacketError);
+            return -1;
+        }
+        nRecvAllLen -= unRecvLen;
+        //数据指针向后移动指向未读取位置
+        pTemp1 += unRecvLen;
+        //总长度小于包长的长度,结束
+        if(nRecvAllLen < 0)
+        {
+            nRecvAllLen += unRecvLen;
+            pTemp1 -= unRecvLen;
+            LOG_DEBUG("default", "Receive client part data left len = %d",nRecvAllLen,unRecvLen);
+            break;
+        }
+
+        unLength = 0;
+        //包长数据已读出,准备都去真正的数据存入mszMsgBuf
+        pTemp = mszMsgBuf;
+
+        //预留总长度
+        pTemp += sizeof(short);
+        unLength += sizeof(short);
+
+        //预留8字节对齐长度
+        pTemp += sizeof(short);
+        unLength += sizeof(short);
+
+        CMessage tmpMsg;
+        tmpMsg.Clear();
+
+        iTmpRet = ClientCommEngine::ConvertStreamToMsg(pTemp1 - unRecvLen,unRecvLen,&tmpMsg);
+        if (iTmpRet != 0)
+        {
+            LOG_ERROR("default","CTCPCtrl::RecvClientData error,ConvertStreamTomsg return %d",iTmpRet);
+            ClearSocketInfo(Err_PacketError);
+            return -1;
+        }
+
+        if (tmpMsg.msghead().messageid() != CMsgPingRequest::MsgID)
+        {
+            //转发消息
+            CTcpHead pbTmpTcpHead;
+            pbTmpTcpHead.Clear();
+            pbTmpTcpHead.set_srcfe(FE_TCPSERVER);      //设置源服务器
+            pbTmpTcpHead.set_srcid(tcpserverid);
+            pbTmpTcpHead.set_dstfe(tmpMsg.msghead().dstfe());
+            pbTmpTcpHead.set_srcid(tmpMsg.msghead().dstid());
+            pbTmpTcpHead.set_timestamp(tTempTime);
+            CSocketInfo* pbSocketInfo = pbTmpTcpHead.add_socketinfos();
+            if (pbSocketInfo)
+            {
+                LOG_ERROR("default","CTCPCtrl::RecvClientData error,add socketingo error,pbSocketInfo is NULL");
+                ClearSocketInfo(Err_PacketError);
+            }
+
+            pbSocketInfo->set_createtime(mpSocketInfo->mtCreateTime);
+            pbSocketInfo->set_socketid(iSocketFd);
+            pbSocketInfo->set_createtime(mpSocketInfo->mtCreateTime);
+            pbSocketInfo->set_srcip(mpSocketInfo->miSrcIP);
+            pbSocketInfo->set_srcport(mpSocketInfo->mnSrcPort);
+            //state < 0 说明关闭socket
+            pbSocketInfo->set_state(0);
+
+            //序列化CTCPhead
+            *(short*)pTemp = pbTmpTcpHead.ByteSize();
+            pTemp += sizeof(short);
+            unLength += sizeof(short);
+
+            //序列化CTCPhead
+            if (pbTmpTcpHead.SerializeToArray(pTemp, sizeof(mszMsgBuf) - unLength - 1) != true)
+            {
+                LOG_ERROR("default", "CTCPCtrl::RecvClientData error,pbTmpTcpHead SerializeToArray error");
+                ClearSocketInfo(Err_PacketError);
+                return -1;
+            }
+
+            pTemp += pbTmpTcpHead.GetCachedSize();
+            unLength += pbTmpTcpHead.GetCachedSize();
+
+            //拷贝消息到发送缓冲区
+            memcpy(pTemp,pTemp1 - unRecvLen,unRecvLen);
+            pTemp += unRecvLen;
+            unLength += unRecvLen;
+
+            //8字节对齐
+            unsigned short iTmpAddlen = (unLength % 8);
+            if (iTmpAddlen > 0)
+            {
+                iTmpAddlen = 8 - iTmpAddlen;
+                memset(pTemp,0,iTmpAddlen);
+            }
+
+            pTemp += iTmpAddlen;
+            unLength += iTmpAddlen;
+            //序列话消息总长度
+            pTemp = mszMsgBuf;
+            *(short*) pTemp = unLength;
+            pTemp += sizeof(short);
+
+            //序列话8字节对齐长度
+            *(short*) pTemp = iTmpAddlen;
+
+        }
     }
 }
 
@@ -480,6 +614,39 @@ void CTcpCtrl::ClearSocketInfo(short enError)
     //关闭socket
     if (mpSocketInfo->miSocket > 0)
     {
-        mstEpollEvent.data.fd = 0;
+        mstEpollEvent.data.fd = mpSocketInfo->miSocket;
+        if (epoll_ctl(miKdpfd,EPOLL_CTL_DEL,mpSocketInfo->miSocket,&mstEpollEvent) < 0)
+        {
+            LOG_ERROR("default","epoll remove socket error,socket fd = %d",mpSocketInfo->miSocket);
+        }
+        //关闭socket
+        closesocket(mpSocketInfo->miSocket);
+        //更改当前对大分配socket
+        if(mpSocketInfo->miSocket >= miMaxfds)
+        {
+            int iTmpUnUseSocket;
+            for (iTmpUnUseSocket = mpSocketInfo->miSocket -1 ;iTmpUnUseSocket >= miSocket;iTmpUnUseSocket--)
+            {
+                if(mastSocketInfo[iTmpUnUseSocket].miSocketFlag != 0)
+                {
+                    break;
+                }
+                miMaxfds = iTmpUnUseSocket;
+            }
+        }
+        //总连接数减一
+        mstTcpStat.miConnTotal --;
     }
+    mpSocketInfo->miSocket = INVALID_SOCKET;
+    mpSocketInfo->miSrcIP = 0;
+    mpSocketInfo->mnSrcPort = 0;
+    mpSocketInfo->miDstIP= 0;
+    mpSocketInfo->mnDstPort = short(-1);
+    mpSocketInfo->miRecvBytes = 0;
+    mpSocketInfo->miSocketType = 0;
+    mpSocketInfo->miSocketFlag = 0;
+    mpSocketInfo->mtCreateTime = 0;
+    mpSocketInfo->mtStamp = 0;
+    mpSocketInfo->miSendFlag = 0;
+    mpSocketInfo->miConnectedPort = 0;
 }

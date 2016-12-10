@@ -41,7 +41,7 @@ public:
 
     //******************数据处理**********************/
     int GetExMessage();
-    int RecvClientData(short shIndex);
+    int RecvClientData(int iSocketFd);
     int TcpRead(int iSocket, char *pBuf, int iLen);
     void ClearSocketInfo(short enError);
 
@@ -66,7 +66,7 @@ private:
     TTcpStat            mstTcpStat;                         // 当前tcp连接信息
     int                 miWriteStatCount;
     char                mszWriteStatBuf[1024];
-    struct epoll_event* mpEpollevents;                      //客户端event数组(大小MAX_SOCKET_NUM)
+    struct epoll_event* mpEpollevents;                      //epoll event集合(大小MAX_SOCKET_NUM)
     int                 miKdpfd;                            //epoll描述符
     int                 miMaxfds;
     struct epoll_event  mstEpollEvent;

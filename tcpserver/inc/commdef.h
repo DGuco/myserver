@@ -14,6 +14,7 @@
 /******************************************/
 //配置信息暂时写死 以后加上配置
 const int port = 13000;        //tcpserver 端口
+const int tcpserverid = 1;
 
 /******************************************/
 
@@ -160,12 +161,12 @@ typedef struct _TSocketInfo
 
 typedef struct
 {
-    int     m_iConnIncoming;
-    int     m_iConnTotal;
-    int		m_iPkgRecv;
-    int		m_iPkgSend;
-    int		m_iPkgSizeRecv;
-    int		m_iPkgSizeSend;
+    int     miConnIncoming;
+    int     miConnTotal;
+    int		miPkgRecv;
+    int		miPkgSend;
+    int		miPkgSizeRecv;
+    int		miPkgSizeSend;
 } TTcpStat;
 
 #endif // __TCPDEF_H__
