@@ -12,16 +12,19 @@
 #include "inc/commdef.h"
 
 using namespace std;
-#define _DEBUG_
+
+CTcpCtrl *g_pTcpServer;
 
 void sigusr1_handle(int iSigVal)
 {
-    
+    g_pTcpServer->SetRunFlag(reloadcfg);
+    signal(SIGUSR1, sigusr1_handle);
 }
 
-void sigusr1_handle(int iSigVal)
+void sigusr2_handle(int iSigVal)
 {
-    
+    g_pTcpServer->SetRunFlag(tcpexit);
+    signal(SIGUSR2, sigusr2_handle);
 }
 
 void Initialize()
@@ -41,7 +44,7 @@ int main(int argc,char **argv)
     g_pTcpServer = new CTcpCtrl;
     if (g_pTcpServer == NULL)
     {
-        LOG_ERROR("default","New TcpCtrl failed.")
+        LOG_ERROR("default","New TcpCtrl failed.");
         exit(0);
     }
 
@@ -51,16 +54,20 @@ int main(int argc,char **argv)
         LOG_ERROR("default","Tcpserver Initialize failed,iRet = %d",iTmpRet);
         delete g_pTcpServer;
         g_pTcpServer = NULL;
+        exit(0);
     }
+    LOG_INFO("default", "tcp server is going to run...");
+    std::cout << "*********************" << std::endl;
+    std::cout << "*********************" << std::endl;
+    std::cout << "TcpServer start success" << std::endl;
+    std::cout << "*********************" << std::endl;
+    std::cout << "*********************" << std::endl;
+
+    g_pTcpServer->Run();
 
     if (g_pTcpServer != NULL)
     {
         delete g_pTcpServer;
         g_pTcpServer = NULL; 
     }
-    std::cout << "*********************" << std::endl;
-    std::cout << "*********************" << std::endl;
-    std::cout << "TcpServer start success" << std::endl;
-    std::cout << "*********************" << std::endl;
-    std::cout << "*********************" << std::endl;
 }

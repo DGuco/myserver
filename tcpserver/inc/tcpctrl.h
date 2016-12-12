@@ -10,6 +10,7 @@
 
 #include <sys/epoll.h>
 #include "../../common/tools/inc/tcp_conn.h"
+#include "../../common/tools/inc/log.h"
 #include "../../common/tools/inc/servertool.h"
 #include "../../common/message/tcpmessage.pb.h"
 #include "../../common/message/message.pb.h"

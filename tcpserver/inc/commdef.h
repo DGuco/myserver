@@ -13,15 +13,13 @@
 
 /******************************************/
 //配置信息暂时写死 以后加上配置
-const int port = 13000;        //tcpserver 端口
+#define  listenport  20000         //tcpserver 端口
 const int tcpserverid = 1;
 
 /******************************************/
 
 #define TCP_BUFFER_LEN             300000               //TCP接收缓冲区大小
 #define RECV_QUEUQ_MAX             1024                 //接收队列大小
-
-#define MEDIUM_SIZE
 
 #ifdef SMALL_SIZE
 #define MAX_SOCKET_NUM				500					// 单个TCPCtrl支持的连接数

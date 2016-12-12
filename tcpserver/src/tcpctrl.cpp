@@ -77,7 +77,7 @@ int CTcpCtrl::Initialize()
     //初始化epoll
     mpEpollevents = NULL;
     //初始化epoll socket
-    iTmpRet = InitEpollSocket((short)port);
+    iTmpRet = InitEpollSocket((short)listenport);
     if (0 != iTmpRet)
     {
         LOG_ERROR("default","InitEpollSocket failed! TCPserver init failed. ReusltCode = %d!",iTmpRet);
@@ -88,7 +88,7 @@ int CTcpCtrl::Initialize()
     mastSocketInfo[miSocket].miSocket = miSocket;
     mastSocketInfo[miSocket].miSocketType = LISTEN_SOCKET;
     mastSocketInfo[miSocket].miSocketFlag = RECV_DATA;
-    mastSocketInfo[miSocket].miConnectedPort = port;
+    mastSocketInfo[miSocket].miConnectedPort = listenport;
     miMaxfds = miSocket++;
 
     return 0;
@@ -169,11 +169,12 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
     setsockopt(miSocket,IPPROTO_TCP,TCP_NODELAY,&iTmpFlags,sizeof(iTmpFlags));
 
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
+    addr.sin_port = htons(shTmpport);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(miSocket,(struct sockaddr *)&addr,sizeof(addr)) == -1)
     {
+        printf("******** error %s",strerror(errno));
         LOG_ERROR("default","Bind socket Error!");
         EphClose(miSocket);
         EphCleanUp();
@@ -182,21 +183,22 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
 
     int iTmpOptLen = sizeof(socklen_t);
     int iTmpOptval = TCP_BUFFER_LEN;
-    if (!setsockopt(miSocket,SOL_SOCKET,SO_RCVBUF,(const void*)&iTmpOptval,iTmpOptLen))
+    if (setsockopt(miSocket,SOL_SOCKET,SO_RCVBUF,(const void*)&iTmpOptval,iTmpOptLen))
     {
+        printf("******** error %s",strerror(errno));
         LOG_ERROR("default","Set Recv buffer size to %d failed",iTmpOptval);
         return -1;
     }
 
     if (!getsockopt(miSocket,SOL_SOCKET,SO_RCVBUF,(void*)&iTmpOptval,(socklen_t*)&iTmpOptLen))
     {
-        LOG_INFO("default","Set Recv buffer size to %d",iTmpOptval); 
+        LOG_INFO("default","Set Recv buffer size to %d",iTmpOptval);
     }
     //设置接受队列大小
     iTmpRet = listen(miSocket,RECV_QUEUQ_MAX);
     if (-1 == iTmpRet)
     {
-        LOG_ERROR("default","Listen %d connection failed",RECV_QUEUQ_MAX); 
+        LOG_ERROR("default","Listen %d connection failed",RECV_QUEUQ_MAX);
         return -1;
     }
 
