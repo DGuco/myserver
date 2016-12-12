@@ -96,6 +96,30 @@ int CTcpCtrl::Initialize()
 
 int CTcpCtrl::Run()
 {
+    LOG_NOTICE("default","Tcpserver is runing....");
+#ifdef _DEBUG_
+    time_t tNow = 0;
+    time_t tTick = 0;
+    int iTmpCnt = 0;
+#endif 
+
+    while(1)
+    {
+        if (tcpexit == miRunFlag)
+        {
+            LOG_NOTICE("default","TcpServer exit!");
+            return 0;
+        }
+
+        if(reloadcfg == miRunFlag)
+        {
+            LOG_NOTICE("default","Reload tcpsvrd config file ok!");
+            miRunFlag = 0;
+        }
+       
+       GetExMessage();              //读取客户端输入
+    }
+    
     return 0;
 }
 
