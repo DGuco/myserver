@@ -1,0 +1,4988 @@
+//角色基本信息
+message BaseInfo{
+    required int64 uid = 1;
+    required bytes nickname = 2;
+    required int32 level = 3; 
+    required int32 exp = 4;
+    required int32 icon = 5;
+    required int32 mflag = 6;//是否修改过昵称 0未改过，1改过
+    required bytes language = 7;//玩家语言
+    optional int32 figure = 8;//玩家形象
+   	repeated PBEquipment  equipmentlist = 9; //领主穿戴装备信息
+}
+message Equip{
+    required int32 equipID=1; 
+}
+//城堡进展激活信息
+message CityProgress{
+    required int32 iconID=1; 
+}
+//角色货币信息
+message FinanceInfo
+{
+	required int32 type = 1;//货币类型
+	required int32 value = 2;//数量
+}
+
+//城池开启的区域
+message CityArea
+{
+	required int32 areaID = 1;//城池划分区域编码,land_config
+	required int32 buildingID = 2; //该区域所建建筑building_config,0表示没有建筑
+}
+
+//在建或升级的建筑信息
+message UpdateBuilding
+{
+	required int32 areaID = 1;//在建建筑所在城池的区域ID
+	required int32 bid = 2;//在建或升级的建筑的当前id
+	required int32 lastTime = 3;//建造或升级完成剩余时间（单位：秒）
+	optional int32 type = 4;//建筑类型，1建造，2升级，3拆除
+}
+
+//资源田信息
+message ResourceInfo
+{
+	required int32 areaID = 1;//资源田位置
+	required int32 bid = 2;//资源田ID building_config
+	required int32 type = 3;//产出资源类型
+	required int32 current = 4;//当前产出
+	required int32 limit = 5;//产出上限
+	required int32 last_time = 6;//资源田产量提速剩余时间（单位：秒）
+}
+
+//道具信息
+message Item
+{
+	required int32 item_id = 1;//道具ID
+	required int32 item_num = 2; //道具数量
+	optional int32 item_time = 3;	//道具到期时间戳 限时道具有
+}
+
+//士兵
+message Soldier
+{
+	required int32 soldier_id = 1;//士兵ID,对应skill_config表sort字段
+	required int32 soldier_num = 3;//士兵数量
+}
+
+//训练士兵状态
+message TrainStatus
+{
+	required int32 soldier_type = 1;//训练士兵类型 对应soldier_config表soldierType字段
+	required int32 last = 2;//训练完成剩余时间（单位：秒）
+	required int32 num = 3;//训练数量
+	required int32 current = 4;//当前拥有的士兵数量，（训练场，医馆）
+	required int32 all = 5;//训练总时间
+}
+
+//许愿花钻石次数
+message SuppTimes
+{
+	required int32 rtype = 1;//许愿资源类型
+	required int32 times = 2;//当日花费钻石许愿次数
+}
+
+//资源数据
+message ResourceData
+{
+	repeated FinanceInfo finance = 1;//货币花费
+	repeated Item items = 2;//道具列表
+	repeated PBEquipment  equipmentlist = 3; //领主装备信息
+}
+
+//当前科技信息
+message TechInfo
+{
+	required int32 armyType = 1;//对应army_config armyType字段
+	required int32 armyID = 2;//对应army_config id字段
+}
+
+//科技升级状态
+message TechnologyStatus
+{
+	required int32 armyType = 1;//对应army_config armyType字段
+	required int32 armyID = 2;//对应army_config id字段
+	required int32 last = 3;//剩余时间
+}
+
+//弩箭状态
+message BoltStatus
+{
+	required int32 current = 1; //当前值
+	required int32 limit = 2; //当前上限值
+}
+
+//自动治疗伤兵
+message AutoCure
+{
+	required int32 soldier_id = 1; //当前正在治疗的士兵类型
+	required int32 last_time = 2; //治疗完成剩余时间,单位（秒）
+}
+
+//士兵治疗次数
+message CureTimes
+{
+	required int32 soldier_id = 1;//士兵类型，战士,精灵龙等
+	required int32 times = 2; //当天次数
+}
+
+//医馆状态
+message HospitalStatus
+{
+	repeated Soldier soldiers = 1; //伤兵数量
+	repeated Soldier autocures = 2; //已自动治疗的伤兵
+	required AutoCure autocure = 3; //正在自动治疗的士兵状态
+	repeated CureTimes ctimes = 4;//当天立即治疗次数
+	repeated Soldier allSoldiers = 5; //所有伤兵数量
+	optional int32 autoDeadTime = 6;
+}
+
+//推荐任务
+message Task
+{
+	required int32 tid = 1;//任务ID
+	required int32 current = 2; //任务当前值
+	required int32 limit = 3;//任务上限
+	required int32 status = 4;//任务状态 0进行中，1已领取
+	required int32 open = 5;//是否解锁，1已解锁，0未解锁
+}
+
+//积分任务
+message TaskScore
+{
+	required int32 tid = 1;
+	required int32 status = 2;//任务状态 0进行中，1已领取
+}
+
+//坐标
+message Position
+{
+	required int32 x = 1;
+	required int32 y = 2;
+}
+
+message BuildNotify
+{
+	required int32 type = 1;//1建造完成，2升级完成，3拆除完成
+	required int32 btype = 2;//建造类型
+	required int32 bid = 3;//建筑ID
+}
+
+message TechNotify
+{
+	required int32 armyType = 1; //升级科技类型
+	required int32 armyID = 2; //升级科技ID
+}
+
+message TrainNotify
+{
+	required int32 armyType = 1;//训练士兵类型
+	required int32 armyNum = 2;//训练士兵数量
+}
+
+//状态通知
+message NotifyMessage
+{
+	optional BuildNotify buildNotify = 1;
+	optional TechNotify techNotify = 2;
+	optional TrainNotify trainNotify = 3;
+	optional bool upgrade = 4;
+}
+
+//联盟帮助申请
+message allianceHelp
+{
+	optional int32 buildid = 1;//建筑物id
+	optional int32 buildtype = 2;//建筑或科技
+	optional int32 buildlevel = 3;//帮助目标等级(到某一级)
+}
+
+//返回结果
+message Result
+{
+	required int32 no = 1; //错误码，0成功，其他为错误码
+	optional string msg = 2;  //错误消息
+}
+
+//帐号注册/密码登录 command 1001
+message AccountLoginRequest{
+	required string account = 1;			//帐号
+	required string password = 2;			//密码
+	required int32 type = 3;				//1.注册，2.登录, 3.游客登录
+}
+message AccountLoginResponse{
+	optional int32 status = 1;				//状态：请查看svn code.txt文件说明
+	optional int32 type = 2;				//1.注册，2.登录, 3.游客登录
+	optional string openid = 3;				//用于验证登录
+}
+
+message EventInfo
+{
+	optional string appsflyerid = 1;
+	optional int32 	advertiser_tracking_enabled = 2;  //iOS设备是否开启广告追踪
+	optional int32 	application_tracking_enabled = 3; //Facebook应用是否开启广告追踪
+	optional string advertiser_id = 4;				  //设备广告标示
+	optional string country = 5; 					  //国家
+} 
+
+// 1002: 角色登录请求&创建
+message LoginRequest{
+	optional string openid = 1;                 //用户ID UI
+	optional int32 os = 2;					    //操作系统 0 ios, 1 android
+	optional HardwareInfo hardware = 3;    //硬件信息
+	optional int32 platform = 4;
+	optional string access_token = 5;
+	optional string pf = 6;
+	optional string pfkey = 7;
+	optional string pay_token = 8;
+	optional int32 action = 9;                 //0:login,1:relogin,2:register
+	optional int32 zoneid = 10;
+	optional int32 is_wxvip = 11;  //是否是微信vip用户（微信游戏中心登入） 1是 0不是
+	optional int32 type = 12; //登录账号类型 1游客（试玩）,2 facebook, #后面的还没有3 google, 4 apple
+	optional string client_version = 13;//客户端版本号
+	optional string language = 14;//使用语言
+	optional string deviceid = 15;//设备唯一标识
+	optional EventInfo eventinfo = 16; //上传facebook evnet信息
+}
+
+message HardwareInfo{
+    required string ClientVersion = 1; 		//客户端版本
+    required string SystemSoftware = 2; 	//移动终端操作系统版本
+    required string SystemHardware = 3; 	//移动终端机型
+    required string TelecomOper = 4; 	    //运营商
+    required string Network = 5; 		    //3G/WIFI/2G
+    required int32 ScreenWidth = 6; 		//显示屏宽度
+    required int32 ScreenHight = 7; 	    //显示屏高度
+    required string Density = 8; 			//像素密度
+    required int32 RegChannel = 9; 		    //注册渠道
+    required string UUID = 10; 		        //MAC地址
+    required string CpuHardware = 11;    	//cpu类型|频率|核数
+    required int32 Memory = 12; 			    //内存信息单位M
+    required string GLRender = 13; 	    	//opengl render信息
+    required string GLVersion = 14; 		    //opengl版本信息
+    required string DeviceId = 15; 	        //设备ID
+    required string LoginChannel = 16; 	    //登录渠道
+}
+
+//1002：response
+message LoginResponse{
+	required Result result = 1;
+	optional BaseInfo baseInfo = 2; //玩家的基本信息
+	repeated FinanceInfo finance = 3; //玩家的货币信息
+	repeated CityArea areas = 4; //玩家城池开放的区域与所建建筑
+	optional UpdateBuilding free = 5; //免费队列状态
+	repeated Item items = 6;//道具信息
+	repeated ResourceInfo resources = 7;//资源田信息
+	repeated TechInfo tech = 8;//科技信息
+	repeated Soldier soldiers = 9;//当前士兵数量
+	optional TrainStatus train_status = 10;//当前训练状态
+	optional TechnologyStatus tech_status = 11;//科技升级状态
+	optional BoltStatus bolt_status = 12;//弩箭状态
+	optional HospitalStatus hospital_status = 13; //医馆状态
+	repeated Task main_task = 14;//推荐任务
+	repeated Task daily = 15;//日常任务
+	repeated TaskScore daily_score_status = 16;
+	optional int32 task_score = 17; //当日积分任务积分
+	repeated Task achievement = 18;//成就任务
+	optional Position pos = 19;//玩家在大地图位置
+	optional int32 exile = 20;//1新玩家，2流亡，0正常登录
+	optional NotifyMessage notify = 21;//离线任务完成消息通知
+	optional WallStatus wallStatus = 22;//城防状态
+	optional int32 floor = 23;
+	repeated GoForBattleInfo march = 24;//出征队列
+	optional string guild = 25;//联盟ID
+	repeated allianceHelp a_build_helps = 26;//联盟帮助:建筑
+	repeated allianceHelp a_tech_helps = 27;//联盟帮助:科技
+	repeated allianceHelp a_skill_helps = 48;//联盟帮助:科技
+    optional uint32       unread_war_report_num = 28; //未读战报条数
+    optional uint32       alliance_help_num     = 29; //联盟帮助数目
+    optional uint32       war_situation_num     = 30; //军情数目
+    optional int32 zoneid = 31;//区域编码
+    optional int32 invite_num = 32;//联盟邀请函数量
+    optional int32 msg_lock = 33;//消息锁定标识
+    optional bytes alliance_name   = 34;//联盟全称
+    optional int32 spy_num         = 35;//未读侦查报告信息
+    optional int32 alliance_flag   = 36;//联盟旗帜
+    optional int32 praise = 37;//点赞剩余次数
+    optional int32 contribute_draw_times = 38;//贡献领取剩余次数
+    optional string timestr              = 39;//当前服务器时间
+    optional int32 march_situation_num = 40;//军情数量（进攻和被攻击）
+    optional bytes alliance_abbr    = 41;//联盟缩写
+    optional int32 icon_refresh_last = 42;//上传头像刷新剩余时间
+    optional int32 alliance_position = 43;//联盟职位
+    optional int32 taxlast = 44;//税收剩余时间
+    optional int32 taxall = 45;//本次税收总时间
+    optional AllianceTechStruct allianceTechStruct = 46;
+    optional AllSkillInfo 	allSkillInfo 	= 47;	//	所有技能信息
+    optional int32 marketbegin = 49;		//市场贸易开始时间 有正在进行的贸易 就是时间戳
+    optional int32 marketend = 50;			//市场贸易结束时间 有正在进行的贸易 就是时间戳
+    optional int32 FriendGetNum = 51;		//好友请求的数量
+    optional int32 battleTime = 52;         //嗮战力时间cd
+    optional int32 allianceTime = 53;       //嗮联盟时间cd
+    optional int32 activeTime = 54;         //嗮活跃时间cd
+    optional int32 assistanceTime = 55;     //求增援时间cd 
+    optional int32 pointgeneralTime = 56;   //点将令时间cd
+    optional int32 generalendTime  = 57;    //点将令结束时间
+    optional int32 alliancemembers  = 58;   //当前联盟总人数   
+    optional int32 signancemembers  = 59;   //点将令签到总人数
+    optional bool  hassign  = 60;    	    //是否签到 
+	optional int32 serverTime = 61;      
+	optional int32 alliancejoinnode = 62;	//是否加入过联盟 1加入过 0没有加入过
+	optional UserDragonInfoAck userDragonInfoAck = 63;//	龙崖
+	optional int32 wishfreetimes = 64;            //可用免费许愿次数
+}
+
+// 1003: 修改昵称
+message NameRequest {
+    required bytes nickname = 1;   //昵称
+    required int32 isfirst = 2;//是否首次修改,0首次，1非首次
+    required int32 useItem = 3;//是否使用道具 0，不使用，1使用
+    required int32 ready = 4;//是否输入完成 0未完成，1完成
+}
+
+// 1003: 修改昵称返回
+message NameRes
+{
+	required Result result = 1;
+	optional int32 isfirst = 2; //0首次，1非首次
+	optional int32 useItem = 3;//是否使用道具 0，不使用，1使用
+	optional ResourceData add = 4;//首次修改昵称会发送奖励
+	optional ResourceData cost = 5;//非首次修改昵称需要扣费
+	optional int32 ready = 6;//是否输入完成 0未完成，1完成
+}
+
+//1004:修改头像
+message ModifyIcon
+{
+	required int32 iconID = 1;//修改头像ID
+	required int32 oper = 2;//1使用道具，2花费魔钻
+}
+
+//1004:修改头像返回
+message ModifyIconRes
+{
+	required Result result = 1;
+	optional int32 iconID = 2;//
+	optional int32 oper = 3;
+	optional ResourceData cost = 4;//修改头像花费
+}
+
+//1005:账号异地登陆
+message OtherLogin
+{
+	required Result result = 1;
+}
+
+//1006:版本过低
+message VersionLowPush
+{
+	required Result result = 1;
+	optional int32 param = 2;		//附带参数 如果是封号:－1代表永久封号 非－1代表封号截止时间戳
+}
+
+//1007:修改形象
+message ChangeFigure
+{
+	required int32 figure = 1;
+}
+
+//1007:修改形象返回
+message ChangeFigureRes
+{
+	required Result result = 1;
+	optional int32 figure = 2;
+}
+
+//1008:上传头像完成
+message UploadIcon
+{
+	required int32 icon = 1;
+}
+
+//1008:上传头像
+message UploadIconRes
+{
+	required Result result = 1;
+	optional int32 icon = 2;
+	optional int32 last = 3;//下次刷新剩余时间
+}
+
+//跨服协议
+//1009:跨服登录
+message MigrateLoginReq
+{
+	optional string openid 	= 1; 	//用户ID UI
+	optional int32 os 		= 2;	//操作系统 0 ios, 1 android
+	optional int32 zoneid 	= 3;
+	optional int32 type 	= 4; 	//登录账号类型 1游客（试玩）,2 facebook, #后面的还没有3 google, 4 apple
+	optional string client_version = 5;	//客户端版本号
+	optional string deviceid= 6;	//设备唯一标识
+}
+
+//1009
+message MigrateLoginRes
+{
+	required Result result 	= 1;
+	required int32	time 	= 2;	//玩家最后可以跨服迁城的最后时间戳
+}
+
+//1010:请求跨服迁城
+message MigrateMoveCityReq
+{	
+	required int32 zoneid 	= 1;		//新服务器 zoneid
+	required int32 type 	= 2;		//迁城类型 1代表新手卡跨服 2代表高级迁城领跨服
+	optional int32 x 		= 3;		//新地图的坐标 随机迁城不用填
+	optional int32 y 		= 4;
+}
+
+//1010:迁城结果 如果迁城成功 这个协议一定是服务器主动推送的协议
+message MigrateMoveCityRes
+{
+	required Result result = 1;		
+	required int32  zoneid = 2;//新服务的zoneid
+}
+
+//1101：开启付费队列
+message OpenPayList
+{
+	
+}
+
+//1121 查看玩家信息
+message CheckPlayerInfoReq
+{
+	required int64 llUID 		= 1;
+	optional bytes sName 		= 2;
+}
+
+message CheckPlayerInfoAck
+{
+	required Result result 		= 1;
+	required int64 llUID 		= 2;
+	required bytes snickname 	= 3;	//	玩家昵称
+	required int32 iIcon 		= 4;	//	头像
+	required int32 iCityLvl		= 5;	//	城堡等级
+	required int32 iUserLvl		= 6;	//	领主等级
+	required bytes sSign		= 7;	//	签名
+	required int32 iFightRank 	= 8;	//	战力排行
+	required int32 iFightNum	= 9;	//	战力
+	required int32 iAllianceJob = 10;	//	联盟职位
+	required int32 iKillNum		= 11;	//	消灭
+	required int32 iDeadNum		= 12;	//	死亡
+	required bytes sAllianceName = 13;	//	联盟名字
+}
+
+//1122	修改签名
+message ChangeSignReq
+{
+	required bytes sSign 		= 1;
+}
+
+message ChangeSignAck
+{
+	required Result result = 1;
+}
+
+//1101:开启付费队列返回
+message OpenPayListRes
+{
+	required Result result = 1;
+	optional int32 last_time = 2; //付费队列开启剩余时间（单位：秒）
+	optional ResourceData cost = 3;//开启付费队列花费
+}
+
+//建造建筑，升级建筑，加速完成
+//1102协议option 说明：
+//1:建造(普通建造，消耗资源，花时间)（资源不够，可以花魔钻替代）
+//2:只花魔钻，不花其他资源，立刻完成，不花时间，不占用队列
+//3:升级（普通升级，消耗资源，花时间）（资源不够，可以花魔钻替代）
+//4:升级立刻完成（不花其他资源，立刻完成，不花时间，不占用队列）
+//5:拆除（返回一半资源，倒计时拆除）（拆除完成后返回资源），没有立刻拆除
+//6:消费魔钻加速建造
+//7:消费魔钻加速升级
+//8:消费道具加速建造
+//9:消费道具加速升级
+//10:消费魔钻加速拆除
+//11:消费道具加速拆除
+//12:取消建造
+//13:取消升级
+//14:取消拆除
+//15:完成当前队列，开始建造(资源不够，可以花魔钻替代，开始倒计时)
+//16:完成当前队列，开始升级(资源不够，可以花魔钻替代，开始倒计时)
+//17:完成当前队列，开始拆除(资源不够，可以花魔钻替代，开始倒计时)
+//1102:建造建筑，升级建筑，加速完成，拆除，取消－请求协议
+message Building
+{
+	required int32 option = 1;//建造选项
+	required int32 areaID = 2;//建造建筑位置编号
+	required int32 btype = 3;//建筑类型
+	required int32 cost = 4; //建造或升级,资源不足是否花费魔钻补足, 0不花费魔钻补，1花费魔钻补
+	optional Item item = 5;
+}
+
+//1102:返回协议
+message BuildingRes
+{
+	required Result result = 1;
+	optional int32 option = 2;//建造选项
+	optional ResourceData add = 3; //获得，拆除获得，升级获得
+	optional ResourceData cost = 4; //消耗
+	optional UpdateBuilding free = 5; //免费队列状态
+	optional Item item = 6;//消耗的道具ID
+	optional int32 areaID = 7; //当前操作返回的ID
+	optional int32 bid = 8;//building_config 表ID
+	optional int32 battle = 9;//当前战力
+	optional int32 exp = 10;//当前经验
+	optional int32 level = 11;//当前等级 ,领主
+	optional ResourceInfo resource = 12;//资源田信息
+	optional bool cri = 13 [default = false];//是否爆击
+}
+
+//1103:解锁区域
+message UnlockArea
+{
+	optional int32 areaID = 1;//解锁区域ID
+	optional int32 useMoney = 2;// 1：金币不足用魔钻补足，其他返回错误
+}
+
+//1103:解锁区域返回
+message UnlockAreaRes
+{
+	required Result result = 1;
+	optional int32 areaID = 2;//解锁区域ID
+	optional ResourceData cost = 3;//解锁消耗
+	optional ResourceData add = 4;//解锁获得资源
+	optional int32 useMoney = 5;
+}
+
+//1104:建筑完成推送
+message CopmleteBuildPush
+{
+	required Result result = 1;
+	optional int32 oper = 2; //1:建造完成，2升级完成，3拆除完成
+	optional int32 btype = 3;
+	optional int32 areaID = 4;
+	optional int32 bid = 5;
+	optional ResourceData add = 6;
+	optional ResourceData current = 7;
+	optional int32 exp = 8;//当前经验
+	optional int32 level = 9;//当前等级
+	optional ResourceInfo resource = 10;//资源田信息
+	optional int32 battle_balue = 11;
+}
+
+//1105:建筑换位
+message BuildExchange
+{
+	required int32 srcID = 1;//需要换位的建筑  建筑格ID
+	required int32 tarID = 2; //换到的位置
+	required int32 oper = 3; // 1使用道具，2花费魔钻
+}
+
+//1105:建筑换位返回
+message BuildExchangeRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2; //花费
+	optional int32 srcID = 3;//需要换位的建筑  建筑格ID
+	optional int32 tarID = 4; //换到的位置
+	optional UpdateBuilding free = 5; //免费队列状态
+	repeated allianceHelp a_build_helps = 6;//联盟帮助:建筑
+}
+
+//1201:领取资源田资源
+message DrawResource
+{
+	required int32 areaID = 1;//资源田位置
+}
+
+//1201:领取资源田资源返回
+message DrawResourceRes
+{
+	required Result result = 1;
+	optional ResourceData add = 2;//领取的资源
+	optional ResourceInfo info = 3;//资源田信息
+	optional int32 donte = 4;//资源田连锁奖励，自动捐献后或得的贡献度
+	optional bool cri = 5 [default = false];//是否爆击
+}
+
+//1202:资源田提速
+message AccResource
+{
+	required int32 areaID = 1;//资源田位置
+	required int32 acc_type = 2;//提速类型 1钻石，2道具
+	optional Item item = 3;//提速类型是 2道具 的时候使用
+}
+
+//1202:资源田提速返回
+message AccResourceRes
+{
+	required Result result = 1;
+	optional int32 areaID = 2;
+	optional int32 acc_type = 3;//提速类型 1钻石，2道具
+	optional ResourceData cost = 4;//消耗
+	optional ResourceInfo info = 5;//资源田信息
+}
+
+//1301:使用道具
+message ItemsUse
+{
+	required Item item = 1;//使用道具
+}
+
+//1301:使用道具列表返回
+message ItemsUseRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2; //消耗
+	optional ResourceData add = 3; //获得
+	optional int32 	attTime 		= 4;	//攻击保护时间
+	optional int32 	spyTime 		= 5;	//侦查保护时间
+	optional int32 	x 		= 6;	
+	optional int32 	y 		= 7;	
+	optional int32  vipTime = 8;	//VIP总共剩余时间
+	optional int32  vipExp  = 9;	//增加的VIP经验
+}
+
+//1302:道具合成
+message ItemCombine
+{
+	required int32 cid = 1;//合成编号，对应composite_config表
+	required int32 num = 2;//合成数量
+}
+
+//1302:道具合成返回
+message ItemCombineRes
+{
+	required Result result = 1;
+	optional ResourceData add = 2; //获得
+	optional ResourceData cost = 3; //合成消耗
+}
+
+//1401:训练士兵
+message Training
+{
+	required int32 train_type = 1; //1立即训练花费钻石，2普通训练花费时间
+	required int32 soldier_type = 2;//训练士兵类型
+	required int32 oper = 3;//资源不足的情况下，是否花费魔钻补充, 1补充，0不补充
+}
+
+//1401:训练士兵返回
+message TrainingRes
+{
+	required Result result = 1;
+	optional int32 train_type = 2; //1立即训练花费钻石，2普通训练花费时间
+	optional int32 soldier_type = 3;//训练士兵类型
+	optional ResourceData cost = 4; //消耗
+	optional int32 last_time = 5;//倒计时,立即完成的时候返回0
+	optional int32 train_num = 6;//可建造数量
+	optional int32 battle = 7;//当前战斗力
+	optional int32 oper = 8;//资源不足的情况下，是否花费钻石补充, 1补充，0不补充
+}
+
+//1402:加速训练士兵
+message AccTraining
+{
+	required int32 acc_type = 1; //加速类型1，钻石加速，2道具加速
+	optional Item item = 2; //使用道具数量,道具加速时用
+}
+
+//1402:加速训练士兵返回
+message AccTrainingRes
+{
+	required Result result = 1;
+	optional int32 acc_type = 2; //加速类型1，钻石加速，2道具加速
+	optional ResourceData cost = 3; //消耗
+	optional int32 last_time = 4; //训练剩余时间
+	optional int32 battle = 5;//当前战斗力
+}
+
+//1403:取消训练
+message CancelTraining
+{
+
+}
+
+//1403:取消训练返回
+message CancelTrainingRes
+{
+	required Result result = 1;
+	optional ResourceData add = 2; //返回资源
+}
+
+//1404:领取士兵
+message RecvSoldier
+{
+}
+
+//1404:领取士兵返回
+message RecvSoldierRes
+{
+	required Result result = 1;
+	optional Soldier soldier = 2;
+	optional int32 battle = 3; //当前战力
+	optional int32 current = 4;//当前拥有士兵数量，（训练场，医馆）
+}
+
+//1405:士兵训练完成通知
+message CompleteTrainPush
+{
+	required Result result = 1;
+	optional int32 armyType = 2; //士兵类型
+	optional int32 armyID = 3; //士兵ID
+	optional int32 armyNum = 4; //士兵数量
+	optional int32 battle = 5;//当前战斗力
+}
+
+//1406:设置士兵编队
+message SetFormation
+{
+	required int32 seq = 1;
+	repeated Soldier soldier = 2;
+}
+
+//1406:设置士兵编队
+message SetFormationRes
+{
+	required Result result = 1;
+	optional int32 seq = 2;
+	repeated Soldier soldier = 3;
+}
+
+//1407:查询士兵编队信息
+message QueryFormation
+{
+	
+}
+
+message ArmyFormation
+{
+	required int32 seq = 1;
+	repeated Soldier soldier = 2;
+}
+
+//1407:查询士兵编队信息返回
+message QueryFormationRes
+{
+	required Result result = 1;
+	repeated ArmyFormation army = 2;
+}
+
+//1408:查询士兵概况
+message QueryArmyStatus
+{
+	
+}
+
+message MarchArmyStatus
+{
+	required bytes marchid = 1;
+	required int32 type = 2; //3玩家打玩家出征，4玩家打玩家返回，5采集出发，6采集中，7采集返回，8侦查玩家出发，9侦查玩家返回，10侦查资源田出发，11侦查资源田返回,21援助，22援助返回, 41打怪去 42打怪回 101联盟建筑物 102 联盟建筑回 103 联盟建筑中
+	required Position pos = 3;
+	repeated Soldier soldier = 4;
+}
+
+//1408:查询士兵概括返回
+message QueryArmyStatusRes
+{
+	required Result result = 1;
+	optional int32 all = 2;//全部士兵
+	optional int32 idle = 3;//空闲士兵
+	optional int32 damaged = 4;//伤兵
+	optional int32 march_num = 5;//当前使用队列
+	optional int32 march_all = 6;//全部队列
+	repeated Soldier idle_army = 7;//空闲士兵
+	repeated MarchArmyStatus march = 8;
+}
+
+//1409:推送行军数量
+message MarchNumPush
+{
+	required int32 max = 1;
+	required int32 cur = 2;
+}
+
+//1410:请求士兵信息
+message SoldireInfoReq
+{
+	repeated int32 armytype = 1;
+}
+
+message SoldireInfoRes
+{
+	required Result result = 1;
+	repeated Soldier soldier = 2;
+}
+
+//1501:科技升级
+message TechnologyUp
+{
+	required int32 oper = 1; //1立即升级花费钻石，2普通升级花费时间
+	required int32 armyType = 2;//升级科技类型,army_config表的armyTepe字段
+	required int32 ctl = 3;//资源不足的情况下，是否花费钻石补充, 1补充，0不补充
+}
+
+//1501:科技升级返回
+message TechnologyUpRes
+{
+	required Result result = 1;
+	optional int32 oper = 2;
+	optional int32 armyType = 3;
+	optional ResourceData cost = 4; //消耗
+	optional int32 last_time = 5;//倒计时,立即完成的时候返回0
+	optional int32 level = 6;//领主等级
+	optional int32 exp = 7;//当前经验值
+	optional ResourceData add = 8;//升级的奖励
+	optional int32 armyID = 9;//升级到的等级,对应army_config表ID字段
+	optional int32 battle = 10;//当前战力
+	optional int32 ctl = 11;//资源不足的情况下，是否花费钻石补充, 1补充，0不补充
+}
+
+//1502:加速科技升级
+message AccTechnologyUp
+{
+	required int32 oper = 1; //加速类型1，钻石加速，2道具加速
+	optional Item item = 2; //使用道具数量,道具加速时用
+}
+
+//1502:加速科技升级返回
+message AccTechnologyUpRes
+{
+	required Result result = 1;
+	optional int32 oper = 2; //加速类型1，钻石加速，2道具加速
+	optional int32 armyType = 3; //升级科技类型，对应army_config表armyType字段
+	optional ResourceData cost = 4; //消耗
+	optional int32 last_time = 5; //剩余时间
+	optional int32 level = 6;//领主等级
+	optional int32 exp = 7;//当前经验值
+	optional ResourceData add = 8;//升级的奖励
+	optional int32 armyID = 9;//升级到的等级, 对应army_config表ID字段
+	optional int32 battle = 10;//当前战力
+}
+
+//1503:取消升级
+message CancelUpdate
+{
+
+}
+
+//1503:取消升级返回
+message CancelUpdateRes
+{
+	required Result result = 1;
+	optional ResourceData add = 2; //返回资源
+}
+
+//1504:完成科技推送
+message CompleteTechUpRes
+{
+	required Result result = 1;
+	optional int32 level = 2;//领主等级
+	optional int32 exp = 3;//当前经验值
+	optional ResourceData add = 4;//升级的奖励
+	optional int32 armyType = 5;//对应army_config表armyType字段
+	optional int32 armyID = 6;//对应army_config 表的ID字段
+	optional int32 battle = 7;//当前战力
+}
+
+//1505:联盟帮助加速推送
+message AlliancehelpUpInfo
+{
+	required int32 cell_id = 1;//所在地图格子id
+	required int32 target_id = 2;//buildid:armyid
+	required int32 lastTime = 3;//建造或升级完成剩余时间（单位：秒）
+	required int32 type = 4;//建筑1:科技2
+}
+message AllianceHelpUpPush
+{
+	optional AlliancehelpUpInfo Help_up_info = 1;
+}
+
+//1000:客户端测试接口
+message DebugCmd
+{
+	repeated string parameters = 1;
+}
+
+//1000:客户端测试接口返回
+message DebugCmdRes
+{
+	required Result result = 1;
+	optional ResourceData add = 2; //添加
+	optional ResourceData cost = 3; //添加
+}
+
+//1601:许愿池许愿
+message Supplication
+{
+	required int32 stype = 1;//许愿类型1免费，2道具，3钻石
+	required int32 rtype = 2;//许愿资源类型
+}
+
+//1601:许愿池许愿返回
+message SupplicationRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2;
+	optional ResourceData add = 3;
+	optional int32 free = 4;//当日剩余免费次数
+	optional SuppTimes pay = 5; //花费钻石许愿次数
+}
+
+//1602:获取当前许愿状态
+message SupplicationStatus
+{
+	
+}
+//1602:返回
+message SupplicationStatusRes
+{
+	required Result result = 1;
+	optional int32 free = 2;//免费次数
+	repeated SuppTimes pay = 5; //花费钻石许愿次数
+}
+
+//1701:购买商品
+message BuyGoods
+{
+	required int32 gid = 1;//商品ID对应goods_config表
+	required int32 num = 2;//购买商品数量
+}
+
+//1701:返回
+message BuyGoodsRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2;//花费
+	optional ResourceData add = 3;//获得
+}
+//1702:快捷购买
+message FasterBuy
+{
+	required int32 rtype = 1; //购买资源类型，1资产, 2商品
+	required int32 rid = 2; //如果是资产对应资产类型，如果是商品对应商品表ID
+	required int32 num = 3; //资产数量
+}
+
+//1702:快捷购买返回
+message FasterBuyRes
+{
+	required Result result = 1;
+	optional ResourceData add = 2; //购买的资源
+	optional ResourceData cost = 3; //花费的资源
+}
+
+//1801:补充弩箭数量
+message AddBolt
+{
+	required int32 oper = 1;//资源不足的情况下，是否花费钻石补充, 1补充，0不补充
+}
+
+//1801:补充弩箭返回
+message AddBoltRes
+{
+	required Result result = 1;
+	optional int32 current = 2; //补充后弩箭当前值
+	optional int32 limit = 3; //当前弩箭上限
+	optional ResourceData cost = 4;//花费
+	optional int32 oper = 5;//资源不足的情况下，是否花费钻石补充, 1补充，0不补充
+}
+
+//1901:获取医馆状态
+message HospitalReq
+{
+
+}
+
+//1901:医馆状态
+message HospitalRes
+{
+	required Result result = 1;
+	optional HospitalStatus hospital = 2;//医馆状态
+}
+
+//1902:治疗伤兵
+message CureSoldier
+{
+	required Soldier soldier = 1;
+	required int32 oper = 2;//资源不足的情况下，是否花费钻石补充, 1补充，0不补充
+}
+
+//1902:治疗伤兵返回
+message CureSoldierRes
+{
+	required Result result = 1;
+	optional Soldier soldier = 2;     //治疗伤兵数量
+	optional ResourceData cost = 3;   //花费
+	optional HospitalStatus status = 4;//当前状态
+	optional int32 battle = 5;//当前战斗力
+	optional int32 oper = 6;//资源不足的情况下，是否花费钻石补充, 1补充，0不补充
+}
+
+
+//1903:花费魔钻全部治疗
+message CureAllSoldier
+{
+	
+}
+
+//1903:花费魔钻全部治疗返回
+message CureAllSoldierRes
+{
+	required Result result = 1;
+	repeated Soldier soldiers = 2;//治疗士兵
+	optional ResourceData cost = 3;//花费
+	optional HospitalStatus status = 4;//当前状态
+	optional int32 battle = 5;//当前战力
+}
+
+//1904:领取自动治疗的伤兵
+message DrawCureSoldier
+{
+	
+}
+
+//1904:领取自动治疗的伤兵返回
+message DrawCureSoldierRes
+{
+	required Result result = 1;
+	repeated Soldier soldiers = 2; //领取的自动治疗的伤兵
+	optional HospitalStatus status = 3;//当前状态
+	optional int32 battle = 4;//当前战斗力
+}
+
+//1905:自动治疗完伤兵通知
+message AutoCurePush
+{
+	required Result result = 1;
+	required HospitalStatus status = 2;//当前状态
+}
+
+//1906:修改当前治疗伤病类型
+message HospitalChangeTypeReq
+{
+	required int32 soldierType = 1;	//	修改成什么类型
+}
+
+message HospitalChangeTypeAck
+{
+	required Result result = 1;
+	required HospitalStatus status = 2;//当前状态
+}
+
+//2101:获取任务列表
+message TaskList
+{
+	
+}
+//2101:获取任务列表返回
+message TaskListRes
+{
+	required Result result = 1;
+	repeated Task main_task = 2;//推荐任务
+	repeated Task daily = 3;//日常任务
+	optional int32 task_score = 4; //当日积分任务积分
+	repeated TaskScore daily_score_status = 5;
+	repeated Task achievement = 6;//成就任务2101
+}
+
+//2102:领取任务奖励
+message TaskDraw
+{
+	required int32 tid = 1;//任务ID
+	required int32 type = 2;//1领取推荐任务，2领取日常积分任务，3领取成就任务奖励
+}
+
+//2102:领取任务奖励返回
+message TaskDrawRes
+{
+	required Result result = 1;
+	optional int32 tid = 2;
+	optional int32 type = 3;
+	optional ResourceData add = 4;
+}
+
+//2103:任务状态变更推送
+message TaskStatus
+{
+	required Result result = 1;
+	repeated Task main_task = 2;//主线任务更新
+	repeated Task daily = 3;//任务状态变更推送
+	required int32 score = 4;//当日任务积分,当前值
+	repeated Task achieve = 5; //成就任务推送
+}
+
+//好友系统
+//2201:搜索玩家
+message SearchPlayer
+{
+	required bytes nickname = 1;
+}
+
+//2201:搜索玩家返回
+message SearchPlayerRes
+{
+	required Result result = 1;
+	optional BaseInfo info = 2;
+}
+
+//2202:添加好友
+message AddFriend
+{
+	required int64 uid = 1;//请求添加好友的uid
+}
+
+//2202:添加好友返回
+message AddFriendRes
+{
+	required Result result = 1;
+}
+
+//2203:删除好友
+message DelFriend
+{
+	required int64 uid = 1;//要删除的好友uid
+}
+
+//2203:删除好友返回
+message DelFriendRes
+{
+	required Result result = 1;
+}
+
+//2204:接受好友请求
+message AccecpFriendRequest
+{
+	required int64 uid = 1;
+}
+
+//请求添加好友消息
+message AddFriendRequest
+{
+	required BaseInfo info=1; 
+}
+
+//2200:登录后消息推送
+message PushMessage
+{
+	
+}
+
+//1 嗮战力 
+//2 嗮活跃 
+//3 招募令 
+//4 嗮联盟 
+//5 联盟点将令 
+//6 联盟求增援
+//7 联盟集结令
+//8 公告 
+//9 点将结束
+//10 系统公告 走马灯
+//11 系统公告 聊天公告
+message ChatMessage
+{
+	required int64 uid=1;				//发送者id
+	required bytes nickname = 2;		//发送者昵称
+	required int32 icon = 3;			//发送者头像id
+	optional bytes alliance_shorname = 4;//发送者联盟名称简写
+	required bytes message = 5;			//消息内容
+    optional int32 timestamp = 6;		//时间戳
+    optional int64 accpuid = 7;			//接收者id
+    optional bytes accpnickname = 8;	//接收者昵称
+	optional int32 accpicon = 9;		//接收者头像id
+	optional bytes accpalliance = 10;	//接收者联盟名称简写
+	optional int32 type = 11;	//
+    optional bytes marchid	  = 12; //联盟聊天扩展功能集结令出征id
+	optional int32 viplevel = 13; //发送者vip等级
+	optional bool  isvipactive = 14; //发送者vip是否激活
+}
+
+////////////////////////////////消息私聊////////////////////////////////
+
+//2301:消息推送
+message WorldChat
+{
+	required ChatMessage messages = 1;
+    optional int32       type     = 2;//聊天类型  0 世界聊天  1 联盟聊天 2 私聊
+}
+
+///////////////
+//type
+//聊天类型 
+//0 世界聊天 
+//1 联盟聊天 
+//2 私聊 
+///////////////
+//childtype
+//0 聊天
+//1 嗮战力 
+//2 嗮活跃 
+//3 招募令 
+//4 嗮联盟 
+//5 联盟点将令 
+//6 联盟求增援
+//7 联盟集结令
+//8 公告 
+//9 点将结束
+//2302:玩家世界聊天发送
+message UserChat
+{
+	optional bytes message = 1;
+    optional int32 type    = 2; 
+    optional int64 uid = 3;//私聊玩家uid
+    optional int32 childtype    = 4; 
+}
+
+//2302:玩家世界聊天返回
+message UserChatRes
+{
+	required Result result = 1;
+    optional int32  type   = 2;//聊天类型  0 世界聊天  1 联盟聊天 2 私聊
+    optional int32  canusetime = 3; //下次可用时间
+    optional int32 	childtype    = 4; 
+	optional ResourceData cost = 5;   //花费
+}
+
+//2303:请求玩家离线私聊信息列表
+message UserPrivateListReq
+{
+
+}
+
+message UserPrivateInfo
+{
+	required int32 count = 1;		//消息条数
+	required ChatMessage info = 2;	//最后一条消息内容 用于客户端消息列表界面显示
+}
+//2303:请求玩家离线私聊信息列表 返回
+message UserPrivateListRes
+{
+	required Result result = 1;
+	repeated UserPrivateInfo list = 2;
+}
+
+//2304:请求某个玩家给我的私聊信息
+message UserOncePrivateReq
+{
+	required int64 uid=1;			//玩家id
+}
+
+message UserOncePrivateRes
+{
+	required Result result = 1;
+	repeated ChatMessage list = 2;	//消息列表
+}
+
+message GeneralPointEndInfo
+{
+	required int32 alliancemembers = 1;  //联盟成员数
+	required int32 signmembers = 2;		//签到人数
+	repeated string name = 3;    //未签到人的名字
+}
+//2305 点将令签到
+message SignReq
+{
+
+}
+
+message SignRes
+{
+	required Result result = 1;
+}
+
+message AllianceAssInfo
+{
+	required int64 uid = 1; //玩家uid
+	required int32 maxnum = 2; //最大数量
+	required int32 hasnum = 3; //已援助数量		
+}
+
+//2306
+message AllianceAssInfoReq
+{
+	
+}
+
+message AllianceAssInfoRes
+{
+	required Result result = 1;
+	repeated AllianceAssInfo ass = 2;
+}
+
+////////////////////////////////END////////////////////////////////////
+
+//地图城堡信息
+message MapUser
+{
+	required string mid = 1;//地图唯一ID
+	required int64 uid = 2;
+	required bytes nickname = 3;
+	required Position pos = 4;
+	required string gid = 5;//联盟ID, 如果是空的话，则没有联盟
+	required bytes gname = 6;//联盟名称
+	required int32 tlevel = 7;//城堡等级
+	required int32 burning = 8;//是否燃烧,1燃烧，0未燃烧
+	required int32 floor = 9;//地板颜色
+	required bool isFlag = 10;//是否为白旗状态
+	required bool isCanAtt = 11;//是否可以被攻击
+	optional bool embassy = 12;//是否建有大使馆
+	optional bool assist = 13;//是否有援军
+	optional int32 icon = 14;//头像
+	optional bool isCanSpy = 15;//是否有反侦察
+}
+
+//玩家部队信息
+message MarchUser
+{
+	required bytes key = 1;
+	required int64 uid = 2;
+	required bytes nickname = 3;
+	required int32 icon = 4;
+	required string gid = 5;
+	required bytes gname = 6;
+	required bytes gfullname = 7;
+	repeated BattleSoldier soldier = 8;
+	required int32 x = 9;
+	required int32 y = 10;
+	optional int32 isreach = 11; //参与集结部队是否到达
+}
+
+//出征信息 2502
+//event 
+//3 出征玩家出发
+//4 出征玩家返回
+//5 出征资源田出发
+//6 资源田采集
+//7 资源田返回
+//8 侦查玩家出发
+//9 侦查玩家返回
+//10 侦查资源田出发
+//11 侦查资源田返回
+//21 支援出发
+//22 支援返回
+//23 支援中
+//31 集结中
+//32 集结出发
+//33 集结召回
+//34 集结战斗结束返回
+//35 参与集结出发
+//36 参与集结返回
+//41 npc出征
+//42 npc出征返回
+//65 贸易线路
+//71 去往联盟仓库线路
+//72 从联盟仓库返回线路
+//101 发起联盟建筑
+//102 联盟建筑返回
+//103 联盟建筑里
+message GoForBattleInfo
+{
+	required bytes gfbID = 1; //出征ID（行军队列ID）
+	required Position start = 2; //出征开始位置
+	required Position end = 3; //出征目标
+	required int32 last = 4; //到达目标剩余时间（单位：秒) 0:已经到达
+	required MarchUser gather = 5;//发起方
+	repeated MarchUser partner = 6;//辅助
+	required int64 defencer = 7;//防守方ID
+	required string defencer_gid = 8;//防守方联盟ID(ID为空，没有联盟)
+	required int32 need = 9; //到达目标时间
+	required int32 times = 10;//已加速次数
+	required int32 eventType = 11; //行军事件
+	optional bytes battle_id = 12;//用于出征返回之后对应的战斗ID
+	optional bool hasShadow = 13;//是否有影子部队
+	optional int32 iBlackLand = 14;	//	黑土地
+	optional int32 iOutBeg = 15;	//	黑土地外
+}
+
+message MapResource
+{
+	required string mid = 1; //地图ID
+	required int32 x = 2; //坐标
+	required int32 y = 3;
+	required int64 uid = 4; //占领玩家uid，如果未占领为0
+	required string gid = 5;//联盟ID
+	repeated Soldier soldier = 6; //占领玩家士兵
+	required int32 type = 7;//资源田类型
+	required int32 level = 8;//资源田等级
+	required float collectSpeed = 9;//采集速度
+	required int32 endTime = 10;//采集结束时间 
+	required int32 castleLevel = 11;
+	required int32 current = 12;
+	required int32 cfid = 13;
+	required int64 ruid = 14;
+    optional int32 has_collect_time = 15;//已采集时间
+    optional bytes nickname         = 16;//占领玩家的昵称
+    optional bytes alliance_abbr    = 17;//占领玩家联盟缩写
+    optional int32 add_rate         = 18;//采集速度加成 * 1000
+    optional int32 has_collected    = 19;//结算变动前已采集的数量
+    optional int32 icon 			= 20;//头像
+    optional bool isProtect = 21;		//是否有安全采集
+}
+
+//怪物
+message MapMonster
+{
+	required string mid = 1;//地图ID
+	required int64 muid = 2;//怪物uid
+	required int32 x = 3;//坐标x
+	required int32 y = 4;//坐标y
+	required int32 monster_id = 5;//怪物配表ID
+}
+
+//联盟建筑
+message MapAllianceBuildList
+{
+	required string mid 				= 1;	//	地图ID
+	required int32 	iX 					= 2;	//	X坐标
+	required int32 	iY 					= 3;	//	Y坐标
+	required bytes  sBuildKey 			= 4;	//	建筑的Key 用于操作
+	required int32 	iBuildID 			= 5;	//	建筑ID
+	required int32	iBuildStatus 		= 6;	//	建筑状态 0为建造完成 1为建造中
+	required int32	iIsHave				= 7;	//	0为没有驻扎 1为自己驻扎 -1为敌方驻扎
+	required int32  iIsRange			= 8;	//	势力范围是否生效
+	required int32 	iHpNow 				= 9;	//	当前血量
+	required int32	iBeginTime			= 10;	//	开始时间
+	required int32	iEndTime			= 11;	//	结束时间
+	required string sAllianceID 		= 12;	//	联盟ID
+	required string sAllianceName 		= 13;	//	联盟名称
+	required string sAllianceShortName 	= 14;	//	联盟缩写
+	required int32 	iBuildIndex 		= 15;	//	建筑索引
+	optional int32  iAllianceIcon		= 16;	//	联盟旗帜
+}
+
+//地图装饰物
+message MapDecorateList
+{
+	required string mid 				= 1;	//	地图ID
+	required int32 	iX 					= 2;	//	X坐标
+	required int32 	iY 					= 3;	//	Y坐标
+	required int32 decorateID			= 4;	//	装饰物ID
+}
+
+//2501:请求地图信息
+message QueryMapInfo
+{
+	required Position start = 1;
+	required Position end = 2;
+	required Position center = 3;
+}
+
+//2501:请求地图信息返回
+message QueryMapInfoRes
+{
+	required Result result = 1;
+	repeated MapUser map_users = 2;
+	repeated GoForBattleInfo gfbList = 3;
+	repeated MapResource map_resources = 4;
+	repeated MapMonster map_monsters = 5;
+	repeated MapAllianceBuildList mapAllianceBuildList = 6;
+	repeated MapDecorateList mapDecorateList = 7;
+}
+
+message MemberPoint
+{
+	required int32 iX = 1;
+	required int32 iY = 2;
+}
+
+message BuildPoint
+{
+	required int32 iX 		= 1;
+	required int32 iY 		= 2;
+	required int32 iType 	= 3;
+}
+
+//2505:请求大地图信息
+message BigMapInfoReq
+{
+	
+}
+
+message BigMapInfoAck
+{
+	repeated MemberPoint 	memberPoint = 1;
+	repeated BuildPoint 	buildPoint 	= 2;
+}
+
+//2531:离开地图
+message LeaveMap
+{
+	
+}
+//2531:离开地图返回
+message LeaveMapRes
+{
+	required Result result = 1;
+}
+
+//2532
+//type 0:资源 
+//subtype 100:钻石矿 101:金矿 102:伐木场 103:采石场 104:铁矿
+//type 1:怪物
+//subtype 1－5
+message SearchMapReq
+{
+	required int32 type = 1;
+	required int32 subtype = 2;
+	required int32 level = 3;
+	optional int32 searchtype = 4; //0:正常搜索 1:任务搜索不扣免费次数，不限制等级
+}
+
+message SearchMapRes
+{
+	required Result result = 1;
+	required int32 time = 2;   //查找次数
+	optional int32 x = 3;   
+	optional int32 y = 4;   
+	optional int32 searchtype = 5; //0:正常搜索 1:任务搜索不扣免费次数，不限制等级
+}
+//2533
+message MapSearchTimeReq
+{
+
+}
+
+//2534
+message MapSearchTimeBuyReq
+{
+
+}
+
+message MapSearchBuyTimeRes
+{
+	required Result result = 1;
+	required int32 time = 2;   //查找次数	
+	optional ResourceData cost = 3;   //花费
+}
+
+message MapSearchTimeRes
+{
+	required Result result = 1;
+	required int32 time = 2;   //查找用了的次数	
+}
+
+//2520:地图城堡信息广播
+message MapUserPush
+{
+	required Result result = 1;
+	required int32 type = 2; //1新增，2修改，3删除
+	required MapUser muser = 3;
+}
+
+//2560:地图资源田信息广播
+message MapResourcePush
+{
+	required Result result = 1;
+	required int32 type = 2;//1新增，2修改，3删除
+	required MapResource mresource = 3;
+}
+
+//2561:地图联盟基地广播
+message MapAllianceBuildPush
+{
+	required int32 type = 1;//1新增，2修改，3删除
+	required MapAllianceBuildList mapAllianceBuildList = 2;
+}
+
+//2521:地图行军路线广播
+message MarchInfoPush
+{
+	required Result result = 1;
+	required GoForBattleInfo info = 2;
+}
+
+message BattleSoldier
+{
+	required int32 armyType = 1; //士兵类型
+	required int32 armyID = 2;//士兵ID
+	required int32 armyNum = 3; //士兵数量
+}
+
+//2502:出征
+message GoForBattle
+{
+	required string mid = 1;//出征目标(MapUser.mid)
+	required int64 uid = 2;//出征目标
+	repeated BattleSoldier army = 3; //出征部队
+    optional int32 type = 4;//0攻打普通玩家 1资源田 2 侦查玩家城堡  3 侦查资源田 4发起集结 5参与集结 6攻打npc 7攻打联盟建筑 8联盟建筑侦查 9联盟资源田 10去联盟仓库 11从联盟仓库返回
+    optional int32 time = 5;//发起集结时间
+    repeated FinanceInfo 	info 	= 6;	//行军携带的资源
+}
+
+//2502:返回消息
+message GoForBattleRes
+{
+	required Result result = 1;
+	optional GoForBattleInfo info = 2;
+    optional ResourceData  cost     = 3;//消耗金币数
+}
+
+message WarPlayer
+{
+	required int64 uid = 1;
+	required bytes nickname = 2;
+	required Position pos = 3;
+	required int32 icon = 4;
+	required string gid = 5;//联盟ID
+	optional bytes gcname = 6;//联盟简称
+}
+
+//----2503:请求军情信息,取消2503请求改为2518请求
+//message WarSituation
+//{
+	
+//}
+
+message WarBuild
+{
+	required AllianceBuildList allianceBuildList = 1;
+	required bytes allianceName = 2;
+	required bytes allianceID 	= 3;
+	required int32 iIsHave 		= 4;
+}
+
+message WarSituationInfo
+{
+	required bytes gfbID = 1;//军情唯一ID
+	repeated WarPlayer attacker = 2;
+	repeated WarPlayer defencer = 3;
+	required int32 last = 4;//战斗开始剩余时间(单位：秒)
+	required int32 all = 5;//所需总时间
+	optional int32 eventType = 6;//与出征事件类型一致
+	optional bool canAssist = 7;//是否可援助
+	optional WarBuild warBuild = 8;
+	optional int32 gatherlastnum = 9; //集结可派遣最大士兵数
+}
+
+message BuildSituationInfo
+{
+	required bytes gfbID 			= 1;	//	军情唯一ID
+	repeated WarPlayer attacker 	= 2;
+	required string sAllianceName 	= 3;	//	联盟名字
+	required int32 	iBuildID 		= 4;	//	建筑ID
+	required bytes  sBuildKey 	    = 5;	//	建筑为的Key用于操作
+	required int32 	iX 				= 6;	//	X坐标
+	required int32 	iY 				= 7;	//	Y坐标
+	required int32	iBuildStatus 	= 8;	//	建筑状态 0为建造完成 1为建造中
+	required int32	iIsHave 		= 9;	//	0为无驻扎 1为自己驻扎 -1为别人驻扎
+	required int32	iHpNow 			= 10;	//	开始时间的血量
+	required int32	iBeginTime 		= 11;	//	开始时间
+	required int32	iEndTime 		= 12;	//	结束时间
+	required int32	iIsRange 		= 13;	//	势力范围是否生效
+}
+
+//2503:出征军情通知
+message WarSituationPush
+{
+	required Result result = 1;
+	repeated WarSituationInfo sit = 2;
+	repeated BuildSituationInfo buildSituationInfo = 3;
+}
+
+//2518:请求军情
+
+//2504:行军加速
+message AccMarch
+{
+	required bytes gfbID = 1;
+}
+
+//2504:行军加速返回
+message AccMarchRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2;//花费
+	optional GoForBattleInfo info = 3;
+}
+
+//2506:召回部队请求
+message CallBackMarch
+{
+	required bytes gfbID = 1;//出征ID
+}
+
+//2506:返回
+message CallBackMarchRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2;
+	optional GoForBattleInfo info = 3;
+	optional bytes gfbID = 4;
+}
+
+//2508:召回加速
+message AccCallBackMarch
+{
+	required bytes gfbID = 1;
+}
+
+//2508:召回加速返回
+message AccCallBackMarchRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2;
+	optional GoForBattleInfo info = 3;
+}
+
+//出征军队状态
+message ArmyStatus
+{
+	required int32 armyType = 1;//士兵类型
+	required int32 armyID = 2; //士兵ID
+	required int32 sendNum = 3; //派遣数量
+	required int32 deadNum = 4; //死亡数量
+	required int32 hurtNum = 5; //受伤数量(需要进医馆)
+	required int32 liveNum = 6; //返回人数
+	optional float atk_add = 7; //兵种攻击加成
+	optional float hp_add = 8; 	//兵种生命力加成
+}
+
+message UserWarReport
+{
+    required int64  uid             = 1; //uid
+    repeated ArmyStatus army        = 2; //军队信息
+    repeated FinanceInfo resource   = 3; //抢夺或丢失的资源
+    optional int32  battle_lose     = 4; //丢失的战斗力
+    optional WarPlayer player       = 5; //玩家详情
+    optional bytes sMarchID 		= 6;
+}
+
+message SlaveWarReport
+{
+	required int32 level = 1; //怪物等级
+    repeated ArmyStatus army        = 2; //军队信息
+}
+
+//战报:本次贸易 统计 单次收益
+message MarketOnceWin
+{
+	required int32 event = 1;	//事件类型 0 代表正常贸易 1 贸易失败 2 负面事件 3 代表增益事件
+	required int32 gold = 2;	//金币获得
+	required int32 wood = 3;	//木材获得
+	required int32 stone = 4;	//石头获得
+	required int32 steel = 5;	//铁矿获得
+	required string nickname = 6;	//玩家昵称
+}
+
+//战报:本次贸易 统计 总计收益
+message MarketAllWin
+{
+	required int32 base = 1;	//基础收益
+	required int32 gold = 2;	//金币额外加成
+	required int32 wood = 3;	//木材额外加成
+	required int32 stone = 4;	//石头额外加成
+	required int32 steel = 5;	//铁矿额外加成
+	repeated MarketOnceWin list = 6;	//单个贸易详细 
+}
+
+message WarReport
+{
+	required bytes key = 1;//战报ID
+	optional bool fightResult = 2; //战斗结果，从进攻方来看xszddff
+	optional WarPlayer attacker = 3; //攻击方
+	repeated ArmyStatus attackerArmy = 4; //攻击后的部队状态
+	optional int32 attackerBattle = 5;//进攻方当前战斗力
+	optional WarPlayer defencer = 6; //防守方
+	repeated ArmyStatus defencerArmy = 7; //防守方部队状态
+	optional int32 defencerBattle = 8;//防守方当前战斗力
+	optional ResourceData cost = 9;//抢夺/被抢夺的资源
+	optional ResourceData add = 10;//抗击奖励
+	optional int32 drawReward = 11;//抗击奖励领取标志位：0未领取，1已领取
+	optional int32 warTime = 12;//战报到当前的时间
+	optional int32 type = 13; //战报类型, 1玩家打玩家 5代表贸易情况
+    optional uint32 reward_rate = 14;// 实际奖励比率＊100
+    optional bool   is_read     = 15;// false 未读 true 已读
+    optional int32 resource_type = 16;//采集资源的类型
+    optional int32 resource_num  = 17;//采集资源的数量
+    optional int32 resource_level = 18;//采集资源的等级 
+    optional int32 carry_num      = 19;//兵的数量
+    repeated UserWarReport  atk_res = 20;//攻击方信息
+    repeated UserWarReport  def_res = 21;//防守方信息
+    optional int32 monster_id = 22;//怪物ID
+    optional bool firstKill = 23;//是否首杀
+    optional bool isShadow = 24;//是否是影子部队  
+	repeated SlaveWarReport defencerSlave = 25; //防守方奴隶援军壮态
+	optional MarketAllWin market_base = 26;	//贸易基础统计
+	optional string sAllianceName = 27;
+    optional int32 forgvalue = 28;//锻造值
+    optional int32 iBuildID = 29;
+};
+
+
+//2509:请求战报详情
+message BattleResult
+{}
+
+//2509:请求战报详情
+message BattleResultPush
+{
+	required Result result = 1;
+	repeated WarReport report = 2;
+    optional int32     push_type = 3;//0 默认请求回包  1 推送单个战报
+}
+
+message CBattleIndex
+{
+	required bytes mid = 1; //key
+	required int64 atk = 2;
+	required int64 def = 3;
+	required bool result = 4;
+	required int32 type = 5;
+	required int32 last = 6;
+	required int32 reward = 7;//抗击奖励
+	required int32 draw = 8;//是否领取抗击奖励
+}
+//2509:请求战报列表
+//message BattleList
+//{}
+
+//2509:请求战报列表返回,新战报推送
+//message BattleListRes
+//{
+//	required Result result = 1;
+//	repeated CBattleIndex blist = 2;
+//}
+
+//2525:请求删除战报
+message WarReportDel
+{
+	required bytes key = 1;
+}
+
+//2525:请求删除战报返回
+message WarReportDelRes
+{
+	required Result result = 1;
+	optional bytes key = 2;
+}
+
+//2526:领取战报奖励
+message DrawWarReport
+{
+	required bytes key = 1;
+}
+
+//2526:领取战报奖励返回
+message DrawWarReportRes
+{
+	required Result result = 1;
+	optional ResourceData add = 2;
+	optional WarReport report = 3;
+}
+
+//2527:读取战报
+message WarReportReadReq
+{
+    repeated bytes keys    = 1;    //index key
+}
+//2527:
+message WarReportReadRsp
+{
+    required Result result  = 1; //result
+    repeated bytes keys    = 2; //index key
+}
+
+//城防状态
+message WallStatus
+{
+	required bool burning = 1;//是否燃烧
+	required int32 wallValue = 2;//当前城防值
+	required int32 modifyWall = 3;//可修复城防值剩余时间(单位：秒)
+	required int32 last = 4;//燃烧剩余时间
+	required int32 perDown = 5;//每次燃烧间隔时间
+	optional int32 endBurn = 6;//全部燃烧剩余时间
+}
+
+//2510:城墙状态信息
+message WallStatusPush
+{
+	required Result result = 1;
+	required WallStatus status = 2;
+}
+
+//2511:流亡通知
+message ExilePush
+{
+	required Result result = 1;
+}
+
+//2512:查看领主详情
+message QueryLordInfo
+{
+	required int64 uid = 1;//
+	required string nickName = 2;
+}
+//2512:返回
+message QueryLordInfoRes
+{
+	required Result result = 1;
+	optional int64 uid = 2;
+	optional bytes nickname = 3;
+	optional string allianceid = 4;
+	optional bytes shortname = 5;
+	optional bytes alliancename = 6;
+	optional int32 exp = 7;
+	optional int32 level = 8;
+	optional bool isfriend = 9;
+	optional int32 figure = 10;
+    repeated PBEquipment  equipmentlist = 11; //领主穿戴装备信息
+    optional int32 state = 12;	//1 等待验证 2 已添加
+}
+
+//2513:查看部队详情
+message QueryArmyInfo
+{
+	required bytes gfbID = 1;
+    optional int64 uid   = 2;//所有者uid
+}
+
+message UserBattleSoldierInfo
+{
+    required int64 uid  = 1; //uid
+    required bytes nick = 2; //昵称
+    required int32 icon = 3; // 头像
+    repeated BattleSoldier army = 4; //部队详情
+}
+
+//2513:查看部队详情返回
+message QueryArmyInfoRes
+{
+	required Result result = 1;
+	repeated BattleSoldier army = 2;
+    repeated UserBattleSoldierInfo user_armys = 3; //多个部队信息
+}
+
+//2514:城墙灭火
+message OutFire
+{
+}
+
+//2514:灭火返回
+message OutFireRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2;
+	optional WallStatus status = 3;
+}
+
+//2515:加固城墙
+message ModifyWall
+{
+}
+
+//2515:加固城墙返回
+message ModifyWallRes
+{
+	required Result result = 1;
+	optional WallStatus status = 2;
+}
+
+//2540:迁城
+message MoveCity
+{
+	required int32 x = 1; //目标点
+	required int32 y = 2;
+	optional int32 oper = 3;//0钻石，1道具
+}
+ 
+//2540:迁城返回
+message MoveCityRes
+{
+	required Result result = 1;
+	optional int32 x = 2;
+	optional int32 y = 3;
+	optional ResourceData cost = 4;
+	optional ResourceData add = 5;
+}
+
+//2541:当前士兵数量
+message ArmyStatusPush
+{
+	required Result result = 1;
+	repeated Soldier soldiers = 2;
+	optional int32 battle = 3;
+	optional BoltStatus bolt = 4;
+}
+
+//2542:重建城池
+message RebuildCity
+{
+	
+}
+
+//2542:重建城池返回
+message RebuildCityRes
+{
+	required Result result = 1;
+	optional int32 x = 2;
+	optional int32 y = 3;
+	optional WallStatus status = 4;
+}
+
+//2543:玩家流亡通知
+message OtherExilePush
+{
+	required int32 x = 1;
+	required int32 y = 2;
+}
+
+//8888:请求充值信息
+message PayInfo
+{
+	required string orderID = 1;//google充值订单ID
+}
+
+//8888:请求充值信息返回
+message PayInfoRes
+{
+	required Result result = 1;
+	optional int32 add =  2;		// 充值添加的钱
+	optional int32 type = 3;		// 1领取订单，2通知订单
+	optional int32 sys_type = 4;	// 充值系统类型 1 充值; 2 充值礼包; 3 月卡; 4 联盟礼包
+	optional int32 cfg_id = 5;		// 配置表id
+	optional int32 contribution = 6;// 奖励的玩家个人贡献
+	optional ResourceData item = 7;	// 奖励的道具
+}
+
+//2000:联盟消息推送：如：踢出联盟后的个人通知
+message AlliancePush
+{
+    required Result result = 1;
+    optional int32 pushtype = 2;//1,申请 2,加入 3,离开 4,被踢 5,拒绝
+    optional bytes opr_name = 3;//操作方名字
+}
+
+//2001:获取联盟信息
+message GetAllianceResponse
+{
+    required bool have_or_not = 1;       // 是否拥有联盟
+    optional AllianceInfo info = 2;      // 联盟信息
+    optional bool first_in_or_not = 3;   // 是否首次加入联盟
+    optional int32 contribution = 4;     // 每日贡献值
+    optional int32 all_contribution = 5; // 历史贡献值
+    optional int32 welfare_times = 6;    // 获取每日福利次数
+}
+
+//联盟基本信息
+message AllianceInfo
+{
+    required string a_id = 1;            // id
+    required bytes a_name = 2;          // 名称
+    required bytes short_name = 3;    // 缩写
+    /*required int32 member_num = 4;       // 人数*/
+    required int32 honour = 5;           // 荣誉
+    required int32 flag = 6;            // 旗帜
+    required bytes declaration = 7;     // 宣言
+    required bool is_public_apply = 8; // 是否公开招募
+    required int32 apply_power = 9; // 是否公开招募
+    required bytes language = 10;        // 语言
+    required AllianceMemberInfo leader = 11;          // 盟主
+    required AllianceMemberInfo vice_leader = 12;     // 副盟主
+    repeated AllianceMemberInfo member_info = 13;    // 成员列表
+    repeated AllianceMemberInfo apply_info = 14;    // 申请列表
+    optional bool leader_absence = 15; //盟主7天没在线
+    optional bool applied = 16; //是否已经申请
+}
+
+// 联盟成员信息
+message AllianceMemberInfo
+{
+    required int64 uid = 1;           // 成员ID
+    required bytes name = 2;        // 成员名称
+    required int32 power = 3;        // 战力
+    required int32 contribution = 4; // 贡献
+    required bool is_online = 5;    // 是否在线
+    required bool under_atk = 6;     // 是否正在攻击
+    optional int32 header = 7;     // 头像
+    optional int32 position = 8;     // 职位 1 盟主 2 副盟主 3 普通成员
+    optional int32 week_score   = 9;//本周捐献积分
+    optional Position pos       = 10;//城堡坐标
+}
+
+//2002: 创建联盟
+message CreateAllianceRequest
+{
+    required bytes a_name = 1;            // 名称
+    required bytes declaration = 2;     // 宣言
+}
+
+message CreateAllianceResponse
+{
+	required Result result = 1;     // 返回结果
+    optional AllianceInfo info = 2; //联盟信息
+	optional ResourceData add = 3;  // 获得
+	optional ResourceData cost = 4; // 消耗
+	required AllianceTechStruct allianceTechStruct = 5;
+}
+
+//2004:搜索联盟
+message SearchAllianceRequest{
+    required bytes input = 1; //输入的搜索内容
+}
+
+//2003:推荐联盟
+//2004:搜索联盟
+//联盟列表
+message AllianceListResponse{
+	required Result result = 1;     // 返回结果
+    repeated AllianceInfo info = 2; //联盟信息
+}
+
+//2005: 加入联盟/加入联盟申请
+message JoinAllianceRequest
+{
+    required string a_id = 1;            // 联盟id
+    optional bytes apply_msg = 2; //申请信息
+    optional bool is_public_apply = 3; // 是否公开招募
+}
+
+message JoinAllianceResponse
+{
+    required Result result = 1;     // 返回结果
+    optional AllianceInfo info = 2; //联盟信息
+    optional ResourceData add = 3;  // 获得
+    optional bytes apply_msg = 4;  // 申请信息
+    optional RecommendUser user_info = 5;//申请人信息
+    optional AllianceTechStruct allianceTechStruct = 6;
+}
+
+
+//2006: 任命副盟主 
+message SetViceLeaderRequest
+{
+    required int64 uid = 1;//副盟主id
+}
+
+//2007: 降为成员
+message CancelViceLeaderRequest
+{
+    required int64 uid = 1;//副盟主id
+}
+
+//2008: 转让盟主
+message ChangeLeaderRequest
+{
+    required int64 uid = 1;//新盟主id
+}
+//2009: 踢出联盟
+message KickOutAllianceRequest
+{
+    required int64 uid = 1;//被踢玩家id
+}
+//2010: 退出联盟
+message RemoveAllianceRequest
+{
+    required int64 uid = 1;//玩家id
+}
+//2011: 取代盟主
+message ReplaceLeaderRequest
+{
+    required int64 uid = 1;//被踢玩家id
+}
+message ReplaceLeaderResponse
+{
+    required Result result = 1;
+    optional ResourceData cost = 2; //取代盟主消耗
+}
+
+message AllianceBuildList
+{
+	required bytes  sBuildKey 	= 1;	//	建筑为的Key用于操作
+	required int32 	iBuildID 	= 2;	//	建筑ID
+	required int32	iX 			= 3;	//	X坐标
+	required int32	iY 			= 4;	//	Y坐标
+}
+
+//2012:联盟建筑信息
+message AllianceBuildReq
+{
+	
+}
+
+message AllianceBuildAck
+{
+	required Result result = 1;
+	repeated AllianceBuildList allianceBuildList = 2;
+}
+
+//2015: 联盟设置
+message AllianceSettingRequest{
+    optional bytes a_name = 1;        // 联盟名称
+    optional int32 flag = 2;          // 旗帜
+    optional bytes declaration = 3;   // 宣言
+    optional bool is_public_apply = 4; // 是否公开招募
+    optional int32 apply_power = 5;    // 招募所需战斗力
+    optional bytes language = 6;      // 语言
+    required int32 setting_type = 7;      //设置类型:1,2,3,4,5,6,7:名称缩写
+}
+
+//2015: 联盟设置返回
+message AllianceSettingResponse{
+    required Result result = 1;
+    optional bytes a_name = 2;        // 联盟名称
+    optional int32 flag = 3;           // 旗帜
+    optional bytes declaration = 4;   // 宣言
+    optional bool is_public_apply = 5; // 是否公开招募
+    optional int32 apply_power = 6;    // 招募所需战斗力
+    optional bytes language = 7;      // 语言 
+    optional int32 set_type = 8;      // 设置类型
+    optional ResourceData cost = 9;   // 设置消耗
+    optional bytes a_short_name = 10; //联盟缩写
+}
+
+//2016: 联盟动态
+message AllianceNewsResponse{
+    repeated AllianceNewsInfo info = 1;
+}
+message AllianceNewsInfo{
+    required int32 new_type = 1;  // 类型 1申请 2加入 3离开 4A攻击了B 5A任命了B副盟主 6A任命了B成员 7A踢出了B 8A同意了B 9拒绝了B 10A转让盟主给B 11您创建了联盟 12 您成为了新盟主 13战斗
+    optional bytes a_name = 2;   // 玩家A 申请/加入／离开者
+    optional int64 a_uid = 3;     // 玩家A id
+    optional bytes b_name = 4;   // 玩家B 审批者
+    optional int64 b_uid = 5;     // 玩家B id
+    optional bool battle_res = 6; // 攻击结果
+    optional int32 apply_res = 7;  // 审批结果:0没审批 1通过，2拒绝
+    optional int32 time = 8;  // 发生时间
+    optional string allianceid = 9;//联盟id
+    optional bytes apply_msg = 10;  // 申请信息
+    optional int32 honor = 11;//战斗计算荣誉
+    optional int32 x = 12;//非盟友方坐标
+    optional int32 y = 13;//非盟友方坐标
+    optional bytes shortname = 14;//非盟友方联盟
+    optional int32 btype = 15;// 0进攻，1防守
+    optional int32 techID = 16;// 0进攻，1防守
+    optional int32 iBuildID = 17;//建筑ID
+}
+
+// 2017: 审批加入
+// 返回：Results
+message AllowAllianceApplyRequest{
+    required bool apply_res = 1; // 同意True，拒绝False
+    required int64 uid = 2; // 玩家ID
+}
+
+//2019联盟动态推送
+message AllianceNewsPush
+{
+	required AllianceNewsInfo one_news= 1;
+    optional AllianceMemberInfo new_member = 2;//新加入玩家的信息
+}
+
+//联盟+
+message RecommendUser
+{
+	required int64  uid = 1;
+	required bytes user_name = 2;
+	required int32 user_icon = 3;
+	required int32 user_power= 4;//战斗力
+}
+
+
+//2020: 推荐玩家列表
+//请求：空
+message AllianceUserListResponse
+{
+    repeated RecommendUser info = 1; //玩家信息
+}
+
+//2021: 搜索玩家列表请求
+//返回: AllianceUserListResponse
+message SearchUserRequest{
+    required bytes input = 1; //输入的搜索内容
+}
+
+//2022: 刷新推荐玩家
+//请求：空
+//返回: 
+message AllianceRefreshRecommendUserListResponse
+{
+	repeated RecommendUser info = 1; //玩家信息
+
+    //required Result result = 1; //结果
+    //repeated AllianceMemberInfo info = 2; //玩家信息
+	//required ResourceData cost = 3;
+}
+
+
+// 2030: 发送联盟帮助
+message SendAllianceHelpRequest{
+    required int32 help_id = 1; // 帮助ID：建筑或者科技ID
+    required int32 help_type = 2; // 帮助type: 1建筑 2科技 3技能
+}
+//2030
+message SendAllianceHelpResponse
+{
+	required Result result = 1; //结果
+	repeated allianceHelp a_build_helps = 2;//联盟帮助:建筑
+	repeated allianceHelp a_tech_helps = 3;//联盟帮助:科技
+	repeated allianceHelp a_skill_helps = 4;//联盟帮助:技能
+}
+
+// 2031: 联盟帮助列表
+// 请求：空
+message GetAllianceHelpListResponse{
+    repeated AllianceHelpInfo help_info = 1; // 帮助信息
+}
+
+//
+message AllianceHelpInfo{
+    required string hid = 1; // 帮助信息ID
+    required int64 uid = 2; // 玩家id
+    required bytes name = 3; // 玩家名称
+    required int32 help_id = 4; // 帮助ID：建筑或者科技ID
+    required int32 help_type = 5; // 帮助type: 1建筑 2科技
+    required int32 help_times = 6; // 帮助次数
+    optional int32 help_level = 7; // 帮助目标等级
+    optional int32 bid = 8;//建筑id，对应building_config ID
+    optional int32 max_times = 9;//申请方最大可接受帮助次数
+    optional int32 icon = 10;
+}
+
+// 2032: 帮助联盟玩家/全部玩家(发送空字符串)
+// 返回:Result
+message HelpAllianceMemberRequest{
+    required string hid = 1; // 帮助信息ID
+}
+
+// 2033: 推送联盟帮助信息
+// AllianceHelpInfo
+// 2034: 推送联盟帮助信息
+message AllianceHelpList{
+    required AllianceHelpInfo help_info = 1; // 帮助信息
+    required bytes goodman_name = 2;
+}
+
+message AllianceShopOne_
+{
+	required int32 id = 1;
+	required int32 num = 2;
+}
+
+//	2041:联盟商店信息
+message AllianceShopInfo
+{
+
+}
+
+message AllianceShopInfoRes
+{
+	required int32 buyMax = 1;
+	repeated AllianceShopOne_ allianceShopOne = 2;
+	optional int32 devote = 3;
+}
+
+//	2042:联盟商店购买
+message AllianceShopBuy
+{
+	required int32 id = 1;
+	required int32 num = 2;
+}
+
+message AllianceShopBuyRes
+{
+	required Result result = 1;
+	optional int32 cost = 2;
+	optional ResourceData add = 3; //获得
+}
+
+//	联盟科技信息
+message OneTechInfo
+{
+	required int32 techID 	= 1;	//	科技ID
+	required int32 voteNum 	= 2;	//	科技票数
+}
+
+//	联盟科技信息结构
+message AllianceTechStruct
+{
+	required int32 allianceScore = 1;		 //	联盟积分
+	required int32 techVoteType = 2;		 //	联盟科技投票给了谁(科技类型)
+    repeated OneTechInfo oneTechInfo = 3;    //	联盟科技信息
+    optional int32 techUpID = 4;			 //	当前升级科技的ID
+    optional int32 techUpTime = 5;			 //	当前升级科技的剩余时间
+    required int32 resType = 6;				 // 返回类型 0为主动请求 1为推送
+}
+
+//	2051:联盟科技信息
+message AllianceTechInfo
+{
+
+}
+
+message AllianceTechInfoRes
+{
+	required Result result = 1;
+	optional AllianceTechStruct allianceTechStruct = 2;
+}
+
+//	2052:给联盟科技投票
+message AllianceVote
+{
+	required int32 techType = 1;	//	投票科技的类型
+}
+
+message AllianceVoteRes
+{
+	required Result result = 1;
+	optional AllianceTechStruct allianceTechStruct = 2;
+}
+
+//	2053:点击科技升级
+message AllianceTechUpgrade
+{
+	required int32 techType = 1;	//	升级科技的类型
+}
+
+message AllianceTechUpgradeRes
+{
+	required Result result = 1;
+	optional AllianceTechStruct allianceTechStruct = 2;
+}
+
+//  2058:联盟科技点击升级推送积分
+message AllianceScorePush
+{
+	required AllianceTechStruct allianceTechStruct = 1;
+}
+
+//	2059:科技升级完成的推送
+message AllianceTechPush
+{
+	required int32 techIDOld = 1;	//	老的科技ID
+	required int32 techIDNew = 2;	//	新的科技ID
+	required AllianceTechStruct allianceTechStruct = 3;
+}
+
+// 2080:联盟建筑信息
+message AllianceBuildInfoReq
+{
+	required bytes sBuildKey 	= 1;	//	建筑为的Key用于操作
+}
+
+message AllianceBuildInfoAck
+{
+	required Result result 			= 1;
+	optional bytes  sBuildKey 		= 2;	//	建筑为的Key用于操作
+	optional int32 	iBuildID 		= 3;	//	建筑ID
+	optional string	sAllianceID 	= 4;	//	联盟ID
+	optional string sAllianceName	= 5;	//	联盟名称
+	optional int64	iCaptainUID		= 6;	//	队长ID
+	optional int32	iBuildStatus 	= 7;	//	建筑状态 0为建造完成 1为建造中 2为升级中
+	optional int32	iIsHave 		= 8;	//	0为无驻扎 1为自己驻扎 -1为别人驻扎
+	optional int32  iIsRange		= 9;	//	势力范围是否生效
+	optional int32	iHpNow 			= 10;	//	开始时间的血量
+	optional int32	iBeginTime 		= 11;	//	开始时间
+	optional int32	iEndTime 		= 12;	//	结束时间
+	optional int32	iVolumeNow 		= 13;	//	当前容量
+	optional int32	iVolumelimit 	= 14;	//	容量上限
+	repeated MarchUser marchuserList = 15;	//	队列信息
+	optional int32  position 		= 16;     // 职位 1 盟主 2 副盟主 3 普通成员  
+}
+
+//	2081:放下联盟建筑
+message AllianceBuildPutDownReq
+{
+	required int32 iBuildID = 1;	//	放下的建筑物ID
+	required int32 iX 		= 2;	//	X坐标
+	required int32 iY 		= 3;	//	Y坐标
+}
+
+message AllianceBuildPutDownAck
+{
+	required Result result = 1;
+}
+
+//  2082:派兵确认状态
+message AllianceBuildAttStatusReq
+{
+	required bytes sBuildKey 	= 1;	//	建筑为的Key用于操作
+}
+
+message AllianceBuildAttStatusAck
+{
+	required Result result 			= 1;
+	optional int32 	iArmyMax 		= 2;	//	建筑还能放多少兵
+	optional int32 	iBuildID 		= 3;	//	建筑ID
+	optional int32	iBuildStatus 	= 4;	//	建筑状态 0为建造完成 1为建造中
+	optional int32	iIsHave 		= 5;	//	0为无驻扎 1为自己驻扎 -1为别人驻扎
+	optional int32  iHpNow 			= 6;    //	当前血量
+}
+
+//2083:拆除联盟建筑
+message AllianceBuildDelReq
+{
+	required bytes sBuildKey 	= 1;	//	建筑为的Key用于操作
+}
+
+message AllianceBuildDelAck
+{
+	required Result result = 1;
+}
+
+//2084:遣返部队
+message AllianceBuildArmyBackReq
+{
+	required bytes sBuildKey 	= 1;	//	建筑为的Key用于操作
+	required bytes sMarchKey 	= 2;	//	队列的KEY
+}
+
+message AllianceBuildArmyBackAck
+{
+	required Result result 		= 1;
+	optional bytes sBuildKey 	= 2;	//	建筑为的Key用于操作
+	optional bytes sMarchKey 	= 3;	//	队列的KEY
+}
+
+//2089:联盟冲突状态 推送
+message AllianceBuildPlusInfo
+{
+	required int32	iRangeNow 	= 1;	//	当前势力范围
+	required int32	iRangeAll	= 2;	//	所有势力范围
+	required int32	iRangeOn 	= 3;	//	是否处于势力范围 0没有 1范围内 -1冲突内
+	required int32 	iBuildID 	= 4;	//	建筑ID
+}
+
+message PBMemCollectInfo
+{
+	required MarchUser marchinfo = 1;  
+	required int32 speed = 2;	 //采集速度
+	required int32 current = 3;  //当前采集量
+	required int32 load = 4;  //负载
+	required int32 speedadd = 5;  //速度加成
+}
+
+message PBAllianceResourceInfo
+{
+	required bytes bkey = 1; //建筑key
+	required int32 bid = 2;  //建筑id
+	required string alliancename = 3;
+	required int32 limit = 4;  //采集最大值
+	required int32 last = 5;  //采集剩余
+	required int32 collectvalue = 6;  //已采集
+	required int32 load = 7;  //负载
+	required int32 x = 8;  //资源田坐标
+	required int32 y = 9;  //资源田坐标
+}
+
+//2090 资源田田采集信息请求
+message AllianceResourceInfoReq
+{
+	required bytes bkey = 1; //建筑key
+}
+
+message AllianceResourceInfoRes
+{
+	required Result result 		= 1;
+	required PBAllianceResourceInfo resourcecollectinfo = 2; //建筑key
+	repeated PBMemCollectInfo memscollectinfo = 3;
+}
+
+//2091 资源田田采集信息推送
+message AllianceResourceInfoPush
+{
+	required PBAllianceResourceInfo resourcecollectinfo = 1; //建筑key
+	repeated PBMemCollectInfo memscollectinfo = 2;
+}
+
+message PBContributeInfo
+{
+	required bytes name = 1;
+	required int64 uid = 2;
+	required int32 icon = 3;
+	required int32 valueday = 4; //捐献值（今天）
+	required int32 valueseason = 5; //捐献值（赛季）
+	required int32 ranking = 6; 		//赛季排名
+	required int32 postion = 7; 		//联盟职位	
+	required int32 battlevalue = 8;     //战斗力
+}
+
+//2092 捐献排行
+message ContributeRankReq
+{
+
+}
+
+message ContributeRankRes
+{
+	required Result result 		= 1;
+	repeated PBContributeInfo  contributeinfolist = 2;
+}
+
+//2085:联盟加成情况
+message AllianceBuildPlusReq
+{
+	
+}
+
+message AllianceBuildPlusAck
+{
+	required Result result 		= 1;
+	required AllianceBuildPlusInfo allianceBuildPlusInfo = 2;
+}
+
+//	2086:建筑重建
+message AllianceBuildReBuildReq
+{
+	required bytes sBuildKey 	= 1;	//	放下的建筑物KEY
+	required int32 iX 			= 2;	//	X坐标
+	required int32 iY 			= 3;	//	Y坐标
+}
+
+message AllianceBuildReBuildAck
+{
+	required Result result = 1;
+}
+
+//	2087:建筑升级
+message AllianceBuildUpgradeReq
+{
+	required bytes sBuildKey 	= 1;	//	放下的建筑物KEY
+}
+
+message AllianceBuildUpgradeAck
+{
+	required Result result = 1;
+}
+
+//2089:联盟加成的推送
+message AllianceBuildPlusPush
+{
+	required AllianceBuildPlusInfo allianceBuildPlusInfo = 1;
+}
+
+//系统内部消息
+message RechargeInfo
+{
+	required string productID = 1;
+	required int32 status = 2;
+	required int32 sys_type = 3;	//充值系统类型 1 充值; 2 充值礼包; 3 月卡; 4 联盟礼包
+	required string sys_cfgid = 4;	//系统的配置ID
+	required int32 arg = 5;			//额外的参数 联盟礼包时 0代表实名购买;1代表匿名购买
+	required float money = 6;		//充值金额
+	required int32 money_type = 7;	//货币类型 #中国1 #美国2 #德国3 #香港4 #澳大利亚5 #新西兰6 #新加坡7 #马来西亚8 #菲律宾9 #印度尼西亚10 #加拿大11 #其他0
+}
+//系统内部消息
+message OnlineData
+{
+	required int32 timekey = 1;
+	required int32 zoneid = 2;
+	required int32 gsid = 3;
+	required int32 ios = 4;
+	required int32 android = 5;
+}
+
+//2516 行军后经济消息推送
+message FinanceInfoPush {
+    repeated FinanceInfo finance = 1; //玩家的货币信息
+}
+
+//2535 推送联盟帮助数目
+message AllianceHelpNumPush {
+    required int32 total_num   = 1;// all help num
+}
+
+//2536 小红点推送
+message RedPointInfoPush {
+    required int32 type     = 1;//推送类型 1:战报  3. 侦查报告
+    required int32 status   = 2;//+1 增加一条  -1 删除一条 +2 增加两条 -2 ...
+}
+
+//2601:注册gcm
+message GcmRegister
+{
+	required string deviceid = 1;
+}
+
+//2601:注册gcm返回
+message GcmRegisterRes
+{
+	required Result result = 1;
+}
+
+//2701:账号绑定
+message AccountBind
+{
+	required string toaccount = 1;
+	required int32 type = 2;
+}
+
+//2701:账号绑定返回
+message AccountBindRes
+{
+	required Result result = 1;
+}
+
+//2702:新游戏
+message NewGame
+{
+	required int32 type = 1;
+	required string openid = 2;
+}
+
+//2702:新游戏返回
+message NewGameRes
+{
+	required Result result = 1;
+}
+
+//2703:账号解除绑定
+message AccountUnBind
+{
+	required int32 type = 1;
+}
+
+//2703:账号解除绑定返回
+message AccountUnBindRes
+{
+	required Result result = 1;
+}
+
+message AccountType
+{
+	required int32 type = 1;//账号类型 1试玩账号，2 facebook
+	required string openid = 2;
+	required int32 bind = 3;//0未绑定，1已绑定
+}
+
+//2704:获取账号状态
+message AccountStatus
+{
+	
+}
+
+//2704:获取账号状态返回
+message AccountStatusRes
+{
+	required Result result = 1;
+	repeated AccountType account = 2;
+}
+
+//2705:切换账号
+message SwitchAccount
+{
+	required int32 type = 1;//账号类型
+	required string openid = 2;//
+}
+
+//2705:切换账号返回
+message SwitchAccountRes
+{
+	required Result result = 1;
+	optional int32 type = 2;//账号类型
+	optional string openid = 3;
+	optional bytes nickname = 4;//昵称
+	optional int32 level = 5;//角色等级
+}
+
+//2706:获取系统时间
+message SystenTime
+{
+	
+}
+
+//2706:获取系统时间返回
+message SystenTimeRes
+{
+	required string timestr = 1;
+}
+
+//2707:清除试玩账号
+message ClearTest
+{
+
+}
+
+//2707:清除试玩账号返回
+message ClearTestRes
+{
+	required Result result = 1;//
+}
+
+//2801:请求邀请列表－只有盟主和副盟主有权限请求
+message InviteList
+{
+	
+}
+
+message InviteUser
+{
+	required int64 uid = 1;
+	required bytes nickname = 2;
+	required int32 battle = 3;
+	required int32 icon = 4;
+	required int32 invite = 5;//是否邀请0未邀请，1已邀请
+}
+
+//2801:返回
+message InviteListRes
+{
+	required Result result = 1;
+	repeated InviteUser iu = 2;
+	optional int32 last = 3;//可刷新剩余时间(秒)
+}
+
+//2802:刷新邀请列表
+message FreshInvite
+{
+
+}
+
+//2802:刷新邀请列表返回
+message FreshInviteRes
+{
+	required Result result = 1;// 2280201----未到刷新时间，2280202-－权限不足
+	repeated InviteUser iu = 2;
+	optional int32 last = 3;//可刷新剩余时间(秒)
+}
+
+//2803:加速刷新结束
+message AccInviteFresh
+{
+	
+}
+
+//2803:返回
+message AccInviteFreshRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2;
+	optional int32 last = 3;//剩余时间
+}
+
+//2804:邀请
+message InvitePlayer
+{
+	required int64 uid = 1;//邀请的玩家
+}
+
+//2804:返回
+message InvitePlayerRes
+{
+	required Result result = 1;//
+	optional int64 uid = 2;//
+}
+
+//2805:请求联盟邀请函
+message RequestInvite
+{
+	
+}
+
+message AllianceInvite
+{
+	required string aid = 1;//联盟ID
+	required bytes aname = 2;//联盟名称
+	required int32 icon = 3;//联盟图标
+	required int32 current = 4;//联盟当前人数
+	required int32 limit = 5;//联盟人数上限
+	required int32 honor = 6;//联盟荣誉
+	required int64 aleader = 7;//盟主uid
+	required bytes leadername = 8;//盟主昵称
+	required int32 xt = 9;//邀请时间（时间戳）
+}
+
+//2805:返回
+message RequestInviteRes
+{
+	required Result result = 1;
+	repeated AllianceInvite invs = 2;
+}
+
+//2806:接受邀请
+message AcceptInvite
+{
+	required string aid = 1;
+}
+
+//2806:返回
+message AcceptInviteRes
+{
+	required Result result = 1;
+	optional string aid = 2;
+}
+
+//2807:拒绝邀请
+message RefuseInvite
+{
+	required string aid = 1;
+}
+
+//2807:返回
+message RefuseInviteRes
+{
+	required Result result = 1;
+	optional string aid = 2;
+}
+
+//2808:设置消息锁定
+message SetMsgLock
+{
+	required int32 msg_lock = 1;
+}
+
+//2808:返回
+message SetMsgLockRes
+{
+	required Result result = 1;
+	optional int32 msg_lock = 2;
+}
+
+message SpyAssistance {
+    required WarPlayer player = 1;
+    repeated Soldier soldiers = 2;
+}
+
+message SlaveAssistance {
+    required int32 level = 1;
+    repeated Soldier soldiers = 2;
+}
+
+message SpySoilder
+{
+	required int32 iType = 1;
+	required int32 iNum = 2;
+}
+
+message SpyArmyInfo
+{
+	required bytes sAllianceName = 1;
+	required bytes sPlayerName = 2;
+	repeated SpySoilder spySoilder = 3;
+}
+
+message SpyInfo
+{
+    required bytes 			spy_id      	= 1;//ID
+    optional int32  		spy_type    	= 2;//类型 1 城堡  2 资源田 3联盟建筑
+    optional int32  		spy_level   	= 3;//侦查着瞭望塔等级
+    optional int32 			protect_rate 	= 4;//保护比例 ＊100
+    optional int32 			resource_type  	= 5;//资源田用 
+    optional int32 			resource_level 	= 6;//资源田用 
+    optional int32 			resource_num   	= 7;//资源田用 
+    repeated int32 			towers         	= 8;//魔法塔信息
+    optional WarPlayer 		spyer      		= 9;//侦查者信息
+    optional WarPlayer 		spieder    		= 10;//被侦查着信息
+    repeated FinanceInfo 	resource 		= 11;//侦查到的资源信息
+    repeated Soldier     	soldiers 		= 12;//侦查到的士兵信息 /资源田占领士兵
+    optional bool        	is_burning 		= 13;// 是否燃烧
+    optional int32       	wall_value 		= 14;//城防值
+    optional int32       	wall_limit 		= 15;//城防上限
+    optional int32       	burn_speed 		= 16;//燃烧速度
+    optional int32       	burnLast   		= 17;//燃烧剩余时间
+    optional bool        	is_read    		= 18;//是否已读
+    optional int32       	time_stamp 		= 19;//产生的时间戳
+    optional string      	time_str   		= 20;//时间字符串
+    optional int32       	bold_num   		= 21;//弩箭数量 
+    repeated FinanceInfo 	total_resource 	= 22;//被侦查者的总资源
+    optional int32       	bold_level     	= 23;//弩箭等级
+    optional int32       	bold_limit     	= 24;//弩箭上限
+    repeated SpyAssistance  assistance  	= 25;//援助信息
+    repeated SlaveAssistance slaves  	  	= 26;//怪物奴隶
+    optional bool 			resource_protect= 27;//资源田是否有保护罩
+    optional bool			is_success 		= 28;//是否侦查成功
+    optional int32 			iBuildID 		= 29;//	建筑ID
+    optional int32			iBuildX 		= 30;//	建筑坐标
+    optional int32			iBuildY 		= 31;//	建筑坐标
+    optional int32 			iBuildHPNow		= 32;//	建筑当前血量
+    repeated SpyArmyInfo 	spyArmyInfo 	= 33;
+    optional string			sAllianceName 	= 34;//	联盟名称
+    optional int32			iBuildStatus	= 35;//	建造状态
+    optional int32			iBeginTime		= 36;//	开始时间
+    optional int32			iEndTime		= 37;//	结束时间
+    optional int32			iIsHave			= 38;
+}
+
+//2550  请求侦查信息
+message SpyInfoReq
+{
+
+}
+//2550  侦查信息回包
+message SpyInfoRsp
+{
+    repeated SpyInfo spys = 1;//
+}
+
+//2551 读取单个信息
+message ReadSpyInfoReq
+{
+    required bytes spy_id  = 1;
+}
+
+//2551 读取单个信息
+message ReadSpyInfoRsp
+{
+    required Result result  = 1;
+    optional bytes spy_id  = 2;
+}
+
+//2552 删除侦查信息
+message DelSpyInfoReq
+{
+    required bytes spy_id  = 1;
+}
+
+//2552 删除侦查信息
+message DelSpyInfoRsp
+{
+    required Result result  = 1;
+    optional bytes spy_id  = 2;
+}
+
+//2553 拉取联盟聊天信息
+message AllianceChatMsgReq
+{
+
+}
+//2553 拉取联盟聊天信息
+message AllianceChatMsgRsp
+{
+    required Result         result  = 1;
+    repeated ChatMessage    chats   = 2;
+}
+
+//2901:获取个人排行榜
+message UserRank
+{
+	
+}
+message RankUser
+{
+	required int64 uid = 1;
+	required int32 icon = 2;
+	required int32 rank = 3;//当前排名
+	required int32 battle = 4;
+	required int32 praise = 5; //是否点赞 0 未， 1已
+	required int32 last_rank = 6;//前次排名
+	required bytes nickname = 7;
+	required string aid = 8;//联盟ID
+	required bytes aname = 9;//联盟名字
+}
+//2901:获取个人排行返回
+message UserRankRes
+{
+	required Result result = 1;
+	repeated RankUser users = 2;
+	optional int32 rank = 3; //自己当前排行
+	optional int32 last = 4; //自己上次排行
+	optional int32 prase_num = 5;//点赞次数
+}
+
+//2902:点赞
+message PraiseUser
+{
+	required int64 uid = 1;
+}
+
+//2902:点赞返回
+message PraiseUserRes
+{
+	required Result result = 1;
+	optional int64 uid = 2;
+	optional ResourceData add = 3;//点赞奖励
+	optional int32 last = 4;//点赞剩余次数
+}
+
+
+//2903:联盟排行榜
+message AllianceRank
+{}
+
+message RankAlliance
+{
+	required string aid = 1;//联盟ID
+	required bytes aname = 2;//联盟名称
+	required int32 icon = 3;//联盟徽章
+	required int32 current = 4;//当前人数
+	required int32 limit = 5;//人数上限
+	required int32 honor = 6;//联盟荣誉
+	required int32 rank_last = 7;//上次排名
+	required int32 rank_now = 8;//本次排名
+	optional bytes nickname = 9;//盟主名称
+}
+
+
+//2903:返回
+message AllianceRankRes
+{
+	required Result result = 1;
+	repeated RankAlliance rank = 2;//联盟排行
+	optional RankAlliance user = 3; //个人联盟排行
+	optional int32  time 	= 4;	//联盟排行榜剩余秒数
+}
+
+
+//2554 请求捐献信息
+message ContributeInfoReq
+{
+
+}
+
+message CSContributeOpt {
+    required int32      level   = 1;
+    required int32      is_open = 2;
+    required int32      opt     = 3;// 金币/钻石
+}
+//2554 请求捐献信息
+message ContributeInfoRsp
+{
+    optional int32  join_alliance_time  = 1;//已经加入联盟的时间 second
+    optional ResourceData       gifts   = 2;//礼包信息 
+    optional int32           gitf_times = 3;//今日领取礼包的次数
+    optional bool       is_cool_down    = 4;//是否冷却中
+    optional int32             cd_last  = 5;//cd 剩余时间
+    repeated CSContributeOpt   options  = 6;//捐献选项
+    optional int32          cscore      = 7;//捐献积分
+    optional int32          week_score  = 8;//本周积分
+    optional int32          alliance_score = 9;//联盟积分
+    optional int32          gift_need      = 10;//礼包需要的积分
+    optional int32          cur_cd         = 11;//当前cd
+    optional int32          gitf_level         = 12;//今日领取礼包的等级
+}
+
+//2555 捐献
+message ContributeReq {
+    required int32  level   = 1;//捐献等级
+}
+
+//2555 捐献
+message ContributeRsp {
+    required Result result = 1;
+    optional ResourceData   cost = 2;//
+}
+
+//2556 领取贡献礼包
+message DrawContributionReq {
+
+}
+
+//2556 领取贡献礼包
+message DrawContributionRsp {
+    required Result result = 1;
+    optional ResourceData add_resource = 2;//获取的物品 
+    optional int32   cost_score  = 3;//消耗的个人积分
+}
+
+//2557 花钻清除cd
+message RemoveCDReq {
+    required int32 type = 1;// 1.捐献cd清除
+}
+
+//2557 花钻清除cd
+message RemoveCDRsp {
+    required Result       result = 1;
+    optional ResourceData cost   = 2; //花费
+    optional int32        last   = 3; //剩余时间
+    optional int32        type   = 4;//类型
+}
+
+//3001:心跳消息
+message HeartBeat
+{
+	
+}
+
+//3001:心跳消息返回
+message HeartBeatRes
+{
+	required Result result = 1;
+    optional string timestr = 2;//当前服务器时间
+    optional int32 serverTime = 3;            //当前系统时间戳
+}
+
+//9999:错误消息
+message CommonResult
+{
+	required int32 cmdid = 1; //请求的协议ID
+	required int32 no = 2; //返回错误码
+	optional bytes msg = 3;//错误提示-可选项
+}
+
+message PBMonsterSlave
+{
+	required int32 monsterId = 1; //怪物id
+	required int32 solderNum = 2; //怪物带兵数
+}
+
+message AssistanceInfo
+{
+    required WarPlayer player = 1; //援助方信息
+    repeated Soldier  soldier = 2; //援助方士兵信息
+    required int32    atime   = 3;//到达时间戳
+    required bytes    ekey    = 4;//队列id
+}
+
+//3100:查询援助
+message QueryAssistanceReq
+{
+    required int64  uid = 1;//查询玩家的uid
+}
+
+message QueryAssistanceRsp
+{
+    repeated AssistanceInfo assists = 1;
+    optional int32          max_num = 2;//可援助的士兵数上限
+    optional Result         result  = 3;//错误码
+    optional bool           is_send = 4;//是否向该玩家派遣过援兵
+	repeated PBMonsterSlave  monsterslave = 5;
+    optional int64  uid = 6;//查询玩家的uid
+	optional int32 icon = 7;			//发送者头像id
+}
+
+//3101:援助盟友
+message AssistOtherReq
+{
+    required int64  uid  = 1; //对方玩家的uid 
+    repeated BattleSoldier soldiers =  2;//援助的士兵信息
+}
+
+message AssistOtherRsp
+{
+    optional Result result  = 1;
+}
+
+//3102:遣返援助士兵
+message AssistMoveBackReq
+{
+    required bytes  ekey = 1;//盟友的队列id
+}
+
+message AssistMoveBackRsp
+{
+    optional Result result = 1;
+    optional bytes  ekey   = 2;
+}
+
+//3103:自己召回
+message AssistCallBackReq
+{
+    required bytes ekey  = 1;//出征的Eventkey
+}
+
+message AssistCallBackRsp
+{
+    optional Result result = 1;
+    optional bytes  ekey   = 2;
+}
+
+//3002:查看天赋状态
+message QueryTalent
+{
+	required int64 uid = 1;
+}
+
+message TalentStatus
+{
+	required int32 level = 1;
+	required int32 talent = 2;
+}
+
+//3002:查看天赋状态返回
+message QueryTalentRes
+{
+	required Result result = 1;
+	required int64 uid = 2;
+	repeated TalentStatus status = 3;//未激活的不返回
+}
+
+//3003:激活天赋
+message ActiveTalent
+{
+	required int32 level = 1;//需要激活的天赋等级
+	required int32 talent = 2;//需要激活的天赋
+}
+
+//3003:激活天赋返回
+message ActiveTalentRes
+{
+	required Result result = 1;
+	optional int32 level = 2;
+	optional int32 talent = 3;
+	optional int32 battle = 4;
+}
+
+//3004:变更天赋
+message ChangeTalent
+{
+	required int32 level = 1;
+	required int32 talent = 2;
+}
+
+//3004:变更天赋返回
+message ChangeTalentRes
+{
+	required Result result = 1;
+	optional int32 level = 2;
+	optional int32 talent = 3;
+	optional ResourceData cost = 4;
+	optional int32 battle = 5;
+}
+
+//3005:领取税收
+message DrawTax
+{
+	
+}
+
+//3005:领取税收返回
+message DrawTaxRes
+{
+	required Result result = 1;
+	optional int32 last = 2;//下次领取剩余时间
+	optional ResourceData add = 3;
+}
+
+//3006:查询新手引导状态
+message QueryNewbid
+{}
+//3006:返回
+message QueryNewbieRes
+{
+	required Result result = 1;
+	optional int32 nid = 2;//新手引导ID
+	optional bool jump = 3;//是否跳过
+	optional bool end = 4;//是否结束
+}
+
+//3007:设置新手引导
+message SetNewbie
+{
+	required int32 nid = 1;
+}
+
+//3007:设置新手引导返回
+message SetNewbieRes
+{
+	required Result result = 1;
+	optional int32 nid = 2;
+}
+
+//3008:查询空闲资源田
+message QueryEmptyResource
+{
+	required int32 nid = 1;
+}
+
+//3008:返回
+message QueryEmptyResourceRes
+{
+	required Result result = 1;
+	optional int32 nid = 2;
+	optional MapResource resource = 3;
+}
+
+//3009:设置跳过新手引导
+message JumpNewbie
+{
+	
+}
+
+//3009:返回
+message JumpNewbieRes
+{
+	required Result result = 1;
+}
+
+//3010:设置新手引导结束
+message SetNewbieEnd
+{}
+
+//3010:返回
+message SetNewbieEndRes
+{
+	required Result result = 1;
+	repeated ResourceInfo resources = 2;
+}
+
+//3011:参与集结
+message UserToGather
+{
+	required int64 uid = 1;//集结发起方玩家uid
+	required bytes ekey = 2;//发起的集结ID
+	repeated BattleSoldier soldier = 3;//派出集结的部队
+}
+
+//3011:返回
+message UserToGatherRes
+{
+	required Result result = 1;
+	optional int64 uid = 2;
+	optional bytes ekey = 3;
+	repeated BattleSoldier soldier = 4;//派出集结的部队
+}
+
+//3012:遣返参与集结的部队
+message RepatriateUser
+{
+	required bytes key = 1;//集结ID
+	required bytes part = 2;//参与集结的ID
+}
+
+//3012:返回
+message RepatriateUserRes
+{
+	required Result result = 1;
+	optional bytes key = 2;
+	optional bytes part = 3;//参与集结的ID
+}
+
+//集结状态
+message GatherMarch
+{
+	required MarchUser user = 1;
+	required int32 status = 2;//1集结中，2已集结
+}
+
+//3013:查询集结状态
+message GatherStatus
+{
+	required int64 uid = 1;//发起集结的人
+	required bytes ekey = 2;//集结ID
+}
+
+//3013:返回
+message GatherStatusRes
+{
+	required Result result = 1;
+	optional GatherMarch gather = 2;//集结发起人
+	repeated GatherMarch partner = 3;//参与人
+	optional int32 max = 4;//最大可带兵数量
+	optional int32 maxTeam = 5;//最大可集结队伍数量
+	optional int32 need = 6;//集结时间
+	optional int32 last = 7;//剩余时间
+}
+
+//3014:解散集结
+message GatherDissolve
+{
+	required bytes ekey = 1;//解散集结
+}
+
+//3014:返回
+message GatherDissolveRes
+{
+	required Result result = 1;
+	optional bytes ekey = 2;
+}
+
+
+//4001:请求酒吧悬赏任务信息
+message MissionbarInfo
+{
+	
+}
+
+message MissionbarOne
+{
+	required int32 mindex 	= 1;	//用于操作的唯一ID
+	required int32 mid 		= 2;	//任务ID
+}
+
+message MissionbarInfoRes
+{
+	required Result result 					= 1;
+	optional int32 reftime 					= 2;	//下一次可刷新的时间
+	optional int32 completenum 				= 3;	//已经领取的奖励次数
+	optional int32 completetime 			= 4;	//重置领取奖励次数的时间戳
+	repeated MissionbarOne missionbarOne 	= 5;
+}
+
+//4002:酒馆任务品质提升
+message MissionbarUp
+{
+	
+}
+
+
+//3015:集结结束推送成员
+message GatherDissolvePush
+{
+	required Result result = 1;
+	required bytes name = 2; //发起集结人名称
+	required bytes aname = 3;//发起集结人联盟名称
+	required bytes gather = 4;//发起集结ID
+	required bytes part = 5;//参与集结ID
+}
+
+//3016:战斗结果广播
+message BroadBattle
+{
+	required bytes battle_id = 1; //战斗ID
+	required int32 type = 2;//1玩家  2 怪物  3集结  4 资源田
+	required Position start = 3;//攻击方坐标
+	required Position end = 4;//防守方士兵
+	repeated BattleSoldier soldier = 5;//战斗之前的士兵总数
+	required bool battle_result = 6;//战斗结果，从进攻方看
+	optional bool isShadow = 7; //是否是影子部队
+}
+
+//3017:购买攻打npc次数
+message BuyNpcAttack
+{
+	
+}
+
+message MissionbarUpRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2;
+}
+
+//4003:酒馆任务手动刷新
+message MissionbarRef
+{
+	
+}
+
+//3017:返回
+message BuyNpcAttackRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2;
+}
+
+
+//3018:查询当天出征npc状态
+message MarchNpcStatus
+{
+	
+}
+
+//4004:领取任务奖励
+message MissionbarComplete
+{
+	required int32 mindex 	= 1;
+}
+
+message MissionbarCompleteRes
+{
+	required Result result = 1;
+	repeated MissionbarOne missionbarOne = 2;
+	optional ResourceData cost = 3; //消耗
+	optional ResourceData add = 4; //获得
+}
+
+message Couple
+{
+	required int32 k = 1;
+	required int32 v = 2;
+}
+
+//3018:返回
+message MarchNpcStatusPush
+{
+	required Result result = 1;
+	required int32 current = 2;//当前剩余次数
+	required int32 count = 3;//当前已付费次数
+	repeated Couple mons = 4;//不同类型的npc已击败的等级
+}
+
+//3019:怪物信息广播
+message MapMonsterPush
+{
+	required Result result = 1;
+	required MapMonster monster = 2;
+	required int32 type = 3;//1新增，2消失
+}
+
+//3020:查询怪物类型
+message QueryMonster
+{
+	required int32 type = 1;
+	required int32 level = 2;
+}
+
+//3020:返回
+message QueryMonsterRes
+{
+	required Result result = 1;
+	optional MapMonster monster = 2;
+}
+
+//3021:npc战斗完成推送新增道具
+message NpcItemPush
+{
+	required ResourceData add = 1;
+}
+
+//3022:集结数量变化推送
+message GatherNumPush
+{
+	required bytes mamrchid = 1; //出征队列id
+	required int32 num = 2; //派兵剩余数量
+	optional bool isover = 3; //集结是否结束
+}
+//3023:联盟援助数量变化推送
+message AssNumPush
+{
+	required AllianceAssInfo ass = 1;
+}
+
+//3024:点将令签到数量变化推送
+message SignNumPush
+{
+    optional int32 generalendTime  = 1;    //点将令结束时间
+    optional bool  hassign  = 2;    	    //是否签到 
+	optional int32 allancemembers = 3; //联盟成员
+	optional int32 signnums = 4; //签到数量
+}
+
+//4101:请求玩家各种保护状态
+message ProtectInfo
+{
+	
+}
+
+message ProtectInfoRes
+{
+	required int32 	createTime 		= 1;	//账号创建时间
+	optional bool 	isProtectNew 	= 2;	//是否有新手保护
+	optional int32 	attTime 		= 3;	//攻击保护时间
+	optional int32 	spyTime 		= 4;	//侦查保护时间
+}
+
+
+//5001:快捷商店购买
+message ShopQuickBuyReq
+{
+	required int32 type = 1;  //快捷商店类型  11:金币 12：木材 13:石头 14:铁矿 21:魔法石 22:战争号角 23:城池保护 24 VIP激活道具 25 vip增加经验道具
+	required int32 shopid = 2;   //商店id	 
+	required int32 num = 3;   //购买数量
+}
+
+message ShopQuickBuyRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2; //消耗
+	optional ResourceData add = 3; //获得
+	optional int32 	attTime 		= 4;	//攻击保护时间
+	optional int32 	spyTime 		= 5;	//侦查保护时间
+	optional int32  vipTime = 6;	//VIP总共剩余时间
+	optional int32  vipExp  = 7;	//增加的VIP经验
+}
+
+//5002:商店购买
+message ShopBuyReq
+{
+	required int32 shopid = 1;   //商店id	 
+	required int32 num = 2;   //购买数量
+}
+
+message ShopBuyRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2; //消耗
+	optional ResourceData add = 3; //获得
+
+}
+
+/////////////////////////领主装备///////////////////////////////
+
+message PBEquipment   //装备
+{
+	required int32 id = 1; //Configid
+	required int32 level = 2; //装备等级
+	required int32 exp = 3; //经验值
+	required int32 iswear = 4; //是否穿戴
+	required int32 equipmentid = 5; //装备id
+	repeated  PBGemstone   gemstonelist = 6;
+	optional int32 num = 7;
+}
+
+
+//6001:穿戴,卸下,更换装备
+message DealEquipmentReq
+{
+	required int32 type = 1; //操作类型 1:穿戴 2:卸下 
+	required int32 optId = 2; //操作装备Configid（穿戴装备id,卸下装备id,换下的装备id）
+}
+message DealEquipmentRes
+{
+	required Result result = 1;
+	optional int32  type = 2;
+	optional int32 optId = 3; //操作装备Configid（穿戴装备id,卸下装备id,换下的装备id）
+	optional int32  fightvalue = 4;
+}
+
+//6002:装备列表
+message EquipmentListReq
+{
+	required int32 type = 1; //装备类型
+}
+
+message EquipmentListRes
+{
+	required  Result result = 1;
+	repeated  PBEquipment  equipmentlist = 2;
+}
+
+message PBGemstone   //宝石
+{
+	required int32 id = 1; //宝石
+	required int32 type = 2; //宝石类型
+	required int32 iswear = 3; //是否镶嵌
+}
+
+//6003 镶嵌 卸下宝石
+message DealGemstoneReq
+{
+	required int32 gemstoneid = 1; // 宝石id
+	required int32 equipmentid = 2; //装备id
+	required int32 opttype = 3; //操作类型 1:穿戴 0:卸下
+	required int32 weartype = 4; //1:攻击 2:生命 3:统御
+}
+
+message DealGemstoneRes
+{
+	required Result result = 1;
+	required int32  optid = 2; // 宝石id
+	required int32  opttype = 3; //操作类型 1:穿戴 0:卸下
+	required int32 	equipmentid = 4; //装备id
+	required int32  fightvalue = 5;
+	optional ResourceData cost = 6; //消耗
+	optional ResourceData add = 7; //获得
+}
+//6004 合成宝石
+message CombineGemstoneReq
+{
+	required int32 gemstoneid = 1; // 需要宝石id
+	required int32 combinestoneid = 2; // 合成宝石id
+}
+
+message CombineGemstoneRes
+{
+    required  Result result = 1;
+	optional ResourceData cost = 2; //消耗
+	optional ResourceData add = 3; //获得
+}
+
+//6005铁匠铺购买装备
+message BuyEquipmentReq
+{
+	required int32 eqconfigId = 1; //装备的configid
+	required int32 type = 2; //0 单件购买 1:全部购买
+}
+
+message BuyEquipmentRes
+{
+    required Result result = 1;
+	optional ResourceData cost = 2; //消耗
+	optional ResourceData add = 3; //获得
+	optional int32 forgvalue = 4; //当前锻造值
+	optional int32 lastbuytimes = 5; //剩余购买次数	
+	optional int32 eqconfigId = 6; //装备的configid
+}
+
+//6006 刷新铁匠铺装备
+message FreshEquipmentReq
+{
+
+}
+
+message PBSmithyEquipment
+{
+	required int32 eqconfigid = 1; //装备的configid
+	required int32 buytimes = 2; //剩余购买次数
+}
+message FreshEquipmentRes
+{
+	required Result result = 1;
+	repeated PBSmithyEquipment  equipmentlist = 2; //铁匠铺可购买装备（configid）
+	optional int32  time = 3; //当天00:00时间戳
+	optional int32  forgvalue = 4; //当前锻造值
+	optional bool hasNewBie = 5;  //是否有新手引导
+}
+
+//6007 抽奖
+message LuckyDrawReq
+{
+	required int32 type = 1; //0:巨型包厢 1:神奇宝箱 2:超级宝箱
+}
+
+message PBEquipmentReward
+{
+	required int32 configid =  1; //装备configid
+	required int32 num = 2; //数量
+}
+
+message LuckyDrawRes
+{
+    required Result result = 1;
+	optional ResourceData cost = 2; //消耗
+	repeated PBEquipment reward = 3; //抽奖奖励
+	optional int32 forgvalue = 4; //奖励锻造值
+}
+
+message WishPoorInfo
+{
+	optional int32 freetimes = 1; //(可用)免费次数
+	optional int32 itemtimes = 2; //(可用)道具次数
+	optional int32 cointimes = 3; //金币购买次数
+	optional int32 woodtimes = 4; //木材购买次数
+	optional int32 stonetimes = 5; //石头购买次数
+	optional int32 steeltimes = 6; //铁矿购买次数
+	optional int32 critvalue = 7; //暴击倍率
+	optional int32 cost = 8; //消耗
+}
+
+//6008 许愿池信息
+message WishPollFreshReq
+{
+
+}
+
+message WishPollFreshRes
+{
+	required Result result = 1;
+	optional WishPoorInfo wishinfo = 2;
+}
+
+//6009 许愿池许愿
+message WishReq
+{
+	required int32 type = 1; //类型 101:金币许愿 102:木材许愿 103:石头许愿 104:铁矿许愿	
+}
+
+message WishRes
+{
+	required Result result = 1;
+	optional ResourceData cost = 2; //消耗
+	optional ResourceData add = 3; //获得
+	optional WishPoorInfo wishinfo = 4;
+}
+
+//6010 领取宝石
+message ReceiveGemStoneReq
+{
+	
+}
+
+message ReceiveGemStoneRes
+{
+	required Result result = 1;
+	optional ResourceData add = 2; //获得
+}
+
+/////////////////////////领主技能///////////////////////////////
+
+message OneSkillInfo
+{
+	required int32 iSkillID 	= 1; //	技能ID
+	required int32 iSkillType 	= 2; //	技能类型
+	required int32 iConTime 	= 3; //	持续时间
+	required int32 iColdTime 	= 4; //	冷却时间
+}
+
+message AllSkillInfo
+{
+	repeated OneSkillInfo 	oneSkillInfo 	= 1;	//	所有技能信息
+	required int32 			miUpID 			= 2;	//	升级科技的ID
+	required int32 			miUpType 		= 3;	//	升级科技的类型
+	required int32 			miUpTime 		= 4;	//	升级科技的时间
+}
+
+//	3201:请求领主技能信息
+message UserSkillInfoReq
+{
+	
+}
+
+message UserSkillInfoAck
+{
+	required AllSkillInfo allSkillInfo = 1;
+}
+
+//	3202:请求技能升级
+message UserSkillUpgradeReq
+{
+	required int32	oper 		= 1;	//1立即升级花费钻石，2普通升级花费时间
+	required int32 	miSkillType	= 2;	//想要升级科技的类型
+	required int32	ctl 		= 3;	//资源不足的情况下，是否花费钻石补充, 1补充，0不补充
+}
+
+message UserSkillUpgradeAck
+{
+	required Result 		result 		= 1;
+	optional int32 			oper 		= 2;
+	optional int32 			skillType 	= 3;
+	optional ResourceData 	cost 		= 4;	//消耗
+	optional int32 			last_time 	= 5;	//倒计时,立即完成的时候返回0
+	optional int32 			level 		= 6;	//领主等级
+	optional int32 			exp 		= 7;	//当前经验值
+	optional ResourceData	add 		= 8;	//升级的奖励
+	optional int32 			skillID 	= 9;	//升级到的ID
+	optional int32 			battle 		= 10;	//当前战力
+	optional int32 			ctl 		= 11;	//资源不足的情况下，是否花费钻石补充, 1补充，0不补充
+}
+
+//3203:加速科技升级
+message UserSkillUpgradeSpeedReq
+{
+	required int32 	oper = 1; //加速类型1，钻石加速，2道具加速
+	optional Item 	item = 2; //使用道具数量,道具加速时用
+}
+
+//3203:加速科技升级返回
+message UserSkillUpgradeSpeedAck
+{
+	required Result 		result 		= 1;
+	optional int32 			oper 		= 2;	//加速类型1，钻石加速，2道具加速
+	optional int32 			skillType 	= 3;	//升级科技类型
+	optional ResourceData 	cost 		= 4;	//消耗
+	optional int32 			last_time 	= 5;	//剩余时间
+	optional int32 			level 		= 6;	//领主等级
+	optional int32 			exp 		= 7;	//当前经验值
+	optional ResourceData 	add 		= 8;	//升级的奖励
+	optional int32 			skillID 	= 9;	//升级到的ID
+	optional int32 			battle 		= 10;	//当前战力
+}
+
+//3204:取消升级
+message UserSkillCancelUpdateReq
+{
+
+}
+
+//3204:取消升级返回
+message UserSkillCancelUpdateAck
+{
+	required Result 		result 	= 1;
+	optional ResourceData 	add 	= 2; //返回资源
+}
+
+//	3205:请求技能使用
+message UserSkillUseReq
+{
+	required int32 	miSkillType 			= 1;
+}
+
+message UserSkillUseAck
+{
+	required Result 		result 			= 1;
+	optional int32 			miSkillType 	= 2;
+	optional ResourceData 	add 			= 3;
+	optional int32 	x 		= 4;	
+	optional int32 	y 		= 5;
+}
+
+//3208:完成科技推送
+message UserSkillCompleteAck
+{
+	required Result 		result 		= 1;
+	optional int32 			level 		= 2;	//领主等级
+	optional int32 			exp 		= 3;	//当前经验值
+	optional ResourceData 	add 		= 4;	//升级的奖励
+	optional int32 			skillType 	= 5;	//技能类型
+	optional int32 			skillID 	= 6;	//技能ID
+	optional int32 			battle 		= 7;	//当前战力
+}
+
+///////////////////////////签到相关////////////////////////
+
+//7001:签到列表
+message SignListReq
+{
+
+}
+message SignListRes
+{
+    required  Result result = 1;
+    optional int32 signed = 2;  //今日是否签到
+    optional int32 count = 3;   //累计签到天数
+    repeated Item reward = 4;  //七日签到奖励列表
+}
+
+//7002:领取签到奖励
+message SignRewardReq
+{
+
+}
+message SignRewardRes
+{
+    required  Result result = 1;
+    optional ResourceData reward = 2;  //签到奖励
+}
+
+//********************************************
+//***************好友相关**********************
+//	好友信息
+//	iFrom 1 普通申请 2 联盟 3推荐
+message FriendInfoList
+{
+	required int64 iUID				= 1;	//	好友ID
+	required string sName 			= 2;	//	好友名称
+	required int32 iIcon 			= 3;	//	玩家头像
+	required int32 iVipLevel 		= 4;	//	VIP等级
+	required int32 iPlan 			= 5;	//	平台ID
+	required int32 iFrom			= 6;	//	来自哪种申请
+}
+
+//	玩家好友申请(自己申请别人)
+//	iFrom 1 普通申请 2 联盟 3推荐
+//	iState 1 等待验证 2 已添加 3 已拒绝
+message FriendApplySendList
+{
+	required int64 iUID				= 1;	//	好友ID
+	required string sName 			= 2;	//	好友名称
+	required int32 iIcon 			= 3;	//	玩家头像
+	required int32 iVipLevel 		= 4;	//	VIP等级
+	required int32 iPlan 			= 5;	//	平台ID
+	required int32 iFrom			= 6;	//	来自哪种申请
+	required string sMessage		= 7;	//	留言
+	required int32 iState 			= 8;	//	状态
+}
+
+//	玩家好友申请（别人申请自己）
+//	iFrom 1 普通申请 2 联盟 3推荐
+//	iState 1 等待验证 2 已添加 
+message FriendApplyGetList
+{
+	required int64 iUID				= 1;	//	好友ID
+	required string sName 			= 2;	//	好友名称
+	required int32 iIcon 			= 3;	//	玩家头像
+	required int32 iVipLevel 		= 4;	//	VIP等级
+	required int32 iPlan 			= 5;	//	平台ID
+	required int32 iFrom			= 6;	//	来自哪种申请
+	required string sMessage		= 7;	//	留言
+	required int32 iState 			= 8;	//	状态
+}
+
+//	推荐列表
+//	iFrom 1 普通申请 2 联盟 3二度好友 4敌人 5附近玩家 6等级相同 7语言相同
+//	iState 0普通 1 等待验证 2 已添加 
+message FriendRecommendList
+{
+	required int64 iUID				= 1;	//	好友ID
+	required string sName 			= 2;	//	好友名称
+	required int32 iIcon 			= 3;	//	玩家头像
+	required int32 iVipLevel 		= 4;	//	VIP等级
+	required int32 iPlan 			= 5;	//	平台ID
+	required int32 iFrom			= 6;	//	来自哪种申请
+	required int32 iState 			= 7;	//	状态
+}
+
+//7101:好友信息
+message UserFriendInfoReq
+{
+	
+}
+
+message UserFriendInfoAck
+{
+	repeated FriendInfoList 			friendInfo 			= 1;	//	玩家好友
+	repeated FriendApplySendList	 	friendApplySend 	= 2;	//	发送申请
+	repeated FriendApplyGetList	 		friendApplyGet 		= 3;	//	接受申请
+	repeated FriendRecommendList	 	friendRecommend 	= 4;	//	推荐列表
+}
+
+//7102:请求添加好友
+message FriendApplySendReq
+{
+	required int64 iUID				= 1;
+	required int32 iFrom			= 2;	//iFrom 1 普通申请 2 联盟 3推荐
+	required string sMessage		= 3;	//留言
+}
+
+message FriendApplySendAck
+{
+	required Result 				result 				= 1;
+	repeated FriendApplySendList	friendApplySend 	= 2;
+	repeated FriendRecommendList	friendRecommend 	= 3;
+}
+
+//7103:处理好友请求
+message FriendApplyHandleReq
+{
+	required int64 iUID				= 1;
+	required int32 iType			= 2;	//	0:拒绝 1:同意
+}
+
+message FriendApplyHandleAck
+{
+	required Result 				result 				= 1;
+	repeated FriendInfoList	 		friendInfo 			= 2;
+}
+
+//7104:昵称玩家搜索
+message FriendSearchReq
+{
+	required string nickName = 1;
+}
+
+message FriendSearchAck
+{
+	required Result result = 1;
+	optional int64 uid = 2;
+	optional bytes nickname = 3;
+	optional string allianceid = 4;
+	optional bytes shortname = 5;
+	optional bytes alliancename = 6;
+	optional int32 exp = 7;
+	optional int32 level = 8;
+	optional bool isfriend = 9;
+	optional int32 figure = 10;
+    repeated PBEquipment  equipmentlist = 11; //领主穿戴装备信息
+    optional int32 state = 12;	//1 等待验证 2 已添加 
+}
+
+message FriendAllianceList
+{
+	required int64 iUID				= 1;	//	好友ID
+	required string sName 			= 2;	//	好友名称
+	required int32 iIcon 			= 3;	//	玩家头像
+	required int32 iVipLevel 		= 4;	//	VIP等级
+	required int32 iPlan 			= 5;	//	平台ID
+	required int32 iFrom			= 6;	//	来自哪种申请
+	required int32 iState 			= 7;	//	状态
+	required int32 iJob				= 8;	//	联盟职位
+}
+
+//7105:联盟推荐列表
+message FriendAllianceReq
+{
+	
+}
+
+message FriendAllianceAck
+{
+	required Result 				result 			= 1;
+	repeated FriendAllianceList 	friendAlliance 	= 2;
+}
+
+//7106:删除好友
+message FriendDeleteReq
+{
+	required int64 iUID				= 1;
+}
+
+message FriendDeleteAck
+{
+	required Result 				result 			= 1;
+}
+
+
+//type 0:空地
+//type 1:玩家
+//type 2:资源田
+//subtype 100:钻石矿 101:金矿 102:伐木场 103:采石场 104:铁矿 
+//type 3:怪物
+//subtype 怪物id
+//type 4:联盟建筑
+//subtype:1001:联盟基地 1002:联盟兵营 1003:联盟资源田 1004:联盟旗帜 1005:联盟仓库 1006:联盟箭塔
+message PBFarorite
+{
+	required int32 type = 1;
+	required int32 subtype = 2;
+	required int32 x = 3;
+	required int32 y = 4;
+	required int32 time = 5; //时间
+	required bytes mid = 6; //地图mid
+	optional int32 level = 7; //等级
+	optional int32 icon = 8;  //玩家icon
+	optional bytes playernme = 9; //玩家名称
+	optional int32 num = 10;  //资源田剩余资源量
+	optional bytes alliancename = 11; //联盟缩写	
+	optional int64 uid =  12;
+}
+//7107
+message FaroriteListReq 
+{
+	required int32 type = 1;     //0:收藏夹 1:敌人列表
+}
+
+message FaroriteListRes
+{
+	required Result result 	= 1;	
+	required int32 type = 2;     //0:收藏夹 1:敌人列表
+  	repeated PBFarorite favoritelist = 3;
+}
+
+//7108
+message FaroriteReq
+{
+	required int32 x = 1;
+	required int32 y = 2;
+}
+
+message FavoriteRes
+{
+	required Result result 	= 1;
+  	required PBFarorite favorite = 2;
+}
+
+//7109
+message FaroriteRemoveReq
+{
+	required int32 type = 1;     //0:收藏夹 1:敌人列表
+	required int32 x = 2;
+	required int32 y = 3;
+}
+
+message FaroriteRemoveRes
+{
+	required Result result 	= 1;
+	required int32 type = 2;     //0:收藏夹 1:敌人列表	
+ 	required int32 x = 3;
+	required int32 y = 4;
+}
+
+//7110
+message FaroriteStatuReq
+{
+	required int32 x = 1;
+	required int32 y = 2;
+}
+
+message FaroriteStatuRes
+{
+	required Result result 	= 1;
+	required bool canFavorite = 2;   //是否可收藏
+}
+
+//7111:玩家请求的推送
+message FriendApplySendPush
+{
+	repeated FriendApplyGetList	 	friendApplyGet 		= 1;
+}
+
+//7112:玩家处理请求的推送
+message FriendApplyHandlePush
+{
+	repeated FriendApplySendList	 	friendApplySend 	= 1;
+	repeated FriendInfoList	 			friendInfo 			= 2;
+	repeated FriendRecommendList	 	friendRecommend 	= 3;
+}
+
+//7113:删除好友推送
+message FriendDeletePush
+{
+	required int64 iUID				= 1;
+}
+
+//******************
+//邮件相关协议
+
+//7201:玩家请求邮件列表
+message UserMailListReq
+{
+	
+}
+
+//邮件排行榜信息格式
+message MailRankInfo
+{
+	required int32 	rank 	= 1;	//排名
+	required int32 	score 	= 2;	//捐献值
+	required string name 	= 3;	//玩家昵称
+}
+
+//邮件排行榜信息列表
+message MailRankList
+{
+	repeated MailRankInfo	tRank	= 1;
+	required int32			dis 	= 2;	//平均奖励的钻石
+}
+
+message MailInfo
+{
+	required string 		sMailID		= 1;//邮件唯一id
+	required string 		sName 		= 2;//邮件名称
+	required string 		sDescribe 	= 3;//邮件描述
+	required string 		sContent 	= 4;//邮件内容
+	required string 		sSenderName = 5;//邮件发送者名字
+	required int32 			nSenderIcon = 6;//邮件发送者头像id
+	required int32 			nSendTime 	= 7;//邮件发送时间戳
+	required string 		sSendTime 	= 8;//邮件发送时间戳 字符串
+	optional ResourceData	tReward 	= 9;//邮件奖励列表
+	required int32 			nRead		= 10;//邮件是否读取 0 代表 未读取， 1 代表 已读取
+	required int32 			nGive		= 11;//邮件是否领取奖励 0 代表 未领取， 1 代表 已领取
+	optional int32			nType 		= 12;//邮件类型 1代表普通系统邮件 2代表排行榜奖励邮件 3代表GM邮件
+	optional MailRankList	tRank		= 13;//排行榜邮件 所带的玩家捐献值列表
+	repeated string			arg			= 14;//自定义 邮件内容参数列表
+}
+
+message UserMailListRes
+{
+	required Result 	result 	= 1;
+	repeated MailInfo 	list 	= 2; //邮件列表
+}
+
+//7202:玩家请求读取邮件
+message UserReadMailReq
+{
+	required string sMailID	= 1;//邮件唯一id
+}
+
+message UserReadMailRes
+{
+	required Result result 	= 1;
+	required string sMailID	= 2;//邮件唯一id
+}
+
+//7203:玩家请求领取邮件奖励
+message UserGiveMailRewardReq
+{
+	required string sMailID	= 1;//邮件唯一id
+}
+
+message UserGiveMailRewardRes
+{
+	required Result 		result 	= 1;
+	required string 		sMailID	= 2;//邮件唯一id
+	optional ResourceData 	tReward = 3;//邮件奖励列表
+}
+
+//7204:玩家请求删除邮件
+message UserDelMailReq
+{
+	required string sMailID	= 1;//邮件唯一id
+}
+
+message UserDelMailRes
+{
+	required Result result 	= 1;
+	required string sMailID	= 2;//邮件唯一id
+}
+
+///////////////VIP系统相关协议///////
+//7301:上线申请VIP信息
+message UserVipInfoReq
+{
+	
+}
+
+message UserVipInfoRes
+{
+	required Result result 	= 1;
+	required int32 	exp = 2;       //当前经验值
+    required int32 	lv = 3;        //当前vip等级
+    required int32 	time = 4;      //VIP到期时间戳
+    required int32 	show = 5;      //如果 VIP到期 是否要展示给玩家充值界面 1 不展示 0 展示
+    required int32 	sign = 6;      //累计登录天数
+}
+
+//7302:客户端申请确认VIP失效
+message UserVipEndRes
+{
+	required Result result 	= 1;
+}
+
+//7303:告知客户端玩家VIP激活
+message UserVipActiveRes
+{
+	required Result result 	= 1;
+	required int32 	time 	= 2;      //VIP到期时间戳
+}
+
+//7304:告知客户端玩家VIP经验改变
+message UserVipAddExpRes
+{
+	required Result result 	= 1;
+	required int32 	exp = 2;       //当前经验值
+    required int32 	lv = 3;        //当前vip等级
+    required int32 	sign = 4;      //累计登录天数
+    required int32 	add = 5;       //本次增加的经验值
+}
+
+/////////////////////玩家市场系统协议////////////////////////////
+
+//7401:客户端申请市场信息
+message UserMarketInfoReq
+{
+	
+}
+
+message MarketUserInfo
+{
+	required int32 pos 	= 1;	//位置
+	required int64 uid 	= 2;	//玩家id
+	required int32 icon = 3;	//玩家头像
+	required int32 level= 4;	//市场等级
+}
+
+message UserMarketInfoRes
+{
+	required Result 			result 		= 1;
+	required int32  			nCount 		= 2;	//今日进行的商贸次数			
+	required int32				nBeginTime 	= 3;	//本次商贸开始时间 没有正在进行的商贸 就为 0
+	required int32				nEndTime 	= 4;	//本次商贸结束时间 没有正在进行的商贸 就为 0
+	required int32				nTrader 	= 5;	//固定商人ID
+	repeated int32  			tTraderList = 6;	//额外商人ID列表
+	repeated MarketUserInfo		tUserList 	= 7;	//市场内的玩家选择列表
+	required int32				nRefreshTime= 8;	//商人下次刷新时间戳
+}
+
+//7402:获取联盟列表内盟友市场信息
+message AllianceUserListMakectInfoReq
+{
+	
+}
+
+message AllianceUserMarketInfo
+{
+	required int64 uid 	= 1;	//玩家id
+	required int32 icon = 2;	//玩家头像
+	required string name = 3;	//玩家名字
+	required int32 x = 4;		//坐标
+	required int32 y = 5;
+	required int32 lv = 6;		//玩家市场的等级 没有市场为0级
+	optional int32 trader = 7;	//商人id 没有市场 就没有商人
+}
+
+message AllianceUserListMakectInfoRes
+{
+	required Result 				result 	= 1;
+	repeated AllianceUserMarketInfo list 	= 2;	//玩家列表
+}
+
+//7403:申请添加贸易对象列表
+message UserAddMakectObjListReq
+{
+	repeated MarketUserInfo list = 1;
+}
+
+message UserAddMakectObjListRes
+{
+	required Result result = 1;
+	repeated MarketUserInfo list = 2;
+}
+
+//7404:开始贸易
+message UserStartMarketReq
+{
+	
+}
+
+message UserStartMarketRes
+{
+	required Result result = 1;
+	required int32	nBeginTime 	= 2;	//本次商贸开始时间 
+	required int32	nEndTime 	= 3;	//本次商贸结束时间 
+}
+
+//7405:查看当前商贸情况
+message UserLookMarketReq
+{
+	
+}
+
+message UserLookMarketRes
+{
+	required Result result = 1;
+	required int32	nBeginX = 2;	//本阶段 起点坐标
+	required int32	nBeginY = 3;
+	required int32	nBeginTime = 4;	//本阶段 商贸开始时间 
+	required int32	nEndX = 5;		//本阶段 终点坐标
+	required int32	nEndY = 6;
+	required int32	nEndTime = 7;	//本阶段 商贸结束时间
+	required bytes 	gfbID = 8; 		//出征ID（行军队列ID）
+
+}
+
+//7406:贸易完成 服务器主推消息
+message UserFinishMarketRes
+{
+	required Result 		result 	= 1;
+	required ResourceData  	oGet 	= 2;	//获得的收益详细
+}
+
+//7407:购买商人
+message UserBuyMarketTraderReq
+{
+	required int32	trader 	= 1;	//商人ID
+}
+
+message UserBuyMarketTraderRes
+{
+	required Result 		result 	= 1;
+	required int32			trader 	= 2;	//商人ID
+	required ResourceData	cost 	= 3;	//花费的钻石
+}
+
+//7408:查看当前贸易详情
+message UserLookMarketMoreReq
+{
+	required int64 uid = 1;			//要查看的玩家id
+}
+
+message UserMarketMoreInfo
+{
+	required string sName 	= 1;	//玩家名字
+	required int32  nEvent  = 2;	//事件类型 0 正常 1 失败 2 盗贼 3 富商 
+	required int32  nGold  	= 3;	//获得的收益详细
+	required int32  nWood 	= 4;
+	required int32  nStone 	= 5;
+	required int32  nSteel 	= 6;
+}
+
+message UserLookMarketMoreRes
+{
+	required Result result 	= 1;
+	required int64 	uid 	= 2;	//要查看的玩家id
+	required string sName 	= 3;	//玩家名字
+	required int32 	icon 	= 4;	//玩家头像
+	repeated UserMarketMoreInfo list = 5;
+}
+
+//7501:玩家申请月卡信息
+message UserMonthCardReq
+{
+	
+}
+
+message UserMonthCardRes
+{
+	required Result result 	= 1;
+	required int32 	type 	= 2;	//月卡激活类型 0 没有激活; 1周卡; 2 月卡; 3 季卡
+	required int32 	end 	= 3;	//月卡到期时间戳
+	required int32 	give 	= 4;	//今日是否领取啦每日奖励 0 没有领取; 1 领取啦
+}
+
+//7502:玩家申请领取每日月卡奖励
+message UserGiveMonthCardRewardReq
+{
+	
+}
+
+message UserGiveMonthCardRewardRes
+{
+	required Result result 	= 1;
+	required int32 	money 	= 2;	//奖励的钻石数
+}
+
+//7601:玩家申请礼包信息
+message UserRechargeGiftInfoReq
+{
+	
+}
+
+//充值礼包列表的结构
+message GiftMapInfo
+{
+	required int32 id 	= 1; 		//配置ID
+	required int32 time = 2; 		//到期时间戳
+}
+
+message UserRechargeGiftInfoRes
+{
+	required Result 		result 	= 1;
+	repeated GiftMapInfo 	list 	= 2;	//当前礼包列表
+	required int32 			show 	= 3;	//当前展示的礼包ID
+}
+
+//7602:玩家申请当前展示的礼包
+message UserShowGiftReq
+{
+	
+}
+
+message UserShowGiftRes
+{
+	required Result result 	= 1;
+	required int32 	show 	= 2;	//当前展示的礼包ID
+	required int32 	time 	= 3;	//到期时间戳
+	optional bool 	hasReq  = 4;    //当天是否请求过
+}
+
+//7701:GM增加货币
+message GmAddResource
+{
+	required Result 		result 	= 1;
+	required ResourceData	source 	= 2;	//增加的资源详细
+	optional ResourceData 	cost 	= 3; 	//减少的资源详细
+	optional int32 			level 	= 4;	//当前领主等级
+	optional int32 			exp 	= 5;	//当前经验
+}
+
+//7801:申请联盟仓库详细信息
+message AskAllianceDepotReq
+{
+	
+}
+
+//单个玩家存储信息
+message AllianceDepotOnceInfo
+{
+	required int64 			uid 		= 1;
+	required bytes 			nickname 	= 2;
+	required Position 		pos 		= 3;
+	required int32 			icon 		= 4;
+	repeated FinanceInfo 	info 		= 5;	//玩家存储资源信息
+}
+
+message AskAllianceDepotRes
+{
+	required Result 				result 		= 1;
+	repeated AllianceDepotOnceInfo 	list 		= 2;
+	required bytes  				sBuildKey 	= 3;	//	建筑的Key 用于操作
+}
+
+//7802:查看联盟仓库内个人信息
+message AskUserAllianceDepotReq
+{
+	
+}
+
+message AskUserAllianceDepotRes
+{
+	required Result 				result 	= 1;
+	required AllianceDepotOnceInfo 	info 	= 2;
+	required int64					daily 	= 3;	//今日已存储数量
+}
+
+//7805:告知玩家仓库资源回到玩家身上
+message AllianceDepotBackRes
+{
+	required Result 		result 	= 1;
+	required ResourceData 	info 	= 2;	//资源详细
+}
+
+//7806:告知有联盟仓库利息可领
+message AllianceDepotDailyRes
+{
+	required Result 		result 	= 1;
+	repeated FinanceInfo 	info 	= 2;	//利息详情
+}
+
+//7807:领取联盟仓库利息
+message TakeAllianceDepotDailyReq
+{
+	
+}
+
+message TakeAllianceDepotDailyRes
+{
+	required Result 		result 	= 1;
+	required ResourceData 	info 	= 2;	//领取的资源详细
+}
+
+message AllSlotsBox
+{
+	optional int32 iIndex 		= 1;	//	索引
+	optional int32 iChestID 	= 2;	//	卡片ID
+	optional int32 iShow 		= 3;	//	翻开的顺序
+}
+
+//7900:请求转盘信息
+message SlotsInfoReq
+{
+	
+}
+
+message SlotsInfoAck
+{
+	optional int32 iTurnTableNum 		= 1;	//  转盘的次数 初始为1 如果抽取到了三针 则需要转3次
+	optional int32 iTurnTableMul 		= 2;	//  转盘奖励倍数
+	optional int32 iFreeTime 			= 3;	//  免费的时间 每天一次
+	optional int32 iFreeNum 			= 4;	//  免费的次数
+	optional int32 iBoxIndex 			= 5;	//  翻到了第几张牌
+	optional int32 iBoxMul 				= 6;	//  宝箱奖励倍数
+	repeated AllSlotsBox allSlotsBox	= 7;	//  箱子信息
+	repeated int32 iShowIndex 			= 8;	//	显示顺序
+}
+
+//7901:请求转一次转盘
+message PlayTurnTableReq
+{
+	
+}
+
+message PlayTurnTableAck
+{
+	optional Result result 		= 1;
+	repeated int32 	iPlayResult = 2;	//	抽奖结果
+	optional int32  iType 		= 3; 	//	扣除的类型 1免费 2道具 3钻石
+	optional int32  iFreeNum	= 4;	//	奖励倍数
+
+}
+
+//7902:翻一张牌
+message PlayBoxReq
+{
+	optional int32 iShow 		= 1;	//	索引
+}
+
+message PlayBoxAck
+{
+	optional Result result 		= 1;
+	optional int32  iIndex 		= 2;	//	索引
+	optional int32  iBoxIndex 	= 3;	//  翻到了第几张牌
+	optional int32	iBoxMul		= 4;	//	奖励倍数
+	optional int32  iChestID 	= 5;	//	卡片ID
+}
+
+//7903:放弃翻牌
+message BoxDeleteReq
+{
+	
+}
+
+message BoxDeleteAck
+{
+	optional Result result 		= 1;
+}
+
+//8000:六天活动详情 
+message SixDayInfoReq
+{
+	
+}
+
+message PBSixDayTask
+{
+	required int32 taskid = 1;  //任务id
+	required int32 completestatus = 2; //完成状态
+	required int32 receivestatus = 3;  //领取状态
+	required int32 scorecompletestatus = 4; //完成状态
+    required int32 scorereceivestatus = 5;   //积分奖励领取状态
+}
+
+message PBSixDayPlayerRank  //玩家积分排行
+{
+	required bytes username = 1;  //玩家名称
+	required int32 icon = 2;  //头像
+	required int32 score = 3;  //积分
+	required int32 rank = 4;  //名次
+	required int64 uid =  5;
+}
+
+message PBSixDayAllianceRank   //联盟荣誉排行
+{
+	required bytes alliancename = 1;  //联盟名称
+	required int32 icon = 2;  //联盟旗帜
+	required int32 score = 3;  //荣誉值
+	required int32 rank = 4;  //名次
+}
+message SixDayInfoRes
+{
+	optional Result result 		= 1;
+	required int32 	id = 2;  //活动id
+	required int32 	endtime = 3;  //结束时间
+	required int32 	score = 4;  //积分
+	repeated PBSixDayTask tasklist = 5; //任务状态
+	repeated PBSixDayPlayerRank playerranks    = 6;   //排行榜
+	repeated RankAlliance allianceranks    = 7;   //排行榜
+	optional int32 	honor = 8;  //联盟荣誉值
+}
+
+//8001
+message ReceiveSixDayReq
+{	
+	required int32 	id = 1;  //活动id  
+	required int32 	type = 2;  //0:积分奖励 1:任务奖励 
+	required int32 	taskid = 3;  //id:1-3
+}
+
+message ReceiveSixDayRes
+{	
+	required Result result 		= 1;
+	required ResourceData	add = 2;	//领取的奖励
+	required int32 	id = 3;  //活动id  
+	required int32 	type = 4;  //0:积分奖励 1:任务奖励 
+	required int32 	taskid = 5;  //id:1-3
+}
+
+//8100 申请医馆死亡报告列表
+message HospDeadMsgReq
+{
+	
+}
+
+//医馆死亡的单个类型士兵信息
+message HospitalDeadSoldier
+{
+	required int32	id 	= 1;	//士兵ID
+	required int32 	all = 2;	//原有伤兵总数
+	required int32 	dead= 3;	//死亡伤兵数量
+}
+
+//医馆死亡报告记录信息
+message HospitalDead
+{
+	required string					id 			= 1;//唯一ID
+	required int32 					sendtime 	= 2;//发送时间戳
+	required string 				sendtimestr = 3;//发送时间戳 字符串
+	required int32 					read		= 4;//是否读取 0 代表 未读取， 1 代表 已读取
+	repeated HospitalDeadSoldier	list 		= 5;//排行榜类型的邮件 附带成员捐献排名信息
+	required int32					type 		= 6;//类型 扩展占位
+	repeated string					arg			= 7;//自定义参数列表 扩展占位
+}
+
+message HospDeadMsgRes
+{
+	required Result 		result 	= 1;
+	repeated HospitalDead 	list 	= 2;	//死亡报告列表
+}
+
+//8101 读取指定医馆死亡报告信息
+message ReadHospDeadMsgReq
+{
+	required string id = 1;  
+}
+
+message ReadHospDeadMsgRes
+{
+	required Result result 		= 1;
+	required string id 			= 2;  
+}
+
+//8102 删除指定医馆死亡报告信息
+message DelHospDeadMsgReq
+{
+	required string id = 1; 
+}
+
+message DelHospDeadMsgRes
+{
+	required Result result 	= 1;
+	required string id 		= 2;  
+}
+
+message AllDragonInfo
+{
+	required int32 		iID 	= 1;	//	龙的ID
+	required int32		iValue 	= 2;	//	龙的数值
+	required int32		iTime 	= 3;	//	龙的结束时间
+	required bytes 		sKey 	= 4;
+}
+
+//8200 龙崖信息
+message UserDragonInfoReq
+{
+	
+}
+
+//8200 龙崖信息
+message UserDragonInfoAck
+{
+	optional Result result 		= 1;
+	optional int32 iGoldAdd 	= 2;	//  金币产量
+	optional int32 iWoodAdd 	= 3;	//  木材产量
+	optional int32 iStoneAdd 	= 4;	//  石头产量
+	optional int32 iIronAdd 	= 5;	//  铁矿产量
+	optional int32 iAllAdd 		= 6;	//  所有资源产量
+	optional int32 iAtkAdd 		= 7;	//  攻击加成
+	optional int32 iDefAdd 		= 8;	//  生命加成
+	optional int32 iTroopAdd 	= 9;	//  出征上限加成
+	optional int32 iSpeedAdd 	= 10;	//  行军速度加成
+	optional int32 iGetTime		= 11;	//	领取龙蛋时间
+	optional int32 iUseTime		= 12;	//	使用龙蛋时间
+	optional int32 iDragonID	= 13;	//	当前孵出来的龙的ID
+	optional int32 iDragonValue = 14;	//	当前孵出来的龙的数值
+	repeated AllDragonInfo allDragonInfo = 15;
+}
+
+//8201 领取龙蛋
+message UserGetEggReq
+{
+	
+}
+
+//8201 领取龙蛋
+message UserGetEggAck
+{
+	required Result 		result 		= 1;
+	optional ResourceData 	add 		= 2;
+}
+
+//8202 使用龙蛋
+message UserUseEggReq
+{
+	
+}
+
+//8202 使用龙蛋
+message UserUseEggAck
+{
+	required Result result 		= 1;
+}
+
+//8203 收容龙
+message UserGetDragonReq
+{
+	
+}
+
+//8203 收容龙
+message UserGetDragonAck
+{
+	required Result result 		= 1;
+}
+
+//8204 赠送龙别人的情况
+message UserSendDragonInfoReq
+{
+	
+}
+
+message CanSendDragon
+{
+	required int64 llUID 		= 1;
+	required int32 iIcon 		= 2;
+	required string sName 		= 3;
+	required int32 iLevel 		= 4;
+	required int32 iPlaceNum 	= 5;
+}
+
+message UserSendDragonInfoAck
+{
+	required Result 		result 			= 1;
+	repeated CanSendDragon 	friendInfo 		= 2;	//	好友
+	repeated CanSendDragon 	enemyInfo 		= 3;	//	愁人
+	repeated CanSendDragon 	allianceInfo 	= 4;	//	联盟
+}
+
+//8205 赠送
+message UserSendDragonReq
+{
+	required int64 llUID 		= 1;
+	optional string sName 		= 2;
+}
+
+message UserSendDragonAck
+{
+	required Result result 		= 1;
+}
+
+//8206 删除
+message UserDelDragonReq
+{
+	required bytes sKey 	= 1;
+}
+
+message UserDelDragonAck
+{
+	required Result 		result 		= 1;
+	optional ResourceData 	cost 		= 2;
+}
+
+//8207 加速孵化龙蛋
+message UserUseEggNowReq
+{
+	
+}
+
+message UserUseEggNowAck
+{
+	required Result result 		= 1;
+	required int32 iDragonID	= 2;	//	当前孵出来的龙的ID
+	required int32 iDragonValue = 3;	//	当前孵出来的龙的数值
+	optional ResourceData 	cost 		= 4;
+}
+
+//8210龙蛋孵化成功的推送
+message UserUseEggPush
+{
+	required int32 iDragonID	= 1;	//	当前孵出来的龙的ID
+	required int32 iDragonValue = 2;	//	当前孵出来的龙的数值
+}
+
+//8211龙蛋赠送别人的推送
+message UserSendEggPush
+{
+	required int32 iDragonID	= 1;	//	当前孵出来的龙的ID
+	required int32 iDragonValue = 2;	//	当前孵出来的龙的数值
+}
+
+
