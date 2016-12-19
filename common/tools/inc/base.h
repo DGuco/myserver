@@ -1,3 +1,10 @@
+//
+//  base.h
+//  游戏工具
+//  Created by DGuco on 16/12/19.
+//  Copyright © 2016年 DGuco. All rights reserved.
+//
+
 #ifndef __BASE_H__
 #define __BASE_H__
 
@@ -5,7 +12,7 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
-#define __YQ_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
+#define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 
 #define UID_LENGTH		(64)	// 帐号长度
 #define NAME_LENGTH			(32)	// 名字长度

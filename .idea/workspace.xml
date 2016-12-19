@@ -184,13 +184,13 @@
         <option value="$PROJECT_DIR$/tcpserver/src/commdef.cpp" />
         <option value="$PROJECT_DIR$/common/tools/inc/client_comm_engine.h" />
         <option value="$PROJECT_DIR$/common/tools/inc/message_interface.h" />
-        <option value="$PROJECT_DIR$/common/tools/inc/yq_hashmap_mod.h" />
+        <option value="$PROJECT_DIR$/common/tools/inc/MY_hashmap_mod.h" />
         <option value="$PROJECT_DIR$/common/tools/inc/server_comm_engine.h" />
         <option value="$PROJECT_DIR$/common/tools/inc/runflag.h" />
         <option value="$PROJECT_DIR$/common/tools/inc/mymacro.h" />
         <option value="$PROJECT_DIR$/common/tools/src/server_comm_engine.cpp" />
         <option value="$PROJECT_DIR$/common/tools/src/runflag.cpp" />
-        <option value="$PROJECT_DIR$/common/tools/inc/yq_assert.h" />
+        <option value="$PROJECT_DIR$/common/tools/inc/MY_assert.h" />
         <option value="$PROJECT_DIR$/common/tools/inc/json.h" />
         <option value="$PROJECT_DIR$/common/tools/src/json.cpp" />
         <option value="$PROJECT_DIR$/common/tools/inc/config_data.h" />
@@ -605,10 +605,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/tools/inc/yq_sharedvector.h" />
-    <entry file="file://$PROJECT_DIR$/common/tools/inc/yq_queue.h" />
-    <entry file="file://$PROJECT_DIR$/common/tools/inc/yq_vector.h" />
-    <entry file="file://$PROJECT_DIR$/common/tools/inc/yq_random.h" />
+    <entry file="file://$PROJECT_DIR$/common/tools/inc/MY_sharedvector.h" />
+    <entry file="file://$PROJECT_DIR$/common/tools/inc/MY_queue.h" />
+    <entry file="file://$PROJECT_DIR$/common/tools/inc/MY_vector.h" />
+    <entry file="file://$PROJECT_DIR$/common/tools/inc/MY_random.h" />
     <entry file="file://$PROJECT_DIR$/common/tools/inc/timer.h" />
     <entry file="file://$PROJECT_DIR$/common/tools/inc/thread.h">
       <provider selected="true" editor-type-id="text-editor">
@@ -724,7 +724,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/tools/inc/config_data.cpp" />
-    <entry file="file://$PROJECT_DIR$/common/tools/inc/yq_assert.h">
+    <entry file="file://$PROJECT_DIR$/common/tools/inc/MY_assert.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="40" column="52" selection-start-line="40" selection-start-column="52" selection-end-line="40" selection-end-column="52" />

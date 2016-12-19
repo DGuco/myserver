@@ -7,11 +7,11 @@
 -------------------------------------------------------------------------*/
 #ifndef ARRAY_LINKED_LIST_HEADER_
 #define ARRAY_LINKED_LIST_HEADER_
-#include "yq_assert.h"
+#include "my_assert.h"
 #include <cstddef>
 #include <new>
 
-namespace yq
+namespace MY
 {
 	// 由于需要从类型T转化array_list_node_base<T>所以T应该放在最前面
 	// 为了方便快捷的删除，还是需要使用双向链表
@@ -798,7 +798,7 @@ namespace yq
 				node_type* p = node_ + head_;
 				if (! empty())
 				{
-					YQ_ASSERT( head_ >= 0 && head_ < (int)MAX_COUNT, return 0 );
+					MY_ASSERT( head_ >= 0 && head_ < (int)MAX_COUNT, return 0 );
 
 					// it's not the last one element in the dequeue
 					head_ = head_ + node_[head_].get_next_idx();
@@ -829,7 +829,7 @@ namespace yq
 				node_type* p = node_ + head_;
 				if (! empty())
 				{
-					YQ_ASSERT( head_ >= 0 && head_ < (int)MAX_COUNT, return 0  );
+					MY_ASSERT( head_ >= 0 && head_ < (int)MAX_COUNT, return 0  );
 					// it's not the last one element in the dequeue
 					head_ = head_ + node_[head_].get_next_idx();
 
@@ -856,7 +856,7 @@ namespace yq
 			{
 				offset_type __x_off = node_offset(__x);
 
-				YQ_ASSERT( __x_off >= 0 && __x_off < (int)MAX_COUNT , return);
+				MY_ASSERT( __x_off >= 0 && __x_off < (int)MAX_COUNT , return);
 
 				__x->value().~value_type();
 				if (empty())
@@ -866,7 +866,7 @@ namespace yq
 				}
 				else
 				{
-					YQ_ASSERT( tail_ >= 0 && tail_ < (int)MAX_COUNT, return );
+					MY_ASSERT( tail_ >= 0 && tail_ < (int)MAX_COUNT, return );
 					node_[tail_].attach(node_ + __x_off);
 					tail_ = __x_off;
 					node_[tail_].set_next_idx(0);
@@ -897,7 +897,7 @@ namespace yq
 			offset_type first_off = node_offset(first);
 			offset_type last_off = node_offset(cur_node);
 
-			YQ_ASSERT( first_off >= 0 && first_off < (int)MAX_COUNT && last_off >= 0 && last_off < (int)MAX_COUNT , return 0);
+			MY_ASSERT( first_off >= 0 && first_off < (int)MAX_COUNT && last_off >= 0 && last_off < (int)MAX_COUNT , return 0);
 
 			if (empty())
 			{
@@ -906,7 +906,7 @@ namespace yq
 			}
 			else
 			{
-				YQ_ASSERT( tail_ >= 0 && tail_ < (int)MAX_COUNT, return 0 );
+				MY_ASSERT( tail_ >= 0 && tail_ < (int)MAX_COUNT, return 0 );
 				node_[tail_].attach(node_ + first_off);
 				node_[last_off].set_next_idx(0);
 			}
@@ -1014,11 +1014,11 @@ template <class value_type, std::size_t MAX_COUNT, int L = 0>
 class fixed_size_memory_pool
 {
 public:
-	typedef yq::fixed_size_array_list<value_type, MAX_COUNT, L> Array_List;
-	typedef yq::array_list_node_base<value_type,L> node_type;
+	typedef MY::fixed_size_array_list<value_type, MAX_COUNT, L> Array_List;
+	typedef MY::array_list_node_base<value_type,L> node_type;
 
-	typedef yq::array_link_list_iterator<value_type,L> iterator;
-	typedef yq::array_link_list_const_iterator<value_type,L> const_iterator;
+	typedef MY::array_link_list_iterator<value_type,L> iterator;
+	typedef MY::array_link_list_const_iterator<value_type,L> const_iterator;
 	typedef value_type* pointer;
 	typedef const value_type* const_pointer;
 	typedef value_type& reference;
@@ -1095,7 +1095,7 @@ public:
 		
 		node_type* dst_node = reinterpret_cast<node_type*>(dst_pos);
 		
-		YQ_ASSERT( allocated_start_ >= 0, return false );
+		MY_ASSERT( allocated_start_ >= 0, return false );
 
 		node_type* head_node = array_list_[allocated_start_];
 

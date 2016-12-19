@@ -29,7 +29,7 @@ set(COMMON
         tools/inc/tcp_conn.h
         tools/inc/thread.h
         tools/inc/json.h
-        tools/inc/yq_assert.h
+        tools/inc/my_assert.h
         tools/inc/config_data.h
         tools/src/base.cpp
         tools/src/client_comm_engine.cpp

@@ -1,8 +1,8 @@
 //
 //  main.cpp
 //  tcpserver 
-//  Created by 杜国超 on 16/12/8.
-//  Copyright © 2016年 杜国超. All rights reserved.
+//  Created by DGuco on 16/12/8.
+//  Copyright © 2016年 DGuco. All rights reserved.
 //
 
 #include <iostream>

@@ -7,7 +7,7 @@
 
 #include "../inc/client_comm_engine.h"
 #include "../inc/base.h"
-#include "../inc/yq_assert.h"
+#include "../inc/MY_assert.h"
 #include "../inc/oi_tea.h"
 
 unsigned char ClientCommEngine::tKey[16] = {7,21,111,121,57,69,51,121,57,111,20,223,125,154,19,64};
@@ -62,7 +62,7 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 			(pEncrypt == NULL)
 	)
 	{
-		YQ_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToMsg Input param failed.");
+		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToMsg Input param failed.");
 	}
 
 	char* tpBuff = (char*) pBuff;
@@ -74,7 +74,7 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 	// 验证包长与实际长度是否匹配
 	if (tTotalClientLen != unBuffLen)
 	{
-		YQ_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertStreamToMsg tTotalClientLen = %d unequal to unBuffLen = %d.", tTotalClientLen, unBuffLen);
+		MY_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertStreamToMsg tTotalClientLen = %d unequal to unBuffLen = %d.", tTotalClientLen, unBuffLen);
 	}
 	tpBuff += sizeof(unsigned short);
 	tTotalClientLen -= sizeof(unsigned short);
@@ -87,7 +87,7 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 	// 补齐的长度一定小于8字节
 	if (tTmpLen >= 8)
 	{
-		YQ_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tTmpLen);
+		MY_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tTmpLen);
 	}
 	// 直接扔掉8字节补齐的长度
 	tTotalClientLen -= tTmpLen;
@@ -101,11 +101,11 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 	CMessageHead* pMsgHead = pMsg->mutable_msghead();
 	if (pMsgHead->ParseFromArray(tpBuff, tTmpLen) == false)
 	{
-		YQ_ASSERT_STR(0, return -4, "ClientCommEngine::ConvertStreamToMsg CMessageHead ParseFromArray failed.");
+		MY_ASSERT_STR(0, return -4, "ClientCommEngine::ConvertStreamToMsg CMessageHead ParseFromArray failed.");
 	}
 	if (pMsgHead->ByteSize() != tTmpLen)
 	{
-		YQ_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertStreamToMsg pMsgHead ByteSize = %d unequal to tTmpLen = %d..",
+		MY_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertStreamToMsg pMsgHead ByteSize = %d unequal to tTmpLen = %d..",
 			pMsgHead->ByteSize(), tTmpLen);
 	}
 	tpBuff += tTmpLen;
@@ -120,7 +120,7 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 
 		if (tTmpLen != tTotalClientLen)
 		{
-			YQ_ASSERT_STR(0, return -6, "ClientCommEngine::ConvertStreamToMsg tTmpLen %d unequal to tTotalClientLen %d.",
+			MY_ASSERT_STR(0, return -6, "ClientCommEngine::ConvertStreamToMsg tTmpLen %d unequal to tTotalClientLen %d.",
 				tTmpLen, tTotalClientLen);
 		}
 
@@ -147,7 +147,7 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 		// 解密后的长度不能超过最大MAX_PACKAGE_LEN,也不能比输入的未加密前长度长
 		if (tOutLen >= MAX_PACKAGE_LEN || tOutLen > tTotalClientLen)
 		{
-			YQ_ASSERT_STR(0, return -7, "ClientCommEngine::ConvertStreamToMsg DecryptData failed, tOutLen = %d, Input Length = %d.", tOutLen, tTotalClientLen);
+			MY_ASSERT_STR(0, return -7, "ClientCommEngine::ConvertStreamToMsg DecryptData failed, tOutLen = %d, Input Length = %d.", tOutLen, tTotalClientLen);
 		}
 
 		// MessagePara
@@ -155,14 +155,14 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 		Message* tpMsgPara = pMsgFactory->CreateMessage(pMsg->msghead().messageid());
 		if (tpMsgPara == NULL)
 		{
-			YQ_ASSERT_STR(0, return -8, "ClientCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.", pMsg->msghead().messageid());
+			MY_ASSERT_STR(0, return -8, "ClientCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.", pMsg->msghead().messageid());
 		}
 
 		if (tpMsgPara->ParseFromArray(tpEncryBuff, tOutLen) != true)
 		{
 			// 使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
 			tpMsgPara->~Message();
-			YQ_ASSERT_STR(0, return -9, "ClientCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
+			MY_ASSERT_STR(0, return -9, "ClientCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
 		}
 
 		pMsg->set_msgpara((unsigned long)tpMsgPara);
@@ -178,7 +178,7 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 			(pTcpHead == NULL)
 	)
 	{
-		YQ_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToMsg Input param failed.");
+		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToMsg Input param failed.");
 	}
 
 	char* tpBuff = (char*) pBuff;
@@ -188,7 +188,7 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 	unsigned short tTotalLen = *(unsigned short*)tpBuff;
 	if (tTotalLen != unBuffLen)
 	{
-		YQ_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertStreamToMsg tTotalLen = %d unequal to unBuffLen = %d.", tTotalLen, unBuffLen);
+		MY_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertStreamToMsg tTotalLen = %d unequal to unBuffLen = %d.", tTotalLen, unBuffLen);
 	}
 	tpBuff += sizeof(unsigned short);
 	tTotalLen -= sizeof(unsigned short);
@@ -203,7 +203,7 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 	// 补齐的长度一定小于8字节
 	if (tTmpLen >= 8)
 	{
-		YQ_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tTmpLen);
+		MY_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tTmpLen);
 	}
 	// 直接扔掉8字节补齐的长度
 	tTotalLen -= tTmpLen;
@@ -217,12 +217,12 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 	// CTcpHead
 	if (pTcpHead->ParseFromArray(tpBuff, tTmpLen) == false)
 	{
-		YQ_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertStreamToMsg CTcpHead ParseFromArray falied.");
+		MY_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertStreamToMsg CTcpHead ParseFromArray falied.");
 	}
 
 	if (pTcpHead->ByteSize() != tTmpLen)
 	{
-		YQ_ASSERT_STR(0, return -4, "ClientCommEngine::ConvertStreamToMsg pTcpHead ByteSize = %d unequal to tTmpLen = %d.",
+		MY_ASSERT_STR(0, return -4, "ClientCommEngine::ConvertStreamToMsg pTcpHead ByteSize = %d unequal to tTmpLen = %d.",
 			pTcpHead->ByteSize(), tTmpLen);
 	}
 	tpBuff += tTmpLen;
@@ -241,7 +241,7 @@ int ClientCommEngine::ConvertMsgToStream(void* pBuff, unsigned short& unBuffLen,
 			(unBuffLen < (pTcpHead->ByteSize() + sizeof(unsigned short) * 2))
 	)
 	{
-		YQ_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertMsgToStream Input param failed.");
+		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertMsgToStream Input param failed.");
 	}
 
 	char* tpBuff = (char*) pBuff;
@@ -263,7 +263,7 @@ int ClientCommEngine::ConvertMsgToStream(void* pBuff, unsigned short& unBuffLen,
 	// CTcpHead
 	if (pTcpHead->SerializeToArray(tpBuff, unBuffLen - tTotalLen) == false)
 	{
-		YQ_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertMsgToStream CTcpHead SerializeToArray failed.");
+		MY_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertMsgToStream CTcpHead SerializeToArray failed.");
 	}
 	tpBuff += pTcpHead->GetCachedSize();
 	tTotalLen += pTcpHead->GetCachedSize();
@@ -292,7 +292,7 @@ int ClientCommEngine::ConvertMsgToStream(void* pBuff, unsigned short& unBuffLen,
 		// CMessageHead
 		if (pMsg->msghead().SerializeToArray(tpClientBuff, unBuffLen - tTotalLen - tTotalClientLen) == false)
 		{
-			YQ_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertMsgToStream CMessageHead SerializeToArray failed.");
+			MY_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertMsgToStream CMessageHead SerializeToArray failed.");
 		}
 		tpClientBuff += pMsg->msghead().GetCachedSize();
 		tTotalClientLen += pMsg->msghead().GetCachedSize();
@@ -310,11 +310,11 @@ int ClientCommEngine::ConvertMsgToStream(void* pBuff, unsigned short& unBuffLen,
 		::google::protobuf::Message* pMsgPara = (::google::protobuf::Message*) pMsg->msgpara();
 		if (pMsgPara == NULL)
 		{
-			YQ_ASSERT_STR(0, return -4, "ClientCommEngine::ConvertMsgToStream MsgPara is NULL.");
+			MY_ASSERT_STR(0, return -4, "ClientCommEngine::ConvertMsgToStream MsgPara is NULL.");
 		}
 		if (pMsgPara->SerializeToArray(tpEncryBuff, iMsgParaLen) == false)
 		{
-			YQ_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertMsgToStream MsgPara SerializeToArray failed.");
+			MY_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertMsgToStream MsgPara SerializeToArray failed.");
 		}
 		// 消息加密
 		if (bEncrypt)

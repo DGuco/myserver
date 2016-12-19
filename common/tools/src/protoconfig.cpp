@@ -15,7 +15,7 @@ int CConfigMgr::LoadConfig(std::string pPathFileName)
 	if ( tFileDescriptor < 0 )
 	{
 		LOG_ERROR("default", "[%s : %d : %s] %s open failed.",
-				__YQ_FILE__, __LINE__, __FUNCTION__, pPathFileName.c_str());
+				__MY_FILE__, __LINE__, __FUNCTION__, pPathFileName.c_str());
 		return -1;
 	}
 	google::protobuf::io::FileInputStream tFileInput(tFileDescriptor);
@@ -23,7 +23,7 @@ int CConfigMgr::LoadConfig(std::string pPathFileName)
 	if ( false == google::protobuf::TextFormat::Parse(&tFileInput, &m_Config))
 	{
 		LOG_ERROR("default", "[%s : %d : %s] %s parse failed.",
-				__YQ_FILE__, __LINE__, __FUNCTION__, pPathFileName.c_str());
+				__MY_FILE__, __LINE__, __FUNCTION__, pPathFileName.c_str());
 		return -1;
 	}
 

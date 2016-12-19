@@ -3,7 +3,7 @@
 //	Date:	05/26/2008
 // 	Desc:	统计函数调用性能
 //  
-//  Copyright (C) 2008 - YQ Entertainment Technology Co.,Ltd
+//  Copyright (C) 2008 - MY Entertainment Technology Co.,Ltd
 //						All Rights Reserved 
 // ***************************************************************
 #ifndef __PERFORMANCE_H__

@@ -4,9 +4,9 @@
 #include <cstddef>
 #include <string>
 
-#include "yq_string.h"
+#include "MY_string.h"
 
-namespace yq
+namespace MY
 {
 	template<class _Key>
 	struct hash
@@ -54,9 +54,9 @@ namespace yq
 
 
 	template<>
-	struct hash< yq::string<8> >
+	struct hash< MY::string<8> >
 	{
-		size_t operator()(const yq::string<8>& __s) const
+		size_t operator()(const MY::string<8>& __s) const
 		{
 			return __stl_hash_string(__s.c_str());
 		}		
@@ -64,27 +64,27 @@ namespace yq
 
 
 	template<>
-	struct hash< yq::string<16> >
+	struct hash< MY::string<16> >
 	{
-		size_t operator()(const yq::string<16>& __s) const
+		size_t operator()(const MY::string<16>& __s) const
 		{
 			return __stl_hash_string(__s.c_str());
 		}		
 	};
 
 	template<>
-	struct hash< yq::string<32> >
+	struct hash< MY::string<32> >
 	{
-		size_t operator()(const yq::string<32>& __s) const
+		size_t operator()(const MY::string<32>& __s) const
 		{
 			return __stl_hash_string(__s.c_str());
 		}		
 	};
 
 	template<>
-	struct hash< yq::string<64> >
+	struct hash< MY::string<64> >
 	{
-		size_t operator()(const yq::string<64>& __s) const
+		size_t operator()(const MY::string<64>& __s) const
 		{
 			return __stl_hash_string(__s.c_str());
 		}		

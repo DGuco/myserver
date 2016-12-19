@@ -1,5 +1,5 @@
 #include "../inc/server_comm_engine.h"
-#include "../inc/yq_assert.h"
+#include "../inc/MY_assert.h"
 #include "../inc/message_interface.h"
 
 
@@ -26,7 +26,7 @@ int ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CProxyHead* 
 {
 	if ((pBuff == NULL) || (unBuffLen < (sizeof(unsigned short) * 3)) || (pProxyHead == NULL) || (pMsg == NULL) || ( pMsgFactory == NULL ) )
 	{
-		YQ_ASSERT_STR(0, return -1, "ServerCommEngine::ConvertStreamToMsg Input param failed.");
+		MY_ASSERT_STR(0, return -1, "ServerCommEngine::ConvertStreamToMsg Input param failed.");
 	}
 	char* tpBuff = (char*) pBuff;
 	unsigned short tTmpLen = 0;
@@ -37,7 +37,7 @@ int ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CProxyHead* 
 	// 验证包长与实际长度是否匹配
 	if (tTotalLen != unBuffLen)
 	{
-		YQ_ASSERT_STR(0, return -2, "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d unequal to unBuffLen = %d.", tTotalLen, unBuffLen);
+		MY_ASSERT_STR(0, return -2, "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d unequal to unBuffLen = %d.", tTotalLen, unBuffLen);
 	}
 
 	tpBuff += sizeof(unsigned short);
@@ -51,7 +51,7 @@ int ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CProxyHead* 
 	// 补齐的长度一定小于8字节
 	if (tAddLen >= 8)
 	{
-		YQ_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tAddLen);
+		MY_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tAddLen);
 	}
 	// 直接抛掉补充长度
 	tTotalLen -= tAddLen;
@@ -64,14 +64,14 @@ int ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CProxyHead* 
 	// CProxyHead
 	if (pProxyHead->ParseFromArray(tpBuff, tTmpLen) != true)
 	{
-		YQ_ASSERT_STR(0, return -4, "ServerCommEngine::ConvertStreamToMsg CProxyHead ParseFromArray failed.");
+		MY_ASSERT_STR(0, return -4, "ServerCommEngine::ConvertStreamToMsg CProxyHead ParseFromArray failed.");
 	}
 	tpBuff += tTmpLen;
 	tTotalLen -= tTmpLen;
 
 	if (tTotalLen < 0)
 	{
-		YQ_ASSERT_STR(0, return -5, "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d impossibility.", tTotalLen);
+		MY_ASSERT_STR(0, return -5, "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d impossibility.", tTotalLen);
 	}
 
 	if (tTotalLen == 0)
@@ -87,7 +87,7 @@ int ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CProxyHead* 
 	// MessageHead
 	if (pMsg->mutable_msghead()->ParseFromArray(tpBuff, tTmpLen) != true)
 	{
-		YQ_ASSERT_STR(0, return -6, "ServerCommEngine::ConvertStreamToMsg CMessageHead ParseFromArray failed.");
+		MY_ASSERT_STR(0, return -6, "ServerCommEngine::ConvertStreamToMsg CMessageHead ParseFromArray failed.");
 	}
 	tpBuff += tTmpLen;
 	tTotalLen -= tTmpLen;
@@ -100,7 +100,7 @@ int ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CProxyHead* 
 	if (tTotalLen != tTmpLen)
 	{
 		// msgpara长度不匹配
-		YQ_ASSERT_STR(0, return -7, "ServerCommEngine::ConvertStreamToMsg failed, tTotalLen(%d) != tTmpLen.(%d)", tTotalLen, tTmpLen);
+		MY_ASSERT_STR(0, return -7, "ServerCommEngine::ConvertStreamToMsg failed, tTotalLen(%d) != tTmpLen.(%d)", tTotalLen, tTmpLen);
 	}
 
 	// MessagePara
@@ -111,14 +111,14 @@ int ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CProxyHead* 
 
 	if (tpMsgPara == NULL)
 	{
-		YQ_ASSERT_STR(0, return -8, "ServerCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.", pMsg->msghead().messageid());
+		MY_ASSERT_STR(0, return -8, "ServerCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.", pMsg->msghead().messageid());
 	}
 
 	if (tpMsgPara->ParseFromArray(tpBuff, tTmpLen) != true)
 	{
 		// 使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
 		tpMsgPara->~Message();
-		YQ_ASSERT_STR(0, return -9, "ServerCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
+		MY_ASSERT_STR(0, return -9, "ServerCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
 	}
 
 	pMsg->set_msgpara((unsigned long)tpMsgPara);
@@ -130,7 +130,7 @@ int ConvertMsgToStream(CProxyHead* pProxyHead, CMessage* pMsg, void* pBuff, unsi
 {
 	if ((pBuff == NULL) || (unBuffLen < 8) || (pProxyHead == NULL))
 	{
-		YQ_ASSERT_STR(0, return -1, "ServerCommEngine::ConvertMsgToStream Input impossibility.");
+		MY_ASSERT_STR(0, return -1, "ServerCommEngine::ConvertMsgToStream Input impossibility.");
 	}
 
 	char* tpBuff = (char*) pBuff;
@@ -155,7 +155,7 @@ int ConvertMsgToStream(CProxyHead* pProxyHead, CMessage* pMsg, void* pBuff, unsi
 	// 序列化CProxyHead
 	if (pProxyHead->SerializeToArray(tpBuff, unBuffLen - tLen) == false)
 	{
-		YQ_ASSERT_STR(0, return -2, "ServerCommEngine::ConvertMsgToStream CProxyHead SerializeToArray failed.");
+		MY_ASSERT_STR(0, return -2, "ServerCommEngine::ConvertMsgToStream CProxyHead SerializeToArray failed.");
 	}
 	tpBuff += pProxyHead->GetCachedSize();
 	tLen += pProxyHead->GetCachedSize();
@@ -191,7 +191,7 @@ int ConvertMsgToStream(CProxyHead* pProxyHead, CMessage* pMsg, void* pBuff, unsi
 	// 序列化CMessageHead
 	if (pMsg->mutable_msghead()->SerializeToArray(tpBuff, unBuffLen - tLen) == false)
 	{
-		YQ_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertMsgToStream CMessageHead SerializeToArray failed.");
+		MY_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertMsgToStream CMessageHead SerializeToArray failed.");
 	}
 	tpBuff += pMsg->mutable_msghead()->GetCachedSize();
 	tLen += pMsg->mutable_msghead()->GetCachedSize();
@@ -200,7 +200,7 @@ int ConvertMsgToStream(CProxyHead* pProxyHead, CMessage* pMsg, void* pBuff, unsi
 	Message* tpMsgPara = (Message*)pMsg->msgpara();
 	if (tpMsgPara == NULL)
 	{
-		YQ_ASSERT_STR(0, return -4, "ServerCommEngine::ConvertMsgToStream CMessagePara is NULL.");
+		MY_ASSERT_STR(0, return -4, "ServerCommEngine::ConvertMsgToStream CMessagePara is NULL.");
 	}
 
 	// msgpara长度
@@ -211,7 +211,7 @@ int ConvertMsgToStream(CProxyHead* pProxyHead, CMessage* pMsg, void* pBuff, unsi
 	// 序列化msgpara
 	if (tpMsgPara->SerializeToArray(tpBuff, unBuffLen - tLen) == false)
 	{
-		YQ_ASSERT_STR(0, return -5, "ServerCommEngine::ConvertMsgToStream msgpara SerializeToArray failed.");
+		MY_ASSERT_STR(0, return -5, "ServerCommEngine::ConvertMsgToStream msgpara SerializeToArray failed.");
 	}
 	tpBuff += tpMsgPara->GetCachedSize();
 	tLen += tpMsgPara->GetCachedSize();
@@ -240,7 +240,7 @@ int ConvertStreamToProxy(const void* pBuff, unsigned short unBuffLen, CProxyHead
 {
 	if ((pBuff == NULL) || (unBuffLen < (sizeof(unsigned short) * 3)) || (pProxyHead == NULL) )
 	{
-		YQ_ASSERT_STR(0, return -1, "ServerCommEngine::ConvertStreamToMsg Input param failed.");
+		MY_ASSERT_STR(0, return -1, "ServerCommEngine::ConvertStreamToMsg Input param failed.");
 	}
 	char* tpBuff = (char*) pBuff;
 	unsigned short tTmpLen = 0;
@@ -251,7 +251,7 @@ int ConvertStreamToProxy(const void* pBuff, unsigned short unBuffLen, CProxyHead
 	// 验证包长与实际长度是否匹配
 	if (tTotalLen != unBuffLen)
 	{
-		YQ_ASSERT_STR(0, return -2, "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d unequal to unBuffLen = %d.", tTotalLen, unBuffLen);
+		MY_ASSERT_STR(0, return -2, "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d unequal to unBuffLen = %d.", tTotalLen, unBuffLen);
 	}
 
 	tpBuff += sizeof(unsigned short);
@@ -265,7 +265,7 @@ int ConvertStreamToProxy(const void* pBuff, unsigned short unBuffLen, CProxyHead
 	// 补齐的长度一定小于8字节
 	if (tAddLen >= 8)
 	{
-		YQ_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tAddLen);
+		MY_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tAddLen);
 	}
 	// 直接抛掉补充长度
 	tTotalLen -= tAddLen;
@@ -278,14 +278,14 @@ int ConvertStreamToProxy(const void* pBuff, unsigned short unBuffLen, CProxyHead
 	// CProxyHead
 	if (pProxyHead->ParseFromArray(tpBuff, tTmpLen) != true)
 	{
-		YQ_ASSERT_STR(0, return -4, "ServerCommEngine::ConvertStreamToMsg CProxyHead ParseFromArray failed.");
+		MY_ASSERT_STR(0, return -4, "ServerCommEngine::ConvertStreamToMsg CProxyHead ParseFromArray failed.");
 	}
 	tpBuff += tTmpLen;
 	tTotalLen -= tTmpLen;
 
 	if (tTotalLen < 0)
 	{
-		YQ_ASSERT_STR(0, return -5, "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d impossibility.", tTotalLen);
+		MY_ASSERT_STR(0, return -5, "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d impossibility.", tTotalLen);
 	}
 
 	return 0;

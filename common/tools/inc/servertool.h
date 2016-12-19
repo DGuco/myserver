@@ -11,7 +11,7 @@
 
 #include "clock.h"
 #include "object.h"
-#include "yq_assert.h"
+#include "my_assert.h"
 #include "log.h"
 
 using namespace std;
@@ -32,7 +32,7 @@ public:
 		spSingleton = static_cast< T* >( this );
 	}
 
-	static T* GetSingletonPtr( )
+	static T* GetSingletonPtr()
 	{
 		return spSingleton;
 	}

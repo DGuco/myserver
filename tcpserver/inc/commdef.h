@@ -1,8 +1,8 @@
 //
 //  commdef.cpp
 //  tcpserver 宏定义
-//  Created by 杜国超 on 16/12/1.
-//  Copyright © 2016年 杜国超. All rights reserved.
+//  Created by DGuco on 16/12/1.
+//  Copyright © 2016年 DGuco. All rights reserved.
 //
 
 #ifndef __TCPDEF_H__

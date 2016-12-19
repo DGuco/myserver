@@ -1,21 +1,14 @@
-/******************************************************************************
-  文件名          : objmanager.h
-  版本号          : 1.0
-  作者            : YQ
-  生成日期        : 2009-06-05
-  最近修改        : 
-  功能描述        : 对象管理器(创建,删除,查找),效率O(1),保证对象id自增长
-  函数列表        : 
-  修改历史        : 
-  1 日期          : 2009-06-05
-    作者          : YQ
-    修改内容      : 生成
-*******************************************************************************/
+//
+//  objmanager.h
+//  objmanager
+//  Created by DGuco on 16/12/19.
+//  Copyright © 2016年 DGuco. All rights reserved.
+//
 #pragma once
 
 #include "array_list.h"
 #include "clock.h"
-#include "yq_assert.h"
+#include "my_assert.h"
 #include "log.h"
 
 /**
@@ -69,7 +62,7 @@ struct incremental_obj_id_policy
 	{
 		if (id < id_start || id > id_end)
 		{
-			YQ_ASSERT_STR(false, return -1, "id = %d, id_start = %d, id_end = %d.", id, id_start, id_end);
+			MY_ASSERT_STR(false, return -1, "id = %d, id_start = %d, id_end = %d.", id, id_start, id_end);
 		}
 		return (id - id_start) % count;
 	}
@@ -78,11 +71,11 @@ struct incremental_obj_id_policy
 };
 
 template <class obj_name, id_type id_start, int count, id_type id_end>
-class ObjManager : public yq::fixed_size_memory_pool<obj_name, count>
+class ObjManager : public MY::fixed_size_memory_pool<obj_name, count>
 {
 public:
 	typedef incremental_obj_id_policy<id_start, count, id_end> id_policy;
-	typedef yq::fixed_size_memory_pool<obj_name, count> super;
+	typedef MY::fixed_size_memory_pool<obj_name, count> super;
 	typedef typename super::pointer pointer;
 	typedef typename super::reference reference;
 	typedef typename super::iterator iterator;

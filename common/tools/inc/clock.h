@@ -3,7 +3,7 @@
 //	Date:	05/23/2008
 // 	Desc:	封装时钟函数
 //  
-//  Copyright (C) 2008 - YQ Entertainment Technology Co.,Ltd
+//  Copyright (C) 2008 - MY Entertainment Technology Co.,Ltd
 //						All Rights Reserved 
 // ***************************************************************
 #ifndef __CLOCK_H__
