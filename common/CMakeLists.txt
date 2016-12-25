@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-add_definitions(-DUSE_LOG4CPP -std=c++11)
+add_definitions(-DUSE_LOG4CPP -DLINUX -std=c++11)
 project(gameserver)
 set(COMMON
         tools/inc/array_list.h

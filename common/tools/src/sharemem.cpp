@@ -32,7 +32,7 @@ BYTE* CreateShareMem( key_t iKey, long vSize )
 	LOG_NOTICE( "default", "Try to malloc share memory of %ld bytes...", iTempShmSize);
 
 	iShmID = shmget( iKey, iTempShmSize, IPC_CREAT|IPC_EXCL|0666 );
-s
+
 	if( iShmID < 0 )
 	{
 		if( errno != EEXIST )
