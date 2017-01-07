@@ -4,7 +4,7 @@ set(CMAKE_C_COMPILER gcc)
 set(CMAKE_CXX_COMPILER g++)
 
 project(server)
-add_subdirectory(common)
+add_subdirectory(framework)
 add_subdirectory(proxyserver)
 add_subdirectory(tcpserver)
 

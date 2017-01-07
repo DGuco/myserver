@@ -12,9 +12,15 @@ set(SOURCE_FILES
 
 include_directories(
         /usr/local/include
-        ${CMAKE_SOURCE_DIR/common/message/inc}
-        ${CMAKE_SOURCE_DIR/common/mytimer}
-        ${CMAKE_SOURCE_DIR/common/tools/inc}
+        ${CMAKE_SOURCE_DIR/framework/base}
+        ${CMAKE_SOURCE_DIR/framework/config}
+        ${CMAKE_SOURCE_DIR/framework/log}
+        ${CMAKE_SOURCE_DIR/framework/message}
+        ${CMAKE_SOURCE_DIR/framework/mystd}
+        ${CMAKE_SOURCE_DIR/framework/net}
+        ${CMAKE_SOURCE_DIR/framework/sharemem}
+        ${CMAKE_SOURCE_DIR/framework/thread}
+        ${CMAKE_SOURCE_DIR/framework/timer}
 )
 link_directories(
         /usr/local/lib/
@@ -22,5 +28,5 @@ link_directories(
 )
 
 add_executable(tcpserver ${SOURCE_FILES})
-target_link_libraries(tcpserver common pthread protobuf )
+target_link_libraries(tcpserver framework pthread protobuf )
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)

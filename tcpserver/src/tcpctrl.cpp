@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <netinet/tcp.h>
 #include "../inc/tcpctrl.h"
-#include "../../common/tools/inc/client_comm_engine.h"
+#include "../../framework/net/client_comm_engine.h"
 #include "../inc/commdef.h"
 
 /**

@@ -3,10 +3,10 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <sourceRoots>
-      <file path="$PROJECT_DIR$/common" />
-      <file path="$PROJECT_DIR$/common/message" />
       <file path="$PROJECT_DIR$/common/mytimer" />
-      <file path="$PROJECT_DIR$/common/tools" />
+      <file path="$PROJECT_DIR$/framework" />
+      <file path="$PROJECT_DIR$/framework/base" />
+      <file path="$PROJECT_DIR$/framework/message" />
       <file path="$PROJECT_DIR$/proxyserver" />
       <file path="$PROJECT_DIR$/shareread" />
       <file path="$PROJECT_DIR$/sharewrite" />

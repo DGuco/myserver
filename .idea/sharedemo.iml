@@ -5,7 +5,8 @@
       <sourceFolder url="file://$MODULE_DIR$/tcpserver" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sharewrite" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/common" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/common/mytimer" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/framework" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/shareread" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/proxyserver" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/bin" />

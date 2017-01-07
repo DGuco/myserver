@@ -9,12 +9,12 @@
 #define __TCPCTRL_H__
 
 #include <sys/epoll.h>
-#include "../../common/tools/inc/tcp_conn.h"
-#include "../../common/tools/inc/log.h"
-#include "../../common/tools/inc/servertool.h"
-#include "../../common/message/tcpmessage.pb.h"
-#include "../../common/message/message.pb.h"
-#include "../../common/tools/inc/protoconfig.h"
+#include "../../framework/net/tcp_conn.h"
+#include "../../framework/log/log.h"
+#include "../../framework/base/servertool.h"
+#include "../../framework/message/tcpmessage.pb.h"
+#include "../../framework/message/message.pb.h"
+#include "../../framework/config/protoconfig.h"
 #include "../inc/commdef.h"
 
 #define MAX_ERRNO_NUM 10
