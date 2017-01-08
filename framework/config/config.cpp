@@ -1,9 +1,9 @@
 /************************************************************
-  Copyright ?  2002-2003,
+  Copyright ?
   FileName:     ConfigFile.cpp
   Author:        
   Version:      1.0
-  Date:         2002年5月8日
+  Date:         20017年1月6日
   Description:
     实现对配置文件的读取。
     使用方法如下：

@@ -1,10 +1,10 @@
 // ***************************************************************
 //  File:	clock.h   version:  1.0
-//	Date:	05/23/2008
+//	Date:	20017年1月6日
 // 	Desc:	封装时钟函数
 //  
-//  Copyright (C) 2008 - MY Entertainment Technology Co.,Ltd
-//						All Rights Reserved 
+//  Copyright (C) 2008 - DGuco
+//						All Rights Reserved
 // ***************************************************************
 #ifndef __CLOCK_H__
 #define __CLOCK_H__

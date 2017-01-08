@@ -18,248 +18,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d069f017-acfa-4319-a930-9c3a45d30834" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/framework/CMakeLists.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/framework/net/nethead.cpp" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/.svn/text-base/.cproject.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/.svn/text-base/.project.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/CMakeLists.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/all-wcprops" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/entries" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/cmake.bat.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/coremessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/coremessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/ordermessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/ordermessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/protoc.exe.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/protoc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/resourcemessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/resourcemessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/roommessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/roommessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/tcpmessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/tcpmessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/template.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/prop-base/template.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/cmake.bat.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/configure.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/configure.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/coremessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/coremessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/dbmessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/dbmessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/itemmessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/itemmessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/make.bat.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/make.sh.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/message.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/message.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/ordermessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/ordermessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/protoc.exe.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/protoc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/proxymessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/proxymessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/resourcemessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/resourcemessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/roommessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/roommessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/tcpmessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/tcpmessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/template.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/template.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/webmessage.pb.cc.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/text-base/webmessage.pb.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/coremessage.pb.cc.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/coremessage.pb.h.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/dbmessage.pb.cc.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/dbmessage.pb.h.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/itemmessage.pb.cc.2.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/itemmessage.pb.cc.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/itemmessage.pb.h.2.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/itemmessage.pb.h.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/resourcemessage.pb.cc.2.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/resourcemessage.pb.cc.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/resourcemessage.pb.h.2.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/resourcemessage.pb.h.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/roommessage.pb.cc.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/roommessage.pb.h.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/svn-6Yr6ot" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/template.pb.cc.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/.svn/tmp/template.pb.h.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/all-wcprops" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/entries" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/prop-base/webmessage.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/README.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/configure.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/coremessage.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/dbmessage.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/itemmessage.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/message.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/ordermessage.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/proxymessage.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/resourcemessage.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/roommessage.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/tcpmessage.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/template.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/text-base/webmessage.proto.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/tmp/dbmessage.proto.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/tmp/itemmessage.proto.2.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/tmp/itemmessage.proto.3.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/tmp/itemmessage.proto.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/tmp/resourcemessage.proto.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/message/proto/.svn/tmp/template.proto.tmp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/.svn/all-wcprops" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/.svn/entries" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/all-wcprops" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/entries" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/array_list.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/base.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/client_comm_engine.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/clock.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/code_queue.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/config.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/daemon.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/dirtyword.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/hash_function.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/log.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/luaconfig.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/message_interface.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/mymacro.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/nethead.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/object.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/objmanager.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/oi_tea.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/performance.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/protoconfig.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/runflag.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/server_comm_engine.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/servertool.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/sharemem.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/shm.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/statistics.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/tcp_conn.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/tcp_conn.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/thread.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/timer.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/yq_assert.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/yq_hashmap.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/yq_hashmap_mod.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/yq_queue.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/yq_random.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/yq_set.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/yq_sharedhashmap.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/yq_sharedvector.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/yq_string.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/inc/.svn/text-base/yq_vector.h.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/all-wcprops" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/entries" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/base.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/client_comm_engine.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/clock.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/code_queue.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/config.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/daemon.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/dirtyword.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/log.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/luaconfig.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/message_interface.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/nethead.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/object.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/oi_tea.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/performance.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/protoconfig.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/runflag.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/server_comm_engine.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/servertool.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/sharemem.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/shm.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/statistics.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/thread.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/.svn/text-base/timer.cpp.svn-base" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/config_data.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/nethead.cpp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/tools/src/thread.cpp" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/.cproject" afterPath="$PROJECT_DIR$/framework/.cproject" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/.project" afterPath="$PROJECT_DIR$/framework/.project" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/.svn/all-wcprops" afterPath="$PROJECT_DIR$/framework/.svn/all-wcprops" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/.svn/entries" afterPath="$PROJECT_DIR$/framework/.svn/entries" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/cmake.bat" afterPath="$PROJECT_DIR$/framework/message/cmake.bat" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/configure.pb.cc" afterPath="$PROJECT_DIR$/framework/message/configure.pb.cc" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/configure.pb.h" afterPath="$PROJECT_DIR$/framework/message/configure.pb.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/make.bat" afterPath="$PROJECT_DIR$/framework/message/make.bat" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/make.sh" afterPath="$PROJECT_DIR$/framework/message/make.sh" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/message.pb.cc" afterPath="$PROJECT_DIR$/framework/message/message.pb.cc" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/message.pb.h" afterPath="$PROJECT_DIR$/framework/message/message.pb.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/proto/README" afterPath="$PROJECT_DIR$/framework/message/proto/README" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/proto/configure.proto" afterPath="$PROJECT_DIR$/framework/message/proto/configure.proto" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/proto/message.proto" afterPath="$PROJECT_DIR$/framework/message/proto/message.proto" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/proto/proxymessage.proto" afterPath="$PROJECT_DIR$/framework/message/proto/proxymessage.proto" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/proto/tcpmessage.proto" afterPath="$PROJECT_DIR$/framework/message/proto/tcpmessage.proto" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/protoc" afterPath="$PROJECT_DIR$/framework/message/protoc" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/protoc.exe" afterPath="$PROJECT_DIR$/framework/message/protoc.exe" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/proxymessage.pb.cc" afterPath="$PROJECT_DIR$/framework/message/proxymessage.pb.cc" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/proxymessage.pb.h" afterPath="$PROJECT_DIR$/framework/message/proxymessage.pb.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/tcpmessage.pb.cc" afterPath="$PROJECT_DIR$/framework/message/tcpmessage.pb.cc" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/message/tcpmessage.pb.h" afterPath="$PROJECT_DIR$/framework/message/tcpmessage.pb.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/array_list.h" afterPath="$PROJECT_DIR$/framework/mystd/array_list.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/base.h" afterPath="$PROJECT_DIR$/framework/base/base.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/client_comm_engine.h" afterPath="$PROJECT_DIR$/framework/net/client_comm_engine.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/clock.h" afterPath="$PROJECT_DIR$/framework/timer/clock.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/code_queue.h" afterPath="$PROJECT_DIR$/framework/mystd/code_queue.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/config.h" afterPath="$PROJECT_DIR$/framework/config/config.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/config_data.h" afterPath="$PROJECT_DIR$/framework/config/config_data.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/daemon.h" afterPath="$PROJECT_DIR$/framework/net/daemon.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/dirtyword.h" afterPath="$PROJECT_DIR$/framework/base/dirtyword.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/hash_function.h" afterPath="$PROJECT_DIR$/framework/mystd/hash_function.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/json.h" afterPath="$PROJECT_DIR$/framework/config/json.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/log.h" afterPath="$PROJECT_DIR$/framework/log/log.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/luaconfig.h" afterPath="$PROJECT_DIR$/framework/config/luaconfig.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/message_interface.h" afterPath="$PROJECT_DIR$/framework/net/message_interface.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/my_assert.h" afterPath="$PROJECT_DIR$/framework/mystd/my_assert.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/mymacro.h" afterPath="$PROJECT_DIR$/framework/mystd/mymacro.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/nethead.h" afterPath="$PROJECT_DIR$/framework/net/nethead.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/object.h" afterPath="$PROJECT_DIR$/framework/base/object.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/objmanager.h" afterPath="$PROJECT_DIR$/framework/base/objmanager.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/oi_tea.h" afterPath="$PROJECT_DIR$/framework/net/oi_tea.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/performance.h" afterPath="$PROJECT_DIR$/framework/base/performance.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/protoconfig.h" afterPath="$PROJECT_DIR$/framework/config/protoconfig.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/runflag.h" afterPath="$PROJECT_DIR$/framework/net/runflag.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/server_comm_engine.h" afterPath="$PROJECT_DIR$/framework/net/server_comm_engine.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/servertool.h" afterPath="$PROJECT_DIR$/framework/base/servertool.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/sharemem.h" afterPath="$PROJECT_DIR$/framework/sharemem/sharemem.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/shm.h" afterPath="$PROJECT_DIR$/framework/sharemem/shm.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/statistics.h" afterPath="$PROJECT_DIR$/framework/net/statistics.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/tcp_conn.cpp" afterPath="$PROJECT_DIR$/framework/net/tcp_conn.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/tcp_conn.h" afterPath="$PROJECT_DIR$/framework/net/tcp_conn.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/inc/thread.h" afterPath="$PROJECT_DIR$/framework/thread/thread.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/base.cpp" afterPath="$PROJECT_DIR$/framework/base/base.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/client_comm_engine.cpp" afterPath="$PROJECT_DIR$/framework/net/client_comm_engine.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/clock.cpp" afterPath="$PROJECT_DIR$/framework/timer/clock.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/code_queue.cpp" afterPath="$PROJECT_DIR$/framework/mystd/code_queue.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/config.cpp" afterPath="$PROJECT_DIR$/framework/config/config.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/daemon.cpp" afterPath="$PROJECT_DIR$/framework/net/daemon.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/dirtyword.cpp" afterPath="$PROJECT_DIR$/framework/base/dirtyword.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/json.cpp" afterPath="$PROJECT_DIR$/framework/config/json.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/log.cpp" afterPath="$PROJECT_DIR$/framework/log/log.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/luaconfig.cpp" afterPath="$PROJECT_DIR$/framework/config/luaconfig.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/message_interface.cpp" afterPath="$PROJECT_DIR$/framework/net/message_interface.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/object.cpp" afterPath="$PROJECT_DIR$/framework/base/object.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/oi_tea.cpp" afterPath="$PROJECT_DIR$/framework/net/oi_tea.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/performance.cpp" afterPath="$PROJECT_DIR$/framework/base/performance.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/protoconfig.cpp" afterPath="$PROJECT_DIR$/framework/config/protoconfig.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/runflag.cpp" afterPath="$PROJECT_DIR$/framework/net/runflag.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/server_comm_engine.cpp" afterPath="$PROJECT_DIR$/framework/net/server_comm_engine.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/servertool.cpp" afterPath="$PROJECT_DIR$/framework/base/servertool.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/sharemem.cpp" afterPath="$PROJECT_DIR$/framework/sharemem/sharemem.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/shm.cpp" afterPath="$PROJECT_DIR$/framework/sharemem/shm.cpp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/tools/src/statistics.cpp" afterPath="$PROJECT_DIR$/framework/net/statistics.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/sharedemo.iml" afterPath="$PROJECT_DIR$/.idea/sharedemo.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tcpserver/CMakeLists.txt" afterPath="$PROJECT_DIR$/tcpserver/CMakeLists.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/base/performance.h" afterPath="$PROJECT_DIR$/framework/base/performance.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/base/servertool.cpp" afterPath="$PROJECT_DIR$/framework/base/servertool.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/config/config.cpp" afterPath="$PROJECT_DIR$/framework/config/config.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/config/config.h" afterPath="$PROJECT_DIR$/framework/config/config.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/net/nethead.h" afterPath="$PROJECT_DIR$/framework/net/nethead.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/timer/clock.h" afterPath="$PROJECT_DIR$/framework/timer/clock.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tcpserver/inc/tcpctrl.h" afterPath="$PROJECT_DIR$/tcpserver/inc/tcpctrl.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" afterPath="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" />
     </list>
     <ignored path="sharedemo.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -279,69 +44,69 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/framework/CMakeLists.txt">
+      <file leaf-file-name="thread.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/thread/thread.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="55" column="34" selection-start-line="55" selection-start-column="34" selection-end-line="55" selection-end-column="34" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="nethead.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/framework/net/nethead.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="54">
-              <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#19#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="client_comm_engine.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/framework/net/client_comm_engine.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-              <folding>
-                <element signature="e#87#118#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="thread.cpp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/framework/thread/thread.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#19#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="statistics.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/framework/net/statistics.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="30" column="12" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="12" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="statistics.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/framework/net/statistics.cpp">
+      <file leaf-file-name="clock.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/timer/clock.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="144">
-              <caret line="8" column="19" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
+              <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
               <folding>
-                <marker date="1483758150019" expanded="true" signature="219:223" ph="{...}" />
+                <element signature="e#62#102#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="clock.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/timer/clock.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="20" column="8" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="8" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/base/base.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-396">
+              <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tcpctrl.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-576">
+              <caret line="7" column="9" selection-start-line="7" selection-start-column="9" selection-end-line="7" selection-end-column="9" />
+              <folding>
+                <element signature="e#123#142#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tcpctrl.h" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tcpserver/inc/tcpctrl.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="162">
+              <caret line="24" column="1" selection-start-line="24" selection-start-column="1" selection-end-line="24" selection-end-column="1" />
+              <folding>
+                <element signature="e#166#188#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -350,55 +115,43 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tcpserver/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
-              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tcpctrl.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tcpserver/inc/tcpctrl.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
-              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tcpctrl.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
-              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+            <state relative-caret-position="584">
+              <caret line="39" column="14" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="14" />
               <folding>
-                <marker date="1483757936913" expanded="true" signature="741:744" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="867:870" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="1020:2180" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="2765:2782" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="5445:6190" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="6358:6849" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="6993:7032" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="7159:7247" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="7384:7626" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="7755:11895" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="12042:17170" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="17323:17701" ph="{...}" />
-                <marker date="1483757936913" expanded="true" signature="17843:19213" ph="{...}" />
+                <element signature="e#118#137#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="client_comm_engine.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/framework/net/client_comm_engine.h">
+      <file leaf-file-name="log.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/log/log.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="674">
+              <caret line="109" column="17" selection-start-line="109" selection-start-column="17" selection-end-line="109" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dirtyword.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/base/dirtyword.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="156">
+              <caret line="577" column="18" selection-start-line="577" selection-start-column="4" selection-end-line="577" selection-end-column="18" />
               <folding>
-                <marker date="1483757969977" expanded="true" signature="103:197" ph="..." />
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="object.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/base/object.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="432">
+              <caret line="24" column="7" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -411,12 +164,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/common/tools/src/object.cpp" />
-        <option value="$PROJECT_DIR$/common/tools/src/nethead.cpp" />
-        <option value="$PROJECT_DIR$/common/tools/src/message_interface.cpp" />
-        <option value="$PROJECT_DIR$/common/tools/src/luaconfig.cpp" />
-        <option value="$PROJECT_DIR$/common/tools/src/dirtyword.cpp" />
-        <option value="$PROJECT_DIR$/common/message/proto/configure.proto" />
         <option value="$PROJECT_DIR$/common/tools/src/protoconfig.cpp" />
         <option value="$PROJECT_DIR$/sharewrite/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/sharewrite/main.cpp" />
@@ -452,7 +199,6 @@
         <option value="$PROJECT_DIR$/framework/base/servertool.h" />
         <option value="$PROJECT_DIR$/framework/mystd/array_list.h" />
         <option value="$PROJECT_DIR$/framework/mystd/hash_function.h" />
-        <option value="$PROJECT_DIR$/tcpserver/inc/tcpctrl.h" />
         <option value="$PROJECT_DIR$/tcpserver/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/framework/net/tcp_conn.h" />
         <option value="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" />
@@ -462,6 +208,13 @@
         <option value="$PROJECT_DIR$/framework/net/nethead.cpp" />
         <option value="$PROJECT_DIR$/framework/net/client_comm_engine.cpp" />
         <option value="$PROJECT_DIR$/framework/thread/thread.cpp" />
+        <option value="$PROJECT_DIR$/tcpserver/inc/tcpctrl.h" />
+        <option value="$PROJECT_DIR$/framework/base/performance.h" />
+        <option value="$PROJECT_DIR$/framework/base/servertool.cpp" />
+        <option value="$PROJECT_DIR$/framework/config/config.cpp" />
+        <option value="$PROJECT_DIR$/framework/config/config.h" />
+        <option value="$PROJECT_DIR$/framework/net/nethead.h" />
+        <option value="$PROJECT_DIR$/framework/timer/clock.h" />
       </list>
     </option>
   </component>
@@ -473,10 +226,10 @@
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="64" />
-    <option name="y" value="-7" />
-    <option name="width" value="1217" />
-    <option name="height" value="808" />
+    <option name="x" value="65" />
+    <option name="y" value="24" />
+    <option name="width" value="1209" />
+    <option name="height" value="776" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -518,70 +271,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="myserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myserver" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tcpserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myserver" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tcpserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="inc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myserver" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="framework" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myserver" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="framework" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="net" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -830,12 +519,12 @@
       <workItem from="1482590617245" duration="79000" />
       <workItem from="1482591008599" duration="3428000" />
       <workItem from="1483753273139" duration="3276000" />
-      <workItem from="1483757235760" duration="1039000" />
+      <workItem from="1483757235760" duration="7026000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="102823000" />
+    <option name="totallyTimeSpent" value="108810000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -847,18 +536,18 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-7" width="1217" height="808" extended-state="6" />
+    <frame x="65" y="24" width="1209" height="776" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26050422" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19881557" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.4932773" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36826348" sideWeight="0.48991597" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32784432" sideWeight="0.4932773" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32838038" sideWeight="0.50336134" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24101797" sideWeight="0.49663866" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24101797" sideWeight="0.49663866" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22005989" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22169812" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13323353" sideWeight="0.49663866" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -883,13 +572,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp</url>
-          <line>107</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -898,218 +580,129 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/framework/message/proto/message.proto">
+    <entry file="file://$PROJECT_DIR$/framework/base/servertool.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="792">
-          <caret line="44" column="23" selection-start-line="44" selection-start-column="8" selection-end-line="44" selection-end-column="23" />
+        <state relative-caret-position="-1170">
+          <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/message/message.pb.h">
+    <entry file="file://$PROJECT_DIR$/framework/config/config.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="71" column="2" selection-start-line="71" selection-start-column="2" selection-end-line="71" selection-end-column="2" />
+        <state relative-caret-position="90">
+          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="26" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/message/tcpmessage.pb.h">
+    <entry file="file://$PROJECT_DIR$/framework/config/config.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="216" column="11" selection-start-line="216" selection-start-column="11" selection-end-line="216" selection-end-column="11" />
+        <state relative-caret-position="108">
+          <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/message/tcpmessage.pb.cc">
+    <entry file="file://$PROJECT_DIR$/framework/config/config_data.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="497">
-          <caret line="892" column="19" selection-start-line="892" selection-start-column="9" selection-end-line="892" selection-end-column="19" />
+        <state relative-caret-position="0">
+          <caret line="0" column="9" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#24#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/include/x86_64-linux-gnu/sys/socket.h">
+    <entry file="file://$PROJECT_DIR$/framework/config/config_data.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="114" column="11" selection-start-line="114" selection-start-column="11" selection-end-line="114" selection-end-column="11" />
+        <state relative-caret-position="54">
+          <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+          <folding>
+            <element signature="e#53#70#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/message/proto/tcpmessage.proto">
+    <entry file="file://$PROJECT_DIR$/framework/config/json.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/log/log.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="53" selection-start-line="11" selection-start-column="53" selection-end-line="11" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/log/log.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2880">
-          <caret line="160" column="9" selection-start-line="160" selection-start-column="9" selection-end-line="160" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/sharemem/sharemem.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="537">
-          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/server_comm_engine.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4014">
-          <caret line="223" column="5" selection-start-line="223" selection-start-column="5" selection-end-line="223" selection-end-column="5" />
           <folding>
-            <marker date="1483756793946" expanded="true" signature="447:532" ph="{...}" />
-            <marker date="1483756793946" expanded="true" signature="561:7783" ph="{...}" />
-            <marker date="1483756793946" expanded="true" signature="694:3485" ph="{...}" />
-            <marker date="1483756793946" expanded="true" signature="3590:6264" ph="{...}" />
-            <marker date="1483756793946" expanded="true" signature="6360:7781" ph="{...}" />
+            <element signature="e#0#17#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/timer/clock.cpp">
+    <entry file="file://$PROJECT_DIR$/framework/config/json.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="17" column="5" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/nethead.h">
+    <entry file="file://$PROJECT_DIR$/framework/config/luaconfig.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1884">
-          <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/tcp_conn.cpp">
+    <entry file="file://$PROJECT_DIR$/framework/config/luaconfig.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="13" column="6" selection-start-line="13" selection-start-column="6" selection-end-line="13" selection-end-column="6" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/config/protoconfig.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#261#300#0" expanded="false" />
+            <element signature="e#0#24#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/oi_tea.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1416">
-          <caret line="15" column="10" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/framework/config/protoconfig.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-72">
+        <state relative-caret-position="90">
           <caret line="5" column="29" selection-start-line="5" selection-start-column="29" selection-end-line="5" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/runflag.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/runflag.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/timer/clock.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="17" column="45" selection-start-line="17" selection-start-column="45" selection-end-line="17" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/base.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-810">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/dirtyword.cpp">
+    <entry file="file://$PROJECT_DIR$/framework/log/log.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/dirtyword.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/object.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/object.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/objmanager.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2538">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/performance.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1183">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/performance.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/servertool.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1026">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/servertool.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-648">
-          <caret line="55" column="7" selection-start-line="55" selection-start-column="7" selection-end-line="55" selection-end-column="7" />
+          <caret line="0" column="9" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/framework/mystd/array_list.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10656">
-          <caret line="592" column="16" selection-start-line="592" selection-start-column="0" selection-end-line="593" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="162">
+          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+          <folding>
+            <element signature="e#314#336#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/mystd/code_queue.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#23#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1129,40 +722,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/mystd/mymacro.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/base/base.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/config/config_data.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="648">
-          <caret line="36" column="22" selection-start-line="36" selection-start-column="22" selection-end-line="36" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/config/config.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/framework/mystd/my_assert.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1171,87 +730,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/mystd/code_queue.cpp">
+    <entry file="file://$PROJECT_DIR$/framework/mystd/mymacro.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tcpserver/inc/commdef.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="10" column="9" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
-          <folding>
-            <element signature="e#167#184#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="20" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="20" />
+        <state relative-caret-position="-702">
+          <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tcpserver/CMakeLists.txt">
+    <entry file="file://$PROJECT_DIR$/framework/net/client_comm_engine.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
+        <state relative-caret-position="126">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/tcp_conn.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding>
-            <marker date="1483757913185" expanded="true" signature="953:2532" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tcpserver/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tcpserver/inc/tcpctrl.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-          <folding>
-            <marker date="1483757936913" expanded="true" signature="741:744" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="867:870" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="1020:2180" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="2765:2782" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="5445:6190" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="6358:6849" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="6993:7032" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="7159:7247" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="7384:7626" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="7755:11895" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="12042:17170" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="17323:17701" ph="{...}" />
-            <marker date="1483757936913" expanded="true" signature="17843:19213" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1260,7 +751,123 @@
         <state relative-caret-position="162">
           <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding>
-            <marker date="1483757969977" expanded="true" signature="103:197" ph="..." />
+            <element signature="e#94#124#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/daemon.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#22#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/daemon.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/message_interface.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/message_interface.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/nethead.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/nethead.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="24" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
+          <folding>
+            <marker date="1483759985208" expanded="true" signature="50:87" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/oi_tea.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/oi_tea.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/runflag.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/runflag.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/server_comm_engine.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/server_comm_engine.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="9" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="9" />
+          <folding>
+            <element signature="e#62#96#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/statistics.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="9" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#23#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1273,50 +880,158 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/statistics.cpp">
+    <entry file="file://$PROJECT_DIR$/framework/net/tcp_conn.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="8" column="19" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
-          <folding>
-            <marker date="1483758150019" expanded="true" signature="219:223" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="55" column="34" selection-start-line="55" selection-start-column="34" selection-end-line="55" selection-end-column="34" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/nethead.cpp">
+    <entry file="file://$PROJECT_DIR$/framework/net/tcp_conn.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+        <state relative-caret-position="-342">
+          <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#42#64#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/client_comm_engine.cpp">
+    <entry file="file://$PROJECT_DIR$/framework/sharemem/sharemem.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#87#118#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/sharemem/sharemem.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/sharemem/shm.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#16#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/sharemem/shm.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/framework/thread/thread.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/thread/thread.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/timer/clock.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+          <folding>
+            <element signature="e#62#102#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/timer/clock.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="20" column="8" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tcpserver/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="584">
+          <caret line="39" column="14" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="14" />
+          <folding>
+            <element signature="e#118#137#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/log/log.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="674">
+          <caret line="109" column="17" selection-start-line="109" selection-start-column="17" selection-end-line="109" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/base/dirtyword.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="577" column="18" selection-start-line="577" selection-start-column="4" selection-end-line="577" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/base/object.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="24" column="7" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/base/base.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-396">
+          <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-576">
+          <caret line="7" column="9" selection-start-line="7" selection-start-column="9" selection-end-line="7" selection-end-column="9" />
+          <folding>
+            <element signature="e#123#142#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tcpserver/inc/tcpctrl.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="24" column="1" selection-start-line="24" selection-start-column="1" selection-end-line="24" selection-end-column="1" />
+          <folding>
+            <element signature="e#166#188#0" expanded="true" />
           </folding>
         </state>
       </provider>

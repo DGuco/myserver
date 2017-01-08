@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#include "../tools/base.h"
+#include "../base/base.h"
 
 #define MAX_NETHEAD_LEN (sizeof(short) * 2 + 		\
 		sizeof(int) * (MAX_BROADCAST_NUM + 1) + 	\
