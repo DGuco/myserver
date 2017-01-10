@@ -144,15 +144,16 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
     struct sockaddr_in addr;
     memset(&addr,0,sizeof(struct sockaddr_in));
 
-    if (EphInit() == -1)
-    {
-        return 2;
-    }
-
+    //建立socket
     if ((miSocket = EphSocket(AF_INET,SOCK_STREAM,0)) == -1)
     {
-        EphCleanUp();
         return 3;
+    }
+
+    if (EphInit() == -1)
+    {
+        EphCleanUp();
+        return 2;
     }
 
     /*SO_REUSEADDR
@@ -228,8 +229,8 @@ int CTcpCtrl::EphInit()
     mstEpollEvent.events = EPOLLIN | EPOLLERR | EPOLLHUP; //epoll监听 可读，错误，和挂起事件
     //初始化event触发事件信息
     mstEpollEvent.data.ptr = NULL;
-    mstEpollEvent.data.fd = -1;
-
+    mstEpollEvent.data.fd = iSocketFd;
+    
     mpEpollevents = (struct epoll_event*)malloc((MAX_SOCKET_NUM) * sizeof(struct epoll_event));
     if (NULL == mpEpollevents)
     {
@@ -241,6 +242,7 @@ int CTcpCtrl::EphInit()
     {
         LOG_ERROR("default","ERROR:%s",strerror(errno));
         LOG_ERROR("default","epoll create error!");
+        close(miKdpfd);
         return -1;
     }
     return 0;
@@ -292,7 +294,6 @@ int CTcpCtrl::EphClose(int iSocketFd)
 int CTcpCtrl::EphCleanUp()
 {
     free(mpEpollevents);
-    close(miKdpfd);
     mpEpollevents = NULL;
     return 0;
 }
@@ -304,7 +305,6 @@ int CTcpCtrl::EphCleanUp()
 **/
 int CTcpCtrl::EphNewConn(int iSocketFd)
 {
-    mstEpollEvent.data.fd = iSocketFd;
     if (epoll_ctl(miKdpfd,EPOLL_CTL_ADD,iSocketFd,&mstEpollEvent) < 0)
     {
         LOG_ERROR("default","create new connection error,socket fd:%d!",iSocketFd);
