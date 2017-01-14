@@ -83,7 +83,7 @@ int CTcpCtrl::Initialize()
         LOG_ERROR("default","InitEpollSocket failed! TCPserver init failed. ReusltCode = %d!",iTmpRet);
         return iTmpRet;   
     }
-    LOG_INFO("default","InitEpollSocket successed! TCPserver init failed. ReusltCode = %d!",iTmpRet);
+    LOG_INFO("default","InitEpollSocket successed! TCPserver init successed. ReusltCode = %d!",iTmpRet);
 
     mastSocketInfo[miSocket].miSocket = miSocket;
     mastSocketInfo[miSocket].miSocketType = LISTEN_SOCKET;
@@ -136,10 +136,9 @@ int CTcpCtrl::SetRunFlag(int iRunFlag)
 int CTcpCtrl::InitEpollSocket(short shTmpport)
 {
     int iTmpRet = 0;
-    socklen_t iOptval = 0;
-    //兼容不同的平台系统
-    int iOpenLen = sizeof(int);
-    int iTmpFlags = 0;
+    socklen_t iTmpOptval = 0;
+    int iTmpOptLen = sizeof(int);
+    int iTmpFlags  =0;
     struct linger ling = {0,0};
     struct sockaddr_in addr;
     memset(&addr,0,sizeof(struct sockaddr_in));
@@ -156,17 +155,16 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
         return 2;
     }
 
-    /*SO_REUSEADDR
-     *R允许启动一个监听服务器并捆绑其众所周知端口，即使以前建立的将此端口用做他们的本地端口的连接仍存在。这通常是重启监听服务器时出现，若不设置此选项，则bind时将出错。
-     *允许在同一端口上启动同一服务器的多个实例，只要每个实例捆绑一个不同的本地IP地址即可。对于TCP，我们根本不可能启动捆绑相同IP地址和相同端口号的多个服务器。
-     *允许单个进程捆绑同一端口到多个套接口上，只要每个捆绑指定不同的本地IP地址即可。这一般不用于TCP服务器。
-     *允许完全重复的捆绑：当一个IP地址和端口绑定到某个套接口上时，还允许此IP地址和端口捆绑到另一个套接口上。一般来说，这个特性仅在支持多播的系统上才有，而且只对UDP套接口而言（TCP不支持多播）。
+    /* SO_REUSEADDR
+     * 当tcpserver作为客户端连接其他服务tcp服务时，如果自己断线重连对方时进入TIME_WAIT状态
+     * 此时如果重新绑定端口时会失败，这种状态会持续1-4分钟，设置此选项重用该地址，防止这种情况
+     * 发生
     */
     setsockopt(miSocket,SOL_SOCKET,SO_REUSEADDR,&iTmpFlags,sizeof(iTmpFlags));
     setsockopt(miSocket,SOL_SOCKET,SO_KEEPALIVE,&iTmpFlags,sizeof(iTmpFlags));
     //close()立刻返回，底层将未发送完的数据发送完成后再释放资源，即优雅退出。
     setsockopt(miSocket,SOL_SOCKET,SO_LINGER,&ling,sizeof(linger));
-    //禁止Nagle’s Algorithm延时算法，立刻发送
+    //禁止Nagle’s Algorithm延时算法，立刻发送,防止tcp粘包
     setsockopt(miSocket,IPPROTO_TCP,TCP_NODELAY,&iTmpFlags,sizeof(iTmpFlags));
 
     addr.sin_family = AF_INET;
@@ -175,18 +173,16 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
 
     if (bind(miSocket,(struct sockaddr *)&addr,sizeof(addr)) == -1)
     {
-        printf("******** error %s",strerror(errno));
         LOG_ERROR("default","Bind socket Error!");
         EphClose(miSocket);
         EphCleanUp();
         return 4;
     }
 
-    int iTmpOptLen = sizeof(socklen_t);
-    int iTmpOptval = TCP_BUFFER_LEN;
+    iTmpOptLen = sizeof(socklen_t);
+    iTmpOptval = TCP_BUFFER_LEN;
     if (setsockopt(miSocket,SOL_SOCKET,SO_RCVBUF,(const void*)&iTmpOptval,iTmpOptLen))
     {
-        printf("******** error %s",strerror(errno));
         LOG_ERROR("default","Set Recv buffer size to %d failed",iTmpOptval);
         return -1;
     }
@@ -229,7 +225,7 @@ int CTcpCtrl::EphInit()
     mstEpollEvent.events = EPOLLIN | EPOLLERR | EPOLLHUP; //epoll监听 可读，错误，和挂起事件
     //初始化event触发事件信息
     mstEpollEvent.data.ptr = NULL;
-    mstEpollEvent.data.fd = iSocketFd;
+    mstEpollEvent.data.fd = -1;
     
     mpEpollevents = (struct epoll_event*)malloc((MAX_SOCKET_NUM) * sizeof(struct epoll_event));
     if (NULL == mpEpollevents)
@@ -260,15 +256,15 @@ int CTcpCtrl::EphSocket(int iDomain,int iType,int iProtocol)
 
     if (iTmpSfd == -1)
     {
-        LOG_ERROR("default","socket create error!");
+        LOG_ERROR("default","socket create error! %s",strerror(errno));
         return -1;
     }
 
     //设置socket非阻塞
-    if (ioctl(iTmpSfd,FIONBIO,&iTmpFlags) &&
-        ((iTmpFlags = fcntl(iTmpSfd,F_GETFL,0)) < 0 || fcntl(iTmpSfd,F_GETFL, iTmpFlags | O_NONBLOCK) < 0))
+    if ((ioctl(iTmpSfd,FIONBIO,&iTmpFlags) < 0) ||
+        ((iTmpFlags = fcntl(iTmpSfd,F_GETFL,0)) < 0 || fcntl(iTmpSfd,F_SETFL, iTmpFlags | O_NONBLOCK) < 0))
     {
-        LOG_ERROR("default","set socket nonblock error!");
+        LOG_ERROR("default","set socket nonblock error! %s",strerror(errno));
         close(iTmpSfd);
         return -1;
     }
@@ -294,6 +290,7 @@ int CTcpCtrl::EphClose(int iSocketFd)
 int CTcpCtrl::EphCleanUp()
 {
     free(mpEpollevents);
+    close(miKdpfd);
     mpEpollevents = NULL;
     return 0;
 }
@@ -305,9 +302,10 @@ int CTcpCtrl::EphCleanUp()
 **/
 int CTcpCtrl::EphNewConn(int iSocketFd)
 {
+    mstEpollEvent.data.fd  = iSocketFd;
     if (epoll_ctl(miKdpfd,EPOLL_CTL_ADD,iSocketFd,&mstEpollEvent) < 0)
     {
-        LOG_ERROR("default","create new connection error,socket fd:%d!",iSocketFd);
+        LOG_ERROR("default","create new connection error,socket fd:%d! error:%s",iSocketFd,strerror(errno));
         return -1;
     }
     return 0;
@@ -332,7 +330,7 @@ int CTcpCtrl::GetExMessage()
     iTmpFlags = 1;
     if (-1 == iTmpfdNum)
     {
-        LOG_ERROR("default","Epoll wait error,return -1");
+        LOG_ERROR("default","Epoll wait error,return -1,error %s",strerror(errno));
         return 0;
     }
     int i,j;
