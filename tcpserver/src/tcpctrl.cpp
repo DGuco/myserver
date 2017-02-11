@@ -349,7 +349,7 @@ int CTcpCtrl::GetExMessage()
             continue;
         }
 
-        //epoll错误（注：同或运算）
+        //epoll错误（注：同或运算：相同为1 不同为0）
         if ((EPOLLERR & pevents->events) != 0)
         {
             LOG_ERROR("default","Epoll event->data.fd = %d ,error",pevents->data.fd);
@@ -449,7 +449,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
     int iTmpOffset;
     char* pTemp;
     char* pTemp1;
-    unsigned short unRecvLen;
+    unsigned int unRecvLen;
     int nRecvAllLen;
     time_t tTempTime;
     int iTmpSocket = mpSocketInfo->miSocket;
@@ -481,18 +481,16 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
 
     while(1)
     {
-        if ( nRecvAllLen < MSG_BASE_LEN)
+        //小于最小长度
+        if ( nRecvAllLen < MSG_HEAD_LEN)
         {
             LOG_ERROR("default","the package len is less than base len ,receive len %d",nRecvAllLen);
-            // 最小接受到的客户端的消息字节数不会小于8字节
-            // 这里之所以是8字节不是2字节不是因为消息会超过2字节大小
-            //主要是因为做了8字节对齐
             break;
         }
 
         //取出包的总长度
-        memcpy(&unRecvLen,(void*)pTemp1,sizeof(unsigned short));
-        if (unRecvLen < MSG_BASE_LEN || unRecvLen > MSG_OPT_LEN)
+        memcpy(&unRecvLen,(void*)pTemp1,sizeof(unsigned int));
+        if (unRecvLen < MSG_HEAD_LEN || unRecvLen > MSG_MAX_LEN)
         {
             LOG_ERROR("default","the package len is illegal",nRecvAllLen);
             ClearSocketInfo(Err_PacketError);
@@ -501,9 +499,9 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
         nRecvAllLen -= unRecvLen;
         //数据指针向后移动指向未读取位置
         pTemp1 += unRecvLen;
-        //总长度小于包长的长度,结束
         if(nRecvAllLen < 0)
         {
+            // 总长度小于包的长度，则继续接收
             nRecvAllLen += unRecvLen;
             pTemp1 -= unRecvLen;
             LOG_DEBUG("default", "Receive client part data left len = %d",nRecvAllLen,unRecvLen);
@@ -511,16 +509,16 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
         }
 
         unLength = 0;
-        //包长数据已读出,准备都去真正的数据存入mszMsgBuf
-        pTemp = mszMsgBuf;
-
-        //预留总长度
-        pTemp += sizeof(short);
-        unLength += sizeof(short);
-
-        //预留8字节对齐长度
-        pTemp += sizeof(short);
-        unLength += sizeof(short);
+//        //包长数据已读出,准备都去真正的数据存入mszMsgBuf
+//        pTemp = mszMsgBuf;
+//
+//        //预留总长度
+//        pTemp += sizeof(short);
+//        unLength += sizeof(short);
+//
+//        //预留8字节对齐长度
+//        pTemp += sizeof(short);
+//        unLength += sizeof(short);
 
         CMessage tmpMsg;
         tmpMsg.Clear();

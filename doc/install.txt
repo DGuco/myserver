@@ -1,0 +1,5 @@
+#服务器开发环境  : Ununtu
+#服务器依赖三方库：log4cpp,protobuf,openssl
+#openssl安装(Ubuntu):
+    sudo apt-get install openssl
+    sudo apt-get install libssl-dev

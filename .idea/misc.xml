@@ -3,10 +3,14 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <sourceRoots>
+      <file path="$PROJECT_DIR$/centerserver" />
       <file path="$PROJECT_DIR$/common/mytimer" />
       <file path="$PROJECT_DIR$/framework" />
       <file path="$PROJECT_DIR$/framework/base" />
       <file path="$PROJECT_DIR$/framework/message" />
+      <file path="$PROJECT_DIR$/gameserver" />
+      <file path="$PROJECT_DIR$/gateserver" />
+      <file path="$PROJECT_DIR$/goclient" />
       <file path="$PROJECT_DIR$/proxyserver" />
       <file path="$PROJECT_DIR$/shareread" />
       <file path="$PROJECT_DIR$/sharewrite" />

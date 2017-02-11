@@ -31,11 +31,9 @@ set(FRAMEWORK
         message/proxymessage.pb.cc
         message/configure.pb.h
         message/configure.pb.cc
-        mystd/code_queue.cpp
         mystd/my_assert.h
         mystd/mymacro.h
         mystd/hash_function.h
-        mystd/code_queue.h
         mystd/array_list.h
         net/statistics.h
         net/tcp_conn.h
@@ -54,10 +52,14 @@ set(FRAMEWORK
         net/server_comm_engine.cpp
         net/statistics.cpp
         net/client_comm_engine.cpp
+        net/ccrypto.h
+        net/ccrypto.cpp
         sharemem/sharemem.h
         sharemem/shm.h/
         sharemem/sharemem.cpp
         sharemem/shm.cpp
+        sharemem/code_queue.h
+        sharemem/code_queue.cpp
         thread/thread.h
         thread/thread.cpp
         timer/clock.cpp

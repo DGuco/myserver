@@ -23,41 +23,48 @@ void pbmsg_settcphead(CTcpHead& rHead, int iSrcFE, int iSrcID, int iDstFE, int i
 	rHead.set_timestamp(tTimestamp);
 }
 
-// [客户端实际上下行消息结构]
-// [消息说明]
-// |字段名称 					|长度											|描述
-// |client总长度 				|2字节											|
-// |8字节对齐补充长度 	|2字节											|
-// |CMessageHead长度	|2字节											|消息头长度
-// |CMessageHead			|CMessageHead.ByteSize()			|消息头
-// |MsgPara长度				|2字节											|实际消息内容长度
-// |MsgPara						|MsgPara.ByteSize()						|实际消息内容
-// |字节对齐补充内容 		|8-(client总长度 % 8)					|该内容无任何意义，仅用于消息8字节对齐
+/* 客户端实际上下行消息结构(消息头) + 消息内容
+ * 字段名称 			|		   长度			 |    		描述		 	 |
+ * ——————————————————————————————————————————————————————————————————
+ * client总长度	 	|		   4字节			 |			消息从长度	 |
+ * ——————————————————————————————————————————————————————————————————
+ * 序列号			 |	   	   2字节			 |			消息序列号    |
+ * ——————————————————————————————————————————————————————————————————
+ * protobuf版本      |		   1字节			 |			protobuf版本	 |
+ * ——————————————————————————————————————————————————————————————————
+ * 是否加密			 | 		   1字节			 |			是否加密		 |
+ * ———————————————————————————————————————————————————————————————————
+ * cmd				 |         2字节			 | 			消息码        |
+ */
 
 
-// [服务器内部总消息组成](仅在服务器内部传输时,CTcpHead后面的可以为空)
-// [消息说明]
-// |字段名称 					|长度												|描述
-// |总长度 						|2字节												|
-// |8字节对齐补充长度 	|2字节												|
-// |CTcpHead长度 			|2字节												|
-// |CTcpHead 					|CTcpHead.ByteSize()						|
-// |client总长度 				|2字节												|
-// |8字节对齐补充长度 	|2字节												|
-// |CMessageHead长度	|2字节												|消息头长度
-// |CMessageHead			|CMessageHead.ByteSize()				|消息头
-// |MsgPara长度				|2字节												|实际消息内容长度
-// |MsgPara						|MsgPara.ByteSize()							|实际消息内容
-// |字节对齐补充内容 		|8-(client总长度 % 8)						|该内容无任何意义，仅用于消息8字节对齐
-// |字节对齐补充内容 		|8-(总长度 % 8)								|该内容无任何意义，仅用于消息8字节对齐
-
+/* [服务器内部总消息组成](仅在服务器内部传输时,CTcpHead后面的可以为空)
+ * |字段名称 		|			长度			|			描述			|
+ * ——————————————————————————————————————————————————————————————————
+ * |总长度 			|			2字节		|						|
+ * ——————————————————————————————————————————————————————————————————
+ * |8字节对齐补充长度 |			2字节		|						|
+ * ——————————————————————————————————————————————————————————————————
+ * |CTcpHead长度 	|			2字节		|						|
+ * ——————————————————————————————————————————————————————————————————
+ * |client总长度 	|			2字节		|						|
+ * ——————————————————————————————————————————————————————————————————
+ * |8字节对齐补充长度 |			2字节		|						|
+ * ——————————————————————————————————————————————————————————————————
+ * |CMessageHead长度	|			2字节		|		消息头长度		|
+ * ——————————————————————————————————————————————————————————————————
+ * |MsgPara长度		|			2字节		|		实际消息内容长度  |
+ * ——————————————————————————————————————————————————————————————————
+ * |字节对齐补充内容 	|	8-(client总长度 % 8)	|						|
+ * ——————————————————————————————————————————————————————————————————
+*/
 
 // 反序列化客户端上下行的消息内容
 int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CMessage* pMsg, CFactory* pMsgFactory, bool bEncrypt, const unsigned char* pEncrypt)
 {
 	if (
 			(pBuff == NULL) ||
-			(unBuffLen < (sizeof(unsigned short) * 4)) ||
+			(unBuffLen < 10) ||
 			(pMsg == NULL) ||
 			(pEncrypt == NULL)
 	)
@@ -66,71 +73,53 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 	}
 
 	char* tpBuff = (char*) pBuff;
-	unsigned short tTmpLen = 0;
+	unsigned short tTmpSeq = 0;
+	unsigned short tTmpCmd = 0;
 
 	// client总长度
-	unsigned short tTotalClientLen = *(unsigned short*)tpBuff;
+	unsigned int tTotalClientLen = *(unsigned int*)tpBuff;
 
 	// 验证包长与实际长度是否匹配
 	if (tTotalClientLen != unBuffLen)
 	{
 		MY_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertStreamToMsg tTotalClientLen = %d unequal to unBuffLen = %d.", tTotalClientLen, unBuffLen);
 	}
+	tpBuff += sizeof(unsigned int);
+	tTotalClientLen -= sizeof(unsigned int);
+
+	// 序列号长度
+	tTmpSeq = *(unsigned short*)tpBuff;
 	tpBuff += sizeof(unsigned short);
 	tTotalClientLen -= sizeof(unsigned short);
 
-	// 字节对齐补充长度（采用8字节对齐）
-	tTmpLen = *(unsigned short*)tpBuff;
-	tpBuff += sizeof(unsigned short);
-	tTotalClientLen -= sizeof(unsigned short);
+	// protobuf版本
+	unsigned char tTmpProbufVersion = *(unsigned char*)tpBuff;
+	tpBuff += sizeof(unsigned char);
+	tTotalClientLen -= sizeof(unsigned char);
 
-	// 补齐的长度一定小于8字节
-	if (tTmpLen >= 8)
-	{
-		MY_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tTmpLen);
-	}
-	// 直接扔掉8字节补齐的长度
-	tTotalClientLen -= tTmpLen;
+	// 是否加密
+	unsigned char tTmpIsEncry = *(unsigned char*)tpBuff;
+	tpBuff += sizeof(unsigned char);
+	tTotalClientLen -= sizeof(unsigned char);
 
-	// CMessageHead长度
-	tTmpLen = *(unsigned short*)tpBuff;
+	// 消息码
+	tTmpCmd = *(unsigned short*)tpBuff;
 	tpBuff += sizeof(unsigned short);
 	tTotalClientLen -= sizeof(unsigned short);
 
 	// CMessageHead
 	CMessageHead* pMsgHead = pMsg->mutable_msghead();
-	if (pMsgHead->ParseFromArray(tpBuff, tTmpLen) == false)
-	{
-		MY_ASSERT_STR(0, return -4, "ClientCommEngine::ConvertStreamToMsg CMessageHead ParseFromArray failed.");
-	}
-	if (pMsgHead->ByteSize() != tTmpLen)
-	{
-		MY_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertStreamToMsg pMsgHead ByteSize = %d unequal to tTmpLen = %d..",
-			pMsgHead->ByteSize(), tTmpLen);
-	}
-	tpBuff += tTmpLen;
-	tTotalClientLen -= tTmpLen;
+	pMsgHead->set_messageid(tTmpCmd);
 
 	if (pMsgFactory)
 	{
-		// MessagePara长度
-		tTmpLen = *(unsigned short*)tpBuff;
-		tpBuff += sizeof(unsigned short);
-		tTotalClientLen -= sizeof(unsigned short);
-
-		if (tTmpLen != tTotalClientLen)
-		{
-			MY_ASSERT_STR(0, return -6, "ClientCommEngine::ConvertStreamToMsg tTmpLen %d unequal to tTotalClientLen %d.",
-				tTmpLen, tTotalClientLen);
-		}
-
 		// 有消息工厂则向下解析
 		// 开始消息解密
 		unsigned char tEncryBuff[MAX_PACKAGE_LEN] = {0};
 		unsigned char* tpEncryBuff = &tEncryBuff[0];
 		unsigned short tOutLen = MAX_PACKAGE_LEN;
 
-		if (bEncrypt)
+		if (tTmpIsEncry)
 		{
 			// 加密的消息处理
 			int tDecLen = tOutLen;

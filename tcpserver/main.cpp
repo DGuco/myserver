@@ -57,11 +57,6 @@ int main(int argc,char **argv)
         exit(0);
     }
     LOG_INFO("default", "tcp server is going to run...");
-    std::cout << "*********************" << std::endl;
-    std::cout << "*********************" << std::endl;
-    std::cout << "TcpServer start success" << std::endl;
-    std::cout << "*********************" << std::endl;
-    std::cout << "*********************" << std::endl;
 
     g_pTcpServer->Run();
 
