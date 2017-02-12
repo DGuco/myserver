@@ -1,4 +1,4 @@
-#include "gate_conn.h"
+#include "../inc/gate_conn.h"
 
 int CMyTCPConn::EstConn(int iAcceptFD) {
 	int iTempRet = 0;

@@ -26,7 +26,7 @@ CGateHandle::~CGateHandle()
 }
 
 
-int CGateHandle::Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo/*, CConfigure* pstCfg*/, CONNS_MAP* pMap)
+int CGateHandle::Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo, CONNS_MAP* pMap)
 {
 	m_eHandleType = eHandleType;
 	m_pInfo = pInfo;

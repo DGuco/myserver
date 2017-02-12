@@ -52,9 +52,7 @@ CTcpCtrl::~CTcpCtrl()
 **/
 int CTcpCtrl::Initialize()
 {
-    int iTmpI;
     int iTmpRet;
-    BYTE* pbTmp;
 
     mLastKeepaliveTime = 0;
     miRunFlag = 0;
@@ -119,12 +117,12 @@ int CTcpCtrl::Run()
        
        GetExMessage();              //读取客户端输入
     }
-    
     return 0;
 }
 
 int CTcpCtrl::SetRunFlag(int iRunFlag)
 {
+    miRunFlag = iRunFlag;
     return 0;
 }
 
@@ -210,6 +208,7 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
         EphCleanUp();
         return 5;
     }
+    return 0;
 }
 
 /**
@@ -433,6 +432,7 @@ int CTcpCtrl::GetExMessage()
         }
 
     }
+    return 0;
 }
 
 /**
@@ -444,8 +444,6 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
 {
     int iTmpRet = 0;
     int iTmpRecvBytes = 0;
-    int iTempRet;
-    int iRecvBytes;
     int iTmpOffset;
     char* pTemp;
     char* pTemp1;
@@ -594,9 +592,9 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
 
             //序列话8字节对齐长度
             *(short*) pTemp = iTmpAddlen;
-
         }
     }
+    return 0;
 }
 
 /**
@@ -633,9 +631,10 @@ int CTcpCtrl::TcpRead(int iSocket, char *pBuf, int iLen)
 **/
 void CTcpCtrl::ClearSocketInfo(short enError)
 {
-    int iTmpRet;
     if ( TCP_SUCCESS == enError)
-    {}
+    {
+
+    }
 
     //关闭socket
     if (mpSocketInfo->miSocket > 0)

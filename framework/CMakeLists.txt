@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-add_definitions(-DUSE_LOG4CPP -DLINUX -std=c++11)
+add_definitions(-DUSE_LOG4CPP -DLINUX -DUSE_MY_ASSERT -std=c++11)
 project(myserver)
 set(FRAMEWORK
         base/base.h
@@ -13,6 +13,7 @@ set(FRAMEWORK
         base/object.cpp
         base/performance.cpp
         base/servertool.cpp
+        base/my_assert.h
         config/json.h
         config/config_data.h
         config/config.h
@@ -31,10 +32,6 @@ set(FRAMEWORK
         message/proxymessage.pb.cc
         message/configure.pb.h
         message/configure.pb.cc
-        mystd/my_assert.h
-        mystd/mymacro.h
-        mystd/hash_function.h
-        mystd/array_list.h
         net/statistics.h
         net/tcp_conn.h
         net/client_comm_engine.h

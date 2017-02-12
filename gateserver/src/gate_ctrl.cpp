@@ -1,10 +1,9 @@
-#include "gate_ctrl.h"
-#include "runflag.h"
-#include "log.h"
-#include "message.pb.h"
-#include "tcpmessage.pb.h"
-#include "protoconfig.h"
-#include "client_comm_engine.h"
+#include "../inc/gate_ctrl.h"
+#include "../../framework/net/runflag.h"
+#include "../../framework/log/log.h"
+#include "../../framework/message/message.pb.h"
+#include "../../framework/message/tcpmessage.pb.h"
+#include "../../framework/net/client_comm_engine.h"
 
 extern CRunFlag g_byRunFlag;
 
@@ -15,7 +14,7 @@ extern CRunFlag g_byRunFlag;
 
 CGateCtrl::CGateCtrl()
 {
-	m_mapConns.initialize();
+	m_mapConns.clear();
 
 	for (int i = 0; i < MAX_CONNS_NUM; i++)
 	{
@@ -47,11 +46,11 @@ int CGateCtrl::Initialize()
 
 int CGateCtrl::ReadCfg()
 {
-	if (CConfigMgr::GetSingletonPtr()->LoadConfig("../config/gateconfig.proto") < 0)
-	{
-		LOG_ERROR("default", "load config failed.");
-		return -1;
-	}
+//	if (CConfigMgr::GetSingletonPtr()->LoadConfig("../config/gateconfig.proto") < 0)
+//	{
+//		LOG_ERROR("default", "load config failed.");
+//		return -1;
+//	}
 
 	return 0;
 }
@@ -419,7 +418,7 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	if (iRet < 0)
 	{
 		LOG_ERROR("default", "[%s : %d : %s] ConvertStreamToMsg return %d.",
-				__YQ_FILE__, __LINE__, __FUNCTION__, iRet);
+				__FILE__, __LINE__, __FUNCTION__, iRet);
 		return -1;
 	}
 
@@ -579,8 +578,6 @@ int CGateCtrl::CheckRoutines() {
 #endif
 		}
 	}
-
-
 		return 0;
 }
 
@@ -588,7 +585,7 @@ int CGateCtrl::PrepareToRun()
 {
 	int i;
 	// 创建主线程的监听socket
-	if (m_stListenSocket.CreateServer(CConfigMgr::GetSingletonPtr()->GetGateConfig().port()))
+	if (m_stListenSocket.CreateServer(20001))
 	{
 		return -1;
 	}

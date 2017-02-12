@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.6)
 project(gateserver)
-add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DMEDIUM_SIZE)
+add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DMEDIUM_SIZE -D_POSIX_MT_)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -std=c++11")
 
 set(SOURCE_FILES
         main.cpp
         inc/gate_conn.h
-        inc/gate_ctrl.h.h
+        inc/gate_ctrl.h
         inc/gate_handle.h
         src/gate_conn.cpp
         src/gate_ctrl.cpp

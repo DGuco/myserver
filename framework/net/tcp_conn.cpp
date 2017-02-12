@@ -104,7 +104,8 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateServer(unsigned short unPort, 
 		return -1;
 	}
 
-	if( setsockopt(m_iSocketFD, SOL_SOCKET, SO_REUSEADDR, &iReusePortFlag, sizeof(int)) )  // 允许套接口和一个已在使用中的地址捆绑
+	// 允许套接口和一个已在使用中的地址捆绑
+	if( setsockopt(m_iSocketFD, SOL_SOCKET, SO_REUSEADDR, &iReusePortFlag, sizeof(int)) )
 	{
 		LOG_ERROR( "default", "Set socket addr reusable failed, %s.", strerror(errno));
 	}

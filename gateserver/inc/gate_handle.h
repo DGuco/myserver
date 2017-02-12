@@ -1,6 +1,7 @@
 #ifndef _GATE_HANDLE_H_
 #define _GATE_HANDLE_H_
 
+#include <map>
 #include "../../framework/thread/thread.h"
 #include "gate_conn.h"
 
@@ -43,8 +44,7 @@ struct TStatLog {
 #define GETCURRENTHANDLEID(handletype ,i) (handletype + (i * EHandleType_NUM))
 
 
-typedef yq::hash_map<int, CMyTCPConn*, MAX_CONNS_NUM> CONNS_MAP;
-
+typedef std::map<int, CMyTCPConn*> CONNS_MAP;
 
 class CGateHandle : public CThread
 {
@@ -52,7 +52,7 @@ public:
 	CGateHandle();
 	~CGateHandle();
 
-	int Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo/*, CConfigure* pstCfg*/, CONNS_MAP* pMap);
+	int Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo, CONNS_MAP* pMap);
 
 	virtual int PrepareToRun() ;
 	virtual int Run() ;
