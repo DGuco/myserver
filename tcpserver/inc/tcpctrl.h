@@ -48,39 +48,39 @@ public:
 
 private:
 
-    static BYTE*        pCurrentShm;                     	// 内存块的指针     // 配置信息
-    int                 miRunFlag;
-    time_t              miLastTime;                     	// 上次检测超时的时间
-    time_t              miLastWriteStatTime;            	// 上次检测超时的时间
-    time_t              miNowTime;                      	// 当前时间
-    struct  timeval     mtvWait;                        	// 网络事件超时设置
-    int 				miSocket;                       	// 监听socket
-    struct sockaddr_in  mstSockAddr;                    	// 网络地址
-    TSocketInfo 		mastSocketInfo[MAX_SOCKET_NUM]; 	// socket结构数组，用于记录客户端的信息
-    TSocketInfo* 		mpSocketInfo;                   	// 当前的socket结构指针
+    static BYTE*        m_pCurrentShm;                     	// 内存块的指针     // 配置信息
+    int                 m_iRunFlag;
+    time_t              m_iLastTime;                     	// 上次检测超时的时间
+    time_t              m_iLastWriteStatTime;            	// 上次检测超时的时间
+    time_t              m_iNowTime;                      	// 当前时间
+    struct  timeval     m_tvWait;                        	// 网络事件超时设置
+    int 				m_iSocket;                       	// 监听socket
+    struct sockaddr_in  m_stSockAddr;                    	// 网络地址
+    TSocketInfo 		m_astSocketInfo[MAX_SOCKET_NUM]; 	// socket结构数组，用于记录客户端的信息
+    TSocketInfo* 		m_pSocketInfo;                   	// 当前的socket结构指针
 
-    char                mszCSPipeFile[100];             	// 本地文件
-    char                mszSCPipeFile[100];             	// 本地文件
+    char                m_szCSPipeFile[100];             	// 本地文件
+    char                m_szSCPipeFile[100];             	// 本地文件
 
-    char                mszMsgBuf[MAX_BUF_LEN]; 		 	// 消息包缓冲(加大是为了防止game过来的消息过大)
-    int                 miTimeout;
-    TTcpStat            mstTcpStat;                         // 当前tcp连接信息
-    int                 miWriteStatCount;
-    char                mszWriteStatBuf[1024];
-    struct epoll_event* mpEpollevents;                      //epoll event集合(大小MAX_SOCKET_NUM)
-    int                 miKdpfd;                            //epoll描述符
-    int                 miMaxfds;
-    struct epoll_event  mstEpollEvent;
+    char                m_szMsgBuf[MAX_BUF_LEN]; 		 	// 消息包缓冲(加大是为了防止game过来的消息过大)
+    int                 m_iTimeout;
+    TTcpStat            m_stTcpStat;                         // 当前tcp连接信息
+    int                 m_iWriteStatCount;
+    char                m_szWriteStatBuf[1024];
+    struct epoll_event* m_pEpollevents;                      //epoll event集合(大小MAX_SOCKET_NUM)
+    int                 m_iKdpfd;                            //epoll描述符
+    int                 m_iMaxfds;
+    struct epoll_event  m_stEpollEvent;
 
-    unsigned char 		mszSCMsgBuf[MAX_BUF_LEN]; 		 	// 发送消息缓冲区
-    unsigned short 		miSCIndex; 					 	    // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
-    short 				mnSCLength; 					 	// 实际发送的数据长度
+    unsigned char 		m_szSCMsgBuf[MAX_BUF_LEN]; 		 	// 发送消息缓冲区
+    unsigned short 		m_iSCIndex; 					 	    // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
+    short 				m_nSCLength; 					 	// 实际发送的数据长度
 
-//    CGateClient		mGateClient;
-    time_t				mLastKeepaliveTime;
-    CTcpHead			mSCTcpHead;				// 服务器发送到客户端的数据信息头
-    int					miSendIndex;				// 已发送的服务器到客户端的数据的游标
-    bool				mbHasRecv;					// 是否接收过数据(只用于第一次接收数据使用,防止没有RecvData直接GetOneCode报错)
+//    CGateClient		m_GateClient;
+    time_t				m_LastKeepaliveTime;
+    CTcpHead			m_SCTcpHead;				// 服务器发送到客户端的数据信息头
+    int					m_iSendIndex;				// 已发送的服务器到客户端的数据的游标
+    bool				m_bHasRecv;					// 是否接收过数据(只用于第一次接收数据使用,防止没有RecvData直接GetOneCode报错)
 };
 
 #endif

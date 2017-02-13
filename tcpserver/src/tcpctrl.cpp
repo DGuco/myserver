@@ -54,26 +54,26 @@ int CTcpCtrl::Initialize()
 {
     int iTmpRet;
 
-    mLastKeepaliveTime = 0;
-    miRunFlag = 0;
-    miWriteStatCount = 0;
-    mSCTcpHead.Clear();
-    miSendIndex = 0;
-    mbHasRecv = 0;
+    m_iLastKeepaliveTime = 0;
+    m_iRunFlag = 0;
+    m_iWriteStatCount = 0;
+    m_SCTcpHead.Clear();
+    m_iSendIndex = 0;
+    m_bHasRecv = 0;
 
-    memset(&mstTcpStat,0,sizeof(mstTcpStat));
+    memset(&m_stTcpStat,0,sizeof(m_stTcpStat));
 
     //初始化客户端socket数组信息
     for (int i = 0; i < MAX_SOCKET_NUM; ++i)
     {
-        memset(&mastSocketInfo[i],0,sizeof(TSocketInfo));
-        memset(&mastSocketInfo[i],0,sizeof(TSocketInfo));
+        memset(&m_astSocketInfo[i],0,sizeof(TSocketInfo));
+        memset(&m_astSocketInfo[i],0,sizeof(TSocketInfo));
         //把socket句柄设为无效句柄
-        mastSocketInfo[i].miSocket = INVALID_SOCKET;
+        m_astSocketInfo[i].m_iSocket = INVALID_SOCKET;
     }
 
     //初始化epoll
-    mpEpollevents = NULL;
+    m_pEpollevents = NULL;
     //初始化epoll socket
     iTmpRet = InitEpollSocket((short)listenport);
     if (0 != iTmpRet)
@@ -83,11 +83,11 @@ int CTcpCtrl::Initialize()
     }
     LOG_INFO("default","InitEpollSocket successed! TCPserver init successed. ReusltCode = %d!",iTmpRet);
 
-    mastSocketInfo[miSocket].miSocket = miSocket;
-    mastSocketInfo[miSocket].miSocketType = LISTEN_SOCKET;
-    mastSocketInfo[miSocket].miSocketFlag = RECV_DATA;
-    mastSocketInfo[miSocket].miConnectedPort = listenport;
-    miMaxfds = miSocket++;
+    m_astSocketInfo[m_iSocket].m_iSocket = m_iSocket;
+    m_astSocketInfo[m_iSocket].m_iSocketType = LISTEN_SOCKET;
+    m_astSocketInfo[m_iSocket].m_iSocketFlag = RECV_DATA;
+    m_astSocketInfo[m_iSocket].m_iConnectedPort = listenport;
+    m_iMaxfds = m_iSocket++;
 
     return 0;
 }
@@ -103,16 +103,16 @@ int CTcpCtrl::Run()
 
     while(1)
     {
-        if (tcpexit == miRunFlag)
+        if (tcpexit == m_iRunFlag)
         {
             LOG_NOTICE("default","TcpServer exit!");
             return 0;
         }
 
-        if(reloadcfg == miRunFlag)
+        if(reloadcfg == m_iRunFlag)
         {
             LOG_NOTICE("default","Reload tcpsvrd config file ok!");
-            miRunFlag = 0;
+            m_iRunFlag = 0;
         }
        
        GetExMessage();              //读取客户端输入
@@ -122,7 +122,7 @@ int CTcpCtrl::Run()
 
 int CTcpCtrl::SetRunFlag(int iRunFlag)
 {
-    miRunFlag = iRunFlag;
+    m_iRunFlag = iRunFlag;
     return 0;
 }
 
@@ -142,7 +142,7 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
     memset(&addr,0,sizeof(struct sockaddr_in));
 
     //建立socket
-    if ((miSocket = EphSocket(AF_INET,SOCK_STREAM,0)) == -1)
+    if ((m_iSocket = EphSocket(AF_INET,SOCK_STREAM,0)) == -1)
     {
         return 3;
     }
@@ -162,39 +162,39 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
      * 此时如果重新绑定端口时会失败，这种状态会持续1-4分钟，设置此选项重用该地址，防止这种情况
      * 发生
     */
-    setsockopt(miSocket,SOL_SOCKET,SO_REUSEADDR,&iTmpFlags,sizeof(iTmpFlags));
-    setsockopt(miSocket,SOL_SOCKET,SO_KEEPALIVE,&iTmpFlags,sizeof(iTmpFlags));
+    setsockopt(m_iSocket,SOL_SOCKET,SO_REUSEADDR,&iTmpFlags,sizeof(iTmpFlags));
+    setsockopt(m_iSocket,SOL_SOCKET,SO_KEEPALIVE,&iTmpFlags,sizeof(iTmpFlags));
     //close()立刻返回，底层将未发送完的数据发送完成后再释放资源，即优雅退出。
-    setsockopt(miSocket,SOL_SOCKET,SO_LINGER,&ling,sizeof(linger));
+    setsockopt(m_iSocket,SOL_SOCKET,SO_LINGER,&ling,sizeof(linger));
     //禁止Nagle’s Algorithm延时算法，立刻发送,防止tcp粘包
-    setsockopt(miSocket,IPPROTO_TCP,TCP_NODELAY,&iTmpFlags,sizeof(iTmpFlags));
+    setsockopt(m_iSocket,IPPROTO_TCP,TCP_NODELAY,&iTmpFlags,sizeof(iTmpFlags));
 
     addr.sin_family = AF_INET;
     addr.sin_port = htons(shTmpport);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if (bind(miSocket,(struct sockaddr *)&addr,sizeof(addr)) == -1)
+    if (bind(m_iSocket,(struct sockaddr *)&addr,sizeof(addr)) == -1)
     {
         LOG_ERROR("default","Bind socket Error!");
-        EphClose(miSocket);
+        EphClose(m_iSocket);
         EphCleanUp();
         return 4;
     }
 
     iTmpOptLen = sizeof(socklen_t);
     iTmpOptval = TCP_BUFFER_LEN;
-    if (setsockopt(miSocket,SOL_SOCKET,SO_RCVBUF,(const void*)&iTmpOptval,iTmpOptLen))
+    if (setsockopt(m_iSocket,SOL_SOCKET,SO_RCVBUF,(const void*)&iTmpOptval,iTmpOptLen))
     {
         LOG_ERROR("default","Set Recv buffer size to %d failed",iTmpOptval);
         return -1;
     }
 
-    if (!getsockopt(miSocket,SOL_SOCKET,SO_RCVBUF,(void*)&iTmpOptval,(socklen_t*)&iTmpOptLen))
+    if (!getsockopt(m_iSocket,SOL_SOCKET,SO_RCVBUF,(void*)&iTmpOptval,(socklen_t*)&iTmpOptLen))
     {
         LOG_INFO("default","Set Recv buffer size to %d",iTmpOptval);
     }
     //设置接受队列大小
-    iTmpRet = listen(miSocket,RECV_QUEUQ_MAX);
+    iTmpRet = listen(m_iSocket,RECV_QUEUQ_MAX);
     if (-1 == iTmpRet)
     {
         LOG_ERROR("default","Listen %d connection failed",RECV_QUEUQ_MAX);
@@ -202,9 +202,9 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
     }
 
     //把epoll socket fd放入epoll socket集合中
-    if (EphNewConn(miSocket) == -1)
+    if (EphNewConn(m_iSocket) == -1)
     {
-        EphClose(miSocket);
+        EphClose(m_iSocket);
         EphCleanUp();
         return 5;
     }
@@ -219,29 +219,29 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
 int CTcpCtrl::EphInit()
 {
     //已经设置
-    if (NULL != mpEpollevents)
+    if (NULL != m_pEpollevents)
     {
         return 0;
     }
 
-    memset(&mstEpollEvent,0,sizeof(struct epoll_event));
-    mstEpollEvent.events = EPOLLIN | EPOLLERR | EPOLLHUP; //epoll监听 可读，错误，和挂起事件
+    memset(&m_stEpollEvent,0,sizeof(struct epoll_event));
+    m_stEpollEvent.events = EPOLLIN | EPOLLERR | EPOLLHUP; //epoll监听 可读，错误，和挂起事件
     //初始化event触发事件信息
-    mstEpollEvent.data.ptr = NULL;
-    mstEpollEvent.data.fd = -1;
+    m_stEpollEvent.data.ptr = NULL;
+    m_stEpollEvent.data.fd = -1;
     
-    mpEpollevents = (struct epoll_event*)malloc((MAX_SOCKET_NUM) * sizeof(struct epoll_event));
-    if (NULL == mpEpollevents)
+    m_pEpollevents = (struct epoll_event*)malloc((MAX_SOCKET_NUM) * sizeof(struct epoll_event));
+    if (NULL == m_pEpollevents)
     {
         LOG_ERROR("default","malloc mpEpollevents Error!");
         return -1;
     }
     //生成epoll描述符
-    if ((miKdpfd = epoll_create(MAX_SOCKET_NUM)) < 0)
+    if ((m_iKdpfd = epoll_create(MAX_SOCKET_NUM)) < 0)
     {
         LOG_ERROR("default","ERROR:%s",strerror(errno));
         LOG_ERROR("default","epoll create error!");
-        close(miKdpfd);
+        close(m_iKdpfd);
         return -1;
     }
     return 0;
@@ -292,9 +292,9 @@ int CTcpCtrl::EphClose(int iSocketFd)
 **/
 int CTcpCtrl::EphCleanUp()
 {
-    free(mpEpollevents);
-    close(miKdpfd);
-    mpEpollevents = NULL;
+    free(m_pEpollevents);
+    close(m_iKdpfd);
+    m_pEpollevents = NULL;
     return 0;
 }
 
@@ -305,8 +305,8 @@ int CTcpCtrl::EphCleanUp()
 **/
 int CTcpCtrl::EphNewConn(int iSocketFd)
 {
-    mstEpollEvent.data.fd  = iSocketFd;
-    if (epoll_ctl(miKdpfd,EPOLL_CTL_ADD,iSocketFd,&mstEpollEvent) < 0)
+    m_stEpollEvent.data.fd  = iSocketFd;
+    if (epoll_ctl(m_iKdpfd,EPOLL_CTL_ADD,iSocketFd,&m_stEpollEvent) < 0)
     {
         LOG_ERROR("default","create new connection error,socket fd:%d! error:%s",iSocketFd,strerror(errno));
         return -1;
@@ -328,8 +328,8 @@ int CTcpCtrl::GetExMessage()
     int iTmpfdNum;
     int iTmpFlags;
     struct epoll_event* pevents;
-    iTmpSocketAddrSize = sizeof(mstSockAddr);
-    iTmpfdNum = epoll_wait(miKdpfd,mpEpollevents,MAX_SOCKET_NUM,miTimeout);
+    iTmpSocketAddrSize = sizeof(m_stSockAddr);
+    iTmpfdNum = epoll_wait(m_iKdpfd,m_pEpollevents,MAX_SOCKET_NUM,m_iTimeout);
     iTmpFlags = 1;
     if (-1 == iTmpfdNum)
     {
@@ -337,10 +337,10 @@ int CTcpCtrl::GetExMessage()
         return 0;
     }
     int i,j;
-    for (i = 0,pevents = mpEpollevents; i < iTmpfdNum;i++ ,pevents++)
+    for (i = 0,pevents = m_pEpollevents; i < iTmpfdNum;i++ ,pevents++)
     {
         iTmpFd = pevents->data.fd;
-        mpSocketInfo = &mastSocketInfo[iTmpFd];
+        m_pSocketInfo = &m_astSocketInfo[iTmpFd];
         //无效文件描述符
         if (iTmpFd <= 0)
         {
@@ -362,20 +362,20 @@ int CTcpCtrl::GetExMessage()
             continue;            
         }
         
-        if (mpSocketInfo->miSocketType == LISTEN_SOCKET)
+        if (m_pSocketInfo->m_iSocketType == LISTEN_SOCKET)
         {
             LOG_NOTICE("default","recv events:%d fd:%d",iTmpfdNum,iTmpFd);
             //accept 一个tcp连接
-            iTmpNewSocket = accept(iTmpFd,(struct sockaddr*) &mstSockAddr,(socklen_t*) &iTmpSocketAddrSize);
+            iTmpNewSocket = accept(iTmpFd,(struct sockaddr*) &m_stSockAddr,(socklen_t*) &iTmpSocketAddrSize);
             //客户端主动关闭了连接
             if (iTmpNewSocket <= 0)
             {
                 LOG_NOTICE("default","client canncled connection: port %d fd:%d,errno(%d : %s)",
-                            mpSocketInfo->miConnectedPort,iTmpNewSocket,errno,strerror(errno));
+                            m_pSocketInfo->m_iConnectedPort,iTmpNewSocket,errno,strerror(errno));
                 continue;
             }
 
-            mstTcpStat.miConnIncoming ++;
+            m_stTcpStat.m_iConnIncoming ++;
             if (iTmpNewSocket >= MAX_SOCKET_NUM)
             {
                 LOG_ERROR("default","socket is too big %d",iTmpNewSocket);
@@ -389,7 +389,7 @@ int CTcpCtrl::GetExMessage()
                 ((iTmpFlags = fcntl(iTmpNewSocket, F_GETFL, 0)) < 0 ||
                  fcntl(iTmpNewSocket, F_SETFL, iTmpFlags | O_NONBLOCK) < 0))
             {
-                LOG_ERROR("default","operate on socket %d error connect port %d!", iTmpNewSocket, mpSocketInfo->miConnectedPort);
+                LOG_ERROR("default","operate on socket %d error connect port %d!", iTmpNewSocket, m_pSocketInfo->m_iConnectedPort);
                 closesocket(iTmpNewSocket);
                 continue;
             }
@@ -397,37 +397,37 @@ int CTcpCtrl::GetExMessage()
             iTmpRet = EphNewConn(iTmpNewSocket);
             if (iTmpRet != 0)
             {
-                LOG_ERROR("default","add to epoll failed [socket %d connect port %d]!", iTmpNewSocket,mpSocketInfo->miConnectedPort);
+                LOG_ERROR("default","add to epoll failed [socket %d connect port %d]!", iTmpNewSocket,m_pSocketInfo->m_iConnectedPort);
                 closesocket(iTmpNewSocket);
                 continue;
             }
 
             //更改当前的最大socket
-            if (iTmpNewSocket > miMaxfds)
+            if (iTmpNewSocket > m_iMaxfds)
             {
-                miMaxfds = iTmpNewSocket;
+                m_iMaxfds = iTmpNewSocket;
             }
             // 总连接数加1
-            mstTcpStat.miConnTotal ++;
+            m_stTcpStat.m_iConnTotal ++;
 
             //生成一个socket结构
             j = iTmpNewSocket;
-            char* pTmpIp = inet_ntoa(mstSockAddr.sin_addr);
-            mastSocketInfo[j].miSrcIP = mstSockAddr.sin_addr.s_addr;
-            mastSocketInfo[j].mnSrcPort = mstSockAddr.sin_port;
-            strncpy(mastSocketInfo[j].mszClientIP,pTmpIp,sizeof(mpSocketInfo[j].mszClientIP) -1);
-            time(&(mastSocketInfo[j].mtCreateTime));
-            mastSocketInfo[j].mtStamp = mastSocketInfo[j].mtCreateTime;
-            mastSocketInfo[j].miSocketType = CONNECT_SOCKET;
-            mastSocketInfo[j].miSocket = iTmpNewSocket;
-            mastSocketInfo[j].miSocketFlag = RECV_DATA;
-            mastSocketInfo[j].miConnectedPort  = mpSocketInfo->miConnectedPort;
-            mastSocketInfo[j].miUin = 0;
-            LOG_NOTICE("default","%s connected port %d, socket id = %d.", pTmpIp, mpSocketInfo->miConnectedPort, iTmpNewSocket);
+            char* pTmpIp = inet_ntoa(m_stSockAddr.sin_addr);
+            m_astSocketInfo[j].m_iSrcIP = m_stSockAddr.sin_addr.s_addr;
+            m_astSocketInfo[j].m_nSrcPort = m_stSockAddr.sin_port;
+            strncpy(m_astSocketInfo[j].m_szClientIP,pTmpIp,sizeof(mpSocketInfo[j].m_szClientIP) -1);
+            time(&(m_astSocketInfo[j].m_tCreateTime));
+            m_astSocketInfo[j].m_tStamp = mastSocketInfo[j].m_tCreateTime;
+            m_astSocketInfo[j].m_iSocketType = CONNECT_SOCKET;
+            m_astSocketInfo[j].m_iSocket = iTmpNewSocket;
+            m_astSocketInfo[j].m_iSocketFlag = RECV_DATA;
+            m_astSocketInfo[j].m_iConnectedPort  = m_pSocketInfo->m_iConnectedPort;
+            m_astSocketInfo[j].m_iUin = 0;
+            LOG_NOTICE("default","%s connected port %d, socket id = %d.", pTmpIp, m_pSocketInfo->m_iConnectedPort, iTmpNewSocket);
         }
         else      //接收客户端数据
         {
-            mpSocketInfo = &mastSocketInfo[iTmpFd];
+            m_pSocketInfo = &m_astSocketInfo[iTmpFd];
             RecvClientData(iTmpFd);
         }
 
@@ -450,32 +450,32 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
     unsigned int unRecvLen;
     int nRecvAllLen;
     time_t tTempTime;
-    int iTmpSocket = mpSocketInfo->miSocket;
+    int iTmpSocket = m_pSocketInfo->m_iSocket;
     unsigned short unLength = 0;
-    iTmpOffset = mpSocketInfo->miRecvBytes; 
+    iTmpOffset = m_pSocketInfo->m_iRecvBytes; 
     
     //读取tcp数据
-    iTmpRecvBytes = TcpRead(iTmpSocket,mpSocketInfo->mszMsgBuf + iTmpOffset,sizeof(mpSocketInfo->mszMsgBuf) - iTmpOffset); 
+    iTmpRecvBytes = TcpRead(iTmpSocket,m_pSocketInfo->m_szMsgBuf + iTmpOffset,sizeof(m_pSocketInfo->m_szMsgBuf) - iTmpOffset); 
     //客户端关闭连接
     if (iTmpRecvBytes <= 0)
     {
         LOG_ERROR("default","Client[%s] close the tcp connection,socket id = %d,the client's port = ",
-            mpSocketInfo->mszClientIP,mpSocketInfo->miSocket,mpSocketInfo->miConnectedPort);
+            m_pSocketInfo->m_szClientIP,m_pSocketInfo->m_iSocket,m_pSocketInfo->mi_ConnectedPort);
         ClearSocketInfo(Err_ClientClose);
         return -1;
     }
 
     //统计接受信息
-    mstTcpStat.miPkgSizeRecv += iTmpRecvBytes;
+    m_stTcpStat.m_iPkgSizeRecv += iTmpRecvBytes;
     //增加收到的总字节数
-    mpSocketInfo->miRecvBytes = mpSocketInfo->miRecvBytes + iTmpRecvBytes;
+    m_pSocketInfo->m_iRecvBytes = m_pSocketInfo->m_iRecvBytes + iTmpRecvBytes;
     //记录消息起始地址
-    pTemp1 = mpSocketInfo->mszMsgBuf;
-    nRecvAllLen = mpSocketInfo->miRecvBytes;
+    pTemp1 = m_pSocketInfo->m_szMsgBuf;
+    nRecvAllLen = m_pSocketInfo->m_iRecvBytes;
 
     // 记录该socket接收客户端数据的时间
     time(&tTempTime);
-    mpSocketInfo->mtStamp = tTempTime;
+    m_pSocketInfo->m_tStamp = tTempTime;
 
     while(1)
     {
@@ -637,41 +637,41 @@ void CTcpCtrl::ClearSocketInfo(short enError)
     }
 
     //关闭socket
-    if (mpSocketInfo->miSocket > 0)
+    if (m_pSocketInfo->m_iSocket > 0)
     {
-        mstEpollEvent.data.fd = mpSocketInfo->miSocket;
-        if (epoll_ctl(miKdpfd,EPOLL_CTL_DEL,mpSocketInfo->miSocket,&mstEpollEvent) < 0)
+        m_stEpollEvent.data.fd = m_pSocketInfo->m_iSocket;
+        if (epoll_ctl(m_iKdpfd,EPOLL_CTL_DEL,m_pSocketInfo->m_iSocket,&m_stEpollEvent) < 0)
         {
-            LOG_ERROR("default","epoll remove socket error,socket fd = %d",mpSocketInfo->miSocket);
+            LOG_ERROR("default","epoll remove socket error,socket fd = %d",m_pSocketInfo->m_iSocket);
         }
         //关闭socket
-        closesocket(mpSocketInfo->miSocket);
+        closesocket(m_pSocketInfo->m_iSocket);
         //更改当前对大分配socket
-        if(mpSocketInfo->miSocket >= miMaxfds)
+        if(m_pSocketInfo->m_iSocket >= m_iMaxfds)
         {
             int iTmpUnUseSocket;
-            for (iTmpUnUseSocket = mpSocketInfo->miSocket -1 ;iTmpUnUseSocket >= miSocket;iTmpUnUseSocket--)
+            for (iTmpUnUseSocket = m_pSocketInfo->m_iSocket -1 ;iTmpUnUseSocket >= m_iSocket;iTmpUnUseSocket--)
             {
-                if(mastSocketInfo[iTmpUnUseSocket].miSocketFlag != 0)
+                if(m_astSocketInfo[iTmpUnUseSocket].m_iSocketFlag != 0)
                 {
                     break;
                 }
-                miMaxfds = iTmpUnUseSocket;
+                m_iMaxfds = iTmpUnUseSocket;
             }
         }
         //总连接数减一
-        mstTcpStat.miConnTotal --;
+        m_stTcpStat.m_iConnTotal --;
     }
-    mpSocketInfo->miSocket = INVALID_SOCKET;
-    mpSocketInfo->miSrcIP = 0;
-    mpSocketInfo->mnSrcPort = 0;
-    mpSocketInfo->miDstIP= 0;
-    mpSocketInfo->mnDstPort = short(-1);
-    mpSocketInfo->miRecvBytes = 0;
-    mpSocketInfo->miSocketType = 0;
-    mpSocketInfo->miSocketFlag = 0;
-    mpSocketInfo->mtCreateTime = 0;
-    mpSocketInfo->mtStamp = 0;
-    mpSocketInfo->miSendFlag = 0;
-    mpSocketInfo->miConnectedPort = 0;
+    m_pSocketInfo->m_iSocket = INVALID_SOCKET;
+    m_pSocketInfo->m_iSrcIP = 0;
+    m_pSocketInfo->m_nSrcPort = 0;
+    m_pSocketInfo->m_iDstIP= 0;
+    m_pSocketInfo->m_nDstPort = short(-1);
+    m_pSocketInfo->m_iRecvBytes = 0;
+    m_pSocketInfo->m_iSocketType = 0;
+    m_pSocketInfo->m_iSocketFlag = 0;
+    m_pSocketInfo->m_tCreateTime = 0;
+    m_pSocketInfo->m_tStamp = 0;
+    m_pSocketInfo->m_iSendFlag = 0;
+    m_pSocketInfo->m_iConnectedPort = 0;
 }
