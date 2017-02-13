@@ -77,7 +77,7 @@ private:
     short 				m_nSCLength; 					 	// 实际发送的数据长度
 
 //    CGateClient		m_GateClient;
-    time_t				m_LastKeepaliveTime;
+    time_t				m_iLastKeepaliveTime;
     CTcpHead			m_SCTcpHead;				// 服务器发送到客户端的数据信息头
     int					m_iSendIndex;				// 已发送的服务器到客户端的数据的游标
     bool				m_bHasRecv;					// 是否接收过数据(只用于第一次接收数据使用,防止没有RecvData直接GetOneCode报错)

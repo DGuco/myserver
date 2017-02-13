@@ -415,9 +415,9 @@ int CTcpCtrl::GetExMessage()
             char* pTmpIp = inet_ntoa(m_stSockAddr.sin_addr);
             m_astSocketInfo[j].m_iSrcIP = m_stSockAddr.sin_addr.s_addr;
             m_astSocketInfo[j].m_nSrcPort = m_stSockAddr.sin_port;
-            strncpy(m_astSocketInfo[j].m_szClientIP,pTmpIp,sizeof(mpSocketInfo[j].m_szClientIP) -1);
+            strncpy(m_astSocketInfo[j].m_szClientIP,pTmpIp,sizeof(m_pSocketInfo[j].m_szClientIP) -1);
             time(&(m_astSocketInfo[j].m_tCreateTime));
-            m_astSocketInfo[j].m_tStamp = mastSocketInfo[j].m_tCreateTime;
+            m_astSocketInfo[j].m_tStamp = m_astSocketInfo[j].m_tCreateTime;
             m_astSocketInfo[j].m_iSocketType = CONNECT_SOCKET;
             m_astSocketInfo[j].m_iSocket = iTmpNewSocket;
             m_astSocketInfo[j].m_iSocketFlag = RECV_DATA;
@@ -460,7 +460,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
     if (iTmpRecvBytes <= 0)
     {
         LOG_ERROR("default","Client[%s] close the tcp connection,socket id = %d,the client's port = ",
-            m_pSocketInfo->m_szClientIP,m_pSocketInfo->m_iSocket,m_pSocketInfo->mi_ConnectedPort);
+            m_pSocketInfo->m_szClientIP,m_pSocketInfo->m_iSocket,m_pSocketInfo->m_iConnectedPort);
         ClearSocketInfo(Err_ClientClose);
         return -1;
     }
@@ -546,11 +546,11 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
                 ClearSocketInfo(Err_PacketError);
             }
 
-            pbSocketInfo->set_createtime(mpSocketInfo->mtCreateTime);
+            pbSocketInfo->set_createtime(m_pSocketInfo->m_tCreateTime);
             pbSocketInfo->set_socketid(iSocketFd);
-            pbSocketInfo->set_createtime(mpSocketInfo->mtCreateTime);
-            pbSocketInfo->set_srcip(mpSocketInfo->miSrcIP);
-            pbSocketInfo->set_srcport(mpSocketInfo->mnSrcPort);
+            pbSocketInfo->set_createtime(m_pSocketInfo->m_tCreateTime);
+            pbSocketInfo->set_srcip(m_pSocketInfo->m_iSrcIP);
+            pbSocketInfo->set_srcport(m_pSocketInfo->m_nSrcPort);
             //state < 0 说明关闭socket
             pbSocketInfo->set_state(0);
 
@@ -560,7 +560,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
             unLength += sizeof(short);
 
             //序列化CTCPhead
-            if (pbTmpTcpHead.SerializeToArray(pTemp, sizeof(mszMsgBuf) - unLength - 1) != true)
+            if (pbTmpTcpHead.SerializeToArray(pTemp, sizeof(m_szMsgBuf) - unLength - 1) != true)
             {
                 LOG_ERROR("default", "CTCPCtrl::RecvClientData error,pbTmpTcpHead SerializeToArray error");
                 ClearSocketInfo(Err_PacketError);
@@ -586,7 +586,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
             pTemp += iTmpAddlen;
             unLength += iTmpAddlen;
             //序列话消息总长度
-            pTemp = mszMsgBuf;
+            pTemp = m_szMsgBuf;
             *(short*) pTemp = unLength;
             pTemp += sizeof(short);
 

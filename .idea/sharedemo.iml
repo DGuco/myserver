@@ -5,14 +5,14 @@
       <sourceFolder url="file://$MODULE_DIR$/tcpserver" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sharewrite" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/common/mytimer" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/goclient" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gameserver" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/centerserver" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gateserver" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/framework" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/shareread" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/proxyserver" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/goclient" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/common/mytimer" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/bin" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
