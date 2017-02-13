@@ -14,7 +14,6 @@
 #include "../../framework/base/servertool.h"
 #include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/message/message.pb.h"
-#include "../../framework/config/protoconfig.h"
 #include "../inc/commdef.h"
 
 #define MAX_ERRNO_NUM 10

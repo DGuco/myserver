@@ -14,14 +14,8 @@ set(FRAMEWORK
         base/performance.cpp
         base/servertool.cpp
         base/my_assert.h
-        config/json.h
-        config/config_data.h
-        config/config.h
-        config/protoconfig.h
-        config/config.cpp
-        config/protoconfig.cpp
-        config/json.cpp
-        config/config_data.cpp
+        json/json.h
+        json/json.cpp
         log/log.h
         log/log.cpp
         message/message.pb.h
@@ -73,6 +67,6 @@ link_directories(
 )
 
 add_library(framework ${FRAMEWORK})
-target_link_libraries(framework pthread protobuf log4cpp)
+target_link_libraries(framework pthread protobuf log4cpp crypto)
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

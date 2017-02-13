@@ -188,7 +188,7 @@
 #include <map>
 #include <string>
 #include <assert.h>
-
+#include "../include/rapidjson/rapidjson.h"
 namespace json
 {
 	enum ValueType

@@ -21,6 +21,7 @@
     </libraryRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/bin" />
+      <file path="$PROJECT_DIR$/log" />
     </excludeRoots>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
