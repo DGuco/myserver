@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/ballpool/!svn/ver/450/server/trunk/common/rapidjson/include/rapidjson/msinttypes
+END
+inttypes.h
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/ballpool/!svn/ver/450/server/trunk/common/rapidjson/include/rapidjson/msinttypes/inttypes.h
+END
+stdint.h
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/ballpool/!svn/ver/450/server/trunk/common/rapidjson/include/rapidjson/msinttypes/stdint.h
+END
