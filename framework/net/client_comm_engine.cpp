@@ -59,6 +59,186 @@ void pbmsg_settcphead(CTcpHead& rHead, int iSrcFE, int iSrcID, int iDstFE, int i
  * ——————————————————————————————————————————————————————————————————
 */
 
+// 反序列化客户端Message
+int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short unBuffLen, CMessage* pMsg, CFactory* pMsgFactory, bool bEncrypt, const unsigned char* pEncrypt)
+{
+    if (
+            (pBuff == NULL) ||
+            (unBuffLen < (sizeof(unsigned short) * 4)) ||
+            (pMsg == NULL) ||
+            (pEncrypt == NULL)
+            )
+    {
+        MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToMsg Input param failed.");
+    }
+
+    char* tpBuff = (char*) pBuff;
+    unsigned short tTmpLen = 0;
+
+    if (pMsgFactory)
+    {
+        // 有消息工厂则向下解析
+        // 开始消息解密
+        unsigned char tEncryBuff[MAX_PACKAGE_LEN] = {0};
+        unsigned char* tpEncryBuff = &tEncryBuff[0];
+        unsigned short tOutLen = MAX_PACKAGE_LEN;
+
+        if (bEncrypt)
+        {
+            // 加密的消息处理
+            int tDecLen = tOutLen;
+            tOutLen = tDecLen;
+        }
+        else
+        {
+            // 未加密的消息处理
+            tpEncryBuff = (unsigned char*)tpBuff;
+            tOutLen = unBuffLen;
+        }
+
+        // 解密后的长度不能超过最大MAX_PACKAGE_LEN,也不能比输入的未加密前长度长
+        if (tOutLen >= MAX_PACKAGE_LEN || tOutLen > unBuffLen)
+        {
+            MY_ASSERT_STR(0, return -7, "ClientCommEngine::ConvertStreamToMsg DecryptData failed, tOutLen = %d, Input Length = %d.", tOutLen, tTotalClientLen);
+        }
+
+        // MessagePara
+        // 使用消息工厂
+        Message* tpMsgPara = pMsgFactory->CreateMessage(pMsg->msghead().messageid());
+        if (tpMsgPara == NULL)
+        {
+            MY_ASSERT_STR(0, return -8, "ClientCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.", pMsg->msghead().messageid());
+        }
+
+        if (tpMsgPara->ParseFromArray(tpEncryBuff, tOutLen) != true)
+        {
+            // 使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
+            tpMsgPara->~Message();
+            MY_ASSERT_STR(0, return -9, "ClientCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
+        }
+        pMsg->set_msgpara((unsigned long)tpMsgPara);
+    }
+    return 0;
+}
+
+// 反序列化CMessage
+int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CMessage* pMsg, CFactory* pMsgFactory, bool bEncrypt, const unsigned char* pEncrypt)
+{
+    if (
+            (pBuff == NULL) ||
+            (unBuffLen < (sizeof(unsigned short) * 4)) ||
+            (pMsg == NULL) ||
+            (pEncrypt == NULL)
+            )
+    {
+        MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToMsg Input param failed.");
+    }
+
+    char* tpBuff = (char*) pBuff;
+    unsigned short tTmpLen = 0;
+
+    // client总长度
+    unsigned short tTotalClientLen = *(unsigned short*)tpBuff;
+
+    // 验证包长与实际长度是否匹配
+    if (tTotalClientLen != unBuffLen)
+    {
+        MY_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertStreamToMsg tTotalClientLen = %d unequal to unBuffLen = %d.", tTotalClientLen, unBuffLen);
+    }
+    tpBuff += sizeof(unsigned short);
+    tTotalClientLen -= sizeof(unsigned short);
+
+    // 字节对齐补充长度（采用8字节对齐）
+    tTmpLen = *(unsigned short*)tpBuff;
+    tpBuff += sizeof(unsigned short);
+    tTotalClientLen -= sizeof(unsigned short);
+
+    // 补齐的长度一定小于8字节
+    if (tTmpLen >= 8)
+    {
+        MY_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tTmpLen);
+    }
+    // 直接扔掉8字节补齐的长度
+    tTotalClientLen -= tTmpLen;
+
+    // CMessageHead长度
+    tTmpLen = *(unsigned short*)tpBuff;
+    tpBuff += sizeof(unsigned short);
+    tTotalClientLen -= sizeof(unsigned short);
+
+    // CMessageHead
+    CMessageHead* pMsgHead = pMsg->mutable_msghead();
+    if (pMsgHead->ParseFromArray(tpBuff, tTmpLen) == false)
+    {
+        MY_ASSERT_STR(0, return -4, "ClientCommEngine::ConvertStreamToMsg CMessageHead ParseFromArray failed.");
+    }
+    if (pMsgHead->ByteSize() != tTmpLen)
+    {
+        MY_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertStreamToMsg pMsgHead ByteSize = %d unequal to tTmpLen = %d..",
+                      pMsgHead->ByteSize(), tTmpLen);
+    }
+    tpBuff += tTmpLen;
+    tTotalClientLen -= tTmpLen;
+
+    if (pMsgFactory)
+    {
+        // MessagePara长度
+        tTmpLen = *(unsigned short*)tpBuff;
+        tpBuff += sizeof(unsigned short);
+        tTotalClientLen -= sizeof(unsigned short);
+
+        if (tTmpLen != tTotalClientLen)
+        {
+            MY_ASSERT_STR(0, return -6, "ClientCommEngine::ConvertStreamToMsg tTmpLen %d unequal to tTotalClientLen %d.",
+                          tTmpLen, tTotalClientLen);
+        }
+
+        // 有消息工厂则向下解析
+        // 开始消息解密
+        unsigned char tEncryBuff[MAX_PACKAGE_LEN] = {0};
+        unsigned char* tpEncryBuff = &tEncryBuff[0];
+        unsigned short tOutLen = MAX_PACKAGE_LEN;
+
+        if (bEncrypt)
+        {
+            // 加密的消息处理
+            int tDecLen = tOutLen;
+            tOutLen = tDecLen;
+        }
+        else
+        {
+            // 未加密的消息处理
+            tpEncryBuff = (unsigned char*)tpBuff;
+            tOutLen = tTotalClientLen;
+        }
+
+        // 解密后的长度不能超过最大MAX_PACKAGE_LEN,也不能比输入的未加密前长度长
+        if (tOutLen >= MAX_PACKAGE_LEN || tOutLen > tTotalClientLen)
+        {
+            MY_ASSERT_STR(0, return -7, "ClientCommEngine::ConvertStreamToMsg DecryptData failed, tOutLen = %d, Input Length = %d.", tOutLen, tTotalClientLen);
+        }
+
+        // MessagePara
+        // 使用消息工厂
+        Message* tpMsgPara = pMsgFactory->CreateMessage(pMsg->msghead().messageid());
+        if (tpMsgPara == NULL)
+        {
+            MY_ASSERT_STR(0, return -8, "ClientCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.", pMsg->msghead().messageid());
+        }
+
+        if (tpMsgPara->ParseFromArray(tpEncryBuff, tOutLen) != true)
+        {
+            // 使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
+            tpMsgPara->~Message();
+            MY_ASSERT_STR(0, return -9, "ClientCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
+        }
+
+        pMsg->set_msgpara((unsigned long)tpMsgPara);
+    }
+
+    return 0;
+}
+
 // 反序列化CTcpHead, 返回剩余长度
 int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, unsigned short& rOffset, CTcpHead* pTcpHead)
 {
@@ -119,125 +299,6 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 	rOffset += tTmpLen;
 
 	return tTotalLen;
-}
-
-// 反序列化CMessage
-int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CMessage* pMsg, CFactory* pMsgFactory, bool bEncrypt, const unsigned char* pEncrypt)
-{
-	if (
-			(pBuff == NULL) ||
-			(unBuffLen < (sizeof(unsigned short) * 4)) ||
-			(pMsg == NULL) ||
-			(pEncrypt == NULL)
-	)
-	{
-		YQ_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToMsg Input param failed.");
-	}
-
-	char* tpBuff = (char*) pBuff;
-	unsigned short tTmpLen = 0;
-
-	// client总长度
-	unsigned short tTotalClientLen = *(unsigned short*)tpBuff;
-
-	// 验证包长与实际长度是否匹配
-	if (tTotalClientLen != unBuffLen)
-	{
-		YQ_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertStreamToMsg tTotalClientLen = %d unequal to unBuffLen = %d.", tTotalClientLen, unBuffLen);
-	}
-	tpBuff += sizeof(unsigned short);
-	tTotalClientLen -= sizeof(unsigned short);
-
-	// 字节对齐补充长度（采用8字节对齐）
-	tTmpLen = *(unsigned short*)tpBuff;
-	tpBuff += sizeof(unsigned short);
-	tTotalClientLen -= sizeof(unsigned short);
-
-	// 补齐的长度一定小于8字节
-	if (tTmpLen >= 8)
-	{
-		YQ_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tTmpLen);
-	}
-	// 直接扔掉8字节补齐的长度
-	tTotalClientLen -= tTmpLen;
-
-	// CMessageHead长度
-	tTmpLen = *(unsigned short*)tpBuff;
-	tpBuff += sizeof(unsigned short);
-	tTotalClientLen -= sizeof(unsigned short);
-
-	// CMessageHead
-	CMessageHead* pMsgHead = pMsg->mutable_msghead();
-	if (pMsgHead->ParseFromArray(tpBuff, tTmpLen) == false)
-	{
-		YQ_ASSERT_STR(0, return -4, "ClientCommEngine::ConvertStreamToMsg CMessageHead ParseFromArray failed.");
-	}
-	if (pMsgHead->ByteSize() != tTmpLen)
-	{
-		YQ_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertStreamToMsg pMsgHead ByteSize = %d unequal to tTmpLen = %d..",
-			pMsgHead->ByteSize(), tTmpLen);
-	}
-	tpBuff += tTmpLen;
-	tTotalClientLen -= tTmpLen;
-
-	if (pMsgFactory)
-	{
-		// MessagePara长度
-		tTmpLen = *(unsigned short*)tpBuff;
-		tpBuff += sizeof(unsigned short);
-		tTotalClientLen -= sizeof(unsigned short);
-
-		if (tTmpLen != tTotalClientLen)
-		{
-			YQ_ASSERT_STR(0, return -6, "ClientCommEngine::ConvertStreamToMsg tTmpLen %d unequal to tTotalClientLen %d.",
-				tTmpLen, tTotalClientLen);
-		}
-
-		// 有消息工厂则向下解析
-		// 开始消息解密
-		unsigned char tEncryBuff[MAX_PACKAGE_LEN] = {0};
-		unsigned char* tpEncryBuff = &tEncryBuff[0];
-		unsigned short tOutLen = MAX_PACKAGE_LEN;
-
-		if (bEncrypt)
-		{
-			// 加密的消息处理
-			int tDecLen = tOutLen;
-			DecryptData(EncryptType1, pEncrypt, (unsigned char*)tpBuff, (int)tTotalClientLen, tpEncryBuff, &tDecLen);
-			tOutLen = tDecLen;
-		}
-		else
-		{
-			// 未加密的消息处理
-			tpEncryBuff = (unsigned char*)tpBuff;
-			tOutLen = tTotalClientLen;
-		}
-
-		// 解密后的长度不能超过最大MAX_PACKAGE_LEN,也不能比输入的未加密前长度长
-		if (tOutLen >= MAX_PACKAGE_LEN || tOutLen > tTotalClientLen)
-		{
-			YQ_ASSERT_STR(0, return -7, "ClientCommEngine::ConvertStreamToMsg DecryptData failed, tOutLen = %d, Input Length = %d.", tOutLen, tTotalClientLen);
-		}
-
-		// MessagePara
-		// 使用消息工厂
-		Message* tpMsgPara = pMsgFactory->CreateMessage(pMsg->msghead().messageid());
-		if (tpMsgPara == NULL)
-		{
-			YQ_ASSERT_STR(0, return -8, "ClientCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.", pMsg->msghead().messageid());
-		}
-
-		if (tpMsgPara->ParseFromArray(tpEncryBuff, tOutLen) != true)
-		{
-			// 使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
-			tpMsgPara->~Message();
-			YQ_ASSERT_STR(0, return -9, "ClientCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
-		}
-
-		pMsg->set_msgpara((unsigned long)tpMsgPara);
-	}
-
-	return 0;
 }
 
 // 序列化消息(CMessage为空代表服务器内部消息)
@@ -329,7 +390,6 @@ int ClientCommEngine::ConvertMsgToStream(void* pBuff, unsigned short& unBuffLen,
 		{
 			// 加密的消息处理
 			int tEncLen = unBuffLen - tTotalLen - tTotalClientLen;
-			EncryptData(EncryptType1, pEncrypt, tpEncryBuff, pMsgPara->ByteSize(), (unsigned char*)tpClientBuff, &tEncLen);
 			iMsgParaLen = tEncLen;
 		}
 		else
@@ -382,77 +442,3 @@ int ClientCommEngine::ConvertMsgToStream(void* pBuff, unsigned short& unBuffLen,
 
 	return 0;
 }
-
-void ClientCommEngine::EncryptData(short nAlgorithm,
-				 const unsigned char* pbyKey,
-				 const unsigned char* pbyIn,
-				 int nInLength,
-				 unsigned char* pbyOut,
-				 int* pnOutLength)
-{
-	if ((pbyKey == NULL) || (pbyIn == NULL) || (pbyOut == NULL) || (pnOutLength == NULL))
-	{
-		return;
-	}
-
-	switch(nAlgorithm)
-	{
-		case 1:
-		{
-			oi_symmetry_encrypt(pbyIn, nInLength, pbyKey, pbyOut, pnOutLength);
-			break;
-		}
-		case 2:
-		{
-			oi_symmetry_encrypt2(pbyIn, nInLength, pbyKey, pbyOut, pnOutLength);
-			break;
-		}
-		default:
-		{
-			memcpy(pbyOut, pbyIn, nInLength);
-			*pnOutLength = nInLength;
-			break;
-		}
-	}
-}
-
-
-int ClientCommEngine::DecryptData(short nAlgorithm,
-				const unsigned char* pbyKey,
-				const unsigned char* pbyIn,
-				int nInLength,
-				unsigned char* pbyOut,
-				int* pnOutLength)
-{
-	if ((pbyKey == NULL) || (pbyIn == NULL) || (pbyOut == NULL) || (pnOutLength == NULL))
-	{
-		return 0;
-	}
-
-	int nDecryResult = 0;
-
-	switch(nAlgorithm)
-	{
-		case 1:
-		{
-			nDecryResult = oi_symmetry_decrypt(pbyIn, nInLength, pbyKey, pbyOut, pnOutLength);
-			break;
-		}
-		case 2:
-		{
-			nDecryResult = oi_symmetry_decrypt2(pbyIn, nInLength, pbyKey, pbyOut, pnOutLength);
-			break;
-		}
-		default:
-		{
-			memcpy(pbyOut, pbyIn, nInLength);
-			*pnOutLength = nInLength;
-			nDecryResult = 1;
-			break;
-		}
-	}
-
-	return nDecryResult;
-}
-
-//}	// namespace ClientCommEngine

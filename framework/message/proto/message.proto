@@ -29,15 +29,12 @@ message CMessageHead
 	optional	int32	DstFE			= 2;							// 消息到达的服务器类型
 	optional	int32	DstID			= 3;							// 消息到达的服务器ID
 	optional	int64	TimeStamp	= 4;							// 时间戳
-    optional	int32	RoomID		= 5;							// 房间ID,用于房间服务器处理消息
-    optional	int64	RoleID			= 6[default = 0];		// 角色ID
-    optional	int32	EntityID		= 7[default = 0];		// 实体ID(客户端不用填,服务器自己取)
 };
 
 // 单个消息
 message CMessage
 {
-	required	CMessageHead		MsgHead	= 1;						// 消息头+
+	optional	CMessageHead		MsgHead	= 1;						// 消息头+
 	optional	fixed64					MsgPara	= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
 };
 
@@ -45,15 +42,4 @@ message CMessage
 message CMsgPingRequest
 {
 	enum Msg{MsgID	=	0x00FFFFFF;	}
-};
-
-//消息集合(与客户端约定：服务器给客户端下发消息时需要放入消息集合，但客户端上行服务器不需要)
-message CMessageSet
-{
-	repeated bytes	MsgParas = 1;	// 消息集合(每一个bytes组成[总长度：CMessageHead长度：CMessageHead：MsgPara长度：MsgPara])
-};
-
-message CCSHead
-{
-    required int32 timestamp = 1;    //The timestamo of session
 };

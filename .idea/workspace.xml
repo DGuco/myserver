@@ -19,8 +19,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d069f017-acfa-4319-a930-9c3a45d30834" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/json/json.cpp" afterPath="$PROJECT_DIR$/framework/json/json.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/json/json.h" afterPath="$PROJECT_DIR$/framework/json/json.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="sharedemo.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -40,33 +39,45 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="tcpctrl.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tcpserver/inc/tcpctrl.h">
+      <file leaf-file-name="client_comm_engine.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/framework/net/client_comm_engine.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="22" column="14" selection-start-line="22" selection-start-column="14" selection-end-line="22" selection-end-column="14" />
+            <state relative-caret-position="225">
+              <caret line="161" column="31" selection-start-line="161" selection-start-column="31" selection-end-line="161" selection-end-column="31" />
               <folding>
-                <marker date="1486998570819" expanded="true" signature="175:439" ph="..." />
+                <element signature="e#87#118#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/framework/CMakeLists.txt">
+      <file leaf-file-name="server_comm_engine.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/net/server_comm_engine.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
+            <state relative-caret-position="-129">
+              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+              <folding>
+                <element signature="e#62#96#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="server_comm_engine.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/net/server_comm_engine.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="288">
+              <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="client_comm_engine.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/framework/net/client_comm_engine.cpp">
+      <file leaf-file-name="client_comm_engine.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/net/client_comm_engine.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
+            <state relative-caret-position="153">
+              <caret line="30" column="24" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -75,9 +86,31 @@
       <file leaf-file-name="tcpctrl.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="82">
-              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+            <state relative-caret-position="349">
+              <caret line="543" column="48" selection-start-line="543" selection-start-column="48" selection-end-line="543" selection-end-column="48" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="message.proto" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/framework/message/proto/message.proto">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="324">
+              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="commdef.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tcpserver/inc/commdef.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="738">
+              <caret line="42" column="8" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="8" />
+              <folding>
+                <element signature="e#617#669#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -85,18 +118,18 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tcpserver/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
+            <state relative-caret-position="180">
               <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="json.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="json.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/framework/json/json.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="9" column="5" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
+            <state relative-caret-position="810">
+              <caret line="45" column="23" selection-start-line="45" selection-start-column="23" selection-end-line="45" selection-end-column="23" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -116,16 +149,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="document.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/framework/include/rapidjson/document.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="178">
-              <caret line="2061" column="40" selection-start-line="2061" selection-start-column="40" selection-end-line="2061" selection-end-column="40" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="Git.Settings">
@@ -134,13 +157,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/common/thread/thread.cpp" />
         <option value="$PROJECT_DIR$/common/tools/nethead.cpp" />
         <option value="$PROJECT_DIR$/common/net/nethead.cpp" />
         <option value="$PROJECT_DIR$/framework/sharemem/base/client_comm_engine.h" />
         <option value="$PROJECT_DIR$/framework/config/protoconfig.h" />
         <option value="$PROJECT_DIR$/framework/net/tcp_conn.h" />
-        <option value="$PROJECT_DIR$/framework/net/client_comm_engine.h" />
         <option value="$PROJECT_DIR$/framework/net/statistics.cpp" />
         <option value="$PROJECT_DIR$/framework/thread/thread.cpp" />
         <option value="$PROJECT_DIR$/framework/base/performance.h" />
@@ -151,7 +172,6 @@
         <option value="$PROJECT_DIR$/framework/timer/clock.h" />
         <option value="$PROJECT_DIR$/doc/install.txt" />
         <option value="$PROJECT_DIR$/tcpserver/main.cpp" />
-        <option value="$PROJECT_DIR$/tcpserver/inc/commdef.h" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/gateserver/main.cpp" />
         <option value="$PROJECT_DIR$/framework/sharemem/code_queue.h" />
@@ -169,7 +189,6 @@
         <option value="$PROJECT_DIR$/framework/base/servertool.h" />
         <option value="$PROJECT_DIR$/framework/base/my_assert.h" />
         <option value="$PROJECT_DIR$/framework/net/nethead.cpp" />
-        <option value="$PROJECT_DIR$/framework/net/client_comm_engine.cpp" />
         <option value="$PROJECT_DIR$/framework/net/server_comm_engine.cpp" />
         <option value="$PROJECT_DIR$/gateserver/src/gate_handle.cpp" />
         <option value="$PROJECT_DIR$/gateserver/CMakeLists.txt" />
@@ -177,7 +196,6 @@
         <option value="$PROJECT_DIR$/framework/net/tcp_conn.cpp" />
         <option value="$PROJECT_DIR$/gateserver/src/gate_ctrl.cpp" />
         <option value="$PROJECT_DIR$/gateserver/inc/gate_handle.h" />
-        <option value="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" />
         <option value="$PROJECT_DIR$/framework/config/json.h" />
         <option value="$PROJECT_DIR$/framework/json/config.cpp" />
         <option value="$PROJECT_DIR$/tcpserver/inc/tcpctrl.h" />
@@ -185,6 +203,11 @@
         <option value="$PROJECT_DIR$/tcpserver/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/framework/json/json.h" />
         <option value="$PROJECT_DIR$/framework/json/json.cpp" />
+        <option value="$PROJECT_DIR$/tcpserver/inc/commdef.h" />
+        <option value="$PROJECT_DIR$/framework/message/proto/message.proto" />
+        <option value="$PROJECT_DIR$/framework/net/client_comm_engine.h" />
+        <option value="$PROJECT_DIR$/framework/net/client_comm_engine.cpp" />
+        <option value="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" />
       </list>
     </option>
   </component>
@@ -286,6 +309,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="tcpserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="inc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="myserver" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="myserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="framework" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -304,7 +345,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="json" />
+              <option name="myItemId" value="net" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -560,12 +601,13 @@
       <workItem from="1486874753794" duration="1247000" />
       <workItem from="1486876025876" duration="10798000" />
       <workItem from="1486994462029" duration="2686000" />
-      <workItem from="1486997880614" duration="2636000" />
+      <workItem from="1486997880614" duration="2743000" />
+      <workItem from="1487079801816" duration="5732000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="172119000" />
+    <option name="totallyTimeSpent" value="177958000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -580,25 +622,28 @@
     <frame x="64" y="-7" width="1217" height="808" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20336135" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17664671" sideWeight="0.4932773" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31287426" sideWeight="0.8394958" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21932773" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17664671" sideWeight="0.48991597" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33832335" sideWeight="0.47478992" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31287426" sideWeight="0.1605042" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17964073" sideWeight="0.13361345" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.04041916" sideWeight="0.49663866" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.49663866" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="WINDOWED" visible="true" show_stripe_button="true" weight="0.046407185" sideWeight="0.49663866" order="2" side_tool="false" content_ui="tabs" x="66" y="647" width="1213" height="136" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.4932773" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5329341" sideWeight="0.4932773" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17964073" sideWeight="0.86638653" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25449103" sideWeight="0.49663866" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31287426" sideWeight="0.8394958" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="WINDOWED" visible="true" show_stripe_button="true" weight="0.046407185" sideWeight="0.49663866" order="2" side_tool="false" content_ui="tabs" x="66" y="647" width="1213" height="136" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25449103" sideWeight="0.49663866" order="3" side_tool="false" content_ui="tabs" />
     </layout>
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.proto" />
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -616,22 +661,11 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="17" />
+      <option name="time" value="18" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/framework/sharemem/code_queue.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-378">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/mystd/hash_function.h" />
-    <entry file="file://$PROJECT_DIR$/framework/mystd/my_vector.h" />
-    <entry file="file://$PROJECT_DIR$/framework/mystd/my_string.h" />
-    <entry file="file://$PROJECT_DIR$/framework/mystd/my_sharedvector.h" />
     <entry file="file://$PROJECT_DIR$/framework/mystd/my_set.h" />
     <entry file="file://$PROJECT_DIR$/framework/mystd/my_sharedhashmap.h" />
     <entry file="file://$PROJECT_DIR$/framework/mystd/my_hashmap_mod.h" />
@@ -679,13 +713,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/server_comm_engine.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="20" column="1" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -756,7 +783,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="61" selection-start-line="3" selection-start-column="61" selection-end-line="3" selection-end-column="61" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -764,10 +790,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1584">
           <caret line="88" column="16" selection-start-line="88" selection-start-column="16" selection-end-line="88" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#19#0" expanded="false" />
-            <element signature="e#706#772#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -775,9 +797,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5832">
           <caret line="324" column="16" selection-start-line="324" selection-start-column="9" selection-end-line="324" selection-end-column="16" />
-          <folding>
-            <element signature="e#53#70#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -788,40 +807,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tcpserver/inc/commdef.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
-          <folding>
-            <marker date="1486994492685" expanded="false" signature="176:204" ph="..." />
-            <marker date="1486994492685" expanded="false" signature="546:598" ph="..." />
-            <marker date="1486994492685" expanded="false" signature="705:758" ph="..." />
-            <marker date="1486994492685" expanded="true" signature="2309:2343" ph="{...}" />
-            <marker date="1486994492685" expanded="true" signature="2402:2679" ph="{...}" />
-            <marker date="1486994492685" expanded="true" signature="2732:2959" ph="{...}" />
-            <marker date="1486994492685" expanded="true" signature="3002:3223" ph="{...}" />
-            <marker date="1486994492685" expanded="true" signature="3268:3812" ph="{...}" />
-            <marker date="1486994492685" expanded="true" signature="3871:4666" ph="{...}" />
-            <marker date="1486994492685" expanded="true" signature="4696:4846" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gateserver/inc/gate_conn.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1134">
           <caret line="63" column="20" selection-start-line="63" selection-start-column="20" selection-end-line="63" selection-end-column="20" />
-          <folding>
-            <marker date="1486821818132" expanded="true" signature="54:180" ph="..." />
-            <marker date="1486821818132" expanded="true" signature="263:425" ph="{...}" />
-            <marker date="1486821818132" expanded="true" signature="451:490" ph="{...}" />
-            <marker date="1486821818132" expanded="true" signature="512:571" ph="{...}" />
-            <marker date="1486821818132" expanded="true" signature="666:1462" ph="{...}" />
-            <marker date="1486821818132" expanded="true" signature="694:725" ph="{...}" />
-            <marker date="1486821818132" expanded="true" signature="765:868" ph="{...}" />
-            <marker date="1486821818132" expanded="true" signature="785:809" ph="..." />
-            <marker date="1486821818132" expanded="true" signature="819:846" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -836,73 +825,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/config/json.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14490">
-          <caret line="805" column="1" selection-start-line="805" selection-start-column="1" selection-end-line="805" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/config/json.cpp" />
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="7" column="28" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/config/json.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="190" column="17" selection-start-line="190" selection-start-column="17" selection-end-line="190" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/config/protoconfig.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="27" column="2" selection-start-line="27" selection-start-column="2" selection-end-line="27" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/config/luaconfig.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/config/config_data.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-432">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/json/config.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="15" column="9" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="82">
-          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/config/json.h" />
+    <entry file="file://$PROJECT_DIR$/framework/config/protoconfig.h" />
+    <entry file="file://$PROJECT_DIR$/framework/config/luaconfig.h" />
+    <entry file="file://$PROJECT_DIR$/framework/config/config_data.cpp" />
+    <entry file="file://$PROJECT_DIR$/framework/json/config.cpp" />
     <entry file="file://$PROJECT_DIR$/tcpserver/inc/tcpctrl.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
+        <state relative-caret-position="396">
           <caret line="22" column="14" selection-start-line="22" selection-start-column="14" selection-end-line="22" selection-end-column="14" />
           <folding>
             <marker date="1486998570819" expanded="true" signature="175:439" ph="..." />
@@ -910,17 +848,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/framework/net/client_comm_engine.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/framework/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
+        <state relative-caret-position="1260">
           <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
           <folding />
         </state>
@@ -930,13 +860,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
           <caret line="13" column="18" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/framework/include/rapidjson/document.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
+        <state relative-caret-position="37098">
           <caret line="2061" column="40" selection-start-line="2061" selection-start-column="40" selection-end-line="2061" selection-end-column="40" />
           <folding />
         </state>
@@ -954,7 +883,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tcpserver/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
+        <state relative-caret-position="180">
           <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding />
         </state>
@@ -962,10 +891,88 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/framework/json/json.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" column="5" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
+        <state relative-caret-position="810">
+          <caret line="45" column="23" selection-start-line="45" selection-start-column="23" selection-end-line="45" selection-end-column="23" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client_comm_engine.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/netinet/in.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="364" column="16" selection-start-line="364" selection-start-column="16" selection-end-line="364" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tcpserver/inc/commdef.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="738">
+          <caret line="42" column="8" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="8" />
+          <folding>
+            <element signature="e#617#669#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/message/proto/message.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/client_comm_engine.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="30" column="24" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/server_comm_engine.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-129">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding>
+            <element signature="e#62#96#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/server_comm_engine.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="349">
+          <caret line="543" column="48" selection-start-line="543" selection-start-column="48" selection-end-line="543" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/net/client_comm_engine.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="161" column="31" selection-start-line="161" selection-start-column="31" selection-end-line="161" selection-end-column="31" />
+          <folding>
+            <element signature="e#87#118#0" expanded="true" />
           </folding>
         </state>
       </provider>

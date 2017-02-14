@@ -20,6 +20,7 @@ const int tcpserverid = 1;
 
 #define TCP_BUFFER_LEN             300000               //TCP接收缓冲区大小
 #define RECV_QUEUQ_MAX             1024                 //接收队列大小
+#define MESSAGE_EXTRA_LEN          10                   //消息额外长度增加破译难度
 
 #ifdef SMALL_SIZE
 #define MAX_SOCKET_NUM				500					// 单个TCPCtrl支持的连接数

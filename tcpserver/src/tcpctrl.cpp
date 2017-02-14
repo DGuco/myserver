@@ -488,6 +488,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
 
         //取出包的总长度
         memcpy(&unRecvLen,(void*)pTemp1,sizeof(unsigned int));
+        unRecvLen = ntohl(unRecvLen) - MESSAGE_EXTRA_LEN;
         if (unRecvLen < MSG_HEAD_LEN || unRecvLen > MSG_MAX_LEN)
         {
             LOG_ERROR("default","the package len is illegal",nRecvAllLen);
@@ -507,21 +508,40 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
         }
 
         unLength = 0;
-//        //包长数据已读出,准备都去真正的数据存入mszMsgBuf
-//        pTemp = mszMsgBuf;
-//
-//        //预留总长度
-//        pTemp += sizeof(short);
-//        unLength += sizeof(short);
-//
-//        //预留8字节对齐长度
-//        pTemp += sizeof(short);
-//        unLength += sizeof(short);
+        // 序列号长度
+        unsigned short tTmpSeq = 0;
+        memcpy(&tTmpSeq,(void*)pTemp1,sizeof(unsigned short));
+        tTmpSeq = ntohs(tTmpSeq);
+        pTemp += sizeof(unsigned short);
+        unLength += sizeof(unsigned short);
+
+        // protobuf版本
+        unsigned char tTmpProbufVersion = 0;
+        memcpy(&tTmpProbufVersion,(void*)pTemp1,sizeof(unsigned char));
+        pTemp += sizeof(unsigned char);
+        unLength += sizeof(unsigned char);
+
+        // 是否加密
+        unsigned char tTmpIsEncry = 0;
+        memcpy(&tTmpIsEncry,(void*)pTemp1,sizeof(unsigned char));
+        pTemp += sizeof(unsigned char);
+        unLength += sizeof(unsigned char);
+
+        //消息指令编号
+        unsigned short tTmpCmd = 0;
+        memcpy(&tTmpCmd,(void*)pTemp1,sizeof(unsigned short));
+        tTmpCmd = ntohs(tTmpCmd);
+        pTemp += sizeof(unsigned short);
+        unLength += sizeof(unsigned short);
 
         CMessage tmpMsg;
         tmpMsg.Clear();
-
-        iTmpRet = ClientCommEngine::ConvertStreamToMsg(pTemp1 - unRecvLen,unRecvLen,&tmpMsg);
+        CMessageHead* pbMessageHead = tmpMsg.mutable_msghead();
+        pbMessageHead->set_messageid(tTmpCmd);
+        pbMessageHead->set_dstfe(FE_GATESERVER);
+        pbMessageHead->set_dstid(20000);
+        pbMessageHead->set_timestamp(tTempTime);
+        iTmpRet = ClientCommEngine::ConvertClientStreamToMsg(pTemp1,unRecvLen,&tmpMsg);
         if (iTmpRet != 0)
         {
             LOG_ERROR("default","CTCPCtrl::RecvClientData error,ConvertStreamTomsg return %d",iTmpRet);

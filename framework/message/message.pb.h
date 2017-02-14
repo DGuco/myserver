@@ -35,8 +35,6 @@ void protobuf_ShutdownFile_message_2eproto();
 class CMessageHead;
 class CMessage;
 class CMsgPingRequest;
-class CMessageSet;
-class CCSHead;
 
 enum CMsgPingRequest_Msg {
   CMsgPingRequest_Msg_MsgID = 16777215
@@ -171,27 +169,6 @@ class CMessageHead : public ::google::protobuf::Message {
   inline ::google::protobuf::int64 timestamp() const;
   inline void set_timestamp(::google::protobuf::int64 value);
 
-  // optional int32 RoomID = 5;
-  inline bool has_roomid() const;
-  inline void clear_roomid();
-  static const int kRoomIDFieldNumber = 5;
-  inline ::google::protobuf::int32 roomid() const;
-  inline void set_roomid(::google::protobuf::int32 value);
-
-  // optional int64 RoleID = 6 [default = 0];
-  inline bool has_roleid() const;
-  inline void clear_roleid();
-  static const int kRoleIDFieldNumber = 6;
-  inline ::google::protobuf::int64 roleid() const;
-  inline void set_roleid(::google::protobuf::int64 value);
-
-  // optional int32 EntityID = 7 [default = 0];
-  inline bool has_entityid() const;
-  inline void clear_entityid();
-  static const int kEntityIDFieldNumber = 7;
-  inline ::google::protobuf::int32 entityid() const;
-  inline void set_entityid(::google::protobuf::int32 value);
-
   // @@protoc_insertion_point(class_scope:CMessageHead)
  private:
   inline void set_has_messageid();
@@ -202,12 +179,6 @@ class CMessageHead : public ::google::protobuf::Message {
   inline void clear_has_dstid();
   inline void set_has_timestamp();
   inline void clear_has_timestamp();
-  inline void set_has_roomid();
-  inline void clear_has_roomid();
-  inline void set_has_roleid();
-  inline void clear_has_roleid();
-  inline void set_has_entityid();
-  inline void clear_has_entityid();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -215,12 +186,9 @@ class CMessageHead : public ::google::protobuf::Message {
   ::google::protobuf::int32 dstfe_;
   ::google::protobuf::int64 timestamp_;
   ::google::protobuf::int32 dstid_;
-  ::google::protobuf::int32 roomid_;
-  ::google::protobuf::int64 roleid_;
-  ::google::protobuf::int32 entityid_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_message_2eproto();
   friend void protobuf_AssignDesc_message_2eproto();
@@ -285,7 +253,7 @@ class CMessage : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required .CMessageHead MsgHead = 1;
+  // optional .CMessageHead MsgHead = 1;
   inline bool has_msghead() const;
   inline void clear_msghead();
   static const int kMsgHeadFieldNumber = 1;
@@ -418,177 +386,6 @@ class CMsgPingRequest : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static CMsgPingRequest* default_instance_;
 };
-// -------------------------------------------------------------------
-
-class CMessageSet : public ::google::protobuf::Message {
- public:
-  CMessageSet();
-  virtual ~CMessageSet();
-
-  CMessageSet(const CMessageSet& from);
-
-  inline CMessageSet& operator=(const CMessageSet& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const CMessageSet& default_instance();
-
-  void Swap(CMessageSet* other);
-
-  // implements Message ----------------------------------------------
-
-  CMessageSet* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const CMessageSet& from);
-  void MergeFrom(const CMessageSet& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // repeated bytes MsgParas = 1;
-  inline int msgparas_size() const;
-  inline void clear_msgparas();
-  static const int kMsgParasFieldNumber = 1;
-  inline const ::std::string& msgparas(int index) const;
-  inline ::std::string* mutable_msgparas(int index);
-  inline void set_msgparas(int index, const ::std::string& value);
-  inline void set_msgparas(int index, const char* value);
-  inline void set_msgparas(int index, const void* value, size_t size);
-  inline ::std::string* add_msgparas();
-  inline void add_msgparas(const ::std::string& value);
-  inline void add_msgparas(const char* value);
-  inline void add_msgparas(const void* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& msgparas() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_msgparas();
-
-  // @@protoc_insertion_point(class_scope:CMessageSet)
- private:
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::RepeatedPtrField< ::std::string> msgparas_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-
-  friend void  protobuf_AddDesc_message_2eproto();
-  friend void protobuf_AssignDesc_message_2eproto();
-  friend void protobuf_ShutdownFile_message_2eproto();
-
-  void InitAsDefaultInstance();
-  static CMessageSet* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class CCSHead : public ::google::protobuf::Message {
- public:
-  CCSHead();
-  virtual ~CCSHead();
-
-  CCSHead(const CCSHead& from);
-
-  inline CCSHead& operator=(const CCSHead& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const CCSHead& default_instance();
-
-  void Swap(CCSHead* other);
-
-  // implements Message ----------------------------------------------
-
-  CCSHead* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const CCSHead& from);
-  void MergeFrom(const CCSHead& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required int32 timestamp = 1;
-  inline bool has_timestamp() const;
-  inline void clear_timestamp();
-  static const int kTimestampFieldNumber = 1;
-  inline ::google::protobuf::int32 timestamp() const;
-  inline void set_timestamp(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:CCSHead)
- private:
-  inline void set_has_timestamp();
-  inline void clear_has_timestamp();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::int32 timestamp_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-
-  friend void  protobuf_AddDesc_message_2eproto();
-  friend void protobuf_AssignDesc_message_2eproto();
-  friend void protobuf_ShutdownFile_message_2eproto();
-
-  void InitAsDefaultInstance();
-  static CCSHead* default_instance_;
-};
 // ===================================================================
 
 
@@ -684,77 +481,11 @@ inline void CMessageHead::set_timestamp(::google::protobuf::int64 value) {
   timestamp_ = value;
 }
 
-// optional int32 RoomID = 5;
-inline bool CMessageHead::has_roomid() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void CMessageHead::set_has_roomid() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void CMessageHead::clear_has_roomid() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void CMessageHead::clear_roomid() {
-  roomid_ = 0;
-  clear_has_roomid();
-}
-inline ::google::protobuf::int32 CMessageHead::roomid() const {
-  return roomid_;
-}
-inline void CMessageHead::set_roomid(::google::protobuf::int32 value) {
-  set_has_roomid();
-  roomid_ = value;
-}
-
-// optional int64 RoleID = 6 [default = 0];
-inline bool CMessageHead::has_roleid() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void CMessageHead::set_has_roleid() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void CMessageHead::clear_has_roleid() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void CMessageHead::clear_roleid() {
-  roleid_ = GOOGLE_LONGLONG(0);
-  clear_has_roleid();
-}
-inline ::google::protobuf::int64 CMessageHead::roleid() const {
-  return roleid_;
-}
-inline void CMessageHead::set_roleid(::google::protobuf::int64 value) {
-  set_has_roleid();
-  roleid_ = value;
-}
-
-// optional int32 EntityID = 7 [default = 0];
-inline bool CMessageHead::has_entityid() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
-}
-inline void CMessageHead::set_has_entityid() {
-  _has_bits_[0] |= 0x00000040u;
-}
-inline void CMessageHead::clear_has_entityid() {
-  _has_bits_[0] &= ~0x00000040u;
-}
-inline void CMessageHead::clear_entityid() {
-  entityid_ = 0;
-  clear_has_entityid();
-}
-inline ::google::protobuf::int32 CMessageHead::entityid() const {
-  return entityid_;
-}
-inline void CMessageHead::set_entityid(::google::protobuf::int32 value) {
-  set_has_entityid();
-  entityid_ = value;
-}
-
 // -------------------------------------------------------------------
 
 // CMessage
 
-// required .CMessageHead MsgHead = 1;
+// optional .CMessageHead MsgHead = 1;
 inline bool CMessage::has_msghead() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -817,80 +548,6 @@ inline void CMessage::set_msgpara(::google::protobuf::uint64 value) {
 // -------------------------------------------------------------------
 
 // CMsgPingRequest
-
-// -------------------------------------------------------------------
-
-// CMessageSet
-
-// repeated bytes MsgParas = 1;
-inline int CMessageSet::msgparas_size() const {
-  return msgparas_.size();
-}
-inline void CMessageSet::clear_msgparas() {
-  msgparas_.Clear();
-}
-inline const ::std::string& CMessageSet::msgparas(int index) const {
-  return msgparas_.Get(index);
-}
-inline ::std::string* CMessageSet::mutable_msgparas(int index) {
-  return msgparas_.Mutable(index);
-}
-inline void CMessageSet::set_msgparas(int index, const ::std::string& value) {
-  msgparas_.Mutable(index)->assign(value);
-}
-inline void CMessageSet::set_msgparas(int index, const char* value) {
-  msgparas_.Mutable(index)->assign(value);
-}
-inline void CMessageSet::set_msgparas(int index, const void* value, size_t size) {
-  msgparas_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* CMessageSet::add_msgparas() {
-  return msgparas_.Add();
-}
-inline void CMessageSet::add_msgparas(const ::std::string& value) {
-  msgparas_.Add()->assign(value);
-}
-inline void CMessageSet::add_msgparas(const char* value) {
-  msgparas_.Add()->assign(value);
-}
-inline void CMessageSet::add_msgparas(const void* value, size_t size) {
-  msgparas_.Add()->assign(reinterpret_cast<const char*>(value), size);
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-CMessageSet::msgparas() const {
-  return msgparas_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-CMessageSet::mutable_msgparas() {
-  return &msgparas_;
-}
-
-// -------------------------------------------------------------------
-
-// CCSHead
-
-// required int32 timestamp = 1;
-inline bool CCSHead::has_timestamp() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void CCSHead::set_has_timestamp() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void CCSHead::clear_has_timestamp() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void CCSHead::clear_timestamp() {
-  timestamp_ = 0;
-  clear_has_timestamp();
-}
-inline ::google::protobuf::int32 CCSHead::timestamp() const {
-  return timestamp_;
-}
-inline void CCSHead::set_timestamp(::google::protobuf::int32 value) {
-  set_has_timestamp();
-  timestamp_ = value;
-}
 
 
 // @@protoc_insertion_point(namespace_scope)
