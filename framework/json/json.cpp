@@ -6,15 +6,16 @@
 
 namespace MyJson {
 	Json::Json() {
-		_filename.clear();
+		m_sFilename.clear();
 	}
 	Json::~Json() {
-		m_obj.Clear();
-		_filename.clear();
+		m_Obj.Clear();
+        m_sFilename.clear();
 	}
 
-	int Json::loadFromFile(const std::string &filename) {
-		_filename = filename;
+	int Json::LoadFromFile(const std::string &filename) {
+        m_sFilename = filename;
+
 		try {
 			std::fstream fp;
 			fp.open(filename.c_str());
@@ -24,7 +25,6 @@ namespace MyJson {
 			}
 			std::string data;
 			std::string linedata;
-			std::string word;
 
 			while (!fp.eof()) {
 				getline(fp, linedata, '\n');
@@ -32,15 +32,9 @@ namespace MyJson {
 			}
 			fp.close();
 
-			m_obj.Clear();
-			m_obj = rapidjson::Deserialize(data);
-			std::string jstr = json::Serialize(m_obj);
-			clear();
-			int ret = parse();
-
-//        if (filename != "server.json"){
-//            INFO_LOG("load config data: {}", filename);
-//        }
+            m_Obj.Clear();
+            m_Obj.Parse(data.c_str());
+			int ret = Parse();
 
 			return ret;
 		} catch (...) {
@@ -48,14 +42,17 @@ namespace MyJson {
 		}
 	}
 
-	int Json::parse() {
+	int Json::Parse()
+    {
 		return 0;
 	}
 
-	void Json::clear() {
-	}
-	int Json::reload() {
-		clear();
-		return loadFromFile(_filename);
+	void Json::Clear()
+    {
+    }
+	int Json::Reload()
+    {
+        Clear();
+		return LoadFromFile(m_sFilename);
 	}
 }

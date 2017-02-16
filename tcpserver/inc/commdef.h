@@ -11,13 +11,6 @@
 #include <time.h>
 #include <string.h>
 
-/******************************************/
-//配置信息暂时写死 以后加上配置
-#define  listenport  20000         //tcpserver 端口
-const int tcpserverid = 1;
-
-/******************************************/
-
 #define TCP_BUFFER_LEN             300000               //TCP接收缓冲区大小
 #define RECV_QUEUQ_MAX             1024                 //接收队列大小
 #define MESSAGE_EXTRA_LEN          10                   //消息额外长度增加破译难度

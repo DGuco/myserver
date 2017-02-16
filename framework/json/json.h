@@ -11,22 +11,19 @@ namespace MyJson {
 
         virtual ~Json();
 
-        int loadFromFile(const std::string &filename);
+        int LoadFromFile(const std::string &filename);
 
-        virtual int parse();
+        virtual int Parse();
 
-        virtual void clear();
+        virtual void Clear();
 
-        int reload();
+        int Reload();
 
-    public:
+    protected:
+        rapidjson::Document m_Obj;
 
-        rapidjson::Value m_obj;
-
-        std::string _filename;
+        std::string m_sFilename;
     };
-
-#endif // __CONFIG_DATA_H__
 
 #endif //_JSON_H_
 }

@@ -1,0 +1,20 @@
+{
+  "zoneid": 10001,
+  "start_server": "2016-11-7 19:00:00",
+  "host": "0.0.0.0",
+  "port": 2100,
+  "http_host": "0.0.0.0",
+  "http_port": 2200,
+  "redis_server": {
+    "host": "127.0.0.1",
+    "port": 6379,
+    "password": ""
+  },
+  "tlog_server": {
+    "host": "127.0.0.1",
+    "port": 2500
+  },
+  "event_server"  : "tcp://127.0.0.1:2510",
+  "data_dir": "./data/",
+  "log_file": "./logs/slg"
+}

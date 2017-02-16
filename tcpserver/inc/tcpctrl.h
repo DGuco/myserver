@@ -14,14 +14,15 @@
 #include "../../framework/base/servertool.h"
 #include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/message/message.pb.h"
-#include "../inc/commdef.h"
 #include "../../framework/base/base.h"
+#include "../inc/commdef.h"
+#include "../inc/config.h"
 
 #define MAX_ERRNO_NUM 10
 #define READSTAT      0
 #define WRITESTAT     1
 
-type CTCPConn<RECVBUFLENGTH,POSTBUFLENGTH> MyTcpConn;
+typedef CTCPConn<RECVBUFLENGTH,POSTBUFLENGTH> MyTcpConn;
 
 //和gateserver的连接类
 class CGateClient : public MyTcpConn
@@ -31,15 +32,15 @@ public:
     ~CGateClient() {}
 
 protected:
-    CWTimer m_iLastKeepaliveTime;
+    CWTimer m_iLastKeepAliveTime;
 public:
-    CWTimer* GetLastKeepaliveTime()     { return m_iLastKeepaliveTime;}
-    void InitTimer(time_t tTime)        { m_iLastKeepaliveTime.Initialize(tTime);}
-    bool IsTimeOut(time_t tTime)        { m_iLastKeepaliveTime.IsTimeout(tTime);}
-    void ResetTimeOut(time_t tTime)     { m_iLastKeepaliveTime.ResetTimeout(tTime);}
+    CWTimer* GetLastKeepaliveTime()     { return &m_iLastKeepAliveTime;}
+    void InitTimer(time_t tTime)        { m_iLastKeepAliveTime.Initialize(tTime);}
+    bool IsTimeOut(time_t tTime)        { return m_iLastKeepAliveTime.IsTimeout(tTime);}
+    void ResetTimeOut(time_t tTime)     { m_iLastKeepAliveTime.ResetTimeout(tTime);}
 
     bool IsConnected()                  { return GetStatus() == tcs_connected ? true : false;}
-    int  GetStatus()                    { return GetSocket->GetStatus();}
+    int  GetStatus()                    { return GetSocket()->GetStatus();}
     int  SendOneCode(unsigned short nCodeLength, BYTE*pCode)
     {
         return GetSocket()->SendOneCode(nCodeLength,pCode);
@@ -49,9 +50,9 @@ public:
     int RecvData()                      { return GetSocket()->RecvData();} 
     int GetOneCode(unsigned short& nCodeLength, BYTE*pCode)
     {
-        return GetSocket()->GendOneCode(nCodeLength,pCode);
+        return GetSocket()->GetOneCode(nCodeLength,pCode);
     }
-}
+};
 
 class CTcpCtrl
 {

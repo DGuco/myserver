@@ -8,10 +8,20 @@ set(SOURCE_FILES
         inc/commdef.h
         inc/tcpctrl.h
         src/tcpctrl.cpp
-        )
+        inc/config.h
+        src/config.cpp)
 
 link_directories(
         /usr/local/lib/
+        ${CMAKE_SOURCE_DIR/framework/base}
+        ${CMAKE_SOURCE_DIR/framework/config}
+        ${CMAKE_SOURCE_DIR/framework/log}
+        ${CMAKE_SOURCE_DIR/framework/message}
+        ${CMAKE_SOURCE_DIR/framework/mystd}
+        ${CMAKE_SOURCE_DIR/framework/net}
+        ${CMAKE_SOURCE_DIR/framework/sharemem}
+        ${CMAKE_SOURCE_DIR/framework/thread}
+        ${CMAKE_SOURCE_DIR/framework/timer}
 )
 
 add_executable(tcpserver ${SOURCE_FILES})

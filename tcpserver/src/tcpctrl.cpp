@@ -75,7 +75,7 @@ int CTcpCtrl::Initialize()
     //初始化epoll
     m_pEpollevents = NULL;
     //初始化epoll socket
-    iTmpRet = InitEpollSocket((short)listenport);
+    iTmpRet = InitEpollSocket((short)CTcpConfig::GetSingleton().m_iPort);
     if (0 != iTmpRet)
     {
         LOG_ERROR("default","InitEpollSocket failed! TCPserver init failed. ReusltCode = %d!",iTmpRet);
@@ -86,7 +86,7 @@ int CTcpCtrl::Initialize()
     m_astSocketInfo[m_iSocket].m_iSocket = m_iSocket;
     m_astSocketInfo[m_iSocket].m_iSocketType = LISTEN_SOCKET;
     m_astSocketInfo[m_iSocket].m_iSocketFlag = RECV_DATA;
-    m_astSocketInfo[m_iSocket].m_iConnectedPort = listenport;
+    m_astSocketInfo[m_iSocket].m_iConnectedPort = CTcpConfig::GetSingleton().m_iPort;
     m_iMaxfds = m_iSocket++;
 
     return 0;
@@ -555,7 +555,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
             CTcpHead pbTmpTcpHead;
             pbTmpTcpHead.Clear();
             pbTmpTcpHead.set_srcfe(FE_TCPSERVER);      //设置源服务器
-            pbTmpTcpHead.set_srcid(tcpserverid);
+            pbTmpTcpHead.set_srcid(CTcpConfig::GetSingleton().m_iServerId);
             pbTmpTcpHead.set_dstfe(tmpMsg.msghead().dstfe());
             pbTmpTcpHead.set_srcid(tmpMsg.msghead().dstid());
             pbTmpTcpHead.set_timestamp(tTempTime);
@@ -576,11 +576,11 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
 
             pTemp = m_szMsgBuf;
             //预留总长度
-            pTemp += sizeof(short)
-            unLength += sizeof(short)
+            pTemp += sizeof(short);
+            unLength += sizeof(short);
             //预留8字节对齐长度
-            pTemp += sizeof(short)
-            unLength += sizeof(short)
+            pTemp += sizeof(short);
+            unLength += sizeof(short);
             //序列化CTCPhead
             *(short*)pTemp = pbTmpTcpHead.ByteSize();
             pTemp += sizeof(short);
