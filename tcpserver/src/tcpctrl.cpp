@@ -156,8 +156,7 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
     /* SO_REUSEADDR
      * 通知内核，如果端口忙，但TCP状态位于 TIME_WAIT ，可以重用端口。如果端口忙，而TCP状态位
      * 于其他状态，重用端口时依旧得到一个错误信息，指明"地址已经使用中"。如果你的服务程序停止后想
-     * 立即重启，而新套接字依旧使用同一端口，此时SO_REUSEADDR 选项非常有用。必须意识到，此时任何
-     * 非期望数据到达，都可能导致服务程序反应混乱，不过这只是一种可能，事实上很不可能。因此
+     * 立即重启，而新套接字依旧使用同一端口，此时SO_REUSEADDR 选项非常有用。
      * 当tcpserver作为客户端连接其他服务tcp服务时，如果自己断线重连对方时进入TIME_WAIT状态
      * 此时如果重新绑定端口时会失败，这种状态会持续1-4分钟，设置此选项重用该地址，防止这种情况
      * 发生
@@ -437,7 +436,7 @@ int CTcpCtrl::GetExMessage()
 
 /**
   * 函数名          : CTCPCtrl::RecvClientData
-  * 功能描述        : 接客户端的数据
+  * 功能描述        : 接客户端的数据组织客户端数据为服务器其间数据传格式存入消息包缓冲区
   * 返回值          ：void
 **/
 int CTcpCtrl::RecvClientData(int iSocketFd)
@@ -445,13 +444,13 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
     int iTmpRet = 0;
     int iTmpRecvBytes = 0;
     int iTmpOffset;
-    char* pTemp;
     char* pTemp1;
+    char* pTemp;
     unsigned int unRecvLen;
+    unsigned int unLength = 0;
     int nRecvAllLen;
     time_t tTempTime;
     int iTmpSocket = m_pSocketInfo->m_iSocket;
-    unsigned short unLength = 0;
     iTmpOffset = m_pSocketInfo->m_iRecvBytes; 
     
     //读取tcp数据
@@ -479,13 +478,14 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
 
     while(1)
     {
-        //小于最小长度
+        //小于最小长度继续接收
         if ( nRecvAllLen < MSG_HEAD_LEN)
         {
             LOG_ERROR("default","the package len is less than base len ,receive len %d",nRecvAllLen);
             break;
         }
 
+        unLength = 0;
         //取出包的总长度
         memcpy(&unRecvLen,(void*)pTemp1,sizeof(unsigned int));
         unRecvLen = ntohl(unRecvLen) - MESSAGE_EXTRA_LEN;
@@ -495,44 +495,44 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
             ClearSocketInfo(Err_PacketError);
             return -1;
         }
-        nRecvAllLen -= unRecvLen;
         //数据指针向后移动指向未读取位置
-        pTemp1 += unRecvLen;
-        if(nRecvAllLen < 0)
-        {
-            // 总长度小于包的长度，则继续接收
-            nRecvAllLen += unRecvLen;
-            pTemp1 -= unRecvLen;
-            LOG_DEBUG("default", "Receive client part data left len = %d",nRecvAllLen,unRecvLen);
-            break;
-        }
+        pTemp1 += sizeof(unsigned int);
+        nRecvAllLen -= sizeof(unsigned int);
 
-        unLength = 0;
         // 序列号长度
         unsigned short tTmpSeq = 0;
         memcpy(&tTmpSeq,(void*)pTemp1,sizeof(unsigned short));
         tTmpSeq = ntohs(tTmpSeq);
-        pTemp += sizeof(unsigned short);
-        unLength += sizeof(unsigned short);
+        pTemp1 += sizeof(unsigned short);
+        nRecvAllLen -= sizeof(unsigned short);
 
         // protobuf版本
         unsigned char tTmpProbufVersion = 0;
         memcpy(&tTmpProbufVersion,(void*)pTemp1,sizeof(unsigned char));
-        pTemp += sizeof(unsigned char);
-        unLength += sizeof(unsigned char);
+        pTemp1 += sizeof(unsigned char);
+        nRecvAllLen -= sizeof(unsigned char);
 
         // 是否加密
         unsigned char tTmpIsEncry = 0;
         memcpy(&tTmpIsEncry,(void*)pTemp1,sizeof(unsigned char));
-        pTemp += sizeof(unsigned char);
-        unLength += sizeof(unsigned char);
+        pTemp1 += sizeof(unsigned char);
+        nRecvAllLen -= sizeof(unsigned char);
 
         //消息指令编号
         unsigned short tTmpCmd = 0;
         memcpy(&tTmpCmd,(void*)pTemp1,sizeof(unsigned short));
         tTmpCmd = ntohs(tTmpCmd);
-        pTemp += sizeof(unsigned short);
-        unLength += sizeof(unsigned short);
+        pTemp1 += sizeof(unsigned short);
+        nRecvAllLen -= sizeof(unsigned short);
+
+        // 总长度小于包的长度，则继续接收
+        if(nRecvAllLen < unRecvLen)
+        {
+            nRecvAllLen = m_pSocketInfo->m_iRecvBytes;
+            pTemp1      = m_pSocketInfo->m_szMsgBuf;
+            LOG_DEBUG("default", "Receive client part data left len = %d",nRecvAllLen,unRecvLen);
+            break;
+        }
 
         CMessage tmpMsg;
         tmpMsg.Clear();
@@ -548,10 +548,10 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
             ClearSocketInfo(Err_PacketError);
             return -1;
         }
-
+        
+        //组织转发消息
         if (tmpMsg.msghead().messageid() != CMsgPingRequest::MsgID)
         {
-            //转发消息
             CTcpHead pbTmpTcpHead;
             pbTmpTcpHead.Clear();
             pbTmpTcpHead.set_srcfe(FE_TCPSERVER);      //设置源服务器
@@ -574,6 +574,13 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
             //state < 0 说明关闭socket
             pbSocketInfo->set_state(0);
 
+            pTemp = m_szMsgBuf;
+            //预留总长度
+            pTemp += sizeof(short)
+            unLength += sizeof(short)
+            //预留8字节对齐长度
+            pTemp += sizeof(short)
+            unLength += sizeof(short)
             //序列化CTCPhead
             *(short*)pTemp = pbTmpTcpHead.ByteSize();
             pTemp += sizeof(short);
@@ -591,7 +598,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
             unLength += pbTmpTcpHead.GetCachedSize();
 
             //拷贝消息到发送缓冲区
-            memcpy(pTemp,pTemp1 - unRecvLen,unRecvLen);
+            memcpy(pTemp,pTemp1,unRecvLen);
             pTemp += unRecvLen;
             unLength += unRecvLen;
 
@@ -600,6 +607,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
             if (iTmpAddlen > 0)
             {
                 iTmpAddlen = 8 - iTmpAddlen;
+                //将字节对齐部分置为0
                 memset(pTemp,0,iTmpAddlen);
             }
 
@@ -612,6 +620,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
 
             //序列话8字节对齐长度
             *(short*) pTemp = iTmpAddlen;
+            iTmpRet = m_GateClient.SendOneCode(unLength,(unsigned char*) m_szMsgBuf);
         }
     }
     return 0;

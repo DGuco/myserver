@@ -15,10 +15,43 @@
 #include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/message/message.pb.h"
 #include "../inc/commdef.h"
+#include "../../framework/base/base.h"
 
 #define MAX_ERRNO_NUM 10
 #define READSTAT      0
 #define WRITESTAT     1
+
+type CTCPConn<RECVBUFLENGTH,POSTBUFLENGTH> MyTcpConn;
+
+//和gateserver的连接类
+class CGateClient : public MyTcpConn
+{
+public:
+    CGateClient() {}
+    ~CGateClient() {}
+
+protected:
+    CWTimer m_iLastKeepaliveTime;
+public:
+    CWTimer* GetLastKeepaliveTime()     { return m_iLastKeepaliveTime;}
+    void InitTimer(time_t tTime)        { m_iLastKeepaliveTime.Initialize(tTime);}
+    bool IsTimeOut(time_t tTime)        { m_iLastKeepaliveTime.IsTimeout(tTime);}
+    void ResetTimeOut(time_t tTime)     { m_iLastKeepaliveTime.ResetTimeout(tTime);}
+
+    bool IsConnected()                  { return GetStatus() == tcs_connected ? true : false;}
+    int  GetStatus()                    { return GetSocket->GetStatus();}
+    int  SendOneCode(unsigned short nCodeLength, BYTE*pCode)
+    {
+        return GetSocket()->SendOneCode(nCodeLength,pCode);
+    }
+
+    int GetSocketFd()                   { return GetSocket()->GetSocketFD();}
+    int RecvData()                      { return GetSocket()->RecvData();} 
+    int GetOneCode(unsigned short& nCodeLength, BYTE*pCode)
+    {
+        return GetSocket()->GendOneCode(nCodeLength,pCode);
+    }
+}
 
 class CTcpCtrl
 {
@@ -63,7 +96,7 @@ private:
 
     char                m_szMsgBuf[MAX_BUF_LEN]; 		 	// 消息包缓冲(加大是为了防止game过来的消息过大)
     int                 m_iTimeout;
-    TTcpStat            m_stTcpStat;                         // 当前tcp连接信息
+    TTcpStat            m_stTcpStat;                        // 当前tcp连接信息
     int                 m_iWriteStatCount;
     char                m_szWriteStatBuf[1024];
     struct epoll_event* m_pEpollevents;                      //epoll event集合(大小MAX_SOCKET_NUM)
@@ -71,15 +104,15 @@ private:
     int                 m_iMaxfds;
     struct epoll_event  m_stEpollEvent;
 
-    unsigned char 		m_szSCMsgBuf[MAX_BUF_LEN]; 		 	// 发送消息缓冲区
+    unsigned char 		m_szSCMsgBuf[MAX_BUF_LEN]; 		 	 // 发送消息缓冲区
     unsigned short 		m_iSCIndex; 					 	    // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
-    short 				m_nSCLength; 					 	// 实际发送的数据长度
+    short 				m_nSCLength; 					 	 // 实际发送的数据长度
 
-//    CGateClient		m_GateClient;
+    CGateClient		    m_GateClient;                        //gateserver 连接
     time_t				m_iLastKeepaliveTime;
-    CTcpHead			m_SCTcpHead;				// 服务器发送到客户端的数据信息头
-    int					m_iSendIndex;				// 已发送的服务器到客户端的数据的游标
-    bool				m_bHasRecv;					// 是否接收过数据(只用于第一次接收数据使用,防止没有RecvData直接GetOneCode报错)
+    CTcpHead			m_SCTcpHead;				        // 服务器发送到客户端的数据信息头
+    int					m_iSendIndex;				        // 已发送的服务器到客户端的数据的游标
+    bool				m_bHasRecv;					        // 是否接收过数据(只用于第一次接收数据使用,防止没有RecvData直接GetOneCode报错)
 };
 
 #endif
