@@ -63,7 +63,7 @@ public:
     int Run();
     int SetRunFlag(int iRunFlag);
 
-public:
+private:
 
     //*****************Epoll***********************/
     int InitEpollSocket(short shPort);
@@ -74,10 +74,19 @@ public:
     int EphCleanUp();
 
     //******************数据处理**********************/
+    int CheckTimeOut();
     int GetExMessage();
     int RecvClientData(int iSocketFd);
     int TcpRead(int iSocket, char *pBuf, int iLen);
     void ClearSocketInfo(short enError);
+    int CheckWaitSendData();
+
+    //******************gate连接**********************/
+    bool ConnectToGate();
+    bool RegisterToGate();
+    bool SendKeepAliveToGate();
+    void DisConnect(int iError);
+    int  RecvServerData();
 
 private:
 

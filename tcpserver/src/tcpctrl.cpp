@@ -314,6 +314,16 @@ int CTcpCtrl::EphNewConn(int iSocketFd)
 }
 
 /**
+  * 函数名          : CTCPCtrl::CheckTimeOut
+  * 功能描述        : 检测客户端的连接超时和连接gate的超时
+  * 返回值          ：void
+**/
+int CTcpCtrl::CheckTimeOut()
+{
+
+}
+
+/**
   * 函数名          : CTCPCtrl::GetExMessage
   * 功能描述        : 接收外部数据
   * 返回值          ：void
@@ -525,8 +535,10 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
         pTemp1 += sizeof(unsigned short);
         nRecvAllLen -= sizeof(unsigned short);
 
+        nRecvAllLen -= unRecvLen;
+        pTemp1 += unRecvLen;
         // 总长度小于包的长度，则继续接收
-        if(nRecvAllLen < unRecvLen)
+        if(nRecvAllLen < 0)
         {
             nRecvAllLen = m_pSocketInfo->m_iRecvBytes;
             pTemp1      = m_pSocketInfo->m_szMsgBuf;
@@ -541,7 +553,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
         pbMessageHead->set_dstfe(FE_GATESERVER);
         pbMessageHead->set_dstid(20000);
         pbMessageHead->set_timestamp(tTempTime);
-        iTmpRet = ClientCommEngine::ConvertClientStreamToMsg(pTemp1,unRecvLen,&tmpMsg);
+        iTmpRet = ClientCommEngine::ConvertClientStreamToMsg(pTemp1 - unRecvLen,unRecvLen,&tmpMsg);
         if (iTmpRet != 0)
         {
             LOG_ERROR("default","CTCPCtrl::RecvClientData error,ConvertStreamTomsg return %d",iTmpRet);
@@ -621,7 +633,38 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
             //序列话8字节对齐长度
             *(short*) pTemp = iTmpAddlen;
             iTmpRet = m_GateClient.SendOneCode(unLength,(unsigned char*) m_szMsgBuf);
+            if (iTmpRet < 0)
+            {
+                LOG_ERROR("default", "CTCPCtrl::RecvClientData error,send data to gate error,error code = %d",iTmpRet);
+                ClearSocketInfo(Err_PacketError);
+                return iTmpRet;
+            }
+            #ifdef _DEBUG_
+                LOG_DEBUG("defalut","tcp ==>gate [%d bytes]",unLength);
+            #endif
         }
+        else
+        {
+            //心跳信息不做处理
+        }
+        m_stTcpStat.m_iPkgSizeRecv++;
+    }
+    //数据发送完
+    if (nRecvAllLen == 0)
+    {
+        m_pSocketInfo->m_iRecvBytes = 0;
+    }
+    else
+    {
+        if ((MSG_MAX_LEN < nRecvAllLen) || (nRecvAllLen < 0))
+        {
+            LOG_ERROR("default", "the package length is illeagl,the package len = %d",nRecvAllLen);
+            ClearSocketInfo(Err_PacketError);
+            return -1;
+        }
+        //继续转发
+        m_pSocketInfo->m_iRecvBytes = nRecvAllLen;
+        memove(m_pSocketInfo->m_szMsgBuf,pTemp1,nRecvAllLen);
     }
     return 0;
 }
@@ -703,4 +746,64 @@ void CTcpCtrl::ClearSocketInfo(short enError)
     m_pSocketInfo->m_tStamp = 0;
     m_pSocketInfo->m_iSendFlag = 0;
     m_pSocketInfo->m_iConnectedPort = 0;
+}
+
+/**
+  * 函数名          : CTCPCtrl::CheckWaitSendData
+  * 功能描述        : 检测是否有缓存数据要发送
+  * 返回值          ：int
+**/
+int CTcpCtrl::CheckWaitSendData()
+{
+    return 0;
+}
+
+/**
+  * 函数名          : CTCPCtrl::ConnectToGate
+  * 功能描述        : 连接gate服务器
+  * 返回值          ：int
+**/
+bool CTcpCtrl::ConnectToGate()
+{
+
+}
+
+/**
+  * 函数名          : CTCPCtrl::RegisterToGate
+  * 功能描述        : 注册gate服务器
+  * 返回值          ：int
+**/
+bool CTcpCtrl::RegisterToGate()
+{
+
+}
+
+/**
+  * 函数名          : CTCPCtrl::RegisterToGate
+  * 功能描述        : 向gate服务器发送心跳信息
+  * 返回值          ：int
+**/
+bool CTcpCtrl::SendKeepAliveToGate()
+{
+
+}
+
+/**
+  * 函数名          : CTCPCtrl::DisConnect
+  * 功能描述        : 通知gameserver客户端断开连接
+  * 返回值          ：int
+**/
+bool CTcpCtrl::DisConnect()
+{
+
+}
+
+/**
+  * 函数名          : CTCPCtrl::RecvServerData
+  * 功能描述        : 接收gate返回的消息
+  * 返回值          ：int
+**/
+bool CTcpCtrl::RecvServerData()
+{
+
 }

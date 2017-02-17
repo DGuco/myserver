@@ -1,0 +1,22 @@
+{
+  "tcpinfo":
+   {
+      "host": "0.0.0.0",
+      "port": 2100,
+      "serverid" : 20000  
+   }, 
+   "gateinfo":
+   {
+      "host": "0.0.0.0",
+      "port": 2101,
+      "serverid" : 20001  
+   },
+   "gameinfo":
+   {
+      "host": "0.0.0.0",
+      "port": 2102,
+      "serverid" : 20002
+   },
+   "keepalive"  : 10000,    #服务器间的心跳频率
+   "servertick" : 100       #服务器帧频
+}
