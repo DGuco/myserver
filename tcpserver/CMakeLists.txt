@@ -7,9 +7,7 @@ set(SOURCE_FILES
         main.cpp
         inc/commdef.h
         inc/tcpctrl.h
-        src/tcpctrl.cpp
-        inc/config.h
-        src/config.cpp)
+        src/tcpctrl.cpp)
 
 link_directories(
         /usr/local/lib/

@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include "inc/tcpctrl.h"
 #include "inc/commdef.h"
-#include "inc/config.h"
+#include "../framework/json/config.h"
 
 using namespace std;
 
@@ -42,13 +42,13 @@ int main(int argc,char **argv)
     //初始化日志
     INIT_ROLLINGFILE_LOG("default","../log/tcpsvrd.log",LEVEL_DEBUG);
 
-    CTcpConfig* pTmpConfigJson = new CTcpConfig;
-    const string filepath = "../config/tcpserver.json";
-    if (-1 == pTmpConfigJson->GetSingleton().LoadFromFile(filepath))
+    CServerConfig* pTmpConfig = new CServerConfig;
+    const string filepath = "../config/serverinfo.json";
+    if (-1 == CServerConfig::GetSingleton().LoadFromFile(filepath))
     {
         LOG_ERROR("default","Get TcpserverConfig failed");
-        delete pTmpConfigJson;
-        pTmpConfigJson = NULL;
+        delete pTmpConfig;
+        pTmpConfig = NULL;
         exit(0);
     }
 

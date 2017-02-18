@@ -16,11 +16,13 @@
 #include "../../framework/message/message.pb.h"
 #include "../../framework/base/base.h"
 #include "../inc/commdef.h"
-#include "../inc/config.h"
+#include "../../framework/json/config.h"
 
 #define MAX_ERRNO_NUM 10
 #define READSTAT      0
 #define WRITESTAT     1
+
+//CServerConfig* g_pConfigJson = NULL;
 
 typedef CTCPConn<RECVBUFLENGTH,POSTBUFLENGTH> MyTcpConn;
 

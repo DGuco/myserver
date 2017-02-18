@@ -96,3 +96,21 @@ INFO    : Set Recv buffer size to 262142
 INFO    : InitEpollSocket successed! TCPserver init successed. ReusltCode = 0!
 INFO    : tcp server is going to run...
 NOTICE  : Tcpserver is runing....
+ERROR   : Get TcpserverConfig failed
+INFO    : Set Recv buffer size to 262142
+INFO    : InitEpollSocket successed! TCPserver init successed. ReusltCode = 0!
+INFO    : tcp server is going to run...
+NOTICE  : Tcpserver is runing....
+ERROR   : Bind socket Error!
+ERROR   : InitEpollSocket failed! TCPserver init failed. ReusltCode = 4!
+ERROR   : Tcpserver Initialize failed,iRet = 4
+ERROR   : Bind socket Error!
+ERROR   : InitEpollSocket failed! TCPserver init failed. ReusltCode = 4!
+ERROR   : Tcpserver Initialize failed,iRet = 4
+ERROR   : Bind socket Error! Address already in use
+ERROR   : InitEpollSocket failed! TCPserver init failed. ReusltCode = 4!
+ERROR   : Tcpserver Initialize failed,iRet = 4
+INFO    : Set Recv buffer size to 262142
+INFO    : InitEpollSocket successed! TCPserver init successed. ReusltCode = 0!
+INFO    : tcp server is going to run...
+NOTICE  : Tcpserver is runing....

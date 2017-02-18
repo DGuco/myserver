@@ -16,6 +16,8 @@ set(FRAMEWORK
         base/my_assert.h
         json/json.h
         json/json.cpp
+        json/config.h
+        json/config.cpp
         log/log.h
         log/log.cpp
         message/message.pb.h

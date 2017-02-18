@@ -24,8 +24,10 @@
 #include <stdio.h>
 #include <netinet/tcp.h>
 #include "../inc/tcpctrl.h"
-#include "../../framework/net/client_comm_engine.h"
 #include "../inc/commdef.h"
+#include "../../framework/net/client_comm_engine.h"
+#include "../../framework/json/config.h"
+
 
 /**
   * 函数名          : CTcpCtrl::CTcpCtrl
@@ -75,7 +77,7 @@ int CTcpCtrl::Initialize()
     //初始化epoll
     m_pEpollevents = NULL;
     //初始化epoll socket
-    iTmpRet = InitEpollSocket((short)CTcpConfig::GetSingleton().m_iPort);
+    iTmpRet = InitEpollSocket((short)CServerConfig::GetSingletonPtr()->m_iTcpPort);
     if (0 != iTmpRet)
     {
         LOG_ERROR("default","InitEpollSocket failed! TCPserver init failed. ReusltCode = %d!",iTmpRet);
@@ -86,7 +88,7 @@ int CTcpCtrl::Initialize()
     m_astSocketInfo[m_iSocket].m_iSocket = m_iSocket;
     m_astSocketInfo[m_iSocket].m_iSocketType = LISTEN_SOCKET;
     m_astSocketInfo[m_iSocket].m_iSocketFlag = RECV_DATA;
-    m_astSocketInfo[m_iSocket].m_iConnectedPort = CTcpConfig::GetSingleton().m_iPort;
+    m_astSocketInfo[m_iSocket].m_iConnectedPort = CServerConfig::GetSingletonPtr()->m_iTcpPort;
     m_iMaxfds = m_iSocket++;
 
     return 0;
@@ -174,7 +176,7 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
 
     if (bind(m_iSocket,(struct sockaddr *)&addr,sizeof(addr)) == -1)
     {
-        LOG_ERROR("default","Bind socket Error!");
+        LOG_ERROR("default","Bind socket Error! %s",strerror(errno));
         EphClose(m_iSocket);
         EphCleanUp();
         return 4;
@@ -567,7 +569,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
             CTcpHead pbTmpTcpHead;
             pbTmpTcpHead.Clear();
             pbTmpTcpHead.set_srcfe(FE_TCPSERVER);      //设置源服务器
-            pbTmpTcpHead.set_srcid(CTcpConfig::GetSingleton().m_iServerId);
+            pbTmpTcpHead.set_srcid(CServerConfig::GetSingletonPtr()->m_iTcpServerId);
             pbTmpTcpHead.set_dstfe(tmpMsg.msghead().dstfe());
             pbTmpTcpHead.set_srcid(tmpMsg.msghead().dstid());
             pbTmpTcpHead.set_timestamp(tTempTime);
@@ -664,7 +666,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
         }
         //继续转发
         m_pSocketInfo->m_iRecvBytes = nRecvAllLen;
-        memove(m_pSocketInfo->m_szMsgBuf,pTemp1,nRecvAllLen);
+        memmove(m_pSocketInfo->m_szMsgBuf,pTemp1,nRecvAllLen);
     }
     return 0;
 }
@@ -771,7 +773,7 @@ bool CTcpCtrl::ConnectToGate()
 /**
   * 函数名          : CTCPCtrl::RegisterToGate
   * 功能描述        : 注册gate服务器
-  * 返回值          ：int
+  * 返回值          ：bool
 **/
 bool CTcpCtrl::RegisterToGate()
 {
@@ -781,7 +783,7 @@ bool CTcpCtrl::RegisterToGate()
 /**
   * 函数名          : CTCPCtrl::RegisterToGate
   * 功能描述        : 向gate服务器发送心跳信息
-  * 返回值          ：int
+  * 返回值          ：bool
 **/
 bool CTcpCtrl::SendKeepAliveToGate()
 {
@@ -791,9 +793,9 @@ bool CTcpCtrl::SendKeepAliveToGate()
 /**
   * 函数名          : CTCPCtrl::DisConnect
   * 功能描述        : 通知gameserver客户端断开连接
-  * 返回值          ：int
+  * 返回值          ：void
 **/
-bool CTcpCtrl::DisConnect()
+void CTcpCtrl::DisConnect(int iError)
 {
 
 }
@@ -803,7 +805,7 @@ bool CTcpCtrl::DisConnect()
   * 功能描述        : 接收gate返回的消息
   * 返回值          ：int
 **/
-bool CTcpCtrl::RecvServerData()
+int CTcpCtrl::RecvServerData()
 {
 
 }
