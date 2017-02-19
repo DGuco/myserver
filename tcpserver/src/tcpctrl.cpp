@@ -240,8 +240,7 @@ int CTcpCtrl::EphInit()
     //生成epoll描述符
     if ((m_iKdpfd = epoll_create(MAX_SOCKET_NUM)) < 0)
     {
-        LOG_ERROR("default","ERROR:%s",strerror(errno));
-        LOG_ERROR("default","epoll create error!");
+        LOG_ERROR("default","epoll create error:%s",strerror(errno));
         close(m_iKdpfd);
         return -1;
     }
@@ -322,7 +321,32 @@ int CTcpCtrl::EphNewConn(int iSocketFd)
 **/
 int CTcpCtrl::CheckTimeOut()
 {
-
+    int i;
+    time_t iTmTimeGap;
+    time(&m_iNowTime);
+    //检测超时
+    if (m_iNowTime - m_iLastKeepaliveTime >= CServerConfig::GetSingletonPtr()->m_iTcpKeepAlive)
+    {
+        m_iLastKeepaliveTime = m_iNowTime;
+        //超时重新连接
+        if (m_GateClient.IsConnected() == false ||
+                m_GateClient.IsTimeOut(m_iNowTime))
+        {
+            LOG_WARN("default","[%s: %d: %s] gateclient closed,status:%d",
+            __MY_FILE__,__LINE__,__FUNCTION__,m_GateClient.GetStatus());
+            if (ConnectToGate() == true)
+            {
+                if (RegisterToGate() == true)
+                {
+                    m_GateClient.ResetTimeOut(m_iNowTime);
+                }
+            }
+        } else
+        {
+            //发送心跳到gateserver
+            SendKeepAliveToGate();
+        }
+    }
 }
 
 /**
@@ -668,6 +692,8 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
         m_pSocketInfo->m_iRecvBytes = nRecvAllLen;
         memmove(m_pSocketInfo->m_szMsgBuf,pTemp1,nRecvAllLen);
     }
+    //检测发送队列是否有数据发送
+    CheckWaitSendData();
     return 0;
 }
 
@@ -757,6 +783,10 @@ void CTcpCtrl::ClearSocketInfo(short enError)
 **/
 int CTcpCtrl::CheckWaitSendData()
 {
+    fd_set fds_read;
+    int iTmpMaxFd = 0;
+    FD_ZERO(&fds_read);
+
     return 0;
 }
 
@@ -767,7 +797,20 @@ int CTcpCtrl::CheckWaitSendData()
 **/
 bool CTcpCtrl::ConnectToGate()
 {
+    m_GateClient.Initialize(FE_GATESERVER,CServerConfig::GetSingletonPtr()->m_iGateServerId,\
+                           inet_addr(CServerConfig::GetSingletonPtr()->m_sGateHost.c_str()),\
+                            CServerConfig::GetSingletonPtr()->m_iGatePort);
 
+    if(m_GateClient.ConnectToServer((char*)CServerConfig::GetSingletonPtr()->m_sGateHost.c_str()))
+    {
+        LOG_ERROR("default","[%s: %d : %s] Connect to Gate(%s:%d)id:%d failed.",
+                __MY_FILE__,__LINE__,__FUNCTION__,CServerConfig::GetSingletonPtr()->m_sGateHost.c_str(),
+                CServerConfig::GetSingletonPtr()->m_iGatePort,CServerConfig::GetSingletonPtr()->m_iGateServerId);
+        return false;
+    }
+    LOG_NOTICE("default","Connect to Gate(%s:%d)id:%d succeed",CServerConfig::GetSingletonPtr()->m_sGateHost.c_str(),
+               CServerConfig::GetSingletonPtr()->m_iGatePort,CServerConfig::GetSingletonPtr()->m_iGateServerId);
+    return true;
 }
 
 /**
@@ -777,7 +820,28 @@ bool CTcpCtrl::ConnectToGate()
 **/
 bool CTcpCtrl::RegisterToGate()
 {
+    CTcpHead pbTmpHead;
+    pbTmpHead.Clear();
+    char acTmpMessageBuffer[1024];
+    unsigned short unTmpMsgLen = sizeof(acTmpMessageBuffer);
+    int iRet = ClientCommEngine::ConvertMsgToStream(acTmpMessageBuffer,unTmpMsgLen,&pbTmpHead);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default","[%s: %d : %s] ConvertMsgToStream failed,iRet = %d ",
+                  __MY_FILE__,__LINE__,__FUNCTION__,iRet);
+        return false;
+    }
 
+    iRet = m_GateClient.SendOneCode(unTmpMsgLen,(BYTE*)acTmpMessageBuffer);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default","[%s: %d : %s] Send data to GateServer failed,iRet = %d ",
+                  __MY_FILE__,__LINE__,__FUNCTION__,iRet);
+        return false;
+    }
+
+    LOG_NOTICE("default","Register to gate now");
+    return true;
 }
 
 /**
@@ -787,7 +851,29 @@ bool CTcpCtrl::RegisterToGate()
 **/
 bool CTcpCtrl::SendKeepAliveToGate()
 {
+    CTcpHead pbTmpHead;
+    pbTmpHead.Clear();
+    char acTmpMessageBuffer[1024];
+    unsigned short unTmpMsgLen = sizeof(acTmpMessageBuffer);
+    pbmsg_settcphead(pbTmpHead,FE_TCPSERVER,CServerConfig::GetSingletonPtr()->m_iTcpServerId,
+                     FE_GATESERVER,m_GateClient.GetEntityID(),time(NULL),EGC_KEEPALIVE);
 
+    int iRet = ClientCommEngine::ConvertMsgToStream(acTmpMessageBuffer,unTmpMsgLen,&pbTmpHead);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default","[%s: %d : %s] ConvertMsgToStream failed,iRet = %d ",
+                  __MY_FILE__,__LINE__,__FUNCTION__,iRet);
+        return false;
+    }
+
+    iRet = m_GateClient.SendOneCode(unTmpMsgLen,(BYTE*)acTmpMessageBuffer);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default","[%s: %d : %s] Send data to GateServer failed,iRet = %d ",
+                  __MY_FILE__,__LINE__,__FUNCTION__,iRet);
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -797,7 +883,44 @@ bool CTcpCtrl::SendKeepAliveToGate()
 **/
 void CTcpCtrl::DisConnect(int iError)
 {
+    CTcpHead pbTmpHead;
+    pbTmpHead.Clear();
 
+    time_t tTmpNow = time(NULL);
+    pbTmpHead.set_timestamp(tTmpNow);
+    CSocketInfo* pSocketInfo = pbTmpHead.add_socketinfos();
+    if (pSocketInfo == NULL)
+    {
+        LOG_ERROR("default","CTcpCtrl::DisConnect add_socketinfos ERROR");
+        return;
+    }
+    pSocketInfo->set_srcip(m_pSocketInfo->m_iSrcIP);
+    pSocketInfo->set_srcport(m_pSocketInfo->m_nSrcPort);
+    pSocketInfo->set_socketid(m_pSocketInfo->m_iSocket);
+    pSocketInfo->set_createtime(m_pSocketInfo->m_tCreateTime);
+    pSocketInfo->set_state(iError);
+
+    unsigned short unTmpMsgLen = (unsigned short) sizeof(m_szMsgBuf);
+
+    pbmsg_settcphead(pbTmpHead,FE_TCPSERVER,CServerConfig::GetSingletonPtr()->m_iTcpServerId,
+                     FE_GAMESERVER,CServerConfig::GetSingletonPtr()->m_iGameServerId,time(NULL));
+
+    int iRet = ClientCommEngine::ConvertMsgToStream(m_szMsgBuf,unTmpMsgLen,&pbTmpHead);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default","[%s: %d : %s] ConvertMsgToStream failed,iRet = %d ",
+                  __MY_FILE__,__LINE__,__FUNCTION__,iRet);
+        return;
+    }
+
+    iRet = m_GateClient.SendOneCode(unTmpMsgLen,(BYTE*)m_szMsgBuf);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default","[%s: %d : %s] Send data to GateServer failed,iRet = %d ",
+                  __MY_FILE__,__LINE__,__FUNCTION__,iRet);
+        return;
+    }
+    return;
 }
 
 /**

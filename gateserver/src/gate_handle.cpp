@@ -5,7 +5,6 @@
 #include "../../framework/base/base.h"
 #include "../../framework/message/message.pb.h"
 #include "../../framework/message/tcpmessage.pb.h"
-#include "../../framework/config/protoconfig.h"
 #include "../../framework/net/client_comm_engine.h"
 
 
