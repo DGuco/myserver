@@ -783,10 +783,6 @@ void CTcpCtrl::ClearSocketInfo(short enError)
 **/
 int CTcpCtrl::CheckWaitSendData()
 {
-    fd_set fds_read;
-    int iTmpMaxFd = 0;
-    FD_ZERO(&fds_read);
-
     return 0;
 }
 
@@ -930,5 +926,38 @@ void CTcpCtrl::DisConnect(int iError)
 **/
 int CTcpCtrl::RecvServerData()
 {
+    fd_set fds_read;
+    int iTmpMaxFD = 0;
+    FD_ZERO(&fds_read);
+    struct timeval stTmpMonTime;
+    stTmpMonTime.tv_sec = 0;
+    stTmpMonTime.tv_usec = 0;
+    int iRet = 0;
+    int iTmpFD = m_GateClient.GetSocketFd();
+    if (iTmpFD > 0 && m_GateClient.IsConnected())
+    {
+        FD_SET(iTmpFD, &fds_read);
+        if (iTmpFD > iTmpMaxFD)
+        {
+            iTmpMaxFD = iTmpFD;
+        }
+    }
+    // select检测是否有消息可以接收
+    int iTmpOpenFDNum = select(iTmpMaxFD + 1, &fds_read, NULL, NULL, &stTmpMonTime);
+    if (iTmpOpenFDNum <= 0)
+    {
+        // select出错或者超时,没有可读写文件
+        return -1;
+    }
 
+    if (FD_ISSET(iTmpFD, &fds_read))
+    {
+        iRet = m_GateClient.RecvData();
+        if (iRet < 0)
+        {
+            LOG_ERROR("default", "CTCPCtrl::CheckWaitSendData Error, GateClient RecvData return %d.", iRet);
+            return iRet;
+        }
+    }
+    return 0;
 }
