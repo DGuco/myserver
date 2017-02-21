@@ -48,9 +48,9 @@
 		assert(a); 					\
 	} while(0);
 
-#define MY_ASSERT_STR(a, fail_handle, str, ...) 			YQ_ASSERT(a, fail_handle)
-#define MY_ASSERT_LOG(log, a, fail_handle) 					YQ_ASSERT(a, fail_handle)
-#define MY_ASSERT_LOG_STR(log, a, fail_handle, str, ...) 	YQ_ASSERT( a, fail_handle )
+#define MY_ASSERT_STR(a, fail_handle, str, ...) 			MY_ASSERT(a, fail_handle)
+#define MY_ASSERT_LOG(log, a, fail_handle) 					MY_ASSERT(a, fail_handle)
+#define MY_ASSERT_LOG_STR(log, a, fail_handle, str, ...) 	MY_ASSERT( a, fail_handle )
 
 #endif // USE_MY_ASSERT
 

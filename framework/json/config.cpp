@@ -15,7 +15,6 @@ CServerConfig::~CServerConfig()
 
 int CServerConfig::Parse()
 {
-    bool isTine = m_Obj["keepalive"].IsInt();
     m_iTcpKeepAlive = m_Obj["keepalive"].GetInt();
     m_iServerTick = m_Obj["servertick"].GetInt();
 

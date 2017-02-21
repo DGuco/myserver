@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.6)
-add_definitions(-DUSE_LOG4CPP -DLINUX -DUSE_MY_ASSERT -std=c++11)
+add_definitions(-DUSE_LOG4CPP)
+
 project(myserver)
 set(FRAMEWORK
         base/base.h
         base/object.h
-        base/objmanager.h
         base/dirtyword.h
         base/performance.h
         base/servertool.h
