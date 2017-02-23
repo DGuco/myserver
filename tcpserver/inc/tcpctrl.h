@@ -68,27 +68,46 @@ public:
 private:
 
     //*****************Epoll***********************/
+    //初始化socket
     int InitEpollSocket(short shPort);
+    //初始化epoll
     int EphInit();
+    //设置epoll socket
     int EphSocket(int iDomain,int iType,int iProtocol);
+    //添加新的连接
     int EphNewConn(int iSocketFd);
+    //关闭epoll
     int EphClose(int iSocketFd);
+    //清除epoll
     int EphCleanUp();
 
     //******************数据处理**********************/
+    //检测超时
     int CheckTimeOut();
+    //检测epoll事件消息
     int GetExMessage();
+    //接收客户端上行消息
     int RecvClientData(int iSocketFd);
+    //读取tcp数据
     int TcpRead(int iSocket, char *pBuf, int iLen);
+    //清除socket
     void ClearSocketInfo(short enError);
-    int CheckWaitSendData();
 
     //******************gate连接**********************/
+    //连接gate
     bool ConnectToGate();
+    //给gate发送注册消息
     bool RegisterToGate();
+    //给gate发送心跳消息
     bool SendKeepAliveToGate();
+    //通知game玩家断开连接
     void DisConnect(int iError);
+    //接收gate数据
     int  RecvServerData();
+    //检测发送队列
+    int CheckWaitSendData();
+    //向client下行数据
+    int SendClientData();
 
 private:
 
@@ -117,13 +136,13 @@ private:
     struct epoll_event  m_stEpollEvent;
 
     unsigned char 		m_szSCMsgBuf[MAX_BUF_LEN]; 		 	 // 发送消息缓冲区
-    unsigned short 		m_iSCIndex; 					 	    // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
+    unsigned short 		m_iSCIndex; 					 	 // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
     short 				m_nSCLength; 					 	 // 实际发送的数据长度
 
     CGateClient		    m_GateClient;                        //gateserver 连接
     time_t				m_iLastKeepaliveTime;
     CTcpHead			m_SCTcpHead;				        // 服务器发送到客户端的数据信息头
-    int					m_iSendIndex;				        // 已发送的服务器到客户端的数据的游标
+    int					m_iSendIndex;				        // 带要发送数据过去的client socket索引
     bool				m_bHasRecv;					        // 是否接收过数据(只用于第一次接收数据使用,防止没有RecvData直接GetOneCode报错)
 };
 

@@ -783,6 +783,89 @@ void CTcpCtrl::ClearSocketInfo(short enError)
 **/
 int CTcpCtrl::CheckWaitSendData()
 {
+    int iTempRet = 0;
+    int i = 0;
+    unsigned short unTmpCodeLength;
+
+    //每次最多发送MAX_SEND_PKGS_ONCE个数据
+    while(i < MAX_SEND_PKGS_ONCE)
+    {
+        //
+        if(m_iSendIndex < m_SCTcpHead.socketinfos_size())
+        {
+            //有数据未发送，继续发送
+            if (SendClientData())
+            {
+                i++;
+                continue;
+            }
+        }
+        else 
+        {
+            //当前没有接收到数据，先接收数据
+            if (false == m_bHasRecv)
+            {
+                //没有可发送的数据或者发送完成,则接收gate数据
+                iTmpRet = RecvServerData();
+                if (iTmpRet != 0)
+                {
+                    //没有数据可接收，则发送队列无数据发送，退出
+                    break;
+                }
+                m_bHasRecv = true;
+            }
+            else  //处理已经接收到的数据
+            {
+                unTmpCodeLength = (unsigned short ) MAX_BUF_LEN;
+                iTmpRet = m_GateClient.GetOneCode(unTmpCodeLength,m_szSCMsgBuf);
+                if (iTmpRet <= 0)
+                {
+                    //没有接收到数据,标记未接收,发送队列无数据发送，退出
+                    m_bHasRecv = false;
+                    if (iTmpRet != 0)
+                    {
+                        LOG_ERROR("default","Get head code error,error code = %d",iTmpRet);
+                    }
+                    break;
+                }
+                if(unTmpCodeLength <= 0)
+                {
+                     LOG_ERROR("default","Get head code error,unTmpCodeLength = %d",unTmpCodeLength);
+                     break;
+                }
+                //组织服务器发送到客户端的数据信息头，设置相关索引和游标
+                m_SCTcpHead.Clear();
+                m_iSendIndex = 0;
+                m_iSCIndex = 0;
+                m_nSCLength = 0;
+                //反序列化消息的CTcpHead,取出发送游标和长度,把数据存入发送消息缓冲区m_szMsgBuf
+                iTmpRet = ClientCommEngine::ConvertMsgToStream(m_szMsgBuf,unTmpCodeLength,m_iSCIndex,&m_SCTcpHead);
+                //序列化失败继续发送
+                if(iTmpRet < 0)
+                {
+                    LOG_ERROR("default", "CTCPCtrl::CheckWaitSendData Error, ClientCommEngine::ConvertMsgToStream return %d.", iTmpRet);
+                    m_SCTcpHead.clear();
+                    m_iSendIndex = 0;
+                    continue;
+                }
+
+                //gate回复的心跳消息,处理后继续接收
+                if(m_SCTcpHead.srcfe() == FE_GATESERVER && m_SCTcpHead.opflag() == EGC_KEEPALIVE)
+                {
+                    //更新keepalive时间戳
+                    m_iLastKeepaliveTime = m_SCTcpHead.timestamp();
+                    m_GateClient.ResetTimeout(m_iLastKeepAliveTime);
+                    m_SCTcpHead.Clear();
+                    m_iSendIndex = 0;
+                    continue;
+                }
+                //接收成功,取出数据长度
+                unsigned char* pTmp = m_szMsgBuf;
+                pTmp += m_iSCIndex;
+                m_nSCLength = *(unsigned short*)pTmp;
+            }
+        }
+    }
     return 0;
 }
 
@@ -959,5 +1042,96 @@ int CTcpCtrl::RecvServerData()
             return iRet;
         }
     }
+    return 0;
+}
+
+/**
+  * 函数名          : CTCPCtrl::SendClientData
+  * 功能描述        : 向cliet发送数据
+  * 返回值          ：int
+**/
+int CTcpCtrl::SendClientData()
+{
+    BYTE*           pbTmpSend = NULL;
+    unsigned short  unTmpShort;
+    time_t          tTmpTimeStamp;
+    int             iTmpSendBytes;
+    int             nTmpIndex;
+    int             iTmpRet;
+    unsigned short  unTmpPackLen;
+    int             iTmpCloseFlag;
+
+    //client socket索引非法，不存在要发送的client
+    if (m_iSendIndex >= m_SCTcpHead.socketinfos_size()) 
+        return 0;
+    const ::CSocketInfo& pTmpInfo = m_SCTcpHead.socketinfos(m_iSendIndex);
+    //向后移动socket索引
+    m_iSendIndex++;
+    nTmpIndex = pTmpInfo.socketid();
+    tTmpTimeStamp = pTmpInfo.createtime();
+
+    //socket 非法
+    if (nTmpIndex <=0 || MAX_SOCKET_NUM <= nTmpIndex)
+    {
+        LOG_ERROR("default","Invalid socket index %d",nTmpIndex);
+        return -1;
+    }
+    
+    /*
+     * 时间不一样，说明这个socket是个新的连接，原来的连接已经关闭,注(原来的
+     * 的连接断开后，新的客户端用了原来的socket fd ，因此数据不是现在这个连
+     * 接的数据，原来连接的数据,中断发送
+    */
+    if (m_astSocketInfo[nTmpIndex].m_tCreateTime != tTmpTimeStamp)
+    {
+        LOG_ERROR("default","sokcet[%d] already closed(tcp createtime:%d:gate createtime:%d) : gate ==> client[%d] bytes \
+                failed",nTmpIndex,m_astSocketInfo[nTmpIndex].m_tCreateTime,tTmpTimeStamp,m_nSCLength);
+                return -1;
+    }
+    iTmpCloseFlag = pTmpInfo.state();
+    unTmpPackLen = m_nSCLength;
+    m_pSocketInfo = m_astSocketInfo[nTmpIndex];
+    //发送数据
+    if (unTmpPackLen > 0)
+    {
+        //根据发送给客户端的数据在m_szSCMsgBuf中的数组下标取出数据
+        pbTmpSend = (BYTE*)&m_szMsgBuf[m_iSCIndex];
+        memcpy((void*)&unTmpShort,(const void*)pbTmpSend,sizeof(unsigned short));
+        if (unTmpShort != unTmpPackLen)
+        {
+            LOG_ERROR("default","Code length not matched,left length %u is less than body length %u",unTmpPackLen,unTmpShort);
+            return -1;
+        }
+        iTmpSendBytes = TcpWrite(m_pSocketInfo->m_iSocket,(char*)pbTmpSend,unTmpPackLen);
+        if (unTmpPackLen == iTmpSendBytes )
+        {
+            #ifdef _DEBUG_
+                LOG_DEBUG("default"，"[us:%lu]TCP gate ==> client[%d][%s][%d Bytes]",GetUSTime(),nTmpIndex,\
+                    m_astSocketInfo[nTmpIndex].m_szClientIP,iTmpSendBytes);
+            #endif
+            //统计信息
+            m_stTcpStat.m_iPkgSend++;
+            m_stTcpStat.m_iPkgSizeSend += iTmpSendBytes;
+            //设置发送标志位已发送
+            m_pSocketInfo->m_iSendFlag = MAIN_HAVE_SEND_DATA;
+        }
+        else
+        {
+            //发送失败
+            ClearSocketInfo(Err_ClientClose);
+            LOG_ERROR("default",send to client %s Failed due to error %d,m_pSocketInfo->m_szClientIP,errno);
+            return 0;
+        }
+    }
+    if (unTmpPackLen > 0 && iTmpCloseFlag == 0)
+    {
+        return 0;
+    }
+
+    if (iTmpCloseFlag == -1)
+    {
+        //
+    }
+    ClearSocketInfo(TCP_SUCCESS);
     return 0;
 }
