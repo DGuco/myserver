@@ -90,6 +90,8 @@ private:
     int RecvClientData(int iSocketFd);
     //读取tcp数据
     int TcpRead(int iSocket, char *pBuf, int iLen);
+    //发送数据
+    int TcpWrite(int iSocket, char *pBuf, int iPackLen);
     //清除socket
     void ClearSocketInfo(short enError);
 

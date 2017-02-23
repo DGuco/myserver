@@ -10,7 +10,6 @@ CAes::CAes()
     _inputlen = 20480;
     _output = (char*)malloc(20480*sizeof(char));
     _outputlen = 20480;
-    init(CRYPTO_KEY,16);
 }
 
 CAes::~CAes()

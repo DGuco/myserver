@@ -723,11 +723,39 @@ int CTcpCtrl::TcpRead(int iSocket, char *pBuf, int iLen)
         }
     }
 }
+/**
+  * 函数名          : CTCPCtrl::TcpWrite
+  * 功能描述        : 发送tcp数据
+  * 返回值          ：void
+**/
+int CTcpCtrl::TcpWrite(int iSocket, char *pBuf, int iPackLen)
+{
+    int iSendBytes;
+//    int iLeftLen = iPackLen;
+
+    while(1)
+    {
+        iSendBytes = write(iSocket, pBuf, iPackLen);
+        if (iSendBytes == iPackLen)
+        {
+            return iSendBytes;
+        }
+        else
+        {
+            if (0 >= iSendBytes && EINTR == errno)
+            {
+                continue;
+            }
+
+            return iSendBytes;
+        }
+    }
+}
 
 /**
-  * 函数名          : CTCPCtrl::TcpRead
-  * 功能描述        : 读取tcp数据
-  * 返回值          ：void
+  * 函数名          : CTCPCtrl::ClearSocketInfo
+  * 功能描述        : 清楚socket
+  * 返回值         ：void
 **/
 void CTcpCtrl::ClearSocketInfo(short enError)
 {
@@ -783,7 +811,7 @@ void CTcpCtrl::ClearSocketInfo(short enError)
 **/
 int CTcpCtrl::CheckWaitSendData()
 {
-    int iTempRet = 0;
+    int iTmpRet = 0;
     int i = 0;
     unsigned short unTmpCodeLength;
 
@@ -839,12 +867,12 @@ int CTcpCtrl::CheckWaitSendData()
                 m_iSCIndex = 0;
                 m_nSCLength = 0;
                 //反序列化消息的CTcpHead,取出发送游标和长度,把数据存入发送消息缓冲区m_szMsgBuf
-                iTmpRet = ClientCommEngine::ConvertMsgToStream(m_szMsgBuf,unTmpCodeLength,m_iSCIndex,&m_SCTcpHead);
+                iTmpRet = ClientCommEngine::ConvertStreamToMsg(m_szMsgBuf,unTmpCodeLength,m_iSCIndex,&m_SCTcpHead);
                 //序列化失败继续发送
                 if(iTmpRet < 0)
                 {
                     LOG_ERROR("default", "CTCPCtrl::CheckWaitSendData Error, ClientCommEngine::ConvertMsgToStream return %d.", iTmpRet);
-                    m_SCTcpHead.clear();
+                    m_SCTcpHead.Clear();
                     m_iSendIndex = 0;
                     continue;
                 }
@@ -854,13 +882,13 @@ int CTcpCtrl::CheckWaitSendData()
                 {
                     //更新keepalive时间戳
                     m_iLastKeepaliveTime = m_SCTcpHead.timestamp();
-                    m_GateClient.ResetTimeout(m_iLastKeepAliveTime);
+                    m_GateClient.ResetTimeOut(m_iLastKeepaliveTime);
                     m_SCTcpHead.Clear();
                     m_iSendIndex = 0;
                     continue;
                 }
                 //接收成功,取出数据长度
-                unsigned char* pTmp = m_szMsgBuf;
+                unsigned char* pTmp = m_szSCMsgBuf;
                 pTmp += m_iSCIndex;
                 m_nSCLength = *(unsigned short*)pTmp;
             }
@@ -1090,7 +1118,7 @@ int CTcpCtrl::SendClientData()
     }
     iTmpCloseFlag = pTmpInfo.state();
     unTmpPackLen = m_nSCLength;
-    m_pSocketInfo = m_astSocketInfo[nTmpIndex];
+    m_pSocketInfo = &m_astSocketInfo[nTmpIndex];
     //发送数据
     if (unTmpPackLen > 0)
     {
@@ -1106,7 +1134,7 @@ int CTcpCtrl::SendClientData()
         if (unTmpPackLen == iTmpSendBytes )
         {
             #ifdef _DEBUG_
-                LOG_DEBUG("default"，"[us:%lu]TCP gate ==> client[%d][%s][%d Bytes]",GetUSTime(),nTmpIndex,\
+                LOG_DEBUG("default","[us:%lu]TCP gate ==> client[%d][%s][%d Bytes]",GetUSTime(),nTmpIndex,\
                     m_astSocketInfo[nTmpIndex].m_szClientIP,iTmpSendBytes);
             #endif
             //统计信息
@@ -1119,7 +1147,7 @@ int CTcpCtrl::SendClientData()
         {
             //发送失败
             ClearSocketInfo(Err_ClientClose);
-            LOG_ERROR("default",send to client %s Failed due to error %d,m_pSocketInfo->m_szClientIP,errno);
+            LOG_ERROR("default","send to client %s Failed due to error %d",m_pSocketInfo->m_szClientIP,errno);
             return 0;
         }
     }

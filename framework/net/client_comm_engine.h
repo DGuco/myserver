@@ -22,6 +22,7 @@ void pbmsg_settcphead(CTcpHead& rHead, int iSrcFE, int iSrcID, int iDstFE, int i
 class ClientCommEngine
 {
 public:
+	static unsigned char tKey[16];
 	static unsigned char* tpKey;
 
     // 反序列化客户端Message

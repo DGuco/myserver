@@ -10,7 +10,8 @@
 #include "../base/my_assert.h"
 #include "../net/oi_tea.h"
 
-unsigned char* ClientCommEngine::tpKey = "1234567890123456";
+unsigned char ClientCommEngine::tKey[16] = {1,2,3,4,57,6,7,8,9,0,2,2,4,4,5,6};
+unsigned char* ClientCommEngine::tpKey = &tKey[0];
 
 void pbmsg_settcphead(CTcpHead& rHead, int iSrcFE, int iSrcID, int iDstFE, int iDstID, time_t tTimestamp, EGateCmd eCmd)
 {
@@ -89,7 +90,8 @@ int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short
             tOutLen = tDecLen;
 			CAes tmpAes;
 			tmpAes.init(tpKey,16);
-			tpEncryBuff = tmpAes.decrypt((const char*)tpBuff,unBuffLen);
+			int outlen;
+			tpEncryBuff = (unsigned char*)tmpAes.decrypt((const char*)tpBuff,unBuffLen,outlen);
         }
         else
         {
