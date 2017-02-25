@@ -471,7 +471,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 		return -1;
 	}
 	
-	//RecvData();
+//	RecvData();
 
 	iDataLength = m_iReadEnd - m_iReadBegin;
 
@@ -485,7 +485,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 	{
 		if( m_iReadEnd == sizeof(m_abyRecvBuffer) )
 		{
-			//memcpy((void *)&m_abyRecvBuffer[0], (const void *)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
 			memmove((void *)&m_abyRecvBuffer[0], (const void *)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
 			m_iReadBegin = 0;
 			m_iReadEnd = iDataLength;
@@ -516,7 +515,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 	{
 		if( m_iReadEnd == sizeof(m_abyRecvBuffer) )
 		{
-			//memcpy((void *)&m_abyRecvBuffer[0], (const void *)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
 			memmove((void *)&m_abyRecvBuffer[0], (const void *)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
 			m_iReadBegin = 0;
 			m_iReadEnd = iDataLength;
@@ -577,10 +575,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneHttpCode(int &nCodeLength, BYT
 	const char* LENTH_TOKEN = "Content-Length";
 	const char* HEAD_BODY_SPLITTER = "\n\n" ;
 	
-	char* pSpliter = strstr((const char*) &m_abyRecvBuffer[m_iReadBegin], HEAD_BODY_SPLITTER);
+	char* pSpliter = strstr((char*) &m_abyRecvBuffer[m_iReadBegin], HEAD_BODY_SPLITTER);
 	if (pSpliter != NULL)
 	{
-		char* pToken = strstr((const char*) &m_abyRecvBuffer[m_iReadBegin], LENTH_TOKEN);
+		char* pToken = strstr((char*) &m_abyRecvBuffer[m_iReadBegin], LENTH_TOKEN);
 		if (pToken != NULL)
 		{
 			char* pStart = strstr(pToken + strlen(LENTH_TOKEN), ":");

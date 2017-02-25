@@ -1,5 +1,8 @@
 //
-// Created by dguco on 17-2-16.
+//  config.h
+//  读取配置文件
+//  Created by dguco on 17-2-16.
+//  Copyright © 2016年 DGuco. All rights reserved.
 //
 
 #ifndef SERVER_CONFIG_H_H

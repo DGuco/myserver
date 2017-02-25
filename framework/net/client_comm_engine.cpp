@@ -87,11 +87,11 @@ int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short
         {
             // 加密的消息处理
             int tDecLen = tOutLen;
-            tOutLen = tDecLen;
 			CAes tmpAes;
 			tmpAes.init(tpKey,16);
 			int outlen;
-			tpEncryBuff = (unsigned char*)tmpAes.decrypt((const char*)tpBuff,unBuffLen,outlen);
+			tpEncryBuff = (unsigned char*)tmpAes.decrypt((const char*)tpBuff,unBuffLen,tDecLen);
+            tOutLen = tDecLen;
         }
         else
         {
@@ -103,7 +103,7 @@ int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short
         // 解密后的长度不能超过最大MAX_PACKAGE_LEN,也不能比输入的未加密前长度长
         if (tOutLen >= MAX_PACKAGE_LEN || tOutLen > unBuffLen)
         {
-//            MY_ASSERT_STR(0, return -7, "ClientCommEngine::ConvertStreamToMsg DecryptData failed, tOutLen = %d, Input Length = %d.", tOutLen, tTotalClientLen);
+            MY_ASSERT_STR(0, return -7, "ClientCommEngine::ConvertStreamToMsg DecryptData failed, tOutLen = %d, Input Length = %d.", tOutLen, tTotalClientLen);
         }
 
         // MessagePara

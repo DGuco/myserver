@@ -76,10 +76,8 @@ public:
 	int PrepareToRun();
 	int Run();
 protected:
-private:
 
-	int ReadCfg();
-	
+private:
 	int CheckRunFlags();
 	int CheckConnRequest();
 	int CheckRoutines();		// 定时检查

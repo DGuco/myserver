@@ -4,7 +4,7 @@
 #include "inc/gate_ctrl.h"
 #include "../framework/log/log.h"
 #include "../framework/base/base.h"
-#include "../framework/config/protoconfig.h"
+#include "../framework/json/config.h"
 
 
 CRunFlag g_byRunFlag;
@@ -47,16 +47,23 @@ int main(int argc, char **argv)
 	INIT_ROLLINGFILE_LOG("default", "../log/gateserver.log", LEVEL_DEBUG, 10*1024*1024, 5);
 
 	// 读取配置
-	CConfigMgr* pTmpConfig = new CConfigMgr;
+	CServerConfig* pTmpConfig = new CServerConfig;
+	const string filepath = "../config/serverinfo.json";
+	if (-1 == CServerConfig::GetSingleton().LoadFromFile(filepath))
+	{
+		LOG_ERROR("default","Get TcpserverConfig failed");
+		delete pTmpConfig;
+		pTmpConfig = NULL;
+		exit(0);
+	}
 
 	CGateCtrl* pGateCtrl = new CGateCtrl;
-	if (!pGateCtrl)
+	if (NULL == pGateCtrl)
 	{
 		LOG_ERROR("default", "new CGateCtrl failed. exit!");
 		exit(1);
 	}
 
-	// 读取配置文件
 	if (pGateCtrl->Initialize())
 	{
 		LOG_ERROR("default", "CGateCtrl initialize failed.");
@@ -89,13 +96,13 @@ int main(int argc, char **argv)
 	pGateCtrl->Run();
 
 	// 服务器退出
-	if (pTmpConfig)
+	if (pTmpConfig != NULL)
 	{
 		delete pTmpConfig;
 		pTmpConfig = NULL;
 	}
 
-	if (pGateCtrl)
+	if (pGateCtrl != NULL)
 	{
 		delete pGateCtrl;
 		pGateCtrl = NULL;

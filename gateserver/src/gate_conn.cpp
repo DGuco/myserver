@@ -152,65 +152,6 @@ int CMyTCPConn::CleanBlockQueue(int iQueueLength) {
 			}
 		}
 	}
-	/*
-	// 如果连接没有问题但是没有发出数据，则组织队列重试
-	if (m_iConnState == ENTITY_ON && GetSocket()->GetSocketFD() > 0 && 
-			GetSocket()->GetStatus() == tcs_connected && m_iBlockStatus != BLK_EMPTY && 
-			GetSocket()->CleanReserveData() == 0 ) {
-		LOG_DEBUG("default", "Now begin to redo transfer, will recover no more than %d codes.", iQueueLength);
-		// 如果重试队列尚未建立，则建立它
-		if (m_pRedoQueue == NULL) {
-			m_pRedoQueue = new CCodeQueue(BLOCKQUEUESIZE);
-			LOG_DEBUG("default", "Redo queue created now.");
-		}
-		if (m_pRedoQueue) {
-			for (i = 0; i < iQueueLength; i++) {
-				// 没有剩下的数据，则退出循环
-				if (GetSocket()->HasReserveData()) {
-					LOG_ERROR("default", "Redo process is stopped because of data block.");
-					break;
-				}
-
-				m_pRedoQueue->GetHeadCode((BYTE *)&abyCodeBuf, &nCodeLength);
-				// 重试队列为空
-				if (nCodeLength == 0) {
-					LOG_DEBUG("default", "The redo queue is empty now.");
-					if (m_iCurrentRedoSeq < m_iCurrentDumpSeq) {
-						TFName szDumpFile;
-
-						snprintf(szDumpFile, sizeof(szDumpFile)-1, "CODE%02d_%02d_%02d.tmp", GetEntityType(), GetEntityID(), m_iCurrentRedoSeq);
-						LOG_DEBUG("default", "Load redo queue from file %s.", szDumpFile);
-						m_pRedoQueue->LoadFromFile(szDumpFile);  // 将重试队列保存在文件中，并且重新加载该文件，来执行下一次重试
-						m_iCurrentRedoSeq++;
-						i--;
-						unlink((const char *)szDumpFile);
-					} else if (m_pRedoQueue != m_pBlockQueue) {
-						delete m_pRedoQueue;
-						m_pRedoQueue = m_pBlockQueue;
-						i--;
-						LOG_DEBUG("default", "Now begin to redo current block queue."); // 执行上一次被Block的队列 
-					} else {
-						delete m_pRedoQueue;
-						m_pRedoQueue = m_pBlockQueue = NULL;
-						m_iBlockStatus = BLK_EMPTY;
-						m_iCurrentRedoSeq = m_iCurrentDumpSeq = 0;
-						LOG_DEBUG("default", "Now all block queue is cleaned.");  // RedoQueue和BlockQueue均为空，重试结束
-						break;
-					}
-				} else { // 如果重试队列不为空，则尝试发送一个Code，如果发送失败则退出
-					iTempRet = GetSocket()->SendOneCode(nCodeLength, abyCodeBuf);
-					if (iTempRet == 0) {
-						iRedoCount++;
-						LOG_DEBUG("default", "Redo one code OK.");
-					} else {
-						LOG_ERROR("default", "Resend one code failed of %d.", iTempRet);
-						break;
-					}
-				}	// end if code length == 0
-			}	// end for
-		} // end if(pRedoQueue)
-	}
-	*/
 #ifdef _POSIX_MT_
 	pthread_mutex_unlock(&m_stMutex);
 #endif

@@ -33,28 +33,8 @@ CGateCtrl::~CGateCtrl()
 
 int CGateCtrl::Initialize()
 {
-	// 读取配置文件
-	if (ReadCfg() < 0)
-	{
-		LOG_ERROR("default", "Read config failed.");
-		return -1;
-	}
-
 	return 0;
 }
-
-
-int CGateCtrl::ReadCfg()
-{
-//	if (CConfigMgr::GetSingletonPtr()->LoadConfig("../config/gateconfig.proto") < 0)
-//	{
-//		LOG_ERROR("default", "load config failed.");
-//		return -1;
-//	}
-
-	return 0;
-}
-
 
 CMyTCPConn* CGateCtrl::GetConnByKey(int iKey)
 {

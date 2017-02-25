@@ -1,3 +1,10 @@
+//
+//  json.h
+//  读取json文件
+//  Created by dguco on 17-2-16.
+//  Copyright © 2016年 DGuco. All rights reserved.
+//
+
 #ifndef _JSON_H_
 #define _JSON_H_
 

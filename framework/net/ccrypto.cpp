@@ -1,4 +1,5 @@
 #include "ccrypto.h"
+#include "../base/base.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,9 +8,9 @@
 CAes::CAes()
 {
     _input = (char*)malloc(20480*sizeof(char));
-    _inputlen = 20480;
-    _output = (char*)malloc(20480*sizeof(char));
-    _outputlen = 20480;
+    _inputlen = MAX_PACKAGE_LEN;
+    _output = (char*)malloc(MAX_PACKAGE_LEN*sizeof(char));
+    _outputlen = MAX_PACKAGE_LEN;
 }
 
 CAes::~CAes()
