@@ -1,3 +1,9 @@
+//
+//  main.cpp
+//  gateserver
+//  Created by DGuco on 16/12/6.
+//  Copyright © 2016年 DGuco. All rights reserved.
+//
 #include <signal.h>
 
 #include "../framework/net/runflag.h"

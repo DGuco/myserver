@@ -1,3 +1,10 @@
+//
+//  gate_conn.h
+//  gate_conn 管理类头文件
+//  Created by DGuco on 16/12/6.
+//  Copyright © 2016年 DGuco. All rights reserved.
+//
+
 #ifndef _GATE_CONN_H_
 #define _GATE_CONN_H_
 
