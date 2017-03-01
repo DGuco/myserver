@@ -5,6 +5,10 @@ add_definitions(-D_DEBUG_ -DUSE_LOG4CPP)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(SOURCE_FILES
         main.cpp
+        inc/gameserver.h
+        src/gameserver.cpp
+        logicmodule/inc/coremodule.h
+        logicmodule/src/coremodule.cpp
         )
 
 include_directories(
