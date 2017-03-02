@@ -42,7 +42,7 @@ public:
 
 	virtual int PrepareToRun() = 0;
 	virtual int Run() = 0;
-	virtual int IsToBeBlocked() = 0;
+	virtual bool IsToBeBlocked() = 0;
 
 	int CreateThread();
 	int WakeUp();

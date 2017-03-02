@@ -79,19 +79,26 @@ public:
 	static pthread_mutex_t stMutex[MUTEX_NUM];
 #endif
 
+	// 初始化
 	int Initialize();
+	// 准备执行线程
 	int PrepareToRun();
+	// 执行线程
 	int Run();
-protected:
 
 private:
+	// 检测运行标志
 	int CheckRunFlags();
+	// 检测连接请求
 	int CheckConnRequest();
-	int CheckRoutines();		// 定时检查
+	// 定时检查
+	int CheckRoutines();	
+	// 获取指定连接信息	
 	CMyTCPConn* GetConnByAddrAndID(short shSrcID, unsigned long ulSrcAddr);
-
-	int ReceiveAndProcessRegister(int iUnRegisterIdx);	// 接收并处理注册消息
-	int DeleteOneUnRegister(int iUnRegisterIdx);		// 删除一个未注册的连接
+	// 接收并处理注册消息
+	int ReceiveAndProcessRegister(int iUnRegisterIdx);
+	// 删除一个未注册的连接	
+	int DeleteOneUnRegister(int iUnRegisterIdx);		
 	
 	// 通过KEY获取连接信息
 	CMyTCPConn* GetConnByKey(int iKey);
@@ -116,10 +123,10 @@ private:
 	CHandleInfo m_stHandleInfos[EHandleType_NUM];
 	CDoubleLinkerInfo m_UnuseConns;
 
-	// 更改GATE的连接验证机制
-	// 之前为依据ip，现更改为id和ip共同验证
+	// 当前注册数
 	int m_iCurrentUnRegisterNum;
-	STUnRegisterSocketInfo m_astUnRegisterInfo[MAX_UNREGISTER_NUM];               // 最大未注册结构
+	// 最大未注册结构
+	STUnRegisterSocketInfo m_astUnRegisterInfo[MAX_UNREGISTER_NUM];               
 	time_t m_tLastCheckTime;
 };
 

@@ -36,9 +36,18 @@ CThread::~CThread()
 int CThread::CreateThread()
 {
 	pthread_attr_init( &m_stAttr );
-	pthread_attr_setscope( &m_stAttr, PTHREAD_SCOPE_SYSTEM );  // 设置线程状态为与系统中所有线程一起竞争CPU时间
+	// 设置线程状态为与系统中所有线程一起竞争CPU时间
+	pthread_attr_setscope( &m_stAttr, PTHREAD_SCOPE_SYSTEM );  
+	/*
+	 *设置线程的分离状态为PTHREAD_CREATE_JOINABLE或PTHREAD_CREATE_DETACHED。
+	 *默认是joinable，有一些资源会在线程结束后仍然保持占用状态，直到另外的线程对
+	 *这个线程使用pthread_join。detached线程不是这样子的，它没有被其他的线程所等
+	 *待（join），自己运行结束了，线程也就终止了，马上释放系统资源。
+	 *若成功返回0，若失败返回-1。
+	*/
 	//pthread_attr_setdetachstate( &m_stAttr, PTHREAD_CREATE_DETACHED );
-	pthread_attr_setdetachstate( &m_stAttr, PTHREAD_CREATE_JOINABLE );  // 设置非分离的线程
+	pthread_attr_setdetachstate( &m_stAttr, PTHREAD_CREATE_JOINABLE );  
+
 	pthread_cond_init( &m_stCond, NULL );
 	pthread_mutex_init( &m_stMutex, NULL );
 	m_iRunStatus = rt_running;
@@ -50,39 +59,45 @@ int CThread::CreateThread()
 
 int CThread::CondBlock()
 {
+	// 该过程需要在线程锁内完成
 	pthread_mutex_lock( &m_stMutex );
 
-	while( IsToBeBlocked() || m_iRunStatus == rt_stopped )  // 线程被阻塞或者停止
+	// 线程被阻塞或者停止
+	while( IsToBeBlocked() || m_iRunStatus == rt_stopped )  
 	{
-		if( m_iRunStatus == rt_stopped )  // 如果线程需要停止则终止线程
+		// 如果线程需要停止则终止线程
+		if( m_iRunStatus == rt_stopped )  
 		{
 			ThreadLogDebug( "Thread exit.");
 			pthread_exit( (void *)m_abyRetVal );
 		}
 		ThreadLogDebug( "Thread would blocked." );
 		m_iRunStatus = rt_blocked;
-		pthread_cond_wait( &m_stCond, &m_stMutex );  // 进入休眠状态
+		// 进入休眠状态
+		pthread_cond_wait( &m_stCond, &m_stMutex );  
 	}
 
 	if( m_iRunStatus != rt_running )  
 	{
 		ThreadLogDebug( "Thread waked up.");
 	}
-	
-	m_iRunStatus = rt_running;  // 线程状态变为rt_running
 
-	pthread_mutex_unlock( &m_stMutex );  // 该过程需要在线程锁内完成
+	// 线程状态变为rt_running
+	m_iRunStatus = rt_running;  
+	pthread_mutex_unlock( &m_stMutex );  
 
 	return 0;
 }
 
 int CThread::WakeUp()
 {
+	// 该过程需要在线程锁内完成
 	pthread_mutex_lock( &m_stMutex );
 
 	if( !IsToBeBlocked() && m_iRunStatus == rt_blocked )
     {
-		pthread_cond_signal( &m_stCond );  // 向线程发出信号以唤醒
+		// 向线程发出信号以唤醒
+		pthread_cond_signal( &m_stCond );  
 	}
 
 	pthread_mutex_unlock( &m_stMutex );

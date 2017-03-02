@@ -21,7 +21,6 @@ extern CRunFlag g_byRunFlag;
 CGateCtrl::CGateCtrl()
 {
 	m_mapConns.clear();
-
 }
 
 CGateCtrl::~CGateCtrl()

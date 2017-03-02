@@ -57,27 +57,29 @@ class CGateHandle : public CThread
 {
 public:
 	CGateHandle();
-	~CGateHandle();
+	virtual ~CGateHandle();
 
 	int Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo, CONNS_MAP* pMap);
 
 	virtual int PrepareToRun() ;
 	virtual int Run() ;
-	virtual int IsToBeBlocked();
+	virtual bool IsToBeBlocked();
 
 private:
 
+	// 转发数据
 	int DoTransfer();
+	// 转发一个数据包
 	int TransferOneCode(short nCodeLength, BYTE* pbyCode);
-
 	// 通过FE和ID创建KEY
 	int MakeConnKey(const short nType, const short nID);
 	// 通过KEY获取连接信息
 	CMyTCPConn* GetConnByKey(int iKey);
-
+	// 发送数据
 	int SendOneCodeTo(short nCodeLength, BYTE* pbyCode, int  iKey, bool bKeepalive = false);
-
+	// 检测被block的数据
 	int CheckBlockCodes();
+	// 检测发送信息
 	void CheckStatLog();
 
 	timeval m_tvLastCheck;

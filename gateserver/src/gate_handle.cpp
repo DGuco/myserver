@@ -33,12 +33,50 @@ CGateHandle::~CGateHandle()
 
 int CGateHandle::Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo, CONNS_MAP* pMap)
 {
+	m_eHandleType = eHandleType;
+	m_pInfo = pInfo;
+	m_pConnsMap = pMap;
+
+	TFName szThreadLogFile;
+	snprintf(szThreadLogFile,sizeof(szThreadLogFile) -1,"../log/handle%d.log",eHandleType);
+#ifdef _DEBUG_
+	ThreadLogInit(szThreadLogFile,0x1000000,5,0,700);
+#else
+	ThreadLogInit(szThreadLogFile,0x1000000,5,0,600);
+#endif
+	time(&m_tCheckStatLog);
+	return 0;
 }
 
 
-int CGateHandle::IsToBeBlocked()
+bool CGateHandle::IsToBeBlocked()
 {
+	bool iRet = true;
+	if (m_pInfo == NULL)
+	{
+		return true;
+	}
 
+// 该过程需要在线程锁内完成
+#ifdef _POSIX_MT_
+	pthread_mutex_lock(&CGateCtrl::stLinkMutex[m_eHandleType]);
+#endif
+
+	//检查当前线程的连接
+	CMyTCPConn* tcpConn = (CMyTCPConn*) m_pInfo->GetHead();
+	while(tcpConn != NULL)
+	{
+		if (tcpConn->IsConnCanRecv())
+		{
+			iRet = false;
+			break;
+		}
+		tcpConn = (CMyTCPConn*) m_pInfo->GetNext();
+	}
+
+#ifdef _POSIX_MT_
+	pthread_mutex_unlock(&CGateCtrl::stLinkMutex[m_eHandleType]);
+#endif
 	return iRet;
 }
 
