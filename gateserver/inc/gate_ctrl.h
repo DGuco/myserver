@@ -115,12 +115,16 @@ private:
 	// 将连接从map中移除
 	int EraseConnFromMap(CMyTCPConn* pConn, int iIndex);
 
+	//gate监听socket信息
 	CMyTCPSocket m_stListenSocket;
-
+	//tcp连接数组
 	CMyTCPConn m_astConns[MAX_CONNS_NUM];
+	//当前的可用的连接map(注:线程之间共享数据)
 	CONNS_MAP m_mapConns;
 
+	//gate 管理类数组
 	CHandleInfo m_stHandleInfos[EHandleType_NUM];
+	//空闲连接双向链表
 	CDoubleLinkerInfo m_UnuseConns;
 
 	// 当前注册数
