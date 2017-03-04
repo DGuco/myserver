@@ -10,8 +10,6 @@
 #include "inc/gate_ctrl.h"
 #include "../framework/log/log.h"
 #include "../framework/base/base.h"
-#include "../framework/json/config.h"
-
 
 CRunFlag g_byRunFlag;
 

@@ -10,7 +10,9 @@
 
 #include <map>
 #include "../../framework/thread/thread.h"
+#include "../../framework/json/config.h"
 #include "gate_conn.h"
+
 
 enum EMHandleType {
 	EHandleType_FIRST 	= 0,
