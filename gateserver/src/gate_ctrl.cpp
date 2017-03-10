@@ -28,7 +28,7 @@ CGateCtrl::CGateCtrl()
 	}
 
 	m_iCurrentUnRegisterNum = 0;
-	memeset((void*)m_astUnRegisterInfo,0,sizeof(m_astUnRegisterInfo));
+	memset((void*)m_astUnRegisterInfo,0,sizeof(m_astUnRegisterInfo));
 	time(&m_tLastCheckTime);
 }
 
@@ -59,7 +59,7 @@ CMyTCPConn* CGateCtrl::GetConnByKey(int iKey)
 	pthread_mutex_unlock(&stMutex[MUTEX_HASHMAP]);
 #endif
 
-	return tpConn;
+	return tcpConn;
 }
 
 
@@ -134,7 +134,7 @@ int CGateCtrl::CheckConnRequest()
 	tcTimpListen.tv_sec = 0;
 	tcTimpListen.tv_usec = 100000;
 	FD_ZERO(&fds_read);
-	iListenSocketFd = m_stListenSocket.GetSocketFd();
+	iListenSocketFd = m_stListenSocket.GetSocketFD();
 	// 获取监听socketfd失败
 	if (iListenSocketFd < 0)
 	{
@@ -148,7 +148,7 @@ int CGateCtrl::CheckConnRequest()
 
 	for (int i = 0;i < m_iCurrentUnRegisterNum; i++)
 	{
-		if (m_astUnRegisterInfo[i]m_iRegisted == 0)
+		if (m_astUnRegisterInfo[i].m_iRegisted == 0)
 		{
 			FD_SET(m_astUnRegisterInfo[i].m_iSocketFD,&fds_read);
 			if(m_astUnRegisterInfo[i].m_iSocketFD > iMaxSocketFd)
@@ -159,7 +159,7 @@ int CGateCtrl::CheckConnRequest()
 	}
 
 	//等待读取
-	iTmp = select(iMaxSocketFd + 1,&fds_read,NULL,NULL,tcTimpListen);
+	iTmp = select(iMaxSocketFd + 1,&fds_read,NULL,NULL,&tcTimpListen);
 
 	//没有可读取返回
 	if (iTmp <= 0)
@@ -171,7 +171,7 @@ int CGateCtrl::CheckConnRequest()
 		return iTmp;
 	}
 
-	if (FD_ISSET(iListenSocketFd,&fd_read))
+	if (FD_ISSET(iListenSocketFd,&fds_read))
 	{
 		//接收这个连接
 		iNewSocketFd = accept(iListenSocketFd,(struct sockaddr*)&stTmpConnAddr,&iTmpAddrLength);
@@ -192,9 +192,23 @@ int CGateCtrl::CheckConnRequest()
 
 			int iTmpOptLen = sizeof(socklen_t);
 			int iOptVal = SENDBUFSIZE;
-						
+            setsockopt(iNewSocketFd,SOL_SOCKET,SO_SNDBUF,(const void*)&iOptVal,iTmpOptLen);
+            if (getsockopt(iNewSocketFd,SOL_SOCKET,SO_SNDBUF,(void*)&iOptVal,(socklen_t*)&iTmpOptLen) == 0)
+            {
+                LOG_ERROR("default", "socket %d set send bufflen = %d error", iNewSocketFd,iOptVal);
+            }
 		}
 	}
+
+    for (i = m_iCurrentUnRegisterNum - 1;i >= 0;i++)
+    {
+        if (FD_ISSET(m_astUnRegisterInfo[i].m_iSocketFD,&fds_read))
+        {
+            //注册连接
+            ReceiveAndProcessRegister(i);
+        }
+    }
+
 	return 1;
 }
 
@@ -304,7 +318,7 @@ int CGateCtrl::PrepareToRun()
 {
 	int i;
 	//监听socket
-	if(m_stListenSocket.CreateServer(CServerConfig::GetSingleton()->m_iGatePort))
+	if(m_stListenSocket.CreateServer(CServerConfig::GetSingletonPtr()->m_iGatePort))
 	{
 		return -1;
 	}
@@ -318,7 +332,7 @@ int CGateCtrl::PrepareToRun()
 			return -1;
 		}
 		//初始化线程
-		m_stHandleInfos[i].mpHandle->Initialize((EHandleType)i,&(m_stHandleInfos.mLinkerInfo),&m_mapConns);
+		m_stHandleInfos[i].mpHandle->Initialize((EMHandleType)i,&(m_stHandleInfos->mLinkerInfo),&m_mapConns);
 		//创建线程
 		if (m_stHandleInfos[i].mpHandle->CreateThread())
 		{
