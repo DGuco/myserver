@@ -210,12 +210,66 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 {
 	char acTmpBuf[MAX_TMP_BUF_LEN] = {0};
 	int iRecvedBytes = 0;
+	CProxyHead stTmpProsyHead;
 	CMyTCPConn* pAcceptConn = NULL;
 	
 	//索引非法
 	if (iUnRegisterIdx < 0 || iUnRegisterIdx >= m_iCurrentUnRegisterNum)
 	{
+		LOG_ERROR("default","Error in ReceiveAndProcessRegister,Unregister idx(%d) is invalid",iUnRegisterIdx);
+		return -1;
+	}
 
+	int iSocketFd = m_astUnRegisterInfo[iUnRegisterIdx].m_iSocketFD;
+	u_long ulIPAddr = m_astUnRegisterInfo[iUnRegisterIdx].m_ulIPAddr;
+
+	//接收数据
+	iRecvedBytes = recv(iSocketFd,acTmpBuf,sizeof(acTmpBuf),0);
+	//如果连接中断
+	if (iRecvedBytes == 0)
+	{
+		LOG_ERROR("default","The remote site may closed this connect fd = %d,errno = %s",iSocketFd,errno);
+		DeleteOneUnRegister(iUnRegisterIdx);
+		close(iSocketFd);
+		return -1;
+	}
+
+	//如果出错
+	if (iRecvedBytes < 0)
+	{
+		//如果不是无数据可读
+		if (errno != EAGAIN)
+		{
+			LOG_ERROR("default","Error in read conn fd = %d,errno = %s",iSocketFd,errno);
+			DeleteOneUnRegister(iUnRegisterIdx);
+			close(iSocketFd);
+		}
+		return -1;
+	}
+
+	//删除相应的索引
+	DeleteOneUnRegister(iUnRegisterIdx);
+
+	//接收总长度
+	unsigned short iPkgSize = *((unsigned short*)(acTmpBuf));
+	acTmpBuf += sizeof(unsigned short);
+	if (iPkgSize != iRecvedBytes)
+	{
+		LOG_ERROR("default","[%s:%d:%s] iPkgSize = %d,iRecvedBytes = %d",__MY_FILE__,__LINE__,__FUNCTION__,
+			iPkgSize,iRecvedBytes);
+		close(iSocketFd);
+		return -1;
+	}
+	//8字节对齐长度舍弃
+	acTmpBuf += 2;
+	//CProxyHeadSize长度
+	unsigned short iTmpProxyPkgSize = *((unsigned short*)(acTmpBuf));
+	acTmpBuf += sizeof(unsigned short);
+	//获取proxyhead
+	if(stTmpProsyHead.ParseFromArray(acTmpBuf,iTmpProxyPkgSize) == false)
+	{
+		LOG_ERROR("default","stTmpProsyHead ParseFromArray len = %d",iTmpProxyPkgSize);
+		return -1;
 	}
 	return 0;
 }
