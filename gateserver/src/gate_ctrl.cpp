@@ -10,6 +10,7 @@
 #include "../../framework/message/message.pb.h"
 #include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/net/client_comm_engine.h"
+#include "../../framework/message/proxymessage.pb.h"
 
 extern CRunFlag g_byRunFlag;
 
@@ -27,7 +28,7 @@ CGateCtrl::CGateCtrl()
 		m_UnuseConns.insert(&m_astConns[i]);
 	}
 
-	m_iCurrentUnRegisterNum = 0;
+    m_iCurrentUnRegisterNum = 0;
 	memset((void*)m_astUnRegisterInfo,0,sizeof(m_astUnRegisterInfo));
 	time(&m_tLastCheckTime);
 }
@@ -116,6 +117,14 @@ int CGateCtrl::CheckRunFlags()
 	return 0;
 }
 
+/********************************************************
+  Function:     CheckConnRequest
+  Description:  接收连接请求
+  Input:
+  Output:
+  Return:       0 :   成功 ，其他失败
+  Others:
+********************************************************/
 int CGateCtrl::CheckConnRequest()
 {
 	fd_set fds_read;
@@ -130,9 +139,9 @@ int CGateCtrl::CheckConnRequest()
 	memset(&stTmpConnAddr,0,sizeof(stTmpConnAddr));
 	socklen_t iTmpAddrLength = sizeof(stTmpConnAddr);
 
-	//等待100毫秒超时
+	//等待10毫秒超时
 	tcTimpListen.tv_sec = 0;
-	tcTimpListen.tv_usec = 100000;
+	tcTimpListen.tv_usec = 10000;
 	FD_ZERO(&fds_read);
 	iListenSocketFd = m_stListenSocket.GetSocketFD();
 	// 获取监听socketfd失败
@@ -188,6 +197,7 @@ int CGateCtrl::CheckConnRequest()
 			m_astUnRegisterInfo[m_iCurrentUnRegisterNum].m_iSocketFD = iNewSocketFd;
 			m_astUnRegisterInfo[m_iCurrentUnRegisterNum].m_ulIPAddr = stTmpConnAddr.sin_addr.s_addr;
 			m_astUnRegisterInfo[m_iCurrentUnRegisterNum].m_tAcceptTime = GetMSTime();
+            //未注册索引加一
 			m_iCurrentUnRegisterNum++;
 
 			int iTmpOptLen = sizeof(socklen_t);
@@ -200,6 +210,7 @@ int CGateCtrl::CheckConnRequest()
 		}
 	}
 
+    //从后往前遍历，因为在ReceiveAndProcessRegister中会删除
     for (i = m_iCurrentUnRegisterNum - 1;i >= 0;i++)
     {
         if (FD_ISSET(m_astUnRegisterInfo[i].m_iSocketFD,&fds_read))
@@ -226,7 +237,7 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	int iRecvedBytes = 0;
 	CProxyHead stTmpProsyHead;
 	CMyTCPConn* pAcceptConn = NULL;
-	
+
 	//索引非法
 	if (iUnRegisterIdx < 0 || iUnRegisterIdx >= m_iCurrentUnRegisterNum)
 	{
@@ -264,9 +275,10 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	//删除相应的索引
 	DeleteOneUnRegister(iUnRegisterIdx);
 
+	char* pcTmpData = acTmpBuf;
 	//接收总长度
-	unsigned short iPkgSize = *((unsigned short*)(acTmpBuf));
-	acTmpBuf += sizeof(unsigned short);
+	unsigned short iPkgSize = *((unsigned short*)(pcTmpData));
+	pcTmpData += sizeof(unsigned short);
 	if (iPkgSize != iRecvedBytes)
 	{
 		LOG_ERROR("default","[%s:%d:%s] iPkgSize = %d,iRecvedBytes = %d",__MY_FILE__,__LINE__,__FUNCTION__,
@@ -275,10 +287,10 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 		return -1;
 	}
 	//8字节对齐长度舍弃
-	acTmpBuf += 2;
+	pcTmpData += 2;
 	//CProxyHeadSize长度
 	unsigned short iTmpProxyPkgSize = *((unsigned short*)(acTmpBuf));
-	acTmpBuf += sizeof(unsigned short);
+	pcTmpData += sizeof(unsigned short);
 	//获取proxyhead
 	if(stTmpProsyHead.ParseFromArray(acTmpBuf,iTmpProxyPkgSize) == false)
 	{
@@ -298,6 +310,18 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 ********************************************************/
 int CGateCtrl::DeleteOneUnRegister(int iUnRegisterIdx)
 {
+    if (iUnRegisterIdx < 0 || iUnRegisterIdx >= m_iCurrentUnRegisterNum)
+    {
+        LOG_ERROR("default","Error in DeleteOneUnRegister,Unregister idx(%d) is invalid",iUnRegisterIdx);
+        return -1;
+    }
+
+    m_iCurrentUnRegisterNum--;
+    if ((m_iCurrentUnRegisterNum > 0) || (iUnRegisterIdx < m_iCurrentUnRegisterNum))
+    {
+        m_astUnRegisterInfo[iUnRegisterIdx] = m_astUnRegisterInfo[m_iCurrentUnRegisterNum];
+        m_astUnRegisterInfo[m_iCurrentUnRegisterNum].Clear();
+    }
 
 	return 0;
 }
