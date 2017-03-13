@@ -20,7 +20,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d069f017-acfa-4319-a930-9c3a45d30834" name="Default" comment="s">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gateserver/src/gate_ctrl.cpp" afterPath="$PROJECT_DIR$/gateserver/src/gate_ctrl.cpp" />
     </list>
     <ignored path="sharedemo.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -115,7 +114,7 @@
       <file leaf-file-name="gate_ctrl.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gateserver/inc/gate_ctrl.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
+            <state relative-caret-position="2322">
               <caret line="129" column="12" selection-start-line="129" selection-start-column="12" selection-end-line="129" selection-end-column="12" />
               <folding>
                 <element signature="e#177#201#0" expanded="true" />
@@ -127,8 +126,8 @@
       <file leaf-file-name="gate_ctrl.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/gateserver/src/gate_ctrl.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="167" column="5" selection-start-line="167" selection-start-column="5" selection-end-line="167" selection-end-column="5" />
+            <state relative-caret-position="270">
+              <caret line="215" column="40" selection-start-line="215" selection-start-column="21" selection-end-line="215" selection-end-column="40" />
               <folding>
                 <element signature="e#128#157#0" expanded="true" />
               </folding>
@@ -575,12 +574,14 @@
       <workItem from="1488376652975" duration="3838000" />
       <workItem from="1488465749700" duration="281000" />
       <workItem from="1489201303655" duration="2781000" />
-      <workItem from="1489205096339" duration="9450000" />
+      <workItem from="1489205096339" duration="10781000" />
+      <workItem from="1489413336218" duration="3337000" />
+      <workItem from="1489418811158" duration="93000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="245662000" />
+    <option name="totallyTimeSpent" value="250423000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -601,7 +602,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26646706" sideWeight="0.3159664" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.48991597" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.09431138" sideWeight="0.8605042" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15568863" sideWeight="0.8605042" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26646706" sideWeight="0.68403363" order="7" side_tool="false" content_ui="tabs" />
@@ -898,7 +899,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
           <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -964,7 +964,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="665">
           <caret line="366" column="35" selection-start-line="366" selection-start-column="27" selection-end-line="366" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -978,7 +977,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gateserver/inc/gate_ctrl.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
+        <state relative-caret-position="2322">
           <caret line="129" column="12" selection-start-line="129" selection-start-column="12" selection-end-line="129" selection-end-column="12" />
           <folding>
             <element signature="e#177#201#0" expanded="true" />
@@ -988,8 +987,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gateserver/src/gate_ctrl.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="167" column="5" selection-start-line="167" selection-start-column="5" selection-end-line="167" selection-end-column="5" />
+        <state relative-caret-position="270">
+          <caret line="215" column="40" selection-start-line="215" selection-start-column="21" selection-end-line="215" selection-end-column="40" />
           <folding>
             <element signature="e#128#157#0" expanded="true" />
           </folding>
