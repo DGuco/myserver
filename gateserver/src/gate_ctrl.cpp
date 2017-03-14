@@ -154,7 +154,7 @@ int CGateCtrl::CheckConnRequest()
 	FD_SET(iListenSocketFd,&fds_read);
 	iMaxSocketFd = iListenSocketFd;
 
-
+	//将已经建立连接的socket加入端口集，select检测是否有数据可读
 	for (int i = 0;i < m_iCurrentUnRegisterNum; i++)
 	{
 		if (m_astUnRegisterInfo[i].m_iRegisted == 0)
@@ -167,7 +167,10 @@ int CGateCtrl::CheckConnRequest()
 		}
 	}
 
-	//等待读取
+	/*
+	 * 等待读取 注：select返回可读socket数量同时会把不可读的socket从端口集中清除掉
+	 * 因此后面再次FD_SET判断，如果仍然在端口集中socket可读
+	 */
 	iTmp = select(iMaxSocketFd + 1,&fds_read,NULL,NULL,&tcTimpListen);
 
 	//没有可读取返回
@@ -213,13 +216,13 @@ int CGateCtrl::CheckConnRequest()
     //从后往前遍历，因为在ReceiveAndProcessRegister中会删除
     for (i = m_iCurrentUnRegisterNum - 1;i >= 0;i++)
     {
+		//socket是否仍然在端口集中，如果在读取数据并处理
         if (FD_ISSET(m_astUnRegisterInfo[i].m_iSocketFD,&fds_read))
         {
             //注册连接
             ReceiveAndProcessRegister(i);
         }
     }
-
 	return 1;
 }
 
