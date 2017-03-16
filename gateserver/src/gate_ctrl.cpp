@@ -66,7 +66,10 @@ CMyTCPConn* CGateCtrl::GetConnByKey(int iKey)
 
 int CGateCtrl::MakeConnKey(const short nType, const short nID)
 {
-
+	int iKey = 0;
+	iKey = nType;
+	//高16位保存服务器类型，低16位保存服务器id
+	iKey = (iKey << 16) | nID;
 	return iKey;
 }
 
@@ -83,7 +86,17 @@ int CGateCtrl::WakeUp2Work(CMyTCPConn* pConn)
 // 获取一个可用连接
 CMyTCPConn* CGateCtrl::GetCanUseConn()
 {
+	//获取可用连接链表的头
+	CMyTCPConn* pConn = (CMyTCPConn*) m_UnuseConns.GetHead();
+	//没有可用连接
+	if (pConn == NULL)
+	{
+		LOG_WARN("default","No unuse conns.");
+		return NULL;
+	}
 
+	//从可用链表中删除
+	m_UnuseConns.erase(pConn);
 	return pConn;
 }
 
@@ -238,7 +251,7 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 {
 	char acTmpBuf[MAX_TMP_BUF_LEN] = {0};
 	int iRecvedBytes = 0;
-	CProxyHead stTmpProsyHead;
+	CTcpHead stTmpTcpHead;
 	CMyTCPConn* pAcceptConn = NULL;
 
 	//索引非法
@@ -278,27 +291,50 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	//删除相应的索引
 	DeleteOneUnRegister(iUnRegisterIdx);
 
-	char* pcTmpData = acTmpBuf;
-	//接收总长度
-	unsigned short iPkgSize = *((unsigned short*)(pcTmpData));
-	pcTmpData += sizeof(unsigned short);
-	if (iPkgSize != iRecvedBytes)
+	stTmpTcpHead.Clear();
+	unsigned short unOffset = 0;
+	//获取tcphead
+	int iRet = ClientCommEngine::ConvertStreamToMsg(acTmpBuf,iRecvedBytes,unOffset,&stTmpTcpHead);
+	if (iRet < 0)
 	{
-		LOG_ERROR("default","[%s:%d:%s] iPkgSize = %d,iRecvedBytes = %d",__MY_FILE__,__LINE__,__FUNCTION__,
-			iPkgSize,iRecvedBytes);
+		LOG_ERROR("default","[%s : %d : %s] ConvertStreamToMsg error,errno = %d",
+			__MY_FILE__,__LINE__,__FUNCTION__,iRet);
+		return -1;
+	}
+
+	//判断是否是注册消息
+	if (stTmpTcpHead.dstfe () != FE_GATESERVER) \
+		|| stTmpTcpHead.dstid() != CServerConfig::GetSingletonPtr()->m_iGateServerId \
+		|| stTmpTcpHead.opflag() != EGC_REGIST)
+	{
+		LOG_ERROR("default","Error CCSHead is invalid,fd = %d,Src(FE = %d : ID = %d),Dst(FE = %d : ID = %d),OpFlag = %d,TimeStamp = %ld.",
+			iSocketFd,stTmpTcpHead.srcfe(),stTmpTcpHead.srcid(),
+			stTmpTcpHead.srcfe(),stTmpTcpHead.srcid(),
+			stTmpTcpHead.opflag(),stTmpTcpHead.timestamp());
 		close(iSocketFd);
 		return -1;
 	}
-	//8字节对齐长度舍弃
-	pcTmpData += 2;
-	//CProxyHeadSize长度
-	unsigned short iTmpProxyPkgSize = *((unsigned short*)(acTmpBuf));
-	pcTmpData += sizeof(unsigned short);
-	//获取proxyhead
-	if(stTmpProsyHead.ParseFromArray(acTmpBuf,iTmpProxyPkgSize) == false)
+
+#ifdef _DEBUG_
+	LOG_DEBUG("default","************** Recv Msg ****************");
+	LOG_DEBUG("default","[%s]",stTmpTcpHead.ShortDebugString().c_str());
+#endif
+
+	//检查该链接是否已存在
+	int iKey = MakeConnKey(stTmpTcpHead.srcfe(),stTmpTcpHead.srcid());
+	pAcceptConn = GetConnByKey(iKey);
+	if (pAcceptConn != NULL)
 	{
-		LOG_ERROR("default","stTmpProsyHead ParseFromArray len = %d",iTmpProxyPkgSize);
+		LOG_DEBUG("default","The Conn has existed FE = % : id = %d : key = %d",stTmpTcpHead.srcfe(),stTmpTcpHead.srcid());
+		close(iSocketFd);
 		return -1;
+	}
+
+	//生成一个可用连接
+	pAcceptConn = GetCanUseConn();
+	if (pAcceptConn == NULL)
+	{
+		
 	}
 	return 0;
 }
