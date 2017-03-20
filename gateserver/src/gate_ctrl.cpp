@@ -303,7 +303,7 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	}
 
 	//判断是否是注册消息
-	if (stTmpTcpHead.dstfe () != FE_GATESERVER) \
+	if (stTmpTcpHead.dstfe () != FE_GATESERVER \
 		|| stTmpTcpHead.dstid() != CServerConfig::GetSingletonPtr()->m_iGateServerId \
 		|| stTmpTcpHead.opflag() != EGC_REGIST)
 	{
@@ -334,8 +334,14 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	pAcceptConn = GetCanUseConn();
 	if (pAcceptConn == NULL)
 	{
-		
+		//没有可用连接
+        close(iSocketFd);
+        return -1;
 	}
+    pAcceptConn->Initialize(stTmpTcpHead.srcfe(),stTmpTcpHead.srcid(),ulIPAddr,0);
+
+    //
+    int iAcceptRst = pAcceptConn->EstConn(iSocketFd);
 	return 0;
 }
 
