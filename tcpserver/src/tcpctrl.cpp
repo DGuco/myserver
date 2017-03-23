@@ -131,7 +131,7 @@ int CTcpCtrl::SetRunFlag(int iRunFlag)
 /**
   * 函数名          : CTCPCtrl::InitEpollSocket
   * 功能描述        : 初始化Epoll socket
-  * 返回值          ：void 
+  * 返回值          ：int
 **/
 int CTcpCtrl::InitEpollSocket(short shTmpport)
 {
@@ -215,7 +215,7 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
 /**
   * 函数名          : CTCPCtrl::EphInit
   * 功能描述        : 初始化Epoll event
-  * 返回值          ：void 
+  * 返回值          ：int
 **/
 int CTcpCtrl::EphInit()
 {
@@ -250,7 +250,7 @@ int CTcpCtrl::EphInit()
 /**
   * 函数名          : CTCPCtrl::EphSocket
   * 功能描述        : 初始化Epoll socket
-  * 返回值          ：void 
+  * 返回值          ：int
 **/
 int CTcpCtrl::EphSocket(int iDomain,int iType,int iProtocol)
 {
@@ -277,7 +277,7 @@ int CTcpCtrl::EphSocket(int iDomain,int iType,int iProtocol)
 /**
   * 函数名          : CTCPCtrl::EphSocket
   * 功能描述        : 关闭Epoll socket
-  * 返回值          ：void 
+  * 返回值          ：int
 **/
 int CTcpCtrl::EphClose(int iSocketFd)
 {
@@ -288,7 +288,7 @@ int CTcpCtrl::EphClose(int iSocketFd)
 /**
   * 函数名          : CTCPCtrl::EphCleanUp
   * 功能描述        : 清除epoll
-  * 返回值          ：void 
+  * 返回值          ：int
 **/
 int CTcpCtrl::EphCleanUp()
 {
@@ -301,7 +301,7 @@ int CTcpCtrl::EphCleanUp()
 /**
   * 函数名          : CTCPCtrl::EphNewConn
   * 功能描述        : 创建连接
-  * 返回值          ：void 
+  * 返回值          ：int
 **/
 int CTcpCtrl::EphNewConn(int iSocketFd)
 {
@@ -317,7 +317,7 @@ int CTcpCtrl::EphNewConn(int iSocketFd)
 /**
   * 函数名          : CTCPCtrl::CheckTimeOut
   * 功能描述        : 检测客户端的连接超时和连接gate的超时
-  * 返回值          ：void
+  * 返回值          ：int
 **/
 int CTcpCtrl::CheckTimeOut()
 {
@@ -352,7 +352,7 @@ int CTcpCtrl::CheckTimeOut()
 /**
   * 函数名          : CTCPCtrl::GetExMessage
   * 功能描述        : 接收外部数据
-  * 返回值          ：void
+  * 返回值          ：int
 **/
 int CTcpCtrl::GetExMessage()
 {
@@ -473,7 +473,7 @@ int CTcpCtrl::GetExMessage()
 /**
   * 函数名          : CTCPCtrl::RecvClientData
   * 功能描述        : 接客户端的数据组织客户端数据为服务器其间数据传格式存入消息包缓冲区
-  * 返回值          ：void
+  * 返回值          ：int
 **/
 int CTcpCtrl::RecvClientData(int iSocketFd)
 {
@@ -700,7 +700,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
 /**
   * 函数名          : CTCPCtrl::TcpRead
   * 功能描述        : 读取tcp数据
-  * 返回值          ：void
+  * 返回值          ：int
 **/
 int CTcpCtrl::TcpRead(int iSocket, char *pBuf, int iLen)
 {
@@ -726,7 +726,7 @@ int CTcpCtrl::TcpRead(int iSocket, char *pBuf, int iLen)
 /**
   * 函数名          : CTCPCtrl::TcpWrite
   * 功能描述        : 发送tcp数据
-  * 返回值          ：void
+  * 返回值          ：int
 **/
 int CTcpCtrl::TcpWrite(int iSocket, char *pBuf, int iPackLen)
 {

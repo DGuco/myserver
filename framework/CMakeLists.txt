@@ -51,8 +51,8 @@ set(FRAMEWORK
         sharemem/shm.h/
         sharemem/sharemem.cpp
         sharemem/shm.cpp
-        sharemem/code_queue.h
-        sharemem/code_queue.cpp
+        sharemem/codequeue.h
+        sharemem/codequeue.cpp
         thread/thread.h
         thread/thread.cpp
         timer/clock.cpp
