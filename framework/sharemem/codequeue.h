@@ -74,6 +74,7 @@ private:
 		int m_iLockIdx;             //数据锁id
 	} m_stQueueHead;
 
+    //共享内存管道起始地址
 	BYTE* m_pbyCodeBuffer;
 };
 

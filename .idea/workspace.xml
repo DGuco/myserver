@@ -19,13 +19,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d069f017-acfa-4319-a930-9c3a45d30834" name="Default" comment="s">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/Debug/libframework.a" afterPath="$PROJECT_DIR$/bin/Debug/libframework.a" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/sharemem/codequeue.cpp" afterPath="$PROJECT_DIR$/framework/sharemem/codequeue.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/sharemem/codequeue.h" afterPath="$PROJECT_DIR$/framework/sharemem/codequeue.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/framework/sharemem/sharemem.cpp" afterPath="$PROJECT_DIR$/framework/sharemem/sharemem.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log/tcpsvrd.log" afterPath="$PROJECT_DIR$/log/tcpsvrd.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" afterPath="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" />
     </list>
     <ignored path="sharedemo.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -78,28 +72,28 @@
       <file leaf-file-name="shm.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/framework/sharemem/shm.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="337">
+            <state relative-caret-position="2286">
               <caret line="127" column="49" selection-start-line="127" selection-start-column="31" selection-end-line="127" selection-end-column="49" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="codequeue.h" pinned="false" current-in-tab="false">
+      <file leaf-file-name="codequeue.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/framework/sharemem/codequeue.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="887">
-              <caret line="73" column="17" selection-start-line="73" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
+            <state relative-caret-position="390">
+              <caret line="77" column="26" selection-start-line="77" selection-start-column="26" selection-end-line="77" selection-end-column="26" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="codequeue.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="codequeue.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/framework/sharemem/codequeue.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2178">
-              <caret line="161" column="5" selection-start-line="161" selection-start-column="5" selection-end-line="161" selection-end-column="5" />
+            <state relative-caret-position="270">
+              <caret line="42" column="14" selection-start-line="42" selection-start-column="14" selection-end-line="42" selection-end-column="14" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -120,7 +114,7 @@
       <file leaf-file-name="sharemem.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/framework/sharemem/sharemem.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
+            <state relative-caret-position="396">
               <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="27" selection-end-column="3" />
               <folding />
             </state>
@@ -130,7 +124,7 @@
       <file leaf-file-name="tcpctrl.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
+            <state relative-caret-position="3888">
               <caret line="216" column="13" selection-start-line="216" selection-start-column="13" selection-end-line="216" selection-end-column="13" />
               <folding />
             </state>
@@ -204,8 +198,8 @@
         <option value="$PROJECT_DIR$/framework/sharemem/shm.h" />
         <option value="$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp" />
         <option value="$PROJECT_DIR$/framework/sharemem/sharemem.cpp" />
-        <option value="$PROJECT_DIR$/framework/sharemem/codequeue.h" />
         <option value="$PROJECT_DIR$/framework/sharemem/codequeue.cpp" />
+        <option value="$PROJECT_DIR$/framework/sharemem/codequeue.h" />
       </list>
     </option>
   </component>
@@ -630,11 +624,12 @@
       <workItem from="1491290042589" duration="40000" />
       <workItem from="1491290627242" duration="4990000" />
       <workItem from="1491490704989" duration="3799000" />
+      <workItem from="1491494856638" duration="61000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="271526000" />
+    <option name="totallyTimeSpent" value="271587000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -647,16 +642,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-7" width="1217" height="808" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20672269" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17664671" sideWeight="0.48991597" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33832335" sideWeight="0.47142857" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26646706" sideWeight="0.3159664" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.04041916" sideWeight="0.4932773" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.48991597" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.48053893" sideWeight="0.8605042" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1242515" sideWeight="0.8605042" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.58832335" sideWeight="0.68403363" order="7" side_tool="false" content_ui="tabs" />
@@ -665,6 +659,7 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="WINDOWED" visible="true" show_stripe_button="true" weight="0.046407185" sideWeight="0.49663866" order="2" side_tool="false" content_ui="tabs" x="66" y="673" width="1213" height="126" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.04041916" sideWeight="0.4932773" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23952095" sideWeight="0.7890756" order="3" side_tool="false" content_ui="tabs" />
     </layout>
@@ -989,7 +984,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tcpserver/src/tcpctrl.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
+        <state relative-caret-position="3888">
           <caret line="216" column="13" selection-start-line="216" selection-start-column="13" selection-end-line="216" selection-end-column="13" />
           <folding />
         </state>
@@ -997,7 +992,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/framework/sharemem/shm.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
+        <state relative-caret-position="2286">
           <caret line="127" column="49" selection-start-line="127" selection-start-column="31" selection-end-line="127" selection-end-column="49" />
           <folding />
         </state>
@@ -1005,27 +1000,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/framework/sharemem/sharemem.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
+        <state relative-caret-position="396">
           <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="27" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/framework/sharemem/codequeue.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="887">
-          <caret line="73" column="17" selection-start-line="73" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/framework/sharemem/codequeue.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2178">
-          <caret line="161" column="5" selection-start-line="161" selection-start-column="5" selection-end-line="161" selection-end-column="5" />
+        <state relative-caret-position="270">
+          <caret line="42" column="14" selection-start-line="42" selection-start-column="14" selection-end-line="42" selection-end-column="14" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/framework/sharemem/codequeue.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="77" column="26" selection-start-line="77" selection-start-column="26" selection-end-line="77" selection-end-column="26" />
+          <folding />
         </state>
       </provider>
     </entry>
