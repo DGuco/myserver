@@ -746,7 +746,6 @@ int CTcpCtrl::TcpWrite(int iSocket, char *pBuf, int iPackLen)
             {
                 continue;
             }
-
             return iSendBytes;
         }
     }

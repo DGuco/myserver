@@ -67,11 +67,11 @@ private:
 
 	struct _tagHead
 	{
-		int m_nSize;
-		int m_iCodeBufOffSet;
-		int m_nBegin;
-		int m_nEnd;
-		int m_iLockIdx;
+		int m_iSize;                //共享内存管道大小
+		int m_iCodeBufOffSet;       //共享内存管道地址在CCodeQueue对象中的偏移地址
+		int m_iReadIndex;           //读数据索引
+		int m_iWriteIndex;          //写数据索引
+		int m_iLockIdx;             //数据锁id
 	} m_stQueueHead;
 
 	BYTE* m_pbyCodeBuffer;

@@ -4,7 +4,12 @@
 
 CSharedMem* CCodeQueue::pCurrentShm = NULL;
 
-
+/**
+  *函数名          : CountQueueSize
+  *功能描述        : PIPE_SIZE + CountQueueSize
+  *参数			  : iBufSize:PIPE_SIZE 共享内存管道长度
+  *返回值         ： PIPE_SIZE + CountQueueSize
+**/
 size_t CCodeQueue::CountQueueSize(int iBufSize)
 {
 	size_t iTempSize = 0;
@@ -18,6 +23,14 @@ size_t CCodeQueue::CountQueueSize(int iBufSize)
 	return iTempSize;
 }
 
+/**
+  *函数名          : CCodeQueue重在new运算符
+  *功能描述        : 改变CCodeQueue的new操作，在共享内存空间上生成内存空间生生成对象，
+  *                 用来进程间通信，此时codequeue对象指向了一块 sizeof（CCodeQueue）
+  *                 + PIPE_SIZE大小的内存快，调用new之后此时只有sizeof（CCodeQueue）
+  *                 大小的内存快是有效的
+  *参数           ： sizeof（CCodeQueue）
+**/
 void* CCodeQueue::operator new(size_t nSize)
 {
 	BYTE* pTemp;
@@ -38,20 +51,26 @@ void CCodeQueue::operator delete(void *pBase)
 
 CCodeQueue::CCodeQueue()
 {
-	m_stQueueHead.m_nBegin = 0;
-	m_stQueueHead.m_nEnd = 0;
-	m_stQueueHead.m_nSize = 0;
+	m_stQueueHead.m_iReadIndex = 0;
+	m_stQueueHead.m_iWriteIndex = 0;
+	m_stQueueHead.m_iSize = 0;
 	m_stQueueHead.m_iCodeBufOffSet = -1;
 	m_stQueueHead.m_iLockIdx = -1;
 }
 
+/**
+  *函数名          : CCodeQueue
+  *功能描述        : 调用new之后此时只有sizeof（CCodeQueue），构造函数通过Initialize
+  *                 初始化剩下的nTotalSize大小的内存快
+  *参数           ： 共享内存管道大小PIPE_SIZE
+**/
 CCodeQueue::CCodeQueue(int nTotalSize, int iLockIdx /* = -1  */)
 {
 	if( !pCurrentShm )
 	{
-		m_stQueueHead.m_nBegin = 0;
-		m_stQueueHead.m_nEnd = 0;
-		m_stQueueHead.m_nSize = 0;
+		m_stQueueHead.m_iReadIndex = 0;
+		m_stQueueHead.m_iWriteIndex = 0;
+		m_stQueueHead.m_iSize = 0;
 		m_stQueueHead.m_iCodeBufOffSet = -1;
 		m_stQueueHead.m_iLockIdx = -1;
 		return;
@@ -72,13 +91,18 @@ CCodeQueue::~CCodeQueue()
 {
 }
 
+/**
+  *函数名          : Initialize
+  *功能描述        : 初始化CCodeQueue的共享内存管道内存区
+  * 参数          ： 共享内存管道大小PIPE_SIZE
+**/
 int CCodeQueue::Initialize( int nTotalSize )
 {
 	BYTE *pbyCodeBuf;
 	
-	m_stQueueHead.m_nSize = nTotalSize;
-	m_stQueueHead.m_nBegin = 0;
-	m_stQueueHead.m_nEnd = 0;
+	m_stQueueHead.m_iSize = nTotalSize;
+	m_stQueueHead.m_iReadIndex = 0;
+	m_stQueueHead.m_iWriteIndex = 0;
 
 	pbyCodeBuf = (BYTE *)(pCurrentShm->CreateSegment((size_t)nTotalSize));
 
@@ -88,6 +112,7 @@ int CCodeQueue::Initialize( int nTotalSize )
 		return -1;
 	}
 
+    //计算共享内存管道在CCodeQueue对象地址中的地址偏移
 	m_stQueueHead.m_iCodeBufOffSet = (int)((BYTE *)pbyCodeBuf - (BYTE *)this); 
 
 	return 0;
@@ -105,29 +130,37 @@ int CCodeQueue::Resume(int nTotalSize)
 	return 0;
 }
 
+/**
+  *函数名          : GetCriticalData
+  *功能描述        : 获取共享内存管道内存区的读写地址索引
+**/
 int CCodeQueue::GetCriticalData(int *piBeginIdx, int *piEndIdx)
 {
 	if( piBeginIdx )
 	{
-		*piBeginIdx = m_stQueueHead.m_nBegin;
+		*piBeginIdx = m_stQueueHead.m_iReadIndex;
 	}
 	if( piEndIdx )
 	{
-		*piEndIdx = m_stQueueHead.m_nEnd;
+		*piEndIdx = m_stQueueHead.m_iWriteIndex;
 	}
 
 	return 0;
 }
 
+/**
+  *函数名          : GetCriticalData
+  *功能描述        : 设置共享内存管道内存区的读写地址索引
+**/
 int CCodeQueue::SetCriticalData(int iBeginIdx, int iEndIdx)
 {
-	if( iBeginIdx >= 0 && iBeginIdx < m_stQueueHead.m_nSize )
+	if( iBeginIdx >= 0 && iBeginIdx < m_stQueueHead.m_iSize )
 	{
-		m_stQueueHead.m_nBegin = iBeginIdx;
+		m_stQueueHead.m_iReadIndex = iBeginIdx;
 	}
-	if( iEndIdx >= 0 && iEndIdx < m_stQueueHead.m_nSize )
+	if( iEndIdx >= 0 && iEndIdx < m_stQueueHead.m_iSize )
 	{
-		m_stQueueHead.m_nEnd = iEndIdx;
+		m_stQueueHead.m_iWriteIndex = iEndIdx;
 	}
 
 	return 0;

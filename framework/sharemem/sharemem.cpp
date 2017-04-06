@@ -9,23 +9,23 @@
 #include "sharemem.h"
 #include "../log/log.h"
 
-/************************************************
-  函数名          : MakeKey
-  功能描述        : 生成共享内存块唯一标识key
-  参数			 : pFile文件路径 vId：
-  返回值         ： 共享内存块唯一标识key
-************************************************/
+/**
+  *函数名          : MakeKey
+  *功能描述        : 生成共享内存块唯一标识key
+  *参数			  : pFile文件路径 vId：
+  *返回值         ： 共享内存块唯一标识key
+**/
 key_t MakeKey( const char* pFile, int vId )
 {
 	return ftok( pFile, vId );
 }
 
-/************************************************
-  函数名          : CreateShareMem
-  功能描述        : 创建共享内存块
-  参数			 :  iKey：共享内存块唯一标识key vSize：大小
-  返回值         ： 共享内存块地址
-************************************************/
+/**
+  *函数名          : CreateShareMem
+  *功能描述        : 创建共享内存块
+  *参数			 :  iKey：共享内存块唯一标识key vSize：大小
+  *返回值         ： 共享内存块地址
+**/
 BYTE* CreateShareMem( key_t iKey, long vSize )
 {
 	size_t iTempShmSize;
