@@ -1,6 +1,6 @@
 //
 //  codequeue.h
-//  共享内存操作接口类
+//  借鉴Java netty异步通信框架 ByteBuf内存管理策略，管理共享内存
 //  Created by DGuco on 17/03/23.
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
@@ -47,12 +47,11 @@ public:
 	int LoadFromFile(const char *szFileName);
 	//清除进程间共享内存管道数据
 	int CleanQueue();
-
 	//codequeue大小
 	static size_t CountQueueSize(int iBufSize);
-
+	//获取共享内管道的其实地址
+	BYTE* GetPipeAddr();
 	static CSharedMem *pCurrentShm;
-
 
 	void GetCriticalData(int& iBegin, int& iEnd, int& iLeft);
 
@@ -62,8 +61,12 @@ private:
 	int IsQueueFull();
 	int SetFullFlag( int iFullFlag );
 
-	int GetCriticalData(int *piBeginIdx, int *piEndIdx);
-	int SetCriticalData(int iBeginIdx, int iEndIdx);
+	//将待读取数据移动至共享内存管道的头部
+	void DiscardReadBytes();
+	//获取数据读写索引
+	void GetCriticalData(int *iReadIndex, int *iWriteIndex);
+	//设置数据读写索引
+	int SetCriticalData(int iReadIndex, int iWriteIndex);
 
 	struct _tagHead
 	{
