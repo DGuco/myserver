@@ -1,32 +1,10 @@
-/*
- * Copyright (c) 2014, Dan Quist
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+#ifndef _SRC_EVENT_EVENT_BUS_H_
+#define _SRC_EVENT_EVENT_BUS_H_
 
-#ifndef _SRC_EVENT_EVENT_BUS_HPP_
-#define _SRC_EVENT_EVENT_BUS_HPP_
-
-#include "Object.hpp"
-#include "EventHandler.hpp"
-#include "Event.hpp"
-#include "HandlerRegistration.hpp"
+#include "../base/object.h"
+#include "eventHandler.h"
+#include "event.h"
+#include "handlerregistration.h"
 
 #include <list>
 #include <typeinfo>
@@ -37,7 +15,7 @@
  * \brief An Event system that allows decoupling of code through synchronous events
  *
  */
-class EventBus : public Object {
+class EventBus : public CObj {
 public:
 	/**
 	 * \brief Default empty constructor
@@ -79,7 +57,7 @@ public:
 	 * @return An EventRegistration pointer which can be used to unregister the event handler
 	 */
 	template <class T>
-	static HandlerRegistration* const AddHandler(EventHandler<T> & handler, Object & sender) {
+	static HandlerRegistration* const AddHandler(EventHandler<T> & handler, CObj & sender) {
 		EventBus* instance = GetInstance();
 
 		// Fetch the list of event pairs unique to this event type
@@ -137,7 +115,7 @@ public:
 	 *
 	 * @param e The event to fire
 	 */
-	static void FireEvent(Event & e) {
+	static void FireEvent(event & e) {
 		EventBus* instance = GetInstance();
 
 		Registrations* registrations = instance->handlers[typeid(e)];
@@ -155,7 +133,7 @@ public:
 				// This is where some magic happens. The void * handler is statically cast to an event handler
 				// of generic type Event and dispatched. The dispatch function will then do a dynamic
 				// cast to the correct event type so the matching onEvent method can be called
-				static_cast<EventHandler<Event>*>(reg->getHandler())->dispatch(e);
+				static_cast<EventHandler<event>*>(reg->getHandler())->dispatch(e);
 			}
 		}
 	}
@@ -184,7 +162,7 @@ private:
 		 * @param registrations The handler collection for this event type
 		 * @param sender The registered sender object
 		 */
-		EventRegistration(void * const handler, Registrations * const registrations, Object * const sender ) :
+		EventRegistration(void * const handler, Registrations * const registrations, CObj * const sender ) :
 			handler(handler),
 			registrations(registrations),
 			sender(sender),
@@ -213,7 +191,7 @@ private:
 		 *
 		 * @return The registered sender object
 		 */
-		Object* const getSender() {
+		CObj* const getSender() {
 			return sender;
 		}
 
@@ -233,7 +211,7 @@ private:
 	private:
 		void * const handler;
 		Registrations* const registrations;
-		Object* const sender;
+		CObj* const sender;
 
 		bool registered;
 	};

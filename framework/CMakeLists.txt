@@ -57,7 +57,11 @@ set(FRAMEWORK
         thread/thread.cpp
         timer/clock.cpp
         timer/clock.h
-        ../gameserver/main.cpp ../gameserver/inc/gameserver.h ../gameserver/src/gameserver.cpp ../gameserver/logicmodule/inc/coremodule.h ../gameserver/logicmodule/src/coremodule.cpp)
+        event/event.h
+        event/eventbus.h
+        event/eventHandler.h
+        event/eventbus.cpp
+        event/handlerregistration.h)
 
 include_directories(
         /usr/local/include
