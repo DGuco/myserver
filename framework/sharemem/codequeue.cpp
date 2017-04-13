@@ -152,15 +152,8 @@ void CCodeQueue::GetCriticalData(int *piBeginIdx, int *piEndIdx)
 **/
 int CCodeQueue::SetCriticalData(int iReadIndex, int iWriteIndex)
 {
-	if( iReadIndex >= 0 && iReadIndex < m_stQueueHead.m_iSize )
-	{
-		m_stQueueHead.m_iReadIndex = iReadIndex;
-	}
-	if( iWriteIndex >= 0 && iWriteIndex < m_stQueueHead.m_iSize )
-	{
-		m_stQueueHead.m_iWriteIndex = iWriteIndex;
-	}
-
+    m_stQueueHead.m_iReadIndex = iReadIndex;
+    m_stQueueHead.m_iWriteIndex = iWriteIndex;
 	return 0;
 }
 
@@ -171,23 +164,14 @@ int CCodeQueue::SetCriticalData(int iReadIndex, int iWriteIndex)
 int CCodeQueue::IsQueueFull()
 {
 	int nTempMaxLength = 0;
-	int nTempBegin = -1;
-	int nTempEnd = -1;
+	int nTempRead = 0;
+	int nTempWrite = 0;
 
 	
-	GetCriticalData( &nTempBegin, &nTempEnd );
-	if( nTempBegin == nTempEnd )
-	{
-		nTempMaxLength = m_stQueueHead.m_iReadIndex;
-	}
-	else if( nTempBegin > nTempEnd )
-	{
-		nTempMaxLength = nTempBegin - nTempEnd;		
-	}
-	else
-	{
-		nTempMaxLength = (m_stQueueHead.m_iSize - nTempEnd) + nTempBegin;
-	}
+	GetCriticalData( &nTempRead, &nTempWrite );
+
+	//最大长度
+	nTempMaxLength = nTempWrite - nTempRead;
 
 	// 重要：最大长度应该减去预留部分长度，保证首尾不会相接
 	nTempMaxLength -= QUEUERESERVELENGTH;
@@ -207,13 +191,12 @@ int CCodeQueue::IsQueueFull()
   *功能描述        : 写共享内存管道
   * Error code: -1 invalid para; -2 not enough; -3 data crashed
 **/
-
 int CCodeQueue::AppendOneCode(const BYTE *pInCode, int sInLength)
 {
 	int nTempMaxLength = 0;
 	int nTempRt = -1;
-	int nTempRead = -1;
-	int nTempWrite = -1;
+	int nTempRead = 0;
+	int nTempWrite = 0;
     int nRequireLen = 0;
 	//char pcTempBuf[8192];
 	BYTE *pbyCodeBuf;
@@ -280,6 +263,7 @@ int CCodeQueue::AppendOneCode(const BYTE *pInCode, int sInLength)
 	pTempDst = &pbyCodeBuf[0];
 	pTempSrc = (BYTE *)&usInLength;
 
+	//把数据长度写在数据头部
 	for( i = 0; i < sizeof(usInLength); i++ )
 	{
 		pTempDst[nTempWrite] = pTempSrc[i];  // 拷贝 Code 的长度
@@ -295,12 +279,17 @@ int CCodeQueue::AppendOneCode(const BYTE *pInCode, int sInLength)
 	return nTempRt;
 }
 
+/**
+  *函数名          : PeekHeadCode
+  *功能描述        : 查看共享内存管道（不改变读写索引）
+  * Error code: -1 invalid para; -2 not enough; -3 data crashed
+**/
 int CCodeQueue::PeekHeadCode(BYTE *pOutCode, int *psOutLength)
 {
 	int nTempMaxLength = 0;
 	int nTempRet = -1;
-	int nTempBegin = -1;
-	int nTempEnd = -1;
+	int nTempRead = 0;
+	int nTempWrite = 0;
 	BYTE *pTempSrc;
 	BYTE *pTempDst;
 	unsigned int i;
@@ -310,33 +299,28 @@ int CCodeQueue::PeekHeadCode(BYTE *pOutCode, int *psOutLength)
 	{
 		return -1;
 	}
-	if( m_stQueueHead.m_iCodeBufOffSet <= 0 || m_stQueueHead.m_nSize <= 0 )
+	if( m_stQueueHead.m_iCodeBufOffSet <= 0 || m_stQueueHead.m_iSize <= 0 )
 	{
 		return -1;
 	}
-	
-	pbyCodeBuf = GetPipeAddr();
-	
-	if( GetCriticalData(&nTempBegin, &nTempEnd) )
-	{
-		return -1;
-	}
-	nTempRet = nTempBegin;
 
-	if( nTempBegin == nTempEnd )
+	//获取共享内存管道的地址
+	pbyCodeBuf = GetPipeAddr();
+
+    //获取读写索引
+	GetCriticalData(&nTempRead, &nTempWrite);
+
+	nTempRet = nTempRead;
+
+	if(IsQueueEmpty())
 	{
 		*psOutLength = 0;
+        CleanQueue();
 		return nTempRet;
 	}
 
-	if( nTempBegin < nTempEnd )
-	{
-		nTempMaxLength = nTempEnd - nTempBegin;
-	}
-	else
-	{
-		nTempMaxLength = m_stQueueHead.m_nSize - nTempBegin + nTempEnd;
-	}
+    //获取数据大小
+    nTempMaxLength = nTempWrite - nTempRead;
 
 	if( nTempMaxLength < (int)sizeof(short) )
 	{
@@ -346,16 +330,20 @@ int CCodeQueue::PeekHeadCode(BYTE *pOutCode, int *psOutLength)
 
 	unsigned short usOutLength = 0;
 
+	//数据目的地址
 	pTempDst = (BYTE *)&usOutLength;
+	//数据源地址
 	pTempSrc = (BYTE *)&pbyCodeBuf[0];
+	//读取数据长度
 	for( i = 0; i < sizeof(short); i++ )
 	{
-		pTempDst[i] = pTempSrc[nTempBegin];
-		nTempBegin = (nTempBegin+1) % m_stQueueHead.m_nSize; 
+		pTempDst[i] = pTempSrc[nTempRead];
+		nTempRead = (nTempRead+1);
 	}
 
 	*psOutLength = usOutLength;
 
+	//数据长度不合法
 	if( (*psOutLength) > (int)(nTempMaxLength - sizeof(short)) )
 	{
 		*psOutLength = 0;
@@ -364,126 +352,90 @@ int CCodeQueue::PeekHeadCode(BYTE *pOutCode, int *psOutLength)
 
 	pTempDst = (BYTE *)&pOutCode[0];
 
-	if( nTempBegin < nTempEnd )
-	{
-		memcpy((void *)pTempDst, (const void *)&pTempSrc[nTempBegin], (size_t)(*psOutLength));
-	}
-	else
-	{
-		// 如果出现分片，则分段拷贝
-		if( m_stQueueHead.m_nSize - nTempBegin < *psOutLength)
-		{
-			memcpy((void *)pTempDst, (const void *)&pTempSrc[nTempBegin], (size_t)(m_stQueueHead.m_nSize - nTempBegin));
-			pTempDst += (m_stQueueHead.m_nSize - nTempBegin);
-			memcpy((void *)pTempDst, (const void *)&pTempSrc[0], (size_t)(*psOutLength+nTempBegin-m_stQueueHead.m_nSize));
-		}
-		else	// 否则，直接拷贝
-		{
-			memcpy((void *)pTempDst, (const void *)&pTempSrc[nTempBegin], (size_t)(*psOutLength));
-		}
-	}
-	nTempBegin = (nTempBegin + (*psOutLength)) % m_stQueueHead.m_nSize;
+    //拷贝数据
+	memcpy((void *)pTempDst, (const void *)&pTempSrc[nTempRead], (size_t)(*psOutLength));
 
 	return nTempRet;
 }
 
-//This function just change the begin idx of code queue
+/**
+  *函数名          : GetHeadCode
+  *功能描述        : 读取共享内存管道（改变读写索引）
+  * Error code: -1 invalid para; -2 not enough; -3 data crashed
+**/
 int CCodeQueue::GetHeadCode(BYTE *pOutCode, int *psOutLength)
 {
-	int nTempMaxLength = 0;
-	int nTempRet = -1;
-	int nTempBegin = -1;
-	int nTempEnd = -1;
-	BYTE *pTempSrc;
-	BYTE *pTempDst;
-	unsigned int i;
-	BYTE *pbyCodeBuf;
+    int nTempMaxLength = 0;
+    int nTempRet = -1;
+    int nTempRead = 0;
+    int nTempWrite = 0;
+    BYTE *pTempSrc;
+    BYTE *pTempDst;
+    unsigned int i;
+    BYTE *pbyCodeBuf;
 
-	if( !pOutCode || !psOutLength )
-	{
-		return -1;
-	}
-	if( m_stQueueHead.m_iCodeBufOffSet <= 0 || m_stQueueHead.m_nSize <= 0 )
-	{
-		return -2;
-	}
+    if( !pOutCode || !psOutLength )
+    {
+        return -1;
+    }
+    if( m_stQueueHead.m_iCodeBufOffSet <= 0 || m_stQueueHead.m_iSize <= 0 )
+    {
+        return -1;
+    }
 
-	pbyCodeBuf = GetPipeAddr();
-	
-	if( GetCriticalData(&nTempBegin, &nTempEnd) )  // 得到数据的开始和结尾 idx
-	{
-		return -3;
-	}
-	nTempRet = nTempBegin;
+    //获取共享内存管道的地址
+    pbyCodeBuf = GetPipeAddr();
 
-	if( nTempBegin == nTempEnd )  // 如果数据为空
-	{
-		*psOutLength = 0;
-		return nTempRet;
-	}
+    //获取读写索引
+    GetCriticalData(&nTempRead, &nTempWrite);
 
+    nTempRet = nTempRead;
 
-	if( nTempBegin < nTempEnd )
-	{
-		nTempMaxLength = nTempEnd - nTempBegin;
-	}
-	else  // 如果数据的开始 idx 大于结束 idx
-	{
-		nTempMaxLength = m_stQueueHead.m_nSize - nTempBegin + nTempEnd;
-	}
+    if(IsQueueEmpty())
+    {
+        *psOutLength = 0;
+        CleanQueue();
+        return nTempRet;
+    }
 
-	if( nTempMaxLength < (int)sizeof(short) )  // 如果数据的最大长度不到 2
-	{
-		*psOutLength = 0;
-		nTempBegin = nTempEnd;
-		SetCriticalData(nTempBegin, -1);
-		return -4;
-	}
+    //获取数据大小
+    nTempMaxLength = nTempWrite - nTempRead;
 
-	unsigned short usOutLength;
-	pTempDst = (BYTE *)&usOutLength;   // 数据拷贝的目的地址
-	pTempSrc = (BYTE *)&pbyCodeBuf[0];  // 数据拷贝的源地址
-	for( i = 0; i < sizeof(short); i++ )
-	{
-		pTempDst[i] = pTempSrc[nTempBegin];
-		nTempBegin = (nTempBegin+1) % m_stQueueHead.m_nSize; 
-	}
+    if( nTempMaxLength < (int)sizeof(short) )
+    {
+        *psOutLength = 0;
+        return -3;
+    }
 
-	*psOutLength = usOutLength;  // 将 psOutLength 赋值为将要取出 Code 的长度
+    unsigned short usOutLength = 0;
 
-	if( (*psOutLength) > (int)(nTempMaxLength - sizeof(short)) || *psOutLength < 0 )  // 如果得到的数据长度不正确
-	{
-		*psOutLength = 0;
-		nTempBegin = nTempEnd;
-		SetCriticalData(nTempBegin, -1);
-		return -5;
-	}
+    //数据目的地址
+    pTempDst = (BYTE *)&usOutLength;
+    //数据源地址
+    pTempSrc = (BYTE *)&pbyCodeBuf[0];
+    //读取数据长度
+    for( i = 0; i < sizeof(short); i++ )
+    {
+        pTempDst[i] = pTempSrc[nTempRead];
+        nTempRead = (nTempRead+1);
+    }
 
-	pTempDst = (BYTE *)&pOutCode[0];  // 设置接收 Code 的地址
+    *psOutLength = usOutLength;
 
-	if( nTempBegin < nTempEnd )  // 如果开始地址小于结束地址，则直接拷贝
-	{
-		memcpy((void *)pTempDst, (const void *)&pTempSrc[nTempBegin], (size_t)(*psOutLength));
-	}
-	else
-	{
-		// 如果出现分片，则分段拷贝
-		if( m_stQueueHead.m_nSize - nTempBegin < *psOutLength)
-		{
-			memcpy((void *)pTempDst, (const void *)&pTempSrc[nTempBegin], (size_t)(m_stQueueHead.m_nSize - nTempBegin));
-			pTempDst += (m_stQueueHead.m_nSize - nTempBegin);
-			memcpy((void *)pTempDst, (const void *)&pTempSrc[0], (size_t)(*psOutLength+nTempBegin-m_stQueueHead.m_nSize));
-		}
-		else	// 否则，直接拷贝
-		{
-			memcpy((void *)pTempDst, (const void *)&pTempSrc[nTempBegin], (size_t)(*psOutLength));
-		}
-	}
-	nTempBegin = (nTempBegin + (*psOutLength)) % m_stQueueHead.m_nSize;  
+    //数据长度不合法
+    if( (*psOutLength) > (int)(nTempMaxLength - sizeof(short)) )
+    {
+        *psOutLength = 0;
+        return -3;
+    }
 
-	SetCriticalData(nTempBegin, -1);  // 取出 Code 后重新设置队列开始 idx
+    pTempDst = (BYTE *)&pOutCode[0];
 
-	return nTempRet;
+    //拷贝数据
+    memcpy((void *)pTempDst, (const void *)&pTempSrc[nTempRead], (size_t)(*psOutLength));
+    nTempRead = nTempRead + (*psOutLength);
+    SetCriticalData(nTempRead,nTempWrite);
+    return nTempRet;
 }
 
 //This function just change the begin idx of code queue
@@ -664,12 +616,12 @@ BYTE* CCodeQueue::GetPipeAddr()
 
 int CCodeQueue::IsQueueEmpty()
 {
-	int iTempBegin;
-	int iTempEnd;
+	int iTempRead;
+	int iTempWrite;
 
-	GetCriticalData(&iTempBegin, &iTempEnd);
+	GetCriticalData(&iTempRead, &iTempWrite);
 
-	if( iTempBegin == iTempEnd)
+	if( iTempRead == iTempWrite)
 	{
 		return 1;
 	}
