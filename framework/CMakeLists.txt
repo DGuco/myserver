@@ -5,11 +5,9 @@ project(myserver)
 set(FRAMEWORK
         base/base.h
         base/object.h
-        base/dirtyword.h
         base/performance.h
         base/servertool.h
         base/base.cpp
-        base/dirtyword.cpp
         base/object.cpp
         base/performance.cpp
         base/servertool.cpp

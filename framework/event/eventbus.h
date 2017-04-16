@@ -28,6 +28,13 @@ public:
 	 */
 	virtual ~EventBus() { }
 
+	int Initialize(){
+		return 0;
+	}
+
+	int Resume(){
+		return 0;
+	}
 
 	/**
 	 * \brief Returns the EventBus singleton instance

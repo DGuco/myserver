@@ -32,6 +32,15 @@ public:
 	virtual ~event() { }
 
 
+	int Initialize(){
+		return 0;
+	}
+
+	int Resume(){
+		return 0;
+	}
+
+
 	/**
 	 * \brief Gets the source object for this event
 	 *

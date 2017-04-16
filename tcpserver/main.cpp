@@ -5,6 +5,7 @@
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
+#include <memory>
 #include <iostream>
 #include <signal.h>
 #include <stdio.h>
@@ -14,7 +15,7 @@
 
 using namespace std;
 
-CTcpCtrl *g_pTcpServer;
+unique_ptr<CTcpCtrl> g_pTcpServer;
 
 void sigusr1_handle(int iSigVal)
 {
@@ -41,18 +42,16 @@ int main(int argc,char **argv)
     Initialize();
     //初始化日志
     INIT_ROLLINGFILE_LOG("default","../log/tcpsvrd.log",LEVEL_DEBUG);
-
-    CServerConfig* pTmpConfig = new CServerConfig;
+    unique_ptr<CServerConfig> pTmpConfig(new CServerConfig);
     const string filepath = "../config/serverinfo.json";
-    if (-1 == CServerConfig::GetSingleton().LoadFromFile(filepath))
+    if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filepath))
     {
         LOG_ERROR("default","Get TcpserverConfig failed");
-        delete pTmpConfig;
-        pTmpConfig = NULL;
         exit(0);
     }
 
-    g_pTcpServer = new CTcpCtrl;
+    unique_ptr<CTcpCtrl> pTmpTcpCtrl(new CTcpCtrl);
+    g_pTcpServer = move(pTmpTcpCtrl);
     if (g_pTcpServer == NULL)
     {
         LOG_ERROR("default","New TcpCtrl failed.");
@@ -63,8 +62,6 @@ int main(int argc,char **argv)
     if (0 != iTmpRet)
     {
         LOG_ERROR("default","Tcpserver Initialize failed,iRet = %d",iTmpRet);
-        delete g_pTcpServer;
-        g_pTcpServer = NULL;
         exit(0);
     }
 
@@ -72,9 +69,4 @@ int main(int argc,char **argv)
 
     g_pTcpServer->Run();
 
-    if (g_pTcpServer != NULL)
-    {
-        delete g_pTcpServer;
-        g_pTcpServer = NULL; 
-    }
 }

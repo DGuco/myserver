@@ -7,6 +7,7 @@
 
 #ifndef SERVER_CONFIG_H_H
 #define SERVER_CONFIG_H_H
+#include <memory>
 #include "../base/servertool.h"
 #include "json.h"
 

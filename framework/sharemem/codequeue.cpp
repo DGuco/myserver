@@ -451,17 +451,14 @@ int CCodeQueue::DeleteHeadCode()
 	BYTE *pTempDst;
 	BYTE *pbyCodeBuf;
 
-	if( m_stQueueHead.m_iCodeBufOffSet <= 0 || m_stQueueHead.m_nSize <= 0 )
+	if( m_stQueueHead.m_iCodeBufOffSet <= 0 || m_stQueueHead.m_iSize <= 0 )
 	{
 		return -1;
 	}
 
 	pbyCodeBuf = GetPipeAddr();
 	
-	if( GetCriticalData(&nTempBegin, &nTempEnd) )
-	{
-		return -1;
-	}
+	GetCriticalData(&nTempBegin, &nTempEnd);
 	nTempRet = nTempBegin;
 
 	if( nTempBegin == nTempEnd )
@@ -475,7 +472,7 @@ int CCodeQueue::DeleteHeadCode()
 	}
 	else
 	{
-		nTempMaxLength = m_stQueueHead.m_nSize - nTempBegin + nTempEnd;
+		nTempMaxLength = m_stQueueHead.m_iSize - nTempBegin + nTempEnd;
 	}
 	
 	if( nTempMaxLength < ( int )sizeof(short) )
@@ -490,7 +487,7 @@ int CCodeQueue::DeleteHeadCode()
 	for( unsigned int i = 0; i < sizeof(short); i++ )
 	{
 		pTempDst[i] = pTempSrc[nTempBegin];
-		nTempBegin = (nTempBegin+1) % m_stQueueHead.m_nSize; 
+		nTempBegin = (nTempBegin+1) % m_stQueueHead.m_iSize;
 	}
 
 	if( sTempShort > (int)(nTempMaxLength - sizeof(short)) || sTempShort < 0 )
@@ -500,7 +497,7 @@ int CCodeQueue::DeleteHeadCode()
 		return -3;
 	}
 
-	nTempBegin = (nTempBegin + sTempShort) % m_stQueueHead.m_nSize;
+	nTempBegin = (nTempBegin + sTempShort) % m_stQueueHead.m_iSize;
 
 	SetCriticalData(nTempBegin, -1);
 	
@@ -518,7 +515,7 @@ int CCodeQueue::GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int
 	BYTE *pTempDst;
 	BYTE *pbyCodeBuf;
 
-	if( m_stQueueHead.m_iCodeBufOffSet <= 0 || m_stQueueHead.m_nSize <= 0 )
+	if( m_stQueueHead.m_iCodeBufOffSet <= 0 || m_stQueueHead.m_iSize <= 0 )
 	{
 		return -1;
 	}
@@ -531,21 +528,17 @@ int CCodeQueue::GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int
 		return -1;
 	}
 
-	if( iCodeOffset < 0 || iCodeOffset >= m_stQueueHead.m_nSize)
+	if( iCodeOffset < 0 || iCodeOffset >= m_stQueueHead.m_iSize)
 	{
 		/*LOG("In GetOneCode, invalid code offset %d.\n", iCodeOffset);*/
 		return -1;
 	}
-	if( nCodeLength < 0 || nCodeLength >= m_stQueueHead.m_nSize )
+	if( nCodeLength < 0 || nCodeLength >= m_stQueueHead.m_iSize )
 	{
 		/*LOG("In GetOneCode, invalid code length %d.\n", nCodeLength);*/
 		return -1;
 	}
-
-	if( GetCriticalData(&iTempBegin, &iTempEnd) )
-	{
-		return -1;
-	}
+	GetCriticalData(&iTempBegin, &iTempEnd);
 	
 	if( iTempBegin == iTempEnd )
 	{
@@ -573,7 +566,7 @@ int CCodeQueue::GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int
 	}
 	else
 	{
-		iTempMaxLength = m_stQueueHead.m_nSize - iTempBegin + iTempEnd;
+		iTempMaxLength = m_stQueueHead.m_iSize - iTempBegin + iTempEnd;
 	}
 
 	if( iTempMaxLength < ( int )sizeof(short) )
@@ -590,7 +583,7 @@ int CCodeQueue::GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int
 	for( unsigned int i = 0; i < sizeof(short); i++ )
 	{
 		pTempDst[i] = pTempSrc[iTempIdx];
-		iTempIdx = (iTempIdx+1) % m_stQueueHead.m_nSize; 
+		iTempIdx = (iTempIdx+1) % m_stQueueHead.m_iSize;
 	}
 
 	if( nTempShort > (int)(iTempMaxLength - sizeof(short)) || nTempShort < 0 || nTempShort != nCodeLength )
@@ -662,14 +655,14 @@ void CCodeQueue::DiscardReadBytes()
 
 void CCodeQueue::GetCriticalData(int& iBegin, int& iEnd, int& iLeft)
 {
-	iBegin = m_stQueueHead.m_nBegin;
-	iEnd = m_stQueueHead.m_nEnd;
+	iBegin = m_stQueueHead.m_iReadIndex;
+	iEnd = m_stQueueHead.m_iWriteIndex;
 
 	int iTempMaxLength = 0;
 	
 	if( iBegin == iEnd )
 	{
-		iTempMaxLength = m_stQueueHead.m_nSize;
+		iTempMaxLength = m_stQueueHead.m_iSize;
 	}
 	else if( iBegin > iEnd )
 	{
@@ -677,7 +670,7 @@ void CCodeQueue::GetCriticalData(int& iBegin, int& iEnd, int& iLeft)
 	}
 	else
 	{
-		iTempMaxLength = (m_stQueueHead.m_nSize - iEnd) + iBegin;
+		iTempMaxLength = (m_stQueueHead.m_iSize - iEnd) + iBegin;
 	}
 
 	// 重要：最大长度应该减去预留部分长度，保证首尾不会相接
@@ -704,13 +697,13 @@ int CCodeQueue::DumpToFile(const char *szFileName)
 	}
 
 	fwrite((const void *)&m_stQueueHead, sizeof(m_stQueueHead), 1, fpDumpFile);
-	iPageCount = m_stQueueHead.m_nSize/iPageSize;
+	iPageCount = m_stQueueHead.m_iSize/iPageSize;
 	for( i = 0; i < iPageCount; i++ )
 	{
 		fwrite((const void *)pPage, iPageSize, 1, fpDumpFile);
 		pPage += iPageSize;
 	}
-	fwrite((const void *)pPage, m_stQueueHead.m_nSize - iPageSize*iPageCount, 1, fpDumpFile);
+	fwrite((const void *)pPage, m_stQueueHead.m_iSize - iPageSize*iPageCount, 1, fpDumpFile);
 
 	fclose(fpDumpFile);
 
@@ -734,13 +727,13 @@ int CCodeQueue::LoadFromFile(const char *szFileName)
 	}                                                                                                             
 
 	fread((void *)&m_stQueueHead, sizeof(m_stQueueHead), 1, fpDumpFile);
-	iPageCount = m_stQueueHead.m_nSize/iPageSize;                                                                 
+	iPageCount = m_stQueueHead.m_iSize/iPageSize;
 	for( i = 0; i < iPageCount; i++ )                                                                             
 	{                                                                                                             
 		fread((void *)pPage, iPageSize, 1, fpDumpFile);
 		pPage += iPageSize;                                                                                       
 	}
-	fread((void *)pPage, m_stQueueHead.m_nSize - iPageSize*iPageCount, 1, fpDumpFile);
+	fread((void *)pPage, m_stQueueHead.m_iSize - iPageSize*iPageCount, 1, fpDumpFile);
 
 	fclose(fpDumpFile);                                                                                           
 

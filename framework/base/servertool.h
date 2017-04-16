@@ -27,10 +27,15 @@ private:
 	static T* spSingleton;
 
 public:
-	CSingleton( )
+	CSingleton()
 	{
 		spSingleton = static_cast< T* >( this );
 	}
+
+	//禁止拷贝
+	CSingleton(const CSingleton& temp) = delete;
+	CSingleton& operator = (const CSingleton& temp) = delete;
+
 
 	static T* GetSingletonPtr()
 	{
