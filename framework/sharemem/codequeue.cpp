@@ -173,9 +173,6 @@ int CCodeQueue::IsQueueFull()
 	//最大长度
 	nTempMaxLength = nTempWrite - nTempRead;
 
-	// 重要：最大长度应该减去预留部分长度，保证首尾不会相接
-	nTempMaxLength -= QUEUERESERVELENGTH;
-
 	if( nTempMaxLength > 0 )
 	{
 		return 0;
@@ -235,9 +232,6 @@ int CCodeQueue::AppendOneCode(const BYTE *pInCode, int sInLength)
 
     //获得剩余空间大小
     nTempMaxLength = m_stQueueHead.m_iSize - (nTempWrite - nTempRead);
-
-	// 重要：最大长度应该减去预留部分长度8，保证首尾不会相接
-	nTempMaxLength -= QUEUERESERVELENGTH;
 
 	nTempRt = nTempWrite;
 
@@ -438,14 +432,17 @@ int CCodeQueue::GetHeadCode(BYTE *pOutCode, int *psOutLength)
     return nTempRet;
 }
 
-//This function just change the begin idx of code queue
+/**
+  *函数名          : DeleteHeadCode
+  *功能描述        : 删除共享内存管道的一个数据包（改变读写索引）
+**/
 int CCodeQueue::DeleteHeadCode()
 {
 	short sTempShort = 0;
 	int nTempMaxLength = 0;
 	int nTempRet = -1;
-	int nTempBegin = -1;
-	int nTempEnd = -1;
+	int nTempRead = -1;
+	int nTempWrite = -1;
 
 	BYTE *pTempSrc;
 	BYTE *pTempDst;
@@ -455,30 +452,23 @@ int CCodeQueue::DeleteHeadCode()
 	{
 		return -1;
 	}
-
+	//获取共享内存管道的地址
 	pbyCodeBuf = GetPipeAddr();
-	
-	GetCriticalData(&nTempBegin, &nTempEnd);
-	nTempRet = nTempBegin;
+	//获取读写索引
+	GetCriticalData(&nTempRead, &nTempWrite);
+	nTempRet = nTempWrite;
 
-	if( nTempBegin == nTempEnd )
+	if(IsQueueEmpty())
 	{
+		CleanQueue();
 		return nTempRet;
 	}
 
-	if( nTempBegin < nTempEnd )
-	{
-		nTempMaxLength = nTempEnd - nTempBegin;
-	}
-	else
-	{
-		nTempMaxLength = m_stQueueHead.m_iSize - nTempBegin + nTempEnd;
-	}
-	
+	nTempMaxLength = nTempWrite - nTempRead;
+
 	if( nTempMaxLength < ( int )sizeof(short) )
 	{
-		nTempBegin = nTempEnd;
-		SetCriticalData(nTempBegin, -1);
+		CleanQueue();
 		return -3;
 	}
 
@@ -486,30 +476,33 @@ int CCodeQueue::DeleteHeadCode()
 	pTempSrc = (BYTE *)&pbyCodeBuf[0];
 	for( unsigned int i = 0; i < sizeof(short); i++ )
 	{
-		pTempDst[i] = pTempSrc[nTempBegin];
-		nTempBegin = (nTempBegin+1) % m_stQueueHead.m_iSize;
+		pTempDst[i] = pTempSrc[nTempRead];
+		nTempRead = (nTempRead+1);
 	}
 
 	if( sTempShort > (int)(nTempMaxLength - sizeof(short)) || sTempShort < 0 )
 	{
-		nTempBegin = nTempEnd;
-		SetCriticalData(nTempBegin, -1);
+		CleanQueue();
 		return -3;
 	}
 
-	nTempBegin = (nTempBegin + sTempShort) % m_stQueueHead.m_iSize;
+	nTempRead = (nTempRead + sTempShort);
 
-	SetCriticalData(nTempBegin, -1);
+	SetCriticalData(nTempRead, nTempWrite);
 	
-	return nTempBegin;
+	return nTempRead;
 }
 
+/**
+  *函数名          : GetOneCode
+  *功能描述        : 从指定位置iCodeOffset获取指定长度nCodeLength数据
+  * */
 int CCodeQueue::GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int *psOutLength)
 {
 	short nTempShort = 0;
 	int iTempMaxLength = 0;
-	int iTempBegin;
-	int iTempEnd;
+	int iTempRead;
+	int iTempWrite;
 	int iTempIdx;
 	BYTE *pTempSrc;
 	BYTE *pTempDst;
@@ -524,76 +517,65 @@ int CCodeQueue::GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int
 
 	if( !pOutCode || !psOutLength )
 	{
-		//LOG("In GetOneCode, invalid input paraments.\n");
 		return -1;
 	}
 
 	if( iCodeOffset < 0 || iCodeOffset >= m_stQueueHead.m_iSize)
 	{
-		/*LOG("In GetOneCode, invalid code offset %d.\n", iCodeOffset);*/
 		return -1;
 	}
 	if( nCodeLength < 0 || nCodeLength >= m_stQueueHead.m_iSize )
 	{
-		/*LOG("In GetOneCode, invalid code length %d.\n", nCodeLength);*/
 		return -1;
 	}
-	GetCriticalData(&iTempBegin, &iTempEnd);
+	GetCriticalData(&iTempRead, &iTempWrite);
 	
-	if( iTempBegin == iTempEnd )
+	if(IsQueueEmpty())
 	{
-		*psOutLength = 0;
+		CleanQueue();
 		return 0;
 	}
 
-	if( iTempBegin == iCodeOffset )
+	//如果该位置是共享内存管道数据的头部，则直接获取
+	if( iTempRead == iCodeOffset )
 	{
 		return GetHeadCode(pOutCode, psOutLength);
 	}
 
-	/*LOG("Warning: Get code is not the first one, there might be sth wrong.\n");*/
-
-	if( iCodeOffset < iTempBegin || iCodeOffset >= iTempEnd )
+	if( iCodeOffset < iTempRead || iCodeOffset >= iTempWrite )
 	{
-		/*LOG("In GetOneCode, code offset out of range.\n");*/
 		*psOutLength = 0;
 		return -1;
 	}
-	
-	if( iTempBegin < iTempEnd )
-	{
-		iTempMaxLength = iTempEnd - iTempBegin;		
-	}
-	else
-	{
-		iTempMaxLength = m_stQueueHead.m_iSize - iTempBegin + iTempEnd;
-	}
+
+	iTempMaxLength = iTempWrite - iTempRead;
 
 	if( iTempMaxLength < ( int )sizeof(short) )
 	{
 		*psOutLength = 0;
-		iTempBegin = iTempEnd;
-		SetCriticalData(iTempBegin, -1);
+		CleanQueue();
 		return -3;
 	}
 
 	pTempDst = (BYTE *)&nTempShort;
 	pTempSrc = (BYTE *)&pbyCodeBuf[0];
 	iTempIdx = iCodeOffset;
+	//获取数据长度
 	for( unsigned int i = 0; i < sizeof(short); i++ )
 	{
 		pTempDst[i] = pTempSrc[iTempIdx];
-		iTempIdx = (iTempIdx+1) % m_stQueueHead.m_iSize;
+		iTempIdx = (iTempIdx+1);
 	}
 
+	//长度不合法
 	if( nTempShort > (int)(iTempMaxLength - sizeof(short)) || nTempShort < 0 || nTempShort != nCodeLength )
 	{
-		/*LOG("Can't get code, code length not matched.\n");*/
 		*psOutLength = 0;
 		return -2;
 	}
 
-	SetCriticalData(iCodeOffset, -1);
+	//设置读写索引
+	SetCriticalData(iCodeOffset, iTempWrite);
 	
 	return GetHeadCode( pOutCode, psOutLength );
 }
@@ -652,6 +634,10 @@ void CCodeQueue::DiscardReadBytes()
     SetCriticalData(0,iTmpWriteIndex - iTmpReadIndex);
 }
 
+/**
+  *函数名          : GetCriticalData
+  *功能描述        : 获取读写索引 readindex，writeindex，剩余空间
+**/
 
 void CCodeQueue::GetCriticalData(int& iBegin, int& iEnd, int& iLeft)
 {
@@ -659,25 +645,9 @@ void CCodeQueue::GetCriticalData(int& iBegin, int& iEnd, int& iLeft)
 	iEnd = m_stQueueHead.m_iWriteIndex;
 
 	int iTempMaxLength = 0;
-	
-	if( iBegin == iEnd )
-	{
-		iTempMaxLength = m_stQueueHead.m_iSize;
-	}
-	else if( iBegin > iEnd )
-	{
-		iTempMaxLength = iBegin - iEnd;		
-	}
-	else
-	{
-		iTempMaxLength = (m_stQueueHead.m_iSize - iEnd) + iBegin;
-	}
-
-	// 重要：最大长度应该减去预留部分长度，保证首尾不会相接
-	iTempMaxLength -= QUEUERESERVELENGTH;
+	iTempMaxLength = m_stQueueHead.m_iSize -(iEnd - iBegin);
 
 	iLeft = iTempMaxLength;
-	
 }
 
 int CCodeQueue::DumpToFile(const char *szFileName)

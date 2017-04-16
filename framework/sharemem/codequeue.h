@@ -10,8 +10,6 @@
 
 #include "shm.h"
 
-#define QUEUERESERVELENGTH		8	//预留部分的长度
-
 class CCodeQueue
 {
 public:
