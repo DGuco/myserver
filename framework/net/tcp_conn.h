@@ -1,3 +1,10 @@
+//
+//  tcp_conn.h
+//  tcp管理
+//  Created by DGuco on 17/04/24.
+//  Copyright © 2016年 DGuco. All rights reserved.
+//
+
 #ifndef _TCP_CONN_H_
 #define _TCP_CONN_H_
 #include <sys/types.h>
@@ -63,39 +70,57 @@ template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 class CTCPSocket
 {
 public:
+	//构造函数
 	CTCPSocket();
+	//析构函数
 	~CTCPSocket();
+	//获取socket描述符
 	int GetSocketFD();
+	//获取tcp状态
 	int GetStatus();
+	//设置socket
 	inline void SetSocketFD( int nSockFD ) { m_iSocketFD = nSockFD; }
+	//设置tcp状态
 	inline void SetStatus( int nStatus ) { m_iStatus = nStatus; }
+	//创建tcp client
 	int CreateClient( char* szLocalAddr = NULL );
+	//创建tcp server
 	int CreateServer(unsigned short unPort, char* szIPAddr=NULL );
+	//连接到指定的ip地址
 	int ConnectTo(char *szIPAddr, unsigned short unPort);
+	//指定阻塞或者非阻塞方式连接到指定的ip
 	int ConnectTo(u_long ulIPNetAddr, u_short unPort, eLinkMode emBlock = em_block_mode);
+	//接受socket连接
 	int Accept( int iAcceptFD );
-	
+	//接受socket数据到接收缓冲去
 	int RecvData();
+	// 从缓冲区获取指定长度的数据
 	int GetOneCode( unsigned short &nCodeLength, BYTE *pCode, eByteMode emByte = use_host_byte);
-	//int GetOneHttpCode( int &nCodeLength, BYTE *pHeadCode, BYTE* pBodyCode); 
-	int GetOneHttpCode( int &nCodeLength, BYTE *pCode); 
+	//int GetOneHttpCode( int &nCodeLength, BYTE *pHeadCode, BYTE* pBodyCode);
+	int GetOneHttpCode( int &nCodeLength, BYTE *pCode);
 	int GetOneCode32( int &iCodeLength, BYTE * pCode);
+	//从写缓冲区发送指定长度的数据
 	int SendOneCode( unsigned short nCodeLength, BYTE *pCode  );
 	int SendOneCode32( int nCodeLength, BYTE *pCode  );
-
-		
+	//fd_set socket
 	int AddToCheckSet( fd_set *pCheckSet );
+	//pCheckSet是否set
 	int IsFDSetted( fd_set *pCheckSet );
-	int SetNBlock(int iSock);		
-
+	//设置非阻塞
+	int SetNBlock(int iSock);
+	//是否有数据要发送
 	int HasReserveData();
+	//发送发送缓冲去数据
 	int CleanReserveData();
+    //打印socket状态
 	int PrintfSocketStat();
+    //检测非阻塞连接
 	int CheckNoblockConnecting(int nto = 0);
-
+    //获取发送和接受缓冲区数据索引
 	void GetCriticalData(int& iReadBegin,int& iReadEnd, int& iPostBegin, int& iPostEnd);
+    //关闭socket
 	int Close();
-	
+
 protected:
 	int m_iSocketFD;					//Socket描述子
 	int m_iSocketType;					//Socket类型
@@ -109,11 +134,11 @@ private:
 	int  m_iReadEnd;
 	BYTE m_abyRecvBuffer[uiRecvBufLen+1];
 
-		
+
 	int  m_iPostBegin;
 	int  m_iPostEnd;
 	BYTE m_abyPostBuffer[uiSendBufLen+1];
-		
+
 };
 
 

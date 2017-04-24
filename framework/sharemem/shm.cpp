@@ -1,6 +1,4 @@
 #include "shm.h"
-#include <stdio.h>
-#include <time.h>
 #include "../log/log.h"
 
 BYTE* CSharedMem::pbCurrentShm = NULL;
@@ -15,6 +13,14 @@ void CSharedMem::SetInitMode( EIMode emMode )
 	m_InitMode = emMode;
 }
 
+
+/**
+  *函数名          : CSharedMem
+  *功能描述        : 改变CSharedMem的new操作，在共享内存空间上生成对象用来进程间通信，
+  *   				pbCurrentShm指向共享内存块地址，大小通常为sizeof(CSharedMem)
+  *   				+ sizeof(CCodeQueue) + PIPE_SIZE（可变）
+  *参数           ： sizeof（CSharedMem）
+**/
 void* CSharedMem::operator new( size_t nSize )
 {
 	BYTE* pTemp = NULL;
@@ -38,15 +44,22 @@ CSharedMem::CSharedMem()
 	m_pbCurrentSegMent = pbCurrentShm + sizeof(CSharedMem);
 }
 
+
+/**
+  *函数名          : CSharedMem
+  *功能描述        : 调用new之后此时只有sizeof（CSharedMem）是可用的
+  *参数           ： nKey crc值的key，nSize共享内存区大小
+**/
 CSharedMem::CSharedMem(unsigned int nKey, size_t nSize )
 {
 	time_t tNow;
 	size_t nTempInt = 0;
 
+	//将当前可使用的内存空间起始地址向后移动sizeof(CSharedMem)
 	m_pbCurrentSegMent = pbCurrentShm + sizeof(CSharedMem);
 
+	//计算crc校验值
 	nTempInt = (size_t)m_nShmKey ^ (size_t)m_nShmSize ^ (size_t)m_tCreateTime ^ (size_t)m_tLastStamp ^ (size_t)m_nCRC;
-
 	if( nTempInt )
 	{
 		Initialize(nKey, nSize);
@@ -115,6 +128,10 @@ int CSharedMem::Initialize(unsigned int nKey, size_t nSize )
 	return 0;
 }
 
+/**
+  *函数名          : CreateSegment
+  *功能描述        : 创建nSize大小内存段
+**/
 void* CSharedMem::CreateSegment( size_t nSize )
 {
 	size_t nTempUsedLength = 0;

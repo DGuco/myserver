@@ -44,7 +44,7 @@ public:
 	void SetInitMode( EIMode emMode );
     //在创建好的共享内存块上划分内存段
 	void*  CreateSegment( size_t nSize);
-    //当前共享内存块地址
+    //当前共享内存块地址大小通常为sizeof(CSharedMem) + sizeof(CCodeQueue) + PIPE_SIZE（可变）
 	static BYTE* pbCurrentShm;
 
 protected:

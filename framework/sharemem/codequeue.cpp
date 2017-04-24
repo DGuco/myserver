@@ -1,5 +1,4 @@
 #include "codequeue.h"
-#include <stdio.h>
 #include <string.h>
 
 CSharedMem* CCodeQueue::pCurrentShm = NULL;
@@ -25,7 +24,7 @@ size_t CCodeQueue::CountQueueSize(int iBufSize)
 
 /**
   *函数名          : CCodeQueue重在new运算符
-  *功能描述        : 改变CCodeQueue的new操作，在共享内存空间上生成内存空间生生成对象，
+  *功能描述        : 改变CCodeQueue的new操作，在共享内存空间上生成对象，
   *                 用来进程间通信，此时codequeue对象指向了一块 sizeof（CCodeQueue）
   *                 + PIPE_SIZE大小的内存快，调用new之后此时只有sizeof（CCodeQueue）
   *                 大小的内存快是有效的
@@ -684,6 +683,7 @@ int CCodeQueue::GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int
     pTempDst = (BYTE *)&nTempShort;
     pTempSrc = (BYTE *)&pbyCodeBuf[0];
     iTempIdx = iCodeOffset;
+    //获取数据长度
     for( unsigned int i = 0; i < sizeof(short); i++ )
     {
         pTempDst[i] = pTempSrc[iTempIdx];
@@ -696,8 +696,9 @@ int CCodeQueue::GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int
         return -2;
     }
 
+    //设置读索引为指定的索引
     SetCriticalData(iCodeOffset, -1);
-
+    //从指定位置读取数据
     return GetHeadCode( pOutCode, psOutLength );
 }
 

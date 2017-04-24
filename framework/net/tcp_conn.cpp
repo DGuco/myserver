@@ -2,6 +2,11 @@
 
 #define  SENDBUFSIZE 300000
 
+/**
+  *函数名          : CTCPSocket
+  *功能描述        : 构造函数
+  * 参数          ： 共享内存管道大小PIPE_SIZE
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 CTCPSocket<uiRecvBufLen, uiSendBufLen>::CTCPSocket()
 {
