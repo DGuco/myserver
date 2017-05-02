@@ -1,58 +1,55 @@
+#include <mutex>
 #include "tcp_conn.h"
-
-#define  SENDBUFSIZE 300000
-
 /**
   *函数名          : CTCPSocket
   *功能描述        : 构造函数
-  * 参数          ： 共享内存管道大小PIPE_SIZE
 **/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 CTCPSocket<uiRecvBufLen, uiSendBufLen>::CTCPSocket()
 {
 	m_iSocketFD = -1;
-	m_iSocketType = sot_comm;
+	m_iSocketType = sot_conn;
 	m_iStatus = tcs_closed;
-
-#ifdef _POSIX_MT_
-	pthread_mutex_init( &m_stMutex, NULL );
-#endif
-
 	m_iReadBegin = 0;
 	m_iReadEnd = 0;
 	m_iPostBegin = m_iPostEnd = 0;
 	
 }
 
+/**
+  *函数名          : ~CTCPSocket
+  *功能描述        : 析构函数
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 CTCPSocket<uiRecvBufLen, uiSendBufLen>::~CTCPSocket()
 {
+    //如果socket没有关闭则关闭
 	if( m_iStatus != tcs_closed && m_iSocketFD > 0 )
 	{
 		Close();
 	}
 }
 
+/**
+  *函数名          : CreateClient
+  *功能描述        : 创建tcp client
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateClient(char* szLocalAddr /* = NULL  */)
 {
-	socklen_t iOptVal = 0;
-	int iOptLen = sizeof(int);
-
+	//当前socket是非关闭状态
 	if(m_iStatus != tcs_closed && m_iSocketFD > 0)
 	{
 		Close();
 	}
 
-	m_iSocketType = sot_comm;
-
+	m_iSocketType = sot_conn;
 	m_iSocketFD = socket(AF_INET, SOCK_STREAM, 0);
 
 	if( m_iSocketFD < 0 )
 	{
 		m_iStatus = tcs_closed;
 		m_iSocketFD = -1;
-
 		return -1;
 	}
 
@@ -66,9 +63,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateClient(char* szLocalAddr /* = 
 		bind(m_iSocketFD, (const struct sockaddr *)&stTempSockAddr, sizeof(stTempSockAddr));
 	}
 
-	iOptLen = sizeof(socklen_t);
-	iOptVal = SENDBUFSIZE;
-	if (setsockopt(m_iSocketFD, SOL_SOCKET, SO_SNDBUF, (const void *)&iOptVal, iOptLen))  // 设置发送缓冲区的大小
+	int iOptLen = sizeof(socklen_t);
+	socklen_t iOptVal = SENDBUFSIZE;
+	// 设置发送缓冲区的大小
+	if (setsockopt(m_iSocketFD, SOL_SOCKET, SO_SNDBUF, (const void *)&iOptVal, iOptLen))
 	{
 		LOG_ERROR( "default", "Set send buffer size to %d failed!", iOptVal);
 		return -1;
@@ -78,20 +76,25 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateClient(char* szLocalAddr /* = 
 		LOG_INFO( "default", "Set Send buf of socket is %d.", iOptVal);
 	}
 
+	//设置socket状态和读写缓冲区索引
 	m_iStatus = tcs_opened;
 	m_iReadBegin = m_iReadEnd = 0;
 	m_iPostBegin = m_iPostEnd = 0;
 	return 0;
 }
 
+/**
+  *函数名          : CreateServer
+  *功能描述        : 创建tcp server
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateServer(unsigned short unPort, char* szIPAddr/* =NULL  */)
 {
 	sockaddr_in stTempSockAddr;
 	int iReusePortFlag = 1;
-	 socklen_t iOptVal = 0;
-	int iOptLen = sizeof(int);
-	
+	socklen_t iOptVal = 0;
+
+	//当前socket是非关闭状态
 	if(m_iStatus != tcs_closed && m_iSocketFD > 0)
 	{
 		Close();
@@ -105,7 +108,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateServer(unsigned short unPort, 
 	{
 		m_iStatus = tcs_closed;
 		m_iSocketFD = -1;
-
 		return -1;
 	}
 
@@ -135,7 +137,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateServer(unsigned short unPort, 
 		return -1;
 	}
 
-	iOptLen = sizeof(socklen_t);
+	int iOptLen = sizeof(socklen_t);
 	iOptVal = SENDBUFSIZE;
 	if (setsockopt(m_iSocketFD, SOL_SOCKET, SO_SNDBUF, (const void *)&iOptVal, iOptLen))  // 设置发送缓冲区的大小
 	{
@@ -146,64 +148,69 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateServer(unsigned short unPort, 
 	{
 		LOG_INFO( "default", "Set Send buf of socket is %d.", iOptVal);
 	}
-	if( listen(m_iSocketFD, 1024) < 0 )  // 将套接字设置为可以接受连接
+
+	// 将套接字设置为可以接受连接
+	if( listen(m_iSocketFD, 1024) < 0 )
 	{
 		LOG_ERROR( "default", "Listen failed, %s.", strerror(errno));
 		Close();
 		return -1;
 	}
 
+	//设置非阻塞
 	SetNBlock( m_iSocketFD );
 	m_iStatus = tcs_opened;
 
 	return 0;
 }
 
+
+/**
+  *函数名          : ConnectTo
+  *功能描述        : client连接到指定ip地址
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::ConnectTo(u_long ulIPNetAddr, u_short unPort, eLinkMode emBlock)
 {
 	sockaddr_in stTempAddr;
 
+	//如果当前socket没有开放或者socket非法
 	if( m_iStatus != tcs_opened || m_iSocketFD < 0 )
 	{
 		return -2;
 	}
+
+    //如果是阻塞模式返回错误
+    if (emBlock == em_block_mode)
+    {
+        Close();
+        return -3;
+    }
 
 	memset((void *)&stTempAddr, 0, sizeof(sockaddr_in));
 	stTempAddr.sin_family = AF_INET;
 	stTempAddr.sin_port = htons(unPort);
 	stTempAddr.sin_addr.s_addr = ulIPNetAddr;
 
-	if ( emBlock == em_nblock_mode )
+	//连接失败ss
+	if(connect(m_iSocketFD, (const struct sockaddr *)&stTempAddr, sizeof(stTempAddr)))
 	{
-		SetNBlock(m_iSocketFD);		
-	}
-
-	if( connect(m_iSocketFD, (const struct sockaddr *)&stTempAddr, sizeof(stTempAddr)) )
-	{
-		if (emBlock == em_block_mode)
+		//操作进行中忽略
+		if (errno != EINPROGRESS)
 		{
 			Close();
 			return -3;
 		}
 
-		// emBlock == nblock_mode
-		if (errno != EINPROGRESS) 	
-		{
-			Close();
-			return -3;
-		}
-
+		//设置tcp 状态为连接中
 		m_iStatus = tcs_connecting;
-
 		return 0;
 	}
 
-	if ( emBlock == em_block_mode)
-	{
-		SetNBlock( m_iSocketFD );
-	}
+	//设置为非阻塞
+    SetNBlock( m_iSocketFD );
 
+	//设置tcp 状态为连接成功并且设置读写索引
 	m_iReadBegin = m_iReadEnd = 0;
 	m_iPostBegin = m_iPostEnd = 0;
 	m_iStatus = tcs_connected;
@@ -211,6 +218,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::ConnectTo(u_long ulIPNetAddr, u_shor
 	return 0;
 }
 
+/**
+  *函数名          : CheckNoblockConnecting
+  *功能描述        : 检查非阻塞连接是否可读写
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CheckNoblockConnecting(int nto)
 {
@@ -261,7 +272,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CheckNoblockConnecting(int nto)
 		return -7;
 	}
 
-
 	m_iReadBegin = m_iReadEnd = 0;
 	m_iPostBegin = m_iPostEnd = 0;
 	m_iStatus = tcs_connected;
@@ -269,6 +279,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CheckNoblockConnecting(int nto)
 	return 0;
 }
 
+/**
+  *函数名          : ConnectTo
+  *功能描述        : client连接到指定ip地址
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::ConnectTo(char *szIPAddr, unsigned short unPort)
 {
@@ -279,7 +293,8 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::ConnectTo(char *szIPAddr, unsigned s
 		return -1;
 	}
 
-	if( m_iStatus != tcs_opened || m_iSocketFD < 0 )
+    //如果当前socket没有开放或者socket非法
+    if( m_iStatus != tcs_opened || m_iSocketFD < 0 )
 	{
 		return -2;
 	}
@@ -295,7 +310,9 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::ConnectTo(char *szIPAddr, unsigned s
 		return -3;
 	}
 
+	//设置非阻塞
 	SetNBlock( m_iSocketFD );
+	//设置已连接
 	m_iReadBegin = m_iReadEnd = 0;
 	m_iPostBegin = m_iPostEnd = 0;
 	m_iStatus = tcs_connected;
@@ -303,7 +320,12 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::ConnectTo(char *szIPAddr, unsigned s
 	return 0;
 }
 
-// -1 --- Invalid input fd, -2 ----- socket already connected
+/**
+  *函数名          : Accept
+  *功能描述        : accept socket
+  * 返回			  ：	-1 --- Invalid input fd, -2 -- socket already connected
+**/
+
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Accept(int iAcceptFD)
 {
@@ -314,7 +336,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Accept(int iAcceptFD)
 		return -1;
 	}
 #ifdef _POSIX_MT_
-	pthread_mutex_lock( &m_stMutex );
+	std::lock_guard<std::mutex> lock(m_stMutex);
 #endif
 	if( m_iSocketFD > 0 && m_iStatus == tcs_connected )
 	{
@@ -324,16 +346,13 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Accept(int iAcceptFD)
 	}
 
 	m_iSocketFD = iAcceptFD;
-	m_iSocketType = sot_comm;
+	m_iSocketType = sot_conn;
 	m_iStatus = tcs_connected;
 	m_iReadBegin = 0;
 	m_iReadEnd = 0;
 	m_iPostBegin = m_iPostEnd = 0;
 	SetNBlock( m_iSocketFD );
 
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock( &m_stMutex );
-#endif
 	return iTempRet;
 }
 

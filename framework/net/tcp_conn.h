@@ -18,11 +18,14 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <pthread.h>
-
 #include "../base/base.h"
 #include "../log/log.h"
+#include "tcp_conn.cpp"
+#ifdef _POSIX_MT_
+#include <mutex>
+#endif
 
-
+#define  SENDBUFSIZE 300000
 //以下定义tcp连接状态
 enum eTCPConnStates
 {
@@ -36,7 +39,7 @@ enum eTCPConnStates
 enum eSockTypes
 {
 	sot_listen = 0,
-	sot_comm
+	sot_conn
 };
 //以下定义接受/发送错误类型
 enum eRecvErrs
@@ -126,7 +129,7 @@ protected:
 	int m_iSocketType;					//Socket类型
 	int m_iStatus;						//连接状态
 #ifdef _POSIX_MT_
-	pthread_mutex_t m_stMutex;			//操作的互斥变量
+	std::mutex m_stMutex;			//操作的互斥变量
 #endif
 
 private:
@@ -166,8 +169,5 @@ private:
 	u_long m_ulIPAddr;
 	u_short m_unPort;
 };
-
-#include "tcp_conn.cpp"
-
 #endif // _TCP_CONN_H_
 
