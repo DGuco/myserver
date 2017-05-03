@@ -356,6 +356,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Accept(int iAcceptFD)
 	return iTempRet;
 }
 
+/**
+  *函数名          : Close
+  *功能描述        : close socket
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Close()
 {
@@ -370,42 +374,43 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Close()
 	return 0;
 }
 
+/**
+  *函数名          : GetSocketFD
+  *功能描述        : 获取socket fd
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetSocketFD()
 {
 	int iTmpFD = -1;
 
 #ifdef _POSIX_MT_
-	pthread_mutex_lock( &m_stMutex );
+	std::lock_guard<std::mutex> lock(m_stMutex);
 #endif
 
 	iTmpFD = m_iSocketFD;
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock( &m_stMutex );
-#endif
-
 	return iTmpFD;
 }
 
+/**
+  *函数名          : GetStatus
+  *功能描述        : 获取socket 状态
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetStatus()
 {
 	int iTmpStatus = tcs_closed;
 
 #ifdef _POSIX_MT_
-	pthread_mutex_lock( &m_stMutex );
+	std::lock_guard<std::mutex> lock(m_stMutex);
 #endif
-
 	iTmpStatus = m_iStatus;
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock( &m_stMutex );
-#endif
-
 	return iTmpStatus;
 }
 
+/**
+  *函数名          : RecvData
+  *功能描述        : 接受数据
+**/
 // 返回值：-1 ：Socket状态错误；-2 ：接收缓冲区已满；-3 ：对端断开连接；-4 ：接收错误
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
@@ -420,14 +425,11 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 	
 	//使用互斥锁保护临界区代码
 #ifdef _POSIX_MT_
-	pthread_mutex_lock( &m_stMutex );
+	std::lock_guard<std::mutex> lock(m_stMutex);
 #endif
 
 	if( m_iSocketFD < 0 || m_iStatus != tcs_connected )
 	{
-#ifdef _POSIX_MT_
-		pthread_mutex_unlock( &m_stMutex );
-#endif
 		LOG_ERROR("default", "RecvData Failed : m_iSocketFD(%d), m_iStatus(%d).",
 			m_iSocketFD, m_iStatus);
 		return ERR_RECV_NOSOCK;
@@ -441,7 +443,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 	
 	do
 	{
-		
+		//接受缓冲区已满
 		if( m_iReadEnd == sizeof(m_abyRecvBuffer) )
 		{
 			LOG_ERROR( "default", "The recv buffer is full now(%d, %d), stop recv data, fd = %d.", m_iReadBegin, m_iReadEnd, m_iSocketFD);
@@ -449,12 +451,16 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 			break;
 		}
 
+        //接收数据，接受长度接受缓冲区剩余大小 sizeof(m_abyRecvBuffer) - m_iReadEnd
 		iRecvedBytes = recv(m_iSocketFD, &m_abyRecvBuffer[m_iReadEnd],
 							sizeof(m_abyRecvBuffer)-m_iReadEnd, 0);
+
+        //移动读结束索引
 		if( iRecvedBytes > 0 )
 		{
 			m_iReadEnd += iRecvedBytes;
 		}
+		//若另一端已关闭，这种关闭是对方主动且正常的关闭
 		else if( iRecvedBytes == 0 )
 		{
 			getpeername(m_iSocketFD, (struct sockaddr*)&stPeerAddr, &iPeerAddrLen);
@@ -464,6 +470,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 			iTempRet = ERR_RECV_REMOTE;
 			break;
 		}
+		//EAGAIN：套接字已标记为非阻塞，无数据可读
 		else if( errno != EAGAIN )
 		{
 			getpeername(m_iSocketFD, (struct sockaddr*)&stPeerAddr, &iPeerAddrLen);
@@ -475,13 +482,13 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 		}
 	} while( iRecvedBytes > 0 );
 
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock( &m_stMutex );
-#endif
-	
 	return iTempRet;
 }
 
+/**
+  *函数名          : GetOneCode
+  *功能描述        : 从读缓冲区读取一个数据包
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLength, BYTE *pCode, eByteMode emByte)
 {
@@ -494,17 +501,17 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 		LOG_ERROR("default", "GetOneCode Failed : pCode is NULL.");
 		return -1;
 	}
-	
-//	RecvData();
 
+    //缓冲区数据总长度
 	iDataLength = m_iReadEnd - m_iReadBegin;
 
 	if( iDataLength <= 0 )
 	{
-		//LOG_ERROR("default", "GetOneCode Failed : iDataLength(%d) <= 0.", iDataLength);
+		LOG_ERROR("default", "GetOneCode Failed : iDataLength(%d) <= 0.", iDataLength);
 		return 0;
 	}
 
+    //长度小于 sizeof(short)，把数据移动至缓冲区头部继续接收
 	if( iDataLength < (int) sizeof(short) )
 	{
 		if( m_iReadEnd == sizeof(m_abyRecvBuffer) )
@@ -513,11 +520,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 			m_iReadBegin = 0;
 			m_iReadEnd = iDataLength;
 		}
-
-		LOG_INFO("default", "GetOneCode Failed : iDataLength(%d) < sizeof(short).", iDataLength);
-		return 0;
+        return 0;
 	}
 
+    //获取数据长度
 	if (emByte == use_network_byte)
 	{
 		nTempLength = ntohs(*((unsigned short *)&m_abyRecvBuffer[m_iReadBegin]));
@@ -526,6 +532,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 		nTempLength = /*ntohs*/(*((unsigned short *)&m_abyRecvBuffer[m_iReadBegin]));
 	}
 
+    //数据长度加上数据长度的长度大于缓冲区总长度，清除缓冲区
 	if( nTempLength == 0 || nTempLength+sizeof(short) > sizeof(m_abyRecvBuffer) )
 	{
 		m_iReadBegin = m_iReadEnd = 0;
@@ -535,6 +542,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 		return -2;
 	}
 
+    //缓冲区数据长度小于数据长度，把数据移动至缓冲区头部继续接收
 	if( iDataLength < (int) nTempLength )
 	{
 		if( m_iReadEnd == sizeof(m_abyRecvBuffer) )
@@ -543,9 +551,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 			m_iReadBegin = 0;
 			m_iReadEnd = iDataLength;
 		}
-
-		//LOG_ERROR("default", "GetOneCode Failed : iDataLength(%d) < nTempLength(%d).",
-		//	iDataLength, nTempLength);
 		return 0;
 	}
 
@@ -553,6 +558,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 	int iTempRet = 1;
 	nCodeLength = nTempLength;
 
+    //读取一个数据包
 	if( nCodeLength < shMaxBufferLen )
 	{
 		memcpy((void *)pCode, (const void *)&m_abyRecvBuffer[m_iReadBegin], nCodeLength);
@@ -566,8 +572,9 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 		return iTempRet;
 	}
 
+    //移动读索引
 	m_iReadBegin += nTempLength;
-
+    //如果当前读缓冲区没有数据可读
 	if( m_iReadBegin == m_iReadEnd )
 	{
 		m_iReadBegin = m_iReadEnd = 0;
@@ -576,121 +583,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 	return iTempRet;
 }
 
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneHttpCode(int &nCodeLength, BYTE *pCode)
-{
-	int shMaxBufferLen = nCodeLength;
-	int iDataLength = 0;
-	unsigned int nTempLength;
-	
-	if( !pCode )
-	{
-		return -1;
-	}
-	
-	iDataLength = m_iReadEnd - m_iReadBegin;
-
-	if( iDataLength <= 0 )
-	{
-		return 0;
-	}
-
-	const char* LENTH_TOKEN = "Content-Length";
-	const char* HEAD_BODY_SPLITTER = "\n\n" ;
-	
-	char* pSpliter = strstr((char*) &m_abyRecvBuffer[m_iReadBegin], HEAD_BODY_SPLITTER);
-	if (pSpliter != NULL)
-	{
-		char* pToken = strstr((char*) &m_abyRecvBuffer[m_iReadBegin], LENTH_TOKEN);
-		if (pToken != NULL)
-		{
-			char* pStart = strstr(pToken + strlen(LENTH_TOKEN), ":");
-			char* pEnd = NULL;
-
-			if (pStart != NULL) pEnd = strstr(pStart, "\n");
-
-			if (pStart != NULL && pEnd != NULL && pStart < pSpliter && pEnd <= pSpliter )
-			{
-				nTempLength = atoi(pStart + 1) + (pSpliter - (char*) m_abyRecvBuffer) + strlen(HEAD_BODY_SPLITTER);
-			}else
-			{
-				// 协议格式不正确
-				m_iReadBegin = m_iReadEnd = 0;
-				Close();
-				return -1;
-			}
-		}else
-		{
-			// 协议格式不正确
-			m_iReadBegin = m_iReadEnd = 0;
-			Close();
-			return -1;
-		}
-	}else
-	{
-		if (iDataLength > 4096)  
-		{
-			// 协议格式不正确
-			m_iReadBegin = m_iReadEnd = 0;
-			Close();
-			return -1;
-		}
-
-		if( m_iReadEnd == sizeof(m_abyRecvBuffer) )
-		{
-			memcpy((void *)&m_abyRecvBuffer[0], (const void *)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			m_iReadBegin = 0;
-			m_iReadEnd = iDataLength;
-		}
-
-		return 0;
-	}
-
-	if( nTempLength == 0 || nTempLength > sizeof(m_abyRecvBuffer) )
-	{
-		m_iReadBegin = m_iReadEnd = 0;
-		Close();
-		return -2;
-	}
-
-	if( iDataLength <  nTempLength )
-	{
-		if( m_iReadEnd == sizeof(m_abyRecvBuffer) )
-		{
-			memcpy((void *)&m_abyRecvBuffer[0], (const void *)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			m_iReadBegin = 0;
-			m_iReadEnd = iDataLength;
-		}
-
-		return 0;
-	}
-
-
-	int iTempRet = 1;
-	nCodeLength = nTempLength;
-
-	if( nCodeLength < shMaxBufferLen )
-	{
-		memcpy((void *)pCode, (const void *)&m_abyRecvBuffer[m_iReadBegin], nCodeLength);
-	}
-	else
-	{	
-		iTempRet = -2;
-		Close();
-		return iTempRet;
-	}
-
-	m_iReadBegin += nTempLength;
-
-	if( m_iReadBegin == m_iReadEnd )
-	{
-		m_iReadBegin = m_iReadEnd = 0;
-	}
-	
-	return iTempRet;
-}
-
+/**
+  *函数名          : GetOneCode32
+  *功能描述        : 从读缓冲区读取一个数据包
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode32( int &iCodeLength, BYTE * pCode)
 {
@@ -741,7 +637,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode32( int &iCodeLength, BYTE
 			m_iReadBegin = 0;
 			m_iReadEnd = iDataLength;
 		}
-
 		return 0;
 	}
 
@@ -770,7 +665,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode32( int &iCodeLength, BYTE
 	return iTempRet;
 }
 
-
+/**
+  *函数名          : SendOneCode
+  *功能描述        : 从写缓冲区发送一个数据包
+**/
 // 返回值说明：-1：参数错误或状态非法；-2：发送缓冲区满；-3：发送系统错误；
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLength, BYTE *pCode)
@@ -787,15 +685,12 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 	}
 
 #ifdef _POSIX_MT_
-	pthread_mutex_lock( &m_stMutex );
+    std::lock_guard<std::mutex> lock(m_stMutex);
 #endif
 
 	
 	if( m_iSocketFD < 0 || m_iStatus != tcs_connected )
 	{
-#ifdef _POSIX_MT_
-		pthread_mutex_unlock( &m_stMutex );
-#endif
 		LOG_ERROR("default", "SendOneCode Failed : m_iSocketFD(%d), m_iStatus(%d).",
 			m_iSocketFD, m_iStatus);
 		return ERR_SEND_NOSOCK;
@@ -833,10 +728,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 	}
 	else
 	{
-		// 否则，直接返回
-#ifdef _POSIX_MT_
-		pthread_mutex_unlock( &m_stMutex );
-#endif
 		if (iBytesLeft < 0)
 		{
 			iTempRet = ERR_SEND_UNKOWN;
@@ -907,11 +798,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 		}
 		
 	}
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock( &m_stMutex );
-#endif
-
 	return iTempRet;
 }
 

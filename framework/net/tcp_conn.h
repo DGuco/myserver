@@ -99,8 +99,6 @@ public:
 	int RecvData();
 	// 从缓冲区获取指定长度的数据
 	int GetOneCode( unsigned short &nCodeLength, BYTE *pCode, eByteMode emByte = use_host_byte);
-	//int GetOneHttpCode( int &nCodeLength, BYTE *pHeadCode, BYTE* pBodyCode);
-	int GetOneHttpCode( int &nCodeLength, BYTE *pCode);
 	int GetOneCode32( int &iCodeLength, BYTE * pCode);
 	//从写缓冲区发送指定长度的数据
 	int SendOneCode( unsigned short nCodeLength, BYTE *pCode  );
