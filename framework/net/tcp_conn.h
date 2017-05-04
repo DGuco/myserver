@@ -99,10 +99,8 @@ public:
 	int RecvData();
 	// 从缓冲区获取指定长度的数据
 	int GetOneCode( unsigned short &nCodeLength, BYTE *pCode, eByteMode emByte = use_host_byte);
-	int GetOneCode32( int &iCodeLength, BYTE * pCode);
 	//从写缓冲区发送指定长度的数据
 	int SendOneCode( unsigned short nCodeLength, BYTE *pCode  );
-	int SendOneCode32( int nCodeLength, BYTE *pCode  );
 	//fd_set socket
 	int AddToCheckSet( fd_set *pCheckSet );
 	//pCheckSet是否set

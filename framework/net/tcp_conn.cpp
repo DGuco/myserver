@@ -584,92 +584,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 }
 
 /**
-  *函数名          : GetOneCode32
-  *功能描述        : 从读缓冲区读取一个数据包
-**/
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode32( int &iCodeLength, BYTE * pCode)
-{
-	int iMaxBufferLen = iCodeLength;
-	int iDataLength = 0;
-	int iTempLength = 0;
-	
-	if( !pCode )
-	{
-		return -1;
-	}
-	
-	//RecvData();
-
-	iDataLength = m_iReadEnd - m_iReadBegin;
-
-	if( iDataLength <= 0 )
-	{
-		return 0;
-	}
-
-	if( iDataLength < sizeof(int) )
-	{
-		if( m_iReadEnd == sizeof(m_abyRecvBuffer) )
-		{
-			memcpy((void *)&m_abyRecvBuffer[0], (const void *)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			m_iReadBegin = 0;
-			m_iReadEnd = iDataLength;
-		}
-
-		return 0;
-	}
-
-	iTempLength = (int)/*ntohl*/(*((int *)&m_abyRecvBuffer[m_iReadBegin]));
-
-	if( iTempLength <= 0 || iTempLength+sizeof(int) > sizeof(m_abyRecvBuffer) )
-	{
-		m_iReadBegin = m_iReadEnd = 0;
-		Close();
-		return -2;
-	}
-
-	if( iDataLength < iTempLength )
-	{
-		if( m_iReadEnd == sizeof(m_abyRecvBuffer) )
-		{
-			memcpy((void *)&m_abyRecvBuffer[0], (const void *)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			m_iReadBegin = 0;
-			m_iReadEnd = iDataLength;
-		}
-		return 0;
-	}
-
-
-	int iTempRet = 1;
-	iCodeLength = iTempLength;
-
-	if( iCodeLength < iMaxBufferLen )
-	{
-		memcpy((void *)pCode, (const void *)&m_abyRecvBuffer[m_iReadBegin], iCodeLength);
-	}
-	else
-	{	
-		iTempRet = -2;
-		Close();
-		return iTempRet;
-	}
-
-	m_iReadBegin += iTempLength;
-
-	if( m_iReadBegin == m_iReadEnd )
-	{
-		m_iReadBegin = m_iReadEnd = 0;
-	}
-	
-	return iTempRet;
-}
-
-/**
   *函数名          : SendOneCode
   *功能描述        : 从写缓冲区发送一个数据包
+  *返回值说明		  ：-1：参数错误或状态非法；-2：发送缓冲区满；-3：发送系统错误；
 **/
-// 返回值说明：-1：参数错误或状态非法；-2：发送缓冲区满；-3：发送系统错误；
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLength, BYTE *pCode)
 {
@@ -699,10 +617,12 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 	// 首先检查是否有滞留数据
 	iBytesLeft = m_iPostEnd - m_iPostBegin;
 	pbyTemp = &(m_abyPostBuffer[m_iPostBegin]);
+	//如果有先发送滞留数据
 	while( iBytesLeft > 0 )
 	{
 		iBytesSent = send(m_iSocketFD, (const char *)pbyTemp, iBytesLeft, 0);
-		
+
+		//发送成功移动发送索引
 		if( iBytesSent > 0 )
 		{
 			pbyTemp += iBytesSent;
@@ -710,8 +630,8 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 			m_iPostBegin += iBytesSent;
 		}
 
+        //发送失败
 		if( iBytesSent < 0 && errno != EAGAIN )
-
 		{
 			m_iStatus = tcs_error;
 			iTempRet = ERR_SEND_FAILED;
@@ -721,10 +641,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 		}
 	}
 
-	if( iBytesLeft == 0 )
+    // 如果滞留数据发送完
+    if( iBytesLeft == 0 )
 	{
-		// 滞留数据发送成功，则继续发送本次提交的数据
-		m_iPostBegin = m_iPostEnd = 0;
+        m_iPostBegin = m_iPostEnd = 0;
 	}
 	else
 	{
@@ -732,11 +652,12 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 		{
 			iTempRet = ERR_SEND_UNKOWN;
 		}
+        //滞留数据没有发送完，说明上面的发送操作失败，把数据存入放松缓冲区，下次尝试继续发送
 		else
 		{
-			// Socket发送缓冲区满，则将剩余的数据放到缓存中
-			// 为了效率考虑,只在m_iPostBegin大于1M时才做处理
-			if (m_iPostBegin > (1024 * 1024))
+            // Socket发送缓冲区满，则将剩余的数据放到缓存中
+            // 为了效率考虑,仅当缓冲区尾部放不下数据时，将数据移动至缓冲区头部
+			if ((m_iPostEnd + nCodeLength) > (int)(sizeof(m_abyPostBuffer) - 1) && m_iPostBegin > 0)
 			{
 				memmove((void*)&(m_abyPostBuffer[0]), (const void *)pbyTemp, iBytesLeft);
 				m_iPostBegin = 0;
@@ -785,7 +706,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 				iBytesSent, iBytesLeft, errno, strerror(errno));
 			break;
 		}
-		
 		else if( iBytesSent < 0 )
 		{
 			// Socket发送缓冲区满，则将剩余的数据放到缓存中
@@ -801,118 +721,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 	return iTempRet;
 }
 
-// 返回值说明：-1：参数错误或状态非法；-2：发送缓冲区满；-3：发送系统错误；
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SendOneCode32(int iCodeLength, BYTE *pCode)
-{
-	int iBytesSent = 0;
-	int iBytesLeft = iCodeLength;
-	BYTE *pbyTemp = NULL;
-	int iTempRet = 0;
-	
-	if( !pCode )
-	{
-		return ERR_SEND_NOSOCK;
-	}
-
-#ifdef _POSIX_MT_
-	pthread_mutex_lock( &m_stMutex );
-#endif
-
-	
-	if( m_iSocketFD < 0 || m_iStatus != tcs_connected )
-	{
-#ifdef _POSIX_MT_
-		pthread_mutex_unlock( &m_stMutex );
-#endif
-		return ERR_SEND_NOSOCK;
-	}
-	
-	// 首先检查是否有滞留数据
-	iBytesLeft = m_iPostEnd - m_iPostBegin;
-	pbyTemp = &(m_abyPostBuffer[m_iPostBegin]);
-	while( iBytesLeft > 0 )
-	{
-		iBytesSent = send(m_iSocketFD, (const char *)pbyTemp, iBytesLeft, 0);
-		
-		if( iBytesSent > 0 )
-		{
-			pbyTemp += iBytesSent;
-			iBytesLeft -= iBytesSent;
-			m_iPostBegin += iBytesSent;
-		}
-
-
-		if( iBytesSent < 0 && errno != EAGAIN )
-
-		{
-			m_iStatus = tcs_error;
-			iTempRet = ERR_SEND_FAILED;
-			break;
-		}
-		else if( iBytesSent < 0 )
-		{
-			iTempRet = ERR_SEND_NOBUFF;
-			break;
-		}
-	}
-
-	if( iBytesLeft == 0 )
-	{
-		// 滞留数据发送成功，则继续发送本次提交的数据
-		m_iPostBegin = m_iPostEnd = 0;
-	}
-	else
-	{
-		// 否则，直接返回
-#ifdef _POSIX_MT_
-		pthread_mutex_unlock( &m_stMutex );
-#endif	
-		return iTempRet;
-	}
-
-	//发送本次提交的数据
-	iBytesLeft = iCodeLength;
-	pbyTemp = pCode;
-
-	while( iBytesLeft > 0 )
-	{
-		iBytesSent = send(m_iSocketFD, (const char *)pbyTemp, iBytesLeft, 0);
-		
-		if( iBytesSent > 0 )
-		{
-			pbyTemp += iBytesSent;
-			iBytesLeft -= iBytesSent;
-		}
-
-
-		if( iBytesSent < 0 && errno != EAGAIN )
-
-		{
-			m_iStatus = tcs_error;
-			iTempRet = ERR_SEND_FAILED;
-			break;
-		}
-		
-		else if( iBytesSent < 0 )
-		{
-			// Socket发送缓冲区满，则将剩余的数据放到缓存中
-			memcpy((void *)&(m_abyPostBuffer[m_iPostEnd]), (const void *)pbyTemp, iBytesLeft);
-			m_iPostEnd += iBytesLeft;
-			iTempRet = ERR_SEND_NOBUFF;
-			break;
-		}
-		
-	}
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock( &m_stMutex );
-#endif
-
-	return iTempRet;
-}
-
-
+/**
+  *函数名          : AddToCheckSet
+  *功能描述        : 把socket 添加到fd_set集合中
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::AddToCheckSet(fd_set *pCheckSet)
 {
@@ -924,7 +736,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::AddToCheckSet(fd_set *pCheckSet)
 	}
 
 #ifdef _POSIX_MT_
-	pthread_mutex_lock( &m_stMutex );
+    std::lock_guard<std::mutex> lock(m_stMutex);
 #endif
 
 	if( m_iSocketFD > 0 && m_iStatus == tcs_connected )
@@ -937,13 +749,13 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::AddToCheckSet(fd_set *pCheckSet)
 		iTempRet = -2;
 	}
 
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock( &m_stMutex );
-#endif
-
 	return iTempRet;
 }
 
+/**
+  *函数名          : IsFDSetted
+  *功能描述        : 检测socket是否添加到fd_set集合中
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::IsFDSetted(fd_set *pCheckSet)
 {
@@ -955,7 +767,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::IsFDSetted(fd_set *pCheckSet)
 	}
 
 #ifdef _POSIX_MT_
-	pthread_mutex_lock( &m_stMutex );
+	std::lock_guard<std::mutex> lock(m_stMutex);
 #endif
 
 	if( m_iSocketFD > 0 && m_iStatus == tcs_connected )
@@ -966,10 +778,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::IsFDSetted(fd_set *pCheckSet)
 	{
 		iTempRet = False;
 	}
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock( &m_stMutex );
-#endif
 
 	return iTempRet;
 }
@@ -987,6 +795,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SetNBlock(int iSock)
 
 }
 
+/**
+  *函数名          : GetCriticalData
+  *功能描述        : 获取缓冲区索引
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 void CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetCriticalData(int& iReadBegin,int& iReadEnd, int& iPostBegin, int& iPostEnd)
 {
@@ -996,7 +808,10 @@ void CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetCriticalData(int& iReadBegin,int
 	iPostEnd = m_iPostEnd;
 }
 
-
+/**
+  *函数名          : HasReserveData
+  *功能描述        : 是否有数据要发送
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::HasReserveData()
 {
@@ -1010,6 +825,10 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::HasReserveData()
 	}
 }
 
+/**
+  *函数名          : CleanReserveData
+  *功能描述        : 发送缓冲区数据
+**/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CleanReserveData()
 {
@@ -1051,8 +870,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CleanReserveData()
 		m_iPostBegin = m_iPostEnd = 0;                                                                            
 		iTempRet = 0;                                                                                             
 	}
-	//SAY("%d bytes is cleaned, left %d bytes.", iBytesCleaned, iBytesLeft);                                      
-	return iTempRet;                                                                                              
+	return iTempRet;
 }
 
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
