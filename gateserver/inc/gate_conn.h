@@ -67,7 +67,7 @@ class CMyTCPConn: public CDoubleLinker, public CTCPConn<RECVBUFLENGTH, POSTBUFLE
 		time_t m_tLastKeepalive;
 
 #ifdef _POSIX_MT_
-		pthread_mutex_t m_stMutex;          // 操作的互斥变量
+	std::mutex m_stMutex;			//操作的互斥变量
 #endif // _POSIX_MT_
 };
 

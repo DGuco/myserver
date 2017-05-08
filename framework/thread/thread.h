@@ -66,8 +66,6 @@ protected:
 	char m_abyRetVal[64];
 
 	TLogCfg m_stLogCfg;
-
-private:
 };
 
 
