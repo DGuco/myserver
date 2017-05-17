@@ -45,9 +45,8 @@ int CMyThread::CreateThread()
 int CMyThread::CondBlock()
 {
 	// 该过程需要在线程锁内完成
-    std::lock_guard<std::mutex> guard(m_lockMut);
     std::unique_lock<std::mutex> lk(m_condMut);
-	// 线程被阻塞或者停止，这里的while等待主要防止线程在条件不满足的情况下被意外唤醒
+	// 线程被阻塞或者停止，这里的while等待主要防止多个线程等待时被意外唤醒，保证当条件满足时，只有一个线程在处理
 	while( IsToBeBlocked() || m_iRunStatus == rt_stopped )  
 	{
 		// 如果线程需要停止则终止线程
@@ -72,13 +71,14 @@ int CMyThread::CondBlock()
 
 	// 线程状态变为rt_running
 	m_iRunStatus = rt_running;
+    lk.unlock();
 	return 0;
 }
 
 int CMyThread::WakeUp()
 {
 	// 该过程需要在线程锁内完成
-    std::lock_guard<std::mutex> guard(m_lockMut);
+    std::lock_guard<std::mutex> guard(m_condMut);
 
 	if( !IsToBeBlocked() && m_iRunStatus == rt_blocked )
     {
@@ -91,11 +91,9 @@ int CMyThread::WakeUp()
 
 int CMyThread::StopThread()
 {
-    std::unique_lock<std::mutex> lk(m_lockMut);
-    lk.lock();
+    std::lock_guard<std::mutex> guard(m_condMut);
 	m_iRunStatus = rt_stopped;
     data_cond.notify_one();
-    lk.unlock();
 	// 等待该线程终止
 //	pthread_join( m_hTrd, NULL );
 	ThreadLogDebug("Thread stopped.");

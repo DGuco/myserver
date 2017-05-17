@@ -59,7 +59,6 @@ protected:
 	void ThreadLogError(const char *sFormat, ...);
 	void ThreadLogFatal(const char *sFormat, ...);
 
-	std::mutex m_lockMut;
 	std::mutex m_condMut;
 	std::condition_variable data_cond;
 
