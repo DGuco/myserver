@@ -53,7 +53,8 @@ int CMyThread::CondBlock()
 		if( m_iRunStatus == rt_stopped )  
 		{
 			ThreadLogDebug( "Thread exit.");
-			pthread_exit( (void *)m_abyRetVal );
+			//退出线程
+			std::this_thread::yield();
 		}
 		ThreadLogDebug( "Thread would blocked." );
 		m_iRunStatus = rt_blocked;

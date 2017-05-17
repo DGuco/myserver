@@ -9,7 +9,7 @@
 #define _GATE_HANDLE_H_
 
 #include <map>
-#include "../../framework/thread/thread.h"
+#include "../../framework/thread/mythread.h"
 #include "../../framework/json/config.h"
 #include "gate_conn.h"
 
@@ -55,7 +55,7 @@ struct TStatLog {
 
 typedef std::map<int, CMyTCPConn*> CONNS_MAP;
 
-class CGateHandle : public CThread
+class CGateHandle : public CMyThread
 {
 public:
 	CGateHandle();

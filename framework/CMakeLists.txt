@@ -53,6 +53,8 @@ set(FRAMEWORK
         sharemem/codequeue.cpp
         thread/thread.h
         thread/thread.cpp
+        thread/mythread.h
+        thread/mythread.cpp
         timer/clock.cpp
         timer/clock.h
         event/event.h
