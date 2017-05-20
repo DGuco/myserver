@@ -10,13 +10,12 @@
 #include "../../framework/message/message.pb.h"
 #include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/net/client_comm_engine.h"
-#include "../../framework/message/proxymessage.pb.h"
 
 extern CRunFlag g_byRunFlag;
 
 #ifdef _POSIX_MT_
-	pthread_mutex_t CGateCtrl::stLinkMutex[EHandleType_NUM];
-	pthread_mutex_t CGateCtrl::stMutex[MUTEX_NUM];
+	std::mutex CGateCtrl::stLinkMutex[EHandleType_NUM];
+	std::mutex CGateCtrl::stMutex[MUTEX_NUM];
 #endif
 
 CGateCtrl::CGateCtrl()
@@ -43,11 +42,15 @@ int CGateCtrl::Initialize()
 	return 0;
 }
 
+/**
+  *函数名          : GetConnByKey
+  *功能描述        : 通过key获取一个连接信息
+**/
 CMyTCPConn* CGateCtrl::GetConnByKey(int iKey)
 {
 	CMyTCPConn* tcpConn = NULL;
 #ifdef _POSIX_MT_
-	pthread_mutex_lock(&stMutex[MUTEX_HASHMAP]);
+	std::lock_guard<std::mutex> guard(stMutex[MUTEX_HASHMAP]);
 #endif
 
 	auto iter = m_mapConns.find(iKey);
@@ -55,15 +58,13 @@ CMyTCPConn* CGateCtrl::GetConnByKey(int iKey)
 	{
 		tcpConn = iter->second;
 	}
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock(&stMutex[MUTEX_HASHMAP]);
-#endif
-
 	return tcpConn;
 }
 
-
+/**
+  *函数名          : MakeConnKey
+  *功能描述        : 生成key
+**/
 int CGateCtrl::MakeConnKey(const short nType, const short nID)
 {
 	int iKey = 0;
@@ -73,17 +74,42 @@ int CGateCtrl::MakeConnKey(const short nType, const short nID)
 	return iKey;
 }
 
-
-// 将连接插入handle并唤醒handle
+/**
+  *函数名          : WakeUp2Work
+  *功能描述        : 将新的连接插入handle并唤醒handle
+**/
 int CGateCtrl::WakeUp2Work(CMyTCPConn* pConn)
 {
+    int iIndex = 0;
+    int minNum = m_stHandleInfos[0].miConnNum;
+    //找出handle连接数最好的handle
+    for (int i = 1; i < EHandleType_NUM;i++)
+    {
+        if (minNum > m_stHandleInfos->miConnNum)
+        {
+            minNum = m_stHandleInfos->miConnNum;
+            iIndex = i;
+        }
+    }
+    //插入连接map
+    int iRet = InsertConnIntoMap(pConn,iIndex);
+    if (iRet != 0)
+    {
+        return iRet;
+    }
 
-
-	return iRet;
+    //唤醒处理线程
+    LOG_DEBUG("default", "Wake up handle(%d) start to work.", index);
+    pConn->SetConnState(ENTITY_ON);
+    pConn->SetLastKeepalive(time(NULL));
+    m_stHandleInfos[iIndex].mpHandle->WakeUp();
+    return iRet;
 }
 
-
-// 获取一个可用连接
+/**
+  *函数名          : GetCanUseConn
+  *功能描述        : 获取一个可用连接
+**/
 CMyTCPConn* CGateCtrl::GetCanUseConn()
 {
 	//获取可用连接链表的头
@@ -100,33 +126,79 @@ CMyTCPConn* CGateCtrl::GetCanUseConn()
 	return pConn;
 }
 
-
-// 回收一个连接
+/**
+  *函数名          : RecycleUnuseConn
+  *功能描述        : 回收一个连接
+**/
 CMyTCPConn* CGateCtrl::RecycleUnuseConn(CMyTCPConn* pConn, int iIndex)
 {
-
-	return tpNext;
+    CMyTCPConn* pNext = NULL;
+    if (pConn == NULL)
+    {
+        return NULL;
+    }
+    pNext =  (CMyTCPConn*)pConn->GetNext();
+    if (iIndex > 0 && iIndex < EHandleType_NUM)
+    {
+        //从连接map中移除
+        EraseConnFromMap(pConn,iIndex);
+    }
+    //回收该连接
+    m_UnuseConns.insert(pConn);
+	return pNext;
 }
 
-
-// 将连接插入map
+/**
+  *函数名          : InsertConnIntoMap
+  *功能描述        : 将连接插入map
+**/
 int CGateCtrl::InsertConnIntoMap(CMyTCPConn* pConn, int iIndex)
 {
+    if (pConn == NULL || iIndex < 0 || iIndex >= EHandleType_NUM )
+    {
+        return -1;
+    }
 
+    //生成key
+    int iKey = MakeConnKey(pConn->GetEntityType(),pConn->GetEntityID());
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> guard(stMutex[MUTEX_HASHMAP]);
+#endif
+    m_mapConns[iKey] =
 	return 0;
 }
 
-
-// 将连接从map中移除
+/**
+  *函数名          : EraseConnFromMap
+  *功能描述        : 将连接从map中移除
+**/
 int CGateCtrl::EraseConnFromMap(CMyTCPConn* pConn, int iIndex)
 {
+    if (pConn == NULL || iIndex < 0 || iIndex >= EHandleType_NUM )
+    {
+        return -1;
+    }
 
-	return 0;
+    //生成key
+    int iKey = MakeConnKey(pConn->GetEntityType(),pConn->GetEntityID());
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> guard(stMutex[MUTEX_HASHMAP]);
+#endif
+    m_mapConns.erase(iKey);
+    LOG_INFO("default", "erase conn(key=%d) from m_mapConns.", iKey);
+    m_stHandleInfos[iIndex].miConnNum--;
+    m_stHandleInfos[iIndex].mLinkerInfo.erase(pConn);
+    return 0;
 }
 
 
 int CGateCtrl::CheckRunFlags()
 {
+    //暂不支持ERF_RELOAD
+    if (g_byRunFlag.CheckRunFlag(ERF_RELOAD))
+    {
+        g_byRunFlag.SetRunFlag(ERF_RUNTIME);
+    }
 	return 0;
 }
 
@@ -340,9 +412,36 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	}
     pAcceptConn->Initialize(stTmpTcpHead.srcfe(),stTmpTcpHead.srcid(),ulIPAddr,0);
 
-    //
+    // accept该连接并改为ENTITY_OFF状态
     int iAcceptRst = pAcceptConn->EstConn(iSocketFd);
-	return 0;
+    if (iAcceptRst < 0)
+    {
+        if (iAcceptRst == -2)
+        {
+            LOG_ERROR("default", "The server had connected, ignore the conn request (fd: %d).", iSocketFd);
+        }
+        // 回收连接
+        RecycleUnuseConn(pAcceptConn);
+        close(iSocketFd);
+        return -1;
+    }
+
+    LOG_INFO("default", "Conn(FE = %d, ID = %d, KEY = %d) connected OK, the FD is %d.",
+             pAcceptConn->GetEntityType(), pAcceptConn->GetEntityID(), iKey, iSocketFd);
+
+    // 分配线程并唤醒
+    iAcceptRst = WakeUp2Work(pAcceptConn);
+    if (iAcceptRst != 0)
+    {
+        LOG_ERROR("default", "WakeUp2Work failed, conn(FE = %D, ID = %d, KEY = %d) FD is %d.",
+                  pAcceptConn->GetEntityType(), pAcceptConn->GetEntityID(), iKey, iSocketFd);
+        // 回收连接
+        RecycleUnuseConn(pAcceptConn);
+        close(iSocketFd);
+        return -1;
+    }
+
+    return 0;
 }
 
 /********************************************************
@@ -379,8 +478,26 @@ int CGateCtrl::DeleteOneUnRegister(int iUnRegisterIdx)
   Return:       0 :   成功 ，其他失败
   Others:		
 ********************************************************/
-int CGateCtrl::CheckRoutines() {
-		return 0;
+int CGateCtrl::CheckRoutines()
+{
+    time_t tCurrentTime = time(NULL);
+    if (tCurrentTime - m_tLastCheckTime >= CHECK_INTERVAL_SECONDS)
+    {
+        m_tLastCheckTime = tCurrentTime;
+        for (int i = m_iCurrentUnRegisterNum; i >= 0;i--)
+        {
+            //检测连接是否超时
+            if (tCurrentTime - m_astUnRegisterInfo[i].m_tAcceptTime > CHECK_TIMEOUT_SECONDS)
+            {
+                int iSocketFd = m_astUnRegisterInfo->m_iSocketFD;
+                LOG_ERROR("default", "Wait register timeout so close it, fd = %d.", iSocketFd);
+                DeleteOneUnRegister(i);
+                close(iSocketFd);
+            }
+        }
+    }
+
+    return 0;
 }
 
 int CGateCtrl::PrepareToRun()

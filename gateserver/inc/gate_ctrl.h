@@ -6,8 +6,9 @@
 //
 
 #ifndef _GATE_CTRL_HPP_
-#define _PROXY_CTRL_HPP_
+#define _GATE_CTRL_HPP_
 
+#include <mutex>
 #include "gate_handle.h"
 #include "../../framework/base/servertool.h"
 
@@ -75,8 +76,8 @@ public:
 	};
 
 #ifdef _POSIX_MT_
-	static pthread_mutex_t stLinkMutex[EHandleType_NUM];
-	static pthread_mutex_t stMutex[MUTEX_NUM];
+	static std::mutex stLinkMutex[EHandleType_NUM];
+	static std::mutex stMutex[MUTEX_NUM];
 #endif
 
 	// 初始化
@@ -122,7 +123,7 @@ private:
 	//当前的可用的连接map(注:线程之间共享数据)
 	CONNS_MAP m_mapConns;
 
-	//gate 管理类数组
+	//gate线程管理类数组
 	CHandleInfo m_stHandleInfos[EHandleType_NUM];
 	//空闲连接双向链表
 	CDoubleLinkerInfo m_UnuseConns;
