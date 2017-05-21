@@ -164,7 +164,24 @@ int CGateCtrl::InsertConnIntoMap(CMyTCPConn* pConn, int iIndex)
 #ifdef _POSIX_MT_
     std::lock_guard<std::mutex> guard(stMutex[MUTEX_HASHMAP]);
 #endif
-    m_mapConns[iKey] =
+    //超过最大连接数
+    if (m_mapConns.size() > MAX_CONNS_NUM)
+    {
+        LOG_ERROR("default", "insert conn(key=%d) into m_mapConns failed.", iKey);
+        return -2;
+    }
+    else
+    {
+        m_mapConns.insert(std::make_pair(iKey,pConn));
+        m_mapConns[iKey] = pConn;
+        m_stHandleInfos[iIndex].miConnNum++;
+#ifdef _POSIX_MT_
+        std::lock_guard<std::mutex> guard(stLinkMutex[iIndex]);
+#endif
+        m_stHandleInfos[iIndex].mLinkerInfo.insert(pConn);
+        LOG_INFO("default", "insert conn(key=%d) into m_mapConns succeed.", iKey);
+    }
+
 	return 0;
 }
 
@@ -493,6 +510,27 @@ int CGateCtrl::CheckRoutines()
                 LOG_ERROR("default", "Wait register timeout so close it, fd = %d.", iSocketFd);
                 DeleteOneUnRegister(i);
                 close(iSocketFd);
+            }
+        }
+
+        // 检查各handle中是否有已关闭的连接，并回收
+        for (int i = 0; i < EHandleType_NUM; i++)
+        {
+#ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> guard(stLinkMutex[i]);
+#endif
+            CMyTCPConn* tpConn = (CMyTCPConn*) m_stHandleInfos[i].mLinkerInfo.GetHead();
+            while (tpConn != NULL)
+            {
+                if (tpConn->IsStateOn() == false || (tCurrentTime - tpConn->GetLastKeepalive() >= CHECK_TIMEOUT_SECONDS))
+                {
+                    // 连接已改为关闭状态或者keepalive超时
+                    tpConn = RecycleUnuseConn(tpConn, i);
+                }
+                else
+                {
+                    tpConn = (CMyTCPConn*) tpConn->GetNext();
+                }
             }
         }
     }
