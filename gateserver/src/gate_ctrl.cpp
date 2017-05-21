@@ -6,7 +6,6 @@
 //
 #include "../inc/gate_ctrl.h"
 #include "../../framework/net/runflag.h"
-#include "../../framework/log/log.h"
 #include "../../framework/message/message.pb.h"
 #include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/net/client_comm_engine.h"
