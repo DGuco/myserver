@@ -7,14 +7,30 @@
 
 #include "../inc/gate_conn.h"
 
-int CMyTCPConn::EstConn(int iAcceptFD) {
+int CMyTCPConn::EstConn(int iAcceptFD)
+{
+#ifdef _POSIX_MT_
+	std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
 	int iTempRet = 0;
+	iTempRet = GetSocket()->Accept(iAcceptFD);
+	m_iConnState = ENTITY_OFF;
 	return iTempRet;
 }
 
-int CMyTCPConn::IsConnCanRecv() {
-
-	return iTempRet;
+int CMyTCPConn::IsConnCanRecv()
+{
+#ifdef _POSIX_MT_
+	std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
+    if (GetSocket()->GetSocketFD() < 0 && GetSocket()->GetStatus() == tcs_connected)
+    {
+        return  True;
+    }
+    else
+    {
+        return False;
+    }
 }
 
 int CMyTCPConn::RegToCheckSet(fd_set *pCheckSet) {

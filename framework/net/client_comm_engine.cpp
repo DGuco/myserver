@@ -246,10 +246,7 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
 // 反序列化CTcpHead, 返回剩余长度
 int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, unsigned short& rOffset, CTcpHead* pTcpHead)
 {
-	if (	(pBuff == NULL) ||
-			(unBuffLen < (sizeof(unsigned short) * 2)) ||
-			(pTcpHead == NULL)
-	)
+	if ((pBuff == NULL) || (unBuffLen < (sizeof(unsigned short) * 2)) || (pTcpHead == NULL))
 	{
 		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToMsg Input param failed.");
 	}

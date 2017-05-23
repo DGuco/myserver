@@ -191,15 +191,15 @@ int CGateHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
     {
         switch(stTmpHead.opflag())
         {
+            //心跳信息
             case EGC_KEEPALIVE:
             {
                 CTcpHead stRetHead;
                 stRetHead.Clear();
-
                 pbmsg_settcphead(
                         stRetHead,
                         FE_GATESERVER,
-                        CConfigMgr::GetSingletonPtr()->GetGateConfig().id(),
+                        CServerConfig::GetSingletonPtr()->m_iGateServerId,
                         stTmpHead.srcfe(),
                         stTmpHead.srcid(),
                         time(NULL),
@@ -268,6 +268,39 @@ int CGateHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
 
 int CGateHandle::DoTransfer()
 {
+    fd_set fds_read;
+    struct timeval stMonTime;
+    int i,iTmpFd = -1;
+    int iOpenFdNum = 0;
+    int iTransferedCount = 0;
+    int iTempRet = 0;
+    int iIndex = 0;
+
+    short nTmpCodeLength;
+    // 性能优化分析
+    BYTE  abyCodeBuf[MAX_PACKAGE_LEN];
+    int iTempTimes;
+    FD_ZERO( &fds_read );
+    stMonTime.tv_sec = 0;
+    stMonTime.tv_usec = 100000;
+    std::vector<CMyTCPConn*> vecConns;
+#ifdef _POSIX_MT_
+    std::unique_lock<std::mutex> lk(CGateCtrl::stLinkMutex[m_eHandleType]);
+    lk.lock();
+#endif
+    //检查当前线程的连接
+    for (CMyTCPConn* tpConn = (CMyTCPConn*)m_pInfo->GetHead();tpConn != NULL,tpConn = (CMyTCPConn*)tpConn->GetNext())
+    {
+        if (tpConn->IsConnCanRecv())
+        {
+            //把socket添加到可读集合中
+            tpConn->RegToCheckSet(&fds_read);
+            vecConns.push_back(tpConn);
+        }
+    }
+#ifdef _POSIX_MT_
+    lk.unlock();
+#endif
 
 	return 0;
 }
