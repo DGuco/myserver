@@ -34,28 +34,63 @@ int CMyTCPConn::IsConnCanRecv()
 }
 
 int CMyTCPConn::RegToCheckSet(fd_set *pCheckSet) {
-	return iTempRet;
+	int iTempt = 0;
+#ifdef _POSIX_MT_
+	std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
+	iTempt = GetSocket()->AddToCheckSet(pCheckSet);
+	return iTempt;
 }
 
 int CMyTCPConn::IsFDSetted(fd_set *pCheckSet) {
-	int iTempRet = 0;
-
-	return iTempRet;
+	int iTmpRet = 0;
+#ifdef _POSIX_MT_
+	std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
+	// 查看该套接字的FD是否在套接字集合中
+	iTmpRet = GetSocket()->IsFDSetted(pCheckSet);
+	return iTmpRet;
 }
 
-int CMyTCPConn::RecvAllData() {
-
-
-	return iTempRet;
+int CMyTCPConn::RecvAllData()
+{
+	int iTmpRet = 0;
+#ifdef _POSIX_MT_
+	std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
+	iTmpRet = GetSocket()->RecvData();
+	return iTmpRet;
 }
 
 int CMyTCPConn::GetOneCode(short &nCodeLength, BYTE *pCode) {
 	return GetSocket()->GetOneCode((unsigned short int &)nCodeLength, pCode);
 }
 
-int CMyTCPConn::SendCode(short nCodeLength, BYTE *pCode, int iFlag /* = FLG_CONN_IGNORE */) {
+int CMyTCPConn::SendCode(short nCodeLength, BYTE *pCode, int iFlag /* = FLG_CONN_IGNORE */)
+{
+	int iTmpRet = 0;
+#ifdef _POSIX_MT_
+	std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
+    //无效的socket连接，直接返回
+    if (GetEntityID() < 0 || GetEntityID() < 0)
+	{
+		return -101;
+	}
 
-	return iTempRet;
+    // 外带数据和只读操作优先发送, 不参与排队
+    if (iFlag == FLG_CONN_CTRL || iFlag == FLG_CONN_IGNORE)
+    {
+        if (GetSocket()->GetStatus() == tcs_connected && GetSocket()->GetSocketFD() > 0)
+        {
+            iTmpRet = GetSocket()->SendOneCode(nCodeLength,pCode);
+        }
+        else
+        {
+            iTmpRet = -102;
+        }
+    }
+	return iTmpRet;
 }
 
 int CMyTCPConn::CleanBlockQueue(int iQueueLength) {
