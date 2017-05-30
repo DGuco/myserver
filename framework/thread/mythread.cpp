@@ -59,10 +59,7 @@ int CMyThread::CondBlock()
 		ThreadLogDebug( "Thread would blocked." );
 		m_iRunStatus = rt_blocked;
 		// 进入休眠状态,直到条件满足
-        data_cond.wait(lk,[]
-        {
-            return (!(IsToBeBlocked() || m_iRunStatus == rt_stopped));
-        });
+        data_cond.wait(lk);
 	}
 
 	if( m_iRunStatus != rt_running )  

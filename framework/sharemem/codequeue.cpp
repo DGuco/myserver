@@ -411,7 +411,7 @@ int CCodeQueue::PeekHeadCode(BYTE *pOutCode, int *psOutLength)
         {
             memcpy((void *)pTempDst, (const void *)&pTempSrc[nTempRead], (size_t)(m_stQueueHead.m_iSize - nTempRead));
             pTempDst += (m_stQueueHead.m_iSize - nTempRead);
-            memcpy((void *)pTempDst, (const void *)&pTempSrc[0], (size_t)(*psOutLength - (m_stQueueHead.m_iSize - nTempRead));
+            memcpy((void *)pTempDst, (const void *)&pTempSrc[0], (size_t)(*psOutLength - (m_stQueueHead.m_iSize - nTempRead)));
         }
         // 否则，直接拷贝
         else
@@ -521,7 +521,7 @@ int CCodeQueue::GetHeadCode(BYTE *pOutCode, int *psOutLength)
         {
             memcpy((void *)pTempDst, (const void *)&pTempSrc[nTempRead], (size_t)(m_stQueueHead.m_iSize - nTempRead));
             pTempDst += (m_stQueueHead.m_iSize - nTempRead);
-            memcpy((void *)pTempDst, (const void *)&pTempSrc[0], (size_t)(*psOutLength - (m_stQueueHead.m_iSize - nTempRead));
+            memcpy((void *)pTempDst, (const void *)&pTempSrc[0], (size_t)(*psOutLength - (m_stQueueHead.m_iSize - nTempRead)));
         }
             // 否则，直接拷贝
         else

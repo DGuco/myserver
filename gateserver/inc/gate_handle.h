@@ -61,6 +61,9 @@ public:
 	CGateHandle();
 	virtual ~CGateHandle();
 
+	//禁止拷贝构造和赋值操作，保证数据的操作在锁的保护范围之内
+	CGateHandle(const CGateHandle& handle) = delete;
+	CGateHandle& operator= (const CGateHandle handle) = delete;
 	int Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo, CONNS_MAP* pMap);
 
 	virtual int PrepareToRun() ;

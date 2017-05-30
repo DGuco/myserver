@@ -98,7 +98,7 @@ int CGateCtrl::WakeUp2Work(CMyTCPConn* pConn)
     }
 
     //唤醒处理线程
-    LOG_DEBUG("default", "Wake up handle(%d) start to work.", index);
+    LOG_DEBUG("default", "Wake up handle(%d) start to work.", iIndex);
     pConn->SetConnState(ENTITY_ON);
     pConn->SetLastKeepalive(time(NULL));
     m_stHandleInfos[iIndex].mpHandle->WakeUp();

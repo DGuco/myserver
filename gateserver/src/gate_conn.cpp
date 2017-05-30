@@ -67,30 +67,22 @@ int CMyTCPConn::IsFDSetted(fd_set *pCheckSet) {
 	return iTmpRet;
 }
 
-int CMyTCPConn::RecvAllData()
-{
-	int iTmpRet = 0;
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
-	iTmpRet = GetSocket()->RecvData();
-	return iTmpRet;
-}
-
 /**
   *函数名          : RecvAllData
   *功能描述        : 接受所有数据
 **/
 int CMyTCPConn::RecvAllData()
 {
+	int iTmpRet = 0;
 #ifdef _POSIX_MT_
     std::lock_guard<std::mutex> guard(m_stMutex);
 #endif
-    return GetSocket()->RecvData();
+	iTmpRet =  GetSocket()->RecvData();
+	return iTmpRet;
 }
 
 /**
-  *函数名          : RecvAllData
+  *函数名          : GetOneCode
   *功能描述        : 接受指定长度的数据
 **/
 int CMyTCPConn::GetOneCode(short &nCodeLength, BYTE *pCode)
@@ -101,6 +93,10 @@ int CMyTCPConn::GetOneCode(short &nCodeLength, BYTE *pCode)
 	return GetSocket()->GetOneCode((unsigned short int &)nCodeLength, pCode);
 }
 
+/**
+  *函数名          : SendCode
+  *功能描述        : 发送指定长度的数据
+**/
 int CMyTCPConn::SendCode(short nCodeLength, BYTE *pCode, int iFlag /* = FLG_CONN_IGNORE */)
 {
 	int iTmpRet = 0;
@@ -128,32 +124,84 @@ int CMyTCPConn::SendCode(short nCodeLength, BYTE *pCode, int iFlag /* = FLG_CONN
 	return iTmpRet;
 }
 
-int CMyTCPConn::CleanBlockQueue(int iQueueLength) {
-	//return iRedoCount;
+/**
+  *函数名          : CleanBlockQueue
+  *功能描述        : 发送滞留数据
+**/
+int CMyTCPConn::CleanBlockQueue(int iQueueLength)
+{
+    int iRedoCount,i,iTmpRet = 0;
+    int nCodeLength = 0;
+    BYTE abcCodeBuf[MAX_PACKAGE_LEN];
+
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
+
+    if (m_iConnState == ENTITY_ON && GetSocket()->GetSocketFD() > 0
+            && GetSocket()->GetStatus() == tcs_connected)
+    {
+        // 如果有滞留数据，则重新发送，直到发送完成或出错
+        if (GetSocket()->HasReserveData() == True)
+        {
+            iTmpRet = GetSocket()->CleanReserveData();
+            if (iTmpRet != 0)
+            {
+                LOG_ERROR("default", "CleanReserveData failed. iTempRet = %d.", iTmpRet);
+                return 0;
+            }
+        }
+    }
 	return 0;
 }
 
-int CMyTCPConn::SetConnState(int iConnState) {
-
+/**
+  *函数名          : SetConnState
+  *功能描述        : 设置连接状态
+**/
+int CMyTCPConn::SetConnState(int iConnState)
+{
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
+    m_iConnState = iConnState;
 	return 0;
 }
 
+/**
+  *函数名          : IsStateOn
+  *功能描述        : 连接是否建立
+**/
 bool CMyTCPConn::IsStateOn()
 {
-
-
-	return bOn;
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
+	return (m_iConnState == ENTITY_ON);
 }
 
+/**
+  *函数名          : SetLastKeepalive
+**/
 int CMyTCPConn::SetLastKeepalive(time_t tNow)
 {
-
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
+    m_tLastKeepalive = tNow;
 	return 0;
 }
 
+/**
+  *函数名          : GetLastKeepalive
+**/
 time_t CMyTCPConn::GetLastKeepalive()
 {
-
+    time_t  tTime = 0;
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> guard(m_stMutex);
+#endif
+    tTime = m_tLastKeepalive;
 	return tTime;
 }
 

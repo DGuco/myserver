@@ -20,7 +20,6 @@
 #include <pthread.h>
 #include "../base/base.h"
 #include "../log/log.h"
-#include "tcp_conn.cpp"
 #ifdef _POSIX_MT_
 #include <mutex>
 #endif
@@ -165,5 +164,6 @@ private:
 	u_long m_ulIPAddr;
 	u_short m_unPort;
 };
+#include "tcp_conn.cpp"
 #endif // _TCP_CONN_H_
 

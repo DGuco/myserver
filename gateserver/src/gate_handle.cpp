@@ -159,8 +159,6 @@ int CGateHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
     CTcpHead stTmpHead;
 
     int iTempRet = 0;
-    int i;
-
     if (nCodeLength <= 0 || !pbyCode)
     {
         TRACE_ERROR("In TransferOneCode, invalid input params.");
@@ -270,16 +268,14 @@ int CGateHandle::DoTransfer()
 {
     fd_set fds_read;
     struct timeval stMonTime;
-    int i,iTmpFd = -1;
-    int iOpenFdNum = 0;
+    int iOpenFDNum = 0;
     int iTransferedCount = 0;
     int iTempRet = 0;
-    int iIndex = 0;
+    int i;
+    short nTmpCodeLength = 0;
 
-    short nTmpCodeLength;
     // 性能优化分析
     BYTE  abyCodeBuf[MAX_PACKAGE_LEN];
-    int iTempTimes;
     FD_ZERO( &fds_read );
     stMonTime.tv_sec = 0;
     stMonTime.tv_usec = 100000;
@@ -289,7 +285,7 @@ int CGateHandle::DoTransfer()
     lk.lock();
 #endif
     //检查当前线程的连接
-    for (CMyTCPConn* tpConn = (CMyTCPConn*)m_pInfo->GetHead();tpConn != NULL,tpConn = (CMyTCPConn*)tpConn->GetNext())
+    for (CMyTCPConn* tpConn = (CMyTCPConn*)m_pInfo->GetHead();tpConn != NULL;tpConn = (CMyTCPConn*)tpConn->GetNext())
     {
         if (tpConn->IsConnCanRecv())
         {
@@ -301,8 +297,105 @@ int CGateHandle::DoTransfer()
 #ifdef _POSIX_MT_
     lk.unlock();
 #endif
+    // 等待接收
+    iOpenFDNum = select(FD_SETSIZE, &fds_read, NULL, NULL, &stMonTime);
 
-	return 0;
+    if(iOpenFDNum <= 0)
+    {
+        return 0;
+    }
+
+    // 开始传输
+    TRACE_DEBUG("--------Some entity has data to transfer----------.");
+
+    // 只检查当前线程所负责的conn
+    for (i = 0; i < vecConns.size(); i++ )
+    {
+        if (!vecConns[i])
+        {
+            continue;
+        }
+
+        // 不能接收则直接跳过
+        if (!vecConns[i]->IsConnCanRecv())
+        {
+            continue;
+        }
+
+        if (vecConns[i]->IsFDSetted(&fds_read))
+        {
+            TRACE_DEBUG("conn(%d, %d) has some data to transfer.",
+                        vecConns[i]->GetEntityType(), vecConns[i]->GetEntityID());
+
+            // 接收所能得到的所有数据
+            vecConns[i]->RecvAllData();
+
+            TRACE_DEBUG("Now transfer data...");
+
+            while (1)
+            {
+                nTmpCodeLength = sizeof(abyCodeBuf);
+                // 从接收到的数据队列中取数据
+                iTempRet = vecConns[i]->GetOneCode(nTmpCodeLength, (BYTE *)abyCodeBuf);
+                if (iTempRet > 0)
+                {
+                    // 性能优化分析
+                    if (nTmpCodeLength < 6 || nTmpCodeLength > MAX_PACKAGE_LEN)
+                    {
+                        TRACE_ERROR("Get Error Len : %d Code from Conn (FE = %d , ID = %d)",
+                                    nTmpCodeLength, vecConns[i]->GetEntityType(), vecConns[i]->GetEntityID());
+                        // 关闭掉连接
+                        vecConns[i]->GetSocket()->Close();
+                        vecConns[i]->SetConnState(ENTITY_OFF);
+                        m_stStatLog.iRcvErrCnt++;
+                        break;
+                    }
+
+                    // 转发数据
+                    if (TransferOneCode(nTmpCodeLength, (BYTE *)abyCodeBuf))
+                    {
+                        TRACE_ERROR("Conn(FE = %d, ID = %d) TransferOne code failed.",
+                                    vecConns[i]->GetEntityType(), vecConns[i]->GetEntityID());
+                        // 关闭掉连接
+                        vecConns[i]->GetSocket()->Close();
+                        vecConns[i]->SetConnState(ENTITY_OFF);
+                        break;
+                    }
+                    iTransferedCount++;
+                    m_stStatLog.iRcvCnt++;
+                    m_stStatLog.iRcvSize += nTmpCodeLength;
+                }
+                else
+                {
+                    // 得不到数据
+#ifdef _DEBUG_
+                    TRACE_DEBUG("DoTransfer : GetOneCode iTempRet = %d", iTempRet);
+#endif
+                    if (iTempRet == -2)
+                    {
+                        TRACE_ERROR("len is impossblie! form Conn(FE = %d, ID = %d).",
+                                    vecConns[i]->GetEntityType(), vecConns[i]->GetEntityID());
+                        vecConns[i]->GetSocket()->Close();
+                        vecConns[i]->SetConnState(ENTITY_OFF);
+                    }
+                    break;
+                }
+            } //end while
+
+            if (iTempRet == 0)
+            {
+                TRACE_DEBUG("All data transfered.");
+            }
+            else
+            {
+                TRACE_ERROR("Data error, recv buffer is resetted.");
+            }
+        }
+    }
+
+    TRACE_DEBUG("------ Thread %d do transfer OK -------.", m_eHandleType);
+    // 返回一共转发了多少个数据
+    return iTransferedCount;
 }
 
 int CGateHandle::CheckBlockCodes()

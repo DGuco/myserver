@@ -37,10 +37,6 @@ public:
 	CMyThread();
 	virtual ~CMyThread();
 
-	//禁止拷贝构造和赋值操作，保证数据的操作在锁的保护范围之内
-	CMyThread(const CMyThread& thread) = delete;
-	CMyThread& operator= (const CMyThread thread) = delete;
-
 	virtual int PrepareToRun() = 0;
 	virtual int Run() = 0;
 	virtual bool IsToBeBlocked() = 0;
