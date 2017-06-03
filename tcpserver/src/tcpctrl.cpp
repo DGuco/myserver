@@ -104,7 +104,9 @@ int CTcpCtrl::Run()
             m_iRunFlag = 0;
         }
        
-       GetExMessage();              //读取客户端输入
+        GetExMessage();              //读取客户端输入
+        CheckWaitSendData();         //发送缓存数据
+        CheckTimeOut();              //检测超时
     }
     return 0;
 }
@@ -692,8 +694,67 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
         m_pSocketInfo->m_iRecvBytes = nRecvAllLen;
         memmove(m_pSocketInfo->m_szMsgBuf,pTemp1,nRecvAllLen);
     }
-    //检测发送队列是否有数据发送
-    CheckWaitSendData();
+    return 0;
+}
+
+/**
+  * 函数名          : CTCPCtrl::CheckTimeOut
+  * 功能描述        : 检测超时
+  * 返回值          ：int
+**/
+int CTcpCtrl::CheckTimeOut()
+{
+    int    i;
+    time_t tempTimeGap;
+    time(&m_iNowTime); // 计算当前时间
+
+    // 和上次检测时间相比，如果达到了检测间隔则进行检测
+    if (m_iNowTime - m_iLastTime < CServerConfig::GetSingleton().m_iChecktimeOutGap)
+    {
+        return 0;
+    }
+    // 从第1个真正收发数据的socket结构开始到当前最大分配的socket
+    // 判断每个socket通讯超时情况
+    for (i = m_iSocket; i <= m_iMaxfds; i++)
+    {
+        m_pSocketInfo = &m_astSocketInfo[i];
+        if (0 == m_pSocketInfo->m_iSocketFlag)
+        {
+            continue;
+        }
+        // 如果Mainsvrd已经向该socket发送过数据，则判断最后一个接收包的时间
+        if (MAIN_HAVE_SEND_DATA == m_pSocketInfo->m_iSendFlag)
+        {
+            tempTimeGap = m_iNowTime - m_pSocketInfo->m_tStamp;
+            // 把当前时间和最近一次socket收到包的时间相比，如果超过了指定的时间间隔则关闭socket
+            if (tempTimeGap >= CServerConfig::GetSingleton().m_iSokcetTimeout)
+            {
+                // 该socket通讯超时
+                LOG_ERROR("default","Client[%s] socket id = %d port %d not recv packet %d seconds, Close.",
+                          m_pSocketInfo->m_szClientIP, m_pSocketInfo->m_iSocket,
+                          m_pSocketInfo->m_iConnectedPort, tempTimeGap);
+
+                ClearSocketInfo(Err_ClientTimeout);
+            }
+        }
+        else
+        {
+            // 该客户端已经连接上来了，但是Mainsvrd还没有向它发送一个包，这时的超时更短，主要是防止恶意攻击
+            tempTimeGap = m_iNowTime - m_pSocketInfo->m_tCreateTime;
+            if (CServerConfig::GetSingleton().m_iSokcetTimeout < tempTimeGap)
+            {
+                // 该socket通讯超时
+                LOG_ERROR("default","Client[%s] connect port %d Timeout %d seconds, close!",
+                          m_pSocketInfo->m_szClientIP, m_pSocketInfo->m_iConnectedPort, tempTimeGap);
+
+                ClearSocketInfo(Err_ClientTimeout);
+            }
+        }
+    }
+
+    // 更新检测时间
+    m_iLastTime = m_iNowTime;
+
     return 0;
 }
 

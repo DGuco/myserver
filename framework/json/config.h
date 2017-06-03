@@ -39,6 +39,8 @@ public:
     //心跳
     int m_iTcpKeepAlive;
     int m_iServerTick;
+    int m_iChecktimeOutGap;
+    int m_iSokcetTimeout;
 };
 
 template<class CServerConfig> CServerConfig* CSingleton<CServerConfig>::spSingleton = NULL;
