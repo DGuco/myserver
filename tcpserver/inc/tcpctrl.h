@@ -15,7 +15,7 @@
 #include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/message/message.pb.h"
 #include "../../framework/base/base.h"
-#include "../inc/commdef.h"
+#include "tcpdef.h"
 #include "../../framework/json/config.h"
 
 #define MAX_ERRNO_NUM 10
@@ -24,37 +24,10 @@
 
 //CServerConfig* g_pConfigJson = NULL;
 
+class CCodeQueue;
+class CSharedMem;
+
 typedef CTCPConn<RECVBUFLENGTH,POSTBUFLENGTH> MyTcpConn;
-
-//和gateserver的连接类
-class CGateClient : public MyTcpConn
-{
-public:
-    CGateClient() {}
-    ~CGateClient() {}
-
-protected:
-    CWTimer m_iLastKeepAliveTime;
-public:
-    CWTimer* GetLastKeepaliveTime()     { return &m_iLastKeepAliveTime;}
-    void InitTimer(time_t tTime)        { m_iLastKeepAliveTime.Initialize(tTime);}
-    bool IsTimeOut(time_t tTime)        { return m_iLastKeepAliveTime.IsTimeout(tTime);}
-    void ResetTimeOut(time_t tTime)     { m_iLastKeepAliveTime.ResetTimeout(tTime);}
-
-    bool IsConnected()                  { return GetStatus() == tcs_connected ? true : false;}
-    int  GetStatus()                    { return GetSocket()->GetStatus();}
-    int  SendOneCode(unsigned short nCodeLength, BYTE*pCode)
-    {
-        return GetSocket()->SendOneCode(nCodeLength,pCode);
-    }
-
-    int GetSocketFd()                   { return GetSocket()->GetSocketFD();}
-    int RecvData()                      { return GetSocket()->RecvData();} 
-    int GetOneCode(unsigned short& nCodeLength, BYTE*pCode)
-    {
-        return GetSocket()->GetOneCode(nCodeLength,pCode);
-    }
-};
 
 class CTcpCtrl
 {
@@ -64,6 +37,7 @@ public:
     int Initialize();		// 初始化
     int Run();
     int SetRunFlag(int iRunFlag);
+    int CreatePipe();
 
 private:
 
@@ -82,8 +56,6 @@ private:
     int EphCleanUp();
 
     //******************数据处理**********************/
-    //检测超时
-    int CheckTimeOut();
     //检测epoll事件消息
     int GetExMessage();
     //接收客户端上行消息
@@ -95,13 +67,6 @@ private:
     //清除socket
     void ClearSocketInfo(short enError);
 
-    //******************gate连接**********************/
-    //连接gate
-    bool ConnectToGate();
-    //给gate发送注册消息
-    bool RegisterToGate();
-    //给gate发送心跳消息
-    bool SendKeepAliveToGate();
     //通知game玩家断开连接
     void DisConnect(int iError);
     //接收gate数据
@@ -141,7 +106,10 @@ private:
     unsigned short 		m_iSCIndex; 					 	 // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
     short 				m_nSCLength; 					 	 // 实际发送的数据长度
 
-    CGateClient		    m_GateClient;                        //gateserver 连接
+    // tcp --> game通信共享内存管道
+    CCodeQueue* mC2SPipe;
+    // game --> tcp通信共享内存管道
+    CCodeQueue* mS2CPipe;
     time_t				m_iLastKeepaliveTime;
     CTcpHead			m_SCTcpHead;				        // 服务器发送到客户端的数据信息头
     int					m_iSendIndex;				        // 带要发送数据过去的client socket索引

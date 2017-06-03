@@ -24,34 +24,20 @@
 #include <stdio.h>
 #include <netinet/tcp.h>
 #include "../inc/tcpctrl.h"
-#include "../inc/commdef.h"
+#include "../inc/tcpdef.h"
+#include "../../framework/base/commondef.h"
 #include "../../framework/net/client_comm_engine.h"
-#include "../../framework/json/config.h"
+#include "../../framework/sharemem/codequeue.h"
+#include "../../framework/sharemem/sharemem.h"
 
-
-/**
-  * 函数名          : CTcpCtrl::CTcpCtrl
-  * 功能描述        : CTCPCtrl构造函数
-  * 返回值          ：无 
-**/
 CTcpCtrl::CTcpCtrl()
 {
 }
 
-/**
-  * 函数名          : CTcpCtrl::~CTcpCtrl
-  * 功能描述        : CTCPCtrl析造函数
-  * 返回值          ：无 
-**/
 CTcpCtrl::~CTcpCtrl()
 {
 }
 
-/**
-  * 函数名          : CTCPCtrl::Initialize
-  * 功能描述        : 初始化CTCPCtrl对象的各成员变量
-  * 返回值         ： int(成功：0 失败：错误码)
-**/
 int CTcpCtrl::Initialize()
 {
     int iTmpRet;
@@ -91,6 +77,7 @@ int CTcpCtrl::Initialize()
     m_astSocketInfo[m_iSocket].m_iConnectedPort = CServerConfig::GetSingletonPtr()->m_iTcpPort;
     m_iMaxfds = m_iSocket++;
 
+    CreatePipe();
     return 0;
 }
 
@@ -128,6 +115,54 @@ int CTcpCtrl::SetRunFlag(int iRunFlag)
     return 0;
 }
 
+/**
+  * 函数名          : CTCPCtrl::CreatePipe
+  * 功能描述        : 创建和游戏服通信的共享内存管道
+  * 返回值         ： int(成功：0 失败：错误码)
+**/
+int CTcpCtrl::CreatePipe()
+{
+    int iTempSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(PIPE_SIZE);
+
+    // create s2cpipe
+    system("touch ./scpipefile");
+
+    char* pcTmpSCPipeID = getenv("SC_PIPE_ID");
+    int iTmpSCPipeID = 0;
+    if (pcTmpSCPipeID)
+    {
+        iTmpSCPipeID = atoi(pcTmpSCPipeID);
+    }
+
+    key_t iTmpKeyS2C = MakeKey("./scpipefile", iTmpSCPipeID);
+    BYTE* pbyTmpS2CPipe = CreateShareMem(iTmpKeyS2C, iTempSize);
+
+    MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
+
+    CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
+    CCodeQueue::pCurrentShm = new CSharedMem(iTmpKeyS2C, iTempSize);
+    mS2CPipe = new CCodeQueue(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_S2C);
+
+    // create c2spipe
+    system("touch ./cspipefile");
+
+    char* pcTmpCSPipeID = getenv("CS_PIPE_ID");
+    int iTmpCSPipeID = 0;
+    if (pcTmpCSPipeID)
+    {
+        iTmpCSPipeID = atoi(pcTmpCSPipeID);
+    }
+
+    key_t iTmpKeyC2S = MakeKey("./cspipefile", iTmpCSPipeID);
+    BYTE* pbyTmpC2SPipe = CreateShareMem(iTmpKeyC2S, iTempSize);
+
+    MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
+
+    CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
+    CCodeQueue::pCurrentShm = new CSharedMem(iTmpKeyC2S, iTempSize);
+    mC2SPipe = new CCodeQueue(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_C2S);
+    return 0;
+}
 /**
   * 函数名          : CTCPCtrl::InitEpollSocket
   * 功能描述        : 初始化Epoll socket
@@ -312,41 +347,6 @@ int CTcpCtrl::EphNewConn(int iSocketFd)
         return -1;
     }
     return 0;
-}
-
-/**
-  * 函数名          : CTCPCtrl::CheckTimeOut
-  * 功能描述        : 检测客户端的连接超时和连接gate的超时
-  * 返回值          ：int
-**/
-int CTcpCtrl::CheckTimeOut()
-{
-    int i;
-    time_t iTmTimeGap;
-    time(&m_iNowTime);
-    //检测超时
-    if (m_iNowTime - m_iLastKeepaliveTime >= CServerConfig::GetSingletonPtr()->m_iTcpKeepAlive)
-    {
-        m_iLastKeepaliveTime = m_iNowTime;
-        //超时重新连接
-        if (m_GateClient.IsConnected() == false ||
-                m_GateClient.IsTimeOut(m_iNowTime))
-        {
-            LOG_WARN("default","[%s: %d: %s] gateclient closed,status:%d",
-            __MY_FILE__,__LINE__,__FUNCTION__,m_GateClient.GetStatus());
-            if (ConnectToGate() == true)
-            {
-                if (RegisterToGate() == true)
-                {
-                    m_GateClient.ResetTimeOut(m_iNowTime);
-                }
-            }
-        } else
-        {
-            //发送心跳到gateserver
-            SendKeepAliveToGate();
-        }
-    }
 }
 
 /**
@@ -576,7 +576,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
         tmpMsg.Clear();
         CMessageHead* pbMessageHead = tmpMsg.mutable_msghead();
         pbMessageHead->set_messageid(tTmpCmd);
-        pbMessageHead->set_dstfe(FE_GATESERVER);
+        pbMessageHead->set_dstfe(FE_GAMESERVER);
         pbMessageHead->set_dstid(20000);
         pbMessageHead->set_timestamp(tTempTime);
         iTmpRet = ClientCommEngine::ConvertClientStreamToMsg(pTemp1 - unRecvLen,unRecvLen,&tmpMsg);
@@ -658,7 +658,7 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
 
             //序列话8字节对齐长度
             *(short*) pTemp = iTmpAddlen;
-            iTmpRet = m_GateClient.SendOneCode(unLength,(unsigned char*) m_szMsgBuf);
+            iTmpRet = mC2SPipe->AppendOneCode((BYTE*) m_szMsgBuf,unLength);
             if (iTmpRet < 0)
             {
                 LOG_ERROR("default", "CTCPCtrl::RecvClientData error,send data to gate error,error code = %d",iTmpRet);
@@ -812,7 +812,7 @@ int CTcpCtrl::CheckWaitSendData()
 {
     int iTmpRet = 0;
     int i = 0;
-    unsigned short unTmpCodeLength;
+    int unTmpCodeLength;
 
     //每次最多发送MAX_SEND_PKGS_ONCE个数据
     while(i < MAX_SEND_PKGS_ONCE)
@@ -840,26 +840,9 @@ int CTcpCtrl::CheckWaitSendData()
                     break;
                 }
                 m_bHasRecv = true;
-            }
-            else  //处理已经接收到的数据
+            }//处理已经接收到的数据
+            else
             {
-                unTmpCodeLength = (unsigned short ) MAX_BUF_LEN;
-                iTmpRet = m_GateClient.GetOneCode(unTmpCodeLength,m_szSCMsgBuf);
-                if (iTmpRet <= 0)
-                {
-                    //没有接收到数据,标记未接收,发送队列无数据发送，退出
-                    m_bHasRecv = false;
-                    if (iTmpRet != 0)
-                    {
-                        LOG_ERROR("default","Get head code error,error code = %d",iTmpRet);
-                    }
-                    break;
-                }
-                if(unTmpCodeLength <= 0)
-                {
-                     LOG_ERROR("default","Get head code error,unTmpCodeLength = %d",unTmpCodeLength);
-                     break;
-                }
                 //组织服务器发送到客户端的数据信息头，设置相关索引和游标
                 m_SCTcpHead.Clear();
                 m_iSendIndex = 0;
@@ -876,16 +859,6 @@ int CTcpCtrl::CheckWaitSendData()
                     continue;
                 }
 
-                //gate回复的心跳消息,处理后继续接收
-                if(m_SCTcpHead.srcfe() == FE_GATESERVER && m_SCTcpHead.opflag() == EGC_KEEPALIVE)
-                {
-                    //更新keepalive时间戳
-                    m_iLastKeepaliveTime = m_SCTcpHead.timestamp();
-                    m_GateClient.ResetTimeOut(m_iLastKeepaliveTime);
-                    m_SCTcpHead.Clear();
-                    m_iSendIndex = 0;
-                    continue;
-                }
                 //接收成功,取出数据长度
                 unsigned char* pTmp = m_szSCMsgBuf;
                 pTmp += m_iSCIndex;
@@ -894,92 +867,6 @@ int CTcpCtrl::CheckWaitSendData()
         }
     }
     return 0;
-}
-
-/**
-  * 函数名          : CTCPCtrl::ConnectToGate
-  * 功能描述        : 连接gate服务器
-  * 返回值          ：int
-**/
-bool CTcpCtrl::ConnectToGate()
-{
-    m_GateClient.Initialize(FE_GATESERVER,CServerConfig::GetSingletonPtr()->m_iGateServerId,\
-                           inet_addr(CServerConfig::GetSingletonPtr()->m_sGateHost.c_str()),\
-                            CServerConfig::GetSingletonPtr()->m_iGatePort);
-
-    if(m_GateClient.ConnectToServer((char*)CServerConfig::GetSingletonPtr()->m_sGateHost.c_str()))
-    {
-        LOG_ERROR("default","[%s: %d : %s] Connect to Gate(%s:%d)id:%d failed.",
-                __MY_FILE__,__LINE__,__FUNCTION__,CServerConfig::GetSingletonPtr()->m_sGateHost.c_str(),
-                CServerConfig::GetSingletonPtr()->m_iGatePort,CServerConfig::GetSingletonPtr()->m_iGateServerId);
-        return false;
-    }
-    LOG_NOTICE("default","Connect to Gate(%s:%d)id:%d succeed",CServerConfig::GetSingletonPtr()->m_sGateHost.c_str(),
-               CServerConfig::GetSingletonPtr()->m_iGatePort,CServerConfig::GetSingletonPtr()->m_iGateServerId);
-    return true;
-}
-
-/**
-  * 函数名          : CTCPCtrl::RegisterToGate
-  * 功能描述        : 注册gate服务器
-  * 返回值          ：bool
-**/
-bool CTcpCtrl::RegisterToGate()
-{
-    CTcpHead pbTmpHead;
-    pbTmpHead.Clear();
-    char acTmpMessageBuffer[1024];
-    unsigned short unTmpMsgLen = sizeof(acTmpMessageBuffer);
-    int iRet = ClientCommEngine::ConvertMsgToStream(acTmpMessageBuffer,unTmpMsgLen,&pbTmpHead);
-    if (iRet != 0)
-    {
-        LOG_ERROR("default","[%s: %d : %s] ConvertMsgToStream failed,iRet = %d ",
-                  __MY_FILE__,__LINE__,__FUNCTION__,iRet);
-        return false;
-    }
-
-    iRet = m_GateClient.SendOneCode(unTmpMsgLen,(BYTE*)acTmpMessageBuffer);
-    if (iRet != 0)
-    {
-        LOG_ERROR("default","[%s: %d : %s] Send data to GateServer failed,iRet = %d ",
-                  __MY_FILE__,__LINE__,__FUNCTION__,iRet);
-        return false;
-    }
-
-    LOG_NOTICE("default","Register to gate now");
-    return true;
-}
-
-/**
-  * 函数名          : CTCPCtrl::RegisterToGate
-  * 功能描述        : 向gate服务器发送心跳信息
-  * 返回值          ：bool
-**/
-bool CTcpCtrl::SendKeepAliveToGate()
-{
-    CTcpHead pbTmpHead;
-    pbTmpHead.Clear();
-    char acTmpMessageBuffer[1024];
-    unsigned short unTmpMsgLen = sizeof(acTmpMessageBuffer);
-    pbmsg_settcphead(pbTmpHead,FE_TCPSERVER,CServerConfig::GetSingletonPtr()->m_iTcpServerId,
-                     FE_GATESERVER,m_GateClient.GetEntityID(),time(NULL),EGC_KEEPALIVE);
-
-    int iRet = ClientCommEngine::ConvertMsgToStream(acTmpMessageBuffer,unTmpMsgLen,&pbTmpHead);
-    if (iRet != 0)
-    {
-        LOG_ERROR("default","[%s: %d : %s] ConvertMsgToStream failed,iRet = %d ",
-                  __MY_FILE__,__LINE__,__FUNCTION__,iRet);
-        return false;
-    }
-
-    iRet = m_GateClient.SendOneCode(unTmpMsgLen,(BYTE*)acTmpMessageBuffer);
-    if (iRet != 0)
-    {
-        LOG_ERROR("default","[%s: %d : %s] Send data to GateServer failed,iRet = %d ",
-                  __MY_FILE__,__LINE__,__FUNCTION__,iRet);
-        return false;
-    }
-    return true;
 }
 
 /**
@@ -1019,7 +906,7 @@ void CTcpCtrl::DisConnect(int iError)
         return;
     }
 
-    iRet = m_GateClient.SendOneCode(unTmpMsgLen,(BYTE*)m_szMsgBuf);
+    iRet = mC2SPipe->AppendOneCode((BYTE*)m_szMsgBuf,unTmpMsgLen);
     if (iRet != 0)
     {
         LOG_ERROR("default","[%s: %d : %s] Send data to GateServer failed,iRet = %d ",
@@ -1036,40 +923,8 @@ void CTcpCtrl::DisConnect(int iError)
 **/
 int CTcpCtrl::RecvServerData()
 {
-    fd_set fds_read;
-    int iTmpMaxFD = 0;
-    FD_ZERO(&fds_read);
-    struct timeval stTmpMonTime;
-    stTmpMonTime.tv_sec = 0;
-    stTmpMonTime.tv_usec = 0;
-    int iRet = 0;
-    int iTmpFD = m_GateClient.GetSocketFd();
-    if (iTmpFD > 0 && m_GateClient.IsConnected())
-    {
-        FD_SET(iTmpFD, &fds_read);
-        if (iTmpFD > iTmpMaxFD)
-        {
-            iTmpMaxFD = iTmpFD;
-        }
-    }
-    // select检测是否有消息可以接收
-    int iTmpOpenFDNum = select(iTmpMaxFD + 1, &fds_read, NULL, NULL, &stTmpMonTime);
-    if (iTmpOpenFDNum <= 0)
-    {
-        // select出错或者超时,没有可读写文件
-        return -1;
-    }
-
-    if (FD_ISSET(iTmpFD, &fds_read))
-    {
-        iRet = m_GateClient.RecvData();
-        if (iRet < 0)
-        {
-            LOG_ERROR("default", "CTCPCtrl::CheckWaitSendData Error, GateClient RecvData return %d.", iRet);
-            return iRet;
-        }
-    }
-    return 0;
+    int unTmpCodeLength = MAX_BUF_LEN;
+    return mS2CPipe->GetHeadCode(m_szSCMsgBuf,&unTmpCodeLength);
 }
 
 /**

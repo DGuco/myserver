@@ -12,6 +12,7 @@ set(FRAMEWORK
         base/performance.cpp
         base/servertool.cpp
         base/my_assert.h
+        base/commondef.h
         json/json.h
         json/json.cpp
         json/config.h

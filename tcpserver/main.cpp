@@ -8,10 +8,7 @@
 #include <memory>
 #include <iostream>
 #include <signal.h>
-#include <stdio.h>
 #include "inc/tcpctrl.h"
-#include "inc/commdef.h"
-#include "../framework/json/config.h"
 
 using namespace std;
 
