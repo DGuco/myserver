@@ -49,13 +49,13 @@ int CMyThread::CondBlock()
 	// 线程被阻塞或者停止，这里的while等待主要防止多个线程等待时被意外唤醒，保证当条件满足时，只有一个线程在处理
 	while( IsToBeBlocked() || m_iRunStatus == rt_stopped )  
 	{
-		// 如果线程需要停止则终止线程
-		if( m_iRunStatus == rt_stopped )  
-		{
-			ThreadLogDebug( "Thread exit.");
-			//退出线程
-			std::this_thread::yield();
-		}
+//		// 如果线程需要停止则终止线程
+//		if( m_iRunStatus == rt_stopped )
+//		{
+//			//退出线程
+//			ThreadLogDebug( "Thread exit.");
+//			pthread_exit( (void *)m_abyRetVal );
+//		}
 		ThreadLogDebug( "Thread would blocked." );
 		m_iRunStatus = rt_blocked;
 		// 进入休眠状态,直到条件满足
@@ -87,17 +87,17 @@ int CMyThread::WakeUp()
 	return 0;
 }
 
-int CMyThread::StopThread()
-{
-    std::lock_guard<std::mutex> guard(m_condMut);
-	m_iRunStatus = rt_stopped;
-    data_cond.notify_one();
-	// 等待该线程终止
+//int CMyThread::StopThread()
+//{
+//    std::lock_guard<std::mutex> guard(m_condMut);
+//	m_iRunStatus = rt_stopped;
+//    data_cond.notify_one();
+//	// 等待该线程终止
 //	pthread_join( m_hTrd, NULL );
-	ThreadLogDebug("Thread stopped.");
-
-	return 0;
-}
+//	ThreadLogDebug("Thread stopped.");
+//
+//	return 0;
+//}
 
 void CMyThread::ThreadLogInit(char *sPLogBaseName, long lPMaxLogSize, int iPMaxLogNum, int iShow, int iLevel /*= 0*/)
 {
