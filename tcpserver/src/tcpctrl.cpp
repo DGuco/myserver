@@ -42,9 +42,7 @@ int CTcpCtrl::Initialize()
 {
     int iTmpRet;
 
-    m_iLastKeepaliveTime = 0;
     m_iRunFlag = 0;
-    m_iWriteStatCount = 0;
     m_SCTcpHead.Clear();
     m_iSendIndex = 0;
     m_bHasRecv = 0;
