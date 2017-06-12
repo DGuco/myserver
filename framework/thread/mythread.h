@@ -55,13 +55,14 @@ protected:
 	void ThreadLogError(const char *sFormat, ...);
 	void ThreadLogFatal(const char *sFormat, ...);
 
-	std::mutex m_condMut;
-	std::condition_variable data_cond;
-
+public:
 	int m_iRunStatus;
 	char m_abyRetVal[64];
-
 	TLogCfg m_stLogCfg;
+
+private:
+    std::mutex m_condMut;
+    std::condition_variable data_cond;
 };
 
 

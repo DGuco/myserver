@@ -11,7 +11,7 @@
 /**
  * \brief The base event class, all events inherit from this class
  */
-class event : public CObj
+class Event : public CObj
 {
 public:
 	/**
@@ -20,7 +20,7 @@ public:
 	 * @param typeIndex The type ID of the inherited class
 	 * @param sender The sender of the event
 	 */
-	event(CObj & sender) :
+	Event(CObj & sender) :
 		sender(sender),
 		canceled(false) {
 	}
@@ -29,7 +29,7 @@ public:
 	/**
 	 * \brief Empty virtual destructor
 	 */
-	virtual ~event() { }
+	virtual ~Event() { }
 
 
 	int Initialize(){
