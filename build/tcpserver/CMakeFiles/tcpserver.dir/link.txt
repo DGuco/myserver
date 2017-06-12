@@ -1,0 +1,1 @@
+/usr/bin/g++    -Wall -g -std=c++11   CMakeFiles/tcpserver.dir/main.cpp.o CMakeFiles/tcpserver.dir/src/tcpctrl.cpp.o  -o ../../bin/tcpserver  -L/usr/local/lib ../../lib/libframework.a -lpthread -lprotobuf -lcrypto -llog4cpp -lcrypto -Wl,-rpath,/usr/local/lib 

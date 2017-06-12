@@ -2,12 +2,9 @@
 #define _SRC_EVENT_EVENT_HANDLER_H_
 
 #include "../base/object.h"
-
+#include "event.h"
 #include <typeinfo>
 #include <type_traits>
-
-// Forward declare the Event class
-class Event;
 
 /**
  * \brief Base class of all classes that listen for events

@@ -44,11 +44,11 @@ int CMyThread::CreateThread()
 
 int CMyThread::CondBlock()
 {
+	// 该过程需要在线程锁内完成
+	std::unique_lock<std::mutex> lk(m_condMut);
 	// 线程被阻塞或者停止，这里的while等待主要防止多个线程等待时被意外唤醒，保证当条件满足时，只有一个线程在处理
 	while( IsToBeBlocked() || m_iRunStatus == rt_stopped )
 	{
-        // 该过程需要在线程锁内完成
-        std::unique_lock<std::mutex> lk(m_condMut);
 //		// 如果线程需要停止则终止线程
 //		if( m_iRunStatus == rt_stopped )
 //		{

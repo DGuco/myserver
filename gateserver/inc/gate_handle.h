@@ -8,11 +8,11 @@
 #ifndef _GATE_HANDLE_H_
 #define _GATE_HANDLE_H_
 
-#include <map>
+#include <unordered_map>
+#include <bits/unordered_map.h>
 #include "../../framework/thread/mythread.h"
 #include "../../framework/json/config.h"
 #include "gate_conn.h"
-
 
 enum EMHandleType {
 	EHandleType_FIRST 	= 0,
@@ -53,7 +53,7 @@ struct TStatLog {
 #define GETCURRENTHANDLEID(handletype ,i) (handletype + (i * EHandleType_NUM))
 
 
-typedef std::map<int, CMyTCPConn*> CONNS_MAP;
+typedef std::unordered_map<int, CMyTCPConn*> CONNS_MAP;
 
 class CGateHandle : public CMyThread
 {

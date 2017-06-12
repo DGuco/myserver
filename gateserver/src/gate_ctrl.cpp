@@ -172,7 +172,6 @@ int CGateCtrl::InsertConnIntoMap(CMyTCPConn* pConn, int iIndex)
     else
     {
         m_mapConns.insert(std::make_pair(iKey,pConn));
-        m_mapConns[iKey] = pConn;
         m_stHandleInfos[iIndex].miConnNum++;
 #ifdef _POSIX_MT_
         std::lock_guard<std::mutex> guard(stLinkMutex[iIndex]);
