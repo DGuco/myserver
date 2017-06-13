@@ -5,7 +5,7 @@
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
-#include "../inc/gate_conn.h"
+#include "../inc/proxy_conn.h"
 
 /**
   *函数名          : EstConn

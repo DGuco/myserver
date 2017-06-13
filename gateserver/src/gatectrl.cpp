@@ -23,22 +23,22 @@
 #include <string.h>
 #include <stdio.h>
 #include <netinet/tcp.h>
-#include "../inc/tcpctrl.h"
-#include "../inc/tcpdef.h"
+#include "../inc/gatectrl.h"
+#include "../inc/gatedef.h"
 #include "../../framework/base/commondef.h"
 #include "../../framework/net/client_comm_engine.h"
 #include "../../framework/sharemem/codequeue.h"
 #include "../../framework/sharemem/sharemem.h"
 
-CTcpCtrl::CTcpCtrl()
+CGateCtrl::CGateCtrl()
 {
 }
 
-CTcpCtrl::~CTcpCtrl()
+CGateCtrl::~CGateCtrl()
 {
 }
 
-int CTcpCtrl::Initialize()
+int CGateCtrl::Initialize()
 {
     int iTmpRet;
 
@@ -79,7 +79,7 @@ int CTcpCtrl::Initialize()
     return 0;
 }
 
-int CTcpCtrl::Run()
+int CGateCtrl::Run()
 {
     LOG_NOTICE("default","Tcpserver is runing....");
 #ifdef _DEBUG_
@@ -109,18 +109,18 @@ int CTcpCtrl::Run()
     return 0;
 }
 
-int CTcpCtrl::SetRunFlag(int iRunFlag)
+int CGateCtrl::SetRunFlag(int iRunFlag)
 {
     m_iRunFlag = iRunFlag;
     return 0;
 }
 
 /**
-  * 函数名          : CTCPCtrl::CreatePipe
+  * 函数名          : CGateCtrl::CreatePipe
   * 功能描述        : 创建和游戏服通信的共享内存管道
   * 返回值         ： int(成功：0 失败：错误码)
 **/
-int CTcpCtrl::CreatePipe()
+int CGateCtrl::CreatePipe()
 {
     int iTempSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(PIPE_SIZE);
 
@@ -164,11 +164,11 @@ int CTcpCtrl::CreatePipe()
     return 0;
 }
 /**
-  * 函数名          : CTCPCtrl::InitEpollSocket
+  * 函数名          : CGateCtrl::InitEpollSocket
   * 功能描述        : 初始化Epoll socket
   * 返回值          ：int
 **/
-int CTcpCtrl::InitEpollSocket(short shTmpport)
+int CGateCtrl::InitEpollSocket(short shTmpport)
 {
     int iTmpRet = 0;
     socklen_t iTmpOptval = 0;
@@ -248,11 +248,11 @@ int CTcpCtrl::InitEpollSocket(short shTmpport)
 }
 
 /**
-  * 函数名          : CTCPCtrl::EphInit
+  * 函数名          : CGateCtrl::EphInit
   * 功能描述        : 初始化Epoll event
   * 返回值          ：int
 **/
-int CTcpCtrl::EphInit()
+int CGateCtrl::EphInit()
 {
     //已经设置
     if (NULL != m_pEpollevents)
@@ -283,11 +283,11 @@ int CTcpCtrl::EphInit()
 }
 
 /**
-  * 函数名          : CTCPCtrl::EphSocket
+  * 函数名          : CGateCtrl::EphSocket
   * 功能描述        : 初始化Epoll socket
   * 返回值          ：int
 **/
-int CTcpCtrl::EphSocket(int iDomain,int iType,int iProtocol)
+int CGateCtrl::EphSocket(int iDomain,int iType,int iProtocol)
 {
     int iTmpSfd = socket(iDomain,iType,iProtocol);
     int iTmpFlags = 1;
@@ -310,11 +310,11 @@ int CTcpCtrl::EphSocket(int iDomain,int iType,int iProtocol)
 }
 
 /**
-  * 函数名          : CTCPCtrl::EphSocket
+  * 函数名          : CGateCtrl::EphSocket
   * 功能描述        : 关闭Epoll socket
   * 返回值          ：int
 **/
-int CTcpCtrl::EphClose(int iSocketFd)
+int CGateCtrl::EphClose(int iSocketFd)
 {
     close(iSocketFd);
     return 0;
@@ -325,7 +325,7 @@ int CTcpCtrl::EphClose(int iSocketFd)
   * 功能描述        : 清除epoll
   * 返回值          ：int
 **/
-int CTcpCtrl::EphCleanUp()
+int CGateCtrl::EphCleanUp()
 {
     free(m_pEpollevents);
     close(m_iKdpfd);
@@ -334,11 +334,11 @@ int CTcpCtrl::EphCleanUp()
 }
 
 /**
-  * 函数名          : CTCPCtrl::EphNewConn
+  * 函数名          : CGateCtrl::EphNewConn
   * 功能描述        : 创建连接
   * 返回值          ：int
 **/
-int CTcpCtrl::EphNewConn(int iSocketFd)
+int CGateCtrl::EphNewConn(int iSocketFd)
 {
     m_stEpollEvent.data.fd  = iSocketFd;
     if (epoll_ctl(m_iKdpfd,EPOLL_CTL_ADD,iSocketFd,&m_stEpollEvent) < 0)
@@ -350,11 +350,11 @@ int CTcpCtrl::EphNewConn(int iSocketFd)
 }
 
 /**
-  * 函数名          : CTCPCtrl::GetExMessage
+  * 函数名          : CGateCtrl::GetExMessage
   * 功能描述        : 接收外部数据
   * 返回值          ：int
 **/
-int CTcpCtrl::GetExMessage()
+int CGateCtrl::GetExMessage()
 {
     int  iTmpRet;
     socklen_t iTmpSocketAddrSize;
@@ -471,11 +471,11 @@ int CTcpCtrl::GetExMessage()
 }
 
 /**
-  * 函数名          : CTCPCtrl::RecvClientData
+  * 函数名          : CGateCtrl::RecvClientData
   * 功能描述        : 接客户端的数据组织客户端数据为服务器其间数据传格式存入消息包缓冲区
   * 返回值          ：int
 **/
-int CTcpCtrl::RecvClientData(int iSocketFd)
+int CGateCtrl::RecvClientData(int iSocketFd)
 {
     int iTmpRet = 0;
     int iTmpRecvBytes = 0;
@@ -696,11 +696,11 @@ int CTcpCtrl::RecvClientData(int iSocketFd)
 }
 
 /**
-  * 函数名          : CTCPCtrl::CheckTimeOut
+  * 函数名          : CGateCtrl::CheckTimeOut
   * 功能描述        : 检测超时
   * 返回值          ：int
 **/
-int CTcpCtrl::CheckTimeOut()
+int CGateCtrl::CheckTimeOut()
 {
     int    i;
     time_t tempTimeGap;
@@ -757,11 +757,11 @@ int CTcpCtrl::CheckTimeOut()
 }
 
 /**
-  * 函数名          : CTCPCtrl::TcpRead
+  * 函数名          : CGateCtrl::TcpRead
   * 功能描述        : 读取tcp数据
   * 返回值          ：int
 **/
-int CTcpCtrl::TcpRead(int iSocket, char *pBuf, int iLen)
+int CGateCtrl::TcpRead(int iSocket, char *pBuf, int iLen)
 {
     int iTmpRecvBytes = 0;
     while(1)
@@ -783,11 +783,11 @@ int CTcpCtrl::TcpRead(int iSocket, char *pBuf, int iLen)
     }
 }
 /**
-  * 函数名          : CTCPCtrl::TcpWrite
+  * 函数名          : CGateCtrl::TcpWrite
   * 功能描述        : 发送tcp数据
   * 返回值          ：int
 **/
-int CTcpCtrl::TcpWrite(int iSocket, char *pBuf, int iPackLen)
+int CGateCtrl::TcpWrite(int iSocket, char *pBuf, int iPackLen)
 {
     int iSendBytes;
 //    int iLeftLen = iPackLen;
@@ -811,11 +811,11 @@ int CTcpCtrl::TcpWrite(int iSocket, char *pBuf, int iPackLen)
 }
 
 /**
-  * 函数名          : CTCPCtrl::ClearSocketInfo
+  * 函数名          : CGateCtrl::ClearSocketInfo
   * 功能描述        : 清楚socket
   * 返回值         ：void
 **/
-void CTcpCtrl::ClearSocketInfo(short enError)
+void CGateCtrl::ClearSocketInfo(short enError)
 {
     if ( TCP_SUCCESS == enError)
     {
@@ -863,11 +863,11 @@ void CTcpCtrl::ClearSocketInfo(short enError)
 }
 
 /**
-  * 函数名          : CTCPCtrl::CheckWaitSendData
+  * 函数名          : CGateCtrl::CheckWaitSendData
   * 功能描述        : 检测是否有缓存数据要发送
   * 返回值          ：int
 **/
-int CTcpCtrl::CheckWaitSendData()
+int CGateCtrl::CheckWaitSendData()
 {
     int iTmpRet = 0;
     int i = 0;
@@ -929,11 +929,11 @@ int CTcpCtrl::CheckWaitSendData()
 }
 
 /**
-  * 函数名          : CTCPCtrl::DisConnect
+  * 函数名          : CGateCtrl::DisConnect
   * 功能描述        : 通知gameserver客户端断开连接
   * 返回值          ：void
 **/
-void CTcpCtrl::DisConnect(int iError)
+void CGateCtrl::DisConnect(int iError)
 {
     CTcpHead pbTmpHead;
     pbTmpHead.Clear();
@@ -976,22 +976,22 @@ void CTcpCtrl::DisConnect(int iError)
 }
 
 /**
-  * 函数名          : CTCPCtrl::RecvServerData
+  * 函数名          : CGateCtrl::RecvServerData
   * 功能描述        : 接收gate返回的消息
   * 返回值          ：int
 **/
-int CTcpCtrl::RecvServerData()
+int CGateCtrl::RecvServerData()
 {
     int unTmpCodeLength = MAX_BUF_LEN;
     return mS2CPipe->GetHeadCode(m_szSCMsgBuf,&unTmpCodeLength);
 }
 
 /**
-  * 函数名          : CTCPCtrl::SendClientData
+  * 函数名          : CGateCtrl::SendClientData
   * 功能描述        : 向cliet发送数据
   * 返回值          ：int
 **/
-int CTcpCtrl::SendClientData()
+int CGateCtrl::SendClientData()
 {
     BYTE*           pbTmpSend = NULL;
     unsigned short  unTmpShort;

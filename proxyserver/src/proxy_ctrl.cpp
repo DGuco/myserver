@@ -4,7 +4,7 @@
 //  Created by DGuco on 16/12/6.
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
-#include "../inc/gate_ctrl.h"
+#include "../inc/proxy_ctrl.h"
 #include "../../framework/net/runflag.h"
 #include "../../framework/message/message.pb.h"
 #include "../../framework/message/tcpmessage.pb.h"
@@ -13,11 +13,11 @@
 extern CRunFlag g_byRunFlag;
 
 #ifdef _POSIX_MT_
-	std::mutex CGateCtrl::stLinkMutex[EHandleType_NUM];
-	std::mutex CGateCtrl::stMutex[MUTEX_NUM];
+	std::mutex CProxyCtrl::stLinkMutex[EHandleType_NUM];
+	std::mutex CProxyCtrl::stMutex[MUTEX_NUM];
 #endif
 
-CGateCtrl::CGateCtrl()
+CProxyCtrl::CProxyCtrl()
 {
 	m_mapConns.clear();
 	//把连接数组元素插入空闲连接双向链表中
@@ -31,12 +31,12 @@ CGateCtrl::CGateCtrl()
 	time(&m_tLastCheckTime);
 }
 
-CGateCtrl::~CGateCtrl()
+CProxyCtrl::~CProxyCtrl()
 {
 
 }
 
-int CGateCtrl::Initialize()
+int CProxyCtrl::Initialize()
 {
 	return 0;
 }
@@ -45,7 +45,7 @@ int CGateCtrl::Initialize()
   *函数名          : GetConnByKey
   *功能描述        : 通过key获取一个连接信息
 **/
-CMyTCPConn* CGateCtrl::GetConnByKey(int iKey)
+CMyTCPConn* CProxyCtrl::GetConnByKey(int iKey)
 {
 	CMyTCPConn* tcpConn = NULL;
 #ifdef _POSIX_MT_
@@ -64,7 +64,7 @@ CMyTCPConn* CGateCtrl::GetConnByKey(int iKey)
   *函数名          : MakeConnKey
   *功能描述        : 生成key
 **/
-int CGateCtrl::MakeConnKey(const short nType, const short nID)
+int CProxyCtrl::MakeConnKey(const short nType, const short nID)
 {
 	int iKey = 0;
 	iKey = nType;
@@ -77,7 +77,7 @@ int CGateCtrl::MakeConnKey(const short nType, const short nID)
   *函数名          : WakeUp2Work
   *功能描述        : 将新的连接插入handle并唤醒handle
 **/
-int CGateCtrl::WakeUp2Work(CMyTCPConn* pConn)
+int CProxyCtrl::WakeUp2Work(CMyTCPConn* pConn)
 {
     int iIndex = 0;
     int minNum = m_stHandleInfos[0].miConnNum;
@@ -109,7 +109,7 @@ int CGateCtrl::WakeUp2Work(CMyTCPConn* pConn)
   *函数名          : GetCanUseConn
   *功能描述        : 获取一个可用连接
 **/
-CMyTCPConn* CGateCtrl::GetCanUseConn()
+CMyTCPConn* CProxyCtrl::GetCanUseConn()
 {
 	//获取可用连接链表的头
 	CMyTCPConn* pConn = (CMyTCPConn*) m_UnuseConns.GetHead();
@@ -129,7 +129,7 @@ CMyTCPConn* CGateCtrl::GetCanUseConn()
   *函数名          : RecycleUnuseConn
   *功能描述        : 回收一个连接
 **/
-CMyTCPConn* CGateCtrl::RecycleUnuseConn(CMyTCPConn* pConn, int iIndex)
+CMyTCPConn* CProxyCtrl::RecycleUnuseConn(CMyTCPConn* pConn, int iIndex)
 {
     CMyTCPConn* pNext = NULL;
     if (pConn == NULL)
@@ -151,7 +151,7 @@ CMyTCPConn* CGateCtrl::RecycleUnuseConn(CMyTCPConn* pConn, int iIndex)
   *函数名          : InsertConnIntoMap
   *功能描述        : 将连接插入map
 **/
-int CGateCtrl::InsertConnIntoMap(CMyTCPConn* pConn, int iIndex)
+int CProxyCtrl::InsertConnIntoMap(CMyTCPConn* pConn, int iIndex)
 {
     if (pConn == NULL || iIndex < 0 || iIndex >= EHandleType_NUM )
     {
@@ -187,7 +187,7 @@ int CGateCtrl::InsertConnIntoMap(CMyTCPConn* pConn, int iIndex)
   *函数名          : EraseConnFromMap
   *功能描述        : 将连接从map中移除
 **/
-int CGateCtrl::EraseConnFromMap(CMyTCPConn* pConn, int iIndex)
+int CProxyCtrl::EraseConnFromMap(CMyTCPConn* pConn, int iIndex)
 {
     if (pConn == NULL || iIndex < 0 || iIndex >= EHandleType_NUM )
     {
@@ -207,7 +207,7 @@ int CGateCtrl::EraseConnFromMap(CMyTCPConn* pConn, int iIndex)
 }
 
 
-int CGateCtrl::CheckRunFlags()
+int CProxyCtrl::CheckRunFlags()
 {
     //暂不支持ERF_RELOAD
     if (g_byRunFlag.CheckRunFlag(ERF_RELOAD))
@@ -225,7 +225,7 @@ int CGateCtrl::CheckRunFlags()
   Return:       0 :   成功 ，其他失败
   Others:
 ********************************************************/
-int CGateCtrl::CheckConnRequest()
+int CProxyCtrl::CheckConnRequest()
 {
 	fd_set fds_read;
 	timeval tcTimpListen;
@@ -334,7 +334,7 @@ int CGateCtrl::CheckConnRequest()
   Return:       0 :   成功 ，其他失败
   Others:		
 ********************************************************/
-int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
+int CProxyCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 {
 	char acTmpBuf[MAX_TMP_BUF_LEN] = {0};
 	int iRecvedBytes = 0;
@@ -467,7 +467,7 @@ int CGateCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
   Return:       0 :   成功 ，其他失败
   Others:		
 ********************************************************/
-int CGateCtrl::DeleteOneUnRegister(int iUnRegisterIdx)
+int CProxyCtrl::DeleteOneUnRegister(int iUnRegisterIdx)
 {
     if (iUnRegisterIdx < 0 || iUnRegisterIdx >= m_iCurrentUnRegisterNum)
     {
@@ -493,7 +493,7 @@ int CGateCtrl::DeleteOneUnRegister(int iUnRegisterIdx)
   Return:       0 :   成功 ，其他失败
   Others:		
 ********************************************************/
-int CGateCtrl::CheckRoutines()
+int CProxyCtrl::CheckRoutines()
 {
     time_t tCurrentTime = time(NULL);
     if (tCurrentTime - m_tLastCheckTime >= CHECK_INTERVAL_SECONDS)
@@ -536,7 +536,7 @@ int CGateCtrl::CheckRoutines()
     return 0;
 }
 
-int CGateCtrl::PrepareToRun()
+int CProxyCtrl::PrepareToRun()
 {
 	int i;
 	//监听socket
@@ -547,7 +547,7 @@ int CGateCtrl::PrepareToRun()
 
 	for (i = 0; i < EHandleType_NUM;i++)
 	{
-		m_stHandleInfos[i].mpHandle = new CGateHandle;
+		m_stHandleInfos[i].mpHandle = new CProxyHandle();
 		//如果创建失败退出
 		if(m_stHandleInfos[i].mpHandle == NULL)
 		{
@@ -564,7 +564,7 @@ int CGateCtrl::PrepareToRun()
 	return 0;
 }
 
-int CGateCtrl::Run()
+int CProxyCtrl::Run()
 {
 
 	while (True)

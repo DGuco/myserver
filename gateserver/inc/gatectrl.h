@@ -5,8 +5,8 @@
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
-#ifndef __TCPCTRL_H__
-#define __TCPCTRL_H__
+#ifndef __GATE_CTRL_H__
+#define __GATE_CTRL_H__
 
 #include <sys/epoll.h>
 #include "../../framework/net/tcp_conn.h"
@@ -15,7 +15,7 @@
 #include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/message/message.pb.h"
 #include "../../framework/base/base.h"
-#include "tcpdef.h"
+#include "gatedef.h"
 #include "../../framework/json/config.h"
 
 #define MAX_ERRNO_NUM 10
@@ -29,11 +29,11 @@ class CSharedMem;
 
 typedef CTCPConn<RECVBUFLENGTH,POSTBUFLENGTH> MyTcpConn;
 
-class CTcpCtrl
+class CGateCtrl
 {
 public:
-    CTcpCtrl();
-    ~CTcpCtrl();
+    CGateCtrl();
+    ~CGateCtrl();
     int Initialize();		// 初始化
     int Run();
     int SetRunFlag(int iRunFlag);

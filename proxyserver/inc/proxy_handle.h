@@ -5,14 +5,14 @@
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
-#ifndef _GATE_HANDLE_H_
-#define _GATE_HANDLE_H_
+#ifndef _PROXY_HANDLE_H_
+#define _PROXY_HANDLE_H_
 
 #include <unordered_map>
 #include <bits/unordered_map.h>
 #include "../../framework/thread/mythread.h"
 #include "../../framework/json/config.h"
-#include "gate_conn.h"
+#include "proxy_conn.h"
 
 enum EMHandleType {
 	EHandleType_FIRST 	= 0,
@@ -55,15 +55,15 @@ struct TStatLog {
 
 typedef std::unordered_map<int, CMyTCPConn*> CONNS_MAP;
 
-class CGateHandle : public CMyThread
+class CProxyHandle : public CMyThread
 {
 public:
-	CGateHandle();
-	virtual ~CGateHandle();
+	CProxyHandle();
+	virtual ~CProxyHandle();
 
 	//禁止拷贝构造和赋值操作，保证数据的操作在锁的保护范围之内
-	CGateHandle(const CGateHandle& handle) = delete;
-	CGateHandle& operator= (const CGateHandle handle) = delete;
+	CProxyHandle(const CProxyHandle& handle) = delete;
+	CProxyHandle& operator= (const CProxyHandle handle) = delete;
 	int Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo, CONNS_MAP* pMap);
 
 	virtual int PrepareToRun() ;
@@ -98,4 +98,4 @@ private:
 	time_t m_tCheckStatLog;
 };
 
-#endif // _GATE_HANDLE_H_
+#endif // _PROXY_HANDLE_H_

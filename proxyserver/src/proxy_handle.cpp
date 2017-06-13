@@ -6,15 +6,15 @@
 //
 
 #include <sys/time.h>
-#include "../inc/gate_handle.h"
-#include "../inc/gate_ctrl.h"
+#include "../inc/proxy_handle.h"
+#include "../inc/proxy_ctrl.h"
 #include "../../framework/base/base.h"
 #include "../../framework/message/message.pb.h"
 #include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/net/client_comm_engine.h"
 
 
-CGateHandle::CGateHandle()
+CProxyHandle::CProxyHandle()
 {
 	m_pInfo = NULL;
 	m_eHandleType = EHandleType_FIRST;
@@ -25,7 +25,7 @@ CGateHandle::CGateHandle()
 }
 
 
-CGateHandle::~CGateHandle()
+CProxyHandle::~CProxyHandle()
 {
 
 }
@@ -34,7 +34,7 @@ CGateHandle::~CGateHandle()
   *函数名          : Initialize
   *功能描述        : 初始化线程
 **/
-int CGateHandle::Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo, CONNS_MAP* pMap)
+int CProxyHandle::Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo, CONNS_MAP* pMap)
 {
 	m_eHandleType = eHandleType;
 	m_pInfo = pInfo;
@@ -55,7 +55,7 @@ int CGateHandle::Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo, 
   *函数名          : IsToBeBlocked
   *功能描述        : 是否阻塞当前线程
 **/
-bool CGateHandle::IsToBeBlocked()
+bool CProxyHandle::IsToBeBlocked()
 {
 	bool iRet = true;
 	if (m_pInfo == NULL)
@@ -65,7 +65,7 @@ bool CGateHandle::IsToBeBlocked()
 
 // 该过程需要在线程锁内完成
 #ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> guard(CGateCtrl::stLinkMutex[m_eHandleType]);
+	std::lock_guard<std::mutex> guard(CProxyCtrl::stLinkMutex[m_eHandleType]);
 #endif
 
 	//检查当前线程的所有连接是否可读
@@ -88,7 +88,7 @@ bool CGateHandle::IsToBeBlocked()
   *函数名          : MakeConnKey
   *功能描述        : 生成key
 **/
-int CGateHandle::MakeConnKey(const short nType, const short nID)
+int CProxyHandle::MakeConnKey(const short nType, const short nID)
 {
 	int iKey = 0;
 
@@ -102,11 +102,11 @@ int CGateHandle::MakeConnKey(const short nType, const short nID)
   *函数名          : GetConnByKey
   *功能描述        : 获取i一个连接
 **/
-CMyTCPConn* CGateHandle::GetConnByKey(int iKey)
+CMyTCPConn* CProxyHandle::GetConnByKey(int iKey)
 {
     CMyTCPConn* tpConn = NULL;
 #ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> guard(CGateCtrl::stMutex[CGateCtrl::MUTEX_HASHMAP]);
+    std::lock_guard<std::mutex> guard(CProxyCtrl::stMutex[CProxyCtrl::MUTEX_HASHMAP]);
 #endif
 
     CONNS_MAP::iterator iter = m_pConnsMap->find(iKey);
@@ -121,7 +121,7 @@ CMyTCPConn* CGateHandle::GetConnByKey(int iKey)
   *函数名          : SendOneCodeTo
   *功能描述        : 发送一个数据包
 **/
-int CGateHandle::SendOneCodeTo(short nCodeLength, BYTE* pbyCode, int  iKey, bool bKeepalive/* = false*/)
+int CProxyHandle::SendOneCodeTo(short nCodeLength, BYTE* pbyCode, int  iKey, bool bKeepalive/* = false*/)
 {
     CMyTCPConn *pWriteConn = NULL;
     int iTempRet = 0;
@@ -154,7 +154,7 @@ int CGateHandle::SendOneCodeTo(short nCodeLength, BYTE* pbyCode, int  iKey, bool
   *函数名          : TransferOneCode
   *功能描述        : 转发一个数据包
 **/
-int CGateHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
+int CProxyHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
 {
     CTcpHead stTmpHead;
 
@@ -264,7 +264,7 @@ int CGateHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
     return 0;
 }
 
-int CGateHandle::DoTransfer()
+int CProxyHandle::DoTransfer()
 {
     fd_set fds_read;
     struct timeval stMonTime;
@@ -281,7 +281,7 @@ int CGateHandle::DoTransfer()
     stMonTime.tv_usec = 100000;
     std::vector<CMyTCPConn*> vecConns;
 #ifdef _POSIX_MT_
-    std::unique_lock<std::mutex> lk(CGateCtrl::stLinkMutex[m_eHandleType]);
+    std::unique_lock<std::mutex> lk(CProxyCtrl::stLinkMutex[m_eHandleType]);
     lk.lock();
 #endif
     //检查当前线程的连接
@@ -398,19 +398,19 @@ int CGateHandle::DoTransfer()
     return iTransferedCount;
 }
 
-int CGateHandle::CheckBlockCodes()
+int CProxyHandle::CheckBlockCodes()
 {
 	int iCleanCount = 0;
 
 	return iCleanCount;
 }
 
-int CGateHandle::PrepareToRun()
+int CProxyHandle::PrepareToRun()
 {
 	return 0;
 }
 
-int CGateHandle::Run()
+int CProxyHandle::Run()
 {
 	while( True )
 	{
@@ -430,6 +430,6 @@ int CGateHandle::Run()
 	return 0;
 }
 
-void CGateHandle::CheckStatLog()
+void CProxyHandle::CheckStatLog()
 {
 }

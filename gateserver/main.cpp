@@ -1,116 +1,67 @@
 //
 //  main.cpp
-//  gateserver
-//  Created by DGuco on 16/12/6.
+//  tcpserver 
+//  Created by DGuco on 16/12/8.
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
+
+#include <memory>
+#include <iostream>
 #include <signal.h>
+#include "inc/gatectrl.h"
 
-#include "../framework/net/runflag.h"
-#include "inc/gate_ctrl.h"
-#include "../framework/log/log.h"
-#include "../framework/base/base.h"
+using namespace std;
 
-CRunFlag g_byRunFlag;
-
+unique_ptr<CGateCtrl> g_pGateServer;
 
 void sigusr1_handle(int iSigVal)
 {
-	g_byRunFlag.SetRunFlag(ERF_RELOAD);
-	signal(SIGUSR1, sigusr1_handle);
+    g_pGateServer->SetRunFlag(reloadcfg);
+    signal(SIGUSR1, sigusr1_handle);
+}
+
+void sigusr2_handle(int iSigVal)
+{
+    g_pGateServer->SetRunFlag(tcpexit);
+    signal(SIGUSR2, sigusr2_handle);
+}
+
+void Initialize()
+{
+    signal(SIGUSR1,sigusr1_handle);
+    signal(SIGUSR2,sigusr2_handle);
 }
 
 
-void ignore_pipe()
+int main(int argc,char **argv)
 {
-	struct sigaction sig;
+    int iTmpRet;
+    Initialize();
+    //初始化日志
+    INIT_ROLLINGFILE_LOG("default","../log/tcpsvrd.log",LEVEL_DEBUG);
+    unique_ptr<CServerConfig> pTmpConfig(new CServerConfig);
+    const string filepath = "../config/serverinfo.json";
+    if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filepath))
+    {
+        LOG_ERROR("default","Get TcpserverConfig failed");
+        exit(0);
+    }
 
-	sig.sa_handler = SIG_IGN;
-	sig.sa_flags = 0;
-	sigemptyset(&sig.sa_mask);
-	sigaction(SIGPIPE, &sig, NULL);
-}
+    unique_ptr<CGateCtrl> pTmpTcpCtrl(new CGateCtrl);
+    g_pGateServer = move(pTmpTcpCtrl);
+    if (g_pGateServer == NULL)
+    {
+        LOG_ERROR("default","New TcpCtrl failed.");
+        exit(0);
+    }
 
-int main(int argc, char **argv)
-{
-	for (int i = 1; i < argc; i++)
-	{
-		if (!strcasecmp(argv[i], "-v"))
-		{
-			// 支持版本信息查询
-#ifdef _DEBUG_
-			printf("gateserver debug build at %s %s\n", __DATE__, __TIME__);
-#else
-			printf("gateserver release build at %s %s\n", __DATE__, __TIME__);
-#endif
-			exit(0);
-		}
-	}
+    iTmpRet = g_pGateServer->Initialize();
+    if (0 != iTmpRet)
+    {
+        LOG_ERROR("default","Tcpserver Initialize failed,iRet = %d",iTmpRet);
+        exit(0);
+    }
 
-	// 初始化日志信息(临时)
-	INIT_ROLLINGFILE_LOG("default", "../log/gateserver.log", LEVEL_DEBUG, 10*1024*1024, 5);
-
-	// 读取配置
-	CServerConfig* pTmpConfig = new CServerConfig;
-	const string filepath = "../config/serverinfo.json";
-	if (-1 == CServerConfig::GetSingleton().LoadFromFile(filepath))
-	{
-		LOG_ERROR("default","Get TcpserverConfig failed");
-		delete pTmpConfig;
-		pTmpConfig = NULL;
-		exit(0);
-	}
-
-	CGateCtrl* pGateCtrl = new CGateCtrl;
-	if (NULL == pGateCtrl)
-	{
-		LOG_ERROR("default", "new CGateCtrl failed. exit!");
-		exit(1);
-	}
-
-	if (pGateCtrl->Initialize())
-	{
-		LOG_ERROR("default", "CGateCtrl initialize failed.");
-		if (pGateCtrl)
-		{
-			delete pGateCtrl;
-			pGateCtrl = NULL;
-		}
-		exit(2);
-	}
-
-	// 创建EHandleType_NUM个线程
-	if (pGateCtrl->PrepareToRun())
-	{
-		LOG_ERROR("default", "CGateCtrl prepare to fun failed.");
-		if (pGateCtrl)
-		{
-			delete pGateCtrl;
-			pGateCtrl = NULL;
-		}
-		exit(3);
-	}
-
-	// 安装信号处理函数
-	signal(SIGUSR1, sigusr1_handle);
-
-	LOG_INFO("default", "CGateCtrl is ready now.");
-
-	// GateServer Run
-	pGateCtrl->Run();
-
-	// 服务器退出
-	if (pTmpConfig != NULL)
-	{
-		delete pTmpConfig;
-		pTmpConfig = NULL;
-	}
-
-	if (pGateCtrl != NULL)
-	{
-		delete pGateCtrl;
-		pGateCtrl = NULL;
-	}
-
-	return 0;
+    LOG_INFO("default", "tcp server is going to run...");
+    g_pGateServer->Run();
 }

@@ -16,5 +16,6 @@
    },
   "keepalive"  : 10000,
   "servertick" : 100,
-  "checktimeOutGap" : 5
+  "checktimeOutGap" : 5,
+  "socketTimeout" : 30
 }

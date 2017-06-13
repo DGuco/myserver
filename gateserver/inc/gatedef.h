@@ -5,8 +5,8 @@
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
-#ifndef __TCPDEF_H__
-#define __TCPDEF_H__
+#ifndef __GATE_DEF_H__
+#define __GATE_DEF_H__
 
 #include <time.h>
 #include <string.h>
@@ -163,4 +163,4 @@ typedef struct
     int		m_iPkgSizeSend;
 } TTcpStat;
 
-#endif // __TCPDEF_H__
+#endif // __GATE_DEF_H__

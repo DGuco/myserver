@@ -5,11 +5,11 @@
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
-#ifndef _GATE_CTRL_HPP_
-#define _GATE_CTRL_HPP_
+#ifndef _PROXY_CTRL_HPP_
+#define _PROXY_CTRL_HPP_
 
 #include <mutex>
-#include "gate_handle.h"
+#include "proxy_handle.h"
 #include "../../framework/base/servertool.h"
 
 #define MAX_TMP_BUF_LEN 		(1024) 				// 注册消息最大长度
@@ -43,7 +43,7 @@ class CHandleInfo
 {
 public:
 	CDoubleLinkerInfo	mLinkerInfo;	// 链表信息
-	CGateHandle*		mpHandle;		// handle
+	CProxyHandle*		mpHandle;		// handle
 	int					miConnNum;		// 连接计数
 
 	CHandleInfo()
@@ -63,10 +63,10 @@ public:
 };
 
 
-class CGateCtrl {
+class CProxyCtrl {
 public:
-	CGateCtrl();
-	~CGateCtrl();
+	CProxyCtrl();
+	~CProxyCtrl();
 
 	enum _enParas
 	{
@@ -135,4 +135,4 @@ private:
 	time_t m_tLastCheckTime;
 };
 
-#endif // _GATE_CTRL_HPP_
+#endif // _PROXY_CTRL_HPP_

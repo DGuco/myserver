@@ -5,8 +5,8 @@
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
-#ifndef _GATE_CONN_H_
-#define _GATE_CONN_H_
+#ifndef _PROXY_CONN_H_
+#define _PROXY_CONN_H_
 
 #include "../../framework/net/tcp_conn.h"
 #include "../../framework/sharemem/codequeue.h"
@@ -80,4 +80,4 @@ private:
 #endif // _POSIX_MT_
 };
 
-#endif // _GATE_CONN_H_
+#endif // _PROXY_CONN_H_
