@@ -43,7 +43,6 @@
 
 #define IP_LENGTH					20					// IP地址长度
 
-#define MAX_BUF_LEN                 (60*1024)			// 服务器发送给客户端单个包的最大长度
 #define RECV_BUF_LEN				(8 * 1024)			// 接收客户端信息的缓冲区
 #define MAX_SEND_PKGS_ONCE			100				// 一次从内存管道中取的最大的数据包
 

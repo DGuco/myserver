@@ -16,11 +16,6 @@
 #include "../../framework/net/runflag.h"
 #include "../../framework/base/base.h"
 #include "../../framework/net/tcp_conn.h"
-//#include "../../framework/timer/timer.h"
-//#include "message_interface.h"
-//#include "shm.h"
-//#include "tlogmodule.h"
-
 class CMessageSet;
 class CMessage;
 class CCSHead;
@@ -39,6 +34,7 @@ class CTeam;
 
 typedef CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH> MyTCPConn;
 
+//proxyServer连接管理
 class CProxyClient : public MyTCPConn
 {
 public:

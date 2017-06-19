@@ -9,13 +9,13 @@
 #define __GATE_CTRL_H__
 
 #include <sys/epoll.h>
+#include "gatedef.h"
 #include "../../framework/net/tcp_conn.h"
 #include "../../framework/log/log.h"
 #include "../../framework/base/servertool.h"
 #include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/message/message.pb.h"
 #include "../../framework/base/base.h"
-#include "gatedef.h"
 #include "../../framework/json/config.h"
 
 #define MAX_ERRNO_NUM 10
@@ -88,7 +88,7 @@ private:
     TSocketInfo 		m_astSocketInfo[MAX_SOCKET_NUM]; 	// socket结构数组，用于记录客户端的信息
     TSocketInfo* 		m_pSocketInfo;                   	// 当前的socket结构指针
 
-    char                m_szMsgBuf[MAX_BUF_LEN]; 		 	// 消息包缓冲(加大是为了防止game过来的消息过大)
+    char                m_szMsgBuf[MAX_PACKAGE_LEN]; 		 	// 消息包缓冲(加大是为了防止game过来的消息过大)
     int                 m_iTimeout;
     TTcpStat            m_stTcpStat;                        // 当前tcp连接信息
 
@@ -97,7 +97,7 @@ private:
     int                 m_iMaxfds;
     struct epoll_event  m_stEpollEvent;
 
-    unsigned char 		m_szSCMsgBuf[MAX_BUF_LEN]; 		 	 // 发送消息缓冲区
+    unsigned char 		m_szSCMsgBuf[MAX_PACKAGE_LEN]; 		 	 // 发送消息缓冲区
     unsigned short 		m_iSCIndex; 					 	 // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
     short 				m_nSCLength; 					 	 // 实际发送的数据长度
 

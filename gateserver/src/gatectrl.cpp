@@ -8,23 +8,13 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <sys/time.h>
-#include <sys/file.h>
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
-#include <assert.h>
-#include <signal.h>
 #include <errno.h>
-#include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/epoll.h>
-#include <sys/ipc.h>
 #include <string.h>
-#include <stdio.h>
 #include <netinet/tcp.h>
 #include "../inc/gatectrl.h"
-#include "../inc/gatedef.h"
 #include "../../framework/base/commondef.h"
 #include "../../framework/net/client_comm_engine.h"
 #include "../../framework/sharemem/codequeue.h"
@@ -982,7 +972,7 @@ void CGateCtrl::DisConnect(int iError)
 **/
 int CGateCtrl::RecvServerData()
 {
-    int unTmpCodeLength = MAX_BUF_LEN;
+    int unTmpCodeLength = MAX_PACKAGE_LEN;
     return mS2CPipe->GetHeadCode(m_szSCMsgBuf,&unTmpCodeLength);
 }
 

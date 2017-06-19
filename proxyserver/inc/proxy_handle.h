@@ -90,8 +90,9 @@ private:
 	timeval m_tvLastCheck;
 
 	EMHandleType m_eHandleType;
-
+	//本线程负责的连接
 	CDoubleLinkerInfo* m_pInfo;
+	//所有连接
 	CONNS_MAP* m_pConnsMap;
 
 	TStatLog m_stStatLog;
