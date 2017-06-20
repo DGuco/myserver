@@ -76,8 +76,8 @@ public:
 	};
 
 #ifdef _POSIX_MT_
-	static std::mutex stLinkMutex[EHandleType_NUM];
-	static std::mutex stMutex[MUTEX_NUM];
+	static std::mutex stLinkMutex[EHandleType_NUM]; 	//连接链表保护锁 注：在主线程和子线程之间起作用
+	static std::mutex stMutex[MUTEX_NUM];				//连接hashmap保护锁 注：在主线程个子线程之间，以及各个子线程之间起作用
 #endif
 
 	// 初始化
