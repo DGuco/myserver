@@ -13,7 +13,6 @@ CTCPSocket<uiRecvBufLen, uiSendBufLen>::CTCPSocket()
 	m_iReadBegin = 0;
 	m_iReadEnd = 0;
 	m_iPostBegin = m_iPostEnd = 0;
-	
 }
 
 /**
@@ -363,6 +362,9 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Accept(int iAcceptFD)
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Close()
 {
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> lock(m_stMutex);
+#endif
 	if( m_iSocketFD > 0 )
 	{
 		close(m_iSocketFD);
@@ -492,6 +494,9 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLength, BYTE *pCode, eByteMode emByte)
 {
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> lock(m_stMutex);
+#endif
 	unsigned short shMaxBufferLen = nCodeLength;
 	int iDataLength = 0;
 	unsigned short nTempLength;
@@ -785,7 +790,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::IsFDSetted(fd_set *pCheckSet)
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SetNBlock(int iSock)
 {
-
 	int iFlags;
 	iFlags = fcntl(iSock, F_GETFL, 0);
 	iFlags |= O_NONBLOCK;
@@ -802,6 +806,9 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SetNBlock(int iSock)
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 void CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetCriticalData(int& iReadBegin,int& iReadEnd, int& iPostBegin, int& iPostEnd)
 {
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> lock(m_stMutex);
+#endif
 	iReadBegin = m_iReadBegin;
 	iReadEnd = m_iReadEnd;
 	iPostBegin = m_iPostBegin;
@@ -815,6 +822,9 @@ void CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetCriticalData(int& iReadBegin,int
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::HasReserveData()
 {
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> lock(m_stMutex);
+#endif
 	if(m_iPostEnd - m_iPostBegin > 0)
 	{
 		return True;
@@ -835,6 +845,9 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CleanReserveData()
 	int iBytesSent = 0, iBytesLeft = 0, iBytesCleaned = 0, iTempRet = 0;
 	BYTE *pbyTemp = NULL;
 
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> lock(m_stMutex);
+#endif
 	if( m_iSocketFD < 0 || m_iStatus != tcs_connected )
 	{
 		return ERR_SEND_NOSOCK;
