@@ -4,7 +4,7 @@
 class CMessage;
 class CTcpHead;
 
-#include "message_interface.h"
+#include "../message/message_interface.h"
 #include "../message/message.pb.h"
 #include "../message/tcpmessage.pb.h"
 #include "ccrypto.h"

@@ -1,6 +1,6 @@
 #include "server_comm_engine.h"
 #include "../base/my_assert.h"
-#include "message_interface.h"
+#include "../message/message_interface.h"
 
 
 void pbmsg_setproxy(CProxyHead* pHead, int iSrcFE, int iSrcID, int iDstFE, int iDstID, time_t tTimestamp, EProxyCmd eCmd)

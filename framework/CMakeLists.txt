@@ -33,11 +33,11 @@ set(FRAMEWORK
         net/runflag.h
         net/server_comm_engine.h
         net/daemon.h
-        net/message_interface.h
+        message/message_interface.h
         net/nethead.h
         net/oi_tea.h
         net/daemon.cpp
-        net/message_interface.cpp
+        message/message_interface.cpp
         net/nethead.cpp
         net/oi_tea.cpp
         net/runflag.cpp
@@ -56,6 +56,8 @@ set(FRAMEWORK
         thread/mythread.cpp
         timer/clock.cpp
         timer/clock.h
+        timer/timer.h
+        timer/timer.cpp
         event/event.h
         event/eventbus.h
         event/eventHandler.h

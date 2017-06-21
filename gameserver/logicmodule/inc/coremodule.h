@@ -7,4 +7,14 @@
 #ifndef SERVER_COREMODULE_H
 #define SERVER_COREMODULE_H
 
+#include "logicmodule.h"
+#include "../../../framework/base/servertool.h"
+
+class CCoreModule : public CLogicModule,public CSingleton<CCoreModule>
+{
+public:
+    CCoreModule();
+    virtual  ~CCoreModule();
+};
+
 #endif //SERVER_COREMODULE_H

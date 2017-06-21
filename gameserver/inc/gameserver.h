@@ -16,6 +16,9 @@
 #include "../../framework/net/runflag.h"
 #include "../../framework/base/base.h"
 #include "../../framework/net/tcp_conn.h"
+#include "../../framework/timer/timer.h"
+#include "../../framework/message/message_interface.h"
+
 class CMessageSet;
 class CMessage;
 class CCSHead;
@@ -27,6 +30,7 @@ class CModuleManager;
 class CMessageDispatcher;
 class CFactory;
 class CTeam;
+class CTimerManager;
 //class CEntity;
 
 
@@ -46,17 +50,25 @@ protected:
     CWTimer m_LastKeepaliveTime;
 
 public:
+    //获取上次心跳时间
     CWTimer* GetLastKeepaliveTimePtr() {return &m_LastKeepaliveTime;}
-
+    //初始化心跳时间
     void InitTimer(time_t tTime) {m_LastKeepaliveTime.Initialize(tTime);}
+    //是否超时
     bool IsTimeout(time_t tNow) {return m_LastKeepaliveTime.IsTimeout(tNow);}
+    //重置超时时间
     void ResetTimeout(time_t tTime) {m_LastKeepaliveTime.ResetTimeout(tTime);}
-
+    //是否已连接上proxyserver
     bool IsConnected() {return GetStatus() == tcs_connected ? true : false;}
+    //获取连接状态
     int GetStatus() {return GetSocket()->GetStatus();}
+    //发送数据宝
     int SendOneCode(unsigned short nCodeLength, BYTE *pCode) {return GetSocket()->SendOneCode(nCodeLength, pCode);}
+    //获取socket描述符
     int GetSocketFD() {return GetSocket()->GetSocketFD();}
+    //接受数据到缓冲区
     int RecvData() {return GetSocket()->RecvData();}
+    //从缓冲区获取数据
     int GetOneCode(unsigned short &nCodeLength, BYTE *pCode) {return GetSocket()->GetOneCode(nCodeLength, pCode);}
 };
 
@@ -67,7 +79,7 @@ public:
     {
         MAX_CHECK_CLIENT_MSG	= 2000,		// 每次循环收取客户端消息最大数
         MAX_CHECK_SERVER_MSG	= 2000,		// 每次循环收取服务器消息最大数
-//		KEEPALIVE_TIME			= 10000,	// 每隔30秒发送一次keepalive消息(单位 : 毫秒)
+//		KEEPALIVE_TIME			= 30000,	// 每隔30秒发送一次keepalive消息(单位 : 毫秒)
 //		KEEPALIVE_TIMEOUT		= 30000,	// 30秒没收到回复即为超时(单位 : 毫秒)
     };
 
@@ -88,20 +100,12 @@ public:
 
     // 初始化
     int Initialize();
-    int Resume();
     // 运行准备
     int PrepareToRun();
     // 运行
     void Run();
     // 退出
     void Exit();
-
-public:
-    static CSharedMem* mShmPtr;
-    static size_t CountSize();
-
-    void* operator new(size_t size) {return (void*) CGameServer::mShmPtr->CreateSegment(size);}
-    void  operator delete(void* pointer) {}
 
 public:
     // 设置服务器状态
@@ -149,7 +153,7 @@ public:
     int SendTeam(CMessageSet* pMsgSet, stPointList* pTeamList);
     // 发送消息给单个玩家
     int SendTeam(CMessageSet* pMsgSet, CTeam* pTeam);
-    int SendTeam(unsigned int iMsgID, Message* pMsgPara, CTeam* pTeam);
+    int SendTeam(unsigned int iMsgID, CMessage* pMsgPara, CTeam* pTeam);
     // 组合消息
     int AddMsgSet(CMessageSet* pMsgSet, unsigned int iMsgID, Message* pMsgPara);
 
@@ -209,21 +213,15 @@ public:
 
 protected:
     // 需要new在共享内存上的
-    CClientHandle* 				mpClientHandle;										// 与客户端通信的连接
-    CSceneObjManager* 		mpSceneObjManager;							// 场景对象管理器
-    CModuleManager* 			m_pModuleManager;								// 模块管理器
-
-    // 不需要new在共享内存上的
+    CClientHandle* 				mpClientHandle;				// 与客户端通信的连接
+    CModuleManager* 			mpModuleManager;			// 模块管理器
     CTimerManager*				mpTimerManager;				// 定时器管理器
-    CMessageDispatcher*		mpMessageDispatcher;		// 消息派发器
-    CFactory*							mpMessageFactory;				// 消息工厂
-    CTemplateMgr*				mpTemplateMgr;					// 模版管理器
-    CRunFlag 							mRunFlag;								// 服务器运行状态
-//	CConfigure 						mConfig;									// 服务器配置信息
+    CMessageDispatcher*		    mpMessageDispatcher;		// 消息派发器
+    CFactory*					mpMessageFactory;				// 消息工厂
+    CRunFlag 					mRunFlag;						// 服务器运行状态
+    CProxyClient				mProxyClient[MAX_PROXY_NUM];	// 服务器间通信的连接
 
-    CProxyClient						mProxyClient[MAX_PROXY_NUM];	// 服务器间通信的连接
-
-    int										mServerState;	// 服务器状态
+    int										miServerState;	// 服务器状态
     unsigned long long						mLastTickCount; // tick
 public:
     CProxyClient* GetProxyClient(int iIndex);
