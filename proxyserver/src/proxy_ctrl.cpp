@@ -412,7 +412,7 @@ int CProxyCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	pAcceptConn = GetConnByKey(iKey);
 	if (pAcceptConn != NULL)
 	{
-		LOG_DEBUG("default","The Conn has existed FE = % : id = %d : key = %d",stTmpTcpHead.srcfe(),stTmpTcpHead.srcid());
+		LOG_DEBUG("default","The Conn has existed FE = %d : id = %d : key = %d",stTmpTcpHead.srcfe(),stTmpTcpHead.srcid(),iKey);
 		close(iSocketFd);
 		return -1;
 	}
@@ -421,7 +421,8 @@ int CProxyCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	pAcceptConn = GetCanUseConn();
 	if (pAcceptConn == NULL)
 	{
-		//没有可用连接
+        LOG_DEBUG("default","Don't have available connection FE = % : id = %d : key = %d",stTmpTcpHead.srcfe(),stTmpTcpHead.srcid(),iKey);
+        //没有可用连接
         close(iSocketFd);
         return -1;
 	}
