@@ -15,6 +15,19 @@ class CCoreModule : public CLogicModule,public CSingleton<CCoreModule>
 public:
     CCoreModule();
     virtual  ~CCoreModule();
+    int Initialize();
+    // 启动服务
+    int OnLaunchServer();
+    // 退出服务
+    int OnExitServer();
+    // 路由消息
+    void OnRouterMessage(CMessage* pMsg);
+    // 客户端消息
+    void OnClientMessage(CTeam* pTeam, CMessage* pMsg);
+    // 创建实体
+    int OnCreateEntity(CTeam* pTeam);
+    // 销毁实体
+    void OnDestroyEntity(CTeam* pTeam);
 };
 
 #endif //SERVER_COREMODULE_H

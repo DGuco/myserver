@@ -114,40 +114,32 @@ int CGateCtrl::CreatePipe()
 {
     int iTempSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(PIPE_SIZE);
 
-    // create s2cpipe
+    ////////////////////////////////mS2CPipe/////////////////////////////////////////
     system("touch ./scpipefile");
-
     char* pcTmpSCPipeID = getenv("SC_PIPE_ID");
     int iTmpSCPipeID = 0;
     if (pcTmpSCPipeID)
     {
         iTmpSCPipeID = atoi(pcTmpSCPipeID);
     }
-
     key_t iTmpKeyS2C = MakeKey("./scpipefile", iTmpSCPipeID);
     BYTE* pbyTmpS2CPipe = CreateShareMem(iTmpKeyS2C, iTempSize);
-
     MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
-
     CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
     CCodeQueue::pCurrentShm = new CSharedMem(iTmpKeyS2C, iTempSize);
     mS2CPipe = new CCodeQueue(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_S2C);
 
-    // create c2spipe
+    ////////////////////////////////mC2SPipe/////////////////////////////////////////
     system("touch ./cspipefile");
-
     char* pcTmpCSPipeID = getenv("CS_PIPE_ID");
     int iTmpCSPipeID = 0;
     if (pcTmpCSPipeID)
     {
         iTmpCSPipeID = atoi(pcTmpCSPipeID);
     }
-
     key_t iTmpKeyC2S = MakeKey("./cspipefile", iTmpCSPipeID);
     BYTE* pbyTmpC2SPipe = CreateShareMem(iTmpKeyC2S, iTempSize);
-
     MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
-
     CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
     CCodeQueue::pCurrentShm = new CSharedMem(iTmpKeyC2S, iTempSize);
     mC2SPipe = new CCodeQueue(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_C2S);

@@ -56,15 +56,14 @@ public:
 
     int Initialize();
 
-    static size_t CountSize();
-
 protected:
-    CCodeQueue* mC2SPipe; 	// tcp --> game
-    CCodeQueue* mS2CPipe; 	// game --> tcp
+    // tcp --> game 共享内存管道起始地址
+    CCodeQueue* mC2SPipe;
+    // game --> tcp 共享内存管道起始地址
+    CCodeQueue* mS2CPipe;
     CNetHead mNetHead;
 
 public:
-    int AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg);
 
     int Send(CMessageSet* pMsgSet, stPointList* pTeamList);
     int Send(CMessageSet* pMsgSet, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff = false);

@@ -90,7 +90,6 @@ BYTE* CreateShareMem( key_t iKey, long vSize )
 
 
 	LOG_NOTICE( "default", "Successfully alloced share memory block, key = %08X, id = %d, size = %ld", iKey, iShmID, iTempShmSize);
-
 	BYTE* tpShm = (BYTE *)shmat(iShmID, NULL, 0);
 
 	if((void*)-1 == tpShm)
@@ -101,7 +100,6 @@ BYTE* CreateShareMem( key_t iKey, long vSize )
 	}
 
 	return tpShm;
-
 }
 
 /************************************************
