@@ -6,13 +6,12 @@
 //
 
 #include <memory>
-#include <iostream>
 #include <signal.h>
 #include "inc/gatectrl.h"
 
 using namespace std;
 
-unique_ptr<CGateCtrl> g_pGateServer;
+CGateCtrl* g_pGateServer;
 
 void sigusr1_handle(int iSigVal)
 {
@@ -47,10 +46,10 @@ int main(int argc,char **argv)
         exit(0);
     }
 
-    unique_ptr<CGateCtrl> pTmpTcpCtrl(new CGateCtrl);
-    g_pGateServer = move(pTmpTcpCtrl);
+    g_pGateServer = new CGateCtrl;
     if (g_pGateServer == NULL)
     {
+        delete g_pGateServer;
         LOG_ERROR("default","New TcpCtrl failed.");
         exit(0);
     }
@@ -58,6 +57,7 @@ int main(int argc,char **argv)
     iTmpRet = g_pGateServer->Initialize();
     if (0 != iTmpRet)
     {
+        delete g_pGateServer;
         LOG_ERROR("default","Tcpserver Initialize failed,iRet = %d",iTmpRet);
         exit(0);
     }

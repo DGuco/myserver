@@ -9,6 +9,10 @@ set(SOURCE_FILES
         src/gameserver.cpp
         logicmodule/inc/coremodule.h
         logicmodule/src/coremodule.cpp
+        logicmodule/inc/logicmodule.h
+        logicmodule/src/logicmodule.cpp
+        logicmodule/inc/modulemanager.h
+        logicmodule/src/modulemanager.cpp
         )
 
 include_directories(
