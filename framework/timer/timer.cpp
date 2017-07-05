@@ -413,7 +413,8 @@ void CTimerManager::RealDestroyTimer(int iObjID)
 // 检测定时器队列
 int CTimerManager::CheckTimerQueue(time_t tNow)
 {
-	while ((tNow / TIMER_PERCISION) > mLastCheckTick)
+    int nowTick = tNow / TIMER_PERCISION;
+	while (nowTick > mLastCheckTick)
 	{
 		// 先处理待销毁定时器
 		DELETE_LIST::iterator itDel = mDeleteList.begin();
@@ -423,24 +424,28 @@ int CTimerManager::CheckTimerQueue(time_t tNow)
 		}
 		mDeleteList.clear();
 		// 循环遍历定时器,处理超时
-		TIMER_FINDER::iterator tIter = mTimerFinder.find(mLastCheckTick);
-		if (tIter != mTimerFinder.end())
+		for (auto tIter = mTimerFinder.begin();tIter != mTimerFinder.end();tIter++)
 		{
-			CDoubleLinkerInfo* tpInfo = &(tIter->second);
-			CTimerBase* tpTemp = (CTimerBase*) tpInfo->GetHead();
-			while (tpTemp != NULL)
-			{
-//				LOG_DEBUG("default", "timer (id=%u).", tpTemp->get_id());
-				tpTemp = Timeout(tpTemp, tNow);
-				if (tpTemp)
-				{
-//					LOG_DEBUG("default", "next timer (id=%u).", tpTemp->get_id());
-				}
-			}
+            //mTimerFinder有序，如果当前的定时任务没有超时，则后面的也没有直接返回
+			if (tIter->first > nowTick)
+            {
+                mLastCheckTick++;
+                return 0;
+            }
+            CDoubleLinkerInfo tpInfo = tIter->second;
+            CTimerBase* tpTemp = (CTimerBase*) tpInfo.GetHead();
+            while (tpTemp != NULL)
+            {
+				LOG_DEBUG("default", "timer (id=%u).", tpTemp->get_id());
+                tpTemp = Timeout(tpTemp, tNow);
+                if (tpTemp)
+                {
+					LOG_DEBUG("default", "next timer (id=%u).", tpTemp->get_id());
+                }
+            }
 		}
 		mLastCheckTick++;
 	}
-
 	return 0;
 }
 
@@ -546,13 +551,21 @@ int CTimerManager::DeleteObject(int iObjID)
 
 	switch(tType)
 	{
-//		CASE_DELETE_OBJ(ETT_TIMER,		mTimerQueue)
-//		CASE_DELETE_OBJ(ETT_SESSION,	mSessionQueue)
+        case  ETT_TIMER:
+        {
+			mTimerMap.erase(iObjID);
+            break;
+        }
+
+        case  ETT_SESSION:
+        {
+			mSessionMap.erase(iObjID);
+            break;
+        }
 		default:
 		{
 			LOG_ERROR("default", "CTimerManager::DeleteObject failed, object id = %u, type = %d.", iObjID, tType);
 			return -1;
-			break;
 		}
 	}
 
@@ -579,12 +592,12 @@ int CTimerManager::DestroyObject(int iObjID)
 	// 定时器不能立即销毁,放入待销毁列表中
 	mDeleteList.push_back(iObjID);
 
-//	// 从链表中删除
-//	EraseFromFinder(tpItem);
+	// 从链表中删除
+	EraseFromFinder(tpItem);
 
-//	// 销毁实体
-//	LOG_DEBUG("default", "[%s : %d : %s] DeleteObject.", __YQ_FILE__, __LINE__, __FUNCTION__);
-//	DeleteObject(iObjID);
+	// 销毁实体
+	LOG_DEBUG("default", "[%s : %d : %s] DeleteObject.", __MY_FILE__, __LINE__, __FUNCTION__);
+	DeleteObject(iObjID);
 
 	return 0;
 }
@@ -603,20 +616,31 @@ CObj* CTimerManager::GetObject(int iObjID)
 
 	switch(tType)
 	{
-//		CASE_GET_OBJ(ETT_TIMER,		mTimerQueue)
-//		CASE_GET_OBJ(ETT_SESSION,	mSessionQueue)
-//		default:
-//		{
-//			LOG_ERROR("default", "CTimerManager::GetObject failed, object id(%u), type(%d : %s), not registed.", iObjID, tType, GetTimerTypeName(tType));
-//			return NULL;
-//			break;
-//		}
-	}
+        case  ETT_TIMER:
+        {
+            auto it = mTimerMap.find(iObjID);
+            if (it != mTimerMap.end())
+            {
+                return (CObj*)(&(it->second));
+            }
+            break;
+        }
 
-	if (pTmpObj == NULL)
-	{
-		LOG_ERROR("default", "CTimerManager::GetObject failed, id(%u), type(%s), has destroyed or not created.",
-				iObjID, GetTimerTypeName(tType));
+        case  ETT_SESSION:
+        {
+            auto it = mSessionMap.find(iObjID);
+            if (it != mSessionMap.end())
+            {
+                return (CObj*)(&(it->second));
+            }
+            break;
+        }
+
+		default:
+		{
+			LOG_ERROR("default", "CTimerManager::GetObject failed, object id(%u), type(%d : %s), not registed.", iObjID, tType, GetTimerTypeName(tType));
+			return NULL;
+		}
 	}
 
 	return pTmpObj;

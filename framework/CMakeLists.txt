@@ -13,6 +13,7 @@ set(FRAMEWORK
         base/servertool.cpp
         base/my_assert.h
         base/commondef.h
+        base/my_macro.h
         json/json.h
         json/json.cpp
         json/config.h
@@ -62,7 +63,7 @@ set(FRAMEWORK
         event/eventbus.h
         event/eventHandler.h
         event/eventbus.cpp
-        event/handlerregistration.h)
+        event/handlerregistration.h base/my_macro.h base/objectmanager.h)
 
 include_directories(
         /usr/local/include

@@ -1,6 +1,7 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
+#include <map>
 #include <unordered_map>
 #include <bits/unordered_map.h>
 #include "../base/object.h"
@@ -233,15 +234,15 @@ protected:
 
 	#define FINDER_QUEUE_LENGTH (TIMER_QUEUE_LENGTH + SESSION_QUEUE_LENGTH)
 
-//	typedef ObjManager<CTimer, TIME_OBJ_ID_COUNT(ETT_TIMER, TIMER_QUEUE_LENGTH)> TimerObjManager;
-//	typedef ObjManager<CSession, TIME_OBJ_ID_COUNT(ETT_SESSION, SESSION_QUEUE_LENGTH)> SessionObjManager;
-	typedef std::unordered_map<time_t, CDoubleLinkerInfo> TIMER_FINDER;
+	typedef std::unordered_map<int,CTimer> TimerObjManager;
+	typedef std::unordered_map<int,CSession> SessionObjManager;
+	typedef std::map<time_t, CDoubleLinkerInfo> TIMER_FINDER;
 	typedef std::vector<int>	DELETE_LIST;
 
 	// CTimer的objmanager
-//	TimerObjManager mTimerQueue;
+	TimerObjManager mTimerMap;
 	// CSession的objmanager
-//	SessionObjManager mSessionQueue;
+	SessionObjManager mSessionMap;
 	// 以超时tick为key，链表信息为value的hash_map
 	TIMER_FINDER mTimerFinder;
 	// 上次检测timer队列的tick即 毫秒 / 100
