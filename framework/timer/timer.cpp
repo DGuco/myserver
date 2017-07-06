@@ -63,7 +63,7 @@ void CTimerBase::RegistCallFunc(CallFunc func)
 int CTimer::Initialize()
 {
 	m_eTimerType = ETT_TIMER;
-	m_iOwnerEntityID = 0;
+	m_ulOwnerEntityID = 0;
 	m_tTimeout = 0;
 	m_tMillTime = 0;
 	m_iCalledNum = 0;
@@ -71,10 +71,10 @@ int CTimer::Initialize()
 	m_eRunTimeMode = ERTM_GAME;
 	m_iOtherInfoNum = 0;
 
-//	for (int i = 0; i < ARRAY_CNT(mOtherInfos); i++)
-//	{
-//		mOtherInfos[i] = 0;
-//	}
+	for (int i = 0; i < MAX_TIMER_PARAM_NUM; i++)
+	{
+		mOtherInfos[i] = 0;
+	}
 
 	return 0;
 }
@@ -89,10 +89,10 @@ int CTimer::Resume()
 // 获取扩展参数
 int CTimer::GetOtherInfo(int iIdx)
 {
-//	if ((iIdx < 0) || (iIdx >= ARRAY_CNT(mOtherInfos)) || (iIdx >= m_iOtherInfoNum))
-//	{
-//		return 0;
-//	}
+	if ((iIdx < 0) || (iIdx >= MAX_TIMER_PARAM_NUM) || (iIdx >= m_iOtherInfoNum))
+	{
+		return 0;
+	}
 
 	return mOtherInfos[iIdx];
 }
@@ -101,7 +101,7 @@ int CTimer::GetOtherInfo(int iIdx)
 // 设置timer信息
 void CTimer::SetTimer(int iTimerMark, ERunTimeMode enRunTimeMode, time_t tMillTime, CallFunc func, int iCalledNum, int iOwnerEntityID, unsigned long ulOwnerID)
 {
-	m_iOwnerEntityID = iOwnerEntityID;
+	m_ulOwnerEntityID = iOwnerEntityID;
 	m_ulOwnerID = ulOwnerID;
 	m_iTimerMark = iTimerMark;
 	m_eRunTimeMode = enRunTimeMode;
@@ -200,11 +200,11 @@ int CSession::Initialize()
 	m_tTimeout = 0;
 	m_iOtherInfoNum = 0;
 	m_tMillTime = 0;
-//	m_bContinues = false;
-//	for (int i = 0; i < ARRAY_CNT(mOtherInfos); i++)
-//	{
-//		mOtherInfos[i] = 0;
-//	}
+	m_bContinues = false;
+	for (int i = 0; i < MAX_SESSION_PARAM_NUM; i++)
+	{
+		mOtherInfos[i] = 0;
+	}
 
 	return 0;
 }
@@ -218,24 +218,21 @@ int CSession::Resume()
 // 获取扩展参数
 int CSession::GetOtherInfo(int iIdx)
 {
-//	if ((iIdx < 0) || (iIdx >= ARRAY_CNT(mOtherInfos)) || (iIdx >= m_iOtherInfoNum))
-//	{
-//		return 0;
-//	}
+	if ((iIdx < 0) || (iIdx >= MAX_SESSION_PARAM_NUM) || (iIdx >= m_iOtherInfoNum))
+	{
+		return 0;
+	}
 
 	return mOtherInfos[iIdx];
 }
 
-
-// 设置session信息（返回session的ID）
-//void CSession::SetSession(time_t tMillTime, CallFunc func, int iOwnerEntityID, unsigned long ulOwnerID, bool bContinues)
-void CSession::SetSession(time_t tMillTime, CallFunc func, int iOwnerEntityID, unsigned long ulOwnerID)
+void CSession::SetSession(time_t tMillTime, CallFunc func, OBJ_ID ulOwnerEntityID, OBJ_ID ulOwnerID, bool bContinues)
 {
-//	m_bContinues = bContinues;
+	m_bContinues = bContinues;
 	m_tMillTime = tMillTime;
 	m_tTimeout = (GetMSTime() + tMillTime);
 	mCallFunc = func;
-	m_iOwnerEntityID = iOwnerEntityID;
+	m_ulOwnerEntityID = ulOwnerEntityID;
 	m_ulOwnerID = ulOwnerID;
 	Clear();
 }
@@ -244,10 +241,10 @@ void CSession::SetSession(time_t tMillTime, CallFunc func, int iOwnerEntityID, u
 // 设置session扩展参数（返回值 0：成功 < 0：失败）
 int CSession::SetOtherInfos(int iNum, int* piParams)
 {
-//	if ((iNum <= 0) || (iNum > ARRAY_CNT(mOtherInfos)) || (piParams == NULL))
-//	{
-//		return -1;
-//	}
+	if ((iNum <= 0) || (iNum > MAX_SESSION_PARAM_NUM) || (piParams == NULL))
+	{
+		return -1;
+	}
 
 	for (int i = 0; i < iNum; i++)
 	{
@@ -266,10 +263,10 @@ void CSession::Timeout(time_t tNow)
 	if (mbDestroy) return;
 	// 先设置超时时间,因为应用里面会用到
 	// 设置下次超时时间
-//	if (m_bContinues == true)
-//	{
+	if (m_bContinues == true)
+	{
 		m_tTimeout += m_tMillTime;
-//	}
+	}
 	// 回调
 	mCallFunc(this);
 }
@@ -308,13 +305,13 @@ int CTimerManager::Initialize()
 // 统计输出
 void CTimerManager::Dump(char* pcBuffer, unsigned int& uiLen)
 {
-//	unsigned int uiMaxLen = uiLen;
-//	uiLen = 0;
-//
-//	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "------------------------------CTimerManager------------------------------");
-//	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10s\t%10s", "name", "free", "total");
-//	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10lu\t%10lu", "CTimer", mTimerQueue.size(), mTimerQueue.max_size());
-//	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10lu\t%10lu", "CSession", mSessionQueue.size(), mSessionQueue.max_size());
+	unsigned int uiMaxLen = uiLen;
+	uiLen = 0;
+
+	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "------------------------------CTimerManager------------------------------");
+	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10s\t%10s", "name", "free", "total");
+	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10lu\t%10lu", "CTimer", mTimerMap.size(), mTimerMap.max_size());
+	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10lu\t%10lu", "CSession", mSessionMap.size(), mSessionMap.max_size());
 }
 
 
@@ -356,7 +353,7 @@ void CTimerManager::EraseFromFinder(CTimerBase* pTimer)
 
 
 // 创建timer
-CTimer* CTimerManager::CreateTimer(int iTimerMark, CTimer::ERunTimeMode enRunTimeMode, time_t tMillTime, CTimer::CallFunc func, int iCalledNum, time_t tRemainTime, int iOwnerEntityID, unsigned long ulOwnerID)
+CTimer* CTimerManager::CreateTimer(int iTimerMark, CTimer::ERunTimeMode enRunTimeMode, time_t tMillTime, CTimer::CallFunc func, int iCalledNum, time_t tRemainTime, int iOwnerEntityID, OBJ_ID ulOwnerID)
 {
 	// 创建timer
 	CTimer* tpTimer = (CTimer*) CreateObject(ETT_TIMER);
@@ -376,23 +373,11 @@ CTimer* CTimerManager::CreateTimer(int iTimerMark, CTimer::ERunTimeMode enRunTim
 
 	// 插入链表
 	InsertIntoFinder(tpTimer);
-
-//	if (enTimerMark < 0 || enTimerMark >= CTimer::ETM_NUM || enRunTimeMode < 0 || enRunTimeMode >= CTimer::ERTM_NUM)
-//	{
-//		LOG_INFO("default", "Timer ID(%u) OwnerID(%d) TimerMark(%d) runTimeMode(%d) MillTime(%ld) CalledNum(%d) RemainTime(%lld) create now.",
-//				tpTimer->get_id(), iOwnerEntityID, enTimerMark, enRunTimeMode,  tMillTime, iCalledNum, tRemainTime);
-//	}
-//	else
-//	{
-//		LOG_INFO("default", "Timer ID(%u) OwnerID(%d) TimerMark(%s) runTimeMode(%s) MillTime(%ld) CalledNum(%d) RemainTime(%lld) create now.",
-//				tpTimer->get_id(), iOwnerEntityID, pacETimerMarkName[enTimerMark], pacRunTimeModeName[enRunTimeMode],  tMillTime, iCalledNum, tRemainTime);
-//	}
-
 	return tpTimer;
 }
 
 // 真实处理定时器实体销毁的接口
-void CTimerManager::RealDestroyTimer(int iObjID)
+void CTimerManager::RealDestroyTimer(OBJ_ID iObjID)
 {
 	// 获取实体
 	CTimerBase* tpItem = (CTimerBase*) GetObject(iObjID);
@@ -406,7 +391,7 @@ void CTimerManager::RealDestroyTimer(int iObjID)
 	EraseFromFinder(tpItem);
 
 	// 销毁实体
-//	LOG_DEBUG("default", "[%s : %d : %s] DeleteObject.", __YQ_FILE__, __LINE__, __FUNCTION__);
+	LOG_DEBUG("default", "[%s : %d : %s] DeleteObject.", __MY_FILE__, __LINE__, __FUNCTION__);
 	DeleteObject(iObjID);
 }
 
@@ -460,7 +445,7 @@ CTimerBase* CTimerManager::Timeout(CTimerBase* pTimer, time_t tNow, bool bClear)
 	pTimer->Timeout(tNow);
 
 	if ( ((pTimer->GetTimerType() == ETT_TIMER) && (bClear == false) && ((((CTimer*) pTimer))->GetCalledNum() != 0))
-			|| (pTimer->GetTimerType() == ETT_SESSION)/* && (((CSession*)pTimer)->IsContinues() == true)*/ )
+			|| (pTimer->GetTimerType() == ETT_SESSION) && (((CSession*)pTimer)->IsContinues() == true))
 	{
 		// 将该结点插入新的链表
 		InsertIntoFinder(pTimer);
@@ -468,7 +453,7 @@ CTimerBase* CTimerManager::Timeout(CTimerBase* pTimer, time_t tNow, bool bClear)
 	else
 	{
 		// 因为该结点已经在上面删除，所以这里直接删除实体
-//		LOG_DEBUG("default", "[%s : %d : %s] DeleteObject.", __YQ_FILE__, __LINE__, __FUNCTION__);
+		LOG_DEBUG("default", "[%s : %d : %s] DeleteObject.", __MY_FILE__, __LINE__, __FUNCTION__);
 		DeleteObject(pTimer->get_id());
 	}
 
@@ -477,7 +462,7 @@ CTimerBase* CTimerManager::Timeout(CTimerBase* pTimer, time_t tNow, bool bClear)
 
 
 // 强制超时（bClear表示本次超时以后是否继续执行）
-void CTimerManager::ForceTimeout(int iTimerID, bool bClear)
+void CTimerManager::ForceTimeout(OBJ_ID iTimerID, bool bClear)
 {
 	CTimer* tpTimer = (CTimer*) GetObject(iTimerID);
 	if (tpTimer == NULL)
@@ -492,7 +477,7 @@ void CTimerManager::ForceTimeout(int iTimerID, bool bClear)
 
 
 // 创建session
-CSession* CTimerManager::CreateSession(time_t tMillTime, CSession::CallFunc func, int iOwnerEntityID, unsigned long ulOwnerID)
+CSession* CTimerManager::CreateSession(time_t tMillTime, CSession::CallFunc func, int iOwnerEntityID, OBJ_ID ulOwnerID)
 {
 	CSession* tpSession = (CSession*) CreateObject(ETT_SESSION);
 	if (tpSession == NULL)
@@ -545,7 +530,7 @@ CObj* CTimerManager::CreateObject(ETimerType eType)
 
 
 // 删除实体
-int CTimerManager::DeleteObject(int iObjID)
+int CTimerManager::DeleteObject(OBJ_ID iObjID)
 {
 	ETimerType tType = (ETimerType) CObj::ID2TYPE(iObjID);
 
@@ -576,7 +561,7 @@ int CTimerManager::DeleteObject(int iObjID)
 
 
 // 提供外部使用的销毁实体的接口，同时从链表中删除对应的结点
-int CTimerManager::DestroyObject(int iObjID)
+int CTimerManager::DestroyObject(OBJ_ID iObjID)
 {
 	// 获取实体
 	CTimerBase* tpItem = (CTimerBase*) GetObject(iObjID);
@@ -604,7 +589,7 @@ int CTimerManager::DestroyObject(int iObjID)
 
 
 // 提供给外部使用的获取实体的接口
-CObj* CTimerManager::GetObject(int iObjID)
+CObj* CTimerManager::GetObject(OBJ_ID iObjID)
 {
 	if (iObjID == INVALID_OBJ_ID)
 	{

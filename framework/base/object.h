@@ -17,8 +17,11 @@
 //};
 
 
-#define OBJ_ID_BITS (24)  // 对象ID的范围最大为2^^24,即16777216个
+#include "base.h"
+
+#define OBJ_ID_BITS (56)  // 对象ID的范围最大为2^^56,
 #define INVALID_OBJ_ID	0 // 无效对象ID
+typedef __uint64_t  OBJ_ID;
 
 class CObj
 {
@@ -35,20 +38,19 @@ public:
 		id_ = INVALID_OBJ_ID;
 	}
 
-	int get_id() const
+	OBJ_ID get_id() const
 	{
 		return id_;
 	}
 
-	void set_id(int id)
+	void set_id(OBJ_ID id)
 	{
 		id_ = id;
 	}
 
-	static int ID2TYPE(int id)
+	static int ID2TYPE(OBJ_ID id)
 	{
-		// 先移位然后计算结果，可以避免得到负数
-		return (id >> OBJ_ID_BITS) & 0X000000FF;
+		return (id >> OBJ_ID_BITS) & 0X00000000000000FF;
 	}
 
 	// 判断object是否合法
@@ -73,7 +75,7 @@ public:
 
 
 private:
-	int id_; // 所有对象的唯一标识
+	OBJ_ID id_; // 所有对象的唯一标识
 
 public:
 	static char msCreateMode; // 对象创建方式
