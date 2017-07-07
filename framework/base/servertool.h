@@ -65,14 +65,7 @@ public:
 public:
 	CCoord2D()
 	{
-		if (CObj::msCreateMode)
-		{
-			Initialize();
-		}
-		else
-		{
-			Resume();
-		}
+		Initialize();
 	}
 	CCoord2D(float fX, float fY) : m_fX(fX), m_fY(fY) {}
 
@@ -114,14 +107,7 @@ public:
 public:
 	CCoord3D()
 	{
-		if (CObj::msCreateMode)
-		{
-			Initialize();
-		}
-		else
-		{
-			Resume();
-		}
+		Initialize();
 	}
 	CCoord3D(float fX, float fY, float fZ) : m_fX(fX), m_fY(fY), m_fZ(fZ) {}
 
@@ -221,11 +207,8 @@ protected:
 public:
 	CWTimer()
 	{
-		if (CObj::msCreateMode)
-		{
-			mDuration = 0;
-			mNextTimeout = 0;
-		}
+		mDuration = 0;
+		mNextTimeout = 0;
 	}
 
 	void Initialize(time_t vDuration)

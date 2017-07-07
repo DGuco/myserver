@@ -16,4 +16,13 @@
         return NULL;                \
 	} while(0);
 
+#define SAFE_DELETE(pointer)        \
+    do                              \
+    {                               \
+        if (pointer != NULL)        \
+        {                           \
+            delete pointer;         \
+        }                           \
+    }while(0);
+
 #endif //SERVER_MY_NACRO_H

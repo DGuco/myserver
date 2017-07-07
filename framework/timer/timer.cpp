@@ -1,4 +1,5 @@
 #include "timer.h"
+#include "../base/my_macro.h"
 
 char* GetTimerTypeName(ETimerType eType)
 {
@@ -286,19 +287,24 @@ CTimerManager::CTimerManager()
 
 CTimerManager::~CTimerManager()
 {
-
+    SAFE_DELETE(m_pSessionManager);
+    SAFE_DELETE(m_pTimerManager);
+    m_mTimerMap.clear();
+    m_mTimerFinder.clear();
+    m_mSessionMap.clear();
+    m_aDeleteList.clear();
 }
 
 
 int CTimerManager::Initialize()
 {
-//	mTimerQueue.cl();
-	mTimerFinder.clear();
-//	mSessionQueue.initialize();
-	mDeleteList.clear();
-
-	mLastCheckTick = (GetMSTime() / TIMER_PERCISION);
-
+    m_pSessionManager = new CObjectManager(EnObjType::OBJ_SESSION_TIMER);
+    m_pTimerManager = new CObjectManager(EnObjType::OBJ_GAMER_TIMER);
+    m_mTimerMap.clear();
+	m_mTimerFinder.clear();
+    m_mSessionMap.clear();
+	m_aDeleteList.clear();
+	m_tLastCheckTick = (GetMSTime() / TIMER_PERCISION);
 	return 0;
 }
 
@@ -310,21 +316,21 @@ void CTimerManager::Dump(char* pcBuffer, unsigned int& uiLen)
 
 	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "------------------------------CTimerManager------------------------------");
 	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10s\t%10s", "name", "free", "total");
-	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10lu\t%10lu", "CTimer", mTimerMap.size(), mTimerMap.max_size());
-	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10lu\t%10lu", "CSession", mSessionMap.size(), mSessionMap.max_size());
+	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10lu\t%10lu", "CTimer", m_mTimerMap.size(), m_mTimerMap.max_size());
+	uiLen += snprintf(pcBuffer + uiLen, uiMaxLen - uiLen, "\n%30s\t%10lu\t%10lu", "CSession", m_mSessionMap.size(), m_mSessionMap.max_size());
 }
 
 
 // 插入mTimerFinder
 void CTimerManager::InsertIntoFinder(CTimerBase* pTimer)
 {
-	TIMER_FINDER::iterator tIter = mTimerFinder.find((pTimer->GetTimeout() / TIMER_PERCISION));
-	if (tIter == mTimerFinder.end())
+	TIMER_FINDER::iterator tIter = m_mTimerFinder.find((pTimer->GetTimeout() / TIMER_PERCISION));
+	if (tIter == m_mTimerFinder.end())
 	{
 		CDoubleLinkerInfo tInfo;
 		tInfo.Initialize();
 		tInfo.insert(pTimer);
-		mTimerFinder.insert(TIMER_FINDER::value_type((pTimer->GetTimeout() / TIMER_PERCISION), tInfo));
+        m_mTimerFinder.insert(TIMER_FINDER::value_type((pTimer->GetTimeout() / TIMER_PERCISION), tInfo));
 	}
 	else
 	{
@@ -336,13 +342,13 @@ void CTimerManager::InsertIntoFinder(CTimerBase* pTimer)
 // 从mTimerFinder移除
 void CTimerManager::EraseFromFinder(CTimerBase* pTimer)
 {
-	TIMER_FINDER::iterator tIter = mTimerFinder.find((pTimer->GetTimeout() / TIMER_PERCISION));
-	if (tIter != mTimerFinder.end())
+	TIMER_FINDER::iterator tIter = m_mTimerFinder.find((pTimer->GetTimeout() / TIMER_PERCISION));
+	if (tIter != m_mTimerFinder.end())
 	{
 		if (tIter->second.erase(pTimer) == 0)
 		{
 			// 说明没数据了
-			mTimerFinder.erase((pTimer->GetTimeout() / TIMER_PERCISION));
+            m_mTimerFinder.erase((pTimer->GetTimeout() / TIMER_PERCISION));
 		}
 	}
 	else
@@ -399,22 +405,22 @@ void CTimerManager::RealDestroyTimer(OBJ_ID iObjID)
 int CTimerManager::CheckTimerQueue(time_t tNow)
 {
     int nowTick = tNow / TIMER_PERCISION;
-	while (nowTick > mLastCheckTick)
+	while (nowTick > m_tLastCheckTick)
 	{
 		// 先处理待销毁定时器
-		DELETE_LIST::iterator itDel = mDeleteList.begin();
-		for (; itDel != mDeleteList.end(); itDel++)
+		DELETE_LIST::iterator itDel = m_aDeleteList.begin();
+		for (; itDel != m_aDeleteList.end(); itDel++)
 		{
 			RealDestroyTimer((int) *itDel);
 		}
-		mDeleteList.clear();
+        m_aDeleteList.clear();
 		// 循环遍历定时器,处理超时
-		for (auto tIter = mTimerFinder.begin();tIter != mTimerFinder.end();tIter++)
+		for (auto tIter = m_mTimerFinder.begin();tIter != m_mTimerFinder.end();tIter++)
 		{
             //mTimerFinder有序，如果当前的定时任务没有超时，则后面的也没有直接返回
 			if (tIter->first > nowTick)
             {
-                mLastCheckTick++;
+                m_tLastCheckTick++;
                 return 0;
             }
             CDoubleLinkerInfo tpInfo = tIter->second;
@@ -429,7 +435,7 @@ int CTimerManager::CheckTimerQueue(time_t tNow)
                 }
             }
 		}
-		mLastCheckTick++;
+        m_tLastCheckTick++;
 	}
 	return 0;
 }
@@ -506,12 +512,22 @@ CObj* CTimerManager::CreateObject(ETimerType eType)
 
 	switch(eType)
 	{
-//		CASE_CREATE_OBJ(ETT_TIMER,		mTimerQueue)
-//		CASE_CREATE_OBJ(ETT_SESSION,	mSessionQueue)
-		default:
+        case  ETT_TIMER:
+        {
+            pTmpObj = new CTimer();
+            pTmpObj->set_id(m_pTimerManager->GetValidId());
+            break;
+        }
+
+        case  ETT_SESSION:
+        {
+            pTmpObj = new CSession();
+            pTmpObj->set_id(m_pSessionManager->GetValidId());
+            break;
+        }
+        default:
 		{
 			LOG_ERROR("default", "CTimerManager::CreateObject failed, object type(%d) invalid.", eType);
-			return NULL;
 			break;
 		}
 	}
@@ -538,13 +554,13 @@ int CTimerManager::DeleteObject(OBJ_ID iObjID)
 	{
         case  ETT_TIMER:
         {
-			mTimerMap.erase(iObjID);
+			m_mTimerMap.erase(iObjID);
             break;
         }
 
         case  ETT_SESSION:
         {
-			mSessionMap.erase(iObjID);
+            m_mTimerMap.erase(iObjID);
             break;
         }
 		default:
@@ -575,7 +591,7 @@ int CTimerManager::DestroyObject(OBJ_ID iObjID)
 	tpItem->NeedDestroy();
 
 	// 定时器不能立即销毁,放入待销毁列表中
-	mDeleteList.push_back(iObjID);
+	m_aDeleteList.push_back(iObjID);
 
 	// 从链表中删除
 	EraseFromFinder(tpItem);
@@ -603,8 +619,8 @@ CObj* CTimerManager::GetObject(OBJ_ID iObjID)
 	{
         case  ETT_TIMER:
         {
-            auto it = mTimerMap.find(iObjID);
-            if (it != mTimerMap.end())
+            auto it = m_mTimerMap.find(iObjID);
+            if (it != m_mTimerMap.end())
             {
                 return (CObj*)(&(it->second));
             }
@@ -613,8 +629,8 @@ CObj* CTimerManager::GetObject(OBJ_ID iObjID)
 
         case  ETT_SESSION:
         {
-            auto it = mSessionMap.find(iObjID);
-            if (it != mSessionMap.end())
+            auto it = m_mSessionMap.find(iObjID);
+            if (it != m_mSessionMap.end())
             {
                 return (CObj*)(&(it->second));
             }

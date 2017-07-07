@@ -8,7 +8,6 @@ set(FRAMEWORK
         base/performance.h
         base/servertool.h
         base/base.cpp
-        base/object.cpp
         base/performance.cpp
         base/servertool.cpp
         base/my_assert.h
@@ -63,7 +62,7 @@ set(FRAMEWORK
         event/eventbus.h
         event/eventHandler.h
         event/eventbus.cpp
-        event/handlerregistration.h base/my_macro.h base/objectmanager.h)
+        event/handlerregistration.h base/my_macro.h base/objectManager.cpp base/objectManager.h)
 
 include_directories(
         /usr/local/include

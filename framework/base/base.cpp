@@ -30,8 +30,8 @@ bool IsSameDay(time_t tFirstTime, time_t tSecondTime)
 	return false;
 }
 
-// 获取当前毫秒数
-time_t GetMSTime()
+// 获取当前秒数
+int GetSecondTime()
 {
 	struct timeval tmval = {0};
 	int nRetCode = gettimeofday(&tmval, NULL);
@@ -39,7 +39,19 @@ time_t GetMSTime()
 	{
 		return 0;
 	}
-	return ((tmval.tv_sec * 1000) + (tmval.tv_usec / 1000));
+	return (int)(tmval.tv_sec);
+}
+
+// 获取当前毫秒数
+long GetMSTime()
+{
+	struct timeval tmval = {0};
+	int nRetCode = gettimeofday(&tmval, NULL);
+	if (nRetCode != 0)
+	{
+		return 0;
+	}
+	return (long)((tmval.tv_sec * 1000) + (tmval.tv_usec / 1000));
 }
 
 
@@ -52,7 +64,7 @@ time_t GetUSTime()
 	{
 		return 0;
 	}
-	return ((tmval.tv_sec * 1000 * 1000) + tmval.tv_usec);
+	return (long)((tmval.tv_sec * 1000 * 1000) + tmval.tv_usec);
 }
 
 

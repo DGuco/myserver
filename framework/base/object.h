@@ -9,19 +9,27 @@
 #ifndef _OBJECT_H_
 #define _OBJECT_H_
 
-//// 对象创建模式
-//enum
-//{
-//	Init	= 0,	// 初始化模式
-//	Resume	= 1,	// 恢复模式
-//};
-
-
 #include "base.h"
 
-#define OBJ_ID_BITS (56)  // 对象ID的范围最大为2^^56,
-#define INVALID_OBJ_ID	0 // 无效对象ID
+//OBJ_ID_BITS占位,时间戳(4字节)+类型(2字节)+同一秒序列id(3字节),同一秒同类型的对象ID的范围最大为2^^24,
+//即每秒可生成16777216个同类型对象(足够了) (注意:服务器时间不能往回调)
+#define OBJ_ID_BITS (56)
+#define INVALID_OBJ_ID	0 //
 typedef __uint64_t  OBJ_ID;
+
+//同一秒id范围
+#define OBJ_ID_START(type)			(((type) << OBJ_ID_BITS) + 1)
+//这里预留10个保证不同类型id不会相同
+#define OBJ_ID_END(type)			((((type) + 1) << OBJ_ID_BITS) - 10)
+
+// 类型取值 0 ~ 255 为了防止越界，去掉头尾边界，所以有效取值范围为 1 ~ 254,所以这里取值从254（0xFE）开始递减
+typedef enum _ObjType
+{
+    OBJ_SESSION_TIMER = 0xFE,
+    OBJ_GAMER_TIMER   = 0xFD,
+    OBJ_PLAYER_ENTRY  = 0xFC,
+    OBJ_INVALID
+}EnObjType;
 
 class CObj
 {
@@ -67,18 +75,11 @@ public:
 		id_ = INVALID_OBJ_ID;
 	}
 
-	// 初始化对象数据( 构造函数中根据共享内存启动模式调用 )
+	// 初始化对象数据
 	virtual int Initialize() = 0;
-
-	// 恢复对象数据-继续保留内存中的数据,用于共享内存热启动 ( 构造函数中根据共享内存启动模式调用 )
-	virtual int Resume() = 0; 
-
 
 private:
 	OBJ_ID id_; // 所有对象的唯一标识
-
-public:
-	static char msCreateMode; // 对象创建方式
 };                                               
                                                            
 #endif // _OBJECT_H_

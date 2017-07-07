@@ -6,6 +6,7 @@
 #include <bits/unordered_map.h>
 #include "../base/object.h"
 #include "../base/servertool.h"
+#include "../base/objectManager.h"
 
 // 类型取值 0 ~ 255 为了防止越界，去掉头尾边界，所以有效取值范围为 1 ~ 254
 // 由于游戏内部的objmanager从1开始，为了不与游戏内的类型重复，所以这里取值从254（0xFE）开始递减
@@ -212,12 +213,7 @@ public:
 	// 统计输出
 	void Dump(char* pcBuffer, unsigned int& uiLen);
 protected:
-
-	#define TIME_OBJ_ID_START(type)			(((type) << OBJ_ID_BITS) + 1)
-	#define TIME_OBJ_ID_END(type)			((((type) + 1) << OBJ_ID_BITS) - 10)
-	#define TIME_OBJ_ID_COUNT(type, count)	TIME_OBJ_ID_START(type), count, TIME_OBJ_ID_END(type)
-
-	enum
+    enum
 	{
 		TIMER_PERCISION	= 100,			// 定时器精度 100 ms
 		TIMER_QUEUE_LENGTH	= 120000,	// 定时器最大个数
@@ -226,21 +222,23 @@ protected:
 
 	#define FINDER_QUEUE_LENGTH (TIMER_QUEUE_LENGTH + SESSION_QUEUE_LENGTH)
 
-	typedef std::unordered_map<OBJ_ID ,CTimer> TimerObjManager;
-	typedef std::unordered_map<OBJ_ID,CSession> SessionObjManager;
+	typedef std::unordered_map<OBJ_ID ,CTimer> TimerObjMap;
+	typedef std::unordered_map<OBJ_ID,CSession> SessionObjMap;
 	typedef std::map<time_t, CDoubleLinkerInfo> TIMER_FINDER;
 	typedef std::vector<OBJ_ID>	DELETE_LIST;
 
 	// CTimer的objmanager
-	TimerObjManager mTimerMap;
+    CObjectManager* m_pTimerManager;
+    TimerObjMap m_mTimerMap;
 	// CSession的objmanager
-	SessionObjManager mSessionMap;
+    CObjectManager* m_pSessionManager;
+    SessionObjMap m_mSessionMap;
 	// 以超时tick为key，链表信息为value的hash_map
-	TIMER_FINDER mTimerFinder;
+	TIMER_FINDER m_mTimerFinder;
 	// 上次检测timer队列的tick即 毫秒 / 100
-	time_t mLastCheckTick;
+	time_t m_tLastCheckTick;
 	// 定时器销毁队列(定时器不能即时销毁,因为定时器里面有可能销毁定时器,所以放入待销毁列表中)
-	DELETE_LIST		mDeleteList;
+	DELETE_LIST		m_aDeleteList;
 
 	// 插入mTimerFinder
 	void InsertIntoFinder(CTimerBase* pTimer);

@@ -67,7 +67,8 @@ Tokens StrSplit(const std::string &src, const std::string &sep);
 
 // 通过unix时间戳获取是当年的第几天
 int GetDayOfYear(time_t tTime);
-
+// 获取当前秒数
+int GetSecondTime();
 // 判断两个时间戳是否是同一天
 bool IsSameDay(time_t tFirstTime, time_t tSecondTime);
 
