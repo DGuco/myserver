@@ -13,8 +13,8 @@
 
 //OBJ_ID_BITS占位,时间戳(4字节)+类型(2字节)+同一秒序列id(3字节),同一秒同类型的对象ID的范围最大为2^^24,
 //即每秒可生成16777216个同类型对象(足够了) (注意:服务器时间不能往回调)
-#define OBJ_ID_BITS (56)
-#define INVALID_OBJ_ID	0 //
+#define OBJ_ID_BITS (24)
+#define INVALID_OBJ_ID	0
 typedef __uint64_t  OBJ_ID;
 
 //同一秒id范围
