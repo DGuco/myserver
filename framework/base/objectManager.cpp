@@ -25,7 +25,7 @@ OBJ_ID CObjectManager::GetValidId()
         LOG_ERROR("default" ,"Id out of range,type = %d, id_start = %d, id_end = %d.",m_enObjType, OBJ_ID_START(m_enObjType), OBJ_ID_START(m_enObjType));
         return INVALID_OBJ_ID;
     }
-    id = timeNow << 56 | m_ulLastUsedId;
+    id = timeNow << 32 | m_ulLastUsedId;
     if (m_tLastGetTime == timeNow) {
         m_ulLastUsedId++;
     }else
