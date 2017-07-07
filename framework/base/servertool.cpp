@@ -53,14 +53,11 @@ unsigned short CGuid::mAddCnt = 0;
 
 CGuid::CGuid()
 {
-	if (CObj::msCreateMode)
-	{
-		mCreateTime	= 0;
-		mZoneID		= 0;
-		mServerType	= 0;
-		mServerID	= 0;
-		mMyAddCnt	= 0;
-	}
+	mCreateTime	= 0;
+	mZoneID		= 0;
+	mServerType	= 0;
+	mServerID	= 0;
+	mMyAddCnt	= 0;
 }
 
 
