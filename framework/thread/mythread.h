@@ -43,7 +43,7 @@ public:
 
 	int CreateThread();
 	int WakeUp();
-//	int StopThread();
+	int StopThread();
 	void ThreadLogInit(char *sPLogBaseName, long lPMaxLogSize, int iPMaxLogNum, int iShow, int iLevel = 0);
 
 protected:
@@ -63,6 +63,7 @@ public:
 private:
     std::mutex m_condMut;
     std::condition_variable data_cond;
+	std::thread mt;
 };
 
 
