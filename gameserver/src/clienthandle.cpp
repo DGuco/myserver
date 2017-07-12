@@ -34,9 +34,9 @@ int CClientHandle::Initialize()
     BYTE* pbyTmpS2CPipe = CreateShareMem(iTmpKeyS2C, iTempSize);
     MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
     CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
-    CCodeQueue::pCurrentShm = new CSharedMem(iTmpKeyS2C, iTempSize);
+    CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize);
     //mS2CPipe地址相对pbyTmpS2CPipe的偏移地址是sizeof(CSharedMem) + sizeof(CCodeQueue)
-    mS2CPipe = new CCodeQueue(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_S2C);
+    mS2CPipe = CCodeQueue::CreateInsance(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_S2C);
 
     ////////////////////////////////mC2SPipe/////////////////////////////////////////
     system("touch ./cspipefile");
@@ -50,9 +50,9 @@ int CClientHandle::Initialize()
     BYTE* pbyTmpC2SPipe = CreateShareMem(iTmpKeyC2S, iTempSize);
     MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
     CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
-    CCodeQueue::pCurrentShm = new CSharedMem(iTmpKeyC2S, iTempSize);
+    CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyC2S, iTempSize);
     //mC2SPipe地址相对pbyTmpS2CPipe的偏移地址是sizeof(CSharedMem) + sizeof(CCodeQueue)
-    mC2SPipe = new CCodeQueue(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_C2S);
+    mC2SPipe = CCodeQueue::CreateInsance(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_C2S);
     return 0;
 }
 

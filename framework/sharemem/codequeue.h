@@ -13,13 +13,16 @@
 
 class CCodeQueue
 {
-public:
+	//禁止在栈上生成对象
+protected:
 	//构造函数
 	CCodeQueue();
 	//构造函数
 	CCodeQueue( int nTotalSize, int iLockIdx = -1 );
-	//析构函数
-	~CCodeQueue();
+
+public:
+    //析构函数
+    ~CCodeQueue();
 	//new操作符重载将类对象定义到共享内存区地址
 	void* operator new( size_t nSize );
 	//delete操作符重载
@@ -46,6 +49,9 @@ public:
 	int LoadFromFile(const char *szFileName);
 	//清除进程间共享内存管道数据
 	int CleanQueue();
+
+	static CCodeQueue* CreateInsance();
+	static CCodeQueue* CreateInsance(int nTotalSize, int iLockIdx = -1 );
 	//codequeue大小
 	static size_t CountQueueSize(int iBufSize);
 	//获取共享内管道的其实地址
@@ -54,8 +60,6 @@ public:
 
 	void GetCriticalData(int& iBegin, int& iEnd, int& iLeft);
 
-protected:
-	
 private:
 	int IsQueueFull();
 	int SetFullFlag( int iFullFlag );

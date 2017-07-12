@@ -20,16 +20,18 @@ typedef enum
 
 class CSharedMem
 {
-public:
+	//禁止在栈上生成对象
+protected:
     //构造函数
 	CSharedMem();
     //构造函数
 	CSharedMem(unsigned int nKey, size_t nSize);
     //构造函数
 	CSharedMem(unsigned int nKey, size_t nSize, int nInitFlag);
-    //析构函数
-	~CSharedMem();
 
+public:
+    //析构函数
+    ~CSharedMem();
     //初始化
 	int Initialize(unsigned int nKey, size_t nSize);
     //设置共享内存创建时间戳
@@ -44,6 +46,10 @@ public:
 	void SetInitMode( EIMode emMode );
     //在创建好的共享内存块上划分内存段
 	void*  CreateSegment( size_t nSize);
+    static CSharedMem* CreateInstance();
+    static CSharedMem* CreateInstance(unsigned int nKey, size_t nSize);
+    static CSharedMem* CreateInstance(unsigned int nKey, size_t nSize, int nInitFlag);
+
     //当前共享内存块地址大小通常为sizeof(CSharedMem) + sizeof(CCodeQueue) + PIPE_SIZE（可变）
 	static BYTE* pbCurrentShm;
 

@@ -126,8 +126,8 @@ int CGateCtrl::CreatePipe()
     BYTE* pbyTmpS2CPipe = CreateShareMem(iTmpKeyS2C, iTempSize);
     MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
     CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
-    CCodeQueue::pCurrentShm = new CSharedMem(iTmpKeyS2C, iTempSize);
-    mS2CPipe = new CCodeQueue(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_S2C);
+    CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize);
+    mS2CPipe = CCodeQueue::CreateInsance(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_S2C);
 
     ////////////////////////////////mC2SPipe/////////////////////////////////////////
     system("touch ./cspipefile");
@@ -141,8 +141,8 @@ int CGateCtrl::CreatePipe()
     BYTE* pbyTmpC2SPipe = CreateShareMem(iTmpKeyC2S, iTempSize);
     MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
     CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
-    CCodeQueue::pCurrentShm = new CSharedMem(iTmpKeyC2S, iTempSize);
-    mC2SPipe = new CCodeQueue(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_C2S);
+    CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyC2S, iTempSize);
+    mC2SPipe = CCodeQueue::CreateInsance(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_C2S);
     return 0;
 }
 /**

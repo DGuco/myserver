@@ -1,7 +1,5 @@
 #include <stdarg.h>
 #include <string.h>
-#include <thread>
-
 #include "../base/base.h"
 #include "mythread.h"
 #include "../log/log.h"

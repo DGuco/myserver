@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <condition_variable>
 #include <mutex>
+#include <thread>
 
 #define TRACE_DEBUG		ThreadLogDebug
 #define TRACE_INFO			ThreadLogInfo

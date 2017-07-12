@@ -384,11 +384,9 @@ template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetSocketFD()
 {
 	int iTmpFD = -1;
-
 #ifdef _POSIX_MT_
 	std::lock_guard<std::mutex> lock(m_stMutex);
 #endif
-
 	iTmpFD = m_iSocketFD;
 	return iTmpFD;
 }
@@ -401,7 +399,6 @@ template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetStatus()
 {
 	int iTmpStatus = tcs_closed;
-
 #ifdef _POSIX_MT_
 	std::lock_guard<std::mutex> lock(m_stMutex);
 #endif
@@ -494,9 +491,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLength, BYTE *pCode, eByteMode emByte)
 {
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
 	unsigned short shMaxBufferLen = nCodeLength;
 	int iDataLength = 0;
 	unsigned short nTempLength;
@@ -507,6 +501,9 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 		return -1;
 	}
 
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> lock(m_stMutex);
+#endif
     //缓冲区数据总长度
 	iDataLength = m_iReadEnd - m_iReadBegin;
 
