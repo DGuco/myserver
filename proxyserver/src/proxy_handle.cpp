@@ -281,7 +281,6 @@ int CProxyHandle::DoTransfer()
     std::vector<CMyTCPConn*> vecConns;
 #ifdef _POSIX_MT_
     std::unique_lock<std::mutex> lk(CProxyCtrl::stLinkMutex[m_eHandleType]);
-    lk.lock();
 #endif
     //检查当前线程的连接
     for (CMyTCPConn* tpConn = (CMyTCPConn*)m_pInfo->GetHead();tpConn != NULL;tpConn = (CMyTCPConn*)tpConn->GetNext())
