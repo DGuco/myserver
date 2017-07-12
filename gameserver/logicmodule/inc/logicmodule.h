@@ -14,6 +14,7 @@ enum EModuleType
     EMODULETYPE_CORE			= 0,	// 核心模块
     EMODULETYPE_NUM						// 模块数量
 };
+
 #define EMODULETYPE_START (EMODULETYPE_INVALID + 1)	// 模块起始下标
 
 class CTeam;

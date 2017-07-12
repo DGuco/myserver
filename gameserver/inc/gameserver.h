@@ -22,15 +22,15 @@
 class CMessageSet;
 class CMessage;
 class CCSHead;
-class CProxyHead;
-class CCoreModule;
+//class CProxyHead;
+//class CCoreModule;
 class CClientHandle;
-class CSceneObjManager;
+//class CSceneObjManager;
 class CModuleManager;
 class CMessageDispatcher;
-class CFactory;
+//class CFactory;
 class CTeam;
-class CTimerManager;
+//class CTimerManager;
 //class CEntity;
 
 
@@ -109,13 +109,13 @@ public:
 
 public:
     // 设置服务器状态
-    void SetServerState(int iState) {mServerState = (mServerState | iState);}
+    void SetServerState(int iState) {miServerState = (miServerState | iState);}
     // 清除服务器状态
-    void EraseServerState(int iState) {mServerState = (mServerState & (~iState));}
+    void EraseServerState(int iState) {miServerState = (miServerState & (~iState));}
     // 判断服务器状态
-    bool IsOk(int iState) {return ((mServerState & iState) == iState);}
+    bool IsOk(int iState) {return ((miServerState & iState) == iState);}
     // 服务器是否正常
-    bool IsNormal() {return mServerState == ESS_NORMAL;}
+    bool IsNormal() {return miServerState == ESS_NORMAL;}
 
     // 服务器拉取数据完成
     void LoadDataFinish();
@@ -123,7 +123,7 @@ public:
     void StartProcessingInitData();
 
     // 是否能正常处理客户端上行消息
-    bool CanProcessingClientMsg() {return (mServerState &  ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG;}
+    bool CanProcessingClientMsg() {return (miServerState &  ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG;}
     // 创建实体
     int	CreateEntity(CTeam* pTeam);
     // 销毁实体
@@ -212,8 +212,7 @@ public:
     int LimitTeamLogin( unsigned int iTeamID, time_t iTimes ); // itimes 暂定为小时
 
 protected:
-    // 需要new在共享内存上的
-    CClientHandle* 				mpClientHandle;				// 与客户端通信的连接
+    CClientHandle* 				mpClientHandle;				// 与客户端通信的连接,需要new在共享内存上的
     CModuleManager* 			mpModuleManager;			// 模块管理器
     CTimerManager*				mpTimerManager;				// 定时器管理器
     CMessageDispatcher*		    mpMessageDispatcher;		// 消息派发器
