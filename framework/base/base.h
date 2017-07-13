@@ -52,7 +52,6 @@ typedef unsigned char BYTE;
 
 
 
-#define I64FMTD "%lu"
 typedef __int64_t   int64;
 typedef __int32_t   int32;
 typedef __int16_t   int16;

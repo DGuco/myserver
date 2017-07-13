@@ -1,0 +1,8 @@
+//
+// Created by DGuco on 17-7-13.
+//
+
+#ifndef SERVER_MESSAGEFACTORY_H
+#define SERVER_MESSAGEFACTORY_H
+
+#endif //SERVER_MESSAGEFACTORY_H

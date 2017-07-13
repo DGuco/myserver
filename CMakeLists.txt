@@ -7,4 +7,5 @@ project(server)
 add_subdirectory(framework)
 add_subdirectory(gateserver)
 add_subdirectory(proxyserver)
+add_subdirectory(dbserver)
 

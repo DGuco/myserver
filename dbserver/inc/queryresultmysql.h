@@ -1,0 +1,8 @@
+//
+// Created by DGuco on 17-7-13.
+//
+
+#ifndef SERVER_QUERYRESULTMYSQL_H
+#define SERVER_QUERYRESULTMYSQL_H
+
+#endif //SERVER_QUERYRESULTMYSQL_H
