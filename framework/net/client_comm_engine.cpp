@@ -10,7 +10,7 @@
 #include "../base/my_assert.h"
 #include "../net/oi_tea.h"
 
-unsigned char ClientCommEngine::tKey[16] = {1,2,3,4,57,6,7,8,9,0,2,2,4,4,5,6};
+unsigned char ClientCommEngine::tKey[16] = {1,2,3,4,5,6,7,8,9,0,2,2,4,4,5,6};
 unsigned char* ClientCommEngine::tpKey = &tKey[0];
 
 void pbmsg_settcphead(CTcpHead& rHead, int iSrcFE, int iSrcID, int iDstFE, int iDstID, time_t tTimestamp, EGateCmd eCmd)
@@ -87,6 +87,7 @@ int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short
         {
             // 加密的消息处理
             int tDecLen = tOutLen;
+            //这里每次都创建一个CAes 对象保证函数的无状态，线程安全
 			CAes tmpAes;
 			tmpAes.init(tpKey,16);
 			int outlen;
@@ -207,13 +208,18 @@ int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuf
         {
             // 加密的消息处理
             int tDecLen = tOutLen;
+            //这里每次都创建一个CAes 对象保证函数的无状态，线程安全
+            CAes tmpAes;
+            tmpAes.init(tpKey,16);
+            int outlen;
+            tpEncryBuff = (unsigned char*)tmpAes.decrypt((const char*)tpBuff,unBuffLen,tDecLen);
             tOutLen = tDecLen;
         }
         else
         {
             // 未加密的消息处理
             tpEncryBuff = (unsigned char*)tpBuff;
-            tOutLen = tTotalClientLen;
+            tOutLen = unBuffLen;
         }
 
         // 解密后的长度不能超过最大MAX_PACKAGE_LEN,也不能比输入的未加密前长度长
@@ -386,19 +392,25 @@ int ClientCommEngine::ConvertMsgToStream(void* pBuff, unsigned short& unBuffLen,
 		{
 			MY_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertMsgToStream MsgPara SerializeToArray failed.");
 		}
-		// 消息加密
-		if (bEncrypt)
-		{
-			// 加密的消息处理
-			int tEncLen = unBuffLen - tTotalLen - tTotalClientLen;
-			iMsgParaLen = tEncLen;
-		}
-		else
-		{
+
+        //消息加密
+        if (bEncrypt)
+        {
+            int tEncLen = unBuffLen - tTotalLen - tTotalClientLen;
+            //这里每次都创建一个CAes 对象保证函数的无状态，线程安全
+            CAes tmpAes;
+            tmpAes.init(tpKey,16);
+            tpEncryBuff = (unsigned char*)tmpAes.encrypt((const char*)tpEncryBuff,pMsgPara->ByteSize(), tEncLen);
+            iMsgParaLen = tEncLen;
+            memcpy(tpClientBuff, tpEncryBuff, iMsgParaLen);
+        }
+        else
+        {
 			// 未加密的消息处理
 			iMsgParaLen = pMsgPara->ByteSize();
 			memcpy(tpClientBuff, tpEncryBuff, iMsgParaLen);
-		}
+        }
+
 		tpClientBuff += iMsgParaLen;
 		tTotalClientLen += iMsgParaLen;
 
