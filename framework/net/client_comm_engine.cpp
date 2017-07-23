@@ -125,8 +125,22 @@ int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short
     }
     return 0;
 }
+int ClientCommEngine::AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg)
+{
+    if ((pMsgSet == NULL) || (pMsgSet == NULL))
+    {
+        MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet Input param failed.");
+    }
+    BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
+    int iTmpCodeLength = sizeof(abyTmpCodeBuf);
+    if(!pMsg->SerializePartialToArray((void*) abyTmpCodeBuf,iTmpCodeLength))
+    {
+        MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet SerializePartialToArray failed.");
+    }
+    pMsgSet->add_msgparas((const char*)abyTmpCodeBuf);
+    return 0;
+}
 
-// 反序列化CMessage
 int ClientCommEngine::ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CMessage* pMsg, CFactory* pMsgFactory, bool bEncrypt, const unsigned char* pEncrypt)
 {
     if (

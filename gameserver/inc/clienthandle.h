@@ -45,7 +45,7 @@ class CMessage;
 class CCSHead;
 class CCodeQueue;
 class CSharedMem;
-class CTeam;
+class CPlayer;
 class CMessageSet;
 
 class CClientHandle
@@ -64,8 +64,8 @@ protected:
     CNetHead mNetHead;
 
 public:
-
-    int Send(CMessageSet* pMsgSet, stPointList* pTeamList);
+    int AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg);
+    int Send(CMessageSet* pMsgSet, stPointList* pPlayerList);
     int Send(CMessageSet* pMsgSet, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff = false);
     int Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid);
     int SendLog(BYTE* pCodeBuff, int vLen);
@@ -74,7 +74,7 @@ public:
     int DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CCSHead* pCSHead, CMessage* pMsg);
 
     // 断开玩家连接
-    void DisconnectClient(CTeam* pTeam);
+    void DisconnectClient(CPlayer* cPlayer);
     // 断开玩家连接
     void DisconnectClient(int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort);
 

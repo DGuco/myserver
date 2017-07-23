@@ -25,7 +25,10 @@ public:
 	static unsigned char tKey[16];
 	static unsigned char* tpKey;
 
-    // 反序列化客户端Message
+	static int AddMsgToMsgSet(CMessageSet* pMsgSet,
+                              CMessage* pMsg);
+
+	// 反序列化客户端Message
     static int ConvertClientStreamToMsg(const void* pBuff,
                                   unsigned short unBuffLen,
                                   CMessage* pMsg,

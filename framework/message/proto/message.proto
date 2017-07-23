@@ -43,3 +43,18 @@ message CMsgPingRequest
 {
 	enum Msg{MsgID	=	0x00FFFFFF;	}
 };
+
+// 客户端与服务器之间的消息头
+message CCSHead
+{
+    optional uint32		DialogID	= 1[default = 0];	// 会话ID
+    optional uint64		TeamID		= 2;				// 战队ID
+    optional uint32		EntityID	= 3;				// 实体ID
+	optional int64		TimeStamp	= 4[default = 0];	// 时间戳
+};
+
+// 消息集合(与客户端约定：服务器给客户端下发消息时需要放入消息集合，但客户端上行服务器不需要)
+message CMessageSet
+{
+	repeated bytes	MsgParas = 1;	// 消息集合(每一个bytes组成[总长度：CMessageHead长度：CMessageHead：MsgPara长度：MsgPara])
+};

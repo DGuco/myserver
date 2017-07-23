@@ -29,7 +29,7 @@ class CClientHandle;
 class CModuleManager;
 class CMessageDispatcher;
 //class CFactory;
-class CTeam;
+class CPlayer;
 //class CTimerManager;
 //class CEntity;
 
@@ -37,7 +37,7 @@ class CTeam;
 #define MAX_PROXY_NUM	(2)	// proxy服务器的最大数量
 
 typedef CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH> MyTCPConn;
-
+//
 //proxyServer连接管理
 class CProxyClient : public MyTCPConn
 {
@@ -125,12 +125,12 @@ public:
     // 是否能正常处理客户端上行消息
     bool CanProcessingClientMsg() {return (miServerState &  ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG;}
     // 创建实体
-    int	CreateEntity(CTeam* pTeam);
+    int	CreateEntity(CPlayer* pPlayer);
     // 销毁实体
-    void DestroyEntity(CTeam* pTeam);
+    void DestroyEntity(CPlayer* pPlayer);
 
     // 处理客户端上行消息
-    void ProcessClientMessage(CCSHead* pHead, CMessage* pMsg, CTeam* pTeam);
+    void ProcessClientMessage(CCSHead* pHead, CMessage* pMsg, CPlayer* pPlayer);
     // 处理服务器内部消息
     void ProcessRouterMessage(CMessage* pMsg);
 
@@ -150,10 +150,10 @@ public:
     // 收取服务器消息
     int RecvServerMsg(time_t tTime);
     // 广播消息给玩家，广播时，发起人一定放第一个
-    int SendTeam(CMessageSet* pMsgSet, stPointList* pTeamList);
+    int SendPlayer(CMessageSet* pMsgSet, stPointList* pTeamList);
     // 发送消息给单个玩家
-    int SendTeam(CMessageSet* pMsgSet, CTeam* pTeam);
-    int SendTeam(unsigned int iMsgID, CMessage* pMsgPara, CTeam* pTeam);
+    int SendPlayer(CMessageSet* pMsgSet, CPlayer* pPlayer);
+    int SendPlayer(unsigned int iMsgID, CMessage* pMsgPara, CPlayer* pPlayer);
     // 组合消息
     int AddMsgSet(CMessageSet* pMsgSet, unsigned int iMsgID, Message* pMsgPara);
 
@@ -162,7 +162,7 @@ public:
     int GetModuleClass(int iMsgID);
 
     // 主动断开链接
-    void DisconnectClient(CTeam* pTeam);
+    void DisconnectClient(CPlayer* pPlayer);
 
     // 连接到Proxy
     bool Connect2Proxy(int iIndex);

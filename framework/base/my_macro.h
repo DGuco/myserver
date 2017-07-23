@@ -5,6 +5,9 @@
 #ifndef SERVER_MY_NACRO_H
 #define SERVER_MY_NACRO_H
 
+// 获取数组元素最大个数
+#define ARRAY_CNT(a)	int(sizeof(a) / sizeof(a[0]))
+
 #define MAP_SAGE_FIND(map, key) 	\
 	do 								\
 	{ 								\

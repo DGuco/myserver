@@ -6,7 +6,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -pipe -std=c++11")
 set(SOURCE_FILES
         main.cpp
         inc/gameserver.h
+        inc/clienthandle.h
+        inc/player.h
         src/gameserver.cpp
+        src/player.cpp
+        src/player.cpp
         logicmodule/inc/coremodule.h
         logicmodule/src/coremodule.cpp
         logicmodule/inc/logicmodule.h
