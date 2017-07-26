@@ -1,6 +1,6 @@
 //
 // Created by DGuco on 17-7-26.
-// 对象内存池
+// 结合数组和双向链表实现对象内存池（注:使用该内存的类必须有无参的构造函数）
 //
 
 #ifndef SERVER_MEMPOOL_H
@@ -12,12 +12,10 @@ template<class Type>
 class CMemoryPool
 {
 public:
-    CMemoryPool(void)
-            :	m_pElementsSetList	( NULL	)
-    {
-    }
+    CMemoryPool(void) :	m_pElementsSetList(NULL),m_pUnusedElementsList(NULL) {}
     virtual ~CMemoryPool(void){}
 private:
+    //节点数据结构
     struct TagElement
     {
         Type		Element;
@@ -26,19 +24,28 @@ private:
         bool		bAlloc;
     };
 
+    //对象链表
     struct TagElementsSet
     {
+        //对象数组
         TagElement*		aElementsSet;
+        //如果初始化大小使用完，开辟另外一个同等大小的链表，并指向该链表
         TagElementsSet*	pNext;
     };
 
+    //对象池链表
     TagElementsSet* m_pElementsSetList;
+    //使用数量
     int			m_nNumOfAlloc;
+    //当前可用的节点
     TagElement*	m_pUnusedElementsList;
+    //一个链表的最大对象数量
     int			m_nNumOfElements;
+    //链表数量
     int			m_nNumOfElementsSet;
 
 public:
+    //开辟指定数量的内存池
     virtual bool	Create( uint nNumOfElements )
     {
         m_nNumOfElements	= nNumOfElements;
@@ -65,6 +72,7 @@ public:
         return TRUE;
     }
 
+    //回收内存
     virtual void Destroy()
     {
         while( m_pElementsSetList )
@@ -84,6 +92,7 @@ public:
     virtual Type* Alloc()
     {
         bool bTestAlloc = FALSE;
+        //如果当前的链表使用完，开辟新的一条同等大小的链表
         if( m_pUnusedElementsList == NULL )
         {
             bTestAlloc = TRUE;
@@ -115,12 +124,11 @@ public:
         pTagElement = m_pUnusedElementsList;
         m_pUnusedElementsList = m_pUnusedElementsList->pNext;
         if( m_pUnusedElementsList )
+        {
             m_pUnusedElementsList->pBefore = NULL;
 
-        if( pTagElement->bAlloc )
-        {
-            int a = 3;
         }
+
         pTagElement->bAlloc = TRUE;
 
         m_nNumOfAlloc++;
@@ -131,10 +139,6 @@ public:
     virtual void Free( Type* pElement )
     {
         TagElement* pTagElement = (TagElement*)pElement;
-        if( pTagElement->bAlloc != 1 )
-        {
-            int a = 3;
-        }
         pTagElement->pNext					= m_pUnusedElementsList;
         pTagElement->pBefore				= NULL;
         if( m_pUnusedElementsList )

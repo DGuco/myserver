@@ -13,7 +13,10 @@ template<class Type>
 class CMemoryPoolSafty : public CMemoryPool<Type>
 {
 private:
+#ifdef _POSIX_MT_
     std::mutex	m_cs;
+#endif
+
 public:
     virtual bool Create(uint nNumOfElements )
     {
@@ -27,7 +30,9 @@ public:
 
     virtual Type* Alloc()
     {
+#ifdef _POSIX_MT_
         std::lock_guard<std::mutex> guard(m_cs);
+#endif
         Type* pType;
         pType = CMemoryPool<Type>::Alloc();
         return pType;
@@ -35,8 +40,9 @@ public:
 
     virtual void Free( Type* pElement )
     {
+#ifdef _POSIX_MT_
         std::lock_guard<std::mutex> guard(m_cs);
-        CMemoryPool<Type>::Free( pElement );
+#endif        CMemoryPool<Type>::Free( pElement );
     }
 
 };
