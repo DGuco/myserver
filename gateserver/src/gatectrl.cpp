@@ -17,8 +17,8 @@
 #include "../inc/gatectrl.h"
 #include "../../framework/base/commondef.h"
 #include "../../framework/net/client_comm_engine.h"
-#include "../../framework/sharemem/codequeue.h"
-#include "../../framework/sharemem/sharemem.h"
+#include "../../framework/mem/codequeue.h"
+#include "../../framework/mem/sharemem.h"
 
 CGateCtrl::CGateCtrl()
 {

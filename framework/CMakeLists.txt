@@ -13,6 +13,9 @@ set(FRAMEWORK
         base/my_assert.h
         base/commondef.h
         base/my_macro.h
+        base/my_macro.h
+        base/objectManager.cpp
+        base/objectManager.h
         json/json.h
         json/json.cpp
         json/config.h
@@ -46,12 +49,14 @@ set(FRAMEWORK
         net/client_comm_engine.cpp
         net/ccrypto.h
         net/ccrypto.cpp
-        sharemem/sharemem.h
-        sharemem/shm.h/
-        sharemem/sharemem.cpp
-        sharemem/shm.cpp
-        sharemem/codequeue.h
-        sharemem/codequeue.cpp
+        mem/sharemem.h
+        mem/shm.h/
+        mem/sharemem.cpp
+        mem/shm.cpp
+        mem/codequeue.h
+        mem/codequeue.cpp
+        mem/mempool.h
+        mem/mempoolsafty.h
         thread/mythread.h
         thread/mythread.cpp
         timer/clock.cpp
@@ -62,7 +67,7 @@ set(FRAMEWORK
         event/eventbus.h
         event/eventHandler.h
         event/eventbus.cpp
-        event/handlerregistration.h base/my_macro.h base/objectManager.cpp base/objectManager.h)
+        event/handlerregistration.h)
 
 include_directories(
         /usr/local/include

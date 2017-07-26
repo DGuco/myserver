@@ -3,13 +3,12 @@
 //
 
 #include "../inc/clienthandle.h"
-#include "../../framework/sharemem/shm.h"
-#include "../../framework/sharemem/sharemem.h"
-#include "../../framework/sharemem/codequeue.h"
+#include "../../framework/mem/shm.h"
+#include "../../framework/mem/sharemem.h"
+#include "../../framework/mem/codequeue.h"
 #include "../../framework/base/my_assert.h"
 #include "../../framework/base/commondef.h"
 #include "../../framework/net/client_comm_engine.h"
-#include "../../framework/message/message.pb.h"
 #include "../../framework/json/config.h"
 
 CClientHandle::CClientHandle()
@@ -144,7 +143,7 @@ int CClientHandle::Send(CMessageSet* pMsgSet, stPointList* pTeamList)
 
 int CClientHandle::Send(CMessageSet* pMsgSet, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff)
 {
-    YQ_ASSERT((pMsgSet != NULL), return -1);
+    MY_ASSERT((pMsgSet != NULL), return -1);
 
     time_t tTmpNow = time(NULL);
     // 判断是否发送消息后断开连接(这个主动断开只针对与第一个玩家)
