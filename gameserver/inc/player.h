@@ -123,42 +123,41 @@ public:
 
 protected:
     // 上次登录时间
-    int miLastLoginTime;
+    int m_iLastLoginTime;
     // 离线时间
-    int miLeaveTime;
-    // 战队ID
-    unsigned long	mulPlayerID;
+    int m_iLeaveTime;
     // 创建时间
-    time_t mtCreateTime;
+    time_t m_tCreateTime;
     // 帐号状态时长( 禁止登陆 禁止说话 禁止...)
-    time_t mtLoginLimitTime;
+    time_t m_tLoginLimitTime;
     // 战队名称
-    char			macTeamName[NAME_LENGTH];
+    char			m_acPlayerName[NAME_LENGTH];
     // 帐号
-    char			macAccount[UID_LENGTH];
+    char			m_acAccount[UID_LENGTH];
     //连接信息
-    STConnectInfo	mSocketInfo;
+    STConnectInfo	m_SocketInfo;
 public:
     // 上次登录时间
-    void SetLastLoginTime(int v) {miLastLoginTime = v;}
-    int GetLastLoginTime() {return miLastLoginTime;}
+    void SetLastLoginTime(int v) {m_iLastLoginTime = v;}
+    int GetLastLoginTime() {return m_iLastLoginTime;}
     // 离线时间
-    void SetLeaveTime(int v) {miLeaveTime = v;}
-    int GetLeaveTime() {return miLeaveTime;}
+    void SetLeaveTime(int v) {m_iLeaveTime = v;}
+    int GetLeaveTime() {return m_iLeaveTime;}
     // 创建时间
-    void SetCreateTime(time_t v) {mtCreateTime = v;}
-    time_t GetCreateTime() {return mtCreateTime;}
-
+    void SetCreateTime(time_t v) {m_tCreateTime = v;}
+    time_t GetCreateTime() {return m_tCreateTime;}
+    unsigned long GetPlayerId() { return GetEntityID();}
+    char* GetPlayerName() { return m_acPlayerName;}
     // 帐号
     void SetAccount(const char* p)
     {
         if (p == NULL) {return;}
         int iTmpLen = strlen(p);
-        strncpy(macAccount, p, iTmpLen >= ARRAY_CNT(macAccount) ? (ARRAY_CNT(macAccount) - 1) : iTmpLen);
+        strncpy(m_acAccount, p, iTmpLen >= ARRAY_CNT(m_acAccount) ? (ARRAY_CNT(m_acAccount) - 1) : iTmpLen);
     }
-    char* GetAccount() {return &macAccount[0];}
+    char* GetAccount() {return &m_acAccount[0];}
 public:
     // 获取连接信息
-    STConnectInfo* GetSocketInfoPtr() {return &mSocketInfo;}
+    STConnectInfo* GetSocketInfoPtr() {return &m_SocketInfo;}
 };
 #endif //SERVER_PLAYER_H_H

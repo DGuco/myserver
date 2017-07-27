@@ -3,6 +3,8 @@
 //
 
 #include "../inc/clienthandle.h"
+#include "../inc/player.h"
+#include "../inc/messagedispatcher.h"
 #include "../../framework/mem/shm.h"
 #include "../../framework/mem/sharemem.h"
 #include "../../framework/mem/codequeue.h"
@@ -10,6 +12,7 @@
 #include "../../framework/base/commondef.h"
 #include "../../framework/net/client_comm_engine.h"
 #include "../../framework/json/config.h"
+#include "../../framework/base/servertool.h"
 
 CClientHandle::CClientHandle()
 {
@@ -75,26 +78,26 @@ int CClientHandle::Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid)
     CCSHead tmpCSHead;
     tmpCSHead.set_timestamp(lMsgGuid);
     // 如果需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertMsgToStream
-            (
-                    &mNetHead,
-                    &tmpCSHead,
-                    pMsgSet,
-                    pcTmpBuff,
-                    unTmpCodeLength
-            );
-    if (iRet != 0)
-    {
-        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertMsgToStream failed.");
-    }
+//    int iRet = ClientCommEngine::ConvertMsgToStream
+//            (
+//                    &mNetHead,
+//                    &tmpCSHead,
+//                    pMsgSet,
+//                    pcTmpBuff,
+//                    unTmpCodeLength
+//            );
+//    if (iRet != 0)
+//    {
+//        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertMsgToStream failed.");
+//    }
+//
+//    iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
+//    if (iRet < 0)
+//    {
+//        MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
+//    }
 
-    iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
-    if (iRet < 0)
-    {
-        YQ_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
-    }
-
-    LOG_DEBUG("default", "---- Send To Client Succeed ----");
+//    LOG_DEBUG("default", "---- Send To Client Succeed ----");
 //	for (int i = 0; i < unTmpCodeLength; i++)
 //	{
 //		LOG_DEBUG("default", "[%d : %d]", i, abyTmpCodeBuf[i]);
@@ -105,7 +108,7 @@ int CClientHandle::Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid)
 
 int CClientHandle::Send(CMessageSet* pMsgSet, stPointList* pTeamList)
 {
-    YQ_ASSERT((pMsgSet != NULL && pTeamList != NULL), return -1);
+    MY_ASSERT((pMsgSet != NULL && pTeamList != NULL), return -1);
 
     time_t tTmpNow = time(NULL);
     bool bTmpKickoff = false;
@@ -114,14 +117,14 @@ int CClientHandle::Send(CMessageSet* pMsgSet, stPointList* pTeamList)
     for (int i = 0; i < pTeamList->GetBroadcastNum(); i++)
     {
         // 将列表中的实体信息加入nethead头中
-        CTeam* pTmpTeam = (CTeam*)pTeamList->GetPointByIdx(i);
+        CPlayer* pTmpTeam = (CPlayer*)pTeamList->GetPointByIdx(i);
         if (pTmpTeam)
         {
             if (pTmpTeam->GetSocketInfoPtr()->iSocket != 0)
             {
                 mNetHead.AddEntity(pTmpTeam->GetSocketInfoPtr()->iSocket, pTmpTeam->GetSocketInfoPtr()->tCreateTime);
                 LOG_DEBUG("default", "---- Send To Client( %d | %lu | %s ) socket(%d) createtime(%ld) ----",
-                          pTmpTeam->GetEntityID(), pTmpTeam->GetTeamID(), pTmpTeam->GetTeamName(),
+                          pTmpTeam->GetEntityID(), pTmpTeam->GetPlayerId(), pTmpTeam->GetPlayerName(),
                           pTmpTeam->GetSocketInfoPtr()->iSocket, pTmpTeam->GetSocketInfoPtr()->tCreateTime);
             }
             else
@@ -132,7 +135,7 @@ int CClientHandle::Send(CMessageSet* pMsgSet, stPointList* pTeamList)
     }
 
     int iRet = -11;
-    CTeam* pTmpTeam = (CTeam*)pTeamList->GetPointByIdx(0);
+    CPlayer* pTmpTeam = (CPlayer*)pTeamList->GetPointByIdx(0);
     if (pTmpTeam)
     {
         iRet = Send2Tcp(pMsgSet, pTmpTeam->GetSocketInfoPtr()->lMsgGuid);
@@ -169,7 +172,7 @@ int CClientHandle::Recv()
     if (iRet < 0)
     {
         LOG_ERROR("default", "[%s : %d : %s] When GetHeadCode from C2SPipe, error ocurr %d",
-                  __YQ_FILE__, __LINE__, __FUNCTION__, iRet);
+                  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
         return CLIENTHANDLE_QUEUE_CRASH;
     }
 
@@ -253,12 +256,12 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CCSHead* pCSHead, CM
         LOG_INFO("default", "client(%d : %d) commhandle closed by err = %d. ", iTmpSocket, tTmpCreateTime, mNetHead.m_cState);
 
         // 从连接容器中取出玩家实体
-        CTeam* pTmpTeam = CCoreModule::GetSingletonPtr()->GetTeamBySocket(iTmpSocket);
+        CPlayer* pTmpTeam = CCoreModule::GetSingletonPtr()->GetTeamBySocket(iTmpSocket);
         if (NULL == pTmpTeam)
         {
             // 找不到玩家，连接已经关闭了
             LOG_ERROR("default", "[%s : %d : %s] socket(%d : %d) EntityID = %d has closed.",
-                      __YQ_FILE__, __LINE__, __FUNCTION__, iTmpSocket, tTmpCreateTime);
+                      __MY_FILE__, __LINE__, __FUNCTION__, iTmpSocket, tTmpCreateTime);
             return CLIENTHANDLE_HASCLOSED;
         }
         else
@@ -268,7 +271,7 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CCSHead* pCSHead, CM
             {
                 // 当前玩家与该连接信息不匹配,说明该玩家的连接已经失效
                 LOG_WARN("default", "[%s : %d : %s] socket(%d : %d) not match, now(%d : %d).",
-                         __YQ_FILE__, __LINE__, __FUNCTION__, iTmpSocket, tTmpCreateTime, pTmpTeam->GetSocketInfoPtr()->iSocket, pTmpTeam->GetSocketInfoPtr()->tCreateTime);
+                         __MY_FILE__, __LINE__, __FUNCTION__, iTmpSocket, tTmpCreateTime, pTmpTeam->GetSocketInfoPtr()->iSocket, pTmpTeam->GetSocketInfoPtr()->tCreateTime);
                 // 重置玩家连接信息
                 CCoreModule::GetSingletonPtr()->LeaveGame(pTmpTeam, false);
 //				CCoreModule::GetSingletonPtr()->EraseSockInfoList(iTmpSocket);
@@ -399,108 +402,6 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CCSHead* pCSHead, CM
             CCoreModule::GetSingletonPtr()->SDKLoginSucces(pTmpMsg->account().c_str(),pTmpMsg->password().c_str(),pTmpMsg->serverid(),pTmpMsg->pfrom(),iTmpSocket,tTmpCreateTime,lTmpMsgGuid,mNetHead.m_iSrcIP,mNetHead.m_nSrcPort,mNetHead.m_tStamp);
             return CLIENTHANDLE_LOGINCHECK;
         }
-//		// 通过帐号和服务器ID查找玩家
-//		unsigned long ulTmpTeamID = CCoreModule::GetSingletonPtr()->GetTeamIDByAccount(pTmpMsg->account().c_str(), pTmpMsg->serverid(), pTmpMsg->pfrom());
-//		if( ulTmpTeamID  ==  0)
-//		{
-//			// 这是新玩家
-//			// 每次有新玩家连接时都检测是否在线已满
-//			if (CCoreModule::GetSingletonPtr()->IsOnlineFull())
-//			{
-//				// 通知客户端服务器已满并断开连接
-//				CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_isfull,lTmpMsgGuid,iTmpSocket, tTmpCreateTime,
-//				mNetHead.m_iSrcIP, mNetHead.m_nSrcPort,true);
-//				return CLIENTHANDLE_ONLINEFULL;
-//
-//			}
-//			// 创建TeamID
-//			ulTmpTeamID = CCoreModule::GetSingletonPtr()->CreateTeamID(pTmpMsg->serverid(), pTmpMsg->pfrom());
-//			if (ulTmpTeamID == 0)
-//			{
-//				LOG_ERROR("default", "[%s : %d : %s]  team(Account=%s, ServerID=%d, PFrom=%d) login failed, create team id failed.",
-//						__YQ_FILE__, __LINE__, __FUNCTION__, pTmpMsg->account().c_str(), pTmpMsg->serverid(), pTmpMsg->pfrom());
-//				// 通知客户端创建teamid失败并断开连接
-//				CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_createteamid, lTmpMsgGuid, iTmpSocket,
-//						tTmpCreateTime, mNetHead.m_iSrcIP,mNetHead.m_nSrcPort, true);
-//				return CLIENTHANDLE_MSGINVALID;
-//			}
-//			// 创建玩家实体
-//			pTmpTeam =(CTeam*) CSceneObjManager::GetSingletonPtr()->CreateObject(OBJTYPE_TEAM);
-//			if (pTmpTeam == NULL)
-//			{
-//				LOG_ERROR("default", "[%s : %d : %s]  team(Account=%s, ServerID=%d) login failed, create team object failed.",
-//						__YQ_FILE__, __LINE__, __FUNCTION__, pTmpMsg->account().c_str(), pTmpMsg->serverid());
-//				// 通知客户端创建team失败并断开连接
-//				CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_createteam, lTmpMsgGuid, iTmpSocket,
-//						tTmpCreateTime, mNetHead.m_iSrcIP,mNetHead.m_nSrcPort, true);
-//				return CLIENTHANDLE_CREATETEAMFAILED;
-//			}
-//			// 新创建的玩家需要设置TeamID和是否初次登录标记
-//			pTmpTeam->SetTeamID(ulTmpTeamID);
-//			pTmpTeam->SetCreateTime(time(NULL));
-//			pTmpTeam->SetFirstLoginFlag(CTeam::emLoginFlag_First);
-//
-//		}
-//		else
-//		{
-//			// 不是新玩家
-//			pTmpTeam = CCoreModule::GetSingletonPtr()->GetTeamByTeamID(ulTmpTeamID);
-//			if( pTmpTeam)
-//			{
-//				if( pTmpTeam->GetTeamState()  ==  CTeam::ETS_INGAMECONNECT)
-//				{
-//					// 玩家有连接,则断开连接,并通知客户端被挤掉
-//					CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(
-//							emSystem_loginagain,
-//							-1,
-//							pTmpTeam->GetSocketInfoPtr()->iSocket,
-//							pTmpTeam->GetSocketInfoPtr()->tCreateTime,
-//							pTmpTeam->GetSocketInfoPtr()->uiIP,
-//							pTmpTeam->GetSocketInfoPtr()->unPort,
-//							true);
-//					// 设置断连状态
-//					CCoreModule::GetSingletonPtr()->LeaveGame(pTmpTeam, false);
-//				}
-//				pTmpTeam->SetFirstLoginFlag(CTeam::emLoginFlag_haveobj);
-//			}
-//			else
-//			{
-//				// 每次有玩家连接时都检测是否在线已满
-//				if (CCoreModule::GetSingletonPtr()->IsOnlineFull())
-//				{
-//					// 通知客户端服务器已满并断开连接
-//					CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_isfull,lTmpMsgGuid,iTmpSocket, tTmpCreateTime,
-//					mNetHead.m_iSrcIP, mNetHead.m_nSrcPort,true);
-//					return CLIENTHANDLE_ONLINEFULL;
-//				}
-//				// 创建玩家实体
-//				pTmpTeam =(CTeam*) CSceneObjManager::GetSingletonPtr()->CreateObject(OBJTYPE_TEAM);
-//				if (pTmpTeam == NULL)
-//				{
-//					LOG_ERROR("default", "[%s : %d : %s]  team(Account=%s, ServerID=%d) login failed, create team object failed.",
-//							__YQ_FILE__, __LINE__, __FUNCTION__, pTmpMsg->account().c_str(), pTmpMsg->serverid());
-//					// 通知客户端创建team失败并断开连接
-//					CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_createteam, lTmpMsgGuid, iTmpSocket,
-//							tTmpCreateTime, mNetHead.m_iSrcIP,mNetHead.m_nSrcPort, true);
-//					return CLIENTHANDLE_CREATETEAMFAILED;
-//				}
-//				// 创建的玩家实体需要设置TeamID和是否初次登录标记
-//				pTmpTeam->SetTeamID(ulTmpTeamID);
-//				pTmpTeam->SetFirstLoginFlag(CTeam::emLoginFlag_notFirst);
-//			}
-//		}
-//		pTmpTeam->GetSocketInfoPtr()->SetConnectInfo
-//			(
-//			 mNetHead.m_iSrcIP,
-//			 mNetHead.m_nSrcPort,
-//			 iTmpSocket,
-//			 tTmpCreateTime,
-//			 mNetHead.m_tStamp,
-//			 mNetHead.m_tStamp
-//			);
-//		pTmpTeam->SetTeamState(CTeam::ETS_STARTLOGIN);
-//		// 插入socketlist
-//		CCoreModule::GetSingletonPtr()->InsertSockInfoList(pTmpTeam);
     }
     else
     {
@@ -540,13 +441,13 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CCSHead* pCSHead, CM
 
     pTmpTeam->GetSocketInfoPtr()->tLastActiveTime = mNetHead.m_tStamp;
     pCSHead->set_entityid( pTmpTeam->GetEntityID() );
-//	if (pTmpTeam->GetSocketInfoPtr()->lMsgGuid == lTmpMsgGuid)
-//	{
-//		// 如果消息的GUID相等,说明这是客户端重发的消息,服务器已经处理过了,直接抛弃
-//		LOG_INFO("default", "[%s : %d : %s] message guid(%ld) is same, ignore it.",
-//				__YQ_FILE__, __LINE__, __FUNCTION__, lTmpMsgGuid);
-//		return CLIENTHANDLE_SUCCESS;
-//	}
+	if (pTmpTeam->GetSocketInfoPtr()->lMsgGuid == lTmpMsgGuid)
+	{
+		// 如果消息的GUID相等,说明这是客户端重发的消息,服务器已经处理过了,直接抛弃
+		LOG_INFO("default", "[%s : %d : %s] message guid(%ld) is same, ignore it.",
+				__YQ_FILE__, __LINE__, __FUNCTION__, lTmpMsgGuid);
+		return CLIENTHANDLE_SUCCESS;
+	}
     pTmpTeam->GetSocketInfoPtr()->lMsgGuid = lTmpMsgGuid;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -562,11 +463,11 @@ void CClientHandle::DisconnectClient(CPlayer* cPlayer)
         return;
     }
 
-//    DisconnectClient(
-//            cPlayer->GetSocketInfoPtr()->iSocket,
-//            cPlayer->GetSocketInfoPtr()->tCreateTime,
-//            cPlayer->GetSocketInfoPtr()->uiIP,
-//            cPlayer->GetSocketInfoPtr()->unPort);
+    DisconnectClient(
+            cPlayer->GetSocketInfoPtr()->iSocket,
+            cPlayer->GetSocketInfoPtr()->tCreateTime,
+            cPlayer->GetSocketInfoPtr()->uiIP,
+            cPlayer->GetSocketInfoPtr()->unPort);
 }
 
 // 断开玩家连接

@@ -65,6 +65,7 @@ protected:
 
 public:
     int AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg);
+    int Send(CMessage* message,CPlayer* pPlayer);
     int Send(CMessageSet* pMsgSet, stPointList* pPlayerList);
     int Send(CMessageSet* pMsgSet, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff = false);
     int Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid);
