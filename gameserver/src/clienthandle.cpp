@@ -129,7 +129,7 @@ int CClientHandle::Send(CMessageSet* pMsgSet, stPointList* pTeamList)
             }
             else
             {
-                LOG_DEBUG("default", "Client(%d | %lu | %s) has disconnected.", pTmpTeam->GetEntityID(), pTmpTeam->GetTeamID(), pTmpTeam->GetTeamName());
+                LOG_DEBUG("default", "Client(%d | %lu | %s) has disconnected.", pTmpTeam->GetEntityID(), pTmpTeam->GetPlayerId(), pTmpTeam->GetPlayerName());
             }
         }
     }
