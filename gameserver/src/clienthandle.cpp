@@ -78,30 +78,30 @@ int CClientHandle::Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid)
     CCSHead tmpCSHead;
     tmpCSHead.set_timestamp(lMsgGuid);
     // 如果需要加密，在这里修改参数
-//    int iRet = ClientCommEngine::ConvertMsgToStream
-//            (
-//                    &mNetHead,
-//                    &tmpCSHead,
-//                    pMsgSet,
-//                    pcTmpBuff,
-//                    unTmpCodeLength
-//            );
-//    if (iRet != 0)
-//    {
-//        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertMsgToStream failed.");
-//    }
-//
-//    iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
-//    if (iRet < 0)
-//    {
-//        MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
-//    }
+   int iRet = ClientCommEngine::ConvertMsgToStream
+           (
+                   &mNetHead,
+                   &tmpCSHead,
+                   pMsgSet,
+                   pcTmpBuff,
+                   unTmpCodeLength
+           );
+   if (iRet != 0)
+   {
+       MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertMsgToStream failed.");
+   }
 
-//    LOG_DEBUG("default", "---- Send To Client Succeed ----");
-//	for (int i = 0; i < unTmpCodeLength; i++)
-//	{
-//		LOG_DEBUG("default", "[%d : %d]", i, abyTmpCodeBuf[i]);
-//	}
+   iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
+   if (iRet < 0)
+   {
+       MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
+   }
+
+   LOG_DEBUG("default", "---- Send To Client Succeed ----");
+	for (int i = 0; i < unTmpCodeLength; i++)
+	{
+		LOG_DEBUG("default", "[%d : %d]", i, abyTmpCodeBuf[i]);
+	}
 
     return 0;
 }

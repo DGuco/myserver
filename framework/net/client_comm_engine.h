@@ -24,10 +24,7 @@ class ClientCommEngine
 public:
 	static unsigned char tKey[16];
 	static unsigned char* tpKey;
-
-	static int AddMsgToMsgSet(CMessageSet* pMsgSet,
-                              CMessage* pMsg);
-
+	////////////////////////为了和客户端保持一致，只负责客户端的消息序列化//////////////////////
 	// 反序列化客户端Message
     static int ConvertClientStreamToMsg(const void* pBuff,
                                   unsigned short unBuffLen,
@@ -36,7 +33,20 @@ public:
                                   bool bEncrypt = false,
                                   const unsigned char* pEncrypt = ClientCommEngine::tpKey);
 
-    // 反序列化CMessage
+	// 序列化消息(CMessage为空代表服务器内部消息)
+	static int ConvertClientMsgToStream(void* pBuff, 
+								unsigned short& unBuffLen, 
+								const CTcpHead* pTcpHead, 
+								CMessage* pMsg = NULL, 
+								bool bEncrypt = false, 
+								const unsigned char* pEncrypt = ClientCommEngine::tpKey);
+
+//////////////////////////////////////正常的消息序列化操作////////////////////////////////////
+	//组合消息								
+	static int AddMsgToMsgSet(CMessageSet* pMsgSet,
+							CMessage* pMsg);
+
+	// 反序列化CMessage
 	static int ConvertStreamToMsg(const void* pBuff, 
 								 unsigned short unBuffLen,
 								 CMessage* pMsg, 

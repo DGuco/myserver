@@ -59,6 +59,8 @@ void pbmsg_settcphead(CTcpHead& rHead, int iSrcFE, int iSrcID, int iDstFE, int i
  * ——————————————————————————————————————————————————————————————————
 */
 
+
+////////////////////////为了和客户端保持一致，只负责客户端的消息序列化//////////////////////
 // 反序列化客户端Message
 int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short unBuffLen, CMessage* pMsg, CFactory* pMsgFactory, bool bEncrypt, const unsigned char* pEncrypt)
 {
@@ -125,6 +127,156 @@ int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short
     }
     return 0;
 }
+
+// 序列化消息(CMessage为空代表服务器内部消息)
+int ClientCommEngine::ConvertClientMsgToStream(void* pBuff, unsigned short& unBuffLen, const CTcpHead* pTcpHead, CMessage* pMsg, bool bEncrypt, const unsigned char* pEncrypt)
+{
+	if (
+			(pBuff == NULL) ||
+			(pTcpHead == NULL) ||
+			(unBuffLen < (pTcpHead->ByteSize() + sizeof(unsigned short) * 2))
+	)
+	{
+		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertMsgToStream Input param failed.");
+	}
+
+	char* tpBuff = (char*) pBuff;
+
+	// 总长度
+	unsigned short tTotalLen = 0;
+	tpBuff += sizeof(unsigned short);
+	tTotalLen += sizeof(unsigned short);
+
+	// 8字节对齐的长度
+	tpBuff += sizeof(unsigned short);
+	tTotalLen += sizeof(unsigned short);
+
+	// CTcpHead长度
+	*(unsigned short*)tpBuff = (unsigned short) pTcpHead->ByteSize();
+	tpBuff += sizeof(unsigned short);
+	tTotalLen += sizeof(unsigned short);
+
+	// CTcpHead
+	if (pTcpHead->SerializeToArray(tpBuff, unBuffLen - tTotalLen) == false)
+	{
+		MY_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertMsgToStream CTcpHead SerializeToArray failed.");
+	}
+	tpBuff += pTcpHead->GetCachedSize();
+	tTotalLen += pTcpHead->GetCachedSize();
+
+	// 客户端消息总长度
+	unsigned short tTotalClientLen = 0;
+	char* tpClientBuff = tpBuff;
+	// 有CMessage表示不是服务器内部消息
+	if (pMsg)
+	{
+		// 预留客户端消息总长度
+		char* pTotalClientLen = tpClientBuff;
+		tpClientBuff += sizeof(unsigned short);
+		tTotalClientLen += sizeof(unsigned short);
+
+		// 预留8字节补齐长度
+		char* pAddLen = tpClientBuff;
+		tpClientBuff += sizeof(unsigned short);
+		tTotalClientLen += sizeof(unsigned short);
+
+		// CMessageHead长度
+		*(unsigned short*)tpClientBuff = (unsigned short) pMsg->msghead().ByteSize();
+		tpClientBuff += sizeof(unsigned short);
+		tTotalClientLen += sizeof(unsigned short);
+
+		// CMessageHead
+		if (pMsg->msghead().SerializeToArray(tpClientBuff, unBuffLen - tTotalLen - tTotalClientLen) == false)
+		{
+			MY_ASSERT_STR(0, return -3, "ClientCommEngine::ConvertMsgToStream CMessageHead SerializeToArray failed.");
+		}
+		tpClientBuff += pMsg->msghead().GetCachedSize();
+		tTotalClientLen += pMsg->msghead().GetCachedSize();
+
+		// 预留MsgPara长度
+		char* pMsgParaLen = tpClientBuff;
+		tpClientBuff += sizeof(unsigned short);
+		tTotalClientLen += sizeof(unsigned short);
+
+		// MsgPara
+		unsigned char tEncryBuff[MAX_PACKAGE_LEN] = {0};
+		unsigned char* tpEncryBuff = &tEncryBuff[0];
+		unsigned short iMsgParaLen = MAX_PACKAGE_LEN;
+
+		::google::protobuf::Message* pMsgPara = (::google::protobuf::Message*) pMsg->msgpara();
+		if (pMsgPara == NULL)
+		{
+			MY_ASSERT_STR(0, return -4, "ClientCommEngine::ConvertMsgToStream MsgPara is NULL.");
+		}
+		if (pMsgPara->SerializeToArray(tpEncryBuff, iMsgParaLen) == false)
+		{
+			MY_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertMsgToStream MsgPara SerializeToArray failed.");
+		}
+
+        //消息加密
+        if (bEncrypt)
+        {
+            int tEncLen = unBuffLen - tTotalLen - tTotalClientLen;
+            //这里每次都创建一个CAes 对象保证函数的无状态，线程安全
+            CAes tmpAes;
+            tmpAes.init(tpKey,16);
+            tpEncryBuff = (unsigned char*)tmpAes.encrypt((const char*)tpEncryBuff,pMsgPara->ByteSize(), tEncLen);
+            iMsgParaLen = tEncLen;
+            memcpy(tpClientBuff, tpEncryBuff, iMsgParaLen);
+        }
+        else
+        {
+			// 未加密的消息处理
+			iMsgParaLen = pMsgPara->ByteSize();
+			memcpy(tpClientBuff, tpEncryBuff, iMsgParaLen);
+        }
+
+		tpClientBuff += iMsgParaLen;
+		tTotalClientLen += iMsgParaLen;
+
+		// 8字节补齐
+		unsigned short iAddLen = (tTotalClientLen % 8);
+		if (iAddLen > 0)
+		{
+			iAddLen = (8 - iAddLen);
+			memset(tpClientBuff, 0, iAddLen);
+		}
+		tpClientBuff += iAddLen;
+		tTotalClientLen += iAddLen;
+
+		// 各个长度
+		*(unsigned short*)pTotalClientLen = tTotalClientLen;
+		*(unsigned short*)pAddLen = iAddLen;
+		*(unsigned short*)pMsgParaLen = iMsgParaLen;
+	}
+
+	// 总长度
+	tTotalLen += tTotalClientLen;
+
+	// 8字节对齐
+	unsigned short iAddLen = (tTotalLen % 8);
+	if (iAddLen > 0)
+	{
+		iAddLen = (8 - iAddLen);
+		memset(tpClientBuff, 0, iAddLen);
+	}
+	tpClientBuff += iAddLen;
+	tTotalLen += iAddLen;
+
+	// 设置总长度
+	tpBuff = (char*) pBuff;
+	*(unsigned short*)tpBuff = tTotalLen;
+	tpBuff += sizeof(unsigned short);
+
+	// 设置8字节对齐长度
+	*(unsigned short*) tpBuff = iAddLen;
+
+	unBuffLen = tTotalLen;
+
+	return 0;
+}
+
+//////////////////////////////////////正常的消息序列化操作////////////////////////////////////
 int ClientCommEngine::AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg)
 {
     if ((pMsgSet == NULL) || (pMsgSet == NULL))
