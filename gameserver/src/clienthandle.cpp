@@ -13,6 +13,7 @@
 #include "../../framework/net/client_comm_engine.h"
 #include "../../framework/json/config.h"
 #include "../../framework/base/servertool.h"
+#include "../../framework/message/message.pb.h"
 
 CClientHandle::CClientHandle()
 {
@@ -75,7 +76,7 @@ int CClientHandle::Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid)
 
     char* pcTmpBuff = (char*) abyTmpCodeBuf;
 
-    CCSHead tmpCSHead;
+    CMessageHead tmpCSHead;
     tmpCSHead.set_timestamp(lMsgGuid);
     // 如果需要加密，在这里修改参数
    int iRet = ClientCommEngine::ConvertMsgToStream
@@ -224,9 +225,9 @@ int CClientHandle::Recv()
     return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CCSHead* pCSHead, CMessage* pMsg)
+int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CMessageHead* pCSHead, CMessage* pMsg);
 {
-    if (!pCodeBuff || nLen < int(CNetHead::MinSize() + (sizeof(unsigned short) * 2)))
+    if (!pCodeBuff || nLen < int(pCSHead::MinSize() + (sizeof(unsigned short) * 2)))
     {
         return CLIENTHANDLE_SMALL_LENGTH;
     }
@@ -580,10 +581,4 @@ void CClientHandle::Dump(char* pBuffer, unsigned int& uiLen)
     mS2CPipe->GetCriticalData(iTmpBegin, iTmpEnd, iTmpLeft);
     uiLen += snprintf(pBuffer + uiLen, uiTmpMaxLen - uiLen, "\n%30s\t%10d\t%10d",
                       "s2c pipe", iTmpLeft, PIPE_SIZE);
-}
-
-int CClientHandle::SendLog(BYTE* pCodeBuff, int vLen)
-{
-
-    return 0;
 }

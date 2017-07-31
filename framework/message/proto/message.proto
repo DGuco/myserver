@@ -53,19 +53,10 @@ message CTcpHead
 	repeated	CSocketInfo		SocketInfos	= 7;	// 发送目标信息
 };
 
-// 消息头( server -> client 可以只填messageid, 但 client -> server 必须全填)
-message CMessageHead
-{
-	required	int32	MessageID	= 1[default = 0];		// 消息ID
-	optional	int32	DstFE			= 2;							// 消息到达的服务器类型
-	optional	int32	DstID			= 3;							// 消息到达的服务器ID
-	optional	int64	TimeStamp	= 4;							// 时间戳
-};
-
 // 单个消息
 message CMessage
 {
-	optional	CMessageHead		MsgHead	= 1;						// 消息头+
+	optional	CTcpHead		MsgHead	= 1;						// 消息头+
 	optional	fixed64					MsgPara	= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
 };
 

@@ -47,6 +47,7 @@ class CCodeQueue;
 class CSharedMem;
 class CPlayer;
 class CMessageSet;
+class CMessageHead;
 
 class CClientHandle
 {
@@ -69,10 +70,9 @@ public:
     int Send(CMessageSet* pMsgSet, stPointList* pPlayerList);
     int Send(CMessageSet* pMsgSet, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff = false);
     int Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid);
-    int SendLog(BYTE* pCodeBuff, int vLen);
     int Recv();
 
-    int DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CCSHead* pCSHead, CMessage* pMsg);
+    int DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CMessageHead* pCSHead, CMessage* pMsg);
 
     // 断开玩家连接
     void DisconnectClient(CPlayer* cPlayer);

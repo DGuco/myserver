@@ -9,7 +9,6 @@
 #include "../inc/proxy_handle.h"
 #include "../inc/proxy_ctrl.h"
 #include "../../framework/message/message.pb.h"
-#include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/net/client_comm_engine.h"
 
 
