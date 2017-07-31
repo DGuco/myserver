@@ -142,7 +142,7 @@ int ClientCommEngine::ConvertClientMsgToStream(void* pBuff, unsigned short& unBu
 
 	char* tpBuff = (char*) pBuff;
 
-	// 总长度
+	// 预留总长度
 	unsigned short tTotalLen = 0;
 	tpBuff += sizeof(unsigned short);
 	tTotalLen += sizeof(unsigned short);
@@ -277,6 +277,7 @@ int ClientCommEngine::ConvertClientMsgToStream(void* pBuff, unsigned short& unBu
 }
 
 //////////////////////////////////////正常的消息序列化操作////////////////////////////////////
+
 int ClientCommEngine::AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg)
 {
     if ((pMsgSet == NULL) || (pMsgSet == NULL))
