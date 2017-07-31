@@ -36,7 +36,6 @@ public:
 	// 序列化消息(CMessage为空代表服务器内部消息)
 	static int ConvertClientMsgToStream(void* pBuff, 
 								unsigned short& unBuffLen, 
-								const CTcpHead* pTcpHead, 
 								CMessage* pMsg = NULL, 
 								bool bEncrypt = false, 
 								const unsigned char* pEncrypt = ClientCommEngine::tpKey);

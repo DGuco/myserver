@@ -22,6 +22,37 @@ enum enMessageFE
 	FE_ROOMSERVER			= 13;	// 房间服务器
 };
 
+
+enum EGateCmd
+{
+	EGC_NULL			= 0;	// 无指令
+	EGC_REGIST			= 1;	// 注册
+	EGC_KEEPALIVE	= 2;	// 心跳
+};
+
+
+// 发送gateserver的消息头
+message CSocketInfo
+{
+	optional	int32	SrcIP 			= 1;		// 目标的IP
+	optional	int32	SrcPort			= 2;		// 目标的端口
+	optional	int32	SocketID		= 3;		// 目标的FD
+	optional	int64	CreateTime	= 4;		// 目标的创建时间
+	optional	int32	State				= 5;		// 发送后的状态 < 0 说明关闭socket
+};
+
+// 发送gateserver的消息头
+message CTcpHead
+{
+	optional	int32				SrcFE			= 1;										// 源服务器类型
+	optional	int32				SrcID			= 2;										// 源服务器ID
+	optional	int32				DstFE			= 3;										// 目标服务器类型
+	optional	int32				DstID			= 4;										// 目标服务器ID
+	optional	EGateCmd		OpFlag			= 5[default = EGC_NULL];		// 指令类型
+	optional	int64				TimeStamp	= 6;										// 时间戳(毫秒)
+	repeated	CSocketInfo		SocketInfos	= 7;	// 发送目标信息
+};
+
 // 消息头( server -> client 可以只填messageid, 但 client -> server 必须全填)
 message CMessageHead
 {
@@ -38,23 +69,14 @@ message CMessage
 	optional	fixed64					MsgPara	= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
 };
 
-// ping消息
-message CMsgPingRequest
-{
-	enum Msg{MsgID	=	0x00FFFFFF;	}
-};
-
-// 客户端与服务器之间的消息头
-message CCSHead
-{
-    optional uint32		DialogID	= 1[default = 0];	// 会话ID
-    optional uint64		TeamID		= 2;				// 战队ID
-    optional uint32		EntityID	= 3;				// 实体ID
-	optional int64		TimeStamp	= 4[default = 0];	// 时间戳
-};
-
 // 消息集合(与客户端约定：服务器给客户端下发消息时需要放入消息集合，但客户端上行服务器不需要)
 message CMessageSet
 {
 	repeated bytes	MsgParas = 1;	// 消息集合(每一个bytes组成[总长度：CMessageHead长度：CMessageHead：MsgPara长度：MsgPara])
+};
+
+// ping消息
+message CMsgPingRequest
+{
+	enum Msg{MsgID	=	0x00FFFFFF;	}
 };

@@ -108,7 +108,31 @@ int CClientHandle::Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid)
 
 int CClientHandle::Send(CMessage* message,CPlayer* pPlayer) {
     MY_ASSERT((message != NULL && pPlayer != NULL), return -1);
-    
+    BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
+    unsigned short unTmpCodeLength = sizeof(abyTmpCodeBuf);
+
+    char* pcTmpBuff = (char*) abyTmpCodeBuf;
+
+    // 是否需要加密，在这里修改参数
+   int iRet = ClientCommEngine::ConvertClientMsgToStream(pcTmpBuff,unTmpCodeLength,message,true);
+   if (iRet != 0)
+   {
+       MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertClientMsgToStream failed.");
+   }
+
+   iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
+   if (iRet < 0)
+   {
+       MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
+   }
+
+   LOG_DEBUG("default", "---- Send To Client Succeed ----");
+	for (int i = 0; i < unTmpCodeLength; i++)
+	{
+		LOG_DEBUG("default", "[%d : %d]", i, abyTmpCodeBuf[i]);
+	}
+
+    return 0;
 }
 
 int CClientHandle::Send(CMessageSet* pMsgSet, stPointList* pTeamList)

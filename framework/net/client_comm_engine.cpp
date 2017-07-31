@@ -129,7 +129,7 @@ int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short
 }
 
 // 序列化消息(CMessage为空代表服务器内部消息)
-int ClientCommEngine::ConvertClientMsgToStream(void* pBuff, unsigned short& unBuffLen, const CTcpHead* pTcpHead, CMessage* pMsg, bool bEncrypt, const unsigned char* pEncrypt)
+int ClientCommEngine::ConvertClientMsgToStream(void* pBuff, unsigned short& unBuffLen, CMessage* pMsg, bool bEncrypt, const unsigned char* pEncrypt)
 {
 	if (
 			(pBuff == NULL) ||
