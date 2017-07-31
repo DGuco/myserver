@@ -1,4 +1,4 @@
-
+syntax = "proto2";
 option optimize_for = SPEED;
 
 enum EProxyCmd

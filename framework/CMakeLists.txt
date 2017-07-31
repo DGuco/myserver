@@ -1,6 +1,4 @@
 cmake_minimum_required(VERSION 3.6)
-add_definitions(-DUSE_LOG4CPP)
-
 project(myserver)
 set(FRAMEWORK
         base/base.h
@@ -22,14 +20,12 @@ set(FRAMEWORK
         json/config.cpp
         log/log.h
         log/log.cpp
-        message/message.pb.h
         message/tcpmessage.pb.h
         message/tcpmessage.pb.cc
+        message/message.pb.h
         message/message.pb.cc
         message/proxymessage.pb.h
         message/proxymessage.pb.cc
-        message/configure.pb.h
-        message/configure.pb.cc
         net/statistics.h
         net/tcp_conn.h
         net/client_comm_engine.h
@@ -80,5 +76,4 @@ link_directories(
 
 add_library(framework ${FRAMEWORK})
 target_link_libraries(framework pthread protobuf log4cpp crypto)
-
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

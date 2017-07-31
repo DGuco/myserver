@@ -106,6 +106,11 @@ int CClientHandle::Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid)
     return 0;
 }
 
+int CClientHandle::Send(CMessage* message,CPlayer* pPlayer) {
+    MY_ASSERT((message != NULL && pPlayer != NULL), return -1);
+    
+}
+
 int CClientHandle::Send(CMessageSet* pMsgSet, stPointList* pTeamList)
 {
     MY_ASSERT((pMsgSet != NULL && pTeamList != NULL), return -1);

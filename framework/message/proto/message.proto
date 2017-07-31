@@ -1,6 +1,6 @@
 // 客户端需要引用包
 // package wing.net.msg;
-
+syntax = "proto2";
 option optimize_for = SPEED;
 
 // 服务器类型
