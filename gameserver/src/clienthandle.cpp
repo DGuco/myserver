@@ -1,5 +1,5 @@
 //
-// Created by dguco on 17-6-21.
+// Created by DGuco on 17-6-21.
 //
 
 #include "../inc/clienthandle.h"
@@ -76,10 +76,10 @@ int CClientHandle::Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid)
 
     char* pcTmpBuff = (char*) abyTmpCodeBuf;
 
-    CMessageHead tmpCSHead;
+    CTcpHead tmpCSHead;
     tmpCSHead.set_timestamp(lMsgGuid);
     // 如果需要加密，在这里修改参数
-   int iRet = ClientCommEngine::ConvertMsgToStream
+    int iRet = ClientCommEngine::ConvertMsgToStream
            (
                    &mNetHead,
                    &tmpCSHead,

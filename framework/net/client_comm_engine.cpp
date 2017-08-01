@@ -280,12 +280,19 @@ int ClientCommEngine::ConvertClientMsgToStream(void* pBuff, unsigned short& unBu
 
 int ClientCommEngine::AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg)
 {
-    if ((pMsgSet == NULL) || (pMsgSet == NULL))
+    if ((pMsgSet == NULL) || (!pMsg->has_msgpara()))
     {
         MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet Input param failed.");
     }
+	Message* message = (Message*)pMsg->msgpara();
+	if (message == NULL)
+	{
+		MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet pMsg msgpara failed");
+	}
+	
     BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     int iTmpCodeLength = sizeof(abyTmpCodeBuf);
+
     if(!pMsg->SerializePartialToArray((void*) abyTmpCodeBuf,iTmpCodeLength))
     {
         MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet SerializePartialToArray failed.");
