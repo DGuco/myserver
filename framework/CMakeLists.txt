@@ -20,8 +20,6 @@ set(FRAMEWORK
         json/config.cpp
         log/log.h
         log/log.cpp
-        message/tcpmessage.pb.h
-        message/tcpmessage.pb.cc
         message/message.pb.h
         message/message.pb.cc
         message/proxymessage.pb.h
