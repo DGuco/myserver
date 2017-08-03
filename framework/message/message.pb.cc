@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
 #include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
@@ -15,217 +16,240 @@
 #include <google/protobuf/reflection_ops.h>
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
+class CSocketInfoDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<CSocketInfo> {
+} _CSocketInfo_default_instance_;
+class CTcpHeadDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<CTcpHead> {
+} _CTcpHead_default_instance_;
+class CMessageSetDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<CMessageSet> {
+} _CMessageSet_default_instance_;
+class CClientMessageDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<CClientMessage> {
+} _CClientMessage_default_instance_;
+class CMsgPingRequestDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<CMsgPingRequest> {
+} _CMsgPingRequest_default_instance_;
+class CProxyHeadDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<CProxyHead> {
+} _CProxyHead_default_instance_;
+
+namespace protobuf_message_2eproto {
+
 
 namespace {
 
-const ::google::protobuf::Descriptor* CSocketInfo_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  CSocketInfo_reflection_ = NULL;
-const ::google::protobuf::Descriptor* CTcpHead_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  CTcpHead_reflection_ = NULL;
-const ::google::protobuf::Descriptor* CMessage_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  CMessage_reflection_ = NULL;
-const ::google::protobuf::Descriptor* CMessageSet_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  CMessageSet_reflection_ = NULL;
-const ::google::protobuf::Descriptor* CMsgPingRequest_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  CMsgPingRequest_reflection_ = NULL;
-const ::google::protobuf::EnumDescriptor* CMsgPingRequest_Msg_descriptor_ = NULL;
-const ::google::protobuf::EnumDescriptor* enMessageFE_descriptor_ = NULL;
-const ::google::protobuf::EnumDescriptor* EGateCmd_descriptor_ = NULL;
+::google::protobuf::Metadata file_level_metadata[6];
+const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[4];
 
 }  // namespace
 
+const ::google::protobuf::uint32 TableStruct::offsets[] = {
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, _has_bits_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, srcip_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, srcport_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, socketid_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, createtime_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, state_),
+  0,
+  1,
+  3,
+  2,
+  4,
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, _has_bits_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, opflag_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, timestamp_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, socketinfos_),
+  1,
+  0,
+  ~0u,
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessageSet, _has_bits_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessageSet, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessageSet, msghead_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessageSet, msgparas_),
+  0,
+  ~0u,
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CClientMessage, _has_bits_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CClientMessage, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CClientMessage, cmd_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CClientMessage, seq_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CClientMessage, msgparas_),
+  1,
+  2,
+  0,
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMsgPingRequest, _has_bits_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMsgPingRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, _has_bits_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, srcfe_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, srcid_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, dstfe_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, dstid_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, opflag_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, timestamp_),
+  0,
+  1,
+  2,
+  3,
+  5,
+  4,
+};
 
-void protobuf_AssignDesc_message_2eproto() {
-  protobuf_AddDesc_message_2eproto();
-  const ::google::protobuf::FileDescriptor* file =
-    ::google::protobuf::DescriptorPool::generated_pool()->FindFileByName(
-      "message.proto");
-  GOOGLE_CHECK(file != NULL);
-  CSocketInfo_descriptor_ = file->message_type(0);
-  static const int CSocketInfo_offsets_[5] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, srcip_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, srcport_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, socketid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, createtime_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, state_),
-  };
-  CSocketInfo_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
-      CSocketInfo_descriptor_,
-      CSocketInfo::default_instance_,
-      CSocketInfo_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CSocketInfo, _unknown_fields_),
-      -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(CSocketInfo));
-  CTcpHead_descriptor_ = file->message_type(1);
-  static const int CTcpHead_offsets_[7] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, srcfe_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, srcid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, dstfe_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, dstid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, opflag_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, timestamp_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, socketinfos_),
-  };
-  CTcpHead_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
-      CTcpHead_descriptor_,
-      CTcpHead::default_instance_,
-      CTcpHead_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CTcpHead, _unknown_fields_),
-      -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(CTcpHead));
-  CMessage_descriptor_ = file->message_type(2);
-  static const int CMessage_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessage, msghead_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessage, msgpara_),
-  };
-  CMessage_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
-      CMessage_descriptor_,
-      CMessage::default_instance_,
-      CMessage_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessage, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessage, _unknown_fields_),
-      -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(CMessage));
-  CMessageSet_descriptor_ = file->message_type(3);
-  static const int CMessageSet_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessageSet, msgparas_),
-  };
-  CMessageSet_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
-      CMessageSet_descriptor_,
-      CMessageSet::default_instance_,
-      CMessageSet_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessageSet, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMessageSet, _unknown_fields_),
-      -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(CMessageSet));
-  CMsgPingRequest_descriptor_ = file->message_type(4);
-  static const int CMsgPingRequest_offsets_[1] = {
-  };
-  CMsgPingRequest_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
-      CMsgPingRequest_descriptor_,
-      CMsgPingRequest::default_instance_,
-      CMsgPingRequest_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMsgPingRequest, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CMsgPingRequest, _unknown_fields_),
-      -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(CMsgPingRequest));
-  CMsgPingRequest_Msg_descriptor_ = CMsgPingRequest_descriptor_->enum_type(0);
-  enMessageFE_descriptor_ = file->enum_type(0);
-  EGateCmd_descriptor_ = file->enum_type(1);
-}
+static const ::google::protobuf::internal::MigrationSchema schemas[] = {
+  { 0, 9, sizeof(CSocketInfo)},
+  { 14, 21, sizeof(CTcpHead)},
+  { 24, 30, sizeof(CMessageSet)},
+  { 32, 39, sizeof(CClientMessage)},
+  { 42, 46, sizeof(CMsgPingRequest)},
+  { 46, 56, sizeof(CProxyHead)},
+};
+
+static ::google::protobuf::Message const * const file_default_instances[] = {
+  reinterpret_cast<const ::google::protobuf::Message*>(&_CSocketInfo_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&_CTcpHead_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&_CMessageSet_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&_CClientMessage_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&_CMsgPingRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&_CProxyHead_default_instance_),
+};
 
 namespace {
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AssignDescriptors_once_);
-inline void protobuf_AssignDescriptorsOnce() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AssignDescriptors_once_,
-                 &protobuf_AssignDesc_message_2eproto);
+void protobuf_AssignDescriptors() {
+  AddDescriptors();
+  ::google::protobuf::MessageFactory* factory = NULL;
+  AssignDescriptors(
+      "message.proto", schemas, file_default_instances, TableStruct::offsets, factory,
+      file_level_metadata, file_level_enum_descriptors, NULL);
 }
 
+void protobuf_AssignDescriptorsOnce() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &protobuf_AssignDescriptors);
+}
+
+void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    CSocketInfo_descriptor_, &CSocketInfo::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    CTcpHead_descriptor_, &CTcpHead::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    CMessage_descriptor_, &CMessage::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    CMessageSet_descriptor_, &CMessageSet::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    CMsgPingRequest_descriptor_, &CMsgPingRequest::default_instance());
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 6);
 }
 
 }  // namespace
 
-void protobuf_ShutdownFile_message_2eproto() {
-  delete CSocketInfo::default_instance_;
-  delete CSocketInfo_reflection_;
-  delete CTcpHead::default_instance_;
-  delete CTcpHead_reflection_;
-  delete CMessage::default_instance_;
-  delete CMessage_reflection_;
-  delete CMessageSet::default_instance_;
-  delete CMessageSet_reflection_;
-  delete CMsgPingRequest::default_instance_;
-  delete CMsgPingRequest_reflection_;
+void TableStruct::Shutdown() {
+  _CSocketInfo_default_instance_.Shutdown();
+  delete file_level_metadata[0].reflection;
+  _CTcpHead_default_instance_.Shutdown();
+  delete file_level_metadata[1].reflection;
+  _CMessageSet_default_instance_.Shutdown();
+  delete file_level_metadata[2].reflection;
+  _CClientMessage_default_instance_.Shutdown();
+  delete file_level_metadata[3].reflection;
+  _CMsgPingRequest_default_instance_.Shutdown();
+  delete file_level_metadata[4].reflection;
+  _CProxyHead_default_instance_.Shutdown();
+  delete file_level_metadata[5].reflection;
 }
 
-void protobuf_AddDesc_message_2eproto() {
-  static bool already_here = false;
-  if (already_here) return;
-  already_here = true;
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\rmessage.proto\"b\n\013CSocketInfo\022\r\n\005SrcIP\030"
-    "\001 \001(\005\022\017\n\007SrcPort\030\002 \001(\005\022\020\n\010SocketID\030\003 \001(\005"
-    "\022\022\n\nCreateTime\030\004 \001(\003\022\r\n\005State\030\005 \001(\005\"\241\001\n\010"
-    "CTcpHead\022\r\n\005SrcFE\030\001 \001(\005\022\r\n\005SrcID\030\002 \001(\005\022\r"
-    "\n\005DstFE\030\003 \001(\005\022\r\n\005DstID\030\004 \001(\005\022#\n\006OpFlag\030\005"
-    " \001(\0162\t.EGateCmd:\010EGC_NULL\022\021\n\tTimeStamp\030\006"
-    " \001(\003\022!\n\013SocketInfos\030\007 \003(\0132\014.CSocketInfo\""
-    ":\n\010CMessage\022\032\n\007MsgHead\030\001 \001(\0132\t.CTcpHead\022"
-    "\022\n\007MsgPara\030\002 \001(\006:\0010\"\037\n\013CMessageSet\022\020\n\010Ms"
-    "gParas\030\001 \003(\014\"&\n\017CMsgPingRequest\"\023\n\003Msg\022\014"
-    "\n\005MsgID\020\377\377\377\007*\221\002\n\013enMessageFE\022\014\n\010FE_TIMER"
-    "\020\000\022\r\n\tFE_CLIENT\020\001\022\021\n\rFE_GAMESERVER\020\002\022\022\n\016"
-    "FE_LOGINSERVER\020\003\022\017\n\013FE_DBSERVER\020\004\022\022\n\016FE_"
-    "PROXYSERVER\020\005\022\022\n\016FE_WORLDSERVER\020\006\022\020\n\014FE_"
-    "WEBSERVER\020\007\022\024\n\020FE_OFFLINESERVER\020\010\022\022\n\016FE_"
-    "CHECKSERVER\020\t\022\021\n\rFE_HALLSERVER\020\n\022\021\n\rFE_G"
-    "ATESERVER\020\013\022\020\n\014FE_TCPSERVER\020\014\022\021\n\rFE_ROOM"
-    "SERVER\020\r*;\n\010EGateCmd\022\014\n\010EGC_NULL\020\000\022\016\n\nEG"
-    "C_REGIST\020\001\022\021\n\rEGC_KEEPALIVE\020\002B\002H\001", 753);
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
-    "message.proto", &protobuf_RegisterTypes);
-  CSocketInfo::default_instance_ = new CSocketInfo();
-  CTcpHead::default_instance_ = new CTcpHead();
-  CMessage::default_instance_ = new CMessage();
-  CMessageSet::default_instance_ = new CMessageSet();
-  CMsgPingRequest::default_instance_ = new CMsgPingRequest();
-  CSocketInfo::default_instance_->InitAsDefaultInstance();
-  CTcpHead::default_instance_->InitAsDefaultInstance();
-  CMessage::default_instance_->InitAsDefaultInstance();
-  CMessageSet::default_instance_->InitAsDefaultInstance();
-  CMsgPingRequest::default_instance_->InitAsDefaultInstance();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_message_2eproto);
+  ::google::protobuf::internal::InitProtobufDefaults();
+  _CSocketInfo_default_instance_.DefaultConstruct();
+  _CTcpHead_default_instance_.DefaultConstruct();
+  _CMessageSet_default_instance_.DefaultConstruct();
+  _CClientMessage_default_instance_.DefaultConstruct();
+  _CMsgPingRequest_default_instance_.DefaultConstruct();
+  _CProxyHead_default_instance_.DefaultConstruct();
+  _CMessageSet_default_instance_.get_mutable()->msghead_ = const_cast< ::CTcpHead*>(
+      ::CTcpHead::internal_default_instance());
 }
 
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
+}
+void AddDescriptorsImpl() {
+  InitDefaults();
+  static const char descriptor[] = {
+      "\n\rmessage.proto\"b\n\013CSocketInfo\022\r\n\005SrcIP\030"
+      "\001 \001(\005\022\017\n\007SrcPort\030\002 \001(\005\022\020\n\010SocketID\030\003 \001(\005"
+      "\022\022\n\nCreateTime\030\004 \001(\003\022\r\n\005State\030\005 \001(\005\"i\n\010C"
+      "TcpHead\022\'\n\006OpFlag\030\001 \001(\0162\014.EMessageCmd:\tM"
+      "ESS_NULL\022\021\n\tTimeStamp\030\002 \001(\003\022!\n\013SocketInf"
+      "os\030\003 \003(\0132\014.CSocketInfo\";\n\013CMessageSet\022\032\n"
+      "\007MsgHead\030\001 \001(\0132\t.CTcpHead\022\020\n\010MsgParas\030\002 "
+      "\003(\014\"<\n\016CClientMessage\022\013\n\003Cmd\030\001 \002(\005\022\013\n\003Se"
+      "q\030\002 \002(\005\022\020\n\010MsgParas\030\003 \002(\014\"&\n\017CMsgPingReq"
+      "uest\"\023\n\003Msg\022\014\n\005MsgID\020\377\377\377\007\"\204\001\n\nCProxyHead"
+      "\022\r\n\005SrcFE\030\001 \002(\r\022\r\n\005SrcID\030\002 \002(\r\022\r\n\005DstFE\030"
+      "\003 \002(\r\022\r\n\005DstID\030\004 \002(\r\022\'\n\006OpFlag\030\005 \001(\0162\014.E"
+      "MessageCmd:\tMESS_NULL\022\021\n\tTimeStamp\030\006 \002(\004"
+      "*\377\001\n\013enMessageFE\022\014\n\010FE_TIMER\020\000\022\r\n\tFE_CLI"
+      "ENT\020\001\022\021\n\rFE_GAMESERVER\020\002\022\022\n\016FE_LOGINSERV"
+      "ER\020\003\022\017\n\013FE_DBSERVER\020\004\022\022\n\016FE_PROXYSERVER\020"
+      "\005\022\022\n\016FE_WORLDSERVER\020\006\022\020\n\014FE_WEBSERVER\020\007\022"
+      "\024\n\020FE_OFFLINESERVER\020\010\022\022\n\016FE_CHECKSERVER\020"
+      "\t\022\021\n\rFE_HALLSERVER\020\n\022\021\n\rFE_GATESERVER\020\013\022"
+      "\021\n\rFE_ROOMSERVER\020\014*A\n\013EMessageCmd\022\r\n\tMES"
+      "S_NULL\020\000\022\017\n\013MESS_REGIST\020\001\022\022\n\016MESS_KEEPAL"
+      "IVE\020\002*<\n\tEProxyCmd\022\014\n\010CMD_NULL\020\000\022\016\n\nCMD_"
+      "REGIST\020\001\022\021\n\rCMD_KEEPALIVE\020\002B\002H\001"
+  };
+  ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
+      descriptor, 911);
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
+    "message.proto", &protobuf_RegisterTypes);
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
+}
+
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
+}
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_message_2eproto {
-  StaticDescriptorInitializer_message_2eproto() {
-    protobuf_AddDesc_message_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_message_2eproto_;
+} static_descriptor_initializer;
+
+}  // namespace protobuf_message_2eproto
+
+const ::google::protobuf::EnumDescriptor* CMsgPingRequest_Msg_descriptor() {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_enum_descriptors[0];
+}
+bool CMsgPingRequest_Msg_IsValid(int value) {
+  switch (value) {
+    case 16777215:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const CMsgPingRequest_Msg CMsgPingRequest::MsgID;
+const CMsgPingRequest_Msg CMsgPingRequest::Msg_MIN;
+const CMsgPingRequest_Msg CMsgPingRequest::Msg_MAX;
+const int CMsgPingRequest::Msg_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* enMessageFE_descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return enMessageFE_descriptor_;
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_enum_descriptors[1];
 }
 bool enMessageFE_IsValid(int value) {
-  switch(value) {
+  switch (value) {
     case 0:
     case 1:
     case 2:
@@ -239,19 +263,33 @@ bool enMessageFE_IsValid(int value) {
     case 10:
     case 11:
     case 12:
-    case 13:
       return true;
     default:
       return false;
   }
 }
 
-const ::google::protobuf::EnumDescriptor* EGateCmd_descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return EGateCmd_descriptor_;
+const ::google::protobuf::EnumDescriptor* EMessageCmd_descriptor() {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_enum_descriptors[2];
 }
-bool EGateCmd_IsValid(int value) {
-  switch(value) {
+bool EMessageCmd_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::google::protobuf::EnumDescriptor* EProxyCmd_descriptor() {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_enum_descriptors[3];
+}
+bool EProxyCmd_IsValid(int value) {
+  switch (value) {
     case 0:
     case 1:
     case 2:
@@ -264,45 +302,46 @@ bool EGateCmd_IsValid(int value) {
 
 // ===================================================================
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int CSocketInfo::kSrcIPFieldNumber;
 const int CSocketInfo::kSrcPortFieldNumber;
 const int CSocketInfo::kSocketIDFieldNumber;
 const int CSocketInfo::kCreateTimeFieldNumber;
 const int CSocketInfo::kStateFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CSocketInfo::CSocketInfo()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_message_2eproto::InitDefaults();
+  }
   SharedCtor();
+  // @@protoc_insertion_point(constructor:CSocketInfo)
 }
-
-void CSocketInfo::InitAsDefaultInstance() {
-}
-
 CSocketInfo::CSocketInfo(const CSocketInfo& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&srcip_, &from.srcip_,
+    reinterpret_cast<char*>(&state_) -
+    reinterpret_cast<char*>(&srcip_) + sizeof(state_));
+  // @@protoc_insertion_point(copy_constructor:CSocketInfo)
 }
 
 void CSocketInfo::SharedCtor() {
   _cached_size_ = 0;
-  srcip_ = 0;
-  srcport_ = 0;
-  socketid_ = 0;
-  createtime_ = GOOGLE_LONGLONG(0);
-  state_ = 0;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  ::memset(&srcip_, 0, reinterpret_cast<char*>(&state_) -
+    reinterpret_cast<char*>(&srcip_) + sizeof(state_));
 }
 
 CSocketInfo::~CSocketInfo() {
+  // @@protoc_insertion_point(destructor:CSocketInfo)
   SharedDtor();
 }
 
 void CSocketInfo::SharedDtor() {
-  if (this != default_instance_) {
-  }
 }
 
 void CSocketInfo::SetCachedSize(int size) const {
@@ -311,123 +350,114 @@ void CSocketInfo::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* CSocketInfo::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return CSocketInfo_descriptor_;
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[0].descriptor;
 }
 
 const CSocketInfo& CSocketInfo::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_message_2eproto();
-  return *default_instance_;
+  protobuf_message_2eproto::InitDefaults();
+  return *internal_default_instance();
 }
 
-CSocketInfo* CSocketInfo::default_instance_ = NULL;
-
-CSocketInfo* CSocketInfo::New() const {
-  return new CSocketInfo;
+CSocketInfo* CSocketInfo::New(::google::protobuf::Arena* arena) const {
+  CSocketInfo* n = new CSocketInfo;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void CSocketInfo::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    srcip_ = 0;
-    srcport_ = 0;
-    socketid_ = 0;
-    createtime_ = GOOGLE_LONGLONG(0);
-    state_ = 0;
+// @@protoc_insertion_point(message_clear_start:CSocketInfo)
+  if (_has_bits_[0 / 32] & 31u) {
+    ::memset(&srcip_, 0, reinterpret_cast<char*>(&state_) -
+      reinterpret_cast<char*>(&srcip_) + sizeof(state_));
   }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  _has_bits_.Clear();
+  _internal_metadata_.Clear();
 }
 
 bool CSocketInfo::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:CSocketInfo)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional int32 SrcIP = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 8u) {
+          set_has_srcip();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &srcip_)));
-          set_has_srcip();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(16)) goto parse_SrcPort;
         break;
       }
 
       // optional int32 SrcPort = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_SrcPort:
+        if (tag == 16u) {
+          set_has_srcport();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &srcport_)));
-          set_has_srcport();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(24)) goto parse_SocketID;
         break;
       }
 
       // optional int32 SocketID = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_SocketID:
+        if (tag == 24u) {
+          set_has_socketid();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &socketid_)));
-          set_has_socketid();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(32)) goto parse_CreateTime;
         break;
       }
 
       // optional int64 CreateTime = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_CreateTime:
+        if (tag == 32u) {
+          set_has_createtime();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &createtime_)));
-          set_has_createtime();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(40)) goto parse_State;
         break;
       }
 
       // optional int32 State = 5;
       case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_State:
+        if (tag == 40u) {
+          set_has_state();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &state_)));
-          set_has_state();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -435,12 +465,18 @@ bool CSocketInfo::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:CSocketInfo)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CSocketInfo)
+  return false;
 #undef DO_
 }
 
 void CSocketInfo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CSocketInfo)
   // optional int32 SrcIP = 1;
   if (has_srcip()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->srcip(), output);
@@ -466,14 +502,17 @@ void CSocketInfo::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->state(), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:CSocketInfo)
 }
 
-::google::protobuf::uint8* CSocketInfo::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* CSocketInfo::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic;  // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:CSocketInfo)
   // optional int32 SrcIP = 1;
   if (has_srcip()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->srcip(), target);
@@ -499,17 +538,24 @@ void CSocketInfo::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->state(), target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:CSocketInfo)
   return target;
 }
 
-int CSocketInfo::ByteSize() const {
-  int total_size = 0;
+size_t CSocketInfo::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CSocketInfo)
+  size_t total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  if (_has_bits_[0 / 32] & 31u) {
     // optional int32 SrcIP = 1;
     if (has_srcip()) {
       total_size += 1 +
@@ -524,18 +570,18 @@ int CSocketInfo::ByteSize() const {
           this->srcport());
     }
 
-    // optional int32 SocketID = 3;
-    if (has_socketid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->socketid());
-    }
-
     // optional int64 CreateTime = 4;
     if (has_createtime()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int64Size(
           this->createtime());
+    }
+
+    // optional int32 SocketID = 3;
+    if (has_socketid()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->socketid());
     }
 
     // optional int32 State = 5;
@@ -546,134 +592,255 @@ int CSocketInfo::ByteSize() const {
     }
 
   }
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
+  _cached_size_ = cached_size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
 void CSocketInfo::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(generalized_merge_from_start:CSocketInfo)
+  GOOGLE_DCHECK_NE(&from, this);
   const CSocketInfo* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const CSocketInfo*>(
-      &from);
+      ::google::protobuf::internal::DynamicCastToGenerated<const CSocketInfo>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:CSocketInfo)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:CSocketInfo)
     MergeFrom(*source);
   }
 }
 
 void CSocketInfo::MergeFrom(const CSocketInfo& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CSocketInfo)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from._has_bits_[0 / 32] & 31u) {
     if (from.has_srcip()) {
       set_srcip(from.srcip());
     }
     if (from.has_srcport()) {
       set_srcport(from.srcport());
     }
-    if (from.has_socketid()) {
-      set_socketid(from.socketid());
-    }
     if (from.has_createtime()) {
       set_createtime(from.createtime());
+    }
+    if (from.has_socketid()) {
+      set_socketid(from.socketid());
     }
     if (from.has_state()) {
       set_state(from.state());
     }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
 void CSocketInfo::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:CSocketInfo)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void CSocketInfo::CopyFrom(const CSocketInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CSocketInfo)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 bool CSocketInfo::IsInitialized() const {
-
   return true;
 }
 
 void CSocketInfo::Swap(CSocketInfo* other) {
-  if (other != this) {
-    std::swap(srcip_, other->srcip_);
-    std::swap(srcport_, other->srcport_);
-    std::swap(socketid_, other->socketid_);
-    std::swap(createtime_, other->createtime_);
-    std::swap(state_, other->state_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CSocketInfo::InternalSwap(CSocketInfo* other) {
+  std::swap(srcip_, other->srcip_);
+  std::swap(srcport_, other->srcport_);
+  std::swap(createtime_, other->createtime_);
+  std::swap(socketid_, other->socketid_);
+  std::swap(state_, other->state_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata CSocketInfo::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CSocketInfo_descriptor_;
-  metadata.reflection = CSocketInfo_reflection_;
-  return metadata;
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[0];
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CSocketInfo
+
+// optional int32 SrcIP = 1;
+bool CSocketInfo::has_srcip() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void CSocketInfo::set_has_srcip() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void CSocketInfo::clear_has_srcip() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void CSocketInfo::clear_srcip() {
+  srcip_ = 0;
+  clear_has_srcip();
+}
+::google::protobuf::int32 CSocketInfo::srcip() const {
+  // @@protoc_insertion_point(field_get:CSocketInfo.SrcIP)
+  return srcip_;
+}
+void CSocketInfo::set_srcip(::google::protobuf::int32 value) {
+  set_has_srcip();
+  srcip_ = value;
+  // @@protoc_insertion_point(field_set:CSocketInfo.SrcIP)
+}
+
+// optional int32 SrcPort = 2;
+bool CSocketInfo::has_srcport() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void CSocketInfo::set_has_srcport() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void CSocketInfo::clear_has_srcport() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void CSocketInfo::clear_srcport() {
+  srcport_ = 0;
+  clear_has_srcport();
+}
+::google::protobuf::int32 CSocketInfo::srcport() const {
+  // @@protoc_insertion_point(field_get:CSocketInfo.SrcPort)
+  return srcport_;
+}
+void CSocketInfo::set_srcport(::google::protobuf::int32 value) {
+  set_has_srcport();
+  srcport_ = value;
+  // @@protoc_insertion_point(field_set:CSocketInfo.SrcPort)
+}
+
+// optional int32 SocketID = 3;
+bool CSocketInfo::has_socketid() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void CSocketInfo::set_has_socketid() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void CSocketInfo::clear_has_socketid() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void CSocketInfo::clear_socketid() {
+  socketid_ = 0;
+  clear_has_socketid();
+}
+::google::protobuf::int32 CSocketInfo::socketid() const {
+  // @@protoc_insertion_point(field_get:CSocketInfo.SocketID)
+  return socketid_;
+}
+void CSocketInfo::set_socketid(::google::protobuf::int32 value) {
+  set_has_socketid();
+  socketid_ = value;
+  // @@protoc_insertion_point(field_set:CSocketInfo.SocketID)
+}
+
+// optional int64 CreateTime = 4;
+bool CSocketInfo::has_createtime() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void CSocketInfo::set_has_createtime() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void CSocketInfo::clear_has_createtime() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void CSocketInfo::clear_createtime() {
+  createtime_ = GOOGLE_LONGLONG(0);
+  clear_has_createtime();
+}
+::google::protobuf::int64 CSocketInfo::createtime() const {
+  // @@protoc_insertion_point(field_get:CSocketInfo.CreateTime)
+  return createtime_;
+}
+void CSocketInfo::set_createtime(::google::protobuf::int64 value) {
+  set_has_createtime();
+  createtime_ = value;
+  // @@protoc_insertion_point(field_set:CSocketInfo.CreateTime)
+}
+
+// optional int32 State = 5;
+bool CSocketInfo::has_state() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+void CSocketInfo::set_has_state() {
+  _has_bits_[0] |= 0x00000010u;
+}
+void CSocketInfo::clear_has_state() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+void CSocketInfo::clear_state() {
+  state_ = 0;
+  clear_has_state();
+}
+::google::protobuf::int32 CSocketInfo::state() const {
+  // @@protoc_insertion_point(field_get:CSocketInfo.State)
+  return state_;
+}
+void CSocketInfo::set_state(::google::protobuf::int32 value) {
+  set_has_state();
+  state_ = value;
+  // @@protoc_insertion_point(field_set:CSocketInfo.State)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
-#ifndef _MSC_VER
-const int CTcpHead::kSrcFEFieldNumber;
-const int CTcpHead::kSrcIDFieldNumber;
-const int CTcpHead::kDstFEFieldNumber;
-const int CTcpHead::kDstIDFieldNumber;
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int CTcpHead::kOpFlagFieldNumber;
 const int CTcpHead::kTimeStampFieldNumber;
 const int CTcpHead::kSocketInfosFieldNumber;
-#endif  // !_MSC_VER
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CTcpHead::CTcpHead()
-  : ::google::protobuf::Message() {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_message_2eproto::InitDefaults();
+  }
   SharedCtor();
+  // @@protoc_insertion_point(constructor:CTcpHead)
 }
-
-void CTcpHead::InitAsDefaultInstance() {
-}
-
 CTcpHead::CTcpHead(const CTcpHead& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      _has_bits_(from._has_bits_),
+      _cached_size_(0),
+      socketinfos_(from.socketinfos_) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&timestamp_, &from.timestamp_,
+    reinterpret_cast<char*>(&opflag_) -
+    reinterpret_cast<char*>(&timestamp_) + sizeof(opflag_));
+  // @@protoc_insertion_point(copy_constructor:CTcpHead)
 }
 
 void CTcpHead::SharedCtor() {
   _cached_size_ = 0;
-  srcfe_ = 0;
-  srcid_ = 0;
-  dstfe_ = 0;
-  dstid_ = 0;
-  opflag_ = 0;
-  timestamp_ = GOOGLE_LONGLONG(0);
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  ::memset(&timestamp_, 0, reinterpret_cast<char*>(&opflag_) -
+    reinterpret_cast<char*>(&timestamp_) + sizeof(opflag_));
 }
 
 CTcpHead::~CTcpHead() {
+  // @@protoc_insertion_point(destructor:CTcpHead)
   SharedDtor();
 }
 
 void CTcpHead::SharedDtor() {
-  if (this != default_instance_) {
-  }
 }
 
 void CTcpHead::SetCachedSize(int size) const {
@@ -682,161 +849,94 @@ void CTcpHead::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* CTcpHead::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return CTcpHead_descriptor_;
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[1].descriptor;
 }
 
 const CTcpHead& CTcpHead::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_message_2eproto();
-  return *default_instance_;
+  protobuf_message_2eproto::InitDefaults();
+  return *internal_default_instance();
 }
 
-CTcpHead* CTcpHead::default_instance_ = NULL;
-
-CTcpHead* CTcpHead::New() const {
-  return new CTcpHead;
+CTcpHead* CTcpHead::New(::google::protobuf::Arena* arena) const {
+  CTcpHead* n = new CTcpHead;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
 }
 
 void CTcpHead::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    srcfe_ = 0;
-    srcid_ = 0;
-    dstfe_ = 0;
-    dstid_ = 0;
-    opflag_ = 0;
-    timestamp_ = GOOGLE_LONGLONG(0);
-  }
+// @@protoc_insertion_point(message_clear_start:CTcpHead)
   socketinfos_.Clear();
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+  if (_has_bits_[0 / 32] & 3u) {
+    ::memset(&timestamp_, 0, reinterpret_cast<char*>(&opflag_) -
+      reinterpret_cast<char*>(&timestamp_) + sizeof(opflag_));
+  }
+  _has_bits_.Clear();
+  _internal_metadata_.Clear();
 }
 
 bool CTcpHead::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:CTcpHead)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional int32 SrcFE = 1;
+      // optional .EMessageCmd OpFlag = 1 [default = MESS_NULL];
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &srcfe_)));
-          set_has_srcfe();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(16)) goto parse_SrcID;
-        break;
-      }
-
-      // optional int32 SrcID = 2;
-      case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_SrcID:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &srcid_)));
-          set_has_srcid();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(24)) goto parse_DstFE;
-        break;
-      }
-
-      // optional int32 DstFE = 3;
-      case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_DstFE:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &dstfe_)));
-          set_has_dstfe();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(32)) goto parse_DstID;
-        break;
-      }
-
-      // optional int32 DstID = 4;
-      case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_DstID:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &dstid_)));
-          set_has_dstid();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(40)) goto parse_OpFlag;
-        break;
-      }
-
-      // optional .EGateCmd OpFlag = 5 [default = EGC_NULL];
-      case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_OpFlag:
+        if (tag == 8u) {
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          if (::EGateCmd_IsValid(value)) {
-            set_opflag(static_cast< ::EGateCmd >(value));
+          if (::EMessageCmd_IsValid(value)) {
+            set_opflag(static_cast< ::EMessageCmd >(value));
           } else {
-            mutable_unknown_fields()->AddVarint(5, value);
+            mutable_unknown_fields()->AddVarint(1, value);
           }
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(48)) goto parse_TimeStamp;
         break;
       }
 
-      // optional int64 TimeStamp = 6;
-      case 6: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_TimeStamp:
+      // optional int64 TimeStamp = 2;
+      case 2: {
+        if (tag == 16u) {
+          set_has_timestamp();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &timestamp_)));
-          set_has_timestamp();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(58)) goto parse_SocketInfos;
         break;
       }
 
-      // repeated .CSocketInfo SocketInfos = 7;
-      case 7: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_SocketInfos:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+      // repeated .CSocketInfo SocketInfos = 3;
+      case 3: {
+        if (tag == 26u) {
+          DO_(input->IncrementRecursionDepth());
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
                 input, add_socketinfos()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectTag(58)) goto parse_SocketInfos;
-        if (input->ExpectAtEnd()) return true;
+        input->UnsafeDecrementRecursionDepth();
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -844,183 +944,1673 @@ bool CTcpHead::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:CTcpHead)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CTcpHead)
+  return false;
 #undef DO_
 }
 
 void CTcpHead::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional int32 SrcFE = 1;
-  if (has_srcfe()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->srcfe(), output);
-  }
-
-  // optional int32 SrcID = 2;
-  if (has_srcid()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->srcid(), output);
-  }
-
-  // optional int32 DstFE = 3;
-  if (has_dstfe()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->dstfe(), output);
-  }
-
-  // optional int32 DstID = 4;
-  if (has_dstid()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->dstid(), output);
-  }
-
-  // optional .EGateCmd OpFlag = 5 [default = EGC_NULL];
+  // @@protoc_insertion_point(serialize_start:CTcpHead)
+  // optional .EMessageCmd OpFlag = 1 [default = MESS_NULL];
   if (has_opflag()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      5, this->opflag(), output);
+      1, this->opflag(), output);
   }
 
-  // optional int64 TimeStamp = 6;
+  // optional int64 TimeStamp = 2;
   if (has_timestamp()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt64(6, this->timestamp(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->timestamp(), output);
   }
 
-  // repeated .CSocketInfo SocketInfos = 7;
-  for (int i = 0; i < this->socketinfos_size(); i++) {
+  // repeated .CSocketInfo SocketInfos = 3;
+  for (unsigned int i = 0, n = this->socketinfos_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      7, this->socketinfos(i), output);
+      3, this->socketinfos(i), output);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:CTcpHead)
 }
 
-::google::protobuf::uint8* CTcpHead::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  // optional int32 SrcFE = 1;
-  if (has_srcfe()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->srcfe(), target);
-  }
-
-  // optional int32 SrcID = 2;
-  if (has_srcid()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->srcid(), target);
-  }
-
-  // optional int32 DstFE = 3;
-  if (has_dstfe()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->dstfe(), target);
-  }
-
-  // optional int32 DstID = 4;
-  if (has_dstid()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->dstid(), target);
-  }
-
-  // optional .EGateCmd OpFlag = 5 [default = EGC_NULL];
+::google::protobuf::uint8* CTcpHead::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic;  // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:CTcpHead)
+  // optional .EMessageCmd OpFlag = 1 [default = MESS_NULL];
   if (has_opflag()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      5, this->opflag(), target);
+      1, this->opflag(), target);
   }
 
-  // optional int64 TimeStamp = 6;
+  // optional int64 TimeStamp = 2;
   if (has_timestamp()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(6, this->timestamp(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->timestamp(), target);
   }
 
-  // repeated .CSocketInfo SocketInfos = 7;
-  for (int i = 0; i < this->socketinfos_size(); i++) {
+  // repeated .CSocketInfo SocketInfos = 3;
+  for (unsigned int i = 0, n = this->socketinfos_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        7, this->socketinfos(i), target);
+      InternalWriteMessageNoVirtualToArray(
+        3, this->socketinfos(i), false, target);
   }
 
-  if (!unknown_fields().empty()) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:CTcpHead)
   return target;
 }
 
-int CTcpHead::ByteSize() const {
-  int total_size = 0;
+size_t CTcpHead::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CTcpHead)
+  size_t total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional int32 SrcFE = 1;
-    if (has_srcfe()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->srcfe());
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  // repeated .CSocketInfo SocketInfos = 3;
+  {
+    unsigned int count = this->socketinfos_size();
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->socketinfos(i));
     }
+  }
 
-    // optional int32 SrcID = 2;
-    if (has_srcid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->srcid());
-    }
-
-    // optional int32 DstFE = 3;
-    if (has_dstfe()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->dstfe());
-    }
-
-    // optional int32 DstID = 4;
-    if (has_dstid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->dstid());
-    }
-
-    // optional .EGateCmd OpFlag = 5 [default = EGC_NULL];
-    if (has_opflag()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::EnumSize(this->opflag());
-    }
-
-    // optional int64 TimeStamp = 6;
+  if (_has_bits_[0 / 32] & 3u) {
+    // optional int64 TimeStamp = 2;
     if (has_timestamp()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int64Size(
           this->timestamp());
     }
 
-  }
-  // repeated .CSocketInfo SocketInfos = 7;
-  total_size += 1 * this->socketinfos_size();
-  for (int i = 0; i < this->socketinfos_size(); i++) {
-    total_size +=
-      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        this->socketinfos(i));
-  }
+    // optional .EMessageCmd OpFlag = 1 [default = MESS_NULL];
+    if (has_opflag()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->opflag());
+    }
 
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
   }
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
+  _cached_size_ = cached_size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
 void CTcpHead::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(generalized_merge_from_start:CTcpHead)
+  GOOGLE_DCHECK_NE(&from, this);
   const CTcpHead* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const CTcpHead*>(
-      &from);
+      ::google::protobuf::internal::DynamicCastToGenerated<const CTcpHead>(
+          &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:CTcpHead)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:CTcpHead)
     MergeFrom(*source);
   }
 }
 
 void CTcpHead::MergeFrom(const CTcpHead& from) {
-  GOOGLE_CHECK_NE(&from, this);
+// @@protoc_insertion_point(class_specific_merge_from_start:CTcpHead)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   socketinfos_.MergeFrom(from.socketinfos_);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (from._has_bits_[0 / 32] & 3u) {
+    if (from.has_timestamp()) {
+      set_timestamp(from.timestamp());
+    }
+    if (from.has_opflag()) {
+      set_opflag(from.opflag());
+    }
+  }
+}
+
+void CTcpHead::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:CTcpHead)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CTcpHead::CopyFrom(const CTcpHead& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CTcpHead)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CTcpHead::IsInitialized() const {
+  return true;
+}
+
+void CTcpHead::Swap(CTcpHead* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CTcpHead::InternalSwap(CTcpHead* other) {
+  socketinfos_.UnsafeArenaSwap(&other->socketinfos_);
+  std::swap(timestamp_, other->timestamp_);
+  std::swap(opflag_, other->opflag_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CTcpHead::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[1];
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CTcpHead
+
+// optional .EMessageCmd OpFlag = 1 [default = MESS_NULL];
+bool CTcpHead::has_opflag() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void CTcpHead::set_has_opflag() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void CTcpHead::clear_has_opflag() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void CTcpHead::clear_opflag() {
+  opflag_ = 0;
+  clear_has_opflag();
+}
+::EMessageCmd CTcpHead::opflag() const {
+  // @@protoc_insertion_point(field_get:CTcpHead.OpFlag)
+  return static_cast< ::EMessageCmd >(opflag_);
+}
+void CTcpHead::set_opflag(::EMessageCmd value) {
+  assert(::EMessageCmd_IsValid(value));
+  set_has_opflag();
+  opflag_ = value;
+  // @@protoc_insertion_point(field_set:CTcpHead.OpFlag)
+}
+
+// optional int64 TimeStamp = 2;
+bool CTcpHead::has_timestamp() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void CTcpHead::set_has_timestamp() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void CTcpHead::clear_has_timestamp() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void CTcpHead::clear_timestamp() {
+  timestamp_ = GOOGLE_LONGLONG(0);
+  clear_has_timestamp();
+}
+::google::protobuf::int64 CTcpHead::timestamp() const {
+  // @@protoc_insertion_point(field_get:CTcpHead.TimeStamp)
+  return timestamp_;
+}
+void CTcpHead::set_timestamp(::google::protobuf::int64 value) {
+  set_has_timestamp();
+  timestamp_ = value;
+  // @@protoc_insertion_point(field_set:CTcpHead.TimeStamp)
+}
+
+// repeated .CSocketInfo SocketInfos = 3;
+int CTcpHead::socketinfos_size() const {
+  return socketinfos_.size();
+}
+void CTcpHead::clear_socketinfos() {
+  socketinfos_.Clear();
+}
+const ::CSocketInfo& CTcpHead::socketinfos(int index) const {
+  // @@protoc_insertion_point(field_get:CTcpHead.SocketInfos)
+  return socketinfos_.Get(index);
+}
+::CSocketInfo* CTcpHead::mutable_socketinfos(int index) {
+  // @@protoc_insertion_point(field_mutable:CTcpHead.SocketInfos)
+  return socketinfos_.Mutable(index);
+}
+::CSocketInfo* CTcpHead::add_socketinfos() {
+  // @@protoc_insertion_point(field_add:CTcpHead.SocketInfos)
+  return socketinfos_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::CSocketInfo >*
+CTcpHead::mutable_socketinfos() {
+  // @@protoc_insertion_point(field_mutable_list:CTcpHead.SocketInfos)
+  return &socketinfos_;
+}
+const ::google::protobuf::RepeatedPtrField< ::CSocketInfo >&
+CTcpHead::socketinfos() const {
+  // @@protoc_insertion_point(field_list:CTcpHead.SocketInfos)
+  return socketinfos_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CMessageSet::kMsgHeadFieldNumber;
+const int CMessageSet::kMsgParasFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CMessageSet::CMessageSet()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_message_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CMessageSet)
+}
+CMessageSet::CMessageSet(const CMessageSet& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      _has_bits_(from._has_bits_),
+      _cached_size_(0),
+      msgparas_(from.msgparas_) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_msghead()) {
+    msghead_ = new ::CTcpHead(*from.msghead_);
+  } else {
+    msghead_ = NULL;
+  }
+  // @@protoc_insertion_point(copy_constructor:CMessageSet)
+}
+
+void CMessageSet::SharedCtor() {
+  _cached_size_ = 0;
+  msghead_ = NULL;
+}
+
+CMessageSet::~CMessageSet() {
+  // @@protoc_insertion_point(destructor:CMessageSet)
+  SharedDtor();
+}
+
+void CMessageSet::SharedDtor() {
+  if (this != internal_default_instance()) {
+    delete msghead_;
+  }
+}
+
+void CMessageSet::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CMessageSet::descriptor() {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[2].descriptor;
+}
+
+const CMessageSet& CMessageSet::default_instance() {
+  protobuf_message_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+CMessageSet* CMessageSet::New(::google::protobuf::Arena* arena) const {
+  CMessageSet* n = new CMessageSet;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CMessageSet::Clear() {
+// @@protoc_insertion_point(message_clear_start:CMessageSet)
+  msgparas_.Clear();
+  if (has_msghead()) {
+    GOOGLE_DCHECK(msghead_ != NULL);
+    msghead_->::CTcpHead::Clear();
+  }
+  _has_bits_.Clear();
+  _internal_metadata_.Clear();
+}
+
+bool CMessageSet::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CMessageSet)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional .CTcpHead MsgHead = 1;
+      case 1: {
+        if (tag == 10u) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_msghead()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // repeated bytes MsgParas = 2;
+      case 2: {
+        if (tag == 18u) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->add_msgparas()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CMessageSet)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CMessageSet)
+  return false;
+#undef DO_
+}
+
+void CMessageSet::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CMessageSet)
+  // optional .CTcpHead MsgHead = 1;
+  if (has_msghead()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, *this->msghead_, output);
+  }
+
+  // repeated bytes MsgParas = 2;
+  for (int i = 0; i < this->msgparas_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytes(
+      2, this->msgparas(i), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:CMessageSet)
+}
+
+::google::protobuf::uint8* CMessageSet::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic;  // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:CMessageSet)
+  // optional .CTcpHead MsgHead = 1;
+  if (has_msghead()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        1, *this->msghead_, false, target);
+  }
+
+  // repeated bytes MsgParas = 2;
+  for (int i = 0; i < this->msgparas_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteBytesToArray(2, this->msgparas(i), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CMessageSet)
+  return target;
+}
+
+size_t CMessageSet::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CMessageSet)
+  size_t total_size = 0;
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  // repeated bytes MsgParas = 2;
+  total_size += 1 *
+      ::google::protobuf::internal::FromIntSize(this->msgparas_size());
+  for (int i = 0; i < this->msgparas_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::BytesSize(
+      this->msgparas(i));
+  }
+
+  // optional .CTcpHead MsgHead = 1;
+  if (has_msghead()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->msghead_);
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CMessageSet::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:CMessageSet)
+  GOOGLE_DCHECK_NE(&from, this);
+  const CMessageSet* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const CMessageSet>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:CMessageSet)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:CMessageSet)
+    MergeFrom(*source);
+  }
+}
+
+void CMessageSet::MergeFrom(const CMessageSet& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CMessageSet)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  msgparas_.MergeFrom(from.msgparas_);
+  if (from.has_msghead()) {
+    mutable_msghead()->::CTcpHead::MergeFrom(from.msghead());
+  }
+}
+
+void CMessageSet::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:CMessageSet)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CMessageSet::CopyFrom(const CMessageSet& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CMessageSet)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CMessageSet::IsInitialized() const {
+  return true;
+}
+
+void CMessageSet::Swap(CMessageSet* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CMessageSet::InternalSwap(CMessageSet* other) {
+  msgparas_.UnsafeArenaSwap(&other->msgparas_);
+  std::swap(msghead_, other->msghead_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CMessageSet::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[2];
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CMessageSet
+
+// optional .CTcpHead MsgHead = 1;
+bool CMessageSet::has_msghead() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void CMessageSet::set_has_msghead() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void CMessageSet::clear_has_msghead() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void CMessageSet::clear_msghead() {
+  if (msghead_ != NULL) msghead_->::CTcpHead::Clear();
+  clear_has_msghead();
+}
+const ::CTcpHead& CMessageSet::msghead() const {
+  // @@protoc_insertion_point(field_get:CMessageSet.MsgHead)
+  return msghead_ != NULL ? *msghead_
+                         : *::CTcpHead::internal_default_instance();
+}
+::CTcpHead* CMessageSet::mutable_msghead() {
+  set_has_msghead();
+  if (msghead_ == NULL) {
+    msghead_ = new ::CTcpHead;
+  }
+  // @@protoc_insertion_point(field_mutable:CMessageSet.MsgHead)
+  return msghead_;
+}
+::CTcpHead* CMessageSet::release_msghead() {
+  // @@protoc_insertion_point(field_release:CMessageSet.MsgHead)
+  clear_has_msghead();
+  ::CTcpHead* temp = msghead_;
+  msghead_ = NULL;
+  return temp;
+}
+void CMessageSet::set_allocated_msghead(::CTcpHead* msghead) {
+  delete msghead_;
+  msghead_ = msghead;
+  if (msghead) {
+    set_has_msghead();
+  } else {
+    clear_has_msghead();
+  }
+  // @@protoc_insertion_point(field_set_allocated:CMessageSet.MsgHead)
+}
+
+// repeated bytes MsgParas = 2;
+int CMessageSet::msgparas_size() const {
+  return msgparas_.size();
+}
+void CMessageSet::clear_msgparas() {
+  msgparas_.Clear();
+}
+const ::std::string& CMessageSet::msgparas(int index) const {
+  // @@protoc_insertion_point(field_get:CMessageSet.MsgParas)
+  return msgparas_.Get(index);
+}
+::std::string* CMessageSet::mutable_msgparas(int index) {
+  // @@protoc_insertion_point(field_mutable:CMessageSet.MsgParas)
+  return msgparas_.Mutable(index);
+}
+void CMessageSet::set_msgparas(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:CMessageSet.MsgParas)
+  msgparas_.Mutable(index)->assign(value);
+}
+void CMessageSet::set_msgparas(int index, const char* value) {
+  msgparas_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:CMessageSet.MsgParas)
+}
+void CMessageSet::set_msgparas(int index, const void* value, size_t size) {
+  msgparas_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:CMessageSet.MsgParas)
+}
+::std::string* CMessageSet::add_msgparas() {
+  // @@protoc_insertion_point(field_add_mutable:CMessageSet.MsgParas)
+  return msgparas_.Add();
+}
+void CMessageSet::add_msgparas(const ::std::string& value) {
+  msgparas_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:CMessageSet.MsgParas)
+}
+void CMessageSet::add_msgparas(const char* value) {
+  msgparas_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:CMessageSet.MsgParas)
+}
+void CMessageSet::add_msgparas(const void* value, size_t size) {
+  msgparas_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:CMessageSet.MsgParas)
+}
+const ::google::protobuf::RepeatedPtrField< ::std::string>&
+CMessageSet::msgparas() const {
+  // @@protoc_insertion_point(field_list:CMessageSet.MsgParas)
+  return msgparas_;
+}
+::google::protobuf::RepeatedPtrField< ::std::string>*
+CMessageSet::mutable_msgparas() {
+  // @@protoc_insertion_point(field_mutable_list:CMessageSet.MsgParas)
+  return &msgparas_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CClientMessage::kCmdFieldNumber;
+const int CClientMessage::kSeqFieldNumber;
+const int CClientMessage::kMsgParasFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CClientMessage::CClientMessage()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_message_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CClientMessage)
+}
+CClientMessage::CClientMessage(const CClientMessage& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  msgparas_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.has_msgparas()) {
+    msgparas_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.msgparas_);
+  }
+  ::memcpy(&cmd_, &from.cmd_,
+    reinterpret_cast<char*>(&seq_) -
+    reinterpret_cast<char*>(&cmd_) + sizeof(seq_));
+  // @@protoc_insertion_point(copy_constructor:CClientMessage)
+}
+
+void CClientMessage::SharedCtor() {
+  _cached_size_ = 0;
+  msgparas_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ::memset(&cmd_, 0, reinterpret_cast<char*>(&seq_) -
+    reinterpret_cast<char*>(&cmd_) + sizeof(seq_));
+}
+
+CClientMessage::~CClientMessage() {
+  // @@protoc_insertion_point(destructor:CClientMessage)
+  SharedDtor();
+}
+
+void CClientMessage::SharedDtor() {
+  msgparas_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+void CClientMessage::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CClientMessage::descriptor() {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[3].descriptor;
+}
+
+const CClientMessage& CClientMessage::default_instance() {
+  protobuf_message_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+CClientMessage* CClientMessage::New(::google::protobuf::Arena* arena) const {
+  CClientMessage* n = new CClientMessage;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CClientMessage::Clear() {
+// @@protoc_insertion_point(message_clear_start:CClientMessage)
+  if (has_msgparas()) {
+    GOOGLE_DCHECK(!msgparas_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
+    (*msgparas_.UnsafeRawStringPointer())->clear();
+  }
+  if (_has_bits_[0 / 32] & 6u) {
+    ::memset(&cmd_, 0, reinterpret_cast<char*>(&seq_) -
+      reinterpret_cast<char*>(&cmd_) + sizeof(seq_));
+  }
+  _has_bits_.Clear();
+  _internal_metadata_.Clear();
+}
+
+bool CClientMessage::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CClientMessage)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required int32 Cmd = 1;
+      case 1: {
+        if (tag == 8u) {
+          set_has_cmd();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &cmd_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // required int32 Seq = 2;
+      case 2: {
+        if (tag == 16u) {
+          set_has_seq();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &seq_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // required bytes MsgParas = 3;
+      case 3: {
+        if (tag == 26u) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_msgparas()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CClientMessage)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CClientMessage)
+  return false;
+#undef DO_
+}
+
+void CClientMessage::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CClientMessage)
+  // required int32 Cmd = 1;
+  if (has_cmd()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->cmd(), output);
+  }
+
+  // required int32 Seq = 2;
+  if (has_seq()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->seq(), output);
+  }
+
+  // required bytes MsgParas = 3;
+  if (has_msgparas()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      3, this->msgparas(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:CClientMessage)
+}
+
+::google::protobuf::uint8* CClientMessage::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic;  // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:CClientMessage)
+  // required int32 Cmd = 1;
+  if (has_cmd()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->cmd(), target);
+  }
+
+  // required int32 Seq = 2;
+  if (has_seq()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->seq(), target);
+  }
+
+  // required bytes MsgParas = 3;
+  if (has_msgparas()) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        3, this->msgparas(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CClientMessage)
+  return target;
+}
+
+size_t CClientMessage::RequiredFieldsByteSizeFallback() const {
+// @@protoc_insertion_point(required_fields_byte_size_fallback_start:CClientMessage)
+  size_t total_size = 0;
+
+  if (has_msgparas()) {
+    // required bytes MsgParas = 3;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->msgparas());
+  }
+
+  if (has_cmd()) {
+    // required int32 Cmd = 1;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->cmd());
+  }
+
+  if (has_seq()) {
+    // required int32 Seq = 2;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->seq());
+  }
+
+  return total_size;
+}
+size_t CClientMessage::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CClientMessage)
+  size_t total_size = 0;
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  if (((_has_bits_[0] & 0x00000007) ^ 0x00000007) == 0) {  // All required fields are present.
+    // required bytes MsgParas = 3;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->msgparas());
+
+    // required int32 Cmd = 1;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->cmd());
+
+    // required int32 Seq = 2;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->seq());
+
+  } else {
+    total_size += RequiredFieldsByteSizeFallback();
+  }
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CClientMessage::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:CClientMessage)
+  GOOGLE_DCHECK_NE(&from, this);
+  const CClientMessage* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const CClientMessage>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:CClientMessage)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:CClientMessage)
+    MergeFrom(*source);
+  }
+}
+
+void CClientMessage::MergeFrom(const CClientMessage& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CClientMessage)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from._has_bits_[0 / 32] & 7u) {
+    if (from.has_msgparas()) {
+      set_has_msgparas();
+      msgparas_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.msgparas_);
+    }
+    if (from.has_cmd()) {
+      set_cmd(from.cmd());
+    }
+    if (from.has_seq()) {
+      set_seq(from.seq());
+    }
+  }
+}
+
+void CClientMessage::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:CClientMessage)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CClientMessage::CopyFrom(const CClientMessage& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CClientMessage)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CClientMessage::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
+  return true;
+}
+
+void CClientMessage::Swap(CClientMessage* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CClientMessage::InternalSwap(CClientMessage* other) {
+  msgparas_.Swap(&other->msgparas_);
+  std::swap(cmd_, other->cmd_);
+  std::swap(seq_, other->seq_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CClientMessage::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[3];
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CClientMessage
+
+// required int32 Cmd = 1;
+bool CClientMessage::has_cmd() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void CClientMessage::set_has_cmd() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void CClientMessage::clear_has_cmd() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void CClientMessage::clear_cmd() {
+  cmd_ = 0;
+  clear_has_cmd();
+}
+::google::protobuf::int32 CClientMessage::cmd() const {
+  // @@protoc_insertion_point(field_get:CClientMessage.Cmd)
+  return cmd_;
+}
+void CClientMessage::set_cmd(::google::protobuf::int32 value) {
+  set_has_cmd();
+  cmd_ = value;
+  // @@protoc_insertion_point(field_set:CClientMessage.Cmd)
+}
+
+// required int32 Seq = 2;
+bool CClientMessage::has_seq() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void CClientMessage::set_has_seq() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void CClientMessage::clear_has_seq() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void CClientMessage::clear_seq() {
+  seq_ = 0;
+  clear_has_seq();
+}
+::google::protobuf::int32 CClientMessage::seq() const {
+  // @@protoc_insertion_point(field_get:CClientMessage.Seq)
+  return seq_;
+}
+void CClientMessage::set_seq(::google::protobuf::int32 value) {
+  set_has_seq();
+  seq_ = value;
+  // @@protoc_insertion_point(field_set:CClientMessage.Seq)
+}
+
+// required bytes MsgParas = 3;
+bool CClientMessage::has_msgparas() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void CClientMessage::set_has_msgparas() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void CClientMessage::clear_has_msgparas() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void CClientMessage::clear_msgparas() {
+  msgparas_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_msgparas();
+}
+const ::std::string& CClientMessage::msgparas() const {
+  // @@protoc_insertion_point(field_get:CClientMessage.MsgParas)
+  return msgparas_.GetNoArena();
+}
+void CClientMessage::set_msgparas(const ::std::string& value) {
+  set_has_msgparas();
+  msgparas_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:CClientMessage.MsgParas)
+}
+#if LANG_CXX11
+void CClientMessage::set_msgparas(::std::string&& value) {
+  set_has_msgparas();
+  msgparas_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CClientMessage.MsgParas)
+}
+#endif
+void CClientMessage::set_msgparas(const char* value) {
+  set_has_msgparas();
+  msgparas_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:CClientMessage.MsgParas)
+}
+void CClientMessage::set_msgparas(const void* value, size_t size) {
+  set_has_msgparas();
+  msgparas_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:CClientMessage.MsgParas)
+}
+::std::string* CClientMessage::mutable_msgparas() {
+  set_has_msgparas();
+  // @@protoc_insertion_point(field_mutable:CClientMessage.MsgParas)
+  return msgparas_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+::std::string* CClientMessage::release_msgparas() {
+  // @@protoc_insertion_point(field_release:CClientMessage.MsgParas)
+  clear_has_msgparas();
+  return msgparas_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+void CClientMessage::set_allocated_msgparas(::std::string* msgparas) {
+  if (msgparas != NULL) {
+    set_has_msgparas();
+  } else {
+    clear_has_msgparas();
+  }
+  msgparas_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), msgparas);
+  // @@protoc_insertion_point(field_set_allocated:CClientMessage.MsgParas)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CMsgPingRequest::CMsgPingRequest()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_message_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CMsgPingRequest)
+}
+CMsgPingRequest::CMsgPingRequest(const CMsgPingRequest& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:CMsgPingRequest)
+}
+
+void CMsgPingRequest::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+CMsgPingRequest::~CMsgPingRequest() {
+  // @@protoc_insertion_point(destructor:CMsgPingRequest)
+  SharedDtor();
+}
+
+void CMsgPingRequest::SharedDtor() {
+}
+
+void CMsgPingRequest::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CMsgPingRequest::descriptor() {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[4].descriptor;
+}
+
+const CMsgPingRequest& CMsgPingRequest::default_instance() {
+  protobuf_message_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+CMsgPingRequest* CMsgPingRequest::New(::google::protobuf::Arena* arena) const {
+  CMsgPingRequest* n = new CMsgPingRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CMsgPingRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:CMsgPingRequest)
+  _has_bits_.Clear();
+  _internal_metadata_.Clear();
+}
+
+bool CMsgPingRequest::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CMsgPingRequest)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+  handle_unusual:
+    if (tag == 0 ||
+        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      goto success;
+    }
+    DO_(::google::protobuf::internal::WireFormat::SkipField(
+          input, tag, mutable_unknown_fields()));
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CMsgPingRequest)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CMsgPingRequest)
+  return false;
+#undef DO_
+}
+
+void CMsgPingRequest::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CMsgPingRequest)
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:CMsgPingRequest)
+}
+
+::google::protobuf::uint8* CMsgPingRequest::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic;  // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:CMsgPingRequest)
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CMsgPingRequest)
+  return target;
+}
+
+size_t CMsgPingRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CMsgPingRequest)
+  size_t total_size = 0;
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CMsgPingRequest::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:CMsgPingRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const CMsgPingRequest* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const CMsgPingRequest>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:CMsgPingRequest)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:CMsgPingRequest)
+    MergeFrom(*source);
+  }
+}
+
+void CMsgPingRequest::MergeFrom(const CMsgPingRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CMsgPingRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+}
+
+void CMsgPingRequest::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:CMsgPingRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CMsgPingRequest::CopyFrom(const CMsgPingRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CMsgPingRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CMsgPingRequest::IsInitialized() const {
+  return true;
+}
+
+void CMsgPingRequest::Swap(CMsgPingRequest* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CMsgPingRequest::InternalSwap(CMsgPingRequest* other) {
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CMsgPingRequest::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[4];
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CMsgPingRequest
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CProxyHead::kSrcFEFieldNumber;
+const int CProxyHead::kSrcIDFieldNumber;
+const int CProxyHead::kDstFEFieldNumber;
+const int CProxyHead::kDstIDFieldNumber;
+const int CProxyHead::kOpFlagFieldNumber;
+const int CProxyHead::kTimeStampFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CProxyHead::CProxyHead()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_message_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CProxyHead)
+}
+CProxyHead::CProxyHead(const CProxyHead& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&srcfe_, &from.srcfe_,
+    reinterpret_cast<char*>(&opflag_) -
+    reinterpret_cast<char*>(&srcfe_) + sizeof(opflag_));
+  // @@protoc_insertion_point(copy_constructor:CProxyHead)
+}
+
+void CProxyHead::SharedCtor() {
+  _cached_size_ = 0;
+  ::memset(&srcfe_, 0, reinterpret_cast<char*>(&opflag_) -
+    reinterpret_cast<char*>(&srcfe_) + sizeof(opflag_));
+}
+
+CProxyHead::~CProxyHead() {
+  // @@protoc_insertion_point(destructor:CProxyHead)
+  SharedDtor();
+}
+
+void CProxyHead::SharedDtor() {
+}
+
+void CProxyHead::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CProxyHead::descriptor() {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[5].descriptor;
+}
+
+const CProxyHead& CProxyHead::default_instance() {
+  protobuf_message_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+CProxyHead* CProxyHead::New(::google::protobuf::Arena* arena) const {
+  CProxyHead* n = new CProxyHead;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CProxyHead::Clear() {
+// @@protoc_insertion_point(message_clear_start:CProxyHead)
+  if (_has_bits_[0 / 32] & 63u) {
+    ::memset(&srcfe_, 0, reinterpret_cast<char*>(&opflag_) -
+      reinterpret_cast<char*>(&srcfe_) + sizeof(opflag_));
+  }
+  _has_bits_.Clear();
+  _internal_metadata_.Clear();
+}
+
+bool CProxyHead::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CProxyHead)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 SrcFE = 1;
+      case 1: {
+        if (tag == 8u) {
+          set_has_srcfe();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &srcfe_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // required uint32 SrcID = 2;
+      case 2: {
+        if (tag == 16u) {
+          set_has_srcid();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &srcid_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // required uint32 DstFE = 3;
+      case 3: {
+        if (tag == 24u) {
+          set_has_dstfe();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &dstfe_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // required uint32 DstID = 4;
+      case 4: {
+        if (tag == 32u) {
+          set_has_dstid();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &dstid_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // optional .EMessageCmd OpFlag = 5 [default = MESS_NULL];
+      case 5: {
+        if (tag == 40u) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::EMessageCmd_IsValid(value)) {
+            set_opflag(static_cast< ::EMessageCmd >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(5, value);
+          }
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // required uint64 TimeStamp = 6;
+      case 6: {
+        if (tag == 48u) {
+          set_has_timestamp();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &timestamp_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CProxyHead)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CProxyHead)
+  return false;
+#undef DO_
+}
+
+void CProxyHead::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CProxyHead)
+  // required uint32 SrcFE = 1;
+  if (has_srcfe()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->srcfe(), output);
+  }
+
+  // required uint32 SrcID = 2;
+  if (has_srcid()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->srcid(), output);
+  }
+
+  // required uint32 DstFE = 3;
+  if (has_dstfe()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->dstfe(), output);
+  }
+
+  // required uint32 DstID = 4;
+  if (has_dstid()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->dstid(), output);
+  }
+
+  // optional .EMessageCmd OpFlag = 5 [default = MESS_NULL];
+  if (has_opflag()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      5, this->opflag(), output);
+  }
+
+  // required uint64 TimeStamp = 6;
+  if (has_timestamp()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(6, this->timestamp(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:CProxyHead)
+}
+
+::google::protobuf::uint8* CProxyHead::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic;  // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:CProxyHead)
+  // required uint32 SrcFE = 1;
+  if (has_srcfe()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->srcfe(), target);
+  }
+
+  // required uint32 SrcID = 2;
+  if (has_srcid()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->srcid(), target);
+  }
+
+  // required uint32 DstFE = 3;
+  if (has_dstfe()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->dstfe(), target);
+  }
+
+  // required uint32 DstID = 4;
+  if (has_dstid()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->dstid(), target);
+  }
+
+  // optional .EMessageCmd OpFlag = 5 [default = MESS_NULL];
+  if (has_opflag()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      5, this->opflag(), target);
+  }
+
+  // required uint64 TimeStamp = 6;
+  if (has_timestamp()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(6, this->timestamp(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CProxyHead)
+  return target;
+}
+
+size_t CProxyHead::RequiredFieldsByteSizeFallback() const {
+// @@protoc_insertion_point(required_fields_byte_size_fallback_start:CProxyHead)
+  size_t total_size = 0;
+
+  if (has_srcfe()) {
+    // required uint32 SrcFE = 1;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->srcfe());
+  }
+
+  if (has_srcid()) {
+    // required uint32 SrcID = 2;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->srcid());
+  }
+
+  if (has_dstfe()) {
+    // required uint32 DstFE = 3;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->dstfe());
+  }
+
+  if (has_dstid()) {
+    // required uint32 DstID = 4;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->dstid());
+  }
+
+  if (has_timestamp()) {
+    // required uint64 TimeStamp = 6;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->timestamp());
+  }
+
+  return total_size;
+}
+size_t CProxyHead::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CProxyHead)
+  size_t total_size = 0;
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  if (((_has_bits_[0] & 0x0000001f) ^ 0x0000001f) == 0) {  // All required fields are present.
+    // required uint32 SrcFE = 1;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->srcfe());
+
+    // required uint32 SrcID = 2;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->srcid());
+
+    // required uint32 DstFE = 3;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->dstfe());
+
+    // required uint32 DstID = 4;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->dstid());
+
+    // required uint64 TimeStamp = 6;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->timestamp());
+
+  } else {
+    total_size += RequiredFieldsByteSizeFallback();
+  }
+  // optional .EMessageCmd OpFlag = 5 [default = MESS_NULL];
+  if (has_opflag()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->opflag());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CProxyHead::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:CProxyHead)
+  GOOGLE_DCHECK_NE(&from, this);
+  const CProxyHead* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const CProxyHead>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:CProxyHead)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:CProxyHead)
+    MergeFrom(*source);
+  }
+}
+
+void CProxyHead::MergeFrom(const CProxyHead& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CProxyHead)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from._has_bits_[0 / 32] & 63u) {
     if (from.has_srcfe()) {
       set_srcfe(from.srcfe());
     }
@@ -1033,683 +2623,204 @@ void CTcpHead::MergeFrom(const CTcpHead& from) {
     if (from.has_dstid()) {
       set_dstid(from.dstid());
     }
-    if (from.has_opflag()) {
-      set_opflag(from.opflag());
-    }
     if (from.has_timestamp()) {
       set_timestamp(from.timestamp());
     }
+    if (from.has_opflag()) {
+      set_opflag(from.opflag());
+    }
   }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
-void CTcpHead::CopyFrom(const ::google::protobuf::Message& from) {
+void CProxyHead::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:CProxyHead)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void CTcpHead::CopyFrom(const CTcpHead& from) {
+void CProxyHead::CopyFrom(const CProxyHead& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CProxyHead)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool CTcpHead::IsInitialized() const {
-
+bool CProxyHead::IsInitialized() const {
+  if ((_has_bits_[0] & 0x0000001f) != 0x0000001f) return false;
   return true;
 }
 
-void CTcpHead::Swap(CTcpHead* other) {
-  if (other != this) {
-    std::swap(srcfe_, other->srcfe_);
-    std::swap(srcid_, other->srcid_);
-    std::swap(dstfe_, other->dstfe_);
-    std::swap(dstid_, other->dstid_);
-    std::swap(opflag_, other->opflag_);
-    std::swap(timestamp_, other->timestamp_);
-    socketinfos_.Swap(&other->socketinfos_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+void CProxyHead::Swap(CProxyHead* other) {
+  if (other == this) return;
+  InternalSwap(other);
 }
-
-::google::protobuf::Metadata CTcpHead::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CTcpHead_descriptor_;
-  metadata.reflection = CTcpHead_reflection_;
-  return metadata;
-}
-
-
-// ===================================================================
-
-#ifndef _MSC_VER
-const int CMessage::kMsgHeadFieldNumber;
-const int CMessage::kMsgParaFieldNumber;
-#endif  // !_MSC_VER
-
-CMessage::CMessage()
-  : ::google::protobuf::Message() {
-  SharedCtor();
-}
-
-void CMessage::InitAsDefaultInstance() {
-  msghead_ = const_cast< ::CTcpHead*>(&::CTcpHead::default_instance());
-}
-
-CMessage::CMessage(const CMessage& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
-}
-
-void CMessage::SharedCtor() {
-  _cached_size_ = 0;
-  msghead_ = NULL;
-  msgpara_ = GOOGLE_ULONGLONG(0);
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-CMessage::~CMessage() {
-  SharedDtor();
-}
-
-void CMessage::SharedDtor() {
-  if (this != default_instance_) {
-    delete msghead_;
-  }
-}
-
-void CMessage::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* CMessage::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return CMessage_descriptor_;
-}
-
-const CMessage& CMessage::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_message_2eproto();
-  return *default_instance_;
-}
-
-CMessage* CMessage::default_instance_ = NULL;
-
-CMessage* CMessage::New() const {
-  return new CMessage;
-}
-
-void CMessage::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (has_msghead()) {
-      if (msghead_ != NULL) msghead_->::CTcpHead::Clear();
-    }
-    msgpara_ = GOOGLE_ULONGLONG(0);
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
-}
-
-bool CMessage::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
-  ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CTcpHead MsgHead = 1;
-      case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_msghead()));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(17)) goto parse_MsgPara;
-        break;
-      }
-
-      // optional fixed64 MsgPara = 2 [default = 0];
-      case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
-         parse_MsgPara:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_FIXED64>(
-                 input, &msgpara_)));
-          set_has_msgpara();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectAtEnd()) return true;
-        break;
-      }
-
-      default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-  return true;
-#undef DO_
-}
-
-void CMessage::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional .CTcpHead MsgHead = 1;
-  if (has_msghead()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->msghead(), output);
-  }
-
-  // optional fixed64 MsgPara = 2 [default = 0];
-  if (has_msgpara()) {
-    ::google::protobuf::internal::WireFormatLite::WriteFixed64(2, this->msgpara(), output);
-  }
-
-  if (!unknown_fields().empty()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-}
-
-::google::protobuf::uint8* CMessage::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  // optional .CTcpHead MsgHead = 1;
-  if (has_msghead()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        1, this->msghead(), target);
-  }
-
-  // optional fixed64 MsgPara = 2 [default = 0];
-  if (has_msgpara()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFixed64ToArray(2, this->msgpara(), target);
-  }
-
-  if (!unknown_fields().empty()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  return target;
-}
-
-int CMessage::ByteSize() const {
-  int total_size = 0;
-
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional .CTcpHead MsgHead = 1;
-    if (has_msghead()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->msghead());
-    }
-
-    // optional fixed64 MsgPara = 2 [default = 0];
-    if (has_msgpara()) {
-      total_size += 1 + 8;
-    }
-
-  }
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void CMessage::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const CMessage* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const CMessage*>(
-      &from);
-  if (source == NULL) {
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-    MergeFrom(*source);
-  }
-}
-
-void CMessage::MergeFrom(const CMessage& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_msghead()) {
-      mutable_msghead()->::CTcpHead::MergeFrom(from.msghead());
-    }
-    if (from.has_msgpara()) {
-      set_msgpara(from.msgpara());
-    }
-  }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-}
-
-void CMessage::CopyFrom(const ::google::protobuf::Message& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void CMessage::CopyFrom(const CMessage& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CMessage::IsInitialized() const {
-
-  return true;
-}
-
-void CMessage::Swap(CMessage* other) {
-  if (other != this) {
-    std::swap(msghead_, other->msghead_);
-    std::swap(msgpara_, other->msgpara_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
-}
-
-::google::protobuf::Metadata CMessage::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CMessage_descriptor_;
-  metadata.reflection = CMessage_reflection_;
-  return metadata;
+void CProxyHead::InternalSwap(CProxyHead* other) {
+  std::swap(srcfe_, other->srcfe_);
+  std::swap(srcid_, other->srcid_);
+  std::swap(dstfe_, other->dstfe_);
+  std::swap(dstid_, other->dstid_);
+  std::swap(timestamp_, other->timestamp_);
+  std::swap(opflag_, other->opflag_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
 }
 
-
-// ===================================================================
-
-#ifndef _MSC_VER
-const int CMessageSet::kMsgParasFieldNumber;
-#endif  // !_MSC_VER
-
-CMessageSet::CMessageSet()
-  : ::google::protobuf::Message() {
-  SharedCtor();
-}
-
-void CMessageSet::InitAsDefaultInstance() {
-}
-
-CMessageSet::CMessageSet(const CMessageSet& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
+::google::protobuf::Metadata CProxyHead::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_metadata[5];
 }
 
-void CMessageSet::SharedCtor() {
-  _cached_size_ = 0;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-CMessageSet::~CMessageSet() {
-  SharedDtor();
-}
-
-void CMessageSet::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void CMessageSet::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* CMessageSet::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return CMessageSet_descriptor_;
-}
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CProxyHead
 
-const CMessageSet& CMessageSet::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_message_2eproto();
-  return *default_instance_;
+// required uint32 SrcFE = 1;
+bool CProxyHead::has_srcfe() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
 }
-
-CMessageSet* CMessageSet::default_instance_ = NULL;
-
-CMessageSet* CMessageSet::New() const {
-  return new CMessageSet;
+void CProxyHead::set_has_srcfe() {
+  _has_bits_[0] |= 0x00000001u;
 }
-
-void CMessageSet::Clear() {
-  msgparas_.Clear();
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+void CProxyHead::clear_has_srcfe() {
+  _has_bits_[0] &= ~0x00000001u;
 }
-
-bool CMessageSet::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
-  ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated bytes MsgParas = 1;
-      case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_MsgParas:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
-                input, this->add_msgparas()));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(10)) goto parse_MsgParas;
-        if (input->ExpectAtEnd()) return true;
-        break;
-      }
-
-      default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-  return true;
-#undef DO_
+void CProxyHead::clear_srcfe() {
+  srcfe_ = 0u;
+  clear_has_srcfe();
 }
-
-void CMessageSet::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // repeated bytes MsgParas = 1;
-  for (int i = 0; i < this->msgparas_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteBytes(
-      1, this->msgparas(i), output);
-  }
-
-  if (!unknown_fields().empty()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
+::google::protobuf::uint32 CProxyHead::srcfe() const {
+  // @@protoc_insertion_point(field_get:CProxyHead.SrcFE)
+  return srcfe_;
 }
-
-::google::protobuf::uint8* CMessageSet::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  // repeated bytes MsgParas = 1;
-  for (int i = 0; i < this->msgparas_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteBytesToArray(1, this->msgparas(i), target);
-  }
-
-  if (!unknown_fields().empty()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  return target;
+void CProxyHead::set_srcfe(::google::protobuf::uint32 value) {
+  set_has_srcfe();
+  srcfe_ = value;
+  // @@protoc_insertion_point(field_set:CProxyHead.SrcFE)
 }
-
-int CMessageSet::ByteSize() const {
-  int total_size = 0;
 
-  // repeated bytes MsgParas = 1;
-  total_size += 1 * this->msgparas_size();
-  for (int i = 0; i < this->msgparas_size(); i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::BytesSize(
-      this->msgparas(i));
-  }
-
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
+// required uint32 SrcID = 2;
+bool CProxyHead::has_srcid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
 }
-
-void CMessageSet::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const CMessageSet* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const CMessageSet*>(
-      &from);
-  if (source == NULL) {
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-    MergeFrom(*source);
-  }
+void CProxyHead::set_has_srcid() {
+  _has_bits_[0] |= 0x00000002u;
 }
-
-void CMessageSet::MergeFrom(const CMessageSet& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  msgparas_.MergeFrom(from.msgparas_);
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+void CProxyHead::clear_has_srcid() {
+  _has_bits_[0] &= ~0x00000002u;
 }
-
-void CMessageSet::CopyFrom(const ::google::protobuf::Message& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+void CProxyHead::clear_srcid() {
+  srcid_ = 0u;
+  clear_has_srcid();
 }
-
-void CMessageSet::CopyFrom(const CMessageSet& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+::google::protobuf::uint32 CProxyHead::srcid() const {
+  // @@protoc_insertion_point(field_get:CProxyHead.SrcID)
+  return srcid_;
 }
-
-bool CMessageSet::IsInitialized() const {
-
-  return true;
+void CProxyHead::set_srcid(::google::protobuf::uint32 value) {
+  set_has_srcid();
+  srcid_ = value;
+  // @@protoc_insertion_point(field_set:CProxyHead.SrcID)
 }
 
-void CMessageSet::Swap(CMessageSet* other) {
-  if (other != this) {
-    msgparas_.Swap(&other->msgparas_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+// required uint32 DstFE = 3;
+bool CProxyHead::has_dstfe() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
-
-::google::protobuf::Metadata CMessageSet::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CMessageSet_descriptor_;
-  metadata.reflection = CMessageSet_reflection_;
-  return metadata;
+void CProxyHead::set_has_dstfe() {
+  _has_bits_[0] |= 0x00000004u;
 }
-
-
-// ===================================================================
-
-const ::google::protobuf::EnumDescriptor* CMsgPingRequest_Msg_descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return CMsgPingRequest_Msg_descriptor_;
-}
-bool CMsgPingRequest_Msg_IsValid(int value) {
-  switch(value) {
-    case 16777215:
-      return true;
-    default:
-      return false;
-  }
+void CProxyHead::clear_has_dstfe() {
+  _has_bits_[0] &= ~0x00000004u;
 }
-
-#ifndef _MSC_VER
-const CMsgPingRequest_Msg CMsgPingRequest::MsgID;
-const CMsgPingRequest_Msg CMsgPingRequest::Msg_MIN;
-const CMsgPingRequest_Msg CMsgPingRequest::Msg_MAX;
-const int CMsgPingRequest::Msg_ARRAYSIZE;
-#endif  // _MSC_VER
-#ifndef _MSC_VER
-#endif  // !_MSC_VER
-
-CMsgPingRequest::CMsgPingRequest()
-  : ::google::protobuf::Message() {
-  SharedCtor();
+void CProxyHead::clear_dstfe() {
+  dstfe_ = 0u;
+  clear_has_dstfe();
 }
-
-void CMsgPingRequest::InitAsDefaultInstance() {
+::google::protobuf::uint32 CProxyHead::dstfe() const {
+  // @@protoc_insertion_point(field_get:CProxyHead.DstFE)
+  return dstfe_;
 }
-
-CMsgPingRequest::CMsgPingRequest(const CMsgPingRequest& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
+void CProxyHead::set_dstfe(::google::protobuf::uint32 value) {
+  set_has_dstfe();
+  dstfe_ = value;
+  // @@protoc_insertion_point(field_set:CProxyHead.DstFE)
 }
 
-void CMsgPingRequest::SharedCtor() {
-  _cached_size_ = 0;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+// required uint32 DstID = 4;
+bool CProxyHead::has_dstid() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
-
-CMsgPingRequest::~CMsgPingRequest() {
-  SharedDtor();
+void CProxyHead::set_has_dstid() {
+  _has_bits_[0] |= 0x00000008u;
 }
-
-void CMsgPingRequest::SharedDtor() {
-  if (this != default_instance_) {
-  }
+void CProxyHead::clear_has_dstid() {
+  _has_bits_[0] &= ~0x00000008u;
 }
-
-void CMsgPingRequest::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* CMsgPingRequest::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return CMsgPingRequest_descriptor_;
+void CProxyHead::clear_dstid() {
+  dstid_ = 0u;
+  clear_has_dstid();
 }
-
-const CMsgPingRequest& CMsgPingRequest::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_message_2eproto();
-  return *default_instance_;
+::google::protobuf::uint32 CProxyHead::dstid() const {
+  // @@protoc_insertion_point(field_get:CProxyHead.DstID)
+  return dstid_;
 }
-
-CMsgPingRequest* CMsgPingRequest::default_instance_ = NULL;
-
-CMsgPingRequest* CMsgPingRequest::New() const {
-  return new CMsgPingRequest;
+void CProxyHead::set_dstid(::google::protobuf::uint32 value) {
+  set_has_dstid();
+  dstid_ = value;
+  // @@protoc_insertion_point(field_set:CProxyHead.DstID)
 }
 
-void CMsgPingRequest::Clear() {
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
+// optional .EMessageCmd OpFlag = 5 [default = MESS_NULL];
+bool CProxyHead::has_opflag() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
 }
-
-bool CMsgPingRequest::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
-  ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
-    if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-      return true;
-    }
-    DO_(::google::protobuf::internal::WireFormat::SkipField(
-          input, tag, mutable_unknown_fields()));
-  }
-  return true;
-#undef DO_
+void CProxyHead::set_has_opflag() {
+  _has_bits_[0] |= 0x00000020u;
 }
-
-void CMsgPingRequest::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  if (!unknown_fields().empty()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
+void CProxyHead::clear_has_opflag() {
+  _has_bits_[0] &= ~0x00000020u;
 }
-
-::google::protobuf::uint8* CMsgPingRequest::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  if (!unknown_fields().empty()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  return target;
+void CProxyHead::clear_opflag() {
+  opflag_ = 0;
+  clear_has_opflag();
 }
-
-int CMsgPingRequest::ByteSize() const {
-  int total_size = 0;
-
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
+::EMessageCmd CProxyHead::opflag() const {
+  // @@protoc_insertion_point(field_get:CProxyHead.OpFlag)
+  return static_cast< ::EMessageCmd >(opflag_);
 }
-
-void CMsgPingRequest::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const CMsgPingRequest* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const CMsgPingRequest*>(
-      &from);
-  if (source == NULL) {
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-    MergeFrom(*source);
-  }
+void CProxyHead::set_opflag(::EMessageCmd value) {
+  assert(::EMessageCmd_IsValid(value));
+  set_has_opflag();
+  opflag_ = value;
+  // @@protoc_insertion_point(field_set:CProxyHead.OpFlag)
 }
 
-void CMsgPingRequest::MergeFrom(const CMsgPingRequest& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+// required uint64 TimeStamp = 6;
+bool CProxyHead::has_timestamp() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
-
-void CMsgPingRequest::CopyFrom(const ::google::protobuf::Message& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+void CProxyHead::set_has_timestamp() {
+  _has_bits_[0] |= 0x00000010u;
 }
-
-void CMsgPingRequest::CopyFrom(const CMsgPingRequest& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+void CProxyHead::clear_has_timestamp() {
+  _has_bits_[0] &= ~0x00000010u;
 }
-
-bool CMsgPingRequest::IsInitialized() const {
-
-  return true;
+void CProxyHead::clear_timestamp() {
+  timestamp_ = GOOGLE_ULONGLONG(0);
+  clear_has_timestamp();
 }
-
-void CMsgPingRequest::Swap(CMsgPingRequest* other) {
-  if (other != this) {
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
+::google::protobuf::uint64 CProxyHead::timestamp() const {
+  // @@protoc_insertion_point(field_get:CProxyHead.TimeStamp)
+  return timestamp_;
 }
-
-::google::protobuf::Metadata CMsgPingRequest::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CMsgPingRequest_descriptor_;
-  metadata.reflection = CMsgPingRequest_reflection_;
-  return metadata;
+void CProxyHead::set_timestamp(::google::protobuf::uint64 value) {
+  set_has_timestamp();
+  timestamp_ = value;
+  // @@protoc_insertion_point(field_set:CProxyHead.TimeStamp)
 }
 
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)
 

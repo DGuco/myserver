@@ -62,7 +62,7 @@ void pbmsg_settcphead(CTcpHead& rHead, int iSrcFE, int iSrcID, int iDstFE, int i
 
 ////////////////////////为了和客户端保持一致，只负责客户端的消息序列化//////////////////////
 // 反序列化客户端Message
-int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short unBuffLen, CMessage* pMsg, CFactory* pMsgFactory, bool bEncrypt, const unsigned char* pEncrypt)
+int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short unBuffLen, Message* pMsg, CFactory* pMsgFactory, bool bEncrypt, const unsigned char* pEncrypt)
 {
     if (
             (pBuff == NULL) ||
@@ -129,7 +129,7 @@ int ClientCommEngine::ConvertClientStreamToMsg(const void* pBuff, unsigned short
 }
 
 // 序列化消息(CMessage为空代表服务器内部消息)
-int ClientCommEngine::ConvertClientMsgToStream(void* pBuff, unsigned short& unBuffLen, CMessage* pMsg, bool bEncrypt, const unsigned char* pEncrypt)
+int ClientCommEngine::ConvertClientMsgToStream(void* pBuff, unsigned short& unBuffLen, Message* pMsg, bool bEncrypt, const unsigned char* pEncrypt)
 {
 	if (
 			(pBuff == NULL) ||
@@ -293,7 +293,7 @@ int ClientCommEngine::AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg)
     BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     int iTmpCodeLength = sizeof(abyTmpCodeBuf);
 
-    if(!pMsg->SerializePartialToArray((void*) abyTmpCodeBuf,iTmpCodeLength))
+    if(!message->SerializeToArray((char*) abyTmpCodeBuf,iTmpCodeLength))
     {
         MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet SerializePartialToArray failed.");
     }

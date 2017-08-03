@@ -6,68 +6,88 @@ option optimize_for = SPEED;
 // 服务器类型
 enum enMessageFE
 {
-	FE_TIMER						= 0;		// 内部消息（定时器）(暂时不用)
-	FE_CLIENT					= 1;		// 客户端(暂时不用)
+	FE_TIMER				= 0;		// 内部消息（定时器）(暂时不用)
+	FE_CLIENT				= 1;		// 客户端(暂时不用)
 	FE_GAMESERVER			= 2;		// 场景服务器(暂时不用)
 	FE_LOGINSERVER			= 3;		// 登陆服务器(暂时不用)
 	FE_DBSERVER				= 4; 		// 数据服务器
 	FE_PROXYSERVER			= 5;		// 代理服务器
-	FE_WORLDSERVER		= 6;		// 世界服务器(暂时不用)
-	FE_WEBSERVER				= 7;		// 平台服务器
+	FE_WORLDSERVER			= 6;		// 世界服务器(暂时不用)
+	FE_WEBSERVER			= 7;		// 平台服务器
 	FE_OFFLINESERVER		= 8;		// 离线服务器(暂时不用)
 	FE_CHECKSERVER			= 9; 		// 验证服务器(暂时不用)
-	FE_HALLSERVER			= 10;	// 大厅服务器
-	FE_GATESERVER			= 11;	// 网关服务器
-	FE_TCPSERVER				= 12;	// 连接服务器
-	FE_ROOMSERVER			= 13;	// 房间服务器
+	FE_HALLSERVER			= 10;		// 大厅服务器
+	FE_GATESERVER			= 11;		// 网关服务器
+	FE_ROOMSERVER			= 12;		// 房间服务器
 };
 
-
-enum EGateCmd
-{
-	EGC_NULL			= 0;	// 无指令
-	EGC_REGIST			= 1;	// 注册
-	EGC_KEEPALIVE	= 2;	// 心跳
-};
-
-
+enum EMessageCmd
+{	
+	MESS_NULL			= 0;	// 无指令
+	MESS_REGIST			= 1;	// 注册
+	MESS_KEEPALIVE		= 2;	// 心跳
+}
+/////////////////////////////////////////////GateServer//////////////////////////////////////////////////
 // 发送gateserver的消息头
 message CSocketInfo
 {
 	optional	int32	SrcIP 			= 1;		// 目标的IP
 	optional	int32	SrcPort			= 2;		// 目标的端口
 	optional	int32	SocketID		= 3;		// 目标的FD
-	optional	int64	CreateTime	= 4;		// 目标的创建时间
-	optional	int32	State				= 5;		// 发送后的状态 < 0 说明关闭socket
+	optional	int64	CreateTime		= 4;		// 目标的创建时间
+	optional	int32	State			= 5;		// 发送后的状态 < 0 说明关闭socket
 };
 
 // 发送gateserver的消息头
 message CTcpHead
 {
-	optional	int32				SrcFE			= 1;										// 源服务器类型
-	optional	int32				SrcID			= 2;										// 源服务器ID
-	optional	int32				DstFE			= 3;										// 目标服务器类型
-	optional	int32				DstID			= 4;										// 目标服务器ID
-	optional	EGateCmd		OpFlag			= 5[default = EGC_NULL];		// 指令类型
-	optional	int64				TimeStamp	= 6;										// 时间戳(毫秒)
-	repeated	CSocketInfo		SocketInfos	= 7;	// 发送目标信息
+	optional	EMessageCmd		OpFlag			= 1[default = MESS_NULL];	// 指令类型
+	optional	int64			TimeStamp		= 2;						// 时间戳(毫秒)
+	repeated	CSocketInfo		SocketInfos		= 3;						// 发送目标信息
 };
 
-// 单个消息
-message CMessage
-{
-	optional	CTcpHead		MsgHead	= 1;						// 消息头+
-	optional	fixed64					MsgPara	= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
-};
-
-// 消息集合(与客户端约定：服务器给客户端下发消息时需要放入消息集合，但客户端上行服务器不需要)
+/* 发送给 gateserver 的消息集合(服务器给同一客户端有多条消息下发时放入消息集合,一起发送)
+ * 发送给 gateserver 数据结构:CTcpHead ＋ CTcpHead ＋ 消息列表（单挑消息：消息长度 ＋ 消息数据)
+ */
 message CMessageSet
 {
-	repeated bytes	MsgParas = 1;	// 消息集合(每一个bytes组成[总长度：CMessageHead长度：CMessageHead：MsgPara长度：MsgPara])
+	optional	CTcpHead	MsgHead	= 1;						// 消息头+
+	repeated 	bytes		MsgParas = 2;	// 消息集合(每一个bytes组成[总长度：CMessageHead长度：CMessageHead：MsgPara长度：MsgPara])
+};
+
+//gateServer转发给gameserver的客户端上行消息结构
+message CClientMessage
+{
+	required	int32	Cmd		 = 1;	//消息id
+	required	int32	Seq		 = 2;	//序列号
+	required 	bytes	MsgParas = 3;	//消息
 };
 
 // ping消息
 message CMsgPingRequest
 {
 	enum Msg{MsgID	=	0x00FFFFFF;	}
+};
+
+/////////////////////////////////////////////ProxyServer//////////////////////////////////////////////////
+/*
+ * 发送给proxyserver 数据结构:CProxyHead长度 ＋ CProxyHead ＋ 消息长度 ＋ 消息数据
+ */
+//proxy消息类型
+enum EProxyCmd
+{
+	CMD_NULL			= 0;	// 无指令
+	CMD_REGIST			= 1;	// 注册
+	CMD_KEEPALIVE	= 2;	// 心跳
+};
+
+//发送给proxyserver的消息头
+message CProxyHead
+{
+	required	uint32			SrcFE			= 1;							// 源服务器类型
+	required	uint32			SrcID			= 2;							// 源服务器ID
+	required	uint32			DstFE			= 3;							// 目标服务器类型
+	required	uint32			DstID			= 4;							// 目标服务器ID
+	optional	EMessageCmd		OpFlag			= 5[default = MESS_NULL];		// 指令类型
+	required	uint64			TimeStamp		= 6;							// 时间戳(毫秒)
 };

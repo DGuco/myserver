@@ -62,7 +62,7 @@ int CClientHandle::Initialize()
     return 0;
 }
 
-int CClientHandle::AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg)
+int CClientHandle::AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg)
 {
     return ClientCommEngine::AddMsgToMsgSet(pMsgSet, pMsg);
 }
@@ -107,7 +107,7 @@ int CClientHandle::Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid)
     return 0;
 }
 
-int CClientHandle::Send(CMessage* message,CPlayer* pPlayer) {
+int CClientHandle::Send(Message* message,CPlayer* pPlayer) {
     MY_ASSERT((message != NULL && pPlayer != NULL), return -1);
     BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     unsigned short unTmpCodeLength = sizeof(abyTmpCodeBuf);

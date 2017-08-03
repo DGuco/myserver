@@ -463,7 +463,6 @@ int CGateCtrl::RecvClientData(int iSocketFd)
     int iTmpRecvBytes = 0;
     int iTmpOffset;
     char* pTemp1;
-    char* pTemp;
     unsigned int unRecvLen;
     unsigned int unLength = 0;
     int nRecvAllLen;
@@ -507,6 +506,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
         //取出包的总长度
         memcpy(&unRecvLen,(void*)pTemp1,sizeof(unsigned int));
         unRecvLen = ntohl(unRecvLen) - MESSAGE_EXTRA_LEN;
+        unsigned int tmpRecvLen = unRecvLen;
         if (unRecvLen < MSG_HEAD_LEN || unRecvLen > MSG_MAX_LEN)
         {
             LOG_ERROR("default","the package len is illegal",nRecvAllLen);
@@ -516,25 +516,29 @@ int CGateCtrl::RecvClientData(int iSocketFd)
         //数据指针向后移动指向未读取位置
         pTemp1 += sizeof(unsigned int);
         nRecvAllLen -= sizeof(unsigned int);
-
+        tmpRecvLen -= sizeof(unsigned int);
+        
         // 序列号长度
         unsigned short tTmpSeq = 0;
         memcpy(&tTmpSeq,(void*)pTemp1,sizeof(unsigned short));
         tTmpSeq = ntohs(tTmpSeq);
         pTemp1 += sizeof(unsigned short);
         nRecvAllLen -= sizeof(unsigned short);
+        tmpRecvLen -= sizeof(unsigned short);
 
         // protobuf版本
         unsigned char tTmpProbufVersion = 0;
         memcpy(&tTmpProbufVersion,(void*)pTemp1,sizeof(unsigned char));
         pTemp1 += sizeof(unsigned char);
         nRecvAllLen -= sizeof(unsigned char);
+        tmpRecvLen -= sizeof(unsigned char);
 
         // 是否加密
         unsigned char tTmpIsEncry = 0;
         memcpy(&tTmpIsEncry,(void*)pTemp1,sizeof(unsigned char));
         pTemp1 += sizeof(unsigned char);
         nRecvAllLen -= sizeof(unsigned char);
+        tmpRecvLen -= sizeof(unsigned char);
 
         //消息指令编号
         unsigned short tTmpCmd = 0;
@@ -542,85 +546,43 @@ int CGateCtrl::RecvClientData(int iSocketFd)
         tTmpCmd = ntohs(tTmpCmd);
         pTemp1 += sizeof(unsigned short);
         nRecvAllLen -= sizeof(unsigned short);
+        tmpRecvLen -= sizeof(unsigned short);
 
         nRecvAllLen -= unRecvLen;
-        pTemp1 += unRecvLen;
-        // 总长度小于包的长度，则继续接收
         if(nRecvAllLen < 0)
         {
             nRecvAllLen = m_pSocketInfo->m_iRecvBytes;
-            pTemp1      = m_pSocketInfo->m_szMsgBuf;
+            pTemp1      += tmpRecvLen;
             LOG_DEBUG("default", "Receive client part data left len = %d",nRecvAllLen,unRecvLen);
             break;
         }
 
-        CMessage tmpMsg;
+        CClientMessage tmpMsg;
         tmpMsg.Clear();
-        CMessageHead* pbMessageHead = tmpMsg.mutable_msghead();
-        pbMessageHead->set_messageid(tTmpCmd);
-        pbMessageHead->set_dstfe(FE_GAMESERVER);
-        pbMessageHead->set_dstid(20000);
-        pbMessageHead->set_timestamp(tTempTime);
-        iTmpRet = ClientCommEngine::ConvertClientStreamToMsg(pTemp1 - unRecvLen,unRecvLen,&tmpMsg);
-        if (iTmpRet != 0)
-        {
-            LOG_ERROR("default","CTCPCtrl::RecvClientData error,ConvertStreamTomsg return %d",iTmpRet);
-            ClearSocketInfo(Err_PacketError);
-            return -1;
-        }
+        tmpMsg.set_cmd(tTmpCmd);
+        tmpMsg.set_seq(tTmpSeq);
+        tmpMsg.set_msgparas(pTemp1);
         
         //组织转发消息
-        if (tmpMsg.msghead().messageid() != CMsgPingRequest::MsgID)
+        if (tTmpCmd != CMsgPingRequest::MsgID)
         {
-            CTcpHead pbTmpTcpHead;
-            pbTmpTcpHead.Clear();
-            pbTmpTcpHead.set_srcfe(FE_TCPSERVER);      //设置源服务器
-            pbTmpTcpHead.set_srcid(CServerConfig::GetSingletonPtr()->m_iTcpServerId);
-            pbTmpTcpHead.set_dstfe(tmpMsg.msghead().dstfe());
-            pbTmpTcpHead.set_srcid(tmpMsg.msghead().dstid());
-            pbTmpTcpHead.set_timestamp(tTempTime);
-            CSocketInfo* pbSocketInfo = pbTmpTcpHead.add_socketinfos();
-            if (pbSocketInfo)
-            {
-                LOG_ERROR("default","CTCPCtrl::RecvClientData error,add socketingo error,pbSocketInfo is NULL");
-                ClearSocketInfo(Err_PacketError);
-            }
-
-            pbSocketInfo->set_createtime(m_pSocketInfo->m_tCreateTime);
-            pbSocketInfo->set_socketid(iSocketFd);
-            pbSocketInfo->set_createtime(m_pSocketInfo->m_tCreateTime);
-            pbSocketInfo->set_srcip(m_pSocketInfo->m_iSrcIP);
-            pbSocketInfo->set_srcport(m_pSocketInfo->m_nSrcPort);
-            //state < 0 说明关闭socket
-            pbSocketInfo->set_state(0);
-
-            pTemp = m_szMsgBuf;
+            char* pTemp ＝ m_szMsgBuf;
             //预留总长度
             pTemp += sizeof(short);
             unLength += sizeof(short);
             //预留8字节对齐长度
             pTemp += sizeof(short);
             unLength += sizeof(short);
-            //序列化CTCPhead
-            *(short*)pTemp = pbTmpTcpHead.ByteSize();
-            pTemp += sizeof(short);
-            unLength += sizeof(short);
-
-            //序列化CTCPhead
-            if (pbTmpTcpHead.SerializeToArray(pTemp, sizeof(m_szMsgBuf) - unLength - 1) != true)
+            //序列化CClientMessage
+            if (tmpMsg.SerializeToArray(pTemp,tmpMsg.ByteSize) != true)
             {
                 LOG_ERROR("default", "CTCPCtrl::RecvClientData error,pbTmpTcpHead SerializeToArray error");
                 ClearSocketInfo(Err_PacketError);
                 return -1;
             }
 
-            pTemp += pbTmpTcpHead.GetCachedSize();
-            unLength += pbTmpTcpHead.GetCachedSize();
-
-            //拷贝消息到发送缓冲区
-            memcpy(pTemp,pTemp1,unRecvLen);
-            pTemp += unRecvLen;
-            unLength += unRecvLen;
+            pTemp += tmpMsg.GetCachedSize();
+            unLength += v.GetCachedSize();
 
             //8字节对齐
             unsigned short iTmpAddlen = (unLength % 8);
@@ -633,14 +595,16 @@ int CGateCtrl::RecvClientData(int iSocketFd)
 
             pTemp += iTmpAddlen;
             unLength += iTmpAddlen;
-            //序列话消息总长度
+
+            //回到消息起始地值
             pTemp = m_szMsgBuf;
+            //序列话消息总长度
             *(short*) pTemp = unLength;
             pTemp += sizeof(short);
 
             //序列话8字节对齐长度
             *(short*) pTemp = iTmpAddlen;
-            iTmpRet = mC2SPipe->AppendOneCode((BYTE*) m_szMsgBuf,unLength);
+            iTmpRet = mC2SPipe->AppendOneCode((const BYTE *)m_szMsgBuf,unLength);
             if (iTmpRet < 0)
             {
                 LOG_ERROR("default", "CTCPCtrl::RecvClientData error,send data to gate error,error code = %d",iTmpRet);

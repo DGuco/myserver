@@ -7,6 +7,7 @@
 #define SERVER_CLIENT_HANDLE_H
 
 #include "../../framework/net/nethead.h"
+#include "../../framework/message/message_interface.h"
 
 // 管道标识符
 enum enLockIdx
@@ -41,7 +42,6 @@ enum ClienthandleErrCode
     CLIENTHANDLE_LOGINCHECK							= 17,		// 登陆去验证
 };
 
-class CMessage;
 class CCSHead;
 class CCodeQueue;
 class CSharedMem;
@@ -65,14 +65,14 @@ protected:
     CNetHead mNetHead;
 
 public:
-    int AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg);
-    int Send(CMessage* message,CPlayer* pPlayer);
+    int AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg);
+    int Send(Message* message,CPlayer* pPlayer);
     int Send(CMessageSet* pMsgSet, stPointList* pPlayerList);
     int Send(CMessageSet* pMsgSet, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff = false);
     int Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid);
     int Recv();
 
-    int DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CMessageHead* pCSHead, CMessage* pMsg);
+    int DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CTcpHead* pCSHead, Message* pMsg);
 
     // 断开玩家连接
     void DisconnectClient(CPlayer* cPlayer);

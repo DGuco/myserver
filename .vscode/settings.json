@@ -2,6 +2,13 @@
     "files.associations": {
         "system_error": "cpp",
         "algorithm": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "__functional_base": "cpp",
+        "locale": "cpp",
+        "memory": "cpp",
+        "thread": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "__locale": "cpp"
     }
 }

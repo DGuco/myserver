@@ -71,7 +71,7 @@ CProxyClient* CGameServer::GetProxyClient(int iIndex)
     return &mProxyClient[iIndex];
 }
 
-int CGameServer::AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg)
+int CGameServer::AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg)
 {
     return mpClientHandle->AddMsgToMsgSet(pMsgSet, pMsg);
 }
