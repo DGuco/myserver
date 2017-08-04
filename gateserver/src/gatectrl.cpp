@@ -63,7 +63,7 @@ int CGateCtrl::Initialize()
     m_astSocketInfo[m_iSocket].m_iSocketType = LISTEN_SOCKET;
     m_astSocketInfo[m_iSocket].m_iSocketFlag = RECV_DATA;
     m_astSocketInfo[m_iSocket].m_iConnectedPort = CServerConfig::GetSingletonPtr()->m_iTcpPort;
-    m_iMaxfds = m_iSocket++;
+    m_iMaxfds = m_iSocket + 1;
 
     CreatePipe();
     return 0;
@@ -357,7 +357,6 @@ int CGateCtrl::GetExMessage()
     for (i = 0,pevents = m_pEpollevents; i < iTmpfdNum;i++ ,pevents++)
     {
         iTmpFd = pevents->data.fd;
-        m_pSocketInfo = &m_astSocketInfo[iTmpFd];
         //无效文件描述符
         if (iTmpFd <= 0)
         {
@@ -378,10 +377,12 @@ int CGateCtrl::GetExMessage()
             LOG_ERROR("default","Epoll dosen't listen input event");
             continue;            
         }
-        
+
+        m_pSocketInfo = &m_astSocketInfo[iTmpFd];
+        //有新的连接
         if (m_pSocketInfo->m_iSocketType == LISTEN_SOCKET)
         {
-            LOG_NOTICE("default","recv events:%d fd:%d",iTmpfdNum,iTmpFd);
+            LOG_DEBUG("default","recv events:%d fd:%d",iTmpfdNum,iTmpFd);
             //accept 一个tcp连接
             iTmpNewSocket = accept(iTmpFd,(struct sockaddr*) &m_stSockAddr,(socklen_t*) &iTmpSocketAddrSize);
             //客户端主动关闭了连接
@@ -392,7 +393,7 @@ int CGateCtrl::GetExMessage()
                 continue;
             }
 
-            m_stTcpStat.m_iConnIncoming ++;
+            m_stTcpStat.m_iConnIncoming++;
             if (iTmpNewSocket >= MAX_SOCKET_NUM)
             {
                 LOG_ERROR("default","socket is too big %d",iTmpNewSocket);
@@ -444,7 +445,6 @@ int CGateCtrl::GetExMessage()
         }
         else      //接收客户端数据
         {
-            m_pSocketInfo = &m_astSocketInfo[iTmpFd];
             RecvClientData(iTmpFd);
         }
 
@@ -464,12 +464,12 @@ int CGateCtrl::RecvClientData(int iSocketFd)
     int iTmpOffset;
     char* pTemp1;
     unsigned int unRecvLen;
-    unsigned int unLength = 0;
     int nRecvAllLen;
     time_t tTempTime;
+
+    m_pSocketInfo = &m_astSocketInfo[iSocketFd];
     int iTmpSocket = m_pSocketInfo->m_iSocket;
     iTmpOffset = m_pSocketInfo->m_iRecvBytes; 
-    
     //读取tcp数据
     iTmpRecvBytes = TcpRead(iTmpSocket,m_pSocketInfo->m_szMsgBuf + iTmpOffset,sizeof(m_pSocketInfo->m_szMsgBuf) - iTmpOffset); 
     //客户端关闭连接
@@ -485,7 +485,8 @@ int CGateCtrl::RecvClientData(int iSocketFd)
     m_stTcpStat.m_iPkgSizeRecv += iTmpRecvBytes;
     //增加收到的总字节数
     m_pSocketInfo->m_iRecvBytes = m_pSocketInfo->m_iRecvBytes + iTmpRecvBytes;
-    //记录消息起始地址
+
+    //记录接收客户端数据信息
     pTemp1 = m_pSocketInfo->m_szMsgBuf;
     nRecvAllLen = m_pSocketInfo->m_iRecvBytes;
 
@@ -501,43 +502,42 @@ int CGateCtrl::RecvClientData(int iSocketFd)
             LOG_ERROR("default","the package len is less than base len ,receive len %d",nRecvAllLen);
             break;
         }
-
-        unLength = 0;
         //取出包的总长度
         memcpy(&unRecvLen,(void*)pTemp1,sizeof(unsigned int));
-        unRecvLen = ntohl(unRecvLen) - MESSAGE_EXTRA_LEN;
-        unsigned int tmpRecvLen = unRecvLen;
+        //客户端上行包的总长度小于基本长度大于最大长度，不合法
         if (unRecvLen < MSG_HEAD_LEN || unRecvLen > MSG_MAX_LEN)
         {
             LOG_ERROR("default","the package len is illegal",nRecvAllLen);
             ClearSocketInfo(Err_PacketError);
             return -1;
         }
+        //接收数据的总长度小于包的总长度继续接收
+        if(nRecvAllLen － unRecvLen  < 0)
+        {
+            LOG_DEBUG("default", "Receive client part data left len = %d",nRecvAllLen,unRecvLen);
+            break;
+        }
+        unsigned int tmpRecvLen = unRecvLen;
         //数据指针向后移动指向未读取位置
         pTemp1 += sizeof(unsigned int);
-        nRecvAllLen -= sizeof(unsigned int);
         tmpRecvLen -= sizeof(unsigned int);
         
         // 序列号长度
         unsigned short tTmpSeq = 0;
         memcpy(&tTmpSeq,(void*)pTemp1,sizeof(unsigned short));
-        tTmpSeq = ntohs(tTmpSeq);
         pTemp1 += sizeof(unsigned short);
-        nRecvAllLen -= sizeof(unsigned short);
         tmpRecvLen -= sizeof(unsigned short);
 
         // protobuf版本
         unsigned char tTmpProbufVersion = 0;
         memcpy(&tTmpProbufVersion,(void*)pTemp1,sizeof(unsigned char));
         pTemp1 += sizeof(unsigned char);
-        nRecvAllLen -= sizeof(unsigned char);
         tmpRecvLen -= sizeof(unsigned char);
 
         // 是否加密
         unsigned char tTmpIsEncry = 0;
         memcpy(&tTmpIsEncry,(void*)pTemp1,sizeof(unsigned char));
         pTemp1 += sizeof(unsigned char);
-        nRecvAllLen -= sizeof(unsigned char);
         tmpRecvLen -= sizeof(unsigned char);
 
         //消息指令编号
@@ -545,17 +545,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
         memcpy(&tTmpCmd,(void*)pTemp1,sizeof(unsigned short));
         tTmpCmd = ntohs(tTmpCmd);
         pTemp1 += sizeof(unsigned short);
-        nRecvAllLen -= sizeof(unsigned short);
         tmpRecvLen -= sizeof(unsigned short);
-
-        nRecvAllLen -= unRecvLen;
-        if(nRecvAllLen < 0)
-        {
-            nRecvAllLen = m_pSocketInfo->m_iRecvBytes;
-            pTemp1      += tmpRecvLen;
-            LOG_DEBUG("default", "Receive client part data left len = %d",nRecvAllLen,unRecvLen);
-            break;
-        }
 
         CClientMessage tmpMsg;
         tmpMsg.Clear();
@@ -563,10 +553,11 @@ int CGateCtrl::RecvClientData(int iSocketFd)
         tmpMsg.set_seq(tTmpSeq);
         tmpMsg.set_msgparas(pTemp1);
         
+        unsigned int unLength = 0;
         //组织转发消息
         if (tTmpCmd != CMsgPingRequest::MsgID)
         {
-            char* pTemp ＝ m_szMsgBuf;
+            char* pTemp ＝ m_szCSMsgBuf;
             //预留总长度
             pTemp += sizeof(short);
             unLength += sizeof(short);
@@ -597,14 +588,14 @@ int CGateCtrl::RecvClientData(int iSocketFd)
             unLength += iTmpAddlen;
 
             //回到消息起始地值
-            pTemp = m_szMsgBuf;
+            pTemp = m_szCSMsgBuf;
             //序列话消息总长度
             *(short*) pTemp = unLength;
             pTemp += sizeof(short);
 
             //序列话8字节对齐长度
             *(short*) pTemp = iTmpAddlen;
-            iTmpRet = mC2SPipe->AppendOneCode((const BYTE *)m_szMsgBuf,unLength);
+            iTmpRet = mC2SPipe->AppendOneCode((const BYTE *)m_szCSMsgBuf,unLength);
             if (iTmpRet < 0)
             {
                 LOG_ERROR("default", "CTCPCtrl::RecvClientData error,send data to gate error,error code = %d",iTmpRet);
@@ -626,7 +617,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
     {
         m_pSocketInfo->m_iRecvBytes = 0;
     }
-    else
+    else 
     {
         if ((MSG_MAX_LEN < nRecvAllLen) || (nRecvAllLen < 0))
         {
@@ -634,9 +625,6 @@ int CGateCtrl::RecvClientData(int iSocketFd)
             ClearSocketInfo(Err_PacketError);
             return -1;
         }
-        //继续转发
-        m_pSocketInfo->m_iRecvBytes = nRecvAllLen;
-        memmove(m_pSocketInfo->m_szMsgBuf,pTemp1,nRecvAllLen);
     }
     return 0;
 }
@@ -659,7 +647,7 @@ int CGateCtrl::CheckTimeOut()
     }
     // 从第1个真正收发数据的socket结构开始到当前最大分配的socket
     // 判断每个socket通讯超时情况
-    for (i = m_iSocket; i <= m_iMaxfds; i++)
+    for (i = m_iSocket + 1; i <= m_iMaxfds; i++)
     {
         m_pSocketInfo = &m_astSocketInfo[i];
         if (0 == m_pSocketInfo->m_iSocketFlag)
@@ -810,7 +798,7 @@ void CGateCtrl::ClearSocketInfo(short enError)
 
 /**
   * 函数名          : CGateCtrl::CheckWaitSendData
-  * 功能描述        : 检测是否有缓存数据要发送
+  * 功能描述        : 检测是否有缓存数据要下行客户端
   * 返回值          ：int
 **/
 int CGateCtrl::CheckWaitSendData()
@@ -854,7 +842,7 @@ int CGateCtrl::CheckWaitSendData()
                 m_iSCIndex = 0;
                 m_nSCLength = 0;
                 //反序列化消息的CTcpHead,取出发送游标和长度,把数据存入发送消息缓冲区m_szMsgBuf
-                iTmpRet = ClientCommEngine::ConvertStreamToMsg(m_szMsgBuf,unTmpCodeLength,m_iSCIndex,&m_SCTcpHead);
+                iTmpRet = ClientCommEngine::ConvertStreamToMsg(m_szSCMsgBuf,unTmpCodeLength,m_iSCIndex,&m_SCTcpHead);
                 //序列化失败继续发送
                 if(iTmpRet < 0)
                 {

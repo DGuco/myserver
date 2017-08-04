@@ -27,62 +27,52 @@ enum EMessageCmd
 	MESS_REGIST			= 1;	// 注册
 	MESS_KEEPALIVE		= 2;	// 心跳
 }
-/////////////////////////////////////////////GateServer//////////////////////////////////////////////////
-// 发送gateserver的消息头
 message CSocketInfo
 {
-	optional	int32	SrcIP 			= 1;		// 目标的IP
-	optional	int32	SrcPort			= 2;		// 目标的端口
-	optional	int32	SocketID		= 3;		// 目标的FD
-	optional	int64	CreateTime		= 4;		// 目标的创建时间
-	optional	int32	State			= 5;		// 发送后的状态 < 0 说明关闭socket
+	optional	int32	SocketID		= 1;		// 目标的FD
+	optional	int64	CreateTime		= 2;		// 目标的创建时间
+	optional	int32	State			= 3;		// 发送后的状态 < 0 说明关闭socket
 };
-
+/////////////////////////////////////////GameServer ==> GateServer///////////////////////////////////
 // 发送gateserver的消息头
-message CTcpHead
+message S2CHead
 {
-	optional	EMessageCmd		OpFlag			= 1[default = MESS_NULL];	// 指令类型
-	optional	int64			TimeStamp		= 2;						// 时间戳(毫秒)
-	repeated	CSocketInfo		SocketInfos		= 3;						// 发送目标信息
+	repeated	CSocketInfo		SocketInfos		= 1;	//发送目标信息(多个用来做多人推送)
+	required	int32			Cmd		 		= 2;	//消息id
+	required	int32			Seq		 		= 3;	//序列号
+	required	int32			ProtoVersion	= 4;	//protobuffer版本
+	required	bool			isEncry			= 5;	//是否加密
 };
 
-/* 发送给 gateserver 的消息集合(服务器给同一客户端有多条消息下发时放入消息集合,一起发送)
- * 发送给 gateserver 数据结构:CTcpHead ＋ CTcpHead ＋ 消息列表（单挑消息：消息长度 ＋ 消息数据)
+/* 
+ * 发送给 gateserver 的消息集合(服务器给同一客户端有多条消息下发时放入消息集合,一起发送)
  */
 message CMessageSet
 {
-	optional	CTcpHead	MsgHead	= 1;						// 消息头+
-	repeated 	bytes		MsgParas = 2;	// 消息集合(每一个bytes组成[总长度：CMessageHead长度：CMessageHead：MsgPara长度：MsgPara])
+	required	S2CHead		MsgHead		= 1;	// 消息头+
+	repeated 	bytes		MsgParas 	= 2;	// 消息集合
 };
 
+/////////////////////////////////////////GateServer ==> GameServer///////////////////////////////////
 //gateServer转发给gameserver的客户端上行消息结构
+message C2SHead
+{
+	required	CSocketInfo		SocketInfos		= 1;	//发送者socket信息
+	required	int32			Cmd		 		= 2;	//消息id
+	required	int32			Seq		 		= 3;	//序列号
+	required	int32			ProtoVersion	= 4;	//protobuffer版本
+	required	bool			isEncry			= 5;	//是否加密
+};
+
 message CClientMessage
 {
-	required	int32	Cmd		 = 1;	//消息id
-	required	int32	Seq		 = 2;	//序列号
-	required 	bytes	MsgParas = 3;	//消息
+	required	C2SHead		MsgHead	 		= 1;	//消息头+
+	required 	bytes		MsgParas 		= 4;	//消息
 };
 
-// ping消息
-message CMsgPingRequest
-{
-	enum Msg{MsgID	=	0x00FFFFFF;	}
-};
-
-/////////////////////////////////////////////ProxyServer//////////////////////////////////////////////////
-/*
- * 发送给proxyserver 数据结构:CProxyHead长度 ＋ CProxyHead ＋ 消息长度 ＋ 消息数据
- */
-//proxy消息类型
-enum EProxyCmd
-{
-	CMD_NULL			= 0;	// 无指令
-	CMD_REGIST			= 1;	// 注册
-	CMD_KEEPALIVE	= 2;	// 心跳
-};
-
+/////////////////////////////////内部服务器(dbserver,gameserver等等) ==> ProxyServer/////////////////////
 //发送给proxyserver的消息头
-message CProxyHead
+message S2PHead
 {
 	required	uint32			SrcFE			= 1;							// 源服务器类型
 	required	uint32			SrcID			= 2;							// 源服务器ID
@@ -90,4 +80,29 @@ message CProxyHead
 	required	uint32			DstID			= 4;							// 目标服务器ID
 	optional	EMessageCmd		OpFlag			= 5[default = MESS_NULL];		// 指令类型
 	required	uint64			TimeStamp		= 6;							// 时间戳(毫秒)
+};
+
+message CProxyMessage
+{
+	required	S2PHead			MsgHead	 		= 1;	//消息头+
+	required 	bytes			MsgParas 		= 2;	//消息
+};
+
+/////////////////////////////////ProxyServer ==> 内部服务器(dbserver,logserver等等) /////////////////////
+message P2SHead
+{
+	required	int32			Cmd				= 1;							//消息id
+};
+
+message CServerMessage
+{
+	required	P2SHead			MsgHead	 		= 1;	//消息头+
+	required 	bytes			MsgParas 		= 2;	//消息
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ping消息
+message CMsgPingRequest
+{
+	enum Msg{MsgID	=	0x00FFFFFF;	}
 };

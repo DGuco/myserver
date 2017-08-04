@@ -88,16 +88,16 @@ private:
     TSocketInfo 		m_astSocketInfo[MAX_SOCKET_NUM]; 	// socket结构数组，用于记录客户端的信息
     TSocketInfo* 		m_pSocketInfo;                   	// 当前的socket结构指针
 
-    char                m_szMsgBuf[MAX_PACKAGE_LEN]; 		 	// 消息包缓冲(加大是为了防止game过来的消息过大)
     int                 m_iTimeout;
-    TTcpStat            m_stTcpStat;                        // 当前tcp连接信息
+    TTcpStat            m_stTcpStat;                         // 当前tcp连接信息
 
     struct epoll_event* m_pEpollevents;                      //epoll event集合(大小MAX_SOCKET_NUM)
     int                 m_iKdpfd;                            //epoll描述符
     int                 m_iMaxfds;
     struct epoll_event  m_stEpollEvent;
 
-    unsigned char 		m_szSCMsgBuf[MAX_PACKAGE_LEN]; 		 	 // 发送消息缓冲区
+    unsigned char       m_szCSMsgBuf[MAX_PACKAGE_LEN]; 		 // 发送客户端上行消息给gameserver缓冲
+    unsigned char 		m_szSCMsgBuf[MAX_PACKAGE_LEN]; 		 // 下行客户端发送消息缓冲区
     unsigned short 		m_iSCIndex; 					 	 // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
     short 				m_nSCLength; 					 	 // 实际发送的数据长度
 
