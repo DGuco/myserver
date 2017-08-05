@@ -13,7 +13,6 @@
 #include "../../framework/net/tcp_conn.h"
 #include "../../framework/log/log.h"
 #include "../../framework/base/servertool.h"
-#include "../../framework/message/tcpmessage.pb.h"
 #include "../../framework/message/message.pb.h"
 #include "../../framework/base/base.h"
 #include "../../framework/json/config.h"
@@ -101,11 +100,12 @@ private:
     unsigned short 		m_iSCIndex; 					 	 // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
     short 				m_nSCLength; 					 	 // 实际发送的数据长度
 
+    typedef  ::google::protobuf::RepeatedPtrField< ::CSocketInfo >* SEND_LIST;
+    SEND_LIST m_pSendList;                                  //单个消息需要发送的所有socket信息
     // tcp --> game通信共享内存管道
     CCodeQueue* mC2SPipe;
     // game --> tcp通信共享内存管道
     CCodeQueue* mS2CPipe;
-    CTcpHead			m_SCTcpHead;				        // 服务器发送到客户端的数据信息头
     int					m_iSendIndex;				        // 带要发送数据过去的client socket索引
     bool				m_bHasRecv;					        // 是否接收过数据(只用于第一次接收数据使用,防止没有RecvData直接GetOneCode报错)
 };

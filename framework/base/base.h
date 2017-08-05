@@ -31,6 +31,10 @@
 #define SECOND_ABOVE_CONVERSION_UNIT	60 				// 秒以上换算单位
 #define SECOND_UNDER_CONVERSION_UNIT	1000			// 秒以下换算单位
 
+//4个字节长度，2个字节序列号，1个字节protobuf版本号，1个字节是否加密，2个字节命令码(4+2+1+1+2=10)
+#define MSG_HEAD_LEN 10  // 接收或发送给客户端消息的最小字节数
+#define MSG_MAX_LEN 			    10*1024 			// 接收或发送给客户端消息的最大字节数
+
 typedef char TName[32];
 typedef char TFName[64];
 

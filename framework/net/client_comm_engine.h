@@ -6,7 +6,6 @@ class CTcpHead;
 
 #include "../message/message_interface.h"
 #include "../message/message.pb.h"
-#include "../message/tcpmessage.pb.h"
 #include "ccrypto.h"
 
 // 加密类型定义
@@ -24,48 +23,50 @@ class ClientCommEngine
 public:
 	static unsigned char tKey[16];
 	static unsigned char* tpKey;
-	////////////////////////为了和客户端保持一致，只负责客户端的消息序列化//////////////////////
-	// 反序列化客户端Message
-    static int ConvertClientStreamToMsg(const void* pBuff,
-                                  unsigned short unBuffLen,
-                                  CMessage* pMsg,
-                                  CFactory* pMsgFactory = NULL,
-                                  bool bEncrypt = false,
-                                  const unsigned char* pEncrypt = ClientCommEngine::tpKey);
-
-	// 序列化消息(CMessage为空代表服务器内部消息)
-	static int ConvertClientMsgToStream(void* pBuff, 
-								unsigned short& unBuffLen, 
-								CMessage* pMsg = NULL, 
-								bool bEncrypt = false, 
-								const unsigned char* pEncrypt = ClientCommEngine::tpKey);
-
 //////////////////////////////////////正常的消息序列化操作////////////////////////////////////
-	//组合消息								
+    /**
+     *
+     * @param pMsgSet
+     * @param pMsg
+     * @return
+     */
 	static int AddMsgToMsgSet(CMessageSet* pMsgSet,
 							CMessage* pMsg);
 
-	// 反序列化CMessage
-	static int ConvertStreamToMsg(const void* pBuff, 
-								 unsigned short unBuffLen,
-								 CMessage* pMsg, 
-								 CFactory* pMsgFactory = NULL, 
-								 bool bEncrypt = false, 
-								 const unsigned char* pEncrypt = ClientCommEngine::tpKey);
+	/**
+	 * @param pBuff     client上行数据
+	 * @param unBuffLen 数据长度
+	 * @param pMsg      转发给gameserver的消息格式
+	 * @param pMsgFactory
+	 * @param bEncrypt
+	 * @param pEncrypt
+	 * @return  ： 0：成功 1：数据不完整继续接收  其他：错误
+	 */
+	static int ConvertStreamToClientMsg(char* pBuff,
+                                     unsigned short nRecvAllLen,
+                                     CClientMessage* pMsg,
+                                     CFactory* pMsgFactory = NULL,
+                                     bool bEncrypt = false,
+                                     const unsigned char* pEncrypt = ClientCommEngine::tpKey);
+    /**
+     *
+     * @param pBuff         存放序列化后消息的地址
+     * @param unBuffLen     消息长度
+     * @param pMsg          反序列化客户端消息组成的CClientMessage
+     * @param bEncrypt      是否加密
+     * @param pEncrypt      密钥
+     * @return               0 成功 其他 失败
+     */
+	// 序列化消息CClientMessaged 为发送到gameserver的格式)
+	static int ConvertClientMessagedToStream(unsigned char* pBuff,
+                                    unsigned short& unBuffLen,
+                                    CClientMessage* pMsg = NULL,
+                                    bool bEncrypt = false,
+                                    const unsigned char* pEncrypt = ClientCommEngine::tpKey);
 
-    // 反序列化CTcpHead, 返回剩余长度
-    static int ConvertStreamToMsg(const void* pBuff,
-                                  unsigned short unBuffLen,
-                                  unsigned short& rOffset,
-                                  CTcpHead* pTcpHead);
 
-	// 序列化消息(CMessage为空代表服务器内部消息)
-	static int ConvertMsgToStream(void* pBuff, 
-								unsigned short& unBuffLen, 
-								const CTcpHead* pTcpHead, 
-								CMessage* pMsg = NULL, 
-								bool bEncrypt = false, 
-								const unsigned char* pEncrypt = ClientCommEngine::tpKey);
+    static int ParaseGameServerMessage(unsigned char* pBuff)
+
 };
 
 

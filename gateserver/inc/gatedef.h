@@ -20,7 +20,7 @@
 #endif
 
 #ifdef MEDIUM_SIZE
-#define MAX_SOCKET_NUM				3500				// 单个TCPCtrl支持的连接数
+#define MAX_SOCKET_NUM				6000				// 单个TCPCtrl支持的连接数
 #endif
 
 #ifdef LARGE_SIZE
@@ -29,12 +29,6 @@
 
 
 #define MAX_PORT_NUM				3					// 最大端口数
-
-//4个字节长度，2个字节序列号，1个字节protobuf版本号，1个字节是否加密，2个字节命令码(4+2+1+1+2=10)
-#define MSG_HEAD_LEN 				10 					// 接收或发送给客户端消息的最小字节数
-
-#define MSG_MAX_LEN 			    10*1024 			// 接收或发送给客户端消息的最大字节数
-
 #define LISTEN_SOCKET				1					// 监听socket
 #define CONNECT_SOCKET				2					// 连接socket
 

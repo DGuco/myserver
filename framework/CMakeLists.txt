@@ -31,11 +31,9 @@ set(FRAMEWORK
         net/server_comm_engine.h
         net/daemon.h
         message/message_interface.h
-        net/nethead.h
         net/oi_tea.h
         net/daemon.cpp
         message/message_interface.cpp
-        net/nethead.cpp
         net/oi_tea.cpp
         net/runflag.cpp
         net/server_comm_engine.cpp

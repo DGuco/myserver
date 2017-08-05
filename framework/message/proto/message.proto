@@ -38,10 +38,6 @@ message CSocketInfo
 message S2CHead
 {
 	repeated	CSocketInfo		SocketInfos		= 1;	//发送目标信息(多个用来做多人推送)
-	required	int32			Cmd		 		= 2;	//消息id
-	required	int32			Seq		 		= 3;	//序列号
-	required	int32			ProtoVersion	= 4;	//protobuffer版本
-	required	bool			isEncry			= 5;	//是否加密
 };
 
 /* 
@@ -60,7 +56,6 @@ message C2SHead
 	required	CSocketInfo		SocketInfos		= 1;	//发送者socket信息
 	required	int32			Cmd		 		= 2;	//消息id
 	required	int32			Seq		 		= 3;	//序列号
-	required	int32			ProtoVersion	= 4;	//protobuffer版本
 	required	bool			isEncry			= 5;	//是否加密
 };
 
