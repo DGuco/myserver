@@ -8,9 +8,15 @@ set(SOURCE_FILES
         inc/gameserver.h
         inc/clienthandle.h
         inc/player.h
+        inc/messagefactory.h
+        inc/messagedispatcher.h
+        inc/sceneobjmanager.h
         src/gameserver.cpp
+        src/clienthandle.cpp
         src/player.cpp
-        src/player.cpp
+        src/messagefactory.cpp
+        src/messagedispatcher.cpp
+        src/sceneobjmanager.cpp      
         logicmodule/inc/coremodule.h
         logicmodule/src/coremodule.cpp
         logicmodule/inc/logicmodule.h

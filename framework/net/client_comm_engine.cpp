@@ -13,26 +13,21 @@
 unsigned char ClientCommEngine::tKey[16] = {1,2,3,4,5,6,7,8,9,0,2,2,4,4,5,6};
 unsigned char* ClientCommEngine::tpKey = &tKey[0];
 
-int ClientCommEngine::AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg)
+int ClientCommEngine::AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg)
 {
-//    if ((pMsgSet == NULL) || (!pMsg->has_msgpara()))
-//    {
-//        MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet Input param failed.");
-//    }
-//	Message* message = (Message*)pMsg->msgpara();
-//	if (message == NULL)
-//	{
-//		MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet pMsg msgpara failed");
-//	}
-//
-//    BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
-//    int iTmpCodeLength = sizeof(abyTmpCodeBuf);
-//
-//    if(!message->SerializeToArray((char*) abyTmpCodeBuf,iTmpCodeLength))
-//    {
-//        MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet SerializePartialToArray failed.");
-//    }
-//    pMsgSet->add_msgparas((const char*)abyTmpCodeBuf);
+    if ((pMsgSet == NULL) || (pMsg == NULL))
+    {
+        MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet Input param failed.");
+    }
+
+    BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
+    int iTmpCodeLength = sizeof(abyTmpCodeBuf);
+
+    if(!message->SerializeToArray((char*) abyTmpCodeBuf,iTmpCodeLength))
+    {
+        MY_ASSERT_STR(0, return -1, "ClientCommEngine::AddMsgToMsgSet SerializePartialToArray failed.");
+    }
+    pMsgSet->add_msgparas((const char*)abyTmpCodeBuf);
     return 0;
 }
 

@@ -225,7 +225,7 @@ protected:
 public:
     CProxyClient* GetProxyClient(int iIndex);
 
-    int AddMsgToMsgSet(CMessageSet* pMsgSet, CMessage* pMsg);
+    int AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg);
 
     // 为找不到CTeam的连接发送消息
     void SendMsgSystemErrorResponse(int iResult, long lMsgGuid, int iServerID, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff = false);

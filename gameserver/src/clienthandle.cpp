@@ -225,8 +225,9 @@ int CClientHandle::Recv()
     return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CMessageHead* pCSHead, CMessage* pMsg);
+int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, CMessage* pMsg);
 {
+    //长度小于消息头的长度+数据总长度+字节对齐长度
     if (!pCodeBuff || nLen < int(pCSHead::MinSize() + (sizeof(unsigned short) * 2)))
     {
         return CLIENTHANDLE_SMALL_LENGTH;
@@ -250,40 +251,41 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CMessageHead* pCSHea
         return CLIENTHANDLE_TOTAL_LENGTH;
     }
 
-    // 序列化NetHead长度
-    // 当前pbyTmpBuff指向NetHead长度，并获取该长度。
-    unsigned short unTmpNetHeadLen = *(unsigned short*) pbyTmpBuff;
-    pbyTmpBuff += sizeof(unsigned short);			// 指向NetHead数据处
-    iTmpLen -= sizeof(unsigned short);				// 长度减少一个len长度
+	// 字节对齐补充长度（采用8字节对齐）
+    unsigned short unTmpAddlLen = *(unsigned short*) pbyTmpBuff;
+    pbyTmpBuff += sizeof(unsigned short);
+    iTmpLen -= sizeof(unsigned short);	
 
-    // 序列化NetHead
-    // 当前pbyTmpBuff指向NetHead数据起始位置，unTmpNetHeadLen为NetHead长度。
-    mNetHead.Clear();
-    int iRet = mNetHead.ParseFromArray(pbyTmpBuff, unTmpNetHeadLen);
+	// // 补齐的长度一定小于8字节
+	// if (tTmpLen >= 8)
+	// {
+    //     return CLIENTHANDLE_TOTAL_LENGTH;
+	// }
+    //扔掉字节对齐长度
+    iTmpLen -= unTmpAddlLen;
+
+    // 序列化CClientMessage
+    // 当前pbyTmpBuff指向CClientMessage数据起始位置，iTmpLen为CClientMessage长度。
+    CClientMessage tmpClientMessage;
+    tmpClientMessage.Clear();
+    int iRet = tmpClientMessage.ParseFromArray(pbyTmpBuff, iTmpLen);
     if (iRet < 0)
     {
         return CLIENTHANDLE_NETHEAD;
     }
-    if (unTmpNetHeadLen != mNetHead.Size())
+    if (iTmpLen != tmpClientMessage.Size())
     {
         return CLIENTHANDLE_NETHEAD_LENGTH;
     }
-    pbyTmpBuff += unTmpNetHeadLen;						// pbyTmpBuff指向NetHead之后
-    iTmpLen -= unTmpNetHeadLen;							// 长度减少NetHead内容长度
 
-    // 连接创建时间
-    time_t tTmpCreateTime;
-    // 连接socket
-    int iTmpSocket;
-    if (mNetHead.PopEntity(&iTmpSocket, &tTmpCreateTime) < 0)
-    {
-        return CLIENTHANDLE_NO_ENTITY;
-    }
-
-    if (mNetHead.m_cState < 0)
+    C2SHead* tmpHead = tmpClientMessage.mutable_msghead();
+    CSocketInfo* tmpSocketInfo = tmpHead->mutable_socketinfos();
+    int iTmpSocket = tmpSocketInfo->socketid();
+    int tTmpCreateTime = tmpSocketInfo->createtime();
+    if (tmpSocketInfo->state() < 0)
     {
         // 客户端主动关闭连接，也有可能是连接错误被关闭
-        LOG_INFO("default", "client(%d : %d) commhandle closed by err = %d. ", iTmpSocket, tTmpCreateTime, mNetHead.m_cState);
+        LOG_INFO("default", "client(%d : %d) commhandle closed by err = %d. ", iTmpSocket, tTmpCreateTime, tmpSocketInfo->state());
 
         // 从连接容器中取出玩家实体
         CPlayer* pTmpTeam = CCoreModule::GetSingletonPtr()->GetTeamBySocket(iTmpSocket);
@@ -329,26 +331,7 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CMessageHead* pCSHea
         }
     }
 
-    // 开始解析消息
-    iRet = ClientCommEngine::ConvertStreamToMsg
-            (
-                    (void*) pbyTmpBuff,
-                    (unsigned short) iTmpLen,
-                    pCSHead, pMsg,
-                    CMessageFactory::GetSingletonPtr(),
-                    CConfigMgr::GetSingletonPtr()->GetConfig()->gameconfig().encrypt()
-            );
-    if (iRet < 0)
-    {
-        LOG_ERROR("default", "[%s : %d : %s] ConvertStreamToMsg failed, tRet = %d.",
-                  __YQ_FILE__, __LINE__, __FUNCTION__, iRet);
-        // 通知客户端解析消息失败并断开连接
-        DisconnectClient(iTmpSocket, tTmpCreateTime, mNetHead.m_iSrcIP, mNetHead.m_nSrcPort);
-        //		CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_parsemsgfailed, iTmpSocket, tTmpCreateTime, mNetHead.m_iSrcIP,mNetHead.m_nSrcPort, true);
-        return iRet;
-    }
-
-    long lTmpMsgGuid = pCSHead->timestamp();
+    pMsg->ParseArray()
     // 服务器数据拉完了才能让玩家正常游戏
     if (CGameServer::GetSingletonPtr()->CanProcessingClientMsg() == false)
     {
@@ -356,8 +339,6 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, CMessageHead* pCSHea
         CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_noservice, lTmpMsgGuid, iTmpSocket, tTmpCreateTime, mNetHead.m_iSrcIP,mNetHead.m_nSrcPort, true);
         return CLIENTHANDLE_ISNOTNORMAL;
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////改////////////////////////////////////////////////////////////
     CTeam* pTmpTeam = NULL;
     // 如果是登陆消息
     if (pMsg  && pMsg->mutable_msghead()->messageid() == CMsgLoginGameRequest::MsgID)

@@ -63,10 +63,6 @@ public:
                                     CClientMessage* pMsg = NULL,
                                     bool bEncrypt = false,
                                     const unsigned char* pEncrypt = ClientCommEngine::tpKey);
-
-
-    static int ParaseGameServerMessage(unsigned char* pBuff)
-
 };
 
 

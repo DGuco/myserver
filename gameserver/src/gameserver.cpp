@@ -454,13 +454,7 @@ int CGameServer::SendPlayer(CMessageSet* pMsgSet, CPlayer* pPlayer)
 int CGameServer::AddMsgSet(CMessageSet* pMsgSet, unsigned int iMsgID, Message* pMsgPara)
 {
     MY_ASSERT(pMsgPara != NULL && pMsgSet != NULL, return -1);
-
-    static CMessage tmpMsg;
-    tmpMsg.Clear();
-
-    tmpMsg.mutable_msghead()->set_messageid(iMsgID);
-    tmpMsg.set_msgpara((unsigned long) pMsgPara);
-
+    
     int iRet = mpClientHandle->AddMsgToMsgSet(pMsgSet, &tmpMsg);
     MY_ASSERT_STR(iRet == 0, return -2, "CGameServer::SendPlayer failed, AddMsgToMsgSet failed return %d.", iRet);
     return 0;
