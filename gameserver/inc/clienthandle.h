@@ -46,6 +46,27 @@ class CPlayer;
 class CMessageSet;
 class CMessageHead;
 
+//下行客户端数据包信息
+class Package
+{
+public:
+    Package() {}
+    ~Package() {}
+public:
+    void SetCmd(int cmd) {m_iCmd = cmd; }
+    int  GetCmd(){return m_iCmd;}
+    void SetSeq(int seq) {m_iSeq = seq;}
+    int  GetSeq(){return m_iSeq;}
+    bool GetIsEncrpy() {return m_bIsEncrpy;}
+    void SetIsEncrpy(bool isEncrpy) {m_bIsEncrpy = isEncrpy;}
+    char* GetMessBuff() {return m_acMessageBuff;}
+private:
+    int  m_iCmd;
+    int  m_iSeq;
+    int  m_bIsEncrpy;
+    char m_acMessageBuff[MAX_PACKAGE_LEN];
+};
+
 class CClientHandle
 {
 public:
@@ -63,7 +84,7 @@ protected:
 
 public:
     int AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg);
-    int Send(Message* message,CPlayer* pPlayer);
+    int Send(Message* pMessage,CPlayer* pPlayer);
     int Send(CMessageSet* pMsgSet, stPointList* pPlayerList);
     int Send(CMessageSet* pMsgSet, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff = false);
     int Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid);
@@ -80,7 +101,10 @@ public:
     void Dump(char* pBuffer, unsigned int& uiLen);
 
 private:
-    static char macMessageBuff[MAX_PACKAGE_LEN];
+    Package m_oPackage;
+
+public:
+    Package& GetPackage() {return m_osPackage;}
 };
 
 #endif //SERVER_CLIENT_HANDLE_H

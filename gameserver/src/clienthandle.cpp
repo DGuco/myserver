@@ -76,62 +76,53 @@ int CClientHandle::Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid)
 
     char* pcTmpBuff = (char*) abyTmpCodeBuf;
 
-    CTcpHead tmpCSHead;
-    tmpCSHead.set_timestamp(lMsgGuid);
-    // 如果需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertMsgToStream
-           (
-                   &mNetHead,
-                   &tmpCSHead,
-                   pMsgSet,
-                   pcTmpBuff,
-                   unTmpCodeLength
-           );
-   if (iRet != 0)
-   {
-       MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertMsgToStream failed.");
-   }
+    int iRet = ClientCommEngine::ConvertClientMessagedToStream(abyTmpCodeBuf,unTmpCodeLength,pMsgSet);
+    if (iRet != 0)
+    {
+        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertMsgToStream failed.");
+    }
 
-   iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
-   if (iRet < 0)
-   {
-       MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
-   }
+    iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
+    if (iRet < 0)
+    {
+        MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
+    }
 
-   LOG_DEBUG("default", "---- Send To Client Succeed ----");
-	for (int i = 0; i < unTmpCodeLength; i++)
-	{
-		LOG_DEBUG("default", "[%d : %d]", i, abyTmpCodeBuf[i]);
-	}
-
+    LOG_DEBUG("default", "---- Send To Client Succeed ----");
+    for (int i = 0; i < unTmpCodeLength; i++)
+    {
+        LOG_DEBUG("default", "[%d : %d]", i, abyTmpCodeBuf[i]);
+    }
     return 0;
 }
 
-int CClientHandle::Send(Message* message,CPlayer* pPlayer) {
+int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     MY_ASSERT((message != NULL && pPlayer != NULL), return -1);
     BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     unsigned short unTmpCodeLength = sizeof(abyTmpCodeBuf);
-
     char* pcTmpBuff = (char*) abyTmpCodeBuf;
 
+    CMessageSet tmpMessageSet;
+    S2CHead* tmpHead = tmpMessageSet.mutable_msghead();
+    tmpHead->set_cmd
     // 是否需要加密，在这里修改参数
-   int iRet = ClientCommEngine::ConvertClientMsgToStream(pcTmpBuff,unTmpCodeLength,message,true);
-   if (iRet != 0)
-   {
-       MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertClientMsgToStream failed.");
-   }
+    int iRet = ClientCommEngine::ConvertClientMsgToStream(pcTmpBuff,unTmpCodeLength,message,true);
+    if (iRet != 0)
+    {
+        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertClientMsgToStream failed.");
+    }
 
-   iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
-   if (iRet < 0)
-   {
-       MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
-   }
+    iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
+    if (iRet < 0)
+    {
+        MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
+    }
 
-   LOG_DEBUG("default", "---- Send To Client Succeed ----");
-	for (int i = 0; i < unTmpCodeLength; i++)
-	{
-		LOG_DEBUG("default", "[%d : %d]", i, abyTmpCodeBuf[i]);
-	}
+    LOG_DEBUG("default", "---- Send To Client Succeed ----");
+    for (int i = 0; i < unTmpCodeLength; i++)
+    {
+        LOG_DEBUG("default", "[%d : %d]", i, abyTmpCodeBuf[i]);
+    }
 
     return 0;
 }
@@ -211,10 +202,13 @@ int CClientHandle::Recv()
         return CLIENTHANDLE_QUEUE_EMPTY;
     }
 
-    CCSHead tmpCSHead;
-    CMessage tmpMessage;
+    C2SHead tmpCSHead;
+    Message tmpMessage;
 
     iRet = DecodeNetMsg(abyTmpCodeBuf, iTmpCodeLength, &tmpCSHead, &tmpMessage);
+    m_oPackage.SetCmd(tmpCSHead.cmd());
+    m_oPackage.SetSeq(tmpCSHead.seq());
+    m_oPackage.SetIsEncrpy(tmpCSHead.isencry());
     if (iRet != 0)
     {
         return iRet;
@@ -225,68 +219,30 @@ int CClientHandle::Recv()
     return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, CMessage* pMsg);
+int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, Message* pMsg);
 {
     //长度小于消息头的长度+数据总长度+字节对齐长度
     if (!pCodeBuff || nLen < int(pCSHead::MinSize() + (sizeof(unsigned short) * 2)))
     {
-        return CLIENTHANDLE_SMALL_LENGTH;
+        return ClienthandleErrCode::CLIENTHANDLE_SMALL_LENGTH;
     }
 
-    BYTE* pbyTmpBuff = pCodeBuff;
-    int iTmpLen = nLen;
-
-    // 序列化总长度
-    // protobuf打包或解析时没有自带长度信息或终结符，需要由应用程序自己在发生和接收的时候做正确的切分。
-    // 用unsigned short类型来存储len。
-    // *(unsigned short*) pbyTmpBuff此处pbyTmpBuff强制转换为unsigned short类型指针，
-    // 并且取此指针的数据，此数据为整个buff长度。
-    unsigned short unTmpTotalLen = *(unsigned short*) pbyTmpBuff;
-    pbyTmpBuff += sizeof(unsigned short);		// 指针指向数据处
-    iTmpLen -= sizeof(unsigned short);			// 从长度减少一个len的长度
-
-    // 总长度不匹配
-    if (unTmpTotalLen != nLen)
+    if (ClientCommEngine::ConvertStreamToClientMsg(pCodeBuff,
+                                                nLen,
+                                                pCSHead,
+                                                pMsg,
+                                                CMessageFactory::GetSingletonPtr() == -1)
     {
-        return CLIENTHANDLE_TOTAL_LENGTH;
+        return ClienthandleErrCode::CLIENTHANDLE_CLNENTMESSAGE;
     }
 
-	// 字节对齐补充长度（采用8字节对齐）
-    unsigned short unTmpAddlLen = *(unsigned short*) pbyTmpBuff;
-    pbyTmpBuff += sizeof(unsigned short);
-    iTmpLen -= sizeof(unsigned short);	
-
-	// // 补齐的长度一定小于8字节
-	// if (tTmpLen >= 8)
-	// {
-    //     return CLIENTHANDLE_TOTAL_LENGTH;
-	// }
-    //扔掉字节对齐长度
-    iTmpLen -= unTmpAddlLen;
-
-    // 序列化CClientMessage
-    // 当前pbyTmpBuff指向CClientMessage数据起始位置，iTmpLen为CClientMessage长度。
-    CClientMessage tmpClientMessage;
-    tmpClientMessage.Clear();
-    int iRet = tmpClientMessage.ParseFromArray(pbyTmpBuff, iTmpLen);
-    if (iRet < 0)
-    {
-        return CLIENTHANDLE_NETHEAD;
-    }
-    if (iTmpLen != tmpClientMessage.Size())
-    {
-        return CLIENTHANDLE_NETHEAD_LENGTH;
-    }
-
-    C2SHead* tmpHead = tmpClientMessage.mutable_msghead();
-    CSocketInfo* tmpSocketInfo = tmpHead->mutable_socketinfos();
-    int iTmpSocket = tmpSocketInfo->socketid();
-    int tTmpCreateTime = tmpSocketInfo->createtime();
+    CSocketInfo tmpSocketInfo = pCSHead->socketinfos();
+    int iTmpSocket = tmpSocketInfo.socketid();
+    int tTmpCreateTime = tmpSocketInfo.createtime();
     if (tmpSocketInfo->state() < 0)
     {
         // 客户端主动关闭连接，也有可能是连接错误被关闭
         LOG_INFO("default", "client(%d : %d) commhandle closed by err = %d. ", iTmpSocket, tTmpCreateTime, tmpSocketInfo->state());
-
         // 从连接容器中取出玩家实体
         CPlayer* pTmpTeam = CCoreModule::GetSingletonPtr()->GetTeamBySocket(iTmpSocket);
         if (NULL == pTmpTeam)
@@ -331,7 +287,6 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, CM
         }
     }
 
-    pMsg->ParseArray()
     // 服务器数据拉完了才能让玩家正常游戏
     if (CGameServer::GetSingletonPtr()->CanProcessingClientMsg() == false)
     {
@@ -339,9 +294,10 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, CM
         CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_noservice, lTmpMsgGuid, iTmpSocket, tTmpCreateTime, mNetHead.m_iSrcIP,mNetHead.m_nSrcPort, true);
         return CLIENTHANDLE_ISNOTNORMAL;
     }
+
     CTeam* pTmpTeam = NULL;
     // 如果是登陆消息
-    if (pMsg  && pMsg->mutable_msghead()->messageid() == CMsgLoginGameRequest::MsgID)
+    if (pMsg  &&  == pCSHead->cmd() == CMsgLoginGameRequest::MsgID)
     {
         // 5500踢掉断线玩家 检测是否需要踢掉断连玩家
         if( CCoreModule::GetSingletonPtr()->CheckOnlineIsFull()  <  0)

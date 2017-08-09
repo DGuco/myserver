@@ -1,5 +1,5 @@
 //
-// Created by dguco on 17-7-23.
+// Created by DGuco on 17-7-23.
 //
 
 #ifndef SERVER_PLAYER_H
@@ -21,7 +21,6 @@ struct STConnectInfo
     time_t						tCreateTime;									// 创建时间
     time_t						tLastActiveTime;							// 最后活跃时间
     time_t						tLoginTime;									// 登陆时间
-    char						acAddress[ADDR_LENGTH];		// 地址信息
     long						lMsgGuid;										// 消息唯一ID
 
     STConnectInfo()
@@ -38,9 +37,6 @@ struct STConnectInfo
         tLastActiveTime = 0;
         tLoginTime = 0;
         lMsgGuid = 0;
-
-        memset(acAddress, 0, sizeof(acAddress));
-
         return 0;
     }
 
@@ -52,8 +48,6 @@ struct STConnectInfo
         tCreateTime = tCreateTimePara;
         tLastActiveTime = tLastActiveTimePara;
         tLoginTime = tLoginTimePara;
-
-        SockAddrToString(uiIP, unPort, acAddress);
     }
 
     void Clear()
@@ -61,24 +55,20 @@ struct STConnectInfo
         uiIP = 0;
         unPort = 0;
         iSocket = 0;
-
-        memset(acAddress, 0, sizeof(acAddress));
     }
 };
-
-
 class CPlayer : public CObj
 {
 public:
     enum ETeamState
     {
-        ETS_INVALID								= 0,	// 无效的状态,也是初始状态
+        ETS_INVALID							= 0,	// 无效的状态,也是初始状态
         ETS_STARTLOGIN						= 1,	// 刚创建,初始化了链接信息,其它信息为空
-        ETS_LOADACCOUNT				= 2,	// 刚登陆,拉取帐号信息
-        ETS_LOADDATA							= 3,	// 拉取战队数据
-        ETS_INGAMECONNECT			= 4,	// 在游戏中,并且有连接
-        ETS_INGAMEDISCONNECT		= 5,	// 在游戏中,无连接
-        ETS_EXITSAVE							= 6,	// 离开存储数据
+        ETS_LOADACCOUNT				        = 2,	// 刚登陆,拉取帐号信息
+        ETS_LOADDATA						= 3,	// 拉取战队数据
+        ETS_INGAMECONNECT			        = 4,	// 在游戏中,并且有连接
+        ETS_INGAMEDISCONNECT		        = 5,	// 在游戏中,无连接
+        ETS_EXITSAVE						= 6,	// 离开存储数据
     };
 
     enum ESLF_FLAGS

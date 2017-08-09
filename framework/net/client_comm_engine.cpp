@@ -134,10 +134,125 @@ int ClientCommEngine::ConvertStreamToClientMsg(char* pBuff,
     return 0;
 }
 
-// 序列化消息(CMessage为空代表服务器内部消息)
+int ClientCommEngine::ConvertStreamToClientMsg(char* pBuff,
+                                    unsigned short unBuffLen,
+                                    C2SHead* pHead,
+                                    Message* pMessage,
+                                    CFactory* pMsgFactory = NULL)
+{
+    if ((pBuff == NULL) || (pHead == NULL)|| (pMessage == NULL))
+	{
+		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToClientMsg Input param failed.");
+	}
+    
+    BYTE* pbyTmpBuff = pCodeBuff;
+    int iTmpLen = nLen;
+    //取出数据总长度
+    unsigned short unTmpTotalLen = *(unsigned short*) pbyTmpBuff;
+    pbyTmpBuff += sizeof(unsigned short);		// 指针指向数据处
+    iTmpLen -= sizeof(unsigned short);			// 从长度减少一个len的长度
+
+    // 总长度不匹配
+    if (unTmpTotalLen != nLen)
+    {
+        return -1;
+    }
+
+	// 字节对齐补充长度（采用8字节对齐）
+    unsigned short unTmpAddlLen = *(unsigned short*) pbyTmpBuff;
+    pbyTmpBuff += sizeof(unsigned short);
+    iTmpLen -= sizeof(unsigned short);	
+
+    //扔掉字节对齐长度
+    iTmpLen -= unTmpAddlLen;
+
+    CClientMessage tmpClientMessage;
+    //反序列化失败
+    if (tmpClientMessage.ParseFromArray(pbyTmpBuff,iTmpLen) == false)
+    {
+        return -1;
+    }
+
+    C2SHead tmpHead = tmpClientMessage.msghead();
+    pHead->set_cmd(tmpHead.cmd());
+    pHead->set_seq(tmpHead.seq());
+    pHead->set_isencry(tmpHead.isencry());
+    CSocketInfo tmpSocketInfo = tmpHead.socketinfos();
+    pHead->mutable_socketinfos()->set_socketid(tmpSocketInfo.socketid());
+    pHead->mutable_socketinfos()->set_createtime(tmpSocketInfo.createtime());
+    pHead->mutable_socketinfos()->set_state(tmpSocketInfo.state());
+
+    //如果有消息
+    if (iTmpLen > 0 && pMsgFactory != NULL)
+    {
+        pMessage = pMsgFactory->CreateMessage(tmpHead.cmd());
+    }
+    if (pMessage == NULL) 
+    {
+        return -1;
+    }
+
+    if (pMessage.ParseFromString(tmpClientMessage.msgparas()) == false)
+    {
+        pMessage->~Message();
+        return -1;        
+    }
+}  
+
 int ClientCommEngine::ConvertClientMessagedToStream(unsigned char * pBuff,
 							  unsigned short& unBuffLen,
 							  CClientMessage* pMsg,
+							  bool bEncrypt = false,
+							  const unsigned char* pEncrypt = ClientCommEngine::tpKey)
+{
+	if ((pBuff == NULL) || (pMsg == NULL) )
+	{
+		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertMsgToStream Input param failed.");
+	}
+
+	unsigned char* pTemp = pBuff;
+
+    unsigned int unLength = 0;
+    //预留总长度
+    pTemp += sizeof(short);
+    unLength += sizeof(short);
+    //预留8字节对齐长度
+    pTemp += sizeof(short);
+    unLength += sizeof(short);
+    //序列化CClientMessage
+    if (pMsg->SerializeToArray(pTemp,pMsg->ByteSize()) != true)
+    {
+        LOG_ERROR("default", "CTCPCtrl::RecvClientData error,pbTmpTcpHead SerializeToArray error");
+        return -1;
+    }
+
+    pTemp += pMsg->GetCachedSize();
+    unLength += pMsg->GetCachedSize();
+
+    //8字节对齐
+    unsigned short iTmpAddlen = (unLength % 8);
+    if (iTmpAddlen > 0)
+    {
+        iTmpAddlen = 8 - iTmpAddlen;
+        //将字节对齐部分置为0
+        memset(pTemp,0,iTmpAddlen);
+    }
+    unLength += iTmpAddlen;
+
+    //回到消息起始地值补充数据从长度和字节补齐长度
+    pTemp = pBuff;
+    //序列话消息总长度
+    *(short*) pTemp = unLength;
+    pTemp += sizeof(short);
+    //序列话8字节对齐长度
+    *(short*) pTemp = iTmpAddlen;
+
+    unBuffLen = unLength;
+}
+
+int ClientCommEngine::ConvertClientMessagedToStream(unsigned char * pBuff,
+							  unsigned short& unBuffLen,
+							  CMessageSet* pMsg,
 							  bool bEncrypt = false,
 							  const unsigned char* pEncrypt = ClientCommEngine::tpKey)
 {

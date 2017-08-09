@@ -33,6 +33,11 @@ message CSocketInfo
 	optional	int64	CreateTime		= 2;		// 目标的创建时间
 	optional	int32	State			= 3;		// 发送后的状态 < 0 说明关闭socket
 };
+
+message CMessage
+{
+	required int32 Cmd;
+}
 /////////////////////////////////////////GameServer ==> GateServer///////////////////////////////////
 // 发送gateserver的消息头
 message S2CHead

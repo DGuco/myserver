@@ -7,8 +7,8 @@
 
 typedef ::google::protobuf::Message Message;
 
-#define CASE_NEW_MSG(msgname)				\
-	case msgname::MsgID:						\
+#define CASE_NEW_MSG(msgname,msgid)				\
+	case msgid:						\
 	{											\
 		pTmpMessage = new(macMessageBuff) msgname;	\
 		break;									\

@@ -20,7 +20,6 @@
 #include "../../framework/message/message_interface.h"
 
 class CMessageSet;
-class CMessage;
 class CCSHead;
 //class CProxyHead;
 //class CCoreModule;

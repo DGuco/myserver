@@ -203,11 +203,9 @@ void CGameServer::Exit()
 }
 
 
-void CGameServer::ProcessClientMessage(CCSHead* pHead, CMessage* pMsg, CPlayer* pPlayer)
+void CGameServer::ProcessClientMessage(C2SHead* pHead, Message* pMsg, CPlayer* pPlayer)
 {
     MY_ASSERT(pMsg != NULL && pHead != NULL && pPlayer != NULL, return);
-    MY_ASSERT(pMsg->has_msghead() == true, return);
-
     int iTmpType = GetModuleClass(pMsg->msghead().messageid());
 
 //    m_pModuleManager->OnClientMessage(iTmpType, pTeam, pMsg);
@@ -276,7 +274,6 @@ int CGameServer::RecvClientMsg(time_t tTime)
     while(iTmpRecvCount < MAX_CHECK_CLIENT_MSG)
     {
         int iRet = mpClientHandle->Recv();
-
         if (iRet == CLIENTHANDLE_QUEUE_EMPTY)
         {
             // 队列已空，直接返回
