@@ -23,9 +23,9 @@ CMessageDispatcher::~CMessageDispatcher()
 }
 
 // 消息客户端上传的消息派发
-int CMessageDispatcher::ProcessClientMessage(CCSHead* pHead, CMessage* pMsg)
+int CMessageDispatcher::ProcessClientMessage(CMessage* pMsg)
 {
-    if (pHead == NULL || pMsg == NULL)
+    if (pMsg == NULL)
     {
         return -1;
     }
@@ -36,8 +36,10 @@ int CMessageDispatcher::ProcessClientMessage(CCSHead* pHead, CMessage* pMsg)
         return -2;
     }
 
+    C2SHead tmpHead = pMsg->msghead();
+    CSocketInfo tmpSocketInfo = tmpHead.socketinfos();
     // 获得CTeam 实体
-    CPlayer* pTmpTeam = CSceneObjManager::GetSingletonPtr()->GetPlayer(pHead->entityid());
+    CPlayer* pPlayer = CSceneObjManager::GetSingletonPtr()->GetPlayer(tmpSocketInfo.socketid());
     if ( NULL == pTmpTeam )
     {
         // 未找到玩家实体
@@ -46,14 +48,20 @@ int CMessageDispatcher::ProcessClientMessage(CCSHead* pHead, CMessage* pMsg)
         return -3;
     }
 
-    const ::google::protobuf::Descriptor* pTmpDescriptor = pMsgPara->GetDescriptor();
+    //有消息正在处理（注:）正常情况不会出现这种情况，gameser是单线程的同时只能处理一个消息
+    if(pPlayer->GetPackage().GetIsDeal())
+    {
+        //todo 缓存消息
+        return -4;
+    }
 
+    const ::google::protobuf::Descriptor* pTmpDescriptor = pMsgPara->GetDescriptor();
 #ifdef _DEBUG_
-    OBJ_ID iTmpEntityID = pTmpTeam->GetEntityID();
+    OBJ_ID iTmpPlayerId = pTmpTeam->GetPlayerId();
     if ( pMsg->msghead().messageid() != CMsgPingRequest::MsgID )
     {
         LOG_DEBUG("default", "---- Recv Client(%d : %ld) Msg[ %s ][id: 0x%08x / %d] ----",
-                  iTmpEntityID, pHead->teamid(),
+                  iTmpPlayerId, tmpSocketInfo->socketid(),
                   pTmpDescriptor->name().c_str(), pMsg->msghead().messageid(), pMsg->msghead().messageid());
         LOG_DEBUG("default", "[%s]", ((Message*)pMsg->msgpara())->ShortDebugString().c_str());
     }

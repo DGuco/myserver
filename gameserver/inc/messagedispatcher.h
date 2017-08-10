@@ -18,7 +18,7 @@ public:
     ~CMessageDispatcher();
 
     // 客户端上传的消息派发
-    int ProcessClientMessage(CCSHead* pHead, CMessage* pMsg);
+    int ProcessClientMessage(CMessage* pMsg);
     // 服务器消息派发
     int ProcessServerMessage(CProxyHead* pHead, CMessage* pMsg);
 };

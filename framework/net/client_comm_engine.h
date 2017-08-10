@@ -70,7 +70,7 @@ public:
 
 
     /**
-     * 序列化消息CClientMessage 发送到gateserver（gameserver==>gateserver）
+     * 序列化消息CMessage 发送到gateserver（gameserver==>gateserver）
      * @param pBuff         存放序列化后消息的地址
      * @param unBuffLen     消息长度
      * @param pMsg          反序列化客户端消息组成的CClientMessage
@@ -78,11 +78,9 @@ public:
      * @param pEncrypt      密钥
      * @return               0 成功 其他 失败
      */
-	static int ConvertClientMessagedToStream(unsigned char* pBuff,
+	static int ConvertGameServerMessageToStream(unsigned char* pBuff,
                                     unsigned short& unBuffLen,
-                                    CMessageSet* pMsg = NULL,
-                                    bool bEncrypt = false,
-                                    const unsigned char* pEncrypt = ClientCommEngine::tpKey);
+                                    CGameServerMessage* pMsg = NULL);
 };
 
 #endif /* CLIENT_COMM_ENGINE_H_ */

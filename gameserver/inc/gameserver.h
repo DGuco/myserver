@@ -129,7 +129,7 @@ public:
     void DestroyEntity(CPlayer* pPlayer);
 
     // 处理客户端上行消息
-    void ProcessClientMessage(CCSHead* pHead, CMessage* pMsg, CPlayer* pPlayer);
+    void ProcessClientMessage(CMessage* pMsg, CPlayer* pPlayer);
     // 处理服务器内部消息
     void ProcessRouterMessage(CMessage* pMsg);
 
@@ -153,9 +153,6 @@ public:
     // 发送消息给单个玩家
     int SendPlayer(CMessageSet* pMsgSet, CPlayer* pPlayer);
     int SendPlayer(unsigned int iMsgID, CMessage* pMsgPara, CPlayer* pPlayer);
-    // 组合消息
-    int AddMsgSet(CMessageSet* pMsgSet, unsigned int iMsgID, Message* pMsgPara);
-
 
     // 通过消息ID获取模块类型
     int GetModuleClass(int iMsgID);

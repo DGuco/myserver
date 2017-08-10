@@ -62,54 +62,39 @@ int CClientHandle::Initialize()
     return 0;
 }
 
-int CClientHandle::AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg)
-{
-    return ClientCommEngine::AddMsgToMsgSet(pMsgSet, pMsg);
-}
-
-int CClientHandle::Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid)
-{
-    MY_ASSERT((pMsgSet != NULL), return -1);
-
-    BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
-    unsigned short unTmpCodeLength = sizeof(abyTmpCodeBuf);
-
-    char* pcTmpBuff = (char*) abyTmpCodeBuf;
-
-    int iRet = ClientCommEngine::ConvertClientMessagedToStream(abyTmpCodeBuf,unTmpCodeLength,pMsgSet);
-    if (iRet != 0)
-    {
-        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertMsgToStream failed.");
-    }
-
-    iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
-    if (iRet < 0)
-    {
-        MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
-    }
-
-    LOG_DEBUG("default", "---- Send To Client Succeed ----");
-    for (int i = 0; i < unTmpCodeLength; i++)
-    {
-        LOG_DEBUG("default", "[%d : %d]", i, abyTmpCodeBuf[i]);
-    }
-    return 0;
-}
-
 int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
-    MY_ASSERT((message != NULL && pPlayer != NULL), return -1);
-    BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
+    MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
+    BYTE aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     unsigned short unTmpCodeLength = sizeof(abyTmpCodeBuf);
     char* pcTmpBuff = (char*) abyTmpCodeBuf;
 
-    CMessageSet tmpMessageSet;
-    S2CHead* tmpHead = tmpMessageSet.mutable_msghead();
-    tmpHead->set_cmd
+    CGameServerMessage tmpGameServerMessage;
+    S2CHead* pTmpHead = tmpGameServerMessage.mutable_msghead;
+    CSocketInfo* pTmpSocket = pTmpHead->mutable_socketinfos();
+    STConnectInfo* pTmpConnInfo = pPlayer->GetSocketInfoPtr();
+    if (pTmpConnInfo == NULL)
+    {
+        MY_ASSERT_STR(0, return -1, "CClientHandle::Send failed, Get player connection info failed.");
+    }
+    pTmpSocket->set_createtime(pTmpConnInfo->m_tCreateTime);
+    pTmpSocket->set_socketid(pTmpConnInfo->m_iSocket);
+    Package tmpPackage = pPlayer->GetPackage();
+    pTmpHead->set_cmd(tmpPackage.GetCmd());
+    pTmpHead->set_isencry(tmpPackage.GetIsEncrpy());
+    pTmpHead->set_seq(tmpPackage.GetSeq());
+
+    BYTE aTmpMessageBuf[MAX_PACKAGE_LEN] = { 0 };
+    if (pMessage->SerializeToArray(aTmpMessageBuf,pMsg->ByteSize()) != true)
+    {
+        MY_ASSERT_STR(0, return -1, "CClientHandle::Send failed, Serial message failed.");
+    }
+
+    tmpGameServerMessage.set_msgparas((const char*)aTmpMessageBuf);
     // 是否需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertClientMsgToStream(pcTmpBuff,unTmpCodeLength,message,true);
+    int iRet = ClientCommEngine::ConvertGameServerMessageToStream(pcTmpBuff,unTmpCodeLength,tmpGameServerMessage);
     if (iRet != 0)
     {
-        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertClientMsgToStream failed.");
+        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertGameServerMessageToStream failed.");
     }
 
     iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
@@ -127,7 +112,7 @@ int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     return 0;
 }
 
-int CClientHandle::Send(CMessageSet* pMsgSet, stPointList* pTeamList)
+int CClientHandle::Send(Message* pMessage, stPointList* pTeamList)
 {
     MY_ASSERT((pMsgSet != NULL && pTeamList != NULL), return -1);
 
@@ -165,7 +150,7 @@ int CClientHandle::Send(CMessageSet* pMsgSet, stPointList* pTeamList)
     return iRet;
 }
 
-int CClientHandle::Send(CMessageSet* pMsgSet, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff)
+int CClientHandle::Send(CMessage* pMessage, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff)
 {
     MY_ASSERT((pMsgSet != NULL), return -1);
 
@@ -194,27 +179,27 @@ int CClientHandle::Recv()
     {
         LOG_ERROR("default", "[%s : %d : %s] When GetHeadCode from C2SPipe, error ocurr %d",
                   __MY_FILE__, __LINE__, __FUNCTION__, iRet);
-        return CLIENTHANDLE_QUEUE_CRASH;
+        return ClienthandleErrCode::CLIENTHANDLE_QUEUE_CRASH;
     }
 
     if (iTmpCodeLength == 0)
     {
-        return CLIENTHANDLE_QUEUE_EMPTY;
+        return ClienthandleErrCode::CLIENTHANDLE_QUEUE_EMPTY;
     }
 
-    C2SHead tmpCSHead;
-    Message tmpMessage;
-
-    iRet = DecodeNetMsg(abyTmpCodeBuf, iTmpCodeLength, &tmpCSHead, &tmpMessage);
-    m_oPackage.SetCmd(tmpCSHead.cmd());
-    m_oPackage.SetSeq(tmpCSHead.seq());
-    m_oPackage.SetIsEncrpy(tmpCSHead.isencry());
+    CMessage tmpCMessage;
+    Message* pMessage;
+    iRet = DecodeNetMsg(abyTmpCodeBuf, iTmpCodeLength,tmpMessage.mutable_msghead(), &tmpMessage);
     if (iRet != 0)
     {
         return iRet;
     }
-
-    CMessageDispatcher::GetSingletonPtr()->ProcessClientMessage(&tmpCSHead, &tmpMessage);
+    if (pMessage == NULL)
+    {
+        return ClienthandleErrCode::CLIENTHANDLE_CLNENTMESSAGE;
+    }
+    tmpMessage.set_msgpara((int64)pMessage);
+    CMessageDispatcher::GetSingletonPtr()->ProcessClientMessage(&tmpMessage);
 
     return CLIENTHANDLE_SUCCESS;
 }

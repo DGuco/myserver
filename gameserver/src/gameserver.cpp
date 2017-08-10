@@ -203,12 +203,11 @@ void CGameServer::Exit()
 }
 
 
-void CGameServer::ProcessClientMessage(C2SHead* pHead, Message* pMsg, CPlayer* pPlayer)
+void CGameServer::ProcessClientMessage(CMessage* pMsg, CPlayer* pPlayer)
 {
     MY_ASSERT(pMsg != NULL && pHead != NULL && pPlayer != NULL, return);
     int iTmpType = GetModuleClass(pMsg->msghead().messageid());
-
-//    m_pModuleManager->OnClientMessage(iTmpType, pTeam, pMsg);
+    m_pModuleManager->OnClientMessage(iTmpType, pTeam, pMsg);
 }
 
 
@@ -218,8 +217,7 @@ void CGameServer::ProcessRouterMessage(CMessage* pMsg)
     MY_ASSERT(pMsg->has_msghead() == true, return);
 
     int iTmpType = GetModuleClass(pMsg->msghead().messageid());
-
-//    m_pModuleManager->OnRouterMessage(iTmpType, pMsg);
+    m_pModuleManager->OnRouterMessage(iTmpType, pMsg);
 }
 
 
@@ -447,36 +445,14 @@ int CGameServer::SendPlayer(CMessageSet* pMsgSet, CPlayer* pPlayer)
 //    return mpClientHandle->Send(pMsgSet, &tmpList);
 }
 
-// 组合消息
-int CGameServer::AddMsgSet(CMessageSet* pMsgSet, unsigned int iMsgID, Message* pMsgPara)
-{
-    MY_ASSERT(pMsgPara != NULL && pMsgSet != NULL, return -1);
-    
-    int iRet = mpClientHandle->AddMsgToMsgSet(pMsgSet, &tmpMsg);
-    MY_ASSERT_STR(iRet == 0, return -2, "CGameServer::SendPlayer failed, AddMsgToMsgSet failed return %d.", iRet);
-    return 0;
-}
-
 int CGameServer::SendPlayer(unsigned int iMsgID, Message* pMsgPara, CPlayer* pPlayer)
 {
     MY_ASSERT(pMsgPara != NULL && pPlayer != NULL, return -1);
 
-    static CMessage tmpMsg;
-    tmpMsg.Clear();
-
-    tmpMsg.mutable_msghead()->set_messageid(iMsgID);
-    tmpMsg.set_msgpara((unsigned long) pMsgPara);
-
-    static CMessageSet tmpMsgSet;
-    tmpMsgSet.Clear();
-
-    int iRet = mpClientHandle->AddMsgToMsgSet(&tmpMsgSet, &tmpMsg);
-    MY_ASSERT_STR(iRet == 0, return -2, "CGameServer::SendTeam failed, AddMsgToMsgSet failed return %d.", iRet);
-
     stPointList tmpList;
     tmpList.push_back(pPlayer);
 
-    return mpClientHandle->Send(&tmpMsgSet, &tmpList);
+    return mpClientHandle->Send(pMsgPara, &tmpList);
 }
 
 // 连接到Proxy

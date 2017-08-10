@@ -37,35 +37,13 @@ enum ClienthandleErrCode
     CLIENTHANDLE_ISNOTNORMAL						= 13,		    // 服务器状态异常
     CLIENTHANDLE_LOGINLIMITTIME						= 14,		    // 登陆受限制
     CLIENTHANDLE_LOGINCHECK							= 15,		    // 登陆去验证
+    // CLIENTHANDLE_BUSY						        = 16,		    // 当前玩家有消息在处理中
 };
 
 class CCSHead;
 class CCodeQueue;
 class CSharedMem;
 class CPlayer;
-class CMessageSet;
-class CMessageHead;
-
-//下行客户端数据包信息
-class Package
-{
-public:
-    Package() {}
-    ~Package() {}
-public:
-    void SetCmd(int cmd) {m_iCmd = cmd; }
-    int  GetCmd(){return m_iCmd;}
-    void SetSeq(int seq) {m_iSeq = seq;}
-    int  GetSeq(){return m_iSeq;}
-    bool GetIsEncrpy() {return m_bIsEncrpy;}
-    void SetIsEncrpy(bool isEncrpy) {m_bIsEncrpy = isEncrpy;}
-    char* GetMessBuff() {return m_acMessageBuff;}
-private:
-    int  m_iCmd;
-    int  m_iSeq;
-    int  m_bIsEncrpy;
-    char m_acMessageBuff[MAX_PACKAGE_LEN];
-};
 
 class CClientHandle
 {
@@ -83,11 +61,8 @@ protected:
     CNetHead mNetHead;
 
 public:
-    int AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg);
     int Send(Message* pMessage,CPlayer* pPlayer);
-    int Send(CMessageSet* pMsgSet, stPointList* pPlayerList);
-    int Send(CMessageSet* pMsgSet, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff = false);
-    int Send2Tcp(CMessageSet* pMsgSet, long lMsgGuid);
+    int Send(Message* pMessage, stPointList* pPlayerList);
     int Recv();
 
     int DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, Message* pMsg);
@@ -101,10 +76,7 @@ public:
     void Dump(char* pBuffer, unsigned int& uiLen);
 
 private:
-    Package m_oPackage;
-
-public:
-    Package& GetPackage() {return m_osPackage;}
+    char m_acMessageBuff[MAX_PACKAGE_LEN];      //下行消息缓冲区
 };
 
 #endif //SERVER_CLIENT_HANDLE_H

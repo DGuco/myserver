@@ -15,13 +15,10 @@
 // 玩家链接信息
 struct STConnectInfo
 {
-    unsigned int		uiIP;													// IP
-    unsigned short	unPort;											// 端口
-    int							iSocket;											// socketid即FD
-    time_t						tCreateTime;									// 创建时间
-    time_t						tLastActiveTime;							// 最后活跃时间
-    time_t						tLoginTime;									// 登陆时间
-    long						lMsgGuid;										// 消息唯一ID
+    int						m_iSocket;									// socketid即FD
+    time_t					m_tCreateTime;								// 创建时间
+    time_t					m_tLastActiveTime;							// 最后活跃时间
+    time_t					m_tLoginTime;									// 登陆时间
 
     STConnectInfo()
     {
@@ -30,33 +27,60 @@ struct STConnectInfo
 
     int Initialize()
     {
-        uiIP = 0;
-        unPort = 0;
-        iSocket = 0;
-        tCreateTime = 0;
-        tLastActiveTime = 0;
-        tLoginTime = 0;
-        lMsgGuid = 0;
+        m_iSocket = 0;
+        m_tCreateTime = 0;
+        m_tLastActiveTime = 0;
+        m_tLoginTime = 0;
         return 0;
     }
 
-    void SetConnectInfo(unsigned int uiIPPara, unsigned short unPortPara, int iSocketPara, time_t tCreateTimePara, time_t tLastActiveTimePara, time_t tLoginTimePara)
+    void SetConnectInfo(int iSocketPara, time_t tCreateTimePara, time_t tLastActiveTimePara, time_t tLoginTimePara)
     {
-        uiIP = uiIPPara;
-        unPort = unPortPara;
-        iSocket = iSocketPara;
-        tCreateTime = tCreateTimePara;
-        tLastActiveTime = tLastActiveTimePara;
-        tLoginTime = tLoginTimePara;
+        m_iSocket = iSocketPara;
+        m_tCreateTime = tCreateTimePara;
+        m_tLastActiveTime = tLastActiveTimePara;
+        m_tLoginTime = tLoginTimePara;
     }
 
     void Clear()
     {
-        uiIP = 0;
-        unPort = 0;
-        iSocket = 0;
+        m_iSocket = 0;
+        m_tCreateTime = 0;
+        m_tLastActiveTime = 0;
+        m_tLoginTime = 0;
     }
 };
+
+//下行客户端数据包信息
+class Package
+{
+public:
+    Package() 
+    {
+        m_iCmd = 0;
+        m_iSeq = 0;
+        m_bIsEncrpy = false;
+        m_bIsDeal = false;
+    }
+    ~Package() {}
+public:
+    void SetCmd(int cmd) {m_iCmd = cmd; }
+    int  GetCmd(){return m_iCmd;}
+    void SetSeq(int seq) {m_iSeq = seq;}
+    int  GetSeq(){return m_iSeq;}
+    bool GetIsEncrpy() {return m_bIsEncrpy;}
+    void SetIsEncrpy(bool isEncrpy) {m_bIsEncrpy = isEncrpy;}
+    char* GetMessBuff() {return m_acMessageBuff;}
+    bool GetIsDeal() {return m_bIsDeal;}
+    void SetDeal(bool isDeal) {m_bIsDeal = isDeal;}
+private:
+    int  m_iCmd;                                //消息编号
+    int  m_iSeq;                                //消息序列号
+    int  m_bIsEncrpy;                           //是否加密
+    bool m_bIsDeal;                             //当前消息是否处理完成
+    char m_acMessageBuff[MAX_PACKAGE_LEN];      //下行消息缓冲区
+};
+
 class CPlayer : public CObj
 {
 public:
@@ -126,6 +150,8 @@ protected:
     char			m_acAccount[UID_LENGTH];
     //连接信息
     STConnectInfo	m_SocketInfo;
+private:
+    Package m_oPackage; //处理消息状态
 public:
     // 上次登录时间
     void SetLastLoginTime(int v) {m_iLastLoginTime = v;}
@@ -146,6 +172,7 @@ public:
         strncpy(m_acAccount, p, iTmpLen >= ARRAY_CNT(m_acAccount) ? (ARRAY_CNT(m_acAccount) - 1) : iTmpLen);
     }
     char* GetAccount() {return &m_acAccount[0];}
+    Package& GetPackage() {return m_oPackage;}
 public:
     // 获取连接信息
     STConnectInfo* GetSocketInfoPtr() {return &m_SocketInfo;}
