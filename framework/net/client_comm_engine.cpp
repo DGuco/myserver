@@ -127,15 +127,15 @@ int ClientCommEngine::ConvertStreamToClientMsg(char* pBuff,
 		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToClientMsg Input param failed.");
 	}
     
-    BYTE* pbyTmpBuff = pCodeBuff;
-    int iTmpLen = nLen;
+    char* pbyTmpBuff = pBuff;
+    int iTmpLen = unBuffLen;
     //取出数据总长度
     unsigned short unTmpTotalLen = *(unsigned short*) pbyTmpBuff;
     pbyTmpBuff += sizeof(unsigned short);		// 指针指向数据处
     iTmpLen -= sizeof(unsigned short);			// 从长度减少一个len的长度
 
     // 总长度不匹配
-    if (unTmpTotalLen != nLen)
+    if (unTmpTotalLen != unBuffLen)
     {
         return -1;
     }
@@ -174,7 +174,7 @@ int ClientCommEngine::ConvertStreamToClientMsg(char* pBuff,
         return -1;
     }
 
-    if (pMessage.ParseFromString(tmpClientMessage.msgparas()) == false)
+    if (pMessage->ParseFromString(tmpClientMessage.msgparas()) == false)
     {
         pMessage->~Message();
         return -1;        

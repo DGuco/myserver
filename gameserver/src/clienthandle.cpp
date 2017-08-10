@@ -64,13 +64,12 @@ int CClientHandle::Initialize()
 
 int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
-    BYTE aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
-    unsigned short unTmpCodeLength = sizeof(abyTmpCodeBuf);
-    char* pcTmpBuff = (char*) abyTmpCodeBuf;
+    unsigned char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
+    unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
 
     CGameServerMessage tmpGameServerMessage;
-    S2CHead* pTmpHead = tmpGameServerMessage.mutable_msghead;
-    CSocketInfo* pTmpSocket = pTmpHead->mutable_socketinfos();
+    S2CHead* pTmpHead = tmpGameServerMessage.mutable_msghead();
+    CSocketInfo* pTmpSocket = pTmpHead->mutable_socketinfos()->Add();
     STConnectInfo* pTmpConnInfo = pPlayer->GetSocketInfoPtr();
     if (pTmpConnInfo == NULL)
     {
@@ -84,84 +83,95 @@ int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     pTmpHead->set_seq(tmpPackage.GetSeq());
 
     BYTE aTmpMessageBuf[MAX_PACKAGE_LEN] = { 0 };
-    if (pMessage->SerializeToArray(aTmpMessageBuf,pMsg->ByteSize()) != true)
+    if (pMessage->SerializeToArray(aTmpMessageBuf,pMessage->ByteSize()) != true)
     {
         MY_ASSERT_STR(0, return -1, "CClientHandle::Send failed, Serial message failed.");
     }
 
     tmpGameServerMessage.set_msgparas((const char*)aTmpMessageBuf);
     // 是否需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertGameServerMessageToStream(pcTmpBuff,unTmpCodeLength,tmpGameServerMessage);
+    int iRet = ClientCommEngine::ConvertGameServerMessageToStream(aTmpCodeBuf,
+                                                                  unTmpCodeLength,
+                                                                  &tmpGameServerMessage);
     if (iRet != 0)
     {
         MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertGameServerMessageToStream failed.");
     }
 
-    iRet = mS2CPipe->AppendOneCode(abyTmpCodeBuf, unTmpCodeLength);
+    iRet = mS2CPipe->AppendOneCode(aTmpCodeBuf, unTmpCodeLength);
     if (iRet < 0)
     {
         MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
     }
 
     LOG_DEBUG("default", "---- Send To Client Succeed ----");
-    for (int i = 0; i < unTmpCodeLength; i++)
-    {
-        LOG_DEBUG("default", "[%d : %d]", i, abyTmpCodeBuf[i]);
-    }
-
     return 0;
 }
 
-int CClientHandle::Send(Message* pMessage, stPointList* pTeamList)
+int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
 {
-    MY_ASSERT((pMsgSet != NULL && pTeamList != NULL), return -1);
+    MY_ASSERT((pMessage != NULL && pTeamList != NULL), return -1);
 
     time_t tTmpNow = time(NULL);
     bool bTmpKickoff = false;
     // 判断是否发送消息后断开连接(这个主动断开只针对与第一个玩家)
-    mNetHead.Initialize(tTmpNow, (bTmpKickoff == true ? -1 : 0));
+//    mNetHead.Initialize(tTmpNow, (bTmpKickoff == true ? -1 : 0));
+    CGameServerMessage tmpGameServerMessage;
+    S2CHead* pTmpHead = tmpGameServerMessage.mutable_msghead();
+    pTmpHead->set_cmd(cmd);
+    pTmpHead->set_isencry(false);
+    pTmpHead->set_seq(0);
+    BYTE aTmpMessageBuf[MAX_PACKAGE_LEN] = { 0 };
+    if (pMessage->SerializeToArray(aTmpMessageBuf,pMessage->ByteSize()) != true)
+    {
+        MY_ASSERT_STR(0, return -1, "CClientHandle::Send failed, Serial message failed.");
+    }
+
     for (int i = 0; i < pTeamList->GetBroadcastNum(); i++)
     {
         // 将列表中的实体信息加入nethead头中
-        CPlayer* pTmpTeam = (CPlayer*)pTeamList->GetPointByIdx(i);
-        if (pTmpTeam)
+        CPlayer* pPlayer = (CPlayer*)pTeamList->GetPointByIdx(i);
+        if (pPlayer)
         {
-            if (pTmpTeam->GetSocketInfoPtr()->iSocket != 0)
+            if (pPlayer->GetSocketInfoPtr()->m_iSocket != 0)
             {
-                mNetHead.AddEntity(pTmpTeam->GetSocketInfoPtr()->iSocket, pTmpTeam->GetSocketInfoPtr()->tCreateTime);
-                LOG_DEBUG("default", "---- Send To Client( %d | %lu | %s ) socket(%d) createtime(%ld) ----",
-                          pTmpTeam->GetEntityID(), pTmpTeam->GetPlayerId(), pTmpTeam->GetPlayerName(),
-                          pTmpTeam->GetSocketInfoPtr()->iSocket, pTmpTeam->GetSocketInfoPtr()->tCreateTime);
+                CSocketInfo* pTmpSocket = pTmpHead->mutable_socketinfos()->Add();
+                STConnectInfo* pTmpConnInfo = pPlayer->GetSocketInfoPtr();
+                if (pTmpConnInfo == NULL)
+                {
+                    MY_ASSERT_STR(0, return -1, "CClientHandle::Send failed, Get player connection info failed.");
+                }
+                pTmpSocket->set_createtime(pTmpConnInfo->m_tCreateTime);
+                pTmpSocket->set_socketid(pTmpConnInfo->m_iSocket);
+//                mNetHead.AddEntity(pTmpTeam->GetSocketInfoPtr()->iSocket, pTmpTeam->GetSocketInfoPtr()->tCreateTime);
+//                LOG_DEBUG("default", "---- Send To Client( %d | %lu | %s ) socket(%d) createtime(%ld) ----",
+//                          pTmpTeam->GetEntityID(), pTmpTeam->GetPlayerId(), pTmpTeam->GetPlayerName(),
+//                          pTmpTeam->GetSocketInfoPtr()->iSocket, pTmpTeam->GetSocketInfoPtr()->tCreateTime);
             }
             else
             {
-                LOG_DEBUG("default", "Client(%d | %lu | %s) has disconnected.", pTmpTeam->GetEntityID(), pTmpTeam->GetPlayerId(), pTmpTeam->GetPlayerName());
+                LOG_DEBUG("default", "Client(%d | %lu | %s) has disconnected.", pPlayer->GetEntityID(), pPlayer->GetPlayerId(), pPlayer->GetPlayerName());
             }
         }
     }
 
-    int iRet = -11;
-    CPlayer* pTmpTeam = (CPlayer*)pTeamList->GetPointByIdx(0);
-    if (pTmpTeam)
+    unsigned char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
+    unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
+    tmpGameServerMessage.set_msgparas((const char*)aTmpMessageBuf);
+    // 是否需要加密，在这里修改参数
+    int iRet = ClientCommEngine::ConvertGameServerMessageToStream(aTmpCodeBuf,
+                                                                  unTmpCodeLength,
+                                                                  &tmpGameServerMessage);
+    if (iRet != 0)
     {
-        iRet = Send2Tcp(pMsgSet, pTmpTeam->GetSocketInfoPtr()->lMsgGuid);
+        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertGameServerMessageToStream failed.");
     }
 
-    return iRet;
-}
-
-int CClientHandle::Send(CMessage* pMessage, long lMsgGuid, int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff)
-{
-    MY_ASSERT((pMsgSet != NULL), return -1);
-
-    time_t tTmpNow = time(NULL);
-    // 判断是否发送消息后断开连接(这个主动断开只针对与第一个玩家)
-    mNetHead.Initialize(tTmpNow, (bKickOff == true ? -1 : 0), uiIP, unPort);
-    mNetHead.AddEntity(iSocket, tCreateTime);
-    LOG_DEBUG("default", "---- Send To Client socket(%d) createtime(%ld) ----", iSocket, tCreateTime);
-
-    int iRet = Send2Tcp(pMsgSet, lMsgGuid);
-
+    iRet = mS2CPipe->AppendOneCode(aTmpCodeBuf, unTmpCodeLength);
+    if (iRet < 0)
+    {
+        MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
+    }
     return iRet;
 }
 
@@ -416,24 +426,22 @@ void CClientHandle::DisconnectClient(CPlayer* cPlayer)
     }
 
     DisconnectClient(
-            cPlayer->GetSocketInfoPtr()->iSocket,
-            cPlayer->GetSocketInfoPtr()->tCreateTime,
-            cPlayer->GetSocketInfoPtr()->uiIP,
-            cPlayer->GetSocketInfoPtr()->unPort);
+            cPlayer->GetSocketInfoPtr()->m_iSocket,
+            cPlayer->GetSocketInfoPtr()->m_tCreateTime);
 }
 
 // 断开玩家连接
-void CClientHandle::DisconnectClient(int iSocket, time_t tCreateTime,
-                                     unsigned int uiIP, unsigned short unPort)
+void CClientHandle::DisconnectClient(int iSocket,
+                                     time_t tCreateTime)
 {
     BYTE abyTmpCodeBuff[MAX_PACKAGE_LEN];
     unsigned char* pucTmpBuff = (unsigned char*) abyTmpCodeBuff;
     unsigned short unTmpLen = 0;
 
-    // 这里必须用临时变量，因为有可能是在接收到消息的时候发起断连
-    CNetHead tmpNetHead;
-    tmpNetHead.Initialize(time(NULL), -1, uiIP, unPort);
-    tmpNetHead.AddEntity(iSocket, tCreateTime);
+//    // 这里必须用临时变量，因为有可能是在接收到消息的时候发起断连
+//    CNetHead tmpNetHead;
+//    tmpNetHead.Initialize(time(NULL), -1, uiIP, unPort);
+//    tmpNetHead.AddEntity(iSocket, tCreateTime);
 
     // 总长度
     *(unsigned short*) pucTmpBuff =
@@ -472,13 +480,7 @@ void CClientHandle::DisconnectClient(int iSocket, time_t tCreateTime,
         return;
     }
 
-    char acTmpAddress[ADDR_LENGTH] =
-            { 0 };
-    char* pcTmpAddress = &acTmpAddress[0];
-    if (SockAddrToString(uiIP, unPort, pcTmpAddress) == 0)
-    {
-        LOG_NOTICE("default", "Disconnect Client [%s : Socket = %d : CreateTime = %d].", pcTmpAddress, iSocket, tCreateTime);
-    }
+    LOG_NOTICE("default", "Disconnect Client [Socket = %d : CreateTime = %d].", iSocket, tCreateTime);
 }
 
 // 打印管道状态

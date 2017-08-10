@@ -7,6 +7,7 @@
 #define SERVER_CLIENT_HANDLE_H
 
 #include "../../framework/message/message_interface.h"
+#include "../../framework/message/message.pb.h"
 
 // 管道标识符
 enum enLockIdx
@@ -58,11 +59,10 @@ protected:
     CCodeQueue* mC2SPipe;
     // game --> tcp 共享内存管道起始地址
     CCodeQueue* mS2CPipe;
-    CNetHead mNetHead;
 
 public:
     int Send(Message* pMessage,CPlayer* pPlayer);
-    int Send(Message* pMessage, stPointList* pPlayerList);
+    int Send(int cmd,Message* pMessage, stPointList* pPlayerList);
     int Recv();
 
     int DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, Message* pMsg);
@@ -70,7 +70,7 @@ public:
     // 断开玩家连接
     void DisconnectClient(CPlayer* cPlayer);
     // 断开玩家连接
-    void DisconnectClient(int iSocket, time_t tCreateTime, unsigned int uiIP, unsigned short unPort);
+    void DisconnectClient(int iSocket, time_t tCreateTime);
 
     // 打印管道状态
     void Dump(char* pBuffer, unsigned int& uiLen);
