@@ -491,10 +491,16 @@ int CGateCtrl::RecvClientData(int iSocketFd)
 
     while(1)
     {
-        CClientMessage tmpClientMessage;
-        iTmpRet = ClientCommEngine::ConvertStreamToClientMsg(m_pSocketInfo->m_szMsgBuf,
-                                                   nRecvAllLen,
-                                                   &tmpClientMessage);
+        C2SHead tmpHead;
+        //客户端上行数据（除去消息头部信息）在数据缓存中的偏移
+        unsigned int unTmpMessageUse = 0;
+        //客户端上行数据（除去消息头部信息）长度
+        unsigned int unTmpDataLen = 0;
+        iTmpRet = ClientCommEngine::ParseClientStream(m_pSocketInfo->m_szMsgBuf,
+                                                        nRecvAllLen,
+                                                        &tmpHead,
+                                                        unTmpMessageUse,
+                                                        unTmpDataLen);
         //继续接收
         if (iTmpRet == 1)
         {
@@ -506,16 +512,22 @@ int CGateCtrl::RecvClientData(int iSocketFd)
             return iTmpRet;
         }
         //组织转发消息
-        if (0 == iTmpRet && tmpClientMessage.mutable_msghead()->cmd() != CMsgPingRequest::MsgID)
+        if (0 == iTmpRet && tmpClientMessage.mutable_msghead()->cmd() != CMsgPingRequest::MsgID 
+                && unTmpDataLen >= 0)
         {
             CSocketInfo *tmpSocketInfo = tmpClientMessage.mutable_msghead()->mutable_socketinfos();
             tmpSocketInfo->Clear();
             tmpSocketInfo->set_createtime(m_pSocketInfo->m_tCreateTime);
             tmpSocketInfo->set_socketid(m_pSocketInfo->m_iSocket);
 
-            unsigned short tmpSendLen;
-            unsigned char *pTemp = m_szCSMsgBuf;
-            iTmpRet = ClientCommEngine::ConvertClientMessagedToStream(m_szCSMsgBuf,tmpSendLen,&tmpClientMessage);
+            char *pTemp = m_szCSMsgBuf;
+            unsigned int tmpSendLen = sizof(m_szCSMsgBuf);
+            char* pDataBuff = m_pSocketInfo->m_szMsgBuf + tmpMessageUse;
+            iTmpRet = ClientCommEngine::ConverToGameStream(m_szCSMsgBuf,
+                                                            tmpSendLen,
+                                                            pDataBuff,
+                                                            unTmpDataLen,
+                                                            &tmpClientMessage);
             if (iTmpRet != 0)
             {
                 ClearSocketInfo(Err_SendToMainSvrd);

@@ -64,12 +64,11 @@ int CClientHandle::Initialize()
 
 int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
-    unsigned char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
-    unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
+    char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
+    unsigned int unTmpCodeLength = sizeof(aTmpCodeBuf);
 
-    CGameServerMessage tmpGameServerMessage;
-    S2CHead* pTmpHead = tmpGameServerMessage.mutable_msghead();
-    CSocketInfo* pTmpSocket = pTmpHead->mutable_socketinfos()->Add();
+    S2CHead pTmpHead;
+    CSocketInfo* pTmpSocket = pTmpHead.mutable_socketinfos()->Add();
     STConnectInfo* pTmpConnInfo = pPlayer->GetSocketInfoPtr();
     if (pTmpConnInfo == NULL)
     {
@@ -82,17 +81,11 @@ int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     pTmpHead->set_isencry(tmpPackage.GetIsEncrpy());
     pTmpHead->set_seq(tmpPackage.GetSeq());
 
-    BYTE aTmpMessageBuf[MAX_PACKAGE_LEN] = { 0 };
-    if (pMessage->SerializeToArray(aTmpMessageBuf,pMessage->ByteSize()) != true)
-    {
-        MY_ASSERT_STR(0, return -1, "CClientHandle::Send failed, Serial message failed.");
-    }
-
-    tmpGameServerMessage.set_msgparas((const char*)aTmpMessageBuf);
     // 是否需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertGameServerMessageToStream(aTmpCodeBuf,
-                                                                  unTmpCodeLength,
-                                                                  &tmpGameServerMessage);
+    int iRet = ClientCommEngine::ConvertMessageToStream(aTmpCodeBuf,
+                                                        unTmpCodeLength,
+                                                        &pTmpHead,
+                                                        pMessage);
     if (iRet != 0)
     {
         MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertGameServerMessageToStream failed.");
@@ -116,16 +109,11 @@ int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
     bool bTmpKickoff = false;
     // 判断是否发送消息后断开连接(这个主动断开只针对与第一个玩家)
 //    mNetHead.Initialize(tTmpNow, (bTmpKickoff == true ? -1 : 0));
-    CGameServerMessage tmpGameServerMessage;
-    S2CHead* pTmpHead = tmpGameServerMessage.mutable_msghead();
-    pTmpHead->set_cmd(cmd);
-    pTmpHead->set_isencry(false);
-    pTmpHead->set_seq(0);
+    S2CHead pTmpHead;;
+    pTmpHead.set_cmd(cmd);
+    pTmpHead.set_isencry(false);
+    pTmpHead.set_seq(0);
     BYTE aTmpMessageBuf[MAX_PACKAGE_LEN] = { 0 };
-    if (pMessage->SerializeToArray(aTmpMessageBuf,pMessage->ByteSize()) != true)
-    {
-        MY_ASSERT_STR(0, return -1, "CClientHandle::Send failed, Serial message failed.");
-    }
 
     for (int i = 0; i < pTeamList->GetBroadcastNum(); i++)
     {
@@ -135,7 +123,7 @@ int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
         {
             if (pPlayer->GetSocketInfoPtr()->m_iSocket != 0)
             {
-                CSocketInfo* pTmpSocket = pTmpHead->mutable_socketinfos()->Add();
+                CSocketInfo* pTmpSocket = pTmpHead.mutable_socketinfos()->Add();
                 STConnectInfo* pTmpConnInfo = pPlayer->GetSocketInfoPtr();
                 if (pTmpConnInfo == NULL)
                 {
@@ -157,11 +145,11 @@ int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
 
     unsigned char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
-    tmpGameServerMessage.set_msgparas((const char*)aTmpMessageBuf);
-    // 是否需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertGameServerMessageToStream(aTmpCodeBuf,
-                                                                  unTmpCodeLength,
-                                                                  &tmpGameServerMessage);
+]    // 是否需要加密，在这里修改参数
+    int iRet = ClientCommEngine::ConvertMessageToStream(aTmpCodeBuf,
+                                                        unTmpCodeLength,
+                                                        *pTmpHead,
+                                                        pMessage);
     if (iRet != 0)
     {
         MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertGameServerMessageToStream failed.");
@@ -222,7 +210,7 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, Me
         return ClienthandleErrCode::CLIENTHANDLE_SMALL_LENGTH;
     }
 
-    if (ClientCommEngine::ConvertStreamToClientMsg(pCodeBuff,
+    if (ClientCommEngine::ConvertStreamToMessage(pCodeBuff,
                                                 nLen,
                                                 pCSHead,
                                                 pMsg,

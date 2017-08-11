@@ -9,6 +9,17 @@
         "thread": "cpp",
         "tuple": "cpp",
         "utility": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "typeinfo": "cpp",
+        "unordered_map": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "__split_buffer": "cpp",
+        "deque": "cpp",
+        "vector": "cpp",
+        "typeindex": "cpp",
+        "ios": "cpp",
+        "istream": "cpp",
+        "iterator": "cpp"
     }
 }

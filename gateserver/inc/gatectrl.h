@@ -95,8 +95,8 @@ private:
     int                 m_iMaxfds;
     struct epoll_event  m_stEpollEvent;
 
-    unsigned char       m_szCSMsgBuf[MAX_PACKAGE_LEN]; 		 // 发送客户端上行消息给gameserver缓冲
-    unsigned char 		m_szSCMsgBuf[MAX_PACKAGE_LEN]; 		 // 下行客户端发送消息缓冲区
+    char        m_szCSMsgBuf[MAX_PACKAGE_LEN]; 		         // 发送客户端上行消息给gameserver缓冲
+    char 		m_szSCMsgBuf[MAX_PACKAGE_LEN]; 		         // 下行客户端发送消息缓冲区
     unsigned short 		m_iSCIndex; 					 	 // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
     short 				m_nSCLength; 					 	 // 实际发送的数据长度
 

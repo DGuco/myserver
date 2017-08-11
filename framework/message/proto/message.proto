@@ -34,8 +34,21 @@ message CSocketInfo
 	optional	int32	State			= 3;		// 发送后的状态 < 0 说明关闭socket
 };
 
-/////////////////////////////////////////GameServer ==> GateServer///////////////////////////////////
-// 发送gateserver的消息头
+/////////////////////////////////////////GameServer <==> GateServer///////////////////////////////////
+/* 
+ * 发送给GameServer和gateserver的消息传递格式
+ * 总长度 ＋ 字节对齐长度 ＋ head长度 + head ＋ msgPara
+ */
+ // 发送Gateserver=>GameServer的消息头
+message C2SHead
+{
+	required	CSocketInfo		SocketInfos		= 1;	//发送目标信息(多个用来做多人推送)
+	required	int32			Cmd		 		= 2;	//消息id
+	required	int32			Seq		 		= 3;	//序列号
+	required	bool			isEncry			= 4;	//是否加密
+};
+
+//发送GameServer=>Gateserver的消息头
 message S2CHead
 {
 	repeated	CSocketInfo		SocketInfos		= 1;	//发送目标信息(多个用来做多人推送)
@@ -44,36 +57,11 @@ message S2CHead
 	required	bool			isEncry			= 4;	//是否加密
 };
 
-//gameserver内部消息传递格式
+//gamesever 服务器内部消息传递格式
 message CMessage
 {
 	required	S2CHead		MsgHead		= 1;	// 消息头+
 	optional	fixed64		MsgPara		= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
-};
-
-/* 
- * 发送给 gateserver 的消息集合
- */
-message CGameServerMessage
-{
-	required	S2CHead		MsgHead		= 1;	// 消息头+
-	required 	bytes		MsgParas 	= 2;	// 消息集合
-};
-
-/////////////////////////////////////////GateServer ==> GameServer///////////////////////////////////
-//gateServer转发给gameserver的客户端上行消息结构
-message C2SHead
-{
-	required	CSocketInfo		SocketInfos		= 1;	//发送者socket信息
-	required	int32			Cmd		 		= 2;	//消息id
-	required	int32			Seq		 		= 3;	//序列号
-	required	bool			isEncry			= 4;	//是否加密
-};
-
-message CClientMessage
-{
-	required	C2SHead		MsgHead	 		= 1;	//消息头+
-	required 	bytes		MsgParas 		= 4;	//消息
 };
 
 /////////////////////////////////内部服务器(dbserver,gameserver等等) ==> ProxyServer/////////////////////
@@ -88,10 +76,10 @@ message S2PHead
 	required	uint64			TimeStamp		= 6;							// 时间戳(毫秒)
 };
 
+//总长度 ＋ 字节对齐长度 ＋ head长度 + head ＋ msgPara
 message CProxyMessage
 {
 	required	S2PHead			MsgHead	 		= 1;	//消息头+
-	required 	bytes			MsgParas 		= 2;	//消息
 };
 
 /////////////////////////////////ProxyServer ==> 内部服务器(dbserver,logserver等等) /////////////////////
@@ -100,10 +88,10 @@ message P2SHead
 	required	int32			Cmd				= 1;							//消息id
 };
 
+//总长度 ＋ 字节对齐长度 ＋ head长度 + head ＋ msgPara
 message CServerMessage
 {
 	required	P2SHead			MsgHead	 		= 1;	//消息头+
-	required 	bytes			MsgParas 		= 2;	//消息
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
