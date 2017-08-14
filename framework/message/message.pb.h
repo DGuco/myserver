@@ -30,9 +30,6 @@
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
-class C2SHead;
-class C2SHeadDefaultTypeInternal;
-extern C2SHeadDefaultTypeInternal _C2SHead_default_instance_;
 class CMessage;
 class CMessageDefaultTypeInternal;
 extern CMessageDefaultTypeInternal _CMessage_default_instance_;
@@ -48,12 +45,12 @@ extern CServerMessageDefaultTypeInternal _CServerMessage_default_instance_;
 class CSocketInfo;
 class CSocketInfoDefaultTypeInternal;
 extern CSocketInfoDefaultTypeInternal _CSocketInfo_default_instance_;
+class MesHead;
+class MesHeadDefaultTypeInternal;
+extern MesHeadDefaultTypeInternal _MesHead_default_instance_;
 class P2SHead;
 class P2SHeadDefaultTypeInternal;
 extern P2SHeadDefaultTypeInternal _P2SHead_default_instance_;
-class S2CHead;
-class S2CHeadDefaultTypeInternal;
-extern S2CHeadDefaultTypeInternal _S2CHead_default_instance_;
 class S2PHead;
 class S2PHeadDefaultTypeInternal;
 extern S2PHeadDefaultTypeInternal _S2PHead_default_instance_;
@@ -254,14 +251,14 @@ class CSocketInfo : public ::google::protobuf::Message /* @@protoc_insertion_poi
 };
 // -------------------------------------------------------------------
 
-class C2SHead : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:C2SHead) */ {
+class MesHead : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MesHead) */ {
  public:
-  C2SHead();
-  virtual ~C2SHead();
+  MesHead();
+  virtual ~MesHead();
 
-  C2SHead(const C2SHead& from);
+  MesHead(const MesHead& from);
 
-  inline C2SHead& operator=(const C2SHead& from) {
+  inline MesHead& operator=(const MesHead& from) {
     CopyFrom(from);
     return *this;
   }
@@ -275,24 +272,24 @@ class C2SHead : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const C2SHead& default_instance();
+  static const MesHead& default_instance();
 
-  static inline const C2SHead* internal_default_instance() {
-    return reinterpret_cast<const C2SHead*>(
-               &_C2SHead_default_instance_);
+  static inline const MesHead* internal_default_instance() {
+    return reinterpret_cast<const MesHead*>(
+               &_MesHead_default_instance_);
   }
 
-  void Swap(C2SHead* other);
+  void Swap(MesHead* other);
 
   // implements Message ----------------------------------------------
 
-  inline C2SHead* New() const PROTOBUF_FINAL { return New(NULL); }
+  inline MesHead* New() const PROTOBUF_FINAL { return New(NULL); }
 
-  C2SHead* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  MesHead* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
   void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
   void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void CopyFrom(const C2SHead& from);
-  void MergeFrom(const C2SHead& from);
+  void CopyFrom(const MesHead& from);
+  void MergeFrom(const MesHead& from);
   void Clear() PROTOBUF_FINAL;
   bool IsInitialized() const PROTOBUF_FINAL;
 
@@ -313,137 +310,7 @@ class C2SHead : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const PROTOBUF_FINAL;
-  void InternalSwap(C2SHead* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required .CSocketInfo SocketInfos = 1;
-  bool has_socketinfos() const;
-  void clear_socketinfos();
-  static const int kSocketInfosFieldNumber = 1;
-  const ::CSocketInfo& socketinfos() const;
-  ::CSocketInfo* mutable_socketinfos();
-  ::CSocketInfo* release_socketinfos();
-  void set_allocated_socketinfos(::CSocketInfo* socketinfos);
-
-  // required int32 Cmd = 2;
-  bool has_cmd() const;
-  void clear_cmd();
-  static const int kCmdFieldNumber = 2;
-  ::google::protobuf::int32 cmd() const;
-  void set_cmd(::google::protobuf::int32 value);
-
-  // required int32 Seq = 3;
-  bool has_seq() const;
-  void clear_seq();
-  static const int kSeqFieldNumber = 3;
-  ::google::protobuf::int32 seq() const;
-  void set_seq(::google::protobuf::int32 value);
-
-  // required bool isEncry = 4;
-  bool has_isencry() const;
-  void clear_isencry();
-  static const int kIsEncryFieldNumber = 4;
-  bool isencry() const;
-  void set_isencry(bool value);
-
-  // @@protoc_insertion_point(class_scope:C2SHead)
- private:
-  void set_has_socketinfos();
-  void clear_has_socketinfos();
-  void set_has_cmd();
-  void clear_has_cmd();
-  void set_has_seq();
-  void clear_has_seq();
-  void set_has_isencry();
-  void clear_has_isencry();
-
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::HasBits<1> _has_bits_;
-  mutable int _cached_size_;
-  ::CSocketInfo* socketinfos_;
-  ::google::protobuf::int32 cmd_;
-  ::google::protobuf::int32 seq_;
-  bool isencry_;
-  friend struct  protobuf_message_2eproto::TableStruct;
-};
-// -------------------------------------------------------------------
-
-class S2CHead : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:S2CHead) */ {
- public:
-  S2CHead();
-  virtual ~S2CHead();
-
-  S2CHead(const S2CHead& from);
-
-  inline S2CHead& operator=(const S2CHead& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields();
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields();
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const S2CHead& default_instance();
-
-  static inline const S2CHead* internal_default_instance() {
-    return reinterpret_cast<const S2CHead*>(
-               &_S2CHead_default_instance_);
-  }
-
-  void Swap(S2CHead* other);
-
-  // implements Message ----------------------------------------------
-
-  inline S2CHead* New() const PROTOBUF_FINAL { return New(NULL); }
-
-  S2CHead* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void CopyFrom(const S2CHead& from);
-  void MergeFrom(const S2CHead& from);
-  void Clear() PROTOBUF_FINAL;
-  bool IsInitialized() const PROTOBUF_FINAL;
-
-  size_t ByteSizeLong() const PROTOBUF_FINAL;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output)
-      const PROTOBUF_FINAL {
-    return InternalSerializeWithCachedSizesToArray(
-        ::google::protobuf::io::CodedOutputStream::IsDefaultSerializationDeterministic(), output);
-  }
-  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
-  void InternalSwap(S2CHead* other);
+  void InternalSwap(MesHead* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return NULL;
@@ -492,7 +359,7 @@ class S2CHead : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   bool isencry() const;
   void set_isencry(bool value);
 
-  // @@protoc_insertion_point(class_scope:S2CHead)
+  // @@protoc_insertion_point(class_scope:MesHead)
  private:
   void set_has_cmd();
   void clear_has_cmd();
@@ -590,14 +457,14 @@ class CMessage : public ::google::protobuf::Message /* @@protoc_insertion_point(
 
   // accessors -------------------------------------------------------
 
-  // required .S2CHead MsgHead = 1;
+  // required .MesHead MsgHead = 1;
   bool has_msghead() const;
   void clear_msghead();
   static const int kMsgHeadFieldNumber = 1;
-  const ::S2CHead& msghead() const;
-  ::S2CHead* mutable_msghead();
-  ::S2CHead* release_msghead();
-  void set_allocated_msghead(::S2CHead* msghead);
+  const ::MesHead& msghead() const;
+  ::MesHead* mutable_msghead();
+  ::MesHead* release_msghead();
+  void set_allocated_msghead(::MesHead* msghead);
 
   // optional fixed64 MsgPara = 2 [default = 0];
   bool has_msgpara() const;
@@ -616,7 +483,7 @@ class CMessage : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::HasBits<1> _has_bits_;
   mutable int _cached_size_;
-  ::S2CHead* msghead_;
+  ::MesHead* msghead_;
   ::google::protobuf::uint64 msgpara_;
   friend struct  protobuf_message_2eproto::TableStruct;
 };
@@ -1248,236 +1115,115 @@ inline void CSocketInfo::set_state(::google::protobuf::int32 value) {
 
 // -------------------------------------------------------------------
 
-// C2SHead
-
-// required .CSocketInfo SocketInfos = 1;
-inline bool C2SHead::has_socketinfos() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void C2SHead::set_has_socketinfos() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void C2SHead::clear_has_socketinfos() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void C2SHead::clear_socketinfos() {
-  if (socketinfos_ != NULL) socketinfos_->::CSocketInfo::Clear();
-  clear_has_socketinfos();
-}
-inline const ::CSocketInfo& C2SHead::socketinfos() const {
-  // @@protoc_insertion_point(field_get:C2SHead.SocketInfos)
-  return socketinfos_ != NULL ? *socketinfos_
-                         : *::CSocketInfo::internal_default_instance();
-}
-inline ::CSocketInfo* C2SHead::mutable_socketinfos() {
-  set_has_socketinfos();
-  if (socketinfos_ == NULL) {
-    socketinfos_ = new ::CSocketInfo;
-  }
-  // @@protoc_insertion_point(field_mutable:C2SHead.SocketInfos)
-  return socketinfos_;
-}
-inline ::CSocketInfo* C2SHead::release_socketinfos() {
-  // @@protoc_insertion_point(field_release:C2SHead.SocketInfos)
-  clear_has_socketinfos();
-  ::CSocketInfo* temp = socketinfos_;
-  socketinfos_ = NULL;
-  return temp;
-}
-inline void C2SHead::set_allocated_socketinfos(::CSocketInfo* socketinfos) {
-  delete socketinfos_;
-  socketinfos_ = socketinfos;
-  if (socketinfos) {
-    set_has_socketinfos();
-  } else {
-    clear_has_socketinfos();
-  }
-  // @@protoc_insertion_point(field_set_allocated:C2SHead.SocketInfos)
-}
-
-// required int32 Cmd = 2;
-inline bool C2SHead::has_cmd() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void C2SHead::set_has_cmd() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void C2SHead::clear_has_cmd() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void C2SHead::clear_cmd() {
-  cmd_ = 0;
-  clear_has_cmd();
-}
-inline ::google::protobuf::int32 C2SHead::cmd() const {
-  // @@protoc_insertion_point(field_get:C2SHead.Cmd)
-  return cmd_;
-}
-inline void C2SHead::set_cmd(::google::protobuf::int32 value) {
-  set_has_cmd();
-  cmd_ = value;
-  // @@protoc_insertion_point(field_set:C2SHead.Cmd)
-}
-
-// required int32 Seq = 3;
-inline bool C2SHead::has_seq() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void C2SHead::set_has_seq() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void C2SHead::clear_has_seq() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void C2SHead::clear_seq() {
-  seq_ = 0;
-  clear_has_seq();
-}
-inline ::google::protobuf::int32 C2SHead::seq() const {
-  // @@protoc_insertion_point(field_get:C2SHead.Seq)
-  return seq_;
-}
-inline void C2SHead::set_seq(::google::protobuf::int32 value) {
-  set_has_seq();
-  seq_ = value;
-  // @@protoc_insertion_point(field_set:C2SHead.Seq)
-}
-
-// required bool isEncry = 4;
-inline bool C2SHead::has_isencry() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void C2SHead::set_has_isencry() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void C2SHead::clear_has_isencry() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void C2SHead::clear_isencry() {
-  isencry_ = false;
-  clear_has_isencry();
-}
-inline bool C2SHead::isencry() const {
-  // @@protoc_insertion_point(field_get:C2SHead.isEncry)
-  return isencry_;
-}
-inline void C2SHead::set_isencry(bool value) {
-  set_has_isencry();
-  isencry_ = value;
-  // @@protoc_insertion_point(field_set:C2SHead.isEncry)
-}
-
-// -------------------------------------------------------------------
-
-// S2CHead
+// MesHead
 
 // repeated .CSocketInfo SocketInfos = 1;
-inline int S2CHead::socketinfos_size() const {
+inline int MesHead::socketinfos_size() const {
   return socketinfos_.size();
 }
-inline void S2CHead::clear_socketinfos() {
+inline void MesHead::clear_socketinfos() {
   socketinfos_.Clear();
 }
-inline const ::CSocketInfo& S2CHead::socketinfos(int index) const {
-  // @@protoc_insertion_point(field_get:S2CHead.SocketInfos)
+inline const ::CSocketInfo& MesHead::socketinfos(int index) const {
+  // @@protoc_insertion_point(field_get:MesHead.SocketInfos)
   return socketinfos_.Get(index);
 }
-inline ::CSocketInfo* S2CHead::mutable_socketinfos(int index) {
-  // @@protoc_insertion_point(field_mutable:S2CHead.SocketInfos)
+inline ::CSocketInfo* MesHead::mutable_socketinfos(int index) {
+  // @@protoc_insertion_point(field_mutable:MesHead.SocketInfos)
   return socketinfos_.Mutable(index);
 }
-inline ::CSocketInfo* S2CHead::add_socketinfos() {
-  // @@protoc_insertion_point(field_add:S2CHead.SocketInfos)
+inline ::CSocketInfo* MesHead::add_socketinfos() {
+  // @@protoc_insertion_point(field_add:MesHead.SocketInfos)
   return socketinfos_.Add();
 }
 inline ::google::protobuf::RepeatedPtrField< ::CSocketInfo >*
-S2CHead::mutable_socketinfos() {
-  // @@protoc_insertion_point(field_mutable_list:S2CHead.SocketInfos)
+MesHead::mutable_socketinfos() {
+  // @@protoc_insertion_point(field_mutable_list:MesHead.SocketInfos)
   return &socketinfos_;
 }
 inline const ::google::protobuf::RepeatedPtrField< ::CSocketInfo >&
-S2CHead::socketinfos() const {
-  // @@protoc_insertion_point(field_list:S2CHead.SocketInfos)
+MesHead::socketinfos() const {
+  // @@protoc_insertion_point(field_list:MesHead.SocketInfos)
   return socketinfos_;
 }
 
 // required int32 Cmd = 2;
-inline bool S2CHead::has_cmd() const {
+inline bool MesHead::has_cmd() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void S2CHead::set_has_cmd() {
+inline void MesHead::set_has_cmd() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void S2CHead::clear_has_cmd() {
+inline void MesHead::clear_has_cmd() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void S2CHead::clear_cmd() {
+inline void MesHead::clear_cmd() {
   cmd_ = 0;
   clear_has_cmd();
 }
-inline ::google::protobuf::int32 S2CHead::cmd() const {
-  // @@protoc_insertion_point(field_get:S2CHead.Cmd)
+inline ::google::protobuf::int32 MesHead::cmd() const {
+  // @@protoc_insertion_point(field_get:MesHead.Cmd)
   return cmd_;
 }
-inline void S2CHead::set_cmd(::google::protobuf::int32 value) {
+inline void MesHead::set_cmd(::google::protobuf::int32 value) {
   set_has_cmd();
   cmd_ = value;
-  // @@protoc_insertion_point(field_set:S2CHead.Cmd)
+  // @@protoc_insertion_point(field_set:MesHead.Cmd)
 }
 
 // required int32 Seq = 3;
-inline bool S2CHead::has_seq() const {
+inline bool MesHead::has_seq() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void S2CHead::set_has_seq() {
+inline void MesHead::set_has_seq() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void S2CHead::clear_has_seq() {
+inline void MesHead::clear_has_seq() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void S2CHead::clear_seq() {
+inline void MesHead::clear_seq() {
   seq_ = 0;
   clear_has_seq();
 }
-inline ::google::protobuf::int32 S2CHead::seq() const {
-  // @@protoc_insertion_point(field_get:S2CHead.Seq)
+inline ::google::protobuf::int32 MesHead::seq() const {
+  // @@protoc_insertion_point(field_get:MesHead.Seq)
   return seq_;
 }
-inline void S2CHead::set_seq(::google::protobuf::int32 value) {
+inline void MesHead::set_seq(::google::protobuf::int32 value) {
   set_has_seq();
   seq_ = value;
-  // @@protoc_insertion_point(field_set:S2CHead.Seq)
+  // @@protoc_insertion_point(field_set:MesHead.Seq)
 }
 
 // required bool isEncry = 4;
-inline bool S2CHead::has_isencry() const {
+inline bool MesHead::has_isencry() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void S2CHead::set_has_isencry() {
+inline void MesHead::set_has_isencry() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void S2CHead::clear_has_isencry() {
+inline void MesHead::clear_has_isencry() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void S2CHead::clear_isencry() {
+inline void MesHead::clear_isencry() {
   isencry_ = false;
   clear_has_isencry();
 }
-inline bool S2CHead::isencry() const {
-  // @@protoc_insertion_point(field_get:S2CHead.isEncry)
+inline bool MesHead::isencry() const {
+  // @@protoc_insertion_point(field_get:MesHead.isEncry)
   return isencry_;
 }
-inline void S2CHead::set_isencry(bool value) {
+inline void MesHead::set_isencry(bool value) {
   set_has_isencry();
   isencry_ = value;
-  // @@protoc_insertion_point(field_set:S2CHead.isEncry)
+  // @@protoc_insertion_point(field_set:MesHead.isEncry)
 }
 
 // -------------------------------------------------------------------
 
 // CMessage
 
-// required .S2CHead MsgHead = 1;
+// required .MesHead MsgHead = 1;
 inline bool CMessage::has_msghead() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -1488,30 +1234,30 @@ inline void CMessage::clear_has_msghead() {
   _has_bits_[0] &= ~0x00000001u;
 }
 inline void CMessage::clear_msghead() {
-  if (msghead_ != NULL) msghead_->::S2CHead::Clear();
+  if (msghead_ != NULL) msghead_->::MesHead::Clear();
   clear_has_msghead();
 }
-inline const ::S2CHead& CMessage::msghead() const {
+inline const ::MesHead& CMessage::msghead() const {
   // @@protoc_insertion_point(field_get:CMessage.MsgHead)
   return msghead_ != NULL ? *msghead_
-                         : *::S2CHead::internal_default_instance();
+                         : *::MesHead::internal_default_instance();
 }
-inline ::S2CHead* CMessage::mutable_msghead() {
+inline ::MesHead* CMessage::mutable_msghead() {
   set_has_msghead();
   if (msghead_ == NULL) {
-    msghead_ = new ::S2CHead;
+    msghead_ = new ::MesHead;
   }
   // @@protoc_insertion_point(field_mutable:CMessage.MsgHead)
   return msghead_;
 }
-inline ::S2CHead* CMessage::release_msghead() {
+inline ::MesHead* CMessage::release_msghead() {
   // @@protoc_insertion_point(field_release:CMessage.MsgHead)
   clear_has_msghead();
-  ::S2CHead* temp = msghead_;
+  ::MesHead* temp = msghead_;
   msghead_ = NULL;
   return temp;
 }
-inline void CMessage::set_allocated_msghead(::S2CHead* msghead) {
+inline void CMessage::set_allocated_msghead(::MesHead* msghead) {
   delete msghead_;
   msghead_ = msghead;
   if (msghead) {
@@ -1826,8 +1572,6 @@ inline void CServerMessage::set_allocated_msghead(::P2SHead* msghead) {
 // CMsgPingRequest
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -491,7 +491,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
 
     while(1)
     {
-        C2SHead tmpHead;
+        MesHead tmpHead;
         //客户端上行数据（除去消息头部信息）在数据缓存中的偏移
         unsigned int unTmpMessageUse = 0;
         //客户端上行数据（除去消息头部信息）长度
@@ -825,7 +825,7 @@ void CGateCtrl::DisConnect(int iError)
 
     unsigned short unTmpMsgLen = (unsigned short) sizeof(m_szCSMsgBuf);
 
-    int iRet = ClientCommEngine::ConvertClientMessagedToStream(m_szCSMsgBuf,unTmpMsgLen,&tmpMessage);
+    int iRet = ClientCommEngine::ConvertMessageToStream(m_szCSMsgBuf,unTmpMsgLen,&tmpMessage);
     if (iRet != 0)
     {
         LOG_ERROR("default","[%s: %d : %s] ConvertMsgToStream failed,iRet = %d ",
@@ -861,11 +861,6 @@ int CGateCtrl::RecvServerData(int *pCodeLen)
 **/
 int CGateCtrl::SendClientData()
 {
-    if (m_pSendList == NULL)
-    {
-        return 0;
-    }
-
     BYTE*           pbTmpSend = NULL;
     unsigned short  unTmpShort;
     time_t          tTmpTimeStamp;
@@ -874,10 +869,11 @@ int CGateCtrl::SendClientData()
     unsigned short  unTmpPackLen;
     int             iTmpCloseFlag;
 
+    ::google::protobuf::RepeatedPtrField< ::CSocketInfo >* pSendList = m_S2CHead->add_socketinfos()
     //client socket索引非法，不存在要发送的client
-    if (m_iSendIndex >= m_pSendList->size())
+    if (m_iSendIndex >= pSendList->size())
         return 0;
-    CSocketInfo tmpSocketInfo = m_pSendList->Get(m_iSendIndex);
+    CSocketInfo tmpSocketInfo = pSendList->Get(m_iSendIndex);
 
     //向后移动socket索引
     m_iSendIndex++;

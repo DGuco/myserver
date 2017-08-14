@@ -15,7 +15,7 @@ unsigned char* ClientCommEngine::tpKey = &tKey[0];
 
 int ClientCommEngine::ParseClientStream(const void* pBuff,
                                         unsigned short nRecvAllLen,
-                                        C2SHead* pHead,
+                                        MesHead* pHead,
                                         unsigned int& unTmpOffset,
                                         unsigned int& unTmpDataLen)
 {
@@ -97,7 +97,7 @@ int ClientCommEngine::ConverToGameStream(const void * pBuff,
                                 unsigned int& unBuffLen,
                                 const void *pDataBuff,
                                 unsigned int& unDataLen,
-                                C2SHead* pHead,
+                                MesHead* pHead,
                                 const unsigned char* pEncrypt = ClientCommEngine::tpKey)
 {
 	if ((pBuff == NULL) || (pMsg == NULL) )
@@ -179,10 +179,10 @@ int ClientCommEngine::ConverToGameStream(const void * pBuff,
 
 int ClientCommEngine::ConvertMessageToStream(const void * pBuff,
 							  unsigned int& unBuffLen,
-                              S2CHead* pHead,
+                              MesHead* pHead,
 							  Message* pMsg)
 {
-	if ((pBuff == NULL) || (pMsg == NULL) || pHead == NULL)
+	if ((pBuff == NULL) || pHead == NULL)
 	{
 		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertMsgToStream Input param failed.");
 	}
@@ -210,28 +210,31 @@ int ClientCommEngine::ConvertMessageToStream(const void * pBuff,
 	pTemp += pHead->GetCachedSize();
 	unLength += pHead->GetCachedSize();
 
-    char tEncryBuff[MAX_PACKAGE_LEN] = {0};
-    char* tpEncryBuff = &tEncryBuff[0];
-    unsigned int iMsgParaLen = MAX_PACKAGE_LEN;
-    if (pMsg->SerializeToArray(tpEncryBuff, iMsgParaLen) == false)
+    if(pMsg != NULL)
     {
-        MY_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertMsgToStream MsgPara SerializeToArray failed.");
-    }
+        char tEncryBuff[MAX_PACKAGE_LEN] = {0};
+        char* tpEncryBuff = &tEncryBuff[0];
+        unsigned int iMsgParaLen = MAX_PACKAGE_LEN;
+        if (pMsg->SerializeToArray(tpEncryBuff, iMsgParaLen) == false)
+        {
+            MY_ASSERT_STR(0, return -5, "ClientCommEngine::ConvertMsgToStream MsgPara SerializeToArray failed.");
+        }
 
-    
-    if (pHead->isencry())  
-    {
-        //这里每次都创建一个CAes 对象保证函数的无状态，线程安全
-        CAes tmpAes;
-        tmpAes.init(tpKey,16);
-        tpEncryBuff = tmpAes.encrypt(tpEncryBuff,pMsg->ByteSize(), iMsgParaLen);
+        
+        if (pHead->isencry())  
+        {
+            //这里每次都创建一个CAes 对象保证函数的无状态，线程安全
+            CAes tmpAes;
+            tmpAes.init(tpKey,16);
+            tpEncryBuff = tmpAes.encrypt(tpEncryBuff,pMsg->ByteSize(), iMsgParaLen);
+        }
+        else
+        {
+            iMsgParaLen = pMsg->ByteSize();
+        }
+        memccpy(pTemp,tpEncryBuff,iMsgParaLen);
+        unLength += iMsgParaLen;
     }
-    else
-    {
-        iMsgParaLen = pMsg->ByteSize();
-    }
-    memccpy(pTemp,tpEncryBuff,iMsgParaLen);
-    unLength += iMsgParaLen;
 
     //8字节对齐
     unsigned short iTmpAddlen = (unLength % 8);
@@ -256,11 +259,12 @@ int ClientCommEngine::ConvertMessageToStream(const void * pBuff,
 
 int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
                                             unsigned short unBuffLen,
-                                            C2SHead* pHead,
+                                            MesHead* pHead,
+                                            unsigned int& unTmpOffset,
                                             Message* pMessage,
-                                            CFactory* pMsgFactory = NULL)
+                                            CFactory* pMsgFactory)
 {
-    if ((pBuff == NULL) || (pHead == NULL)|| (pMessage == NULL))
+    if ((pBuff == NULL) || (pHead == NULL))
 	{
 		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToClientMsg Input param failed.");
 	}
@@ -269,8 +273,10 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
     //取出数据总长度
     unsigned int unTmpTotalLen = *(unsigned int*) pbyTmpBuff;
     int iTmpLen = unTmpTotalLen;
+    unTmpOffset = 0;
     pbyTmpBuff += sizeof(unsigned int);		// 指针指向数据处
     iTmpLen -= sizeof(unsigned int);		// 从长度减少一个len的长度
+    unTmpOffset += sizeof(unsigned int);
 
     // 总长度不匹配
     if (unTmpTotalLen != unBuffLen)
@@ -283,14 +289,17 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
     unsigned short unTmpAddlLen = *(unsigned short*) pbyTmpBuff;
     pbyTmpBuff += sizeof(unsigned short);
     iTmpLen -= sizeof(unsigned short);	
+    unTmpOffset += sizeof(unsigned short);
 
     //扔掉字节对齐长度
     iTmpLen -= unTmpAddlLen;
+    unTmpOffset += unTmpAddlLen;
 
 	//C2SHead 长度
     unsigned int tmpHeadLen = *(unsigned int*) pbyTmpBuff;
     pbyTmpBuff += sizeof(unsigned int);
     iTmpLen -= sizeof(unsigned int);	
+    unTmpOffset += sizeof(unsigned int);
 
     //反序列化失败
     if (pHead->ParseFromArray(pbyTmpBuff,tmpHeadLen) == false)
@@ -299,66 +308,23 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
     }
     pbyTmpBuff += tmpHeadLen;
     iTmpLen -= tmpHeadLen;
+    unTmpOffset += tmpHeadLen;
 
     //如果有消息
     if (iTmpLen > 0 && pMsgFactory != NULL)
     {
         pMessage = pMsgFactory->CreateMessage(pHead->cmd());
-    }
+        if (pMessage == NULL) 
+        {
+            return -1;
+        }
 
-    if (pMessage == NULL) 
-    {
-        return -1;
-    }
-
-    if (pMessage->ParseFromString(tmpClientMessage.msgparas()) == false)
-    {
-        pMessage->~Message();
-        return -1;        
+        if (pMessage->ParseFromString(tmpClientMessage.msgparas()) == false)
+        {
+            pMessage->~Message();
+            return -1;        
+        }
+    }else {
+        return iTmpLen;
     }
 }  
-
-int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
-                                            unsigned short unBuffLen,
-                                            S2CHead* pHead,
-                                            unsigned int& unTmpOffset)
-{
-    if ((pBuff == NULL) || (pHead == NULL))
-	{
-		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToClientMsg Input param failed.");
-	}
-    
-    char* pbyTmpBuff = (char*)pBuff;
-    //取出数据总长度
-    unsigned int unTmpTotalLen = *(unsigned int*) pbyTmpBuff;
-    unTmpOffset = 0;
-    pbyTmpBuff += sizeof(unsigned int);		// 指针指向数据处
-    unTmpOffset += sizeof(unsigned int);		// 从长度减少一个len的长度
-
-    // 总长度不匹配
-    if (unTmpTotalLen != unBuffLen)
-    {
-        MY_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertStreamToMsg tTotalLen = %d unequal to unBuffLen = %d.", unTmpTotalLen, unBuffLen);
-    }
-
-	// 字节对齐补充长度（采用8字节对齐）
-    unsigned short unTmpAddlLen = *(unsigned short*) pbyTmpBuff;
-    pbyTmpBuff += sizeof(unsigned short);
-    unTmpOffset += sizeof(unsigned short);	
-
-    //扔掉字节对齐长度
-    iTmpLen -= unTmpAddlLen;
-
-	//S2CHead 长度
-    unsigned int tmpHeadLen = *(unsigned int*) pbyTmpBuff;
-    pbyTmpBuff += sizeof(unsigned int);
-    unTmpOffset += sizeof(unsigned int);	
-
-    //反序列化失败
-    if (pHead->ParseFromArray(pbyTmpBuff,tmpHeadLen) == false)
-    {
-        return -1;
-    }
-    pbyTmpBuff += tmpHeadLen;
-    unTmpOffset += tmpHeadLen;
-} 
