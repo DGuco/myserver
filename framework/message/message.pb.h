@@ -338,21 +338,21 @@ class MesHead : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   const ::google::protobuf::RepeatedPtrField< ::CSocketInfo >&
       socketinfos() const;
 
-  // required int32 Cmd = 2;
+  // optional int32 Cmd = 2;
   bool has_cmd() const;
   void clear_cmd();
   static const int kCmdFieldNumber = 2;
   ::google::protobuf::int32 cmd() const;
   void set_cmd(::google::protobuf::int32 value);
 
-  // required int32 Seq = 3;
+  // optional int32 Seq = 3;
   bool has_seq() const;
   void clear_seq();
   static const int kSeqFieldNumber = 3;
   ::google::protobuf::int32 seq() const;
   void set_seq(::google::protobuf::int32 value);
 
-  // required bool isEncry = 4;
+  // optional bool isEncry = 4;
   bool has_isencry() const;
   void clear_isencry();
   static const int kIsEncryFieldNumber = 4;
@@ -367,9 +367,6 @@ class MesHead : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   void clear_has_seq();
   void set_has_isencry();
   void clear_has_isencry();
-
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::HasBits<1> _has_bits_;
@@ -1147,7 +1144,7 @@ MesHead::socketinfos() const {
   return socketinfos_;
 }
 
-// required int32 Cmd = 2;
+// optional int32 Cmd = 2;
 inline bool MesHead::has_cmd() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -1171,7 +1168,7 @@ inline void MesHead::set_cmd(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:MesHead.Cmd)
 }
 
-// required int32 Seq = 3;
+// optional int32 Seq = 3;
 inline bool MesHead::has_seq() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -1195,7 +1192,7 @@ inline void MesHead::set_seq(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:MesHead.Seq)
 }
 
-// required bool isEncry = 4;
+// optional bool isEncry = 4;
 inline bool MesHead::has_isencry() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }

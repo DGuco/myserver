@@ -208,8 +208,8 @@ void AddDescriptorsImpl() {
       "\n\rmessage.proto\"B\n\013CSocketInfo\022\020\n\010Socket"
       "ID\030\001 \001(\005\022\022\n\nCreateTime\030\002 \001(\003\022\r\n\005State\030\003 "
       "\001(\005\"W\n\007MesHead\022!\n\013SocketInfos\030\001 \003(\0132\014.CS"
-      "ocketInfo\022\013\n\003Cmd\030\002 \002(\005\022\013\n\003Seq\030\003 \002(\005\022\017\n\007i"
-      "sEncry\030\004 \002(\010\"9\n\010CMessage\022\031\n\007MsgHead\030\001 \002("
+      "ocketInfo\022\013\n\003Cmd\030\002 \001(\005\022\013\n\003Seq\030\003 \001(\005\022\017\n\007i"
+      "sEncry\030\004 \001(\010\"9\n\010CMessage\022\031\n\007MsgHead\030\001 \002("
       "\0132\010.MesHead\022\022\n\007MsgPara\030\002 \001(\006:\0010\"\201\001\n\007S2PH"
       "ead\022\r\n\005SrcFE\030\001 \002(\r\022\r\n\005SrcID\030\002 \002(\r\022\r\n\005Dst"
       "FE\030\003 \002(\r\022\r\n\005DstID\030\004 \002(\r\022\'\n\006OpFlag\030\005 \001(\0162"
@@ -791,7 +791,7 @@ bool MesHead::MergePartialFromCodedStream(
         break;
       }
 
-      // required int32 Cmd = 2;
+      // optional int32 Cmd = 2;
       case 2: {
         if (tag == 16u) {
           set_has_cmd();
@@ -804,7 +804,7 @@ bool MesHead::MergePartialFromCodedStream(
         break;
       }
 
-      // required int32 Seq = 3;
+      // optional int32 Seq = 3;
       case 3: {
         if (tag == 24u) {
           set_has_seq();
@@ -817,7 +817,7 @@ bool MesHead::MergePartialFromCodedStream(
         break;
       }
 
-      // required bool isEncry = 4;
+      // optional bool isEncry = 4;
       case 4: {
         if (tag == 32u) {
           set_has_isencry();
@@ -861,17 +861,17 @@ void MesHead::SerializeWithCachedSizes(
       1, this->socketinfos(i), output);
   }
 
-  // required int32 Cmd = 2;
+  // optional int32 Cmd = 2;
   if (has_cmd()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->cmd(), output);
   }
 
-  // required int32 Seq = 3;
+  // optional int32 Seq = 3;
   if (has_seq()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->seq(), output);
   }
 
-  // required bool isEncry = 4;
+  // optional bool isEncry = 4;
   if (has_isencry()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(4, this->isencry(), output);
   }
@@ -894,17 +894,17 @@ void MesHead::SerializeWithCachedSizes(
         1, this->socketinfos(i), false, target);
   }
 
-  // required int32 Cmd = 2;
+  // optional int32 Cmd = 2;
   if (has_cmd()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->cmd(), target);
   }
 
-  // required int32 Seq = 3;
+  // optional int32 Seq = 3;
   if (has_seq()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->seq(), target);
   }
 
-  // required bool isEncry = 4;
+  // optional bool isEncry = 4;
   if (has_isencry()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(4, this->isencry(), target);
   }
@@ -917,31 +917,6 @@ void MesHead::SerializeWithCachedSizes(
   return target;
 }
 
-size_t MesHead::RequiredFieldsByteSizeFallback() const {
-// @@protoc_insertion_point(required_fields_byte_size_fallback_start:MesHead)
-  size_t total_size = 0;
-
-  if (has_cmd()) {
-    // required int32 Cmd = 2;
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->cmd());
-  }
-
-  if (has_seq()) {
-    // required int32 Seq = 3;
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->seq());
-  }
-
-  if (has_isencry()) {
-    // required bool isEncry = 4;
-    total_size += 1 + 1;
-  }
-
-  return total_size;
-}
 size_t MesHead::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:MesHead)
   size_t total_size = 0;
@@ -950,23 +925,6 @@ size_t MesHead::ByteSizeLong() const {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
-  }
-  if (((_has_bits_[0] & 0x00000007) ^ 0x00000007) == 0) {  // All required fields are present.
-    // required int32 Cmd = 2;
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->cmd());
-
-    // required int32 Seq = 3;
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->seq());
-
-    // required bool isEncry = 4;
-    total_size += 1 + 1;
-
-  } else {
-    total_size += RequiredFieldsByteSizeFallback();
   }
   // repeated .CSocketInfo SocketInfos = 1;
   {
@@ -979,6 +937,27 @@ size_t MesHead::ByteSizeLong() const {
     }
   }
 
+  if (_has_bits_[0 / 32] & 7u) {
+    // optional int32 Cmd = 2;
+    if (has_cmd()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->cmd());
+    }
+
+    // optional int32 Seq = 3;
+    if (has_seq()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->seq());
+    }
+
+    // optional bool isEncry = 4;
+    if (has_isencry()) {
+      total_size += 1 + 1;
+    }
+
+  }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -1034,7 +1013,6 @@ void MesHead::CopyFrom(const MesHead& from) {
 }
 
 bool MesHead::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
   return true;
 }
 
@@ -1090,7 +1068,7 @@ MesHead::socketinfos() const {
   return socketinfos_;
 }
 
-// required int32 Cmd = 2;
+// optional int32 Cmd = 2;
 bool MesHead::has_cmd() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -1114,7 +1092,7 @@ void MesHead::set_cmd(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:MesHead.Cmd)
 }
 
-// required int32 Seq = 3;
+// optional int32 Seq = 3;
 bool MesHead::has_seq() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -1138,7 +1116,7 @@ void MesHead::set_seq(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:MesHead.Seq)
 }
 
-// required bool isEncry = 4;
+// optional bool isEncry = 4;
 bool MesHead::has_isencry() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
@@ -1418,9 +1396,6 @@ void CMessage::CopyFrom(const CMessage& from) {
 
 bool CMessage::IsInitialized() const {
   if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
-  if (has_msghead()) {
-    if (!this->msghead_->IsInitialized()) return false;
-  }
   return true;
 }
 

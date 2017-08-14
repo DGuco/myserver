@@ -148,7 +148,7 @@ int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
 ]    // 是否需要加密，在这里修改参数
     int iRet = ClientCommEngine::ConvertMessageToStream(aTmpCodeBuf,
                                                         unTmpCodeLength,
-                                                        *pTmpHead,
+                                                        &pTmpHead,
                                                         pMessage);
     if (iRet != 0)
     {

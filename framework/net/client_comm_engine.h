@@ -13,22 +13,30 @@ class ClientCommEngine
 public:
 	static unsigned char tKey[16];
 	static unsigned char* tpKey;
+    /**
+     *  解析消息头部信息
+     *  @return       成功:头部长度 > 0 失败：错误码 < 0
+     */
+    static int ParseMessageHead(const void*   pBuff,
+                                MSG_LEN_TYPE& unLen,
+                                unsigned int& unSerial,
+                                unsigned int& unSeqId,
+                                int& unCmd);
 	/**
 	 * @param pBuff         client上行数据
 	 * @param unBuffLen     数据长度
-	 * @param pHead         转发给gameserver的消息MesHead
-     * @param iTmpOffset    消息偏移
+	 * @param pHead         转发给gameserver的消息C2SHead
      * @param unTmpDataLen  数据长度
 	 * @return          0：成功 1：数据不完整继续接收  其他：错误
 	 */
-	static int ParseClientStream(const void* pBuff,
-                                    unsigned int nRecvAllLen,
-                                    MesHead* pHead,
-                                    unsigned int& unTmpOffset,
-                                    unsigned int& unTmpDataLen);
+	static int ParseClientStream(const void** pBuff,
+                                unsigned MSG_LEN_TYPE& nRecvAllLen,
+                                MesHead* pHead,
+                                MSG_LEN_TYPE& unTmpDataLen,
+                                MSG_CMD_TYPE& usCmd);
 
     /**
-     * 序列化消息发送到gameserver,如果客户端上行数据加密则解密(gateservet==>gameserver),
+     * 序列化消息发送到gameserver
      * @param pBuff         存放序列化后消息的地址
      * @param unBuffLen     消息长度
      * @param pDataBuff     客户端上行消息数据指针
@@ -42,10 +50,10 @@ public:
                                     unsigned int& unBuffLen,
                                     const void *pDataBuff,
                                     unsigned int& unDataLen,
-                                    MesHead* pHead = NULL,
-                                    const unsigned char* pEncrypt = ClientCommEngine::tpKey);
+                                    MesHead* pHead = NULL);
 
     /**
+     * 序列化消息CMessage 发送到gateserver（gameserver==>gateserver）
      * @param pBuff         存放序列化后消息的地址
      * @param unBuffLen     消息长度
      * @param pMsg          反序列化客户端消息组成的CClientMessage
@@ -56,21 +64,32 @@ public:
 	static int ConvertMessageToStream(const void* pBuff,
                                         unsigned int& unBuffLen,
                                         MesHead* pHead,
-                                        CMessage* pMsg == NULL);
+                                        CMessage* pMsg);
 
     /**
      * @param pBuff         存放转换后地址指针
      * @param unBuffLen     消息长度
      * @param pHead         反序列化后的消息头
      * @param message       反序列化后的消息
-     * @return              成功:返回消息长度 > 0 其他:失败错误码 < 0
+     * @return              0 成功 其他:失败错误码
      */
 	static int ConvertStreamToMessage(const void* pBuff,
                                     unsigned short unBuffLen,
                                     MesHead* pHead,
-                                    unsigned int& unTmpOffset
-                                    Message* pMessage = NULL,
+                                    Message* pMessage,
                                     CFactory* pMsgFactory = NULL);  
+
+    /**
+	 * @param pBuff         数据指针
+	 * @param unBuffLen     数据长度
+	 * @param pHead         S2CHead
+     * @param iTmpOffset    消息偏移
+	 * @return              0 成功 其他:失败错误码
+     */
+	static int ConvertStreamToMessage(const void* pBuff,
+                                    unsigned int nRecvAllLen,
+                                    MesHead* pHead,
+                                    unsigned int& unTmpOffset);
 };
 
 #endif /* CLIENT_COMM_ENGINE_H_ */
