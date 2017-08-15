@@ -67,7 +67,7 @@ int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     unsigned int unTmpCodeLength = sizeof(aTmpCodeBuf);
 
-    S2CHead pTmpHead;
+    MesHead pTmpHead;
     CSocketInfo* pTmpSocket = pTmpHead.mutable_socketinfos()->Add();
     STConnectInfo* pTmpConnInfo = pPlayer->GetSocketInfoPtr();
     if (pTmpConnInfo == NULL)
@@ -109,7 +109,7 @@ int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
     bool bTmpKickoff = false;
     // 判断是否发送消息后断开连接(这个主动断开只针对与第一个玩家)
 //    mNetHead.Initialize(tTmpNow, (bTmpKickoff == true ? -1 : 0));
-    S2CHead pTmpHead;;
+    MesHead pTmpHead;;
     pTmpHead.set_cmd(cmd);
     pTmpHead.set_isencry(false);
     pTmpHead.set_seq(0);
@@ -148,7 +148,7 @@ int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
 ]    // 是否需要加密，在这里修改参数
     int iRet = ClientCommEngine::ConvertMessageToStream(aTmpCodeBuf,
                                                         unTmpCodeLength,
-                                                        *pTmpHead,
+                                                        &pTmpHead,
                                                         pMessage);
     if (iRet != 0)
     {
@@ -202,7 +202,7 @@ int CClientHandle::Recv()
     return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, Message* pMsg);
+int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, MesHead* pCSHead, Message* pMsg);
 {
     //长度小于消息头的长度+数据总长度+字节对齐长度
     if (!pCodeBuff || nLen < int(pCSHead::MinSize() + (sizeof(unsigned short) * 2)))
@@ -214,7 +214,8 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, Me
                                                 nLen,
                                                 pCSHead,
                                                 pMsg,
-                                                CMessageFactory::GetSingletonPtr() == -1)
+                                                0,
+                                                CMessageFactory::GetSingletonPtr())
     {
         return ClienthandleErrCode::CLIENTHANDLE_CLNENTMESSAGE;
     }

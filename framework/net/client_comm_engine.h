@@ -27,7 +27,7 @@ public:
                                     unsigned int& unTmpDataLen);
                       
     /**
-     * 序列化消息发送到gameserver,如果客户端上行数据加密则解密(gateservet==>gameserver),
+     * 序列化消息发送到gameserver
      * @param pBuff         存放序列化后消息的地址
      * @param unBuffLen     消息长度
      * @param pDataBuff     客户端上行消息数据指针
@@ -41,8 +41,7 @@ public:
                                     unsigned int& unBuffLen,
                                     const void *pDataBuff,
                                     unsigned int& unDataLen,
-                                    C2SHead* pHead = NULL,
-                                    const unsigned char* pEncrypt = ClientCommEngine::tpKey);
+                                    MesHead* pHead = NULL);
 
     /**
      * 序列化消息CMessage 发送到gateserver（gameserver==>gateserver）
@@ -55,7 +54,7 @@ public:
      */
 	static int ConvertMessageToStream(const void* pBuff,
                                         unsigned int& unBuffLen,
-                                        S2CHead* pHead,
+                                        MesHead* pHead,
                                         CMessage* pMsg);
 
     /**
@@ -67,7 +66,7 @@ public:
      */
 	static int ConvertStreamToMessage(const void* pBuff,
                                     unsigned short unBuffLen,
-                                    C2SHead* pHead,
+                                    MesHead* pHead,
                                     Message* pMessage,
                                     CFactory* pMsgFactory = NULL);  
 };

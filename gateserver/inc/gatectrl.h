@@ -100,8 +100,7 @@ private:
     unsigned short 		m_iSCIndex; 					 	 // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
     short 				m_nSCLength; 					 	 // 实际发送的数据长度
 
-    typedef  ::google::protobuf::RepeatedPtrField< ::CSocketInfo >* SEND_LIST;
-    SEND_LIST m_pSendList;                                  //单个消息需要发送的所有socket信息
+    MesHead    m_S2CHead;
     // tcp --> game通信共享内存管道
     CCodeQueue* mC2SPipe;
     // game --> tcp通信共享内存管道

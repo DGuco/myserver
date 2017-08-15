@@ -463,6 +463,8 @@ int CGateCtrl::RecvClientData(int iSocketFd)
     int iTmpOffset;
     int nRecvAllLen;
     time_t tTempTime;
+    char* pTemp;
+    char* pTemp1;
 
     m_pSocketInfo = &m_astSocketInfo[iSocketFd];
     int iTmpSocket = m_pSocketInfo->m_iSocket;
@@ -483,6 +485,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
     //增加收到的总字节数
     m_pSocketInfo->m_iRecvBytes = m_pSocketInfo->m_iRecvBytes + iTmpRecvBytes;
 
+    char* pTemp1 = m_pSocketInfo->m_szMsgBuf;
     nRecvAllLen = m_pSocketInfo->m_iRecvBytes;
 
     // 记录该socket接收客户端数据的时间
@@ -491,16 +494,15 @@ int CGateCtrl::RecvClientData(int iSocketFd)
 
     while(1)
     {
-        C2SHead tmpHead;
-        //客户端上行数据（除去消息头部信息）在数据缓存中的偏移
-        unsigned int unTmpMessageUse = 0;
-        //客户端上行数据（除去消息头部信息）长度
-        unsigned int unTmpDataLen = 0;
-        iTmpRet = ClientCommEngine::ParseClientStream(m_pSocketInfo->m_szMsgBuf,
-                                                        nRecvAllLen,
-                                                        &tmpHead,
-                                                        unTmpMessageUse,
-                                                        unTmpDataLen);
+        //客户端上行数据长度
+        MSG_LEN_TYPE unTmpDataLen = 0;
+        //消息指令
+        MSG_CMD_TYPE unCmd = 0;
+        iTmpRet = ClientCommEngine::ParseClientStream(&pTemp1,
+                                                    nRecvAllLen,
+                                                    &tmpHead,
+                                                    unTmpDataLen,
+                                                    unCmd);
         //继续接收
         if (iTmpRet == 1)
         {
@@ -512,9 +514,9 @@ int CGateCtrl::RecvClientData(int iSocketFd)
             return iTmpRet;
         }
         //组织转发消息
-        if (0 == iTmpRet && tmpClientMessage.mutable_msghead()->cmd() != CMsgPingRequest::MsgID 
-                && unTmpDataLen >= 0)
+        if (0 == iTmpRet && unCmd != CMsgPingRequest::MsgID && unTmpDataLen >= 0)
         {
+            MesHead tmpHead;
             CSocketInfo *tmpSocketInfo = tmpClientMessage.mutable_msghead()->mutable_socketinfos();
             tmpSocketInfo->Clear();
             tmpSocketInfo->set_createtime(m_pSocketInfo->m_tCreateTime);
@@ -522,12 +524,12 @@ int CGateCtrl::RecvClientData(int iSocketFd)
 
             char *pTemp = m_szCSMsgBuf;
             unsigned int tmpSendLen = sizof(m_szCSMsgBuf);
-            char* pDataBuff = m_pSocketInfo->m_szMsgBuf + tmpMessageUse;
+            char* pDataBuff = pTemp1 - unTmpDataLen;
             iTmpRet = ClientCommEngine::ConverToGameStream(m_szCSMsgBuf,
                                                             tmpSendLen,
                                                             pDataBuff,
                                                             unTmpDataLen,
-                                                            &tmpClientMessage);
+                                                            &tmpHead);
             if (iTmpRet != 0)
             {
                 ClearSocketInfo(Err_SendToMainSvrd);
@@ -825,7 +827,7 @@ void CGateCtrl::DisConnect(int iError)
 
     unsigned short unTmpMsgLen = (unsigned short) sizeof(m_szCSMsgBuf);
 
-    int iRet = ClientCommEngine::ConvertClientMessagedToStream(m_szCSMsgBuf,unTmpMsgLen,&tmpMessage);
+    int iRet = ClientCommEngine::ConvertMessageToStream(m_szCSMsgBuf,unTmpMsgLen,&tmpMessage);
     if (iRet != 0)
     {
         LOG_ERROR("default","[%s: %d : %s] ConvertMsgToStream failed,iRet = %d ",
@@ -869,10 +871,11 @@ int CGateCtrl::SendClientData()
     unsigned short  unTmpPackLen;
     int             iTmpCloseFlag;
 
+    ::google::protobuf::RepeatedPtrField< ::CSocketInfo >* pSendList = m_S2CHead->add_socketinfos()
     //client socket索引非法，不存在要发送的client
-    if (m_iSendIndex >= m_pSendList->size())
+    if (m_iSendIndex >= pSendList->size())
         return 0;
-    CSocketInfo tmpSocketInfo = m_pSendList->Get(m_iSendIndex);
+    CSocketInfo tmpSocketInfo = pSendList->Get(m_iSendIndex);
 
     //向后移动socket索引
     m_iSendIndex++;

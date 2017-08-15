@@ -39,28 +39,19 @@ message CSocketInfo
  * 发送给GameServer和gateserver的消息传递格式
  * 总长度 ＋ 字节对齐长度 ＋ head长度 + head ＋ msgPara
  */
- // 发送Gateserver=>GameServer的消息头
-message C2SHead
-{
-	required	CSocketInfo		SocketInfos		= 1;	//发送目标信息(多个用来做多人推送)
-	required	int32			Cmd		 		= 2;	//消息id
-	required	int32			Seq		 		= 3;	//序列号
-	required	bool			isEncry			= 4;	//是否加密
-};
-
-//发送GameServer=>Gateserver的消息头
-message S2CHead
+//发送GameServer<=>Gateserver的消息头
+message MesHead
 {
 	repeated	CSocketInfo		SocketInfos		= 1;	//发送目标信息(多个用来做多人推送)
-	required	int32			Cmd		 		= 2;	//消息id
-	required	int32			Seq		 		= 3;	//序列号
-	required	bool			isEncry			= 4;	//是否加密
+	optional	int32			Cmd		 		= 2;	//消息id
+	optional	int32			Seq		 		= 3;	//序列号
+	optional	bool			isEncry			= 4;	//是否加密
 };
 
 //gamesever 服务器内部消息传递格式
 message CMessage
 {
-	required	S2CHead		MsgHead		= 1;	// 消息头+
+	required	MesHead		MsgHead		= 1;	// 消息头+
 	optional	fixed64		MsgPara		= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
 };
 

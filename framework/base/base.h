@@ -35,10 +35,12 @@
 #define MSG_HEAD_LEN 10  // 接收或发送给客户端消息的最小字节数
 #define MSG_MAX_LEN 			    10*1024 			// 接收或发送给客户端消息的最大字节数
 
+typedef unsigned char BYTE;
+typedef unsigned short MSG_LEN_TYPE;		//表示消息长度的数据类型
+typedef int MSG_CMD_TYPE;			//表示消息指令的数据类型
+
 typedef char TName[32];
 typedef char TFName[64];
-
-typedef unsigned char BYTE;
 
 #ifndef TRUE
 #define TRUE 1

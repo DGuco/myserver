@@ -13,17 +13,13 @@
 unsigned char ClientCommEngine::tKey[16] = {1,2,3,4,5,6,7,8,9,0,2,2,4,4,5,6};
 unsigned char* ClientCommEngine::tpKey = &tKey[0];
 
-int ClientCommEngine::ParseClientStream(const void* pBuff,
-                                        unsigned short nRecvAllLen,
+int ClientCommEngine::ParseClientStream(const void** pBuff,
+                                        MSG_LEN_TYPE& nRecvAllLen,
                                         C2SHead* pHead,
-                                        unsigned int& unTmpOffset,
-                                        unsigned int& unTmpDataLen)
+                                        MSG_LEN_TYPE& unTmpDataLen,
+                                        MSG_CMD_TYPE& unCmd)
 {
-    if (
-            (pBuff == NULL) ||
-            (pHead == NULL) ||
-            (pEncrypt == NULL)
-            )
+    if ( (pBuff == NULL) || (pHead == NULL))
     {
         MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToMsg Input param failed.");
     }
@@ -31,86 +27,81 @@ int ClientCommEngine::ParseClientStream(const void* pBuff,
     //小于最小长度继续接收
     if ( nRecvAllLen < MSG_HEAD_LEN)
     {
-        LOG_ERROR("default","the package len is less than base len ,receive len %d",nRecvAllLen);
-        return 1;
+        MY_ASSERT_STR(0,return 1,"the package len is less than base len ,receive len %d",nRecvAllLen);
     }
 
-    char* pTemp1 = (char*)pBuff;
-    unsigned int unRecvLen = 0;
+    char* pTemp = (char*)*pBuff;
+    MSG_LEN_TYPE unRecvLen = 0;
+    MSG_LEN_TYPE unTmpUseLen = 0;
     //取出包的总长度
-    memcpy(&unRecvLen,(void*)pTemp1,sizeof(unsigned int));
-    unRecvLen = ntohl(len); 
+    memcpy(&unRecvLen,(void*)pTemp,sizeof(MSG_LEN_TYPE));
+    unRecvLen = ntohs(len); 
     //客户端上行包的总长度小于基本长度大于最大长度，不合法
     if (unRecvLen < MSG_HEAD_LEN || unRecvLen > MSG_MAX_LEN)
     {
-        LOG_ERROR("default","the package len is illegal",nRecvAllLen);
-        return -1;
+        MY_ASSERT_STR(0,return -1,"default","the package len is illegal,receive len %d",nRecvAllLen);
     }
     //接收数据的总长度小于包的总长度继续接收
     if(nRecvAllLen - unRecvLen  < 0)
     {
-        LOG_DEBUG("default", "Receive client part data left len = %d",nRecvAllLen,unRecvLen);
-        return 1;
+        MY_ASSERT_STR(0,return 1, "Receive client part data left len = %d",nRecvAllLen,unRecvLen);
     }
 
-    unTmpOffset = 0;;
+    //数据总长度
+    unTmpDataLen = unRecvLen;
     //数据指针向后移动指向未读取位置
-    pTemp1 += sizeof(unsigned int);
-    unTmpOffset += sizeof(unsigned int);
+    pTemp += sizeof(MSG_LEN_TYPE);
+    unTmpUseLen += sizeof(MSG_LEN_TYPE);
 
-    // 序列号长度
+    // 序列号
     unsigned short tTmpSeq = 0;
-    memcpy(&tTmpSeq,(void*)pTemp1,sizeof(unsigned short));
-    pTemp1 += sizeof(unsigned short);
-    unTmpOffset += sizeof(unsigned short);
+    memcpy(&tTmpSeq,(void*)pTemp,sizeof(unsigned short));
+    pTemp += sizeof(unsigned short);
+    unTmpUseLen += sizeof(unsigned short);
 
     // protobuf版本
     unsigned short tTmpProbufVersion = 0;
-    memcpy(&tTmpProbufVersion,(void*)pTemp1,sizeof(unsigned short));
-    pTemp1 += sizeof(unsigned short);
-    unTmpOffset += sizeof(unsigned short);
+    memcpy(&tTmpProbufVersion,(void*)pTemp,sizeof(unsigned short));
+    pTemp += sizeof(unsigned short);
+    unTmpUseLen += sizeof(unsigned short);
 
     // 是否加密
     unsigned char tTmpIsEncry = 0;
-    memcpy(&tTmpIsEncry,(void*)pTemp1,sizeof(unsigned char));
-    pTemp1 += sizeof(unsigned char);
-    unTmpOffset += sizeof(unsigned char);
+    memcpy(&tTmpIsEncry,(void*)pTemp,sizeof(unsigned char));
+    pTemp += sizeof(unsigned char);
+    unTmpUseLen += sizeof(unsigned char);
 
     //消息指令编号
-    unsigned short tTmpCmd = 0;
-    memcpy(&tTmpCmd,(void*)pTemp1,sizeof(unsigned short));
+    MSG_CMD_TYPE tTmpCmd = 0;
+    memcpy(&tTmpCmd,(void*)pTemp,sizeof(MSG_CMD_TYPE));
     tTmpCmd = ntohs(tTmpCmd);
-    pTemp1 += sizeof(unsigned short);
-    unTmpOffset += sizeof(unsigned short);
+    pTemp += sizeof(MSG_CMD_TYPE);
+    unTmpUseLen += sizeof(MSG_CMD_TYPE);  
 
-    pHead->Clear();
-    pHead->set_cmd(tTmpCmd);
-    pHead->set_seq(tTmpSeq);
-    pHead->set_isencry(tTmpIsEncry);
-    //计算出数据总长度
-    unTmpDataLen = unRecvLen - unTmpOffset;
-    
+    //指针指向当前数据包的末尾
+    pTemp += unRecvLen - unTmpUseLen;
+    unCmd = tTmpCmd;
+
     return 0;
 }
 
 int ClientCommEngine::ConverToGameStream(const void * pBuff,
-                                unsigned int& unBuffLen,
+                                MSG_LEN_TYPE& unBuffLen,
                                 const void *pDataBuff,
-                                unsigned int& unDataLen,
-                                C2SHead* pHead,
-                                const unsigned char* pEncrypt = ClientCommEngine::tpKey)
+                                MSG_LEN_TYPE& unDataLen,
+                                C2SHead* pHead)
 {
-	if ((pBuff == NULL) || (pMsg == NULL) )
+	if ((pBuff == NULL) || (pMsg == NULL) || pHead == NULL )
 	{
 		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertMsgToStream Input param failed.");
 	}
 
-	unsigned char* pTemp = (char*)pBuff;
+	char* pTemp = (char*)pBuff;
     
     //预留总长度
-    unsigned int unLength = 0;
-    pTemp += sizeof(unsigned int);
-    unLength += sizeof(unsigned int);
+    MSG_LEN_TYPE unLength = 0;
+    pTemp += sizeof(MSG_LEN_TYPE);
+    unLength += sizeof(MSG_LEN_TYPE);
     //预留8字节对齐长度
     pTemp += sizeof(unsigned short);
     unLength += sizeof(unsigned short);
@@ -128,31 +119,30 @@ int ClientCommEngine::ConverToGameStream(const void * pBuff,
 	pTemp += pTcpHead->GetCachedSize();
 	unLength += pTcpHead->GetCachedSize();
 
-
-    // 开始消息解密
-    char tEncryBuff[MAX_PACKAGE_LEN] = {0};
-    char* tpEncryBuff = &tEncryBuff[0];
-    unsigned int tOutLen = MAX_PACKAGE_LEN;
-    if (tTmpIsEncry)
-    {
-        // 加密的消息处理
-        int tDecLen = tOutLen;
-        //这里每次都创建一个CAes 对象保证函数的无状态，线程安全
-        CAes tmpAes;
-        tmpAes.init(tpKey,16);
-        int outlen;
-        tpEncryBuff = (unsigned char*)tmpAes.decrypt((const char*)pDataBuff,unDataLen,tDecLen);
-        tOutLen = tDecLen;
-    }
-    else
-    {
-        // 未加密的消息处理
-        tpEncryBuff = (unsigned char*)pTemp1;
-        tOutLen = unDataLen;
-    }
+    // // 开始消息解密
+    // char tEncryBuff[MAX_PACKAGE_LEN] = {0};
+    // char* tpEncryBuff = &tEncryBuff[0];
+    // unsigned int tOutLen = MAX_PACKAGE_LEN;
+    // if (tTmpIsEncry)
+    // {
+    //     // 加密的消息处理
+    //     int tDecLen = tOutLen;
+    //     //这里每次都创建一个CAes 对象保证函数的无状态，线程安全
+    //     CAes tmpAes;
+    //     tmpAes.init(tpKey,16);
+    //     int outlen;
+    //     tpEncryBuff = (unsigned char*)tmpAes.decrypt((const char*)pDataBuff,unDataLen,tDecLen);
+    //     tOutLen = tDecLen;
+    // }
+    // else
+    // {
+    //     // 未加密的消息处理
+    //     tpEncryBuff = (unsigned char*)pTemp1;
+    //     tOutLen = unDataLen;
+    // }
 
     // 拷贝消息到发送缓冲区
-    memcpy(pTemp, (char*)tpEncryBuff, tOutLen);
+    memcpy(pTemp, (char*)pDataBuff, unDataLen);
     pTemp += tOutLen;
     unLength += tOutLen;
 
