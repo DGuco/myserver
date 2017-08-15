@@ -765,7 +765,7 @@ int CGateCtrl::CheckWaitSendData()
             if (false == m_bHasRecv)
             {
                 //没有可发送的数据或者发送完成,则接收gate数据
-                iTmpRet = RecvServerData(&unTmpCodeLength);
+                iTmpRet = RecvServerData();
                 if (iTmpRet != 0)
                 {
                     //没有数据可接收，则发送队列无数据发送，退出
@@ -781,7 +781,7 @@ int CGateCtrl::CheckWaitSendData()
                 m_iSCIndex = 0;
                 m_nSCLength = 0;
                 //反序列化消息的CTcpHead,取出发送游标和长度,把数据存入发送消息缓冲区m_szMsgBuf
-                iTmpRet = ClientCommEngine::ConvertStreamToMessage(m_szSCMsgBuf,unTmpCodeLength,&m_S2CHead,m_iSCIndex);
+                iTmpRet = ClientCommEngine::ConvertStreamToClientMsg(m_szSCMsgBuf,unTmpCodeLength,m_iSCIndex,&m_SCTcpHead);
                 //序列化失败继续发送
                 if(iTmpRet < 0)
                 {
@@ -848,9 +848,9 @@ void CGateCtrl::DisConnect(int iError)
   * 功能描述        : 接收gate返回的消息
   * 返回值          ：int
 **/
-int CGateCtrl::RecvServerData(int *pCodeLen)
+int CGateCtrl::RecvServerData()
 {
-    int pCodeLen = MAX_PACKAGE_LEN;
+    int unTmpCodeLength = MAX_PACKAGE_LEN;
     return mS2CPipe->GetHeadCode(m_szSCMsgBuf,&unTmpCodeLength);
 }
 
@@ -861,11 +861,6 @@ int CGateCtrl::RecvServerData(int *pCodeLen)
 **/
 int CGateCtrl::SendClientData()
 {
-    if (m_pSendList == NULL)
-    {
-        return 0;
-    }
-
     BYTE*           pbTmpSend = NULL;
     unsigned short  unTmpShort;
     time_t          tTmpTimeStamp;

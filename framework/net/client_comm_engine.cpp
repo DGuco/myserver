@@ -275,7 +275,6 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
     // 总长度不匹配
     if (unTmpTotalLen != unBuffLen)
     {
-        MY_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertStreamToMsg tTotalLen = %d unequal to unBuffLen = %d.", unTmpTotalLen, unBuffLen);
         return -1;
     }
 
@@ -317,48 +316,3 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
         return -1;        
     }
 }  
-
-int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
-                                            unsigned short unBuffLen,
-                                            S2CHead* pHead,
-                                            unsigned int& unTmpOffset)
-{
-    if ((pBuff == NULL) || (pHead == NULL))
-	{
-		MY_ASSERT_STR(0, return -1, "ClientCommEngine::ConvertStreamToClientMsg Input param failed.");
-	}
-    
-    char* pbyTmpBuff = (char*)pBuff;
-    //取出数据总长度
-    unsigned int unTmpTotalLen = *(unsigned int*) pbyTmpBuff;
-    unTmpOffset = 0;
-    pbyTmpBuff += sizeof(unsigned int);		// 指针指向数据处
-    unTmpOffset += sizeof(unsigned int);		// 从长度减少一个len的长度
-
-    // 总长度不匹配
-    if (unTmpTotalLen != unBuffLen)
-    {
-        MY_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertStreamToMsg tTotalLen = %d unequal to unBuffLen = %d.", unTmpTotalLen, unBuffLen);
-    }
-
-	// 字节对齐补充长度（采用8字节对齐）
-    unsigned short unTmpAddlLen = *(unsigned short*) pbyTmpBuff;
-    pbyTmpBuff += sizeof(unsigned short);
-    unTmpOffset += sizeof(unsigned short);	
-
-    //扔掉字节对齐长度
-    iTmpLen -= unTmpAddlLen;
-
-	//S2CHead 长度
-    unsigned int tmpHeadLen = *(unsigned int*) pbyTmpBuff;
-    pbyTmpBuff += sizeof(unsigned int);
-    unTmpOffset += sizeof(unsigned int);	
-
-    //反序列化失败
-    if (pHead->ParseFromArray(pbyTmpBuff,tmpHeadLen) == false)
-    {
-        return -1;
-    }
-    pbyTmpBuff += tmpHeadLen;
-    unTmpOffset += tmpHeadLen;
-} 
