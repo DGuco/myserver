@@ -14,16 +14,15 @@ public:
 	static unsigned char tKey[16];
 	static unsigned char* tpKey;
 	/**
-	 * @param pBuff      client上行数据
-	 * @param unBuffLen  数据长度
-	 * @param pHead      转发给gameserver的消息C2SHead
-     * @param iTmpOffset 消息偏移
+	 * @param pBuff         client上行数据
+	 * @param unBuffLen     上行数据长度
+	 * @param pHead         转发给gameserver的消息C2SHead
+     * @param unTmpDataLen  当前数据包的长度
 	 * @return          0：成功 1：数据不完整继续接收  其他：错误
 	 */
-	static int ParseClientStream(const void* pBuff,
-                                    unsigned int nRecvAllLen,
-                                    C2SHead* pHead,
-                                    unsigned int& unTmpOffset,
+	static int ParseClientStream(const void** pBuff,
+                                    int nRecvAllLen,
+                                    MesHead* pHead,
                                     unsigned int& unTmpDataLen);
                       
     /**
@@ -32,30 +31,41 @@ public:
      * @param unBuffLen     消息长度
      * @param pDataBuff     客户端上行消息数据指针
      * @param unDataLen     客户端上行消息数据长度
-     * @param pMsg          反序列化客户端消息组成的CClientMessage
-     * @param bEncrypt      是否加密
-     * @param pEncrypt      密钥
+     * @param pHead         反序列化客户端消息组成的消息头
      * @return               0 成功 其他 失败
      */
 	static int ConverToGameStream(const void* pBuff,
-                                    unsigned int& unBuffLen,
+                                    MSG_LEN_TYPE& unBuffLen,
                                     const void *pDataBuff,
-                                    unsigned int& unDataLen,
-                                    MesHead* pHead = NULL);
+                                    MSG_LEN_TYPE& unDataLen,
+                                    MesHead* pHead);
+                                    
+    /**
+     * 序列化消息Message 发送到gameserver（gateserver==>gameserver）
+     * @param pBuff         存放序列化后消息的地址
+     * @param unBuffLen     长度
+     * @param pHead         消息头
+     * @param pMsg          反序列化客户端消Message
+     * @return              0 成功 其他 失败
+     */
+	static int ConvertToGameStream(const void* pBuff,
+        MSG_LEN_TYPE& unBuffLen,
+        MesHead* pHead,
+        CMessage* pMsg = NULL);
+
 
     /**
      * 序列化消息CMessage 发送到gateserver（gameserver==>gateserver）
      * @param pBuff         存放序列化后消息的地址
-     * @param unBuffLen     消息长度
-     * @param pMsg          反序列化客户端消息组成的CClientMessage
-     * @param bEncrypt      是否加密
-     * @param pEncrypt      密钥
+     * @param unBuffLen     长度
+     * @param pHead         消息头
+     * @param pMsg          反序列化客户端消息Message
      * @return              0 成功 其他 失败
      */
-	static int ConvertMessageToStream(const void* pBuff,
-                                        unsigned int& unBuffLen,
-                                        MesHead* pHead,
-                                        CMessage* pMsg);
+	static int ConvertToGateStream(const void* pBuff,
+                                    MSG_LEN_TYPE& unBuffLen,
+                                    MesHead* pHead,
+                                    CMessage* pMsg);
 
     /**
      * @param pBuff         存放转换后地址指针
@@ -65,10 +75,11 @@ public:
      * @return              0 成功 其他:失败错误码
      */
 	static int ConvertStreamToMessage(const void* pBuff,
-                                    unsigned short unBuffLen,
-                                    MesHead* pHead,
-                                    Message* pMessage,
-                                    CFactory* pMsgFactory = NULL);  
+                                        MSG_LEN_TYPE unBuffLen,
+                                        MesHead* pHead,
+                                        Message* pMessage = NULL,
+                                        CFactory* pMsgFactory = NULL,
+                                        MSG_LEN_TYPE* unOffset = NULL);  
 };
 
 #endif /* CLIENT_COMM_ENGINE_H_ */

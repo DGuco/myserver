@@ -82,7 +82,7 @@ int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     pTmpHead->set_seq(tmpPackage.GetSeq());
 
     // 是否需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertMessageToStream(aTmpCodeBuf,
+    int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
                                                         unTmpCodeLength,
                                                         &pTmpHead,
                                                         pMessage);
@@ -146,7 +146,7 @@ int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
     unsigned char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
 ]    // 是否需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertMessageToStream(aTmpCodeBuf,
+    int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
                                                         unTmpCodeLength,
                                                         &pTmpHead,
                                                         pMessage);
@@ -167,7 +167,7 @@ int CClientHandle::Recv()
 {
     BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] =
             { 0 };
-    int iTmpCodeLength = sizeof(abyTmpCodeBuf);
+    MSG_LEN_TYPE iTmpCodeLength = sizeof(abyTmpCodeBuf);
 
     // 从共享内存管道提取消息
     int iRet = mC2SPipe->GetHeadCode((BYTE *) abyTmpCodeBuf,
@@ -202,7 +202,7 @@ int CClientHandle::Recv()
     return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, MesHead* pCSHead, Message* pMsg);
+int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pCSHead, Message* pMsg);
 {
     //长度小于消息头的长度+数据总长度+字节对齐长度
     if (!pCodeBuff || nLen < int(pCSHead::MinSize() + (sizeof(unsigned short) * 2)))
@@ -214,7 +214,6 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, int& nLen, MesHead* pCSHead, Me
                                                 nLen,
                                                 pCSHead,
                                                 pMsg,
-                                                0,
                                                 CMessageFactory::GetSingletonPtr())
     {
         return ClienthandleErrCode::CLIENTHANDLE_CLNENTMESSAGE;

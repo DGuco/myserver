@@ -494,15 +494,14 @@ int CGateCtrl::RecvClientData(int iSocketFd)
 
     while(1)
     {
-        //客户端上行数据长度
+        //客户端上行数据长度(除去头部)
         MSG_LEN_TYPE unTmpDataLen = 0;
-        //消息指令
-        MSG_CMD_TYPE unCmd = 0;
+        MesHead tmpHead;
+        //解析数据包头部信息，解析完成后指针指向数据包的末尾
         iTmpRet = ClientCommEngine::ParseClientStream(&pTemp1,
                                                     nRecvAllLen,
                                                     &tmpHead,
-                                                    unTmpDataLen,
-                                                    unCmd);
+                                                    unTmpDataLen);
         //继续接收
         if (iTmpRet == 1)
         {
@@ -514,13 +513,13 @@ int CGateCtrl::RecvClientData(int iSocketFd)
             return iTmpRet;
         }
         //组织转发消息
-        if (0 == iTmpRet && unCmd != CMsgPingRequest::MsgID && unTmpDataLen >= 0)
+        if (0 == iTmpRet && tmpHead.cmd() != CMsgPingRequest::MsgID && unTmpDataLen >= 0)
         {
-            MesHead tmpHead;
-            CSocketInfo *tmpSocketInfo = tmpClientMessage.mutable_msghead()->mutable_socketinfos();
+            CSocketInfo *tmpSocketInfo = tmpHead.mutable_socketinfos();
             tmpSocketInfo->Clear();
             tmpSocketInfo->set_createtime(m_pSocketInfo->m_tCreateTime);
             tmpSocketInfo->set_socketid(m_pSocketInfo->m_iSocket);
+            tmpSocketInfo->set_state(0);
 
             char *pTemp = m_szCSMsgBuf;
             unsigned int tmpSendLen = sizof(m_szCSMsgBuf);
@@ -783,7 +782,12 @@ int CGateCtrl::CheckWaitSendData()
                 m_iSCIndex = 0;
                 m_nSCLength = 0;
                 //反序列化消息的CTcpHead,取出发送游标和长度,把数据存入发送消息缓冲区m_szMsgBuf
-                iTmpRet = ClientCommEngine::ConvertStreamToClientMsg(m_szSCMsgBuf,unTmpCodeLength,m_iSCIndex,&m_SCTcpHead);
+                iTmpRet = ClientCommEngine::ConvertStreamToMessage(m_szSCMsgBuf,
+                                                                unTmpCodeLength,
+                                                                &m_SCTcpHead,
+                                                                NULL,
+                                                                NULL,
+                                                                &m_iSendIndex);
                 //序列化失败继续发送
                 if(iTmpRet < 0)
                 {
@@ -810,12 +814,9 @@ int CGateCtrl::CheckWaitSendData()
 **/
 void CGateCtrl::DisConnect(int iError)
 {
-    CClientMessage tmpMessage;
-    tmpMessage.Clear();
 
-    time_t tTmpNow = time(NULL);
-    C2SHead *tmpHead = tmpMessage.mutable_msghead();
-    CSocketInfo* pSocketInfo = tmpHead->mutable_socketinfos();
+    MesHead tmpHead;
+    CSocketInfo* pSocketInfo = tmpHead.mutable_socketinfos()->Add();
     if (pSocketInfo == NULL)
     {
         LOG_ERROR("default","CTcpCtrl::DisConnect add_socketinfos ERROR");
@@ -827,7 +828,7 @@ void CGateCtrl::DisConnect(int iError)
 
     unsigned short unTmpMsgLen = (unsigned short) sizeof(m_szCSMsgBuf);
 
-    int iRet = ClientCommEngine::ConvertMessageToStream(m_szCSMsgBuf,unTmpMsgLen,&tmpMessage);
+    int iRet = ClientCommEngine::ConvertToGameStream(m_szCSMsgBuf,unTmpMsgLen,&tmpMessage);
     if (iRet != 0)
     {
         LOG_ERROR("default","[%s: %d : %s] ConvertMsgToStream failed,iRet = %d ",

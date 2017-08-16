@@ -6,6 +6,7 @@
 #ifndef SERVER_CLIENT_HANDLE_H
 #define SERVER_CLIENT_HANDLE_H
 
+#include "../../framework/base/base.h"
 #include "../../framework/message/message_interface.h"
 #include "../../framework/message/message.pb.h"
 
@@ -65,7 +66,7 @@ public:
     int Send(int cmd,Message* pMessage, stPointList* pPlayerList);
     int Recv();
 
-    int DecodeNetMsg(BYTE* pCodeBuff, int& nLen, C2SHead* pCSHead, Message* pMsg);
+    int DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, C2SHead* pCSHead, Message* pMsg);
 
     // 断开玩家连接
     void DisconnectClient(CPlayer* cPlayer);

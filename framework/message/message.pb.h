@@ -345,36 +345,36 @@ class MesHead : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::google::protobuf::int32 cmd() const;
   void set_cmd(::google::protobuf::int32 value);
 
-  // optional int32 Seq = 3;
+  // optional int32 Serial = 3;
+  bool has_serial() const;
+  void clear_serial();
+  static const int kSerialFieldNumber = 3;
+  ::google::protobuf::int32 serial() const;
+  void set_serial(::google::protobuf::int32 value);
+
+  // optional int32 Seq = 4;
   bool has_seq() const;
   void clear_seq();
-  static const int kSeqFieldNumber = 3;
+  static const int kSeqFieldNumber = 4;
   ::google::protobuf::int32 seq() const;
   void set_seq(::google::protobuf::int32 value);
-
-  // optional bool isEncry = 4;
-  bool has_isencry() const;
-  void clear_isencry();
-  static const int kIsEncryFieldNumber = 4;
-  bool isencry() const;
-  void set_isencry(bool value);
 
   // @@protoc_insertion_point(class_scope:MesHead)
  private:
   void set_has_cmd();
   void clear_has_cmd();
+  void set_has_serial();
+  void clear_has_serial();
   void set_has_seq();
   void clear_has_seq();
-  void set_has_isencry();
-  void clear_has_isencry();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::HasBits<1> _has_bits_;
   mutable int _cached_size_;
   ::google::protobuf::RepeatedPtrField< ::CSocketInfo > socketinfos_;
   ::google::protobuf::int32 cmd_;
+  ::google::protobuf::int32 serial_;
   ::google::protobuf::int32 seq_;
-  bool isencry_;
   friend struct  protobuf_message_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
@@ -1168,15 +1168,39 @@ inline void MesHead::set_cmd(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:MesHead.Cmd)
 }
 
-// optional int32 Seq = 3;
-inline bool MesHead::has_seq() const {
+// optional int32 Serial = 3;
+inline bool MesHead::has_serial() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void MesHead::set_has_seq() {
+inline void MesHead::set_has_serial() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void MesHead::clear_has_seq() {
+inline void MesHead::clear_has_serial() {
   _has_bits_[0] &= ~0x00000002u;
+}
+inline void MesHead::clear_serial() {
+  serial_ = 0;
+  clear_has_serial();
+}
+inline ::google::protobuf::int32 MesHead::serial() const {
+  // @@protoc_insertion_point(field_get:MesHead.Serial)
+  return serial_;
+}
+inline void MesHead::set_serial(::google::protobuf::int32 value) {
+  set_has_serial();
+  serial_ = value;
+  // @@protoc_insertion_point(field_set:MesHead.Serial)
+}
+
+// optional int32 Seq = 4;
+inline bool MesHead::has_seq() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void MesHead::set_has_seq() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void MesHead::clear_has_seq() {
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void MesHead::clear_seq() {
   seq_ = 0;
@@ -1190,30 +1214,6 @@ inline void MesHead::set_seq(::google::protobuf::int32 value) {
   set_has_seq();
   seq_ = value;
   // @@protoc_insertion_point(field_set:MesHead.Seq)
-}
-
-// optional bool isEncry = 4;
-inline bool MesHead::has_isencry() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void MesHead::set_has_isencry() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void MesHead::clear_has_isencry() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void MesHead::clear_isencry() {
-  isencry_ = false;
-  clear_has_isencry();
-}
-inline bool MesHead::isencry() const {
-  // @@protoc_insertion_point(field_get:MesHead.isEncry)
-  return isencry_;
-}
-inline void MesHead::set_isencry(bool value) {
-  set_has_isencry();
-  isencry_ = value;
-  // @@protoc_insertion_point(field_set:MesHead.isEncry)
 }
 
 // -------------------------------------------------------------------

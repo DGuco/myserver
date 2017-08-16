@@ -44,8 +44,8 @@ message MesHead
 {
 	repeated	CSocketInfo		SocketInfos		= 1;	//发送目标信息(多个用来做多人推送)
 	optional	int32			Cmd		 		= 2;	//消息id
-	optional	int32			Seq		 		= 3;	//序列号
-	optional	bool			isEncry			= 4;	//是否加密
+	optional	int32			Serial		 	= 3;	//序列码
+	optional	int32			Seq		 		= 4;	//应答码
 };
 
 //gamesever 服务器内部消息传递格式

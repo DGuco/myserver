@@ -60,8 +60,8 @@ const ::google::protobuf::uint32 TableStruct::offsets[] = {
   ~0u,  // no _oneof_case_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MesHead, socketinfos_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MesHead, cmd_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MesHead, serial_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MesHead, seq_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MesHead, isencry_),
   ~0u,
   0,
   1,
@@ -207,29 +207,29 @@ void AddDescriptorsImpl() {
   static const char descriptor[] = {
       "\n\rmessage.proto\"B\n\013CSocketInfo\022\020\n\010Socket"
       "ID\030\001 \001(\005\022\022\n\nCreateTime\030\002 \001(\003\022\r\n\005State\030\003 "
-      "\001(\005\"W\n\007MesHead\022!\n\013SocketInfos\030\001 \003(\0132\014.CS"
-      "ocketInfo\022\013\n\003Cmd\030\002 \001(\005\022\013\n\003Seq\030\003 \001(\005\022\017\n\007i"
-      "sEncry\030\004 \001(\010\"9\n\010CMessage\022\031\n\007MsgHead\030\001 \002("
-      "\0132\010.MesHead\022\022\n\007MsgPara\030\002 \001(\006:\0010\"\201\001\n\007S2PH"
-      "ead\022\r\n\005SrcFE\030\001 \002(\r\022\r\n\005SrcID\030\002 \002(\r\022\r\n\005Dst"
-      "FE\030\003 \002(\r\022\r\n\005DstID\030\004 \002(\r\022\'\n\006OpFlag\030\005 \001(\0162"
-      "\014.EMessageCmd:\tMESS_NULL\022\021\n\tTimeStamp\030\006 "
-      "\002(\004\"*\n\rCProxyMessage\022\031\n\007MsgHead\030\001 \002(\0132\010."
-      "S2PHead\"\026\n\007P2SHead\022\013\n\003Cmd\030\001 \002(\005\"+\n\016CServ"
-      "erMessage\022\031\n\007MsgHead\030\001 \002(\0132\010.P2SHead\"&\n\017"
-      "CMsgPingRequest\"\023\n\003Msg\022\014\n\005MsgID\020\377\377\377\007*\377\001\n"
-      "\013enMessageFE\022\014\n\010FE_TIMER\020\000\022\r\n\tFE_CLIENT\020"
-      "\001\022\021\n\rFE_GAMESERVER\020\002\022\022\n\016FE_LOGINSERVER\020\003"
-      "\022\017\n\013FE_DBSERVER\020\004\022\022\n\016FE_PROXYSERVER\020\005\022\022\n"
-      "\016FE_WORLDSERVER\020\006\022\020\n\014FE_WEBSERVER\020\007\022\024\n\020F"
-      "E_OFFLINESERVER\020\010\022\022\n\016FE_CHECKSERVER\020\t\022\021\n"
-      "\rFE_HALLSERVER\020\n\022\021\n\rFE_GATESERVER\020\013\022\021\n\rF"
-      "E_ROOMSERVER\020\014*A\n\013EMessageCmd\022\r\n\tMESS_NU"
-      "LL\020\000\022\017\n\013MESS_REGIST\020\001\022\022\n\016MESS_KEEPALIVE\020"
-      "\002B\002H\001"
+      "\001(\005\"V\n\007MesHead\022!\n\013SocketInfos\030\001 \003(\0132\014.CS"
+      "ocketInfo\022\013\n\003Cmd\030\002 \001(\005\022\016\n\006Serial\030\003 \001(\005\022\013"
+      "\n\003Seq\030\004 \001(\005\"9\n\010CMessage\022\031\n\007MsgHead\030\001 \002(\013"
+      "2\010.MesHead\022\022\n\007MsgPara\030\002 \001(\006:\0010\"\201\001\n\007S2PHe"
+      "ad\022\r\n\005SrcFE\030\001 \002(\r\022\r\n\005SrcID\030\002 \002(\r\022\r\n\005DstF"
+      "E\030\003 \002(\r\022\r\n\005DstID\030\004 \002(\r\022\'\n\006OpFlag\030\005 \001(\0162\014"
+      ".EMessageCmd:\tMESS_NULL\022\021\n\tTimeStamp\030\006 \002"
+      "(\004\"*\n\rCProxyMessage\022\031\n\007MsgHead\030\001 \002(\0132\010.S"
+      "2PHead\"\026\n\007P2SHead\022\013\n\003Cmd\030\001 \002(\005\"+\n\016CServe"
+      "rMessage\022\031\n\007MsgHead\030\001 \002(\0132\010.P2SHead\"&\n\017C"
+      "MsgPingRequest\"\023\n\003Msg\022\014\n\005MsgID\020\377\377\377\007*\377\001\n\013"
+      "enMessageFE\022\014\n\010FE_TIMER\020\000\022\r\n\tFE_CLIENT\020\001"
+      "\022\021\n\rFE_GAMESERVER\020\002\022\022\n\016FE_LOGINSERVER\020\003\022"
+      "\017\n\013FE_DBSERVER\020\004\022\022\n\016FE_PROXYSERVER\020\005\022\022\n\016"
+      "FE_WORLDSERVER\020\006\022\020\n\014FE_WEBSERVER\020\007\022\024\n\020FE"
+      "_OFFLINESERVER\020\010\022\022\n\016FE_CHECKSERVER\020\t\022\021\n\r"
+      "FE_HALLSERVER\020\n\022\021\n\rFE_GATESERVER\020\013\022\021\n\rFE"
+      "_ROOMSERVER\020\014*A\n\013EMessageCmd\022\r\n\tMESS_NUL"
+      "L\020\000\022\017\n\013MESS_REGIST\020\001\022\022\n\016MESS_KEEPALIVE\020\002"
+      "B\002H\001"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 845);
+      descriptor, 844);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message.proto", &protobuf_RegisterTypes);
   ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
@@ -695,8 +695,8 @@ void CSocketInfo::set_state(::google::protobuf::int32 value) {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int MesHead::kSocketInfosFieldNumber;
 const int MesHead::kCmdFieldNumber;
+const int MesHead::kSerialFieldNumber;
 const int MesHead::kSeqFieldNumber;
-const int MesHead::kIsEncryFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 MesHead::MesHead()
@@ -715,15 +715,15 @@ MesHead::MesHead(const MesHead& from)
       socketinfos_(from.socketinfos_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&cmd_, &from.cmd_,
-    reinterpret_cast<char*>(&isencry_) -
-    reinterpret_cast<char*>(&cmd_) + sizeof(isencry_));
+    reinterpret_cast<char*>(&seq_) -
+    reinterpret_cast<char*>(&cmd_) + sizeof(seq_));
   // @@protoc_insertion_point(copy_constructor:MesHead)
 }
 
 void MesHead::SharedCtor() {
   _cached_size_ = 0;
-  ::memset(&cmd_, 0, reinterpret_cast<char*>(&isencry_) -
-    reinterpret_cast<char*>(&cmd_) + sizeof(isencry_));
+  ::memset(&cmd_, 0, reinterpret_cast<char*>(&seq_) -
+    reinterpret_cast<char*>(&cmd_) + sizeof(seq_));
 }
 
 MesHead::~MesHead() {
@@ -761,8 +761,8 @@ void MesHead::Clear() {
 // @@protoc_insertion_point(message_clear_start:MesHead)
   socketinfos_.Clear();
   if (_has_bits_[0 / 32] & 7u) {
-    ::memset(&cmd_, 0, reinterpret_cast<char*>(&isencry_) -
-      reinterpret_cast<char*>(&cmd_) + sizeof(isencry_));
+    ::memset(&cmd_, 0, reinterpret_cast<char*>(&seq_) -
+      reinterpret_cast<char*>(&cmd_) + sizeof(seq_));
   }
   _has_bits_.Clear();
   _internal_metadata_.Clear();
@@ -804,26 +804,26 @@ bool MesHead::MergePartialFromCodedStream(
         break;
       }
 
-      // optional int32 Seq = 3;
+      // optional int32 Serial = 3;
       case 3: {
         if (tag == 24u) {
-          set_has_seq();
+          set_has_serial();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &seq_)));
+                 input, &serial_)));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // optional bool isEncry = 4;
+      // optional int32 Seq = 4;
       case 4: {
         if (tag == 32u) {
-          set_has_isencry();
+          set_has_seq();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &isencry_)));
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &seq_)));
         } else {
           goto handle_unusual;
         }
@@ -866,14 +866,14 @@ void MesHead::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->cmd(), output);
   }
 
-  // optional int32 Seq = 3;
-  if (has_seq()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->seq(), output);
+  // optional int32 Serial = 3;
+  if (has_serial()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->serial(), output);
   }
 
-  // optional bool isEncry = 4;
-  if (has_isencry()) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(4, this->isencry(), output);
+  // optional int32 Seq = 4;
+  if (has_seq()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->seq(), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -899,14 +899,14 @@ void MesHead::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->cmd(), target);
   }
 
-  // optional int32 Seq = 3;
-  if (has_seq()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->seq(), target);
+  // optional int32 Serial = 3;
+  if (has_serial()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->serial(), target);
   }
 
-  // optional bool isEncry = 4;
-  if (has_isencry()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(4, this->isencry(), target);
+  // optional int32 Seq = 4;
+  if (has_seq()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->seq(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -945,16 +945,18 @@ size_t MesHead::ByteSizeLong() const {
           this->cmd());
     }
 
-    // optional int32 Seq = 3;
+    // optional int32 Serial = 3;
+    if (has_serial()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->serial());
+    }
+
+    // optional int32 Seq = 4;
     if (has_seq()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->seq());
-    }
-
-    // optional bool isEncry = 4;
-    if (has_isencry()) {
-      total_size += 1 + 1;
     }
 
   }
@@ -989,11 +991,11 @@ void MesHead::MergeFrom(const MesHead& from) {
     if (from.has_cmd()) {
       set_cmd(from.cmd());
     }
+    if (from.has_serial()) {
+      set_serial(from.serial());
+    }
     if (from.has_seq()) {
       set_seq(from.seq());
-    }
-    if (from.has_isencry()) {
-      set_isencry(from.isencry());
     }
   }
 }
@@ -1023,8 +1025,8 @@ void MesHead::Swap(MesHead* other) {
 void MesHead::InternalSwap(MesHead* other) {
   socketinfos_.UnsafeArenaSwap(&other->socketinfos_);
   std::swap(cmd_, other->cmd_);
+  std::swap(serial_, other->serial_);
   std::swap(seq_, other->seq_);
-  std::swap(isencry_, other->isencry_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -1092,15 +1094,39 @@ void MesHead::set_cmd(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:MesHead.Cmd)
 }
 
-// optional int32 Seq = 3;
-bool MesHead::has_seq() const {
+// optional int32 Serial = 3;
+bool MesHead::has_serial() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-void MesHead::set_has_seq() {
+void MesHead::set_has_serial() {
   _has_bits_[0] |= 0x00000002u;
 }
-void MesHead::clear_has_seq() {
+void MesHead::clear_has_serial() {
   _has_bits_[0] &= ~0x00000002u;
+}
+void MesHead::clear_serial() {
+  serial_ = 0;
+  clear_has_serial();
+}
+::google::protobuf::int32 MesHead::serial() const {
+  // @@protoc_insertion_point(field_get:MesHead.Serial)
+  return serial_;
+}
+void MesHead::set_serial(::google::protobuf::int32 value) {
+  set_has_serial();
+  serial_ = value;
+  // @@protoc_insertion_point(field_set:MesHead.Serial)
+}
+
+// optional int32 Seq = 4;
+bool MesHead::has_seq() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void MesHead::set_has_seq() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void MesHead::clear_has_seq() {
+  _has_bits_[0] &= ~0x00000004u;
 }
 void MesHead::clear_seq() {
   seq_ = 0;
@@ -1114,30 +1140,6 @@ void MesHead::set_seq(::google::protobuf::int32 value) {
   set_has_seq();
   seq_ = value;
   // @@protoc_insertion_point(field_set:MesHead.Seq)
-}
-
-// optional bool isEncry = 4;
-bool MesHead::has_isencry() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-void MesHead::set_has_isencry() {
-  _has_bits_[0] |= 0x00000004u;
-}
-void MesHead::clear_has_isencry() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-void MesHead::clear_isencry() {
-  isencry_ = false;
-  clear_has_isencry();
-}
-bool MesHead::isencry() const {
-  // @@protoc_insertion_point(field_get:MesHead.isEncry)
-  return isencry_;
-}
-void MesHead::set_isencry(bool value) {
-  set_has_isencry();
-  isencry_ = value;
-  // @@protoc_insertion_point(field_set:MesHead.isEncry)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
