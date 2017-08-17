@@ -78,8 +78,8 @@ int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     pTmpSocket->set_socketid(pTmpConnInfo->m_iSocket);
     Package tmpPackage = pPlayer->GetPackage();
     pTmpHead->set_cmd(tmpPackage.GetCmd());
-    pTmpHead->set_isencry(tmpPackage.GetIsEncrpy());
     pTmpHead->set_seq(tmpPackage.GetSeq());
+    pTmpHead->set_serial(tmpPackage.GetSerial());
 
     // 是否需要加密，在这里修改参数
     int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,

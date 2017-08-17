@@ -57,27 +57,32 @@ class Package
 public:
     Package() 
     {
-        m_iCmd = 0;
-        m_iSeq = 0;
-        m_bIsEncrpy = false;
+        m_unSerial = 0;
+        m_unCmd = 0;
+        m_unSeq = 0;
+        // m_bIsEncrpy = false;
         m_bIsDeal = false;
     }
     ~Package() {}
 public:
-    void SetCmd(int cmd) {m_iCmd = cmd; }
-    int  GetCmd(){return m_iCmd;}
-    void SetSeq(int seq) {m_iSeq = seq;}
-    int  GetSeq(){return m_iSeq;}
-    bool GetIsEncrpy() {return m_bIsEncrpy;}
-    void SetIsEncrpy(bool isEncrpy) {m_bIsEncrpy = isEncrpy;}
+    void SetSerial(unsigned short seq) {m_unSerial = seq;}
+    unsigned short  GetSerial(){return m_unSerial;}
+    void SetSeq(unsigned short seq) {m_unSeq = seq;}
+    unsigned short  GetSeq(){return m_unSeq;}
+    void SetCmd(unsigned short cmd) {m_unCmd = cmd; }
+    unsigned short  GetCmd(){return m_unCmd;}
+
+    // bool GetIsEncrpy() {return m_bIsEncrpy;}
+    // void SetIsEncrpy(bool isEncrpy) {m_bIsEncrpy = isEncrpy;}
     char* GetMessBuff() {return m_acMessageBuff;}
     bool GetIsDeal() {return m_bIsDeal;}
     void SetDeal(bool isDeal) {m_bIsDeal = isDeal;}
 private:
-    int  m_iCmd;                                //消息编号
-    int  m_iSeq;                                //消息序列号
-    int  m_bIsEncrpy;                           //是否加密
-    bool m_bIsDeal;                             //当前消息是否处理完成
+    unsigned short m_unSerial;                  //序列码
+    unsigned short m_unSeq;                     //消息应答码    
+    unsigned short m_unCmd;                     //消息编号
+    // bool  m_bIsEncrpy;                          //是否加密
+    bool  m_bIsDeal;                            //当前消息是否处理完成
     char m_acMessageBuff[MAX_PACKAGE_LEN];      //下行消息缓冲区
 };
 

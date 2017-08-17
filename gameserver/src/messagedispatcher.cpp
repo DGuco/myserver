@@ -36,7 +36,7 @@ int CMessageDispatcher::ProcessClientMessage(CMessage* pMsg)
         return -2;
     }
 
-    C2SHead tmpHead = pMsg->msghead();
+    MesHead tmpHead = pMsg->msghead();
     CSocketInfo tmpSocketInfo = tmpHead.socketinfos();
     // 获得CTeam 实体
     CPlayer* pPlayer = CSceneObjManager::GetSingletonPtr()->GetPlayer(tmpSocketInfo.socketid());
@@ -48,10 +48,10 @@ int CMessageDispatcher::ProcessClientMessage(CMessage* pMsg)
         return -3;
     }
 
-    //有消息正在处理（注:）正常情况不会出现这种情况，gameser是单线程的同时只能处理一个消息
+    //有消息正在处理（注:正常情况不会出现这种情况，客户端等一个消息回复后才能发下一个消息)
     if(pPlayer->GetPackage().GetIsDeal())
     {
-        //todo 缓存消息
+        //todo 缓存消息 or 踢下线
         return -4;
     }
 
