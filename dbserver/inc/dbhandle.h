@@ -8,10 +8,10 @@
 #include "../../framework/base/servertool.h"
 #include "../../framework/thread/mythread.h"
 #include "../../framework/net/tcp_conn.h"
-#include "../../framework/sharemem/shm.h"
+#include "../../framework/mem/shm.h"
+#include "../../framework/mem/codequeue.h"
 #include "../../framework/message/proxymessage.pb.h"
 #include "../../framework/message/message.pb.h"
-#include "../../framework/sharemem/codequeue.h"
 #include "../inc/basedb.h"
 #include "../inc/queryresultmysql.h"
 #include "../inc/database.h"
@@ -53,7 +53,7 @@ public:
     enum _enHandleParas
     {
         //HANDLECOUNT = 8,
-                MULTIFACTOR = 1,
+        MULTIFACTOR = 1,
         RPTCHECKGAP = 3600,
         ROUTETABSIZE = 1024
     };
@@ -68,13 +68,7 @@ public:
     int PostOneCode( int nCodeLength, BYTE* pCode);
 
     int InitLogFile( const char* vLogName, const char* vLogDir, LogLevel vPriority  = LEVEL_NOTSET , unsigned int vMaxFileSize  = 10*1024*1024 , unsigned int vMaxBackupIndex  = 1 , bool vAppend  = true  );
-
-    void* operator new(size_t nSize);
-    void  operator delete( void* pMem);
-
-    static size_t CountSize();
     static CSharedMem *ms_pCurrentShm;
-    static pthread_mutex_t stDBConnMutex;
     static int m_iDBSvrID;
     static short m_sDBOperMode;
 

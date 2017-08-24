@@ -17,10 +17,26 @@ public:
     CServerConfig();
     ~CServerConfig();
     int Parse();
-
     void Clear();
 
 public:
+    const int GetTcpServerId() const {return m_iTcpServerId;}
+    const string GetTcpHost() const {return m_sTcpHost;}
+    const int GetTcpPort() const {return m_iTcpPort;}
+
+    const int GetGateServerId() const {return m_iGateServerId;}
+    const string GetGateHost() const {return m_sGateHost;}
+    const int GetGatePort() const {return m_iGatePort;}
+
+    const int GetGameServerId() const {return m_iGameServerId;}
+    const string GetGameHost() const {return m_sGameHost;}
+    const int GetGamePort() const {return m_iGamePort;}
+
+    const int GetTcpKeepAlive() const {return m_iTcpKeepAlive;}
+    const int GetServetTick() const {return m_iServerTick;}
+    const int GetCheckTimeOutGap() const {return m_iChecktimeOutGap;}
+    const int GetSocketTimeOut() const {return m_iSokcetTimeout;}
+private:
     //TCPserver
     int m_iTcpServerId;
     string m_sTcpHost;

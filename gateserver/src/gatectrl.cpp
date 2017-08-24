@@ -50,7 +50,7 @@ int CGateCtrl::Initialize()
     //初始化epoll
     m_pEpollevents = NULL;
     //初始化epoll socket
-    iTmpRet = InitEpollSocket((short)CServerConfig::GetSingletonPtr()->m_iTcpPort);
+    iTmpRet = InitEpollSocket((short)CServerConfig::GetSingletonPtr()->GetTcpPort());
     if (0 != iTmpRet)
     {
         LOG_ERROR("default","InitEpollSocket failed! TCPserver init failed. ReusltCode = %d!",iTmpRet);
@@ -61,7 +61,7 @@ int CGateCtrl::Initialize()
     m_astSocketInfo[m_iSocket].m_iSocket = m_iSocket;
     m_astSocketInfo[m_iSocket].m_iSocketType = LISTEN_SOCKET;
     m_astSocketInfo[m_iSocket].m_iSocketFlag = RECV_DATA;
-    m_astSocketInfo[m_iSocket].m_iConnectedPort = CServerConfig::GetSingletonPtr()->m_iTcpPort;
+    m_astSocketInfo[m_iSocket].m_iConnectedPort = CServerConfig::GetSingletonPtr()->GetTcpPort();
     m_iMaxfds = m_iSocket + 1;
 
     m_pSendList = NULL;
@@ -580,7 +580,7 @@ int CGateCtrl::CheckTimeOut()
     time(&m_iNowTime); // 计算当前时间
 
     // 和上次检测时间相比，如果达到了检测间隔则进行检测
-    if (m_iNowTime - m_iLastTime < CServerConfig::GetSingleton().m_iChecktimeOutGap)
+    if (m_iNowTime - m_iLastTime < CServerConfig::GetSingleton().GetCheckTimeOutGap())
     {
         return 0;
     }
@@ -598,7 +598,7 @@ int CGateCtrl::CheckTimeOut()
         {
             tempTimeGap = m_iNowTime - m_pSocketInfo->m_tStamp;
             // 把当前时间和最近一次socket收到包的时间相比，如果超过了指定的时间间隔则关闭socket
-            if (tempTimeGap >= CServerConfig::GetSingleton().m_iSokcetTimeout)
+            if (tempTimeGap >= CServerConfig::GetSingleton().GetSocketTimeOut())
             {
                 // 该socket通讯超时
                 LOG_ERROR("default","Client[%s] socket id = %d port %d not recv packet %d seconds, Close.",
@@ -612,7 +612,7 @@ int CGateCtrl::CheckTimeOut()
         {
             // 该客户端已经连接上来了，但是Mainsvrd还没有向它发送一个包，这时的超时更短，主要是防止恶意攻击
             tempTimeGap = m_iNowTime - m_pSocketInfo->m_tCreateTime;
-            if (CServerConfig::GetSingleton().m_iSokcetTimeout < tempTimeGap)
+            if (CServerConfig::GetSingleton().GetSocketTimeOut() < tempTimeGap)
             {
                 // 该socket通讯超时
                 LOG_ERROR("default","Client[%s] connect port %d Timeout %d seconds, close!",

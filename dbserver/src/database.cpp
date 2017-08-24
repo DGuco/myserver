@@ -9,6 +9,11 @@
 #include "../inc/database.h"
 #include "../inc/basedb.h"
 
+Database::Database()
+{
+
+}
+
 Database::~Database()
 {
     /*Delete objects*/

@@ -29,11 +29,11 @@ DatabaseMysql::DatabaseMysql() : Database(), mMysql(0)
         mysql_library_init(-1, NULL, NULL);
 
         // 如果是每个线程独享一个mysql链接，那么就不需要mysql的线程安全性
-        //if (!mysql_thread_safe())
-        //{
+        // if (!mysql_thread_safe())
+        // {
         //    LOG_ERROR( m_logsName.c_str(), "FATAL ERROR: Used MySQL library isn't thread-safe.");
         //    exit(1);
-        //}
+        // }
     }
 
     // m_connflag = 0;

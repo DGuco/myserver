@@ -195,7 +195,7 @@ int CProxyHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
                 pbmsg_settcphead(
                         stRetHead,
                         FE_GATESERVER,
-                        CServerConfig::GetSingletonPtr()->m_iGateServerId,
+                        CServerConfig::GetSingletonPtr()->GetGateServerId(),
                         stTmpHead.srcfe(),
                         stTmpHead.srcid(),
                         time(NULL),

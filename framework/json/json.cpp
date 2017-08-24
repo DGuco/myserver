@@ -32,10 +32,9 @@ namespace MyJson {
 			}
 			fp.close();
 
-//            m_Obj.Clear();
+           	m_Obj.Clear();
             m_Obj.Parse(data.c_str());
 			int ret = Parse();
-
 			return ret;
 		} catch (...) {
 			return -1;
@@ -49,7 +48,8 @@ namespace MyJson {
 
 	void Json::Clear()
     {
-    }
+	}
+	
 	int Json::Reload()
     {
         Clear();

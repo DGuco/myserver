@@ -19,7 +19,7 @@ class QueryResult;
 class Database
 {
 protected:
-    Database()  {};
+    Database();
 
 public:
 

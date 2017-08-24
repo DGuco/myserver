@@ -20,6 +20,13 @@
         "typeindex": "cpp",
         "ios": "cpp",
         "istream": "cpp",
-        "iterator": "cpp"
+        "iterator": "cpp",
+        "iosfwd": "cpp",
+        "__hash_table": "cpp",
+        "__tree": "cpp",
+        "bitset": "cpp",
+        "initializer_list": "cpp",
+        "map": "cpp",
+        "regex": "cpp"
     }
 }

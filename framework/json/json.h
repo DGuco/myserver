@@ -13,24 +13,16 @@
 namespace MyJson {
     class Json {
     public:
-
         Json();
-
         virtual ~Json();
-
         int LoadFromFile(const std::string &filename);
-
         virtual int Parse();
-
         virtual void Clear();
-
         int Reload();
 
     protected:
         rapidjson::Document m_Obj;
-
         std::string m_sFilename;
     };
-
-#endif //_JSON_H_
 }
+#endif //_JSON_H_

@@ -391,7 +391,7 @@ int CProxyCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 
 	//判断是否是注册消息
 	if (stTmpTcpHead.dstfe () != FE_GATESERVER \
-		|| stTmpTcpHead.dstid() != CServerConfig::GetSingletonPtr()->m_iGateServerId \
+		|| stTmpTcpHead.dstid() != CServerConfig::GetSingletonPtr()->GetGateServerId() \
 		|| stTmpTcpHead.opflag() != EGC_REGIST)
 	{
 		LOG_ERROR("default","Error CCSHead is invalid,fd = %d,Src(FE = %d : ID = %d),Dst(FE = %d : ID = %d),OpFlag = %d,TimeStamp = %ld.",
@@ -541,7 +541,7 @@ int CProxyCtrl::PrepareToRun()
 {
 	int i;
 	//监听socket
-	if(m_stListenSocket.CreateServer(CServerConfig::GetSingletonPtr()->m_iGatePort))
+	if(m_stListenSocket.CreateServer(CServerConfig::GetSingletonPtr()->GetGatePort()))
 	{
 		return -1;
 	}
