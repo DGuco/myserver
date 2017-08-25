@@ -28,7 +28,7 @@ enum ClienthandleErrCode
     CLIENTHANDLE_QUEUE_EMPTY						= 2,			// 从管道取出长度为空
     CLIENTHANDLE_SMALL_LENGTH						= 3,			// 小于最小长度
     CLIENTHANDLE_TOTAL_LENGTH						= 4,			// tcp转发过来的总长度不匹配
-    CLIENTHANDLE_CLNENTMESSAGE					    = 5,			// 序列化ClientMessage失败
+    CLIENTHANDLE_PARSE_FAILED					    = 5,			// 序列化ClientMessage失败
     CLIENTHANDLE_HASCLOSED							= 6,			// 连接池中找不到玩家实体，已经关闭连接
     CLIENTHANDLE_NOTSAMETEAM						= 7,			// 不是同一个玩家
     CLIENTHANDLE_NOTEAM								= 8,		    // 找不到玩家实体
@@ -66,7 +66,7 @@ public:
     int Send(int cmd,Message* pMessage, stPointList* pPlayerList);
     int Recv();
 
-    int DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, C2SHead* pCSHead, Message* pMsg);
+    int DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pCSHead, Message* pMsg);
 
     // 断开玩家连接
     void DisconnectClient(CPlayer* cPlayer);

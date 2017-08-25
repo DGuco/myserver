@@ -4,9 +4,32 @@
 
 #include "../inc/dbctrl.h"
 #include "../../framework/mem/shm.h"
+#include "../../framework/mem/sharemem.h"
+#include "../../framework/json/config.h"
+#include "../../gameserver/inc/gameserver.h"
 
 CSharedMem* CDBCtrl::mShmPtr = NULL;
 template<> CDBCtrl* CSingleton< CDBCtrl >::spSingleton = NULL;
+
+int CDBCtrl::MallocShareMem()
+{
+    char szCmd[ 128 ] = {0};
+    snprintf(szCmd, sizeof(szCmd)-1, "touch %s", "./dbpipefile");
+    system(szCmd);
+
+    unsigned int tkeydb = MakeKey( "./dbpipefile", 'D' );
+    size_t tSize = sizeof(CSharedMem) + MAXHANDLENUMBER * INPUTQUEUELENGTH;
+    BYTE* tpDBShm = CreateShareMem ( tkeydb, tSize );
+
+    MY_ASSERT( ( tpDBShm != NULL ), return -1 );
+
+    LOG_DEBUG( "default", "DB Shm Size is %lld", tSize );
+
+    CSharedMem::pbCurrentShm = tpDBShm;
+    CDBCtrl::mShmPtr = CSharedMem::CreateInstance(tkeydb,tSize);
+    MY_ASSERT( CDBCtrl::mShmPtr != NULL, return -1);
+    return 0;
+}
 
 void CDBCtrl::SetRunFlag( int iFlag )
 {
@@ -27,21 +50,7 @@ bool CDBCtrl::IsRunFlagSet( int iFlag )
 
 CDBCtrl::CDBCtrl()
 {
-	int i;
-
-	if(!mShmPtr)
-	{
-		return;
-	}
-
-	CDBHandle::ms_pCurrentShm = mShmPtr;
-
-	for( i = 0; i < MAXHANDLENUMBER; i++ )
-	{
-		m_apHandles[i] = new CDBHandle;
-	}
-
-	m_iRunFlag = 0;
+    m_iRunFlag = 0;
 	m_which_handle = 0;
 	m_lastTick = 0;
 }
@@ -52,30 +61,27 @@ CDBCtrl::~CDBCtrl()
 
 int CDBCtrl::Initialize( )
 {
-	if(CConfigMgr::GetSingletonPtr()->LoadConfig("../../config/dbconfig.proto" ) < 0 )  // 读取数据库配置文件
-	{
-		if (CConfigMgr::GetSingletonPtr()->LoadConfig("../../../server/trunk/config/dbconfig.proto" ) < 0)
-		{
-			printf("\ndbserver read config error!!!!!!!\n");
-			return -1;
-		}
-	}
 
-	if ( false == CConfigMgr::GetSingletonPtr()->GetConfig()->has_dbconfig() )
+    int i;
+
+    if(MallocShareMem() != 0)
+    {
+        return -1;
+    }
+
+    CDBHandle::ms_pCurrentShm = mShmPtr;
+    for( i = 0; i < MAXHANDLENUMBER; i++ )
+    {
+        m_apHandles[i] = new CDBHandle;
+    }
+
+	if (CServerConfig::GetSingletonPtr()->GetProxySize() <= 0
+			|| CServerConfig::GetSingletonPtr()->GetProxySize() > MAX_PROXY_NUM )
 	{
 		printf("\ndbserver read config error!!!!!!!\n");
 		return -1;
 	}
 
-	if (CConfigMgr::GetSingletonPtr()->GetDBConfig().proxyinfo_size() <= 0
-			|| CConfigMgr::GetSingletonPtr()->GetDBConfig().proxyinfo_size() > MAXPROXYCODELEN )
-	{
-		printf("\ndbserver read config error!!!!!!!\n");
-		return -1;
-	}
-
-	LOG_INFO("default", "[%s]", /*m_stDBSvrdCfg*/CConfigMgr::GetSingletonPtr()->GetDBConfig().ShortDebugString().c_str());
-	
 	return 0;
 }
 
@@ -84,30 +90,30 @@ int  CDBCtrl::ConnectToProxyServer()
 {
 	int i = 0;
 
-	for( i = 0; i < MAXPROXYNUMBER && i < CConfigMgr::GetSingletonPtr()->GetDBConfig().proxyinfo_size();  i++ )
+//	for( i = 0; i < MAXPROXYNUMBER && i < CServerConfig::GetSingletonPtr()->GetProxySize();  i++ )
+//	{
+	m_astProxySvrdCon[i].Initialize( FE_PROXYSERVER,
+									 CServerConfig::GetSingleton().GetDbServerId(),
+									 inet_addr(CServerConfig::GetSingleton().GetDbInfo().c_str() ),
+									 CServerConfig::GetSingleton().GetDbPort());
+
+	if( m_astProxySvrdCon[i].ConnectToServer( (char*)pbProxy.ip().c_str() ) )
 	{
-
-		const PBProxy& pbProxy = CConfigMgr::GetSingletonPtr()->GetDBConfig().proxyinfo(i);
-
-		m_astProxySvrdCon[i].Initialize( FE_PROXYSERVER, pbProxy.id(), inet_addr(pbProxy.ip().c_str() ), pbProxy.port() );
-
-		if( m_astProxySvrdCon[i].ConnectToServer( (char*)pbProxy.ip().c_str() ) )
-		{
-			LOG_INFO( "default", "Error:connect to Proxy Server %d failed.\n", pbProxy.id());
-			continue;
-		}
-
-		if( RegisterToProxyServer( i ) )
-		{
-			LOG_ERROR( "default", "Error: Register to Proxy Server %d failed.\n", pbProxy.id() );
-			continue;
-		}
-
-		m_atLastSendKeepAlive[i] = GetMSTime();	// 记录这一次的注册的时间
-		m_atLastRecvKeepAlive[i] = GetMSTime();	// 由于是注册,所以也将第一次收到的时间记录为当下
-
-		LOG_INFO( "default", "Connect to Proxy server %d Succeed.\n", pbProxy.id() );
+		LOG_INFO( "default", "Error:connect to Proxy Server %d failed.\n", pbProxy.id());
+		continue;
 	}
+
+	if( RegisterToProxyServer( i ) )
+	{
+		LOG_ERROR( "default", "Error: Register to Proxy Server %d failed.\n", pbProxy.id() );
+		continue;
+	}
+
+	m_atLastSendKeepAlive[i] = GetMSTime();	// 记录这一次的注册的时间
+	m_atLastRecvKeepAlive[i] = GetMSTime();	// 由于是注册,所以也将第一次收到的时间记录为当下
+
+	LOG_INFO( "default", "Connect to Proxy server %d Succeed.\n", pbProxy.id() );
+//	}
 
 	return i;
 }

@@ -18,7 +18,13 @@ set(SOURCE_FILES
         inc/queryresultmysql.h
         src/database.cpp
         src/databasemysql.cpp
-        src/field.cpp src/messagefactory.cpp src/queryresultmysql.cpp)
+        src/field.cpp
+        src/messagefactory.cpp
+        src/queryresultmysql.cpp)
+
+include_directories(
+        /usr/local/include
+)
 
 link_directories(
         /usr/local/lib/
@@ -34,5 +40,5 @@ link_directories(
 )
 
 add_executable(dbeserver ${SOURCE_FILES})
-target_link_libraries(dbeserver framework protobuf crypto)
+target_link_libraries(dbeserver framework protobuf crypto mysqlclient)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)

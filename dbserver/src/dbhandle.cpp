@@ -2,11 +2,12 @@
 // Created by DGuco on 17-7-13.
 //
 
+#include "../../framework/net/server_comm_engine.h"
+#include "../../framework/mem/codequeue.h"
 #include "../inc/dbhandle.h"
 #include "../inc/dbctrl.h"
 #include "../inc/queryresultmysql.h"
-#include "../databasemysql.h"
-#include "../../framework/net/server_comm_engine.h"
+#include "../inc/databasemysql.h"
 
 CSharedMem* CDBHandle::ms_pCurrentShm = NULL;
 int CDBHandle::m_iDBSvrID = -1;
@@ -21,7 +22,7 @@ CDBHandle::CDBHandle()
 
     // 初始化输入队列对象
     CCodeQueue::pCurrentShm = ms_pCurrentShm;
-    m_pInputQueue = new CCodeQueue(INPUTQUEUELENGTH);
+    m_pInputQueue = CCodeQueue::CreateInsance(INPUTQUEUELENGTH);
 	if( m_pInputQueue == NULL )
 	{
 		printf( "in CDBHandle::CDBHandle(), new CCodeQueue failed" );

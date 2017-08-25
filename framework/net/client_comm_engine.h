@@ -1,9 +1,6 @@
 #ifndef CLIENT_COMM_ENGINE_H_
 #define CLIENT_COMM_ENGINE_H_
 
-class CMessage;
-class CTcpHead;
-
 #include "../message/message_interface.h"
 #include "../message/message.pb.h"
 #include "ccrypto.h"
@@ -23,7 +20,7 @@ public:
 	static int ParseClientStream(const void** pBuff,
                                     int nRecvAllLen,
                                     MesHead* pHead,
-                                    unsigned int& unTmpDataLen);
+                                    MSG_LEN_TYPE & unTmpDataLen);
                       
     /**
      * 序列化消息发送到gameserver
@@ -51,7 +48,7 @@ public:
 	static int ConvertToGameStream(const void* pBuff,
         MSG_LEN_TYPE& unBuffLen,
         MesHead* pHead,
-        CMessage* pMsg = NULL);
+        Message* pMsg = NULL);
 
 
     /**
@@ -65,7 +62,7 @@ public:
 	static int ConvertToGateStream(const void* pBuff,
                                     MSG_LEN_TYPE& unBuffLen,
                                     MesHead* pHead,
-                                    CMessage* pMsg);
+                                    Message* pMsg);
 
     /**
      * @param pBuff         存放转换后地址指针
@@ -79,7 +76,7 @@ public:
                                         MesHead* pHead,
                                         Message* pMessage = NULL,
                                         CFactory* pMsgFactory = NULL,
-                                        MSG_LEN_TYPE* unOffset = NULL);  
+                                        int* unOffset = NULL);
 };
 
 #endif /* CLIENT_COMM_ENGINE_H_ */

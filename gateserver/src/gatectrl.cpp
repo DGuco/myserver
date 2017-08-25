@@ -64,7 +64,6 @@ int CGateCtrl::Initialize()
     m_astSocketInfo[m_iSocket].m_iConnectedPort = CServerConfig::GetSingletonPtr()->GetTcpPort();
     m_iMaxfds = m_iSocket + 1;
 
-    m_pSendList = NULL;
     CreatePipe();
     return 0;
 }
@@ -485,7 +484,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
     //增加收到的总字节数
     m_pSocketInfo->m_iRecvBytes = m_pSocketInfo->m_iRecvBytes + iTmpRecvBytes;
 
-    char* pTemp1 = m_pSocketInfo->m_szMsgBuf;
+    pTemp1 = m_pSocketInfo->m_szMsgBuf;
     nRecvAllLen = m_pSocketInfo->m_iRecvBytes;
 
     // 记录该socket接收客户端数据的时间
@@ -498,7 +497,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
         MSG_LEN_TYPE unTmpDataLen = 0;
         MesHead tmpHead;
         //解析数据包头部信息，解析完成后指针指向数据包的末尾
-        iTmpRet = ClientCommEngine::ParseClientStream(&pTemp1,
+        iTmpRet = ClientCommEngine::ParseClientStream(&(const void *)pTemp1,
                                                     nRecvAllLen,
                                                     &tmpHead,
                                                     unTmpDataLen);
@@ -515,14 +514,14 @@ int CGateCtrl::RecvClientData(int iSocketFd)
         //组织转发消息
         if (0 == iTmpRet && tmpHead.cmd() != CMsgPingRequest::MsgID && unTmpDataLen >= 0)
         {
-            CSocketInfo *tmpSocketInfo = tmpHead.mutable_socketinfos();
+            CSocketInfo *tmpSocketInfo = tmpHead.mutable_socketinfos()->Add();
             tmpSocketInfo->Clear();
             tmpSocketInfo->set_createtime(m_pSocketInfo->m_tCreateTime);
             tmpSocketInfo->set_socketid(m_pSocketInfo->m_iSocket);
             tmpSocketInfo->set_state(0);
 
             char *pTemp = m_szCSMsgBuf;
-            unsigned int tmpSendLen = sizof(m_szCSMsgBuf);
+            MSG_LEN_TYPE tmpSendLen = sizeof(m_szCSMsgBuf);
             char* pDataBuff = pTemp1 - unTmpDataLen;
             iTmpRet = ClientCommEngine::ConverToGameStream(m_szCSMsgBuf,
                                                             tmpSendLen,
@@ -750,8 +749,7 @@ int CGateCtrl::CheckWaitSendData()
     while(i < MAX_SEND_PKGS_ONCE)
     {
         //
-        if(m_pSendList != NULL
-            && m_iSendIndex < m_pSendList->size())
+        if( m_iSendIndex < m_S2CHead.socketinfos().size())
         {
             //有数据未发送，继续发送
             if (SendClientData())
@@ -777,14 +775,13 @@ int CGateCtrl::CheckWaitSendData()
             else
             {
                 //组织服务器发送到客户端的数据信息头，设置相关索引和游标
-                m_pSendList->Clear();
                 m_iSendIndex = 0;
                 m_iSCIndex = 0;
                 m_nSCLength = 0;
                 //反序列化消息的CTcpHead,取出发送游标和长度,把数据存入发送消息缓冲区m_szMsgBuf
                 iTmpRet = ClientCommEngine::ConvertStreamToMessage(m_szSCMsgBuf,
                                                                 unTmpCodeLength,
-                                                                &m_SCTcpHead,
+                                                                &m_S2CHead,
                                                                 NULL,
                                                                 NULL,
                                                                 &m_iSendIndex);
@@ -792,13 +789,13 @@ int CGateCtrl::CheckWaitSendData()
                 if(iTmpRet < 0)
                 {
                     LOG_ERROR("default", "CTCPCtrl::CheckWaitSendData Error, ClientCommEngine::ConvertMsgToStream return %d.", iTmpRet);
-                    m_SCTcpHead.Clear();
+                    m_S2CHead.Clear();
                     m_iSendIndex = 0;
                     continue;
                 }
 
                 //接收成功,取出数据长度
-                unsigned char* pTmp = m_szSCMsgBuf;
+                char* pTmp = m_szSCMsgBuf;
                 pTmp += m_iSCIndex;
                 m_nSCLength = *(unsigned short*)pTmp;
             }
@@ -828,7 +825,7 @@ void CGateCtrl::DisConnect(int iError)
 
     unsigned short unTmpMsgLen = (unsigned short) sizeof(m_szCSMsgBuf);
 
-    int iRet = ClientCommEngine::ConvertToGameStream(m_szCSMsgBuf,unTmpMsgLen,&tmpMessage);
+    int iRet = ClientCommEngine::ConvertToGameStream(m_szCSMsgBuf,unTmpMsgLen,&tmpHead);
     if (iRet != 0)
     {
         LOG_ERROR("default","[%s: %d : %s] ConvertMsgToStream failed,iRet = %d ",
@@ -854,7 +851,7 @@ void CGateCtrl::DisConnect(int iError)
 int CGateCtrl::RecvServerData()
 {
     int unTmpCodeLength = MAX_PACKAGE_LEN;
-    return mS2CPipe->GetHeadCode(m_szSCMsgBuf,&unTmpCodeLength);
+    return mS2CPipe->GetHeadCode((BYTE*)m_szSCMsgBuf,&unTmpCodeLength);
 }
 
 /**
@@ -872,7 +869,7 @@ int CGateCtrl::SendClientData()
     unsigned short  unTmpPackLen;
     int             iTmpCloseFlag;
 
-    ::google::protobuf::RepeatedPtrField< ::CSocketInfo >* pSendList = m_S2CHead->add_socketinfos()
+    auto* pSendList = m_S2CHead.mutable_socketinfos();
     //client socket索引非法，不存在要发送的client
     if (m_iSendIndex >= pSendList->size())
         return 0;

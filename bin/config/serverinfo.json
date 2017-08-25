@@ -14,8 +14,17 @@
       "port": 2102,
       "serverid" : 20002
    },
-  "keepalive"  : 10000,
-  "servertick" : 100,
+  "dbinfo": {
+    "host": "0.0.0.0",
+    "port": 2103,
+    "serverid" : 20003,
+    "mysqlinfo" : "192.168.156.201;3306;root;qweqwe123;marble_game",
+    "sleeptime":0,										// mysql重连休眠时间
+    "loop":1											// mysql重连次数
+  },
+  "keepalive"  : 10000,   //服务器心跳频率（10s）
+  "servertick" : 100,     //服务器帧率（10ms）
   "checktimeOutGap" : 5,
-  "socketTimeout" : 30
+  "socketTimeout" : 30,
+  "proxySize" : 1
 }

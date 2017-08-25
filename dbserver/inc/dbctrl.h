@@ -15,7 +15,7 @@
 #include "asqlexe.h"
 #endif
 
-#define MAXPROXYNUMBER				2					// 最大game server 数目
+#define MAXPROXYNUMBER				2					// 最大proxy server 数目
 
 #define MAXHANDLENUMBER				2
 
@@ -42,7 +42,10 @@ public:
     int PrepareToRun();
     int Run();
 
+    //创建共享内
+    static int MallocShareMem();
     static CSharedMem *mShmPtr;
+
 	// 运行标志
 	enum ERunFlag
 	{

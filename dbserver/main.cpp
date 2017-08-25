@@ -4,9 +4,8 @@
 
 #include "../framework/mem/sharemem.h"
 #include "../framework/mem/codequeue.h"
+#include "../framework/json/config.h"
 #include "./inc/dbctrl.h"
-#include "./inc/basedb.h"
-#include <unistd.h>
 #include <signal.h>
 
 int Initialize(int iInitFlag = 0);
@@ -39,74 +38,12 @@ void ignore_pipe()
     sigaction(SIGPIPE,&sig,NULL);
 }
 
-
-int Initialize(int iInitFlag )
-{
-	char szCmd[ 128 ] = {0};
-	snprintf(szCmd, sizeof(szCmd)-1, "touch %s", "./dbpipefile");
-	system(szCmd);
-
-	unsigned int tkeydb = MakeKey( "./dbpipefile", 'D' );
-	size_t tSize = CDBCtrl::CountSize() + sizeof( CSharedMem );
-	BYTE* tpDBShm = CreateShareMem ( tkeydb, tSize );
-
-	MY_ASSERT( ( tpDBShm != NULL ), return -1 );
-
-	LOG_DEBUG( "default", "DB Shm Size is %lld", tSize );
-
-	CSharedMem::pbCurrentShm = tpDBShm;
-	CDBCtrl::mShmPtr = new CSharedMem( tkeydb, tSize, iInitFlag );
-	YQ_ASSERT( CDBCtrl::mShmPtr != NULL, return -1 );
-
-    return 0;
-}
-
-
 int main(int argc, char **argv)
 {
     int iInitFlag = 1;
-	int iInitDaemon = SERVER_INIT_DAEMON;
 
     INIT_ROLLINGFILE_LOG( "default", "../log/dbserver.log", LEVEL_DEBUG, 10 * 1024 * 1024, 20 );
 //	INIT_ROLLINGFILE_LOG( "dbctrl", "../log/dbserver.log", LEVEL_DEBUG, 10 * 1024 * 1024, 20 );
-
-	if( argc > 1 )
-	{
-		// 支持版本信息查询
-		if( !strcasecmp(argv[1], "-v") )
-		{
-#ifdef _DEBUG_
-			printf("mhdl dbserver debug build at %s %s\n", __DATE__, __TIME__);
-#else
-			printf("mhdl dbserver release build at %s %s\n", __DATE__, __TIME__);
-#endif
-			exit(0);
-		}
-
-		int i = 0;
-		for( i = 1; i < argc; i++ )
-		{
-			if( strcasecmp((const char *)argv[i], "-Init") == 0 )
-			{
-				iInitFlag = 1;
-			}
-			else if( strcasecmp((const char *)argv[i], "-r") == 0  )
-			{
-				iInitFlag = 0;
-				printf( "dataserver can not run in resume model ...\n" );
-				exit(0);
-			}
-			else if( strcasecmp((const char *)argv[i], "-d") == 0 )
-			{
-				 iInitDaemon = SERVER_INIT_UNDAEMON;	
-			}
-		}
-	}
-
-    if( Initialize(iInitFlag) < 0 )  // 创建共享内存
-    {
-        exit(-1);
-    }
 
 	unique_ptr<CServerConfig> pTmpConfig(new CServerConfig);
     const string filepath = "../config/serverinfo.json";

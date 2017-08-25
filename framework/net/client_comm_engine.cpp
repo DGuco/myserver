@@ -6,9 +6,6 @@
  */
 
 #include "client_comm_engine.h"
-#include "../base/base.h"
-#include "../base/my_assert.h"
-#include "../net/oi_tea.h"
 
 unsigned char ClientCommEngine::tKey[16] = {1,2,3,4,5,6,7,8,9,0,2,2,4,4,5,6};
 unsigned char* ClientCommEngine::tpKey = &tKey[0];
@@ -34,7 +31,7 @@ int ClientCommEngine::ParseClientStream(const void** pBuff,
     MSG_LEN_TYPE unTmpUseLen = 0;
     //取出包的总长度
     memcpy(&unRecvLen,(void*)pTemp,sizeof(MSG_LEN_TYPE));
-    unRecvLen = ntohs(len); 
+    unRecvLen = ntohs(unRecvLen);
     //客户端上行包的总长度小于基本长度大于最大长度，不合法
     if (unRecvLen < MSG_HEAD_LEN || unRecvLen > MSG_MAX_LEN)
     {
@@ -112,8 +109,8 @@ int ClientCommEngine::ConverToGameStream(const void * pBuff,
 	{
 		MY_ASSERT_STR(0, return -2, "ClientCommEngine::ConvertMsgToStream CTcpHead SerializeToArray failed.");
 	}
-	pTemp += pTcpHead->GetCachedSize();
-	unLength += pTcpHead->GetCachedSize();
+	pTemp += pHead->GetCachedSize();
+	unLength += pHead->GetCachedSize();
 
     // // 开始消息解密
     // char tEncryBuff[MAX_PACKAGE_LEN] = {0};
@@ -157,7 +154,7 @@ int ClientCommEngine::ConverToGameStream(const void * pBuff,
     unLength += iTmpAddlen;
 
     //回到消息起始地值补充数据从长度和字节补齐长度
-    pTemp = ((char*))pBuff;
+    pTemp = (char*)pBuff;
     //序列话消息总长度
     *(unsigned int*) pTemp = unLength;
     pTemp += sizeof(unsigned short);
@@ -189,7 +186,7 @@ int ClientCommEngine::ConvertToGameStream(const void * pBuff,
     unLength += sizeof(MSG_LEN_TYPE);
 
     // MesHead长度
-    *(MSG_LEN_TYPE*)pTemp = (MSG_LEN_TYPE) pTcpHead->ByteSize();
+    *(MSG_LEN_TYPE*)pTemp = (MSG_LEN_TYPE) pHead->ByteSize();
     pTemp += sizeof(MSG_LEN_TYPE);
     unLength += sizeof(MSG_LEN_TYPE);
 
@@ -216,7 +213,7 @@ int ClientCommEngine::ConvertToGameStream(const void * pBuff,
         unLength += sizeof(MSG_LEN_TYPE);
 
         //拷贝消息到缓冲区
-        memccpy(pTemp,tpEncryBuff,iMsgParaLen);
+        memcpy(pTemp,tpEncryBuff,iMsgParaLen);
         pTemp += iMsgParaLen;
         unLength += iMsgParaLen;
     }
@@ -263,7 +260,7 @@ int ClientCommEngine::ConvertToGateStream(const void * pBuff,
     unLength += sizeof(MSG_LEN_TYPE);
 
 	// MesHead长度
-	*(MSG_LEN_TYPE*)pTemp = (MSG_LEN_TYPE) pTcpHead->ByteSize();
+	*(MSG_LEN_TYPE*)pTemp = (MSG_LEN_TYPE) pHead->ByteSize();
 	pTemp += sizeof(MSG_LEN_TYPE);
 	unLength += sizeof(MSG_LEN_TYPE);
 
@@ -312,7 +309,7 @@ int ClientCommEngine::ConvertToGateStream(const void * pBuff,
 	pTemp += sizeof(unsigned short);
     unLength += sizeof(unsigned short);
 
-    memccpy(pTemp,tpEncryBuff,iMsgParaLen);
+    memcpy(pTemp,tpEncryBuff,iMsgParaLen);
 	pTemp += iMsgParaLen;
     unLength += iMsgParaLen;
     
@@ -342,7 +339,7 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
                                                 MesHead* pHead,
                                                 Message* pMessage,                                              
                                                 CFactory* pMsgFactory,
-                                                MSG_LEN_TYPE* unOffset)
+                                                int* unOffset)
 {
     if ((pBuff == NULL) || (pHead == NULL))
 	{

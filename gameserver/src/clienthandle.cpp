@@ -14,6 +14,7 @@
 #include "../../framework/json/config.h"
 #include "../../framework/base/servertool.h"
 #include "../../framework/message/message.pb.h"
+#include "../inc/messagefactory.h"
 
 CClientHandle::CClientHandle()
 {
@@ -65,7 +66,7 @@ int CClientHandle::Initialize()
 int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
     char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
-    unsigned int unTmpCodeLength = sizeof(aTmpCodeBuf);
+    MSG_LEN_TYPE unTmpCodeLength = sizeof(aTmpCodeBuf);
 
     MesHead pTmpHead;
     CSocketInfo* pTmpSocket = pTmpHead.mutable_socketinfos()->Add();
@@ -77,9 +78,9 @@ int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     pTmpSocket->set_createtime(pTmpConnInfo->m_tCreateTime);
     pTmpSocket->set_socketid(pTmpConnInfo->m_iSocket);
     Package tmpPackage = pPlayer->GetPackage();
-    pTmpHead->set_cmd(tmpPackage.GetCmd());
-    pTmpHead->set_seq(tmpPackage.GetSeq());
-    pTmpHead->set_serial(tmpPackage.GetSerial());
+    pTmpHead.set_cmd(tmpPackage.GetCmd());
+    pTmpHead.set_seq(tmpPackage.GetSeq());
+    pTmpHead.set_serial(tmpPackage.GetSerial());
 
     // 是否需要加密，在这里修改参数
     int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
@@ -91,7 +92,7 @@ int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
         MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertGameServerMessageToStream failed.");
     }
 
-    iRet = mS2CPipe->AppendOneCode(aTmpCodeBuf, unTmpCodeLength);
+    iRet = mS2CPipe->AppendOneCode((BYTE*)aTmpCodeBuf, unTmpCodeLength);
     if (iRet < 0)
     {
         MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
@@ -111,7 +112,6 @@ int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
 //    mNetHead.Initialize(tTmpNow, (bTmpKickoff == true ? -1 : 0));
     MesHead pTmpHead;;
     pTmpHead.set_cmd(cmd);
-    pTmpHead.set_isencry(false);
     pTmpHead.set_seq(0);
     BYTE aTmpMessageBuf[MAX_PACKAGE_LEN] = { 0 };
 
@@ -145,7 +145,7 @@ int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
 
     unsigned char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
-]    // 是否需要加密，在这里修改参数
+    // 是否需要加密，在这里修改参数
     int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
                                                         unTmpCodeLength,
                                                         &pTmpHead,
@@ -171,7 +171,7 @@ int CClientHandle::Recv()
 
     // 从共享内存管道提取消息
     int iRet = mC2SPipe->GetHeadCode((BYTE *) abyTmpCodeBuf,
-                                     &iTmpCodeLength);
+                                     &(int)iTmpCodeLength);
 
     if (iRet < 0)
     {
@@ -185,7 +185,7 @@ int CClientHandle::Recv()
         return ClienthandleErrCode::CLIENTHANDLE_QUEUE_EMPTY;
     }
 
-    CMessage tmpCMessage;
+    CMessage tmpMessage;
     Message* pMessage;
     iRet = DecodeNetMsg(abyTmpCodeBuf, iTmpCodeLength,tmpMessage.mutable_msghead(), &tmpMessage);
     if (iRet != 0)
@@ -202,10 +202,10 @@ int CClientHandle::Recv()
     return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pCSHead, Message* pMsg);
+int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pCSHead, Message* pMsg)
 {
     //长度小于消息头的长度+数据总长度+字节对齐长度
-    if (!pCodeBuff || nLen < int(pCSHead::MinSize() + (sizeof(unsigned short) * 2)))
+    if (!pCodeBuff || nLen < int(pCSHead->ByteSize() + (sizeof(unsigned short) * 2)))
     {
         return ClienthandleErrCode::CLIENTHANDLE_SMALL_LENGTH;
     }
@@ -214,15 +214,20 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pC
                                                 nLen,
                                                 pCSHead,
                                                 pMsg,
-                                                CMessageFactory::GetSingletonPtr())
+                                                CMessageFactory::GetSingletonPtr()) != 0)
     {
-        return ClienthandleErrCode::CLIENTHANDLE_CLNENTMESSAGE;
+        return ClienthandleErrCode::CLIENTHANDLE_PARSE_FAILED;
     }
 
-    CSocketInfo tmpSocketInfo = pCSHead->socketinfos();
+    //gate上行数据必须带client的socket信息
+    if (pCSHead->socketinfos().size() != 1)
+    {
+        return ClienthandleErrCode::CLIENTHANDLE_MSGINVALID;
+    }
+    CSocketInfo tmpSocketInfo = pCSHead->socketinfos(0);
     int iTmpSocket = tmpSocketInfo.socketid();
     int tTmpCreateTime = tmpSocketInfo.createtime();
-    if (tmpSocketInfo->state() < 0)
+    if (tmpSocketInfo.state() < 0)
     {
         // 客户端主动关闭连接，也有可能是连接错误被关闭
         LOG_INFO("default", "client(%d : %d) commhandle closed by err = %d. ", iTmpSocket, tTmpCreateTime, tmpSocketInfo->state());
