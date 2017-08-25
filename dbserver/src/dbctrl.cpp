@@ -2,10 +2,8 @@
 // Created by DGuco on 17-7-13.
 //
 
-#include "dbctrl.h"
-#include "shm.h"
-#include "proxymessage.pb.h"
-#include "server_comm_engine.h"
+#include "../inc/dbctrl.h"
+#include "../../framework/mem/shm.h"
 
 CSharedMem* CDBCtrl::mShmPtr = NULL;
 template<> CDBCtrl* CSingleton< CDBCtrl >::spSingleton = NULL;
@@ -419,7 +417,7 @@ int CDBCtrl::RoutineCheck()
 {
 	time_t tNow = GetMSTime();
 
-	if(tNow - m_lastTick < /*m_stDBSvrdCfg.dbconfig()*/CConfigMgr::GetSingletonPtr()->GetDBConfig().servertick() )
+	if(tNow - m_lastTick < CConfigMgr::GetSingletonPtr()->GetDBConfig().servertick() )
 	{
 		return 0;
 	}
