@@ -1,1 +1,0 @@
-protoc -I. --go_out=. message.protos proxymessage.protos sysmanagermessage.protos 
