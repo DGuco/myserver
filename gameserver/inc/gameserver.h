@@ -18,20 +18,7 @@
 #include "../../framework/net/tcp_conn.h"
 #include "../../framework/timer/timer.h"
 #include "../../framework/message/message_interface.h"
-
-class CMessageSet;
-class CCSHead;
-//class CProxyHead;
-//class CCoreModule;
-class CClientHandle;
-//class CSceneObjManager;
-class CModuleManager;
-class CMessageDispatcher;
-//class CFactory;
-class CPlayer;
-//class CTimerManager;
-//class CEntity;
-
+#include "player.h"
 
 #define MAX_PROXY_NUM	(2)	// proxy服务器的最大数量
 
@@ -149,9 +136,9 @@ public:
     // 收取服务器消息
     int RecvServerMsg(time_t tTime);
     // 广播消息给玩家，广播时，发起人一定放第一个
-    int SendPlayer(CMessageSet* pMsgSet, stPointList* pTeamList);
+    int SendPlayer(CMessage* pMsg, stPointList* pTeamList);
     // 发送消息给单个玩家
-    int SendPlayer(CMessageSet* pMsgSet, CPlayer* pPlayer);
+    int SendPlayer(CMessage* pMsg, CPlayer* pPlayer);
     int SendPlayer(unsigned int iMsgID, CMessage* pMsgPara, CPlayer* pPlayer);
 
     // 通过消息ID获取模块类型

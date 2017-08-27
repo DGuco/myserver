@@ -4,7 +4,7 @@
 #include "../inc/gameserver.h"
 #include "../inc/clienthandle.h"
 #include "../logicmodule/inc/modulemanager.h"
-#include "../../framework/sharemem/shm.h"
+#include "../../framework/mem/shm.h"
 #include "../../framework/message/message.pb.h"
 #include "../../framework/base/performance.h"
 #include "../../framework/base/my_assert.h"
@@ -69,11 +69,6 @@ CProxyClient* CGameServer::GetProxyClient(int iIndex)
     }
 
     return &mProxyClient[iIndex];
-}
-
-int CGameServer::AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg)
-{
-    return mpClientHandle->AddMsgToMsgSet(pMsgSet, pMsg);
 }
 
 // 运行准备
@@ -205,7 +200,7 @@ void CGameServer::Exit()
 
 void CGameServer::ProcessClientMessage(CMessage* pMsg, CPlayer* pPlayer)
 {
-    MY_ASSERT(pMsg != NULL && pHead != NULL && pPlayer != NULL, return);
+    MY_ASSERT(pMsg != NULL && pPlayer != NULL, return);
     int iTmpType = GetModuleClass(pMsg->msghead().messageid());
     m_pModuleManager->OnClientMessage(iTmpType, pTeam, pMsg);
 }
@@ -410,9 +405,9 @@ int CGameServer::RecvServerMsg(time_t tTime)
 
 
 // 广播消息给玩家，广播时，发起人一定放第一个
-int CGameServer::SendPlayer(CMessageSet* pMsgSet, stPointList* pTeamList)
+int CGameServer::SendPlayer(CMessage* pMsg, stPointList* pTeamList)
 {
-    return mpClientHandle->Send(pMsgSet, pTeamList);
+    return mpClientHandle->Send(pMsg->msghead().cmd(),(Message*)pMsg->msgpara(), pTeamList);
 }
 
 // 主动断开链接
@@ -422,9 +417,9 @@ void CGameServer::DisconnectClient(CPlayer* pPlayer)
 }
 
 // 发送消息给单个玩家
-int CGameServer::SendPlayer(CMessageSet* pMsgSet, CPlayer* pPlayer)
+int CGameServer::SendPlayer(CMessage* pMsg, CPlayer* pPlayer)
 {
-    MY_ASSERT( pPlayer != NULL && pMsgSet != NULL,return -1 );
+    MY_ASSERT( pPlayer != NULL && pMsg != NULL,return -1 );
     // 消息集合处理
 //    if( pPlayer->IsSendTask() )
 //    {
@@ -445,14 +440,14 @@ int CGameServer::SendPlayer(CMessageSet* pMsgSet, CPlayer* pPlayer)
 //    return mpClientHandle->Send(pMsgSet, &tmpList);
 }
 
-int CGameServer::SendPlayer(unsigned int iMsgID, Message* pMsgPara, CPlayer* pPlayer)
+int CGameServer::SendPlayer(unsigned int iMsgID, CMessage* pMsg, CPlayer* pPlayer)
 {
-    MY_ASSERT(pMsgPara != NULL && pPlayer != NULL, return -1);
+    MY_ASSERT(pMsg != NULL && pPlayer != NULL, return -1);
 
     stPointList tmpList;
     tmpList.push_back(pPlayer);
 
-    return mpClientHandle->Send(pMsgPara, &tmpList);
+    return mpClientHandle->Send(pMsg->msghead().cmd(),(Message*)pMsg->msgpara(), &tmpList);
 }
 
 // 连接到Proxy
