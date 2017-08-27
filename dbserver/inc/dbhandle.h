@@ -71,7 +71,7 @@ public:
     static CSharedMem *ms_pCurrentShm;
     static int m_iDBSvrID;
     static short m_sDBOperMode;
-
+    static std::mutex m_sMutex;
     int GetHandleID(void){ return m_iHandleID; }
 
     int ConnectToLocalDB();

@@ -61,7 +61,7 @@ CDBHandle::~CDBHandle()
 	}
 }
 
-int CDBHandle::IsToBeBlocked()
+bool CDBHandle::IsToBeBlocked()
 {
     if(!m_pInputQueue)  // 如果队列不存在
     {
