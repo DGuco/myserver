@@ -12,6 +12,7 @@
 CSharedMem* CDBHandle::ms_pCurrentShm = NULL;
 int CDBHandle::m_iDBSvrID = -1;
 short CDBHandle::m_sDBOperMode = -1;
+std::mutex CDBHandle::m_sMutex; 
 
 CDBHandle::CDBHandle()
 {
@@ -105,10 +106,8 @@ int CDBHandle::GetOneCode(int& nCodeLength, BYTE* pCode)
         return -1;
     }
 
-    pthread_mutex_lock( &m_stMutex );
+	std::lock_guard<std::mutex> guard(m_com_stMutexndMut);	
     iTempRet = m_pInputQueue->GetHeadCode( pCode, &nCodeLength );
-    pthread_mutex_unlock( &m_stMutex );
-
     return iTempRet;
 }
 
@@ -121,10 +120,9 @@ int CDBHandle::PostOneCode(int nCodeLength, BYTE* pCode)
         return -1;
     }
 
-    pthread_mutex_lock( &m_stMutex );
-    iTempRet = m_pInputQueue->AppendOneCode((const BYTE *)pCode, nCodeLength);
-    pthread_mutex_unlock( &m_stMutex );
-
+	std::lock_guard<std::mutex> guard(m_com_stMutexndMut);	
+	iTempRet = m_pInputQueue->AppendOneCode((const BYTE *)pCode, nCodeLength);
+	
     return iTempRet;
 }
 
