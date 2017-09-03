@@ -90,30 +90,30 @@ int  CDBCtrl::ConnectToProxyServer()
 {
 	int i = 0;
 
-//	for( i = 0; i < MAXPROXYNUMBER && i < CServerConfig::GetSingletonPtr()->GetProxySize();  i++ )
-//	{
-	m_astProxySvrdCon[i].Initialize( FE_PROXYSERVER,
-									 CServerConfig::GetSingleton().GetDbServerId(),
-									 inet_addr(CServerConfig::GetSingleton().GetDbInfo().c_str() ),
-									 CServerConfig::GetSingleton().GetDbPort());
-
-	if( m_astProxySvrdCon[i].ConnectToServer( (char*)pbProxy.ip().c_str() ) )
+	for( i = 0; i < MAXPROXYNUMBER && i < CServerConfig::GetSingletonPtr()->GetProxySize();  i++ )
 	{
-		LOG_INFO( "default", "Error:connect to Proxy Server %d failed.\n", pbProxy.id());
-		continue;
+		m_astProxySvrdCon[i].Initialize( FE_PROXYSERVER,
+										 CServerConfig::GetSingleton().GetDbServerId(),
+										 inet_addr(CServerConfig::GetSingleton().GetDbInfo().c_str() ),
+										 CServerConfig::GetSingleton().GetDbPort());
+
+		if( m_astProxySvrdCon[i].ConnectToServer( (char*)pbProxy.ip().c_str() ) )
+		{
+			LOG_INFO( "default", "Error:connect to Proxy Server %d failed.\n", pbProxy.id());
+			continue;
+		}
+
+		if( RegisterToProxyServer( i ) )
+		{
+			LOG_ERROR( "default", "Error: Register to Proxy Server %d failed.\n", pbProxy.id() );
+			continue;
+		}
+
+		m_atLastSendKeepAlive[i] = GetMSTime();	// 记录这一次的注册的时间
+		m_atLastRecvKeepAlive[i] = GetMSTime();	// 由于是注册,所以也将第一次收到的时间记录为当下
+
+		LOG_INFO( "default", "Connect to Proxy server %d Succeed.\n", pbProxy.id() );
 	}
-
-	if( RegisterToProxyServer( i ) )
-	{
-		LOG_ERROR( "default", "Error: Register to Proxy Server %d failed.\n", pbProxy.id() );
-		continue;
-	}
-
-	m_atLastSendKeepAlive[i] = GetMSTime();	// 记录这一次的注册的时间
-	m_atLastRecvKeepAlive[i] = GetMSTime();	// 由于是注册,所以也将第一次收到的时间记录为当下
-
-	LOG_INFO( "default", "Connect to Proxy server %d Succeed.\n", pbProxy.id() );
-//	}
 
 	return i;
 }
