@@ -31,7 +31,6 @@
 
 class CSharedMem;
 
-
 class CDBCtrl : public CSingleton< CDBCtrl >
 {
 public:
@@ -62,23 +61,22 @@ public:
 private:
 
     int	ConnectToProxyServer();
-    int RegisterToProxyServer(int nIndex);
-    int SendkeepAliveToProxy(int nIndex);     // 向proxy发送心跳消息
+    int RegisterToProxyServer();
+    int SendkeepAliveToProxy();     // 向proxy发送心跳消息
     int CheckRunFlags();
     int CheckAndDispatchInputMsg();
     int RoutineCheck();
-    int DispatchOneCode(int iProxyIdx, int nCodeLength, BYTE* pbyCode, bool vCountNum = true);
+    int DispatchOneCode(int nCodeLength, BYTE* pbyCode, bool vCountNum = true);
     int PostInternalMsgToHandle(int iHandleID, CMessage *pMsg);
     int NotifyHandleClearComplete();
-	int GetThisRoundHandle();
 private:
 	
 	int m_iRunFlag;	// 运行标志
-    CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH>		m_astProxySvrdCon[MAXPROXYNUMBER];
+    CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH> m_stProxySvrdCon;
     CDBHandle *	m_apHandles[MAXHANDLENUMBER];
 	int		m_which_handle;								// 收到消息放到哪个线程
-    time_t	m_atLastSendKeepAlive[MAXPROXYNUMBER];		// 最后发送proxy心跳消息时间
-    time_t	m_atLastRecvKeepAlive[MAXPROXYNUMBER];		// 最后接收proxy心跳消息时间
+    time_t	m_tLastSendKeepAlive;		// 最后发送proxy心跳消息时间
+    time_t	m_tLastRecvKeepAlive;		// 最后接收proxy心跳消息时间
 	time_t	m_lastTick;
 };
 
