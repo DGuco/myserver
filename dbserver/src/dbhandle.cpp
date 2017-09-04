@@ -8,6 +8,7 @@
 #include "../inc/dbctrl.h"
 #include "../inc/queryresultmysql.h"
 #include "../inc/databasemysql.h"
+#include "../../framework/json/config.h"
 
 CSharedMem* CDBHandle::ms_pCurrentShm = NULL;
 int CDBHandle::m_iDBSvrID = -1;
@@ -73,25 +74,20 @@ bool CDBHandle::IsToBeBlocked()
 
 }
 
-int CDBHandle::Initialize(int iHandleID,  int nProxyNumber, CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH>* pProxySvrdConns )
+int CDBHandle::Initialize(int iHandleID, CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH>* pProxySvrdConns )
 {
-    if(!pProxySvrdConns)
-    {
-        return -1;
-    }
-
     m_iHandleID = iHandleID;
-	m_proxynumber = nProxyNumber;
-
-    m_pProxySvrdConns = pProxySvrdConns;
+    m_stProxySvrdConns = *pProxySvrdConns;
 
 	// 初始化日志
 	InitLog( NULL, NULL, LEVEL_DEBUG );
-	
-	PBDBConfig*	tpConfig = CDBCtrl::GetSingletonPtr()->GetDBSvrConf();
-	YQ_ASSERT( tpConfig != NULL, return -1);
 
-	m_pDatabase->Initialize (tpConfig->mysqlinfo().c_str(), tpConfig->rwtimeout(), tpConfig->sleeptime(), tpConfig->loop() );  // 初始化到mysql的连接
+    ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType::FE_DBSERVER)->second;
+
+	m_pDatabase->Initialize ( CServerConfig::GetSingleton().GetDbInfo().c_str(),
+                              CServerConfig::GetSingleton().GetDbRwTimeout(),
+                              CServerConfig::GetSingleton().GetDbSleep(),
+                              CServerConfig::GetSingleton().GetDbLoop() );  // 初始化到mysql的连接
 
 
     return 0;
@@ -106,7 +102,7 @@ int CDBHandle::GetOneCode(int& nCodeLength, BYTE* pCode)
         return -1;
     }
 
-	std::lock_guard<std::mutex> guard(m_com_stMutexndMut);	
+	std::lock_guard<std::mutex> guard(m_sMutex);
     iTempRet = m_pInputQueue->GetHeadCode( pCode, &nCodeLength );
     return iTempRet;
 }
@@ -120,7 +116,7 @@ int CDBHandle::PostOneCode(int nCodeLength, BYTE* pCode)
         return -1;
     }
 
-	std::lock_guard<std::mutex> guard(m_com_stMutexndMut);	
+	std::lock_guard<std::mutex> guard(m_sMutex);
 	iTempRet = m_pInputQueue->AppendOneCode((const BYTE *)pCode, nCodeLength);
 	
     return iTempRet;
@@ -128,7 +124,7 @@ int CDBHandle::PostOneCode(int nCodeLength, BYTE* pCode)
 
 int CDBHandle::SendMessageTo(CMessage *pMsg)
 {
-	if( pMsg == NULL || m_pProxySvrdConns == NULL )
+	if( pMsg == NULL)
 	{
 		TRACE_ERROR("in CDBHandle::SendMessageTo, pmsg is null");
 		return -1;
@@ -139,7 +135,7 @@ int CDBHandle::SendMessageTo(CMessage *pMsg)
 	unsigned short nCodeLength = sizeof(abyCodeBuf);
 
 	pbmsg_setproxy(&stProxyHead, m_stCurrentProxyHead.dstfe() ,m_stCurrentProxyHead.dstid(), 
-			m_stCurrentProxyHead.srcfe(), m_stCurrentProxyHead.srcid(), GetMSTime(), CMD_REGIST);
+			m_stCurrentProxyHead.srcfe(), m_stCurrentProxyHead.srcid(), GetMSTime(), enMessageCmd::MESS_REGIST);
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&stProxyHead, pMsg, abyCodeBuf, nCodeLength);
 	if (iRet != 0)
@@ -149,7 +145,7 @@ int CDBHandle::SendMessageTo(CMessage *pMsg)
 	}
 	
 	//int nSendReturn = m_pProxySvrdConns[ m_current_proxy_index ].GetSocket()->SendOneCode( nCodeLength, abyCodeBuf );
-	int nSendReturn = m_pProxySvrdConns[ 0 ].GetSocket()->SendOneCode( nCodeLength, abyCodeBuf );
+	int nSendReturn = m_stProxySvrdConns.GetSocket()->SendOneCode( nCodeLength, abyCodeBuf );
 	if( nSendReturn < 0 )
 	{
 		TRACE_ERROR( "Send Code(len:%d) To Proxy faild(error=%d)", nCodeLength, nSendReturn );
@@ -157,7 +153,7 @@ int CDBHandle::SendMessageTo(CMessage *pMsg)
 	}
 
 	Message* pUnknownMessagePara = (Message*) pMsg->msgpara();
-	YQ_ASSERT( pUnknownMessagePara != NULL, return 0 );
+    MY_ASSERT( pUnknownMessagePara != NULL, return 0 );
 	const ::google::protobuf::Descriptor* pDescriptor= pUnknownMessagePara->GetDescriptor();
 	TRACE_DEBUG("SendMessageTo: MsgName[%s] ProxyHead[%s] MsgHead[%s] MsgPara[%s]",
 			pDescriptor->name().c_str(),	stProxyHead.ShortDebugString().c_str(), 
@@ -168,12 +164,10 @@ int CDBHandle::SendMessageTo(CMessage *pMsg)
 
 int CDBHandle::ConnectToLocalDB()
 {
-	PBDBConfig*	tpConfig = CDBCtrl::GetSingletonPtr()->GetDBSvrConf();
-	YQ_ASSERT( tpConfig != NULL, return -1);
-
-	bool bInitRet = m_pDatabase->Initialize (tpConfig->mysqlinfo().c_str(), tpConfig->rwtimeout(), tpConfig->sleeptime(), tpConfig->loop() );  // 初始化到mysql的连接
-
-
+    bool bInitRet=  m_pDatabase->Initialize ( CServerConfig::GetSingleton().GetDbInfo().c_str(),
+                                  CServerConfig::GetSingleton().GetDbRwTimeout(),
+                                  CServerConfig::GetSingleton().GetDbSleep(),
+                                  CServerConfig::GetSingleton().GetDbLoop() );  // 初始化到mysql的连接
 	return bInitRet ? 0 : -1;
 }
 
@@ -186,7 +180,7 @@ int CDBHandle::InitLogFile( const char* vLogName, const char* vLogDir, LogLevel 
 
 	ThreadLogInit( szThreadLogFile, vMaxFileSize, vMaxBackupIndex, 0, vPriority);
 
-	YQ_ASSERT( m_pDatabase != NULL, return -1 );
+    MY_ASSERT( m_pDatabase != NULL, return -1 );
 
 	m_pDatabase->InitLog( szThreadLogFile, szThreadLogFile, vPriority, vMaxFileSize,vMaxBackupIndex );
 
@@ -213,7 +207,7 @@ int CDBHandle::Event(CMessage *pMsg)
 	}
 
 	Message* pUnknownMessagePara = (Message*) pMsg->msgpara();
-	YQ_ASSERT( pUnknownMessagePara != NULL, return 0 );
+	MY_ASSERT( pUnknownMessagePara != NULL, return 0 );
 	const ::google::protobuf::Descriptor* pDescriptor= pUnknownMessagePara->GetDescriptor();
 	TRACE_DEBUG("ReceveMsg: MsgName[%s] MsgHead[%s] MsgPara[%s]",
 			pDescriptor->name().c_str(), pMsg->ShortDebugString().c_str(), ((Message*) pMsg->msgpara())->ShortDebugString().c_str());
@@ -318,7 +312,7 @@ int CDBHandle::ProcessExecuteSqlRequest( CMessage* pMsg )
 {
 	if( pMsg == NULL )
 	{
-		TRACE_ERROR( "Error: [%s][%d][%s], invalid input.\n", __YQ_FILE__, __LINE__, __FUNCTION__ );
+		TRACE_ERROR( "Error: [%s][%d][%s], invalid input.\n", __MY_FILE__, __LINE__, __FUNCTION__ );
 		return -1;
 	}
 
@@ -326,13 +320,13 @@ int CDBHandle::ProcessExecuteSqlRequest( CMessage* pMsg )
 
 	if( pReqMsg == NULL )
 	{
-		TRACE_ERROR( "Error: [%s][%d][%s], msgpara null.\n", __YQ_FILE__, __LINE__, __FUNCTION__ );
+		TRACE_ERROR( "Error: [%s][%d][%s], msgpara null.\n", __MY_FILE__, __LINE__, __FUNCTION__ );
 		return -1;
 	}
 
 	if( pReqMsg->sql().length() <= 0 )
 	{
-		TRACE_ERROR( "Error: [%s][%d][%s], sql len(%d) invalid.\n", __YQ_FILE__, __LINE__, __FUNCTION__, pReqMsg->sql().length()  );
+		TRACE_ERROR( "Error: [%s][%d][%s], sql len(%d) invalid.\n", __MY_FILE__, __LINE__, __FUNCTION__, pReqMsg->sql().length()  );
 		return -1 ;
 	}
 
@@ -349,7 +343,7 @@ int CDBHandle::ProcessExecuteSqlRequest( CMessage* pMsg )
 			if( pReqMsg->bufsize() >=  MAX_PACKAGE_LEN )
 			{
 				// blob字段超出长度
-				TRACE_ERROR( "Error: [%s][%d][%s], exec sql %s faild. sql_len:%d > MAX_PACKAGE_LEN\n", __YQ_FILE__, __LINE__, __FUNCTION__, pReqMsg->sql().c_str(), pReqMsg->bufsize() );
+				TRACE_ERROR( "Error: [%s][%d][%s], exec sql %s faild. sql_len:%d > MAX_PACKAGE_LEN\n", __MY_FILE__, __LINE__, __FUNCTION__, pReqMsg->sql().c_str(), pReqMsg->bufsize() );
 				return -1;
 			}
 
@@ -357,7 +351,7 @@ int CDBHandle::ProcessExecuteSqlRequest( CMessage* pMsg )
 			int len = m_pDatabase->escape_string(sqlBuff, pReqMsg->buffer().c_str(), pReqMsg->bufsize());
 			if ( len <= 0 )
 			{
-				TRACE_ERROR( "Error: [%s][%d][%s], escape_string error!!!!\n", __YQ_FILE__, __LINE__, __FUNCTION__ );
+				TRACE_ERROR( "Error: [%s][%d][%s], escape_string error!!!!\n", __MY_FILE__, __LINE__, __FUNCTION__ );
 				return -1;
 			}
 			sqlStr += sqlBuff;
@@ -454,7 +448,7 @@ int CDBHandle::ProcessExecuteSqlRequest( CMessage* pMsg )
 		// 同步执行
 		if( m_pDatabase->RealDirectExecute( sqlStr.c_str(), sqlStr.length() ) != true )
 		{
-			TRACE_ERROR( "Error: [%s][%d][%s], direct exec sql %s faild.\n", __YQ_FILE__, __LINE__, __FUNCTION__, sqlStr.c_str() );
+			TRACE_ERROR( "Error: [%s][%d][%s], direct exec sql %s faild.\n", __MY_FILE__, __LINE__, __FUNCTION__, sqlStr.c_str() );
 		}
 	}
 

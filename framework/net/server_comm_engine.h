@@ -3,12 +3,11 @@
 
 
 #include "../message/message.pb.h"
-#include "../message/proxymessage.pb.h"
 #include "../message/message_interface.h"
 
 
-void pbmsg_setproxy(CProxyHead* pHead, int iSrcFE, int iSrcID, int iDstFE, int iDstID, time_t tTimestamp, EProxyCmd eCmd = CMD_NULL);
-void pbmsg_setmessagehead(CMessage* pMsg, int iMsgID);
+void pbmsg_setproxy(CProxyHead* pHead, int iSrcFE, int iSrcID, int iDstFE, int iDstID, time_t tTimestamp, enMessageCmd eCmd);
+void pbmsg_setmessagehead(CProxyHead* pHead, int iMsgID);
 
 
 namespace ServerCommEngine

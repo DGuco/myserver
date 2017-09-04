@@ -12,6 +12,7 @@
 #include "../base/servertool.h"
 #include "json.h"
 #include "../base/commondef.h"
+#include "../message/message.pb.h"
 
 struct ServerInfo {
     int m_iServerId;
@@ -28,11 +29,13 @@ public:
     void Clear();
 
 public:
-    const std::map<EServerType ,ServerInfo>& GetServerMap() const {return m_mServerMap;}
+    const std::map<enServerType ,ServerInfo>& GetServerMap() const {return m_mServerMap;}
     const string GetDbInfo() const {return m_sDblInfo;}
     const string GetDbIp() const { return m_sDbIp;}
     const int GetDbSleep() const {return m_iDbSleepTime;}
     const int GetDbLoop() const { return m_iDbLoop;}
+    const int GetDbLogLevel() const { return m_iDbLogLevel;}
+    const int GetDbRwTimeout() const { return m_iRwTimeOut;}
 
     const int GetTcpKeepAlive() const {return m_iTcpKeepAlive;}
     const int GetServetTick() const {return m_iServerTick;}
@@ -45,6 +48,8 @@ private:
     string m_sDblInfo;
     int m_iDbSleepTime;
     int m_iDbLoop;
+    int m_iDbLogLevel;
+    int m_iRwTimeOut;
 
     //心跳
     int m_iTcpKeepAlive;
@@ -52,7 +57,7 @@ private:
     int m_iChecktimeOutGap;
     int m_iSokcetTimeout;
     int m_iProxySize;
-    std::map<EServerType ,ServerInfo> m_mServerMap;
+    std::map<enServerType ,ServerInfo> m_mServerMap;
 };
 
 template<class CServerConfig> CServerConfig* CSingleton<CServerConfig>::spSingleton = NULL;

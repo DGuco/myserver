@@ -4,7 +4,7 @@ syntax = "proto2";
 option optimize_for = SPEED;
 
 // 服务器类型
-enum enMessageFE
+enum enServerType
 {
 	FE_TIMER				= 0;		// 内部消息（定时器）(暂时不用)
 	FE_CLIENT				= 1;		// 客户端(暂时不用)
@@ -21,7 +21,7 @@ enum enMessageFE
 	FE_ROOMSERVER			= 12;		// 房间服务器
 };
 
-enum EMessageCmd
+enum enMessageCmd
 {	
 	MESS_NULL			= 0;	// 无指令
 	MESS_REGIST			= 1;	// 注册
@@ -55,39 +55,15 @@ message CMessage
 	optional	fixed64		MsgPara		= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
 };
 
-/////////////////////////////////内部服务器(dbserver,gameserver等等) ==> ProxyServer/////////////////////
+/////////////////////////////////内部服务器(dbserver,gameserver等等) <==> ProxyServer/////////////////////
 //发送给proxyserver的消息头
-message S2PHead
+message CProxyHead
 {
 	required	uint32			SrcFE			= 1;							// 源服务器类型
 	required	uint32			SrcID			= 2;							// 源服务器ID
 	required	uint32			DstFE			= 3;							// 目标服务器类型
 	required	uint32			DstID			= 4;							// 目标服务器ID
-	optional	EMessageCmd		OpFlag			= 5[default = MESS_NULL];		// 指令类型
-	required	uint64			TimeStamp		= 6;							// 时间戳(毫秒)
-};
-
-//总长度 ＋ 字节对齐长度 ＋ head长度 + head ＋ msgPara
-message CProxyMessage
-{
-	required	S2PHead			MsgHead	 		= 1;	//消息头+
-};
-
-/////////////////////////////////ProxyServer ==> 内部服务器(dbserver,logserver等等) /////////////////////
-message P2SHead
-{
-	required	int32			Cmd				= 1;							//消息id
-};
-
-//总长度 ＋ 字节对齐长度 ＋ head长度 + head ＋ msgPara
-message CServerMessage
-{
-	required	P2SHead			MsgHead	 		= 1;	//消息头+
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ping消息
-message CMsgPingRequest
-{
-	enum Msg{MsgID	=	0x00FFFFFF;	}
+	required	uint64			TimeStamp		= 5;							// 时间戳(毫秒)
+	optional	enMessageCmd	OpFlag			= 6[default = MESS_NULL];	    // 指令类型
+    optional    uint32          messageId       = 7;                            // 消息id
 };

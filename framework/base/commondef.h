@@ -13,12 +13,4 @@ enum EnLockIdx
     IDX_PIPELOCK_A2C = 2,
     IDX_PIPELOCK_S2L = 3,
 };
-
-enum EServerType
-{
-    SERVER_PROXY    = 0,
-    SERVER_GATE     = 1,
-    SERVER_DB       = 2,
-    SERVER_GAME     = 3,
-};
 #endif //SERVER_COMMONDEF_H

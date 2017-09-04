@@ -63,7 +63,7 @@ public:
     virtual int Run();
     virtual int ProcessThreadEnd();
 
-    int Initialize( int iHandleID, int nProxyNumber,  CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH>* pGSvrdConns);
+    int Initialize( int iHandleID, CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH>* pGSvrdConns);
 
     int PostOneCode( int nCodeLength, BYTE* pCode);
 
@@ -102,10 +102,7 @@ private:
 
     CProxyHead m_stCurrentProxyHead;							//当前处理请求的Proxy头部
 
-    CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH>* m_pProxySvrdConns;	//指向所有的proxy server 链接
-
-    int m_proxynumber;											// 启服以后的Proxy个数
-    //int m_current_proxy_index;									// 当前proxy下标
+    CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH> m_stProxySvrdConns;	//指向所有的proxy server 链接
 
     time_t m_tLastCheckTime;
 

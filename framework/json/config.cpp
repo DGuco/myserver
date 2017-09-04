@@ -22,32 +22,25 @@ int CServerConfig::Parse()
     m_iProxySize = m_Obj["proxySize"].GetInt();
 
     ServerInfo tcpServer;
-    rapidjson::Value& tcpinfo = m_Obj["tcpinfo"];
-    tcpServer.m_iPort =  tcpinfo["port"].GetInt();
-    tcpServer.m_sHost =  tcpinfo["host"].GetString();
-    tcpServer.m_iServerId = tcpinfo["serverid"].GetInt();
-    m_mServerMap[EServerType::SERVER_TCP] = tcpServer;
+    rapidjson::Value& gateinfo = m_Obj["gateinfo"];
+    tcpServer.m_iPort =  gateinfo["port"].GetInt();
+    tcpServer.m_sHost =  gateinfo["host"].GetString();
+    tcpServer.m_iServerId = gateinfo["serverid"].GetInt();
+    m_mServerMap[enServerType::FE_GATESERVER] = tcpServer;
 
     ServerInfo gameServer;
     rapidjson::Value& gameinfo = m_Obj["gameinfo"];
     gameServer.m_iServerId =  gameinfo["serverid"].GetInt();
     gameServer.m_iPort =  gameinfo["port"].GetInt();
     gameServer.m_sHost =  gameinfo["host"].GetString();
-    m_mServerMap[EServerType::SERVER_GAME] = gameServer;
-
-    ServerInfo gateServer;
-    rapidjson::Value& gateinfo = m_Obj["gateinfo"];
-    gateServer.m_iServerId =  gateinfo["serverid"].GetInt();
-    gateServer.m_iPort =  gateinfo["port"].GetInt();
-    gateServer.m_sHost =  gateinfo["host"].GetString();
-    m_mServerMap[EServerType::SERVER_GATE] = gameServer;
+    m_mServerMap[enServerType::FE_GAMESERVER] = gameServer;
 
     ServerInfo dbServer;
     rapidjson::Value& dbinfo = m_Obj["dbinfo"];
     dbServer.m_iServerId =  dbinfo["serverid"].GetInt();
     dbServer.m_iPort =  dbinfo["port"].GetInt();
     dbServer.m_sHost =  dbinfo["host"].GetString();
-    m_mServerMap[EServerType::SERVER_DB] = gameServer;
+    m_mServerMap[enServerType::FE_DBSERVER] = gameServer;
 
     m_sDblInfo = dbinfo["mysqlinfo"].GetString();
     m_iDbSleepTime = dbinfo["sleeptime"].GetInt();

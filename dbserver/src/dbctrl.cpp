@@ -3,10 +3,9 @@
 //
 
 #include "../inc/dbctrl.h"
-#include "../../framework/mem/shm.h"
 #include "../../framework/mem/sharemem.h"
 #include "../../framework/json/config.h"
-#include "../../gameserver/inc/gameserver.h"
+#include "../../framework/net/server_comm_engine.h"
 
 CSharedMem* CDBCtrl::mShmPtr = NULL;
 template<> CDBCtrl* CSingleton< CDBCtrl >::spSingleton = NULL;
@@ -83,28 +82,28 @@ int  CDBCtrl::ConnectToProxyServer()
 {
 	int i = 0;
 
-	ServerInfo proxyInfo = CServerConfig::GetSingleton().GetServerMap().find(EServerType::SERVER_PROXY)->second;
+	ServerInfo proxyInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType ::FE_PROXYSERVER)->second;
 	m_stProxySvrdCon.Initialize( FE_PROXYSERVER,
 								proxyInfo.m_iServerId,
 								inet_addr(proxyInfo.m_sHost.c_str()),
-								proxyInfo.m_iPort;
+								proxyInfo.m_iPort);
 
 	if(m_stProxySvrdCon.ConnectToServer( (char*)proxyInfo.m_sHost.c_str()))
 	{
 		LOG_INFO( "default", "Error:connect to Proxy Server %d failed.\n", proxyInfo.m_iServerId);
-		continue;
+		return -1;
 	}
 
 	if( RegisterToProxyServer() )
 	{
-		LOG_ERROR( "default", "Error: Register to Proxy Server %d failed.\n", pbProxy.id() );
-		continue;
+		LOG_ERROR( "default", "Error: Register to Proxy Server %d failed.\n", proxyInfo.m_iServerId );
+		return -1;
 	}
 
-	m_atLastSendKeepAlive = GetMSTime();	// 记录这一次的注册的时间
-	m_atLastRecvKeepAlive = GetMSTime();	// 由于是注册,所以也将第一次收到的时间记录为当下
+	m_tLastSendKeepAlive = GetMSTime();	// 记录这一次的注册的时间
+	m_tLastRecvKeepAlive = GetMSTime();	// 由于是注册,所以也将第一次收到的时间记录为当下
 
-	LOG_INFO( "default", "Connect to Proxy server %d Succeed.\n", pbProxy.id() );
+	LOG_INFO( "default", "Connect to Proxy server %d Succeed.\n", proxyInfo.m_iServerId);
 	return i;
 }
 
@@ -122,9 +121,9 @@ int CDBCtrl::RegisterToProxyServer()
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
 
-	ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(EServerType::SERVER_DB)->second;	
-	pbmsg_setproxy(&tHead, EServerType::SERVER_DB, dbInfo.m_iServerId,
-		EServerType::SERVER_PROXY, m_stProxySvrdCon.GetEntityID(), GetMSTime(), CMD_REGIST);
+	ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType ::FE_DBSERVER)->second;
+	pbmsg_setproxy(&tHead, enServerType::FE_DBSERVER, dbInfo.m_iServerId,
+				   enServerType::FE_PROXYSERVER, m_stProxySvrdCon.GetEntityID(), GetMSTime(), enMessageCmd ::MESS_REGIST);
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&tHead, NULL, message_buffer, tTotalLen);
 	if (iRet != 0)
@@ -136,12 +135,11 @@ int CDBCtrl::RegisterToProxyServer()
 	iRet = m_stProxySvrdCon.GetSocket()->SendOneCode(tTotalLen, (BYTE*)message_buffer);
 	if (iRet != 0)
 	{
-		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer  proxy(index=%d) SendOneCode failed, iRet = %d.",
-				nIndex, iRet);
+		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer SendOneCode failed, iRet = %d.", iRet);
 		return -1;
 	}
 
-	LOG_INFO("default", "Regist to Proxy(index=%d) now.", nIndex);
+	LOG_INFO("default", "Regist to Proxy now.");
 
 	return 0;
 }
@@ -160,9 +158,9 @@ int CDBCtrl::SendkeepAliveToProxy()
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
 
-	ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(EServerType::SERVER_DB)->second;		
-	pbmsg_setproxy(&tHead, EServerType::SERVER_DB,dbInfo.m_iServerId,
-		EServerType::SERVER_PROXY, m_stProxySvrdCon. GetEntityID(), GetMSTime(), CMD_KEEPALIVE);
+	ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType::FE_DBSERVER)->second;
+	pbmsg_setproxy(&tHead, enServerType::FE_DBSERVER,dbInfo.m_iServerId,
+				   enServerType::FE_PROXYSERVER, m_stProxySvrdCon. GetEntityID(), GetMSTime(), enMessageCmd::MESS_KEEPALIVE);
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&tHead, NULL, message_buffer, tTotalLen);
 	if (iRet != 0)
@@ -174,14 +172,13 @@ int CDBCtrl::SendkeepAliveToProxy()
 	iRet = m_stProxySvrdCon.GetSocket()->SendOneCode(tTotalLen, (BYTE*)message_buffer);
 	if (iRet != 0)
 	{
-		LOG_ERROR("default", "CDBCtrl::SendkeepAliveToProxy  proxy(index=%d) SendOneCode failed, iRet = %d.",
-				nIndex, iRet);
+		LOG_ERROR("default", "CDBCtrl::SendkeepAliveToProxy  proxy SendOneCode failed, iRet = %d.", iRet);
 		return -1;
 	}
 
-	m_atLastSendKeepAlive = GetMSTime(); // 保存这一次的发送的时间
+	m_tLastSendKeepAlive = GetMSTime(); // 保存这一次的发送的时间
 
-	LOG_INFO("default", "SendkeepAliveto Proxy(index=%d) now.", nIndex);
+	LOG_INFO("default", "SendkeepAliveto Proxy now.");
 	return 0;
 }
 
@@ -194,7 +191,7 @@ int CDBCtrl::SendkeepAliveToProxy()
 int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE* pbyCode, bool vCountNum)
 {
 	int iTempRet = 0;
-	
+	int iHandleChoice = GetThisRoundHandle();
 	// 解析proxy头
 	CProxyHead tProxyHead;
 	if ( ServerCommEngine::ConvertStreamToProxy(pbyCode+sizeof(int), nCodeLength-sizeof(int), &tProxyHead) < 0 )
@@ -204,7 +201,7 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE* pbyCode, bool vCountNum)
 	}
 
 	// 加入 proxy 命令处理处理心跳消息
-	if( EServerType::SERVER_PROXY == tProxyHead.srcfe() && CMD_KEEPALIVE == tProxyHead.opflag() )
+	if( enServerType ::FE_PROXYSERVER == tProxyHead.srcfe() && enMessageCmd::MESS_KEEPALIVE == tProxyHead.opflag() )
 	{
 		m_tLastRecvKeepAlive = GetMSTime(); // 保存这一次的注册的时间
 		return 0;
@@ -235,7 +232,7 @@ int CDBCtrl::CheckRunFlags()
 		for( i = 0; i < MAXHANDLENUMBER; i++ )
 		{
 			m_apHandles[i]->ProcessThreadEnd();
-			m_apHandles[i]->InitLogFile( NULL, NULL, (LogLevel)CConfigMgr::GetSingletonPtr()->GetDBConfig().loglvl(), 10 * 1024 * 1024, 20 );
+			m_apHandles[i]->InitLogFile( NULL, NULL, (LogLevel)CServerConfig::GetSingletonPtr()->GetDbLogLevel(), 10 * 1024 * 1024, 20 );
 		}
 
 		ClearRunFlag( EFLG_CTRL_RELOAD );
@@ -285,16 +282,13 @@ int CDBCtrl::CheckAndDispatchInputMsg()
 	stMonTime.tv_sec = 0;
 	stMonTime.tv_usec = 10000;
 
-	for(i = 0; i < CConfigMgr::GetSingletonPtr()->GetDBConfig().proxyinfo_size(); i++)
-	{
-		iTempFD = m_astProxySvrdCon[i].GetSocket()->GetSocketFD();
-		iTempStatus = m_astProxySvrdCon[i].GetSocket()->GetStatus();
+    iTempFD = m_stProxySvrdCon.GetSocket()->GetSocketFD();
+    iTempStatus = m_stProxySvrdCon.GetSocket()->GetStatus();
 
-		if(iTempFD > 0 && iTempStatus == tcs_connected)
-		{
-			FD_SET(iTempFD, &fds_read);
-		}
-	}
+    if(iTempFD > 0 && iTempStatus == tcs_connected)
+    {
+        FD_SET(iTempFD, &fds_read);
+    }
 
 	iOpenFDNum = select(FD_SETSIZE, &fds_read, NULL, NULL, &stMonTime);  // 等待读取
 
@@ -304,39 +298,36 @@ int CDBCtrl::CheckAndDispatchInputMsg()
 	}
 
 
-	for(i = 0; i < CConfigMgr::GetSingletonPtr()->GetDBConfig().proxyinfo_size() && i < MAXPROXYNUMBER; i++)  // 有可读的情况
-	{
-		iTempFD = m_astProxySvrdCon[i].GetSocket()->GetSocketFD();
-		if(iTempFD < 0)
-		{
-			continue;
-		}
+    iTempFD = m_stProxySvrdCon.GetSocket()->GetSocketFD();
+    if(iTempFD < 0)
+    {
+        return -1;
+    }
 
 
-		if(FD_ISSET(iTempFD, &fds_read))
-		{
-			LOG_INFO( "default", "Proxy(index:%d,entityid:%d) had req to process.", i, m_astProxySvrdCon[i].GetEntityID());
-			m_astProxySvrdCon[i].GetSocket()->RecvData();  // 接收数据到 m_abyRecvBuffer
-			while(1)
-			{
-				nTmpCodeLength = sizeof(abyCodeBuf)-sizeof(int);
-				if(!(m_astProxySvrdCon[i].GetSocket()->GetOneCode(nTmpCodeLength, (BYTE *)&abyCodeBuf[sizeof(int)]) > 0))  // 将单条消息接收到 abyCodeBuf
-				{
-					break;
-				}
+    if(FD_ISSET(iTempFD, &fds_read))
+    {
+        LOG_INFO( "default", "Proxy(index:%d,entityid:%d) had req to process.", i, m_stProxySvrdCon.GetEntityID());
+        m_stProxySvrdCon.GetSocket()->RecvData();  // 接收数据到 m_abyRecvBuffer
+        while(1)
+        {
+            nTmpCodeLength = sizeof(abyCodeBuf)-sizeof(int);
+            if(!(m_stProxySvrdCon.GetSocket()->GetOneCode(nTmpCodeLength, (BYTE *)&abyCodeBuf[sizeof(int)]) > 0))  // 将单条消息接收到 abyCodeBuf
+            {
+                break;
+            }
 
-				LOG_DEBUG( "default", "Get one code from ( EntityType:%d, EntityID:%d ) Len=%d, dispatch it",
-						m_astProxySvrdCon[i].GetEntityType(),
-						m_astProxySvrdCon[i].GetEntityID(),
-						nTmpCodeLength);
-				memcpy((void *)abyCodeBuf, (const void *)&i, sizeof(int));  // 把 i 的值赋给 abyCodeBuf
-				nTmpCodeLength += sizeof(int);
-				DispatchOneCode(i, nTmpCodeLength, (BYTE *)abyCodeBuf);  // 派发一个消息
-				iCount++;
-			}
+            LOG_DEBUG( "default", "Get one code from ( EntityType:%d, EntityID:%d ) Len=%d, dispatch it",
+                    m_stProxySvrdCon.GetEntityType(),
+                    m_stProxySvrdCon.GetEntityID(),
+                    nTmpCodeLength);
+            memcpy((void *)abyCodeBuf, (const void *)&i, sizeof(int));  // 把 i 的值赋给 abyCodeBuf
+            nTmpCodeLength += sizeof(int);
+            DispatchOneCode(nTmpCodeLength, (BYTE *)abyCodeBuf);  // 派发一个消息
+            iCount++;
+        }
 
-		}
-	}
+    }
 
 	return iCount;
 }
@@ -354,8 +345,8 @@ int CDBCtrl::PrepareToRun()
 
 	for(i = 0; i < MAXHANDLENUMBER; i++)
 	{	
-		m_apHandles[i]->Initialize(i, CConfigMgr::GetSingletonPtr()->GetDBConfig().proxyinfo_size(), &m_astProxySvrdCon[0]);
-		m_apHandles[i]->InitLogFile( NULL, NULL, (LogLevel)CConfigMgr::GetSingletonPtr()->GetDBConfig().loglvl(), 10*1024*1024, 20, "dbhandle_" );
+		m_apHandles[i]->Initialize(i, &m_stProxySvrdCon);
+		m_apHandles[i]->InitLogFile( NULL, NULL, (LogLevel)CServerConfig::GetSingletonPtr()->GetDbLogLevel(), 10*1024*1024, 20, "dbhandle_" );
 	}
 
 	LOG_INFO( "default", "Handles initialized OK, now begin to create threads.\n");
@@ -395,45 +386,51 @@ int CDBCtrl::RoutineCheck()
 {
 	time_t tNow = GetMSTime();
 
-	if(tNow - m_lastTick < CConfigMgr::GetSingletonPtr()->GetDBConfig().servertick() )
+	if(tNow - m_lastTick < CServerConfig::GetSingletonPtr()->GetServetTick())
 	{
 		return 0;
 	}
 
 	// 和 proxy 保持心跳
-	for(int i = 0; i < CConfigMgr::GetSingletonPtr()->GetDBConfig().proxyinfo_size(); i++)
+    if( (m_stProxySvrdCon.GetSocket()->GetStatus() == tcs_connected)  // 已经连接
+            && (m_stProxySvrdCon.GetSocket()->GetSocketFD() > 0)  // 文件描述符
+            && ((tNow - m_tLastRecvKeepAlive) < (CServerConfig::GetSingletonPtr()->GetTcpKeepAlive() * 3)) // 与proxy心跳超时
+      )
+    {
+        if ( tNow - m_tLastSendKeepAlive > CServerConfig::GetSingletonPtr()->GetTcpKeepAlive())
+            SendkeepAliveToProxy();
+    }
+
+    LOG_ERROR("default", "Proxy(ID = %d) is not connected, try to reconnect it", m_stProxySvrdCon.GetEntityID());
+
+    // 如果已经断开了,则重新连接
+    if(m_stProxySvrdCon.ConnectToServer((char*)CServerConfig::GetSingleton().GetServerMap()
+            .find(enServerType::FE_PROXYSERVER)->second.m_sHost.c_str()))
+    {
+        LOG_ERROR("default", "Connect proxy failed.");
+        return -1;
+    }
+
+    // 然后注册
+    if(RegisterToProxyServer())
+    {
+        LOG_ERROR("default", "Register proxyfailed.");
+        return -1;
+    }
+
+    m_tLastSendKeepAlive = GetMSTime();	// 保存这一次的发送的时间
+    m_tLastRecvKeepAlive = GetMSTime();	// 由于第一次发送,所以记录当前时间为接收的时间
+    LOG_INFO("default", "Connect to proxy succeeded.");
+	return 0;
+}
+
+int CDBCtrl::GetThisRoundHandle()
+{
+	int tWhich = m_which_handle++ ;
+	if ( tWhich >= MAX_HANDLE_SZ )
 	{
-		if( (m_astProxySvrdCon[i].GetSocket()->GetStatus() == tcs_connected)  // 已经连接
-				&& (m_astProxySvrdCon[i].GetSocket()->GetSocketFD() > 0)  // 文件描述符
-				&& ((tNow - m_atLastRecvKeepAlive[i]) < (CConfigMgr::GetSingletonPtr()->GetDBConfig().keepalive() * 3)) // 与proxy心跳超时
-		  )
-		{
-			if ( tNow - m_atLastSendKeepAlive[i] > CConfigMgr::GetSingletonPtr()->GetDBConfig().keepalive() )
-				SendkeepAliveToProxy( i );
-			continue;
-		}
-
-		const PBProxy& pbProxy = CConfigMgr::GetSingletonPtr()->GetDBConfig().proxyinfo(i);
-		LOG_ERROR("default", "Proxy[%d](ID = %d) is not connected, try to reconnect it",i, m_astProxySvrdCon[i].GetEntityID());
-
-		// 如果已经断开了,则重新连接
-		if(m_astProxySvrdCon[i].ConnectToServer((char*)pbProxy.ip().c_str()))
-		{
-			LOG_ERROR("default", "Connect proxy[%d] failed.", i);
-			continue;
-		}
-
-		// 然后注册
-		if(RegisterToProxyServer(i))
-		{
-			LOG_ERROR("default", "Register proxy[%d] failed.", i);
-			continue;
-		}
-
-		m_atLastSendKeepAlive[i] = GetMSTime();	// 保存这一次的发送的时间
-		m_atLastRecvKeepAlive[i] = GetMSTime();	// 由于第一次发送,所以记录当前时间为接收的时间
-		LOG_INFO("default", "Connect to proxy %d succeeded.", i);
+		m_which_handle = 0;
 	}
 
-	return 0;
+	return tWhich;
 }

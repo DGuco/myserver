@@ -1,9 +1,6 @@
 #include "server_comm_engine.h"
-#include "../base/my_assert.h"
-#include "../message/message_interface.h"
 
-
-void pbmsg_setproxy(CProxyHead* pHead, int iSrcFE, int iSrcID, int iDstFE, int iDstID, time_t tTimestamp, EProxyCmd eCmd)
+void pbmsg_setproxy(CProxyHead* pHead, int iSrcFE, int iSrcID, int iDstFE, int iDstID, time_t tTimestamp, enMessageCmd eCmd)
 {
 	pHead->set_srcfe(iSrcFE);
 	pHead->set_srcid(iSrcID);
@@ -13,11 +10,9 @@ void pbmsg_setproxy(CProxyHead* pHead, int iSrcFE, int iSrcID, int iDstFE, int i
 	pHead->set_timestamp(tTimestamp);
 }
 
-void pbmsg_setmessagehead(CMessage* pMsg, int iMsgID)
+void pbmsg_setmessagehead(CProxyHead* pMsg, int iMsgID)
 {
-	CMessageHead* tpHead = pMsg->mutable_msghead();
-
-	tpHead->set_messageid(iMsgID);
+	pMsg->set_messageid(iMsgID);
 }
 
 namespace ServerCommEngine

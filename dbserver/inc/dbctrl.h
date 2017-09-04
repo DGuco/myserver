@@ -6,9 +6,6 @@
 #define _DBCTRL_HPP_
 
 #include "dbhandle.h"
-#include "base_db.h"
-
-#include "configure.pb.h"
 //#include "protoconfig.h"
 
 #ifdef _ASYNC_SQL_
@@ -69,6 +66,8 @@ private:
     int DispatchOneCode(int nCodeLength, BYTE* pbyCode, bool vCountNum = true);
     int PostInternalMsgToHandle(int iHandleID, CMessage *pMsg);
     int NotifyHandleClearComplete();
+	int GetThisRoundHandle();
+
 private:
 	
 	int m_iRunFlag;	// 运行标志
