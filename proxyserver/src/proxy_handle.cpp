@@ -9,7 +9,7 @@
 #include "../inc/proxy_handle.h"
 #include "../inc/proxy_ctrl.h"
 #include "../../framework/message/message.pb.h"
-#include "../../framework/message/client_comm_engine.h"
+#include "../../framework/message/server_comm_engine.h"
 
 
 CProxyHandle::CProxyHandle()
@@ -154,7 +154,7 @@ int CProxyHandle::SendOneCodeTo(short nCodeLength, BYTE* pbyCode, int  iKey, boo
 **/
 int CProxyHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
 {
-    CTcpHead stTmpHead;
+    CProxyMessage stTmpMessage;
 
     int iTempRet = 0;
     if (nCodeLength <= 0 || !pbyCode)
@@ -164,13 +164,14 @@ int CProxyHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
     }
 
     unsigned short unOffset = 0;
-    int iRet = ClientCommEngine::ConvertStreamToMsg(pbyCode, nCodeLength, unOffset, &stTmpHead);
+    int iRet = ServerCommEngine::ConvertStreamToMsg(pbyCode, nCodeLength,&stTmpMessage);
     if (iRet < 0)
     {
         TRACE_ERROR("In TransferOneCode, ConvertStreamToCSHead return %d.", iRet);
         return -1;
     }
 
+    CProxyHead stTmpHead = stTmpMessage.msghead();
     TRACE_DEBUG( "TransMsg(%d).", nCodeLength);
 
 #ifdef _DEBUG_
@@ -181,69 +182,6 @@ int CProxyHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
     TRACE_DEBUG("Transfer code begin, from(FE = %d : ID = %d) to(FE = %d : ID = %d), timestamp = %ld.",
                 stTmpHead.srcfe(), stTmpHead.srcid(),
                 stTmpHead.dstfe(), stTmpHead.dstid(), stTmpHead.timestamp());
-
-    // 处理直接发送到 gate 的消息
-    if (stTmpHead.dstfe() == FE_GATESERVER)
-    {
-        switch(stTmpHead.opflag())
-        {
-            //心跳信息
-            case EGC_KEEPALIVE:
-            {
-                CTcpHead stRetHead;
-                stRetHead.Clear();
-                pbmsg_settcphead(
-                        stRetHead,
-                        FE_GATESERVER,
-                        CServerConfig::GetSingletonPtr()->GetGateServerId(),
-                        stTmpHead.srcfe(),
-                        stTmpHead.srcid(),
-                        time(NULL),
-                        EGC_KEEPALIVE);
-
-                if (stRetHead.ByteSize() <= 0)
-                {
-                    TRACE_DEBUG("stRetHead length = %d, invalid.", stRetHead.GetCachedSize());
-                    break;
-                }
-
-                // keepalive的包长度一般都很短
-                char message_buffer[1024];
-                unsigned short nLength = sizeof(message_buffer);
-                int iRet = ClientCommEngine::ConvertMsgToStream(message_buffer, nLength, &stRetHead);
-                if (iRet < 0)
-                {
-                    TRACE_ERROR("send keepalive to (FE = %d : ID = %d), ConvertMsgToStream failed. iRet = %d.",
-                                stRetHead.dstfe(), stRetHead.dstid(), iRet);
-                }
-                else
-                {
-                    int iKey = MakeConnKey(stRetHead.dstfe(), stRetHead.dstid());
-                    int iRet = SendOneCodeTo(nLength, (BYTE*)message_buffer, iKey, true);
-                    if (iRet != 0)
-                    {
-                        TRACE_ERROR("send keepalive to (FE = %d : ID = %d), SendOneCodeTo failed, iRet = %d.",
-                                    stRetHead.dstfe(), stRetHead.dstid(), iRet);
-                    }
-                    else
-                    {
-                        TRACE_DEBUG("send keepalive to (FE = %d : ID = %d) succeed.", stRetHead.dstfe(), stRetHead.dstid());
-                    }
-                }
-
-                break;
-            }
-            default:
-            {
-                TRACE_ERROR("unknown command id %d, from(FE = %d : ID = %d) to(FE = %d : ID = %d), timestamp = %ld.",
-                            stTmpHead.opflag(), stTmpHead.srcfe(), stTmpHead.srcid(),
-                            stTmpHead.dstfe(), stTmpHead.dstid(), stTmpHead.timestamp());
-                break;
-            }
-        }
-
-        return 0;
-    }
 
     int iKey = MakeConnKey(stTmpHead.dstfe(), stTmpHead.dstid());
     iTempRet = SendOneCodeTo(nCodeLength, pbyCode, iKey);

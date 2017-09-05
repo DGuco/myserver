@@ -87,25 +87,27 @@ int ServerCommEngine::ConvertStreamToMsg(const void* pBuff,
 		MY_ASSERT_STR(0, return -7, "ServerCommEngine::ConvertStreamToMsg failed, tTotalLen(%d) != tTmpLen.(%d)", tTotalLen, tTmpLen);
 	}
 
-	// MessagePara
-	// 使用消息工厂
-	Message* tpMsgPara = NULL;
+	if (pMsgFactory != NULL) {
+		// MessagePara
+		// 使用消息工厂
+		Message* tpMsgPara = NULL;
 
-	tpMsgPara = pMsgFactory->CreateMessage(pMsg->msghead().messageid());
+		tpMsgPara = pMsgFactory->CreateMessage(pMsg->msghead().messageid());
 
-	if (tpMsgPara == NULL)
-	{
-		MY_ASSERT_STR(0, return -8, "ServerCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.", pMsg->msghead().messageid());
+		if (tpMsgPara == NULL)
+		{
+			MY_ASSERT_STR(0, return -8, "ServerCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.", pMsg->msghead().messageid());
+		}
+
+		if (tpMsgPara->ParseFromArray(tpBuff, tTmpLen) != true)
+		{
+			// 使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
+			tpMsgPara->~Message();
+			MY_ASSERT_STR(0, return -9, "ServerCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
+		}
+
+		pMsg->set_msgpara((unsigned long)tpMsgPara);
 	}
-
-	if (tpMsgPara->ParseFromArray(tpBuff, tTmpLen) != true)
-	{
-		// 使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
-		tpMsgPara->~Message();
-		MY_ASSERT_STR(0, return -9, "ServerCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
-	}
-
-	pMsg->set_msgpara((unsigned long)tpMsgPara);
 
 	return 0;
 }

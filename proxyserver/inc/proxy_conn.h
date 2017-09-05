@@ -9,7 +9,6 @@
 #define _PROXY_CONN_H_
 
 #include "../../framework/net/tcp_conn.h"
-#include "../../framework/sharemem/codequeue.h"
 #include "../../framework/base/servertool.h"
 
 typedef CTCPSocket<RECVBUFLENGTH, POSTBUFLENGTH> CMyTCPSocket;

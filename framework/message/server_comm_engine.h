@@ -22,7 +22,7 @@ public:
 	static int ConvertStreamToMsg(const void* pBuff,
 								  unsigned short unBuffLen,
 								  CProxyMessage* pMsg,
-								  CFactory* pMsgFactory);
+								  CFactory* pMsgFactory = NULL);
 	// --------------------------------------------------------------------------------
 	// Function:	ConvertMsgToStream
 	// Description:	序列化CProxyHead + CMessageHead + CMessage.msgpara
