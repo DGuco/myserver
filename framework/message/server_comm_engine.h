@@ -2,33 +2,41 @@
 #define SERVER_COMM_ENGINE_H_
 
 
-#include "../message/message.pb.h"
-#include "../message/message_interface.h"
+#include "message.pb.h"
+#include "message_interface.h"
 
 
 void pbmsg_setproxy(CProxyHead* pHead, int iSrcFE, int iSrcID, int iDstFE, int iDstID, time_t tTimestamp, enMessageCmd eCmd);
 void pbmsg_setmessagehead(CProxyHead* pHead, int iMsgID);
 
 
-namespace ServerCommEngine
+class ServerCommEngine
 {
+public:
 	// --------------------------------------------------------------------------------
 	// Function:	ConvertStreamToMsg
-	// Description:	把服务器的二进制流转换成CProxyHead + CMessageHead + CMessage.msgpara
+	// Description:	把服务器的二进制流转换成CProxyHead + CMessage.msgpara
 	// 				消息体指针已经在内部赋值给了CMessage.msgpara
 	// 				注意: 需要在外部delete msgpara
 	// --------------------------------------------------------------------------------
-	int ConvertStreamToMsg(const void* pBuff, unsigned short unBuffLen, CProxyHead* pProxyHead, CMessage* pMsg, CFactory* pMsgFactory);
+	static int ConvertStreamToMsg(const void* pBuff,
+								  unsigned short unBuffLen,
+								  CProxyMessage* pMsg,
+								  CFactory* pMsgFactory);
 	// --------------------------------------------------------------------------------
 	// Function:	ConvertMsgToStream
 	// Description:	序列化CProxyHead + CMessageHead + CMessage.msgpara
 	// --------------------------------------------------------------------------------
-	int ConvertMsgToStream(CProxyHead* pProxyHead, CMessage* pMsg, void* pBuff, unsigned short& unBuffLen);
+	static int ConvertMsgToStream(CProxyMessage* pMsg,
+								  void* pBuff,
+								  unsigned short& unBuffLen);
 	// --------------------------------------------------------------------------------
 	// Function:	ConvertStreamToProxy
 	// Description:	把服务器的二进制流转换成CProxyHead 
 	// --------------------------------------------------------------------------------
-	int ConvertStreamToProxy(const void* pBuff, unsigned short unBuffLen, CProxyHead* pProxyHead);
+	static int ConvertStreamToProxy(const void* pBuff,
+									unsigned short unBuffLen,
+									CProxyHead* pProxyHead);
 
 };
 

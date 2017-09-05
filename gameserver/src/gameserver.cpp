@@ -10,7 +10,7 @@
 #include "../../framework/base/my_assert.h"
 #include "../../framework/json/config.h"
 #include "../../framework/message/proxymessage.pb.h"
-#include "../../framework/net/server_comm_engine.h"
+#include "../../framework/message/server_comm_engine.h"
 
 template<> CGameServer* CSingleton<CGameServer>::spSingleton = NULL;
 

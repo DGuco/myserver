@@ -22,23 +22,21 @@ set(FRAMEWORK
         log/log.cpp
         message/message.pb.h
         message/message.pb.cc
-        message/proxymessage.pb.h
-        message/proxymessage.pb.cc
+        message/client_comm_engine.h
+        message/server_comm_engine.h
+        message/message_interface.h
+        message/message_interface.cpp
+        message/server_comm_engine.cpp
+        message/client_comm_engine.cpp
         net/statistics.h
         net/tcp_conn.h
-        net/client_comm_engine.h
         net/runflag.h
-        net/server_comm_engine.h
         net/daemon.h
-        message/message_interface.h
         net/oi_tea.h
         net/daemon.cpp
-        message/message_interface.cpp
         net/oi_tea.cpp
         net/runflag.cpp
-        net/server_comm_engine.cpp
         net/statistics.cpp
-        net/client_comm_engine.cpp
         net/ccrypto.h
         net/ccrypto.cpp
         mem/sharemem.h

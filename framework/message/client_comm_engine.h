@@ -1,9 +1,9 @@
 #ifndef CLIENT_COMM_ENGINE_H_
 #define CLIENT_COMM_ENGINE_H_
 
-#include "../message/message_interface.h"
-#include "../message/message.pb.h"
-#include "ccrypto.h"
+#include "message_interface.h"
+#include "message.pb.h"
+#include "../net/ccrypto.h"
 
 class ClientCommEngine
 {

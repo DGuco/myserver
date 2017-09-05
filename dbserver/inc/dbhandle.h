@@ -10,7 +10,6 @@
 #include "../../framework/net/tcp_conn.h"
 #include "../../framework/mem/shm.h"
 #include "../../framework/mem/codequeue.h"
-#include "../../framework/message/proxymessage.pb.h"
 #include "../../framework/message/message.pb.h"
 #include "../inc/basedb.h"
 #include "../inc/queryresultmysql.h"
@@ -79,10 +78,10 @@ private:
 
     int GetOneCode(int& nCodeLength, BYTE* pCode);
 
-    int SendMessageTo(CMessage *pMsg);
-    int Event(CMessage *pMsg);
+    int SendMessageTo(CProxyMessage *pMsg);
+    int Event(CProxyMessage *pMsg);
 
-    int ProcessExecuteSqlRequest( CMessage* pMsg );
+    int ProcessExecuteSqlRequest( CProxyMessage* pMsg );
 
     void ReleaseResult(QueryResult *res)
     {

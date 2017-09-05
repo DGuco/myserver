@@ -48,14 +48,14 @@ message MesHead
 	optional	int32			Seq		 		= 4;	//应答码
 };
 
-//gamesever 服务器内部消息传递格式
+//服务器内部消息传递格式
 message CMessage
 {
 	required	MesHead		MsgHead		= 1;	// 消息头+
 	optional	fixed64		MsgPara		= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
 };
 
-/////////////////////////////////内部服务器(dbserver,gameserver等等) <==> ProxyServer/////////////////////
+/////////////////////////////////(dbserver,gameserver等等) <==> ProxyServer/////////////////////
 //发送给proxyserver的消息头
 message CProxyHead
 {
@@ -66,4 +66,11 @@ message CProxyHead
 	required	uint64			TimeStamp		= 5;							// 时间戳(毫秒)
 	optional	enMessageCmd	OpFlag			= 6[default = MESS_NULL];	    // 指令类型
     optional    uint32          messageId       = 7;                            // 消息id
+};
+
+// 单个消息
+message CProxyMessage
+{
+	required	CProxyHead		MsgHead	= 1;						// 消息头+
+	optional	fixed64			MsgPara	= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
 };

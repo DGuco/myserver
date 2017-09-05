@@ -34,7 +34,12 @@ bool Database::Initialize(const char *, int, int, int)
     return true;
 }
 
-bool Database::InitLog(const char* vLogName, const char* vLogDir, LogLevel vPriority  /*= LEVEL_NOTSET*d/ , unsigned int vMaxFileSize  /*= 10*1024*1024*/ , unsigned int vMaxBackupIndex  /*= 1*/ , bool vAppend  /*= true */)
+bool Database::InitLog(const char* vLogName,
+                       const char* vLogDir,
+                       LogLevel vPriority ,
+                       unsigned int vMaxFileSize,
+                       unsigned int vMaxBackupIndex ,
+                       bool vAppend)
 {
     m_logsName = std::string(vLogName);
     return true;

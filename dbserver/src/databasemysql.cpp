@@ -2,11 +2,11 @@
 // Created by DGuco on 17-7-13.
 //
 
+#include <string>
 #include <unistd.h>
 #include "../inc/databasemysql.h"
-#include "../inc/basedb.h"
 #include "../inc/queryresultmysql.h"
-#include "../../framework/base/base.h"
+using namespace std;
 
 void DatabaseMysql::ThreadStart()
 {
@@ -238,7 +238,7 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
         {
             int nErrorNo = mysql_errno( mMysql );
             // if mysql has gone, maybe longtime no request or mysql restarted
-            if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR || nErrorNo == CR_PROXY_ERROR )
+            if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR/* || nErrorNo == CR_PROXY_ERROR*/)
             {
                 if (mMysql)
                     mysql_close(mMysql);
@@ -316,7 +316,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
         {
             int nErrorNo = mysql_errno( mMysql );
             // if mysql has gone, maybe longtime no request or mysql restarted
-            if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR || nErrorNo == CR_PROXY_ERROR )
+            if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR /*|| nErrorNo == CR_PROXY_ERROR*/ )
             {
                 if (mMysql)
                     mysql_close(mMysql);
@@ -423,7 +423,7 @@ bool DatabaseMysql::DirectExecute(const char* sql )
     {
         int nErrorNo = mysql_errno( mMysql );
         // if mysql has gone, maybe longtime no request or mysql restarted
-        if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR || nErrorNo == CR_PROXY_ERROR )
+        if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR /*|| nErrorNo == CR_PROXY_ERROR*/ )
         {
             if (mMysql)
                 mysql_close(mMysql);
@@ -474,7 +474,7 @@ bool DatabaseMysql::RealDirectExecute(const char* sql, unsigned long len)
     {
         int nErrorNo = mysql_errno( mMysql );
         // if mysql has gone, maybe longtime no request or mysql restarted
-        if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR || nErrorNo == CR_PROXY_ERROR )
+        if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR /*|| nErrorNo == CR_PROXY_ERROR */)
         {
             if (mMysql)
                 mysql_close(mMysql);

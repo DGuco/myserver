@@ -2,8 +2,9 @@
 // Created by DGuco on 17-7-13.
 //
 
-#include "../../framework/net/server_comm_engine.h"
+#include "../../framework/message/server_comm_engine.h"
 #include "../../framework/mem/codequeue.h"
+#include "../../framework/message/dbmessage.pb.h"
 #include "../inc/dbhandle.h"
 #include "../inc/dbctrl.h"
 #include "../inc/queryresultmysql.h"
@@ -32,7 +33,6 @@ CDBHandle::CDBHandle()
 	}
 
 	m_iHandleID = -1;
-	m_proxynumber = 0;
     m_tLastCheckTime = time(NULL);
 	m_pDatabase = new DatabaseMysql;
 	if( m_pDatabase == NULL )
@@ -122,7 +122,7 @@ int CDBHandle::PostOneCode(int nCodeLength, BYTE* pCode)
     return iTempRet;
 }
 
-int CDBHandle::SendMessageTo(CMessage *pMsg)
+int CDBHandle::SendMessageTo(CProxyMessage *pMsg)
 {
 	if( pMsg == NULL)
 	{
@@ -130,14 +130,19 @@ int CDBHandle::SendMessageTo(CMessage *pMsg)
 		return -1;
 	}
 
-	CProxyHead stProxyHead;
+	CProxyHead *stProxyHead = pMsg->mutable_msghead();
 	BYTE abyCodeBuf[MAX_PACKAGE_LEN] = {0};
 	unsigned short nCodeLength = sizeof(abyCodeBuf);
 
-	pbmsg_setproxy(&stProxyHead, m_stCurrentProxyHead.dstfe() ,m_stCurrentProxyHead.dstid(), 
-			m_stCurrentProxyHead.srcfe(), m_stCurrentProxyHead.srcid(), GetMSTime(), enMessageCmd::MESS_REGIST);
+	pbmsg_setproxy(stProxyHead,
+                   m_stCurrentProxyHead.dstfe(),
+                   m_stCurrentProxyHead.dstid(),
+			       m_stCurrentProxyHead.srcfe(),
+                   m_stCurrentProxyHead.srcid(),
+                   GetMSTime(),
+                   enMessageCmd::MESS_REGIST);
 
-	int iRet = ServerCommEngine::ConvertMsgToStream(&stProxyHead, pMsg, abyCodeBuf, nCodeLength);
+	int iRet = ServerCommEngine::ConvertMsgToStream(pMsg, abyCodeBuf, nCodeLength);
 	if (iRet != 0)
 	{
 		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = %d.", iRet);
@@ -156,7 +161,7 @@ int CDBHandle::SendMessageTo(CMessage *pMsg)
     MY_ASSERT( pUnknownMessagePara != NULL, return 0 );
 	const ::google::protobuf::Descriptor* pDescriptor= pUnknownMessagePara->GetDescriptor();
 	TRACE_DEBUG("SendMessageTo: MsgName[%s] ProxyHead[%s] MsgHead[%s] MsgPara[%s]",
-			pDescriptor->name().c_str(),	stProxyHead.ShortDebugString().c_str(), 
+			pDescriptor->name().c_str(),stProxyHead->ShortDebugString().c_str(),
 			pMsg->ShortDebugString().c_str(), ((Message*) pMsg->msgpara())->ShortDebugString().c_str());
 
 	return 0;
@@ -198,7 +203,7 @@ int CDBHandle::ProcessThreadEnd()
 
 
 // 执行相应的指令
-int CDBHandle::Event(CMessage *pMsg)
+int CDBHandle::Event(CProxyMessage *pMsg)
 {
 	if( pMsg == NULL )
 	{
@@ -246,7 +251,7 @@ int CDBHandle::Run()
 
 	BYTE abyCodeBuf[MAX_PACKAGE_LEN];
 	int nTempCodeLength = sizeof(abyCodeBuf);
-	CMessage stTempMsg;
+	CProxyMessage stTempMsg;
 
 	while(True)
 	{
@@ -272,21 +277,23 @@ int CDBHandle::Run()
 		}
 
 		// 将解析出的消息头和消息体分别存放在 m_stCurrentProxyHead stTempMsg
-		int tRet = ServerCommEngine::ConvertStreamToMsg( (BYTE*)(abyCodeBuf+sizeof(int)), nTempCodeLength-sizeof(int), &m_stCurrentProxyHead, &stTempMsg, mMsgFactory);  
+		int tRet = ServerCommEngine::ConvertStreamToMsg( (BYTE*)(abyCodeBuf+sizeof(int)),
+                                                         nTempCodeLength-sizeof(int),
+                                                         &stTempMsg,
+                                                         mMsgFactory);
+        CProxyHead tmpProxyHead = stTempMsg.msghead();
+        pbmsg_setproxy(&m_stCurrentProxyHead,
+                       tmpProxyHead.dstfe(),
+                       tmpProxyHead.dstid(),
+                       tmpProxyHead.srcfe(),
+                       tmpProxyHead.srcid(),
+                       GetMSTime(),
+                       enMessageCmd::MESS_REGIST);
 		if( tRet != 0 )  // 如果解析失败则重新取 Code
 		{  
 			TRACE_ERROR("Convert code to message failed. tRet = %d", tRet);
 			continue;
 		}
-
-		 
-		// TODO 如果dbserver连多个proxy可以采取这种方式
-//		m_current_proxy_index = *(int*)abyCodeBuf;
-//		if ( m_current_proxy_index < 0 || m_current_proxy_index >= MAXPROXYNUMBER || m_current_proxy_index >= m_proxynumber  )
-//		{
-//			TRACE_ERROR("m_current_proxy_index(%d) is error", m_current_proxy_index );
-//			continue;
-//		}
 
 		iTempRet = Event( &stTempMsg );  // 服务器执行相应的 Msg ，其实就是执行 SQL
 
@@ -308,7 +315,7 @@ int CDBHandle::Run()
 }
 
 // 执行相应的指令
-int CDBHandle::ProcessExecuteSqlRequest( CMessage* pMsg )
+int CDBHandle::ProcessExecuteSqlRequest( CProxyMessage* pMsg )
 {
 	if( pMsg == NULL )
 	{
@@ -367,7 +374,7 @@ int CDBHandle::ProcessExecuteSqlRequest( CMessage* pMsg )
 	// 需要回执
 	if( MUSTCALLBACK == pReqMsg->callback() )
 	{
-		CMessage tMsg;  // 该消息为回执
+		CProxyMessage tMsg;  // 该消息为回执
 		CMsgExecuteSqlResponse tSqlResMsg;  // tSqlResMsg 为消息体
 		tMsg.Clear();
 		tSqlResMsg.Clear();

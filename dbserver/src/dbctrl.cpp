@@ -5,7 +5,7 @@
 #include "../inc/dbctrl.h"
 #include "../../framework/mem/sharemem.h"
 #include "../../framework/json/config.h"
-#include "../../framework/net/server_comm_engine.h"
+#include "../../framework/message/server_comm_engine.h"
 
 CSharedMem* CDBCtrl::mShmPtr = NULL;
 template<> CDBCtrl* CSingleton< CDBCtrl >::spSingleton = NULL;
@@ -117,15 +117,15 @@ Others:
  ********************************************************/
 int CDBCtrl::RegisterToProxyServer()
 {
-	CProxyHead tHead;
+	CProxyMessage message;
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
 
 	ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType ::FE_DBSERVER)->second;
-	pbmsg_setproxy(&tHead, enServerType::FE_DBSERVER, dbInfo.m_iServerId,
+	pbmsg_setproxy(message.mutable_msghead(), enServerType::FE_DBSERVER, dbInfo.m_iServerId,
 				   enServerType::FE_PROXYSERVER, m_stProxySvrdCon.GetEntityID(), GetMSTime(), enMessageCmd ::MESS_REGIST);
 
-	int iRet = ServerCommEngine::ConvertMsgToStream(&tHead, NULL, message_buffer, tTotalLen);
+	int iRet = ServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
 	if (iRet != 0)
 	{
 		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = %d.", iRet);
@@ -154,18 +154,18 @@ Others:
  ********************************************************/
 int CDBCtrl::SendkeepAliveToProxy()
 {
-	CProxyHead tHead;
+    CProxyMessage message;
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
 
 	ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType::FE_DBSERVER)->second;
-	pbmsg_setproxy(&tHead, enServerType::FE_DBSERVER,dbInfo.m_iServerId,
+	pbmsg_setproxy(message.mutable_msghead(), enServerType::FE_DBSERVER,dbInfo.m_iServerId,
 				   enServerType::FE_PROXYSERVER, m_stProxySvrdCon. GetEntityID(), GetMSTime(), enMessageCmd::MESS_KEEPALIVE);
 
-	int iRet = ServerCommEngine::ConvertMsgToStream(&tHead, NULL, message_buffer, tTotalLen);
+	int iRet = ServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
 	if (iRet != 0)
 	{
-		LOG_ERROR("default", "CDBCtrl::SendkeepAliveToProxy ConvertMsgToStream failed, iRet = %d.", iRet);
+		LOG_ERROR("default", "CDBCtrsl::SendkeepAliveToProxy ConvertMsgToStream failed, iRet = %d.", iRet);
 		return 0;
 	}
 

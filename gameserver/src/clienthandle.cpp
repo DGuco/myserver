@@ -10,7 +10,7 @@
 #include "../../framework/mem/codequeue.h"
 #include "../../framework/base/my_assert.h"
 #include "../../framework/base/commondef.h"
-#include "../../framework/net/client_comm_engine.h"
+#include "../../framework/message/client_comm_engine.h"
 #include "../../framework/json/config.h"
 #include "../../framework/base/servertool.h"
 #include "../../framework/message/message.pb.h"

@@ -36,6 +36,7 @@ class CSocketInfo;
 class MesHead;
 class CMessage;
 class CProxyHead;
+class CProxyMessage;
 
 enum enServerType {
   FE_TIMER = 0,
@@ -540,6 +541,100 @@ class CProxyHead : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static CProxyHead* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class CProxyMessage : public ::google::protobuf::Message {
+ public:
+  CProxyMessage();
+  virtual ~CProxyMessage();
+
+  CProxyMessage(const CProxyMessage& from);
+
+  inline CProxyMessage& operator=(const CProxyMessage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CProxyMessage& default_instance();
+
+  void Swap(CProxyMessage* other);
+
+  // implements Message ----------------------------------------------
+
+  CProxyMessage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CProxyMessage& from);
+  void MergeFrom(const CProxyMessage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required .CProxyHead MsgHead = 1;
+  inline bool has_msghead() const;
+  inline void clear_msghead();
+  static const int kMsgHeadFieldNumber = 1;
+  inline const ::CProxyHead& msghead() const;
+  inline ::CProxyHead* mutable_msghead();
+  inline ::CProxyHead* release_msghead();
+  inline void set_allocated_msghead(::CProxyHead* msghead);
+
+  // optional fixed64 MsgPara = 2 [default = 0];
+  inline bool has_msgpara() const;
+  inline void clear_msgpara();
+  static const int kMsgParaFieldNumber = 2;
+  inline ::google::protobuf::uint64 msgpara() const;
+  inline void set_msgpara(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:CProxyMessage)
+ private:
+  inline void set_has_msghead();
+  inline void clear_has_msghead();
+  inline void set_has_msgpara();
+  inline void clear_has_msgpara();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::CProxyHead* msghead_;
+  ::google::protobuf::uint64 msgpara_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_message_2eproto();
+  friend void protobuf_AssignDesc_message_2eproto();
+  friend void protobuf_ShutdownFile_message_2eproto();
+
+  void InitAsDefaultInstance();
+  static CProxyMessage* default_instance_;
+};
 // ===================================================================
 
 
@@ -929,6 +1024,70 @@ inline ::google::protobuf::uint32 CProxyHead::messageid() const {
 inline void CProxyHead::set_messageid(::google::protobuf::uint32 value) {
   set_has_messageid();
   messageid_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// CProxyMessage
+
+// required .CProxyHead MsgHead = 1;
+inline bool CProxyMessage::has_msghead() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CProxyMessage::set_has_msghead() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CProxyMessage::clear_has_msghead() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CProxyMessage::clear_msghead() {
+  if (msghead_ != NULL) msghead_->::CProxyHead::Clear();
+  clear_has_msghead();
+}
+inline const ::CProxyHead& CProxyMessage::msghead() const {
+  return msghead_ != NULL ? *msghead_ : *default_instance_->msghead_;
+}
+inline ::CProxyHead* CProxyMessage::mutable_msghead() {
+  set_has_msghead();
+  if (msghead_ == NULL) msghead_ = new ::CProxyHead;
+  return msghead_;
+}
+inline ::CProxyHead* CProxyMessage::release_msghead() {
+  clear_has_msghead();
+  ::CProxyHead* temp = msghead_;
+  msghead_ = NULL;
+  return temp;
+}
+inline void CProxyMessage::set_allocated_msghead(::CProxyHead* msghead) {
+  delete msghead_;
+  msghead_ = msghead;
+  if (msghead) {
+    set_has_msghead();
+  } else {
+    clear_has_msghead();
+  }
+}
+
+// optional fixed64 MsgPara = 2 [default = 0];
+inline bool CProxyMessage::has_msgpara() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CProxyMessage::set_has_msgpara() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CProxyMessage::clear_has_msgpara() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CProxyMessage::clear_msgpara() {
+  msgpara_ = GOOGLE_ULONGLONG(0);
+  clear_has_msgpara();
+}
+inline ::google::protobuf::uint64 CProxyMessage::msgpara() const {
+  return msgpara_;
+}
+inline void CProxyMessage::set_msgpara(::google::protobuf::uint64 value) {
+  set_has_msgpara();
+  msgpara_ = value;
 }
 
 
