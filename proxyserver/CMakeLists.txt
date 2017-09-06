@@ -14,7 +14,8 @@ set(SOURCE_FILES
         )
 
 include_directories(
-        /usr/local/include
+        /usr/local/include/
+        ${CMAKE_SOURCE_DIR/framework/include}
         ${CMAKE_SOURCE_DIR/framework/base}
         ${CMAKE_SOURCE_DIR/framework/config}
         ${CMAKE_SOURCE_DIR/framework/log}
@@ -25,6 +26,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR/framework/thread}
         ${CMAKE_SOURCE_DIR/framework/timer}
 )
+
 link_directories(
         /usr/local/lib/
         ${CMAKE_SOURCE_DIR}/lib

@@ -8,17 +8,18 @@
 #ifndef SERVER_GAMESERVER_H
 #define SERVER_GAMESERVER_H
 
-#ifndef GAMESERVER_H_
-#define GAMESERVER_H_
-
-
 #include "../../framework/base/servertool.h"
 #include "../../framework/net/runflag.h"
 #include "../../framework/base/base.h"
 #include "../../framework/net/tcp_conn.h"
 #include "../../framework/timer/timer.h"
 #include "../../framework/message/message_interface.h"
-#include "player.h"
+#include "../../framework/message/message.pb.h"
+#include "../../framework/message/dbmessage.pb.h"
+#include "../datamodule/inc/player.h"
+#include "../logicmodule/inc/modulemanager.h"
+#include "messagedispatcher.h"
+#include "clienthandle.h"
 
 #define MAX_PROXY_NUM	(2)	// proxy服务器的最大数量
 
@@ -136,10 +137,11 @@ public:
     // 收取服务器消息
     int RecvServerMsg(time_t tTime);
     // 广播消息给玩家，广播时，发起人一定放第一个
-    int SendPlayer(CMessage* pMsg, stPointList* pTeamList);
-    // 发送消息给单个玩家
-    int SendPlayer(CMessage* pMsg, CPlayer* pPlayer);
-    int SendPlayer(unsigned int iMsgID, CMessage* pMsgPara, CPlayer* pPlayer);
+    int Push(unsigned int iMsgID,Message* pMsg, stPointList* pTeamList);
+    // 推送消息给单个玩家
+    int Push(unsigned int iMsgID, Message* pMsgPara, CPlayer* pPlayer);
+    // 回复客户端上行的请求
+    int SendResponse(Message* pMsgPara, CPlayer* pPlayer);
 
     // 通过消息ID获取模块类型
     int GetModuleClass(int iMsgID);
@@ -148,11 +150,11 @@ public:
     void DisconnectClient(CPlayer* pPlayer);
 
     // 连接到Proxy
-    bool Connect2Proxy(int iIndex);
+    bool Connect2Proxy();
     // 向Proxy注册
-    bool Regist2Proxy(int iIndex);
+    bool Regist2Proxy();
     // 发送心跳到Proxy
-    bool SendKeepAlive2Proxy(int iIndex);
+    bool SendKeepAlive2Proxy();
 
     // 设置服务器运行状态
     void SetRunFlag(ERunFlag eRunFlag);
@@ -163,8 +165,6 @@ public:
 
     // 读取配置
     int ReadCfg();
-//	// 获取配置信息
-//	CConfigure* GetConfig() {return &mConfig;}
 
     // 根据配置初始化信息
     int	InitializeByConfig();
@@ -195,18 +195,18 @@ public:
     int LimitTeamLogin( unsigned int iTeamID, time_t iTimes ); // itimes 暂定为小时
 
 protected:
-    CClientHandle* 				mpClientHandle;				// 与客户端通信的连接,需要new在共享内存上的
-    CModuleManager* 			mpModuleManager;			// 模块管理器
-    CTimerManager*				mpTimerManager;				// 定时器管理器
-    CMessageDispatcher*		    mpMessageDispatcher;		// 消息派发器
-    CFactory*					mpMessageFactory;				// 消息工厂
-    CRunFlag 					mRunFlag;						// 服务器运行状态
-    CProxyClient				mProxyClient[MAX_PROXY_NUM];	// 服务器间通信的连接
+    CClientHandle* 				m_pClientHandle;				// 与客户端通信的连接,需要new在共享内存上的
+    CModuleManager* 			m_pModuleManager;			// 模块管理器
+    CTimerManager*				m_pTimerManager;				// 定时器管理器
+    CMessageDispatcher*		    m_pMessageDispatcher;		// 消息派发器
+    CFactory*					m_pMessageFactory;				// 消息工厂
+    CRunFlag 					m_RunFlag;						// 服务器运行状态
+    CProxyClient				m_ProxyClient;	// 服务器间通信的连接
 
     int										miServerState;	// 服务器状态
     unsigned long long						mLastTickCount; // tick
 public:
-    CProxyClient* GetProxyClient(int iIndex);
+    const CProxyClient& GetProxyClient();
 
     int AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg);
 

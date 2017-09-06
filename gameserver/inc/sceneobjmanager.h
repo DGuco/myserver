@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include "../../framework/base/servertool.h"
 #include "../../framework/base/base.h"
-#include "player.h"
+#include "../datamodule/inc/player.h"
 
 #ifdef _DEBUG_
 #define SERVER_CAP_TEAM				(500)		// 服务器最大战队实体数量

@@ -31,17 +31,17 @@ void CCoreModule::OnRouterMessage(CMessage *pMsg)
 
 }
 
-void CCoreModule::OnClientMessage(CTeam *pTeam, CMessage *pMsg)
+void CCoreModule::OnClientMessage(CPlayer *pTeam, CMessage *pMsg)
 {
 
 }
 
-int CCoreModule::OnCreateEntity(CTeam *pTeam)
+int CCoreModule::OnCreateEntity(CPlayer *pTeam)
 {
     return 0;
 }
 
-void CCoreModule::OnDestroyEntity(CTeam *pTeam)
+void CCoreModule::OnDestroyEntity(CPlayer *pTeam)
 {
 
 }

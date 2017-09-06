@@ -3,7 +3,7 @@
 //
 
 #include "../inc/clienthandle.h"
-#include "../inc/player.h"
+#include "../datamodule/inc/player.h"
 #include "../inc/messagedispatcher.h"
 #include "../../framework/mem/shm.h"
 #include "../../framework/mem/sharemem.h"
@@ -15,6 +15,7 @@
 #include "../../framework/base/servertool.h"
 #include "../../framework/message/message.pb.h"
 #include "../inc/messagefactory.h"
+#include "../logicmodule/inc/coremodule.h"
 
 CClientHandle::CClientHandle()
 {
@@ -42,8 +43,8 @@ int CClientHandle::Initialize()
     MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
     CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
     CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize);
-    //mS2CPipe地址相对pbyTmpS2CPipe的偏移地址是sizeof(CSharedMem) + sizeof(CCodeQueue)
-    mS2CPipe = CCodeQueue::CreateInsance(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_S2C);
+    //mS2CPipe地址相对pbyTmpS2CPipe的偏移地址sizeof(CSharedMem) + sizeof(CCodeQueue)
+    mS2CPipe = CCodeQueue::CreateInsance(PIPE_SIZE, enLockIdx::IDX_PIPELOCK_S2C);
 
     ////////////////////////////////mC2SPipe/////////////////////////////////////////
     system("touch ./cspipefile");
@@ -58,12 +59,12 @@ int CClientHandle::Initialize()
     MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
     CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
     CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyC2S, iTempSize);
-    //mC2SPipe地址相对pbyTmpS2CPipe的偏移地址是sizeof(CSharedMem) + sizeof(CCodeQueue)
-    mC2SPipe = CCodeQueue::CreateInsance(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_C2S);
+    //mC2SPipe地址相对pbyTmpS2CPipe的偏移地址sizeof(CSharedMem) + sizeof(CCodeQueue)
+    mC2SPipe = CCodeQueue::CreateInsance(PIPE_SIZE, enLockIdx::IDX_PIPELOCK_C2S);
     return 0;
 }
 
-int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
+int CClientHandle::SendResponse(Message* pMessage,CPlayer* pPlayer) {
     MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
     char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     MSG_LEN_TYPE unTmpCodeLength = sizeof(aTmpCodeBuf);
@@ -82,6 +83,7 @@ int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     pTmpHead.set_seq(tmpPackage.GetSeq());
     pTmpHead.set_serial(tmpPackage.GetSerial());
 
+    tmpPackage.SetDeal(false);
     // 是否需要加密，在这里修改参数
     int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
                                                         unTmpCodeLength,
@@ -102,7 +104,7 @@ int CClientHandle::Send(Message* pMessage,CPlayer* pPlayer) {
     return 0;
 }
 
-int CClientHandle::Send(int cmd,Message* pMessage, stPointList* pTeamList)
+int CClientHandle::Push(int cmd,Message* pMessage, stPointList* pTeamList)
 {
     MY_ASSERT((pMessage != NULL && pTeamList != NULL), return -1);
 
@@ -194,7 +196,7 @@ int CClientHandle::Recv()
     }
     if (pMessage == NULL)
     {
-        return ClienthandleErrCode::CLIENTHANDLE_CLNENTMESSAGE;
+        return ClienthandleErrCode::CLIENTHANDLE_PARSE_FAILED;
     }
     tmpMessage.set_msgpara((int64)pMessage);
     CMessageDispatcher::GetSingletonPtr()->ProcessClientMessage(&tmpMessage);
@@ -285,7 +287,7 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pC
 
     CTeam* pTmpTeam = NULL;
     // 如果是登陆消息
-    if (pMsg  &&  == pCSHead->cmd() == CMsgLoginGameRequest::MsgID)
+    if (pMsg  && pCSHead->cmd() == CMsgLoginGameRequest::MsgID)
     {
         // 5500踢掉断线玩家 检测是否需要踢掉断连玩家
         if( CCoreModule::GetSingletonPtr()->CheckOnlineIsFull()  <  0)

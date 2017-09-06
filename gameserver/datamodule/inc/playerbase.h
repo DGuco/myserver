@@ -1,16 +1,20 @@
 //
-// Created by DGuco on 17-7-23.
+// Created by DGuco on 17-9-6.
+// 玩家基础信息
 //
 
-#ifndef SERVER_PLAYER_H
-#define SERVER_PLAYER_H
+#ifndef SERVER_PLAYERBASE_H
+#define SERVER_PLAYERBASE_H
 
-#include <string.h>
+#include <memory>
 #include <ctime>
-#include "../../framework/base/base.h"
-#include "../../framework/base/object.h"
-#include "../../framework/base/servertool.h"
-#include "../../framework/base/my_macro.h"
+#include <cstring>
+#include <iostream>
+#include "playerdata.h"
+#include "player.h"
+#include "../../../framework/base/base.h"
+#include "../../../framework/base/object.h"
+#include "../../../framework/base/my_macro.h"
 
 // 玩家链接信息
 struct STConnectInfo
@@ -51,42 +55,7 @@ struct STConnectInfo
     }
 };
 
-//下行客户端数据包信息
-class Package
-{
-public:
-    Package() 
-    {
-        m_unSerial = 0;
-        m_unCmd = 0;
-        m_unSeq = 0;
-        // m_bIsEncrpy = false;
-        m_bIsDeal = false;
-    }
-    ~Package() {}
-public:
-    void SetSerial(unsigned short seq) {m_unSerial = seq;}
-    unsigned short  GetSerial(){return m_unSerial;}
-    void SetSeq(unsigned short seq) {m_unSeq = seq;}
-    unsigned short  GetSeq(){return m_unSeq;}
-    void SetCmd(unsigned short cmd) {m_unCmd = cmd; }
-    unsigned short  GetCmd(){return m_unCmd;}
-
-    // bool GetIsEncrpy() {return m_bIsEncrpy;}
-    // void SetIsEncrpy(bool isEncrpy) {m_bIsEncrpy = isEncrpy;}
-    char* GetMessBuff() {return m_acMessageBuff;}
-    bool GetIsDeal() {return m_bIsDeal;}
-    void SetDeal(bool isDeal) {m_bIsDeal = isDeal;}
-private:
-    unsigned short m_unSerial;                  //序列码
-    unsigned short m_unSeq;                     //消息应答码    
-    unsigned short m_unCmd;                     //消息编号
-    // bool  m_bIsEncrpy;                          //是否加密
-    bool  m_bIsDeal;                            //当前消息是否处理完成
-    char m_acMessageBuff[MAX_PACKAGE_LEN];      //下行消息缓冲区
-};
-
-class CPlayer : public CObj
+class CPlayerBase : public CPlayerData
 {
 public:
     enum ETeamState
@@ -132,31 +101,12 @@ public:
     };
 
 public:
-    CPlayer();
-
+    CPlayerBase(std::shared_ptr<CPlayer> pPlayer) : CPlayerData(pPlayer) {Initialize();}
+    virtual ~CPlayerBase();
     virtual int Initialize();
-    virtual int Resume();
-
     // 实体ID
-    int GetEntityID() {return get_id();}
+    OBJ_ID GetEntityID() {return GetPlayerId();}
 
-protected:
-    // 上次登录时间
-    int m_iLastLoginTime;
-    // 离线时间
-    int m_iLeaveTime;
-    // 创建时间
-    time_t m_tCreateTime;
-    // 帐号状态时长( 禁止登陆 禁止说话 禁止...)
-    time_t m_tLoginLimitTime;
-    // 战队名称
-    char			m_acPlayerName[NAME_LENGTH];
-    // 帐号
-    char			m_acAccount[UID_LENGTH];
-    //连接信息
-    STConnectInfo	m_SocketInfo;
-private:
-    Package m_oPackage; //处理消息状态
 public:
     // 上次登录时间
     void SetLastLoginTime(int v) {m_iLastLoginTime = v;}
@@ -167,8 +117,7 @@ public:
     // 创建时间
     void SetCreateTime(time_t v) {m_tCreateTime = v;}
     time_t GetCreateTime() {return m_tCreateTime;}
-    unsigned long GetPlayerId() { return GetEntityID();}
-    char* GetPlayerName() { return m_acPlayerName;}
+
     // 帐号
     void SetAccount(const char* p)
     {
@@ -177,9 +126,23 @@ public:
         strncpy(m_acAccount, p, iTmpLen >= ARRAY_CNT(m_acAccount) ? (ARRAY_CNT(m_acAccount) - 1) : iTmpLen);
     }
     char* GetAccount() {return &m_acAccount[0];}
-    Package& GetPackage() {return m_oPackage;}
-public:
     // 获取连接信息
     STConnectInfo* GetSocketInfoPtr() {return &m_SocketInfo;}
+
+private:
+    // 上次登录时间
+    int m_iLastLoginTime;
+    // 离线时间
+    int m_iLeaveTime;
+    // 创建时间
+    time_t m_tCreateTime;
+    // 帐号状态时长( 禁止登陆 禁止说话 禁止...)
+    time_t m_tLoginLimitTime;
+    // 帐号
+    char			m_acAccount[UID_LENGTH];
+    //连接信息
+    STConnectInfo	m_SocketInfo;
 };
-#endif //SERVER_PLAYER_H_H
+
+
+#endif //SERVER_PLAYERBASE_H

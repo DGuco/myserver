@@ -10,8 +10,9 @@ set(SOURCE_FILES
         inc/gatectrl.h
         src/gatectrl.cpp)
 
-link_directories(
-        /usr/local/lib/
+include_directories(
+        /usr/local/include/
+        ${CMAKE_SOURCE_DIR/framework/include}
         ${CMAKE_SOURCE_DIR/framework/base}
         ${CMAKE_SOURCE_DIR/framework/config}
         ${CMAKE_SOURCE_DIR/framework/log}
@@ -21,6 +22,11 @@ link_directories(
         ${CMAKE_SOURCE_DIR/framework/sharemem}
         ${CMAKE_SOURCE_DIR/framework/thread}
         ${CMAKE_SOURCE_DIR/framework/timer}
+)
+
+link_directories(
+        /usr/local/lib/
+        ${CMAKE_SOURCE_DIR}/lib
 )
 
 add_executable(gateserver ${SOURCE_FILES})

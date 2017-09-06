@@ -6,6 +6,7 @@
 #ifndef SERVER_CLIENT_HANDLE_H
 #define SERVER_CLIENT_HANDLE_H
 
+#include "../datamodule/inc/player.h"
 #include "../../framework/base/base.h"
 #include "../../framework/message/message_interface.h"
 #include "../../framework/message/message.pb.h"
@@ -45,7 +46,6 @@ enum ClienthandleErrCode
 class CCSHead;
 class CCodeQueue;
 class CSharedMem;
-class CPlayer;
 
 class CClientHandle
 {
@@ -62,8 +62,8 @@ protected:
     CCodeQueue* mS2CPipe;
 
 public:
-    int Send(Message* pMessage,CPlayer* pPlayer);
-    int Send(int cmd,Message* pMessage, stPointList* pPlayerList);
+    int SendResponse(Message* pMessage,CPlayer* pPlayer);
+    int Push(int cmd,Message* pMessage, stPointList* pPlayerList);
     int Recv();
 
     int DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pCSHead, Message* pMsg);

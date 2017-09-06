@@ -76,7 +76,7 @@ void CModuleManager::OnRouterMessage(int iModuleType, CMessage *pMsg)
     mpLogicModules[iModuleType]->OnRouterMessage(pMsg);
 }
 
-void CModuleManager::OnClientMessage(int iModuleType, CTeam *pTeam, CMessage *pMsg)
+void CModuleManager::OnClientMessage(int iModuleType, CPlayer *pTeam, CMessage *pMsg)
 {
     if (iModuleType < EMODULETYPE_START || iModuleType >= EMODULETYPE_NUM)
     {
@@ -86,7 +86,7 @@ void CModuleManager::OnClientMessage(int iModuleType, CTeam *pTeam, CMessage *pM
     mpLogicModules[iModuleType]->OnClientMessage(pTeam, pMsg);
 }
 
-int CModuleManager::OnCreateEntity(CTeam *pTeam)
+int CModuleManager::OnCreateEntity(CPlayer *pTeam)
 {
     int iRet = 0;
     for (int i = EMODULETYPE_START; i < EMODULETYPE_NUM; i++)
@@ -100,7 +100,7 @@ int CModuleManager::OnCreateEntity(CTeam *pTeam)
     return iRet;
 }
 
-void CModuleManager::OnDestroyEntity(CTeam *pTeam)
+void CModuleManager::OnDestroyEntity(CPlayer *pTeam)
 {
     for (int i = EMODULETYPE_START; i < EMODULETYPE_NUM; i++)
     {

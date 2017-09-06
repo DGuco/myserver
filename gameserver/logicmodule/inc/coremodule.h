@@ -23,11 +23,11 @@ public:
     // 路由消息
     void OnRouterMessage(CMessage* pMsg);
     // 客户端消息
-    void OnClientMessage(CTeam* pTeam, CMessage* pMsg);
+    void OnClientMessage(CPlayer* pTeam, CMessage* pMsg);
     // 创建实体
-    int OnCreateEntity(CTeam* pTeam);
+    int OnCreateEntity(CPlayer* pTeam);
     // 销毁实体
-    void OnDestroyEntity(CTeam* pTeam);
+    void OnDestroyEntity(CPlayer* pTeam);
 };
 
 #endif //SERVER_COREMODULE_H

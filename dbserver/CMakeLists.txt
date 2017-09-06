@@ -23,11 +23,8 @@ set(SOURCE_FILES
         src/queryresultmysql.cpp)
 
 include_directories(
-        /usr/local/include
-)
-
-link_directories(
-        /usr/local/lib/
+        /usr/local/include/
+        ${CMAKE_SOURCE_DIR/framework/include}
         ${CMAKE_SOURCE_DIR/framework/base}
         ${CMAKE_SOURCE_DIR/framework/config}
         ${CMAKE_SOURCE_DIR/framework/log}
@@ -39,6 +36,10 @@ link_directories(
         ${CMAKE_SOURCE_DIR/framework/timer}
 )
 
+link_directories(
+        /usr/local/lib/
+        ${CMAKE_SOURCE_DIR}/lib
+)
 add_executable(dbeserver ${SOURCE_FILES})
 target_link_libraries(dbeserver framework protobuf crypto mysqlclient)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)

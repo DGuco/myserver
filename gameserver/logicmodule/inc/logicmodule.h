@@ -6,6 +6,8 @@
 #ifndef SERVER_LOGIC_MODULE_H
 #define SERVER_LOGIC_MODULE_H
 
+#include "../../datamodule/inc/player.h"
+
 // 模块类型
 enum EModuleType
 {
@@ -17,7 +19,6 @@ enum EModuleType
 
 #define EMODULETYPE_START (EMODULETYPE_INVALID + 1)	// 模块起始下标
 
-class CTeam;
 class CMessage;
 
 class CLogicModule
@@ -46,13 +47,13 @@ public:
     virtual void OnRouterMessage(CMessage* pMsg) {}
 
     // 客户端消息
-    virtual void OnClientMessage(CTeam* pTeam, CMessage* pMsg) {}
+    virtual void OnClientMessage(CPlayer* pTeam, CMessage* pMsg) {}
 
     // 创建实体
-    virtual int OnCreateEntity(CTeam* pTeam) {return 0;}
+    virtual int OnCreateEntity(CPlayer* pTeam) {return 0;}
 
     // 销毁实体
-    virtual void OnDestroyEntity(CTeam* pTeam) {}
+    virtual void OnDestroyEntity(CPlayer* pTeam) {}
 };
 
 #endif //SERVER_LOGIC_MODULE_H

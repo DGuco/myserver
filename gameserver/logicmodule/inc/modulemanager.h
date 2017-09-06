@@ -10,6 +10,7 @@
 
 #include "../../../framework/base/servertool.h"
 #include "logicmodule.h"
+#include "../../datamodule/inc/player.h"
 
 class CLogicModule;
 
@@ -34,13 +35,13 @@ public:
     void OnRouterMessage(int iModuleType, CMessage* pMsg);
 
     // 客户端消息
-    void OnClientMessage(int iModuleType, CTeam* pTeam, CMessage* pMsg);
+    void OnClientMessage(int iModuleType, CPlayer* pTeam, CMessage* pMsg);
 
     // 创建实体
-    int OnCreateEntity(CTeam* pTeam);
+    int OnCreateEntity(CPlayer* pTeam);
 
     // 销毁实体
-    void OnDestroyEntity(CTeam* pTeam);
+    void OnDestroyEntity(CPlayer* pTeam);
 
 protected:
     CLogicModule* mpLogicModules[EMODULETYPE_NUM];

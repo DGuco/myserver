@@ -1,14 +1,11 @@
 //
 // Created by DGuco on 17-7-27.
 //
-#include "../inc/player.h"
+#include "../datamodule/inc/player.h"
 #include "../inc/sceneobjmanager.h"
 #include "../inc/messagedispatcher.h"
 #include "../inc/gameserver.h"
-#include "../../framework/message/message_interface.h"
-#include "../../framework/message/message.pb.h"
 #include "../../framework/base/performance.h"
-#include "../../framework/base/servertool.h"
 
 template<> CMessageDispatcher* CSingleton<CMessageDispatcher>::spSingleton = NULL;
 
@@ -37,10 +34,10 @@ int CMessageDispatcher::ProcessClientMessage(CMessage* pMsg)
     }
 
     MesHead tmpHead = pMsg->msghead();
-    CSocketInfo tmpSocketInfo = tmpHead.socketinfos();
+    CSocketInfo tmpSocketInfo = tmpHead.socketinfos().Get(0);
     // 获得CTeam 实体
     CPlayer* pPlayer = CSceneObjManager::GetSingletonPtr()->GetPlayer(tmpSocketInfo.socketid());
-    if ( NULL == pTmpTeam )
+    if ( NULL == pPlayer )
     {
         // 未找到玩家实体
         LOG_ERROR("default", "[%s : %d : %s] ProcessClientMsg failed, Invalid team obj_id(%d).",
@@ -49,12 +46,13 @@ int CMessageDispatcher::ProcessClientMessage(CMessage* pMsg)
     }
 
     //有消息正在处理（注:正常情况不会出现这种情况，客户端等一个消息回复后才能发下一个消息)
-    if(pPlayer->GetPackage().GetIsDeal())
+    Package tmpPackage = pPlayer->GetPackage();
+    if(tmpPackage.GetIsDeal())
     {
         //todo 缓存消息 or 踢下线
         return -4;
     }
-
+    tmpPackage.SetDeal(true);
     const ::google::protobuf::Descriptor* pTmpDescriptor = pMsgPara->GetDescriptor();
 #ifdef _DEBUG_
     OBJ_ID iTmpPlayerId = pTmpTeam->GetPlayerId();

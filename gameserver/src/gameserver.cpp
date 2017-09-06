@@ -9,7 +9,6 @@
 #include "../../framework/base/performance.h"
 #include "../../framework/base/my_assert.h"
 #include "../../framework/json/config.h"
-#include "../../framework/message/proxymessage.pb.h"
 #include "../../framework/message/server_comm_engine.h"
 
 template<> CGameServer* CSingleton<CGameServer>::spSingleton = NULL;
@@ -22,35 +21,35 @@ CGameServer::CGameServer()
 
 CGameServer::~CGameServer()
 {
-    if (mpClientHandle != NULL)
+    if (m_pClientHandle != NULL)
     {
-        delete mpClientHandle;
+        delete m_pClientHandle;
     }
 
-    if (mpMessageDispatcher != NULL)
+    if (m_pMessageDispatcher != NULL)
     {
-        delete mpMessageDispatcher;
+        delete m_pMessageDispatcher;
     }
 
-    if (mpMessageFactory != NULL)
+    if (m_pMessageFactory != NULL)
     {
-        delete mpMessageFactory;
+        delete m_pMessageFactory;
     }
 
-    if (mpModuleManager != NULL)
+    if (m_pModuleManager != NULL)
     {
-        delete mpModuleManager;
+        delete m_pModuleManager;
     }
 
-    if (mpTimerManager != NULL)
+    if (m_pTimerManager != NULL)
     {
-        delete mpTimerManager;
+        delete m_pTimerManager;
     }
 }
 
 int CGameServer::Initialize()
 {
-    mpModuleManager = new CModuleManager;
+    m_pModuleManager = new CModuleManager;
 }
 
 // 读取配置
@@ -61,14 +60,9 @@ int CGameServer::ReadCfg()
 }
 
 
-CProxyClient* CGameServer::GetProxyClient(int iIndex)
+const CProxyClient& CGameServer::GetProxyClient()
 {
-    if (iIndex < 0 || iIndex >= MAX_PROXY_NUM)
-    {
-        return NULL;
-    }
-
-    return &mProxyClient[iIndex];
+    return m_ProxyClient;
 }
 
 // 运行准备
@@ -87,23 +81,20 @@ int CGameServer::PrepareToRun()
         return -4;
     }
 
-//    // 连接proxy
-//    for (int i = 0; i < CConfigMgr::GetSingletonPtr()->GetConfig()->gameconfig().proxyinfo_size() && i < MAX_PROXY_NUM; i++)
-//    {
-//        if (Connect2Proxy(i) == true)
-//        {
-//            if (Regist2Proxy(i) == true)
-//            {
-//                mProxyClient[i].InitTimer((time_t) CConfigMgr::GetSingletonPtr()->GetConfig()->gameconfig().proxytimeout());
-//            }
-//        }
-//    }
-//
-//    // 通知各模块启动
-//    if (m_pModuleManager->OnLaunchServer() != 0)
-//    {
-//        return -5;
-//    }
+
+    if (Connect2Proxy() == true)
+    {
+        if (Regist2Proxy() == true)
+        {
+            m_ProxyClient.InitTimer((time_t) CServerConfig::GetSingletonPtr()->GetSocketTimeOut());
+        }
+    }
+
+    // 通知各模块启动
+    if (m_pModuleManager->OnLaunchServer() != 0)
+    {
+        return -5;
+    }
 
     return 0;
 }
@@ -173,7 +164,7 @@ void CGameServer::Run()
 
         // 处理内部定时请求
 //		OnTimer(tTmpNow);
-        mpTimerManager->CheckTimerQueue(tTmpNow);
+        m_pTimerManager->CheckTimerQueue(tTmpNow);
         // 处理客户端上传请求
         iRet = RecvClientMsg(tTmpNow);
         // 处理服务器间请求
@@ -201,8 +192,12 @@ void CGameServer::Exit()
 void CGameServer::ProcessClientMessage(CMessage* pMsg, CPlayer* pPlayer)
 {
     MY_ASSERT(pMsg != NULL && pPlayer != NULL, return);
-    int iTmpType = GetModuleClass(pMsg->msghead().messageid());
-    m_pModuleManager->OnClientMessage(iTmpType, pTeam, pMsg);
+    int iTmpType = GetModuleClass(pMsg->msghead().cmd());
+    try {
+        m_pModuleManager->OnClientMessage(iTmpType, pPlayer, pMsg);
+    }catch (std::logic_error error) {
+        LOG_ERROR("default","Catch execption,msg %s",error.what());
+    }
 }
 
 
@@ -211,8 +206,12 @@ void CGameServer::ProcessRouterMessage(CMessage* pMsg)
     MY_ASSERT(pMsg != NULL, return );
     MY_ASSERT(pMsg->has_msghead() == true, return);
 
-    int iTmpType = GetModuleClass(pMsg->msghead().messageid());
-    m_pModuleManager->OnRouterMessage(iTmpType, pMsg);
+    int iTmpType = GetModuleClass(pMsg->msghead().cmd());
+    try {
+        m_pModuleManager->OnRouterMessage(iTmpType, pMsg);
+    }catch (std::logic_error error) {
+        LOG_ERROR("default","Catch execption,msg %s",error.what());
+    }
 }
 
 
@@ -255,7 +254,7 @@ int CGameServer::GetModuleClass(int iMsgID)
 // 设置服务器运行状态
 void CGameServer::SetRunFlag(ERunFlag eRunFlag)
 {
-    mRunFlag.SetRunFlag(eRunFlag);
+    m_RunFlag.SetRunFlag(eRunFlag);
 }
 
 
@@ -266,7 +265,7 @@ int CGameServer::RecvClientMsg(time_t tTime)
 
     while(iTmpRecvCount < MAX_CHECK_CLIENT_MSG)
     {
-        int iRet = mpClientHandle->Recv();
+        int iRet = m_pClientHandle->Recv();
         if (iRet == CLIENTHANDLE_QUEUE_EMPTY)
         {
             // 队列已空，直接返回
@@ -403,70 +402,112 @@ int CGameServer::RecvServerMsg(time_t tTime)
 //    return iTmpRecvCount;
 }
 
-
-// 广播消息给玩家，广播时，发起人一定放第一个
-int CGameServer::SendPlayer(CMessage* pMsg, stPointList* pTeamList)
-{
-    return mpClientHandle->Send(pMsg->msghead().cmd(),(Message*)pMsg->msgpara(), pTeamList);
-}
-
 // 主动断开链接
 void CGameServer::DisconnectClient(CPlayer* pPlayer)
 {
-    return mpClientHandle->DisconnectClient(pPlayer);
+    return m_pClientHandle->DisconnectClient(pPlayer);
+}
+
+// 广播消息给玩家，广播时，发起人一定放第一个
+int CGameServer::Push(unsigned int iMsgID,Message* pMsg, stPointList* pTeamList)
+{
+    return m_pClientHandle->Push(iMsgID,pMsg,pTeamList);
 }
 
 // 发送消息给单个玩家
-int CGameServer::SendPlayer(CMessage* pMsg, CPlayer* pPlayer)
+int CGameServer::Push(unsigned int iMsgID,Message* pMsg, CPlayer* pPlayer)
 {
     MY_ASSERT( pPlayer != NULL && pMsg != NULL,return -1 );
-    // 消息集合处理
-//    if( pPlayer->IsSendTask() )
-//    {
-//        pPlayer->SetSendTask(false);
-//        if( (!pPlayer->GetTaskOnlion()->IsHaveRecv())  && (!pPlayer->GetTaskLoop()->IsHaveRecv()))
-//        {
-//            CTaskModule::GetSingletonPtr()->AddMsgIsHaveRecvResponse(pTeam,  pMsgSet,  RESULT_SUCCESS);
-//        }
-//        else
-//        {
-//            CTaskModule::GetSingletonPtr()->AddMsgIsHaveRecvResponse(pTeam,  pMsgSet, ONE);
-//        }
-//    }
-//
-//    stPointList tmpList;
-//    tmpList.push_back(pTeam);
-
-//    return mpClientHandle->Send(pMsgSet, &tmpList);
-}
-
-int CGameServer::SendPlayer(unsigned int iMsgID, CMessage* pMsg, CPlayer* pPlayer)
-{
-    MY_ASSERT(pMsg != NULL && pPlayer != NULL, return -1);
-
     stPointList tmpList;
     tmpList.push_back(pPlayer);
+    return m_pClientHandle->Push(iMsgID,pMsg, &tmpList);
+}
 
-    return mpClientHandle->Send(pMsg->msghead().cmd(),(Message*)pMsg->msgpara(), &tmpList);
+// 回复客户端上行的请求
+int CGameServer::SendResponse(Message* pMsgPara, CPlayer* pPlayer)
+{
+    MY_ASSERT( pPlayer != NULL && pMsgPara != NULL,return -1 );
+    return m_pClientHandle->SendResponse(pMsgPara, pPlayer);
 }
 
 // 连接到Proxy
-bool CGameServer::Connect2Proxy(int iIndex)
+bool CGameServer::Connect2Proxy()
 {
+    ServerInfo rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerMap().find(enServerType::FE_PROXYSERVER)->second;
+    m_ProxyClient.Initialize(enServerType::FE_PROXYSERVER, rTmpProxy.m_iServerId, inet_addr(rTmpProxy.m_sHost.c_str()), rTmpProxy.m_iPort);
+
+    if (m_ProxyClient.ConnectToServer((char*)rTmpProxy.m_sHost.c_str()))
+    {
+        LOG_ERROR("default", "[%s : %d : %s] Connect to Proxy(%s:%d)(id=%d) failed.",
+                  __MY_FILE__, __LINE__, __FUNCTION__,
+                  rTmpProxy.m_sHost.c_str(), rTmpProxy.m_iPort, rTmpProxy.m_iServerId);
+        return false;
+    }
+
+    LOG_NOTICE("default", "Connect to Proxy(%s:%d)(id=%d) succeed.",
+               rTmpProxy.m_sHost.c_str(), rTmpProxy.m_iPort, rTmpProxy.m_iPort);
 
     return true;
 }
 
 
 // 向Proxy注册
-bool CGameServer::Regist2Proxy(int iIndex)
+bool CGameServer::Regist2Proxy()
 {
+    CProxyMessage tmpMessage;
+    char acTmpMessageBuffer[1024];
+    unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
+
+    ServerInfo rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerMap().find(enServerType::FE_PROXYSERVER)->second;
+    pbmsg_setproxy(tmpMessage.mutable_msghead(), enServerType::FE_GAMESERVER,rTmpProxy.m_iServerId,
+                   enServerType::FE_PROXYSERVER, m_ProxyClient.GetEntityID(), GetMSTime(), enMessageCmd::MESS_REGIST);
+
+    int iRet = ServerCommEngine::ConvertMsgToStream(&tmpMessage,acTmpMessageBuffer, unTmpTotalLen);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default", "[%s : %d : %s] ConvertMsgToStream failed, iRet = %d.",
+                  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+        return false;
+    }
+
+    iRet = m_ProxyClient.SendOneCode(unTmpTotalLen, (BYTE*)acTmpMessageBuffer);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default", "[%s : %d : %s] proxy SendOneCode failed, iRet = %d.",
+                  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+        return false;
+    }
+
+    LOG_NOTICE("default", "Regist to Proxy now.");
+    return true;
 }
 
 
 // 发送心跳到Proxy
-bool CGameServer::SendKeepAlive2Proxy(int iIndex)
+bool CGameServer::SendKeepAlive2Proxy()
 {
+    CProxyMessage tmpMessage;
+    char acTmpMessageBuffer[1024];
+    unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
+    ServerInfo rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerMap().find(enServerType::FE_PROXYSERVER)->second;
+    pbmsg_setproxy(tmpMessage.mutable_msghead(), enServerType::FE_GAMESERVER, rTmpProxy.m_iServerId,
+                   enServerType::FE_PROXYSERVER, m_ProxyClient.GetEntityID(), GetMSTime(), enMessageCmd::MESS_KEEPALIVE);
+
+    int iRet = ServerCommEngine::ConvertMsgToStream(&tmpMessage,acTmpMessageBuffer, unTmpTotalLen);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default", "[%s : %d : %s] ConvertMsgToStream failed, iRet = %d.",
+                  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+        return false;
+    }
+
+    iRet = m_ProxyClient.SendOneCode(unTmpTotalLen, (BYTE*)acTmpMessageBuffer);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default", "[%s : %d : %s] proxy SendOneCode failed, iRet = %d.",
+                  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+        return false;
+    }
     return true;
 }
 
