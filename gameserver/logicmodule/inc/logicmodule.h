@@ -7,6 +7,7 @@
 #define SERVER_LOGIC_MODULE_H
 
 #include "../../datamodule/inc/player.h"
+#include "../../../framework/message/message_interface.h"
 
 // 模块类型
 enum EModuleType
@@ -44,10 +45,10 @@ public:
     virtual int OnExitServer() {return 0;}
 
     // 路由消息
-    virtual void OnRouterMessage(CMessage* pMsg) {}
+    virtual void OnRouterMessage(int cmd,Message* pMsg) {}
 
     // 客户端消息
-    virtual void OnClientMessage(CPlayer* pTeam, CMessage* pMsg) {}
+    virtual void OnClientMessage(CPlayer* pTeam, int cmd,Message* pMsg) {}
 
     // 创建实体
     virtual int OnCreateEntity(CPlayer* pTeam) {return 0;}

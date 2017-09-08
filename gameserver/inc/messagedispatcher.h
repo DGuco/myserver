@@ -6,6 +6,7 @@
 #define SERVER_MESSAGEDISPATCHER_H
 
 #include "../../framework/base/servertool.h"
+#include "../../framework/message/message.pb.h"
 
 class CMessage;
 class CCSHead;
@@ -20,7 +21,7 @@ public:
     // 客户端上传的消息派发
     int ProcessClientMessage(CMessage* pMsg);
     // 服务器消息派发
-    int ProcessServerMessage(CProxyHead* pHead, CMessage* pMsg);
+    int ProcessServerMessage(CProxyMessage* pMessage);
 };
 
 #endif //SERVER_MESSAGEDISPATCHER_H

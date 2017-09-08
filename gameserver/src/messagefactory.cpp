@@ -24,7 +24,7 @@ Message* CMessageFactory::CreateMessage(unsigned int uiMessageID)
 
 	if (pTmpMessage == NULL)
 	{
-		LOG_ERROR("default", "[%s : %d : %s] invalid message id %u.",__YQ_FILE__, __LINE__, __FUNCTION__, uiMessageID);
+		LOG_ERROR("default", "[%s : %d : %s] invalid message id %u.",__MY_FILE__, __LINE__, __FUNCTION__, uiMessageID);
 	}
 	else
 	{
@@ -43,7 +43,6 @@ Message* CMessageFactory::CreateClientMessage(unsigned int uiMessageID)
 		// 只有客户端上行的消息需要在这里生成，下行的消息都是临时变量，不需要在MessageFactory中创建
 		default:
 		{
-            CASE_NEW_MSG()
 			break;
 		}
 	}

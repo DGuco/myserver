@@ -119,18 +119,11 @@ public:
     // 处理客户端上行消息
     void ProcessClientMessage(CMessage* pMsg, CPlayer* pPlayer);
     // 处理服务器内部消息
-    void ProcessRouterMessage(CMessage* pMsg);
+    void ProcessRouterMessage(CProxyMessage* pMsg);
 
     // 给DB Server发消息
-    bool SendMessageToDB(CMessage* pMsg);
+    bool SendMessageToDB(CProxyMessage* pMsg);
     // 给World Server 发消息
-    bool SendMessageToWorld(CMessage* pMsg);
-    // 给Web Server 发消息
-    bool SendMessageToWeb(CMessage* pMsg);
-    // 给Offline Server 发消息
-    bool SendMessageToOffline(CMessage* pMsg);
-    // 给check Server 发消息
-    bool SendMessageToCheck(CMessage* pMsg);
 
     // 收取客户端消息
     int RecvClientMsg(time_t tTime);
@@ -161,7 +154,7 @@ public:
     // 检查服务器状态
     void CheckRunFlags();
     // 刷新服务器状态
-    //void FreshGame();
+    void FreshGame();
 
     // 读取配置
     int ReadCfg();
@@ -194,21 +187,20 @@ public:
     // 限制玩家登陆
     int LimitTeamLogin( unsigned int iTeamID, time_t iTimes ); // itimes 暂定为小时
 
-protected:
-    CClientHandle* 				m_pClientHandle;				// 与客户端通信的连接,需要new在共享内存上的
+private:
+    CClientHandle* 				m_pClientHandle;			// 与客户端通信的连接,需要new在共享内存上的
     CModuleManager* 			m_pModuleManager;			// 模块管理器
-    CTimerManager*				m_pTimerManager;				// 定时器管理器
     CMessageDispatcher*		    m_pMessageDispatcher;		// 消息派发器
-    CFactory*					m_pMessageFactory;				// 消息工厂
-    CRunFlag 					m_RunFlag;						// 服务器运行状态
-    CProxyClient				m_ProxyClient;	// 服务器间通信的连接
+    CFactory*					m_pMessageFactory;			// 消息工厂
+    CTimerManager*				m_pTimerManager;            // 定时器管理器
+    CRunFlag 					m_RunFlag;					// 服务器运行状态
+    CProxyClient				m_ProxyClient;	            // 服务器间通信的连接
+
 
     int										miServerState;	// 服务器状态
     unsigned long long						mLastTickCount; // tick
 public:
     const CProxyClient& GetProxyClient();
-
-    int AddMsgToMsgSet(CMessageSet* pMsgSet, Message* pMsg);
 
     // 为找不到CTeam的连接发送消息
     void SendMsgSystemErrorResponse(int iResult, long lMsgGuid, int iServerID, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff = false);

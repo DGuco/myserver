@@ -66,24 +66,29 @@ int CModuleManager::OnExitServer()
     return iRet;
 }
 
-void CModuleManager::OnRouterMessage(int iModuleType, CMessage *pMsg)
+void CModuleManager::OnRouterMessage(int iModuleType, CProxyMessage * pMsg)
 {
-    if (iModuleType < EMODULETYPE_START || iModuleType >= EMODULETYPE_NUM)
+//    MY_ASSERT(pMsg->has_msghead() == true, return);
+    if (iModuleType < EMODULETYPE_START || iModuleType >= EMODULETYPE_NUM || pMsg == NULL)
     {
         return;
     }
 
-    mpLogicModules[iModuleType]->OnRouterMessage(pMsg);
+    mpLogicModules[iModuleType]->OnRouterMessage(pMsg->msghead().messageid(),
+                                                 (Message*)pMsg->msgpara());
 }
 
 void CModuleManager::OnClientMessage(int iModuleType, CPlayer *pTeam, CMessage *pMsg)
 {
-    if (iModuleType < EMODULETYPE_START || iModuleType >= EMODULETYPE_NUM)
+//    MY_ASSERT(pMsg->has_msghead() == true, return);
+    if (iModuleType < EMODULETYPE_START || iModuleType >= EMODULETYPE_NUM || pMsg == NULL)
     {
         return;
     }
 
-    mpLogicModules[iModuleType]->OnClientMessage(pTeam, pMsg);
+    mpLogicModules[iModuleType]->OnClientMessage(pTeam,
+                                                 pMsg->msghead().cmd(),
+                                                 (Message*)pMsg->msgpara());
 }
 
 int CModuleManager::OnCreateEntity(CPlayer *pTeam)

@@ -11,6 +11,7 @@
 #include "../../../framework/base/servertool.h"
 #include "logicmodule.h"
 #include "../../datamodule/inc/player.h"
+#include "../../../framework/message/message.pb.h"
 
 class CLogicModule;
 
@@ -32,7 +33,7 @@ public:
     int OnExitServer();
 
     // 路由消息
-    void OnRouterMessage(int iModuleType, CMessage* pMsg);
+    void OnRouterMessage(int iModuleType, CProxyMessage* pMsg);
 
     // 客户端消息
     void OnClientMessage(int iModuleType, CPlayer* pTeam, CMessage* pMsg);

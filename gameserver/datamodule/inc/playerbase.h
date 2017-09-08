@@ -101,7 +101,7 @@ public:
     };
 
 public:
-    CPlayerBase(std::shared_ptr<CPlayer> pPlayer) : CPlayerData(pPlayer) {Initialize();}
+    CPlayerBase(std::shared_ptr<CPlayer> pPlayer);
     virtual ~CPlayerBase();
     virtual int Initialize();
     // 实体ID

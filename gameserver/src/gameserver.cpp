@@ -2,12 +2,7 @@
 // Created by DGuco on 17-3-1.
 //
 #include "../inc/gameserver.h"
-#include "../inc/clienthandle.h"
-#include "../logicmodule/inc/modulemanager.h"
-#include "../../framework/mem/shm.h"
-#include "../../framework/message/message.pb.h"
-#include "../../framework/base/performance.h"
-#include "../../framework/base/my_assert.h"
+#include "../inc/messagefactory.h"
 #include "../../framework/json/config.h"
 #include "../../framework/message/server_comm_engine.h"
 
@@ -15,8 +10,7 @@ template<> CGameServer* CSingleton<CGameServer>::spSingleton = NULL;
 
 CGameServer::CGameServer()
 {
-    miServerState = 0;
-    mLastTickCount = 0;
+    Initialize();
 }
 
 CGameServer::~CGameServer()
@@ -49,7 +43,13 @@ CGameServer::~CGameServer()
 
 int CGameServer::Initialize()
 {
+    miServerState = 0;
+    mLastTickCount = 0;
     m_pModuleManager = new CModuleManager;
+    m_pClientHandle = new CClientHandle;
+    m_pMessageDispatcher = new CMessageDispatcher;
+    m_pMessageFactory = new CMessageFactory;
+    m_pTimerManager = new CTimerManager;
 }
 
 // 读取配置
@@ -82,9 +82,9 @@ int CGameServer::PrepareToRun()
     }
 
 
-    if (Connect2Proxy() == true)
+    if (Connect2Proxy())
     {
-        if (Regist2Proxy() == true)
+        if (Regist2Proxy())
         {
             m_ProxyClient.InitTimer((time_t) CServerConfig::GetSingletonPtr()->GetSocketTimeOut());
         }
@@ -98,29 +98,6 @@ int CGameServer::PrepareToRun()
 
     return 0;
 }
-
-//// 处理定时相关功能
-//void CGameServer::OnTimer(time_t tNow)
-//{
-//	// 每100毫秒执行一次
-//	if (mServerTick.IsTimeout(tNow))
-//	{
-//		// 处理定时器
-//		mTimerManager->CheckTimerQueue(tNow);
-//
-//		// 检查服务器间连接状态及心跳
-//		CheckStateInServer(tNow);
-//
-////		// 通知各模块处理自己的定时器
-////		mModuleManager->OnTimer(tNow);
-//
-//		// perf日志打印(用于服务器性能分析)
-//		if ( mSavePerf.IsTimeout(tNow) )
-//		{
-//			PERF_LOG();
-//		}
-//	}
-//}
 
 // 开启所有定时器
 int CGameServer::StartAllTimers()
@@ -146,24 +123,8 @@ void CGameServer::Run()
     time_t tTmpNow;
     int iRet = 0;
 
-//	time_t tLastTick = 0;
-//	int iCnt = 0;
-
     while(true)
     {
-        tTmpNow = GetMSTime();
-        iRet = 0;
-//		if ((tTmpNow / 100) != tLastTick)
-//		{
-//			tLastTick = (tTmpNow / 100);
-////			LOG_DEBUG("default", "now = %ld, tick = %ld, iCnt = %d.", tNow, tLastTick, iCnt);
-//			iCnt = 0;
-//		}
-//
-//		iCnt++;
-
-        // 处理内部定时请求
-//		OnTimer(tTmpNow);
         m_pTimerManager->CheckTimerQueue(tTmpNow);
         // 处理客户端上传请求
         iRet = RecvClientMsg(tTmpNow);
@@ -172,6 +133,7 @@ void CGameServer::Run()
         // 检查服务器状态
         CheckRunFlags();
 
+        //当前没有可处理的消息等待1ms
         if (iRet == 0)
         {
             usleep(1000);
@@ -192,6 +154,7 @@ void CGameServer::Exit()
 void CGameServer::ProcessClientMessage(CMessage* pMsg, CPlayer* pPlayer)
 {
     MY_ASSERT(pMsg != NULL && pPlayer != NULL, return);
+//    MY_ASSERT(pMsg->has_msghead() == true, return);
     int iTmpType = GetModuleClass(pMsg->msghead().cmd());
     try {
         m_pModuleManager->OnClientMessage(iTmpType, pPlayer, pMsg);
@@ -201,12 +164,11 @@ void CGameServer::ProcessClientMessage(CMessage* pMsg, CPlayer* pPlayer)
 }
 
 
-void CGameServer::ProcessRouterMessage(CMessage* pMsg)
+void CGameServer::ProcessRouterMessage(CProxyMessage* pMsg)
 {
     MY_ASSERT(pMsg != NULL, return );
-    MY_ASSERT(pMsg->has_msghead() == true, return);
-
-    int iTmpType = GetModuleClass(pMsg->msghead().cmd());
+//    MY_ASSERT(pMsg->has_msghead() == true, return);
+    int iTmpType = GetModuleClass(pMsg->msghead().messageid());
     try {
         m_pModuleManager->OnRouterMessage(iTmpType, pMsg);
     }catch (std::logic_error error) {
@@ -215,32 +177,42 @@ void CGameServer::ProcessRouterMessage(CMessage* pMsg)
 }
 
 
-bool CGameServer::SendMessageToDB(CMessage* pMsg)
+bool CGameServer::SendMessageToDB(CProxyMessage* pMsg)
 {
-    return true;
-}
+    CProxyHead *pHead = pMsg->mutable_msghead();
+    char acTmpMessageBuffer[MAX_PACKAGE_LEN];
+    unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
 
-// 给World Server 发消息
-bool CGameServer::SendMessageToWorld(CMessage* pMsg)
-{
-    return true;
-}
+    ServerInfo gameInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType::FE_GAMESERVER)->second;
+    ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType::FE_DBSERVER)->second;
+    int iTmpServerID = gameInfo.m_iServerId;
+    int iTmpDBServerID = dbInfo.m_iServerId;
+    pbmsg_setproxy(pHead, FE_GAMESERVER, iTmpServerID, FE_DBSERVER, iTmpDBServerID, GetMSTime(), enMessageCmd::MESS_NULL);
 
-// 给offline Server 发消息
-bool CGameServer::SendMessageToOffline(CMessage* pMsg)
-{
-    return true;
-}
+    int iRet = ServerCommEngine::ConvertMsgToStream(pMsg, acTmpMessageBuffer, unTmpTotalLen);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default", "[%s : %d : %s] ConvertMsgToStream failed, iRet = %d.",
+                  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+        return false;
+    }
+    iRet = m_ProxyClient.SendOneCode(unTmpTotalLen, (BYTE*)acTmpMessageBuffer);
+    if (iRet != 0)
+    {
+        LOG_ERROR("default", "[%s : %d : %s] proxy(index=%d) SendOneCode failed, iRet = %d.",
+                  __MY_FILE__, __LINE__, __FUNCTION__, 0, iRet);
+        return false;
+    }
 
-// 给check Server 发消息
-bool CGameServer::SendMessageToCheck(CMessage* pMsg)
-{
-    return true;
-}
+#ifdef _DEBUG_
 
-// 给Web Server 发消息
-bool CGameServer::SendMessageToWeb(CMessage* pMsg)
-{
+    Message* pTmpUnknownMessagePara = (Message*) pMsg->msgpara();
+    // 如果是打印出错依然返回成功
+    MY_ASSERT(pTmpUnknownMessagePara != NULL, return true);
+    const ::google::protobuf::Descriptor* pDescriptor = pTmpUnknownMessagePara->GetDescriptor();
+    LOG_DEBUG("default", "---- Send DB(%d) Msg[ %s ][id: 0x%08x / %d] ----", pHead->dstid(), pDescriptor->name().c_str(), pMsg->msghead().messageid(), pMsg->msghead().messageid());
+    LOG_DEBUG("default", "[%s]", ((Message*) pMsg->msgpara())->ShortDebugString().c_str());
+#endif
     return true;
 }
 
@@ -289,117 +261,104 @@ int CGameServer::RecvClientMsg(time_t tTime)
 // 收取服务器消息
 int CGameServer::RecvServerMsg(time_t tTime)
 {
-//    int iTmpRecvCount = 0;
-//    fd_set fds_read;
-//    // select超时时间 10毫秒
-//    struct timeval stTmpMonTime;
-//    stTmpMonTime.tv_sec = 0;
-//    stTmpMonTime.tv_usec = 10000;
-//    int iTmpMaxFD = 0;
-//    int iRet = 0;
-//
-//    FD_ZERO(&fds_read);
-//
-//    int iTmpFD;
-////	int iTmpStatus;
-//    for (int i = 0; i < MAX_PROXY_NUM && i < CConfigMgr::GetSingletonPtr()->GetConfig()->gameconfig().proxyinfo_size(); i++)
-//    {
-//        iTmpFD = mProxyClient[i].GetSocketFD();
-////		iTmpStatus = mProxyClient[i].GetStatus();
-//        if (iTmpFD > 0 && mProxyClient[i].IsConnected())
-//        {
-//            FD_SET(iTmpFD, &fds_read);
-//            if (iTmpFD > iTmpMaxFD)
-//            {
-//                iTmpMaxFD = iTmpFD;
-//            }
-//        }
-//    }
-//
-//    int iTmpOpenFDNum = select(iTmpMaxFD + 1, &fds_read, NULL, NULL, &stTmpMonTime);
-//    if (iTmpOpenFDNum <= 0)
-//    {
-//        return iTmpRecvCount;
-//    }
-//
-//    for (int i = 0; i < MAX_PROXY_NUM && i < CConfigMgr::GetSingletonPtr()->GetConfig()->gameconfig().proxyinfo_size(); i++)
-//    {
-//        iTmpFD = mProxyClient[i].GetSocketFD();
-//        if (FD_ISSET(iTmpFD, &fds_read))
-//        {
-//            iRet = mProxyClient[i].RecvData();
-//            if (iRet < 0)
-//            {
-//                LOG_ERROR("default", "[%s : %d : %s] recv proxy(%d) code failed, iRet = %d.",
-//                          __YQ_FILE__, __LINE__, __FUNCTION__, i, iRet);
-//                continue;
-//            }
-//
-//            CProxyHead tmpProxyHead;
-//            CMessage tmpMessage;
-//            BYTE abyTmpBuffer[MAX_PACKAGE_LEN];
-//            unsigned short unTmpBuffLen = sizeof(abyTmpBuffer);
-//
-//            while(true)
-//            {
-//                unTmpBuffLen = sizeof(abyTmpBuffer);
-//                iRet = mProxyClient[i].GetOneCode(unTmpBuffLen, abyTmpBuffer);
-//                if (iRet <= 0)
-//                {
-//                    // 等于0说明没数据了
-//                    if (iRet != 0)
-//                    {
-//                        LOG_ERROR("default", "[%s : %d : %s]GetOneCode from mProxyClient(%d) failed, iRet = %d.",
-//                                  __YQ_FILE__, __LINE__, __FUNCTION__, i, iRet);
-//                    }
-//                    break;
-//                }
-//
-//                if (unTmpBuffLen > sizeof(abyTmpBuffer))
-//                {
-//                    // 数据长度异常
-//                    LOG_ERROR("default", "[%s : %d : %s] code len %d impossible form proxy(%d).",
-//                              __YQ_FILE__, __LINE__, __FUNCTION__, unTmpBuffLen, i);
-//                    break;
-//                }
-//
-//                // 增加已处理消息计数
-//                iTmpRecvCount++;
-//
-//                // 将收到的二进制数据转为protobuf格式
-//                iRet = ServerCommEngine::ConvertStreamToMsg(abyTmpBuffer, unTmpBuffLen, &tmpProxyHead, &tmpMessage, mpMessageFactory);
-//                if (iRet < 0)
-//                {
-//                    LOG_ERROR("default", "[%s : %d : %s] convert stream to message failed, iRet = %d.",
-//                              __YQ_FILE__, __LINE__, __FUNCTION__, iRet);
-//                    continue;
-//                }
-//
-//                if (tmpProxyHead.has_srcfe() && tmpProxyHead.srcfe() == FE_PROXYSERVER)
-//                {
-//                    if (tmpProxyHead.has_srcid() && tmpProxyHead.srcid() == (unsigned short)mProxyClient[i].GetEntityID()
-//                        && tmpProxyHead.has_opflag() && tmpProxyHead.opflag() == CMD_KEEPALIVE)
-//                    {
-//                        // 设置proxy为已连接状态
-//                        SetServerState(ESS_CONNECTPROXY);
-//                        // 从proxy过来只有keepalive，所以其他的可以直接抛弃
-//                        mProxyClient[i].ResetTimeout(GetMSTime());
-////#ifdef _DEBUG_
-////						LOG_DEBUG("default", "[%s : %d : %s] recv proxy(id=%d, index=%d) keepalive, stamp(%lu).",
-////								__YQ_FILE__, __LINE__, __FUNCTION__,
-////								tmpProxyHead.srcid(), i, tmpProxyHead.timestamp());
-////#endif
-//                    }
-//                    continue;
-//                }
-//
-//                // 处理服务器间消息
-//                mpMessageDispatcher->ProcessServerMessage(&tmpProxyHead, &tmpMessage);
-//            }
-//        }
-//    }
-//
-//    return iTmpRecvCount;
+    int iTmpRecvCount = 0;
+    fd_set fds_read;
+    // select超时时间 10毫秒
+    struct timeval stTmpMonTime;
+    stTmpMonTime.tv_sec = 0;
+    stTmpMonTime.tv_usec = 10000;
+    int iTmpMaxFD = 0;
+    int iRet = 0;
+
+    FD_ZERO(&fds_read);
+
+    int iTmpFD;
+    iTmpFD = m_ProxyClient.GetSocketFD();
+    if (iTmpFD > 0 && m_ProxyClient.IsConnected())
+    {
+        FD_SET(iTmpFD, &fds_read);
+        if (iTmpFD > iTmpMaxFD)
+        {
+            iTmpMaxFD = iTmpFD;
+        }
+    }
+    int iTmpOpenFDNum = select(iTmpMaxFD + 1, &fds_read, NULL, NULL, &stTmpMonTime);
+    if (iTmpOpenFDNum <= 0)
+    {
+        return iTmpRecvCount;
+    }
+
+    iTmpFD = m_ProxyClient.GetSocketFD();
+    if (FD_ISSET(iTmpFD, &fds_read))
+    {
+        iRet = m_ProxyClient.RecvData();
+        if (iRet < 0)
+        {
+            LOG_ERROR("default", "[%s : %d : %s] recv proxy code failed, iRet = %d.",
+                      __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+            return 0;
+        }
+
+        CProxyMessage tmpMessage;
+        BYTE abyTmpBuffer[MAX_PACKAGE_LEN];
+        unsigned short unTmpBuffLen = sizeof(abyTmpBuffer);
+
+        while(true)
+        {
+            unTmpBuffLen = sizeof(abyTmpBuffer);
+            iRet = m_ProxyClient.GetOneCode(unTmpBuffLen, abyTmpBuffer);
+            if (iRet <= 0)
+            {
+                // 等于0说明没数据了
+                if (iRet != 0)
+                {
+                    LOG_ERROR("default", "[%s : %d : %s]GetOneCode from mProxyClient failed, iRet = %d.",
+                              __MY_FILE__, __LINE__, __FUNCTION__,  iRet);
+                }
+                break;
+            }
+
+            if (unTmpBuffLen > sizeof(abyTmpBuffer))
+            {
+                // 数据长度异常
+                LOG_ERROR("default", "[%s : %d : %s] code len %d impossible form proxy.",
+                          __MY_FILE__, __LINE__, __FUNCTION__, unTmpBuffLen);
+                break;
+            }
+
+            // 增加已处理消息计数
+            iTmpRecvCount++;
+
+            // 将收到的二进制数据转为protobuf格式
+            iRet = ServerCommEngine::ConvertStreamToMsg(abyTmpBuffer,
+                                                        unTmpBuffLen,
+                                                        &tmpMessage,
+                                                        m_pMessageFactory);
+            if (iRet < 0)
+            {
+                LOG_ERROR("default", "[%s : %d : %s] convert stream to message failed, iRet = %d.",
+                          __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+                continue;
+            }
+
+            CProxyHead tmpProxyHead = tmpMessage.msghead();
+            if (tmpProxyHead.has_srcfe() && tmpProxyHead.srcfe() == FE_PROXYSERVER)
+            {
+                if (tmpProxyHead.has_srcid() && tmpProxyHead.srcid() == (unsigned short)m_ProxyClient.GetEntityID()
+                    && tmpProxyHead.has_opflag() && tmpProxyHead.opflag() == enMessageCmd::MESS_KEEPALIVE)
+                {
+                    // 设置proxy为已连接状态
+                    SetServerState(ESS_CONNECTPROXY);
+                    // 从proxy过来只有keepalive，所以其他的可以直接抛弃
+                    m_ProxyClient.ResetTimeout(GetMSTime());
+                }
+                continue;
+            }
+            // 处理服务器间消息
+            m_pMessageDispatcher->ProcessServerMessage(&tmpMessage);
+        }
+    }
+    return iTmpRecvCount;
 }
 
 // 主动断开链接

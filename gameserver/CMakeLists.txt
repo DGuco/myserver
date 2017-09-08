@@ -18,15 +18,17 @@ set(SOURCE_FILES
         datamodule/inc/player.h
         datamodule/inc/playerdata.h
         datamodule/inc/playerbase.h
+        datamodule/inc/playercity.h
         datamodule/src/player.cpp
         datamodule/src/playerbase.cpp
         datamodule/src/playerdata.cpp
+        datamodule/src/playercity.cpp
         logicmodule/inc/coremodule.h
-        logicmodule/src/coremodule.cpp
         logicmodule/inc/logicmodule.h
-        logicmodule/src/logicmodule.cpp
         logicmodule/inc/modulemanager.h
         logicmodule/src/modulemanager.cpp
+        logicmodule/src/coremodule.cpp
+        logicmodule/src/logicmodule.cpp
         )
 
 include_directories(

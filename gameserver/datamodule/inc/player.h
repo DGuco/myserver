@@ -60,6 +60,7 @@ public:
 public:
     Package& GetPackage() {return m_oPackage;}
     const std::shared_ptr<CPlayerBase> GetPlayerBase() {return m_spPlayerBase;}
+    const OBJ_ID GetPlayerId() {return get_id();}
 private:
     Package m_oPackage;         //处理消息状态
     std::shared_ptr<CPlayerBase> m_spPlayerBase;    //玩家基础信息

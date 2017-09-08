@@ -4,6 +4,11 @@
 
 #include "../inc/playerbase.h"
 
+CPlayerBase::CPlayerBase(std::shared_ptr<CPlayer> pPlayer) : CPlayerData(pPlayer)
+{
+    Initialize();
+}
+
 CPlayerBase::~CPlayerBase()
 {
 

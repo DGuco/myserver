@@ -26,12 +26,12 @@ int CCoreModule::OnExitServer()
 }
 
 
-void CCoreModule::OnRouterMessage(CMessage *pMsg)
+void CCoreModule::OnRouterMessage(int cmd,Message *pMsg)
 {
 
 }
 
-void CCoreModule::OnClientMessage(CPlayer *pTeam, CMessage *pMsg)
+void CCoreModule::OnClientMessage(CPlayer *pTeam, int cmd,Message *pMsg)
 {
 
 }

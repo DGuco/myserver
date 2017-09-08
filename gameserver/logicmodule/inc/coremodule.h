@@ -21,9 +21,9 @@ public:
     // 退出服务
     int OnExitServer();
     // 路由消息
-    void OnRouterMessage(CMessage* pMsg);
+    void OnRouterMessage(int cmd,Message* pMsg);
     // 客户端消息
-    void OnClientMessage(CPlayer* pTeam, CMessage* pMsg);
+    void OnClientMessage(CPlayer* pTeam,int cmd, Message* pMsg);
     // 创建实体
     int OnCreateEntity(CPlayer* pTeam);
     // 销毁实体
