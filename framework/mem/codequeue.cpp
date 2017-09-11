@@ -103,7 +103,7 @@ int CCodeQueue::Initialize( int nTotalSize )
 	m_stQueueHead.m_iReadIndex = 0;
 	m_stQueueHead.m_iWriteIndex = 0;
 
-	pbyCodeBuf = GetPipeAddr();
+	pbyCodeBuf = (BYTE*)pCurrentShm->CreateSegment((size_t)nTotalSize);
 
 	if( !pbyCodeBuf )
 	{

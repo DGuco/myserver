@@ -17,11 +17,12 @@
       <file path="$PROJECT_DIR$/sharewrite" />
       <file path="$PROJECT_DIR$/tcpserver" />
     </sourceRoots>
-    <libraryRoots>
-      <file path="$PROJECT_DIR$/lib" />
-    </libraryRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/bin" />
+      <file path="$PROJECT_DIR$/config" />
+      <file path="$PROJECT_DIR$/data" />
+      <file path="$PROJECT_DIR$/doc" />
+      <file path="$PROJECT_DIR$/lib" />
       <file path="$PROJECT_DIR$/log" />
     </excludeRoots>
   </component>

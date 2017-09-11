@@ -123,7 +123,7 @@ int CGateCtrl::CreatePipe()
     BYTE* pbyTmpS2CPipe = CreateShareMem(iTmpKeyS2C, iTempSize);
     MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
     CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
-    CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize);
+    CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize,EIMode::SHM_INIT);
     mS2CPipe = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_S2C);
 
     ////////////////////////////////mC2SPipe/////////////////////////////////////////
@@ -138,7 +138,7 @@ int CGateCtrl::CreatePipe()
     BYTE* pbyTmpC2SPipe = CreateShareMem(iTmpKeyC2S, iTempSize);
     MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
     CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
-    CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyC2S, iTempSize);
+    CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyC2S, iTempSize,EIMode::SHM_INIT);
     mC2SPipe = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_C2S);
     return 0;
 }
@@ -381,7 +381,7 @@ int CGateCtrl::GetExMessage()
         {
             LOG_DEBUG("default","recv events:%d fd:%d",iTmpfdNum,iTmpFd);
             //accept 一个tcp连接
-            iTmpNewSocket = accept(iTmpFd,(struct sockaddr*) &m_stSockAddr,(socklen_t*) &iTmpSocketAddrSize);
+            iTmpNewSocket = accept(iTmpFd,(struct sockaddr*) &m_stSockAddr,(socklen_t*)&iTmpSocketAddrSize);
             //客户端主动关闭了连接
             if (iTmpNewSocket <= 0)
             {
@@ -763,9 +763,9 @@ int CGateCtrl::CheckWaitSendData()
             {
                 //没有可发送的数据或者发送完成,则接收gate数据
                 iTmpRet = RecvServerData();
-                if (iTmpRet != 0)
+                //没有数据可接收，则发送队列无数据发送，退出
+                if (iTmpRet == 0)
                 {
-                    //没有数据可接收，则发送队列无数据发送，退出
                     break;
                 }
                 m_bHasRecv = true;
@@ -844,12 +844,16 @@ void CGateCtrl::DisConnect(int iError)
 /**
   * 函数名          : CGateCtrl::RecvServerData
   * 功能描述        : 接收gate返回的消息
-  * 返回值          ：int
+  * 返回值          ：int 接收数据长度
 **/
 int CGateCtrl::RecvServerData()
 {
     int unTmpCodeLength = MAX_PACKAGE_LEN;
-    return mS2CPipe->GetHeadCode((BYTE*)m_szSCMsgBuf,&unTmpCodeLength);
+    if (mS2CPipe->GetHeadCode((BYTE*)m_szSCMsgBuf,&unTmpCodeLength) < 0)
+    {
+        unTmpCodeLength = 0;
+    }
+    return unTmpCodeLength;
 }
 
 /**
@@ -903,7 +907,7 @@ int CGateCtrl::SendClientData()
     if (unTmpPackLen > 0)
     {
         //根据发送给客户端的数据在m_szSCMsgBuf中的数组下标取出数据
-        pbTmpSend = (BYTE*)&m_szSCMsgBuf[m_iSCIndex];
+        pbTmpSend = (BYTE*)m_szSCMsgBuf[m_iSCIndex];
         memcpy((void*)&unTmpShort,(const void*)pbTmpSend,sizeof(unsigned short));
         if (unTmpShort != unTmpPackLen)
         {

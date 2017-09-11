@@ -162,6 +162,7 @@ int ClientCommEngine::ConverToGameStream(const void * pBuff,
     *(unsigned short*) pTemp = iTmpAddlen;
 
     unBuffLen = unLength;
+    return 0;
 }
 
 

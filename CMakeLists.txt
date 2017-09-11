@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-add_definitions(-Wall -g -std=c++11)
+add_definitions(-Wall -DUSE_LOG4CPP -g -std=c++11)
 set(CMAKE_C_COMPILER gcc)
 set(CMAKE_CXX_COMPILER g++)
 

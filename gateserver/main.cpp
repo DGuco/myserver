@@ -8,7 +8,6 @@
 #include <memory>
 #include <signal.h>
 #include "inc/gatectrl.h"
-#include "../framework/log/log.h"
 
 using namespace std;
 

@@ -53,6 +53,14 @@ BYTE* CreateShareMem( key_t iKey, long vSize )
 			exit(-1);
 		}
 
+//		LOG_NOTICE( "default", "Same shm seg (key=%08X) exist, now try to destroy it...", iKey);
+//        DestroyShareMem(iKey);
+//        iShmID = shmget( iKey, iTempShmSize, IPC_CREAT|IPC_EXCL|0666 );
+//        if (iShmID < 0)
+//        {
+//            LOG_ERROR( "default", "Fatal error, alloc share memory failed, %s", strerror(errno));
+//            exit(-1);
+//        }
 		LOG_NOTICE( "default", "Same shm seg (key=%08X) exist, now try to attach it...", iKey);
 
 		iShmID = shmget( iKey, iTempShmSize, 0666 );
@@ -86,8 +94,6 @@ BYTE* CreateShareMem( key_t iKey, long vSize )
 			LOG_NOTICE( "default", "Attach to share memory succeed.");
 		}
 	}
-
-
 
 	LOG_NOTICE( "default", "Successfully alloced share memory block, key = %08X, id = %d, size = %ld", iKey, iShmID, iTempShmSize);
 	BYTE* tpShm = (BYTE *)shmat(iShmID, NULL, 0);
