@@ -6,11 +6,10 @@
 
 namespace MyJson {
 	Json::Json() {
-		m_sFilename.clear();
+		Clear();
 	}
 	Json::~Json() {
-		m_Obj.Clear();
-        m_sFilename.clear();
+        Clear();
 	}
 
 	int Json::LoadFromFile(const std::string &filename) {
@@ -48,6 +47,8 @@ namespace MyJson {
 
 	void Json::Clear()
     {
+		m_Obj.Clear();
+		m_sFilename.clear();
 	}
 	
 	int Json::Reload()

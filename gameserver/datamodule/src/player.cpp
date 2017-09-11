@@ -15,6 +15,7 @@ CPlayer::~CPlayer()
 int CPlayer::Initialize()
 {
     m_oPackage.Initialize();
-    m_spPlayerBase = new CPlayerBase(this);
+    m_spPlayerBase = std::make_shared(CPlayerBase(this));
+    m_spPlayerCity = std::make_shared(CPlayerCity(this));
     return 0;
 }

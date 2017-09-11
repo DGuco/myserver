@@ -9,6 +9,7 @@
 #include "playerbase.h"
 #include "../../../framework/base/base.h"
 #include "../../../framework/base/object.h"
+#include "playercity.h"
 
 //下行客户端数据包信息
 struct Package
@@ -60,10 +61,12 @@ public:
 public:
     Package& GetPackage() {return m_oPackage;}
     const std::shared_ptr<CPlayerBase> GetPlayerBase() {return m_spPlayerBase;}
+    const std::shared_ptr<CPlayerCity> GetPlayerCity() {return m_spPlayerCity;}
     const OBJ_ID GetPlayerId() {return get_id();}
 private:
     Package m_oPackage;         //处理消息状态
     std::shared_ptr<CPlayerBase> m_spPlayerBase;    //玩家基础信息
+    std::shared_ptr<CPlayerCity> m_spPlayerCity;    //玩家城池信息
 };
 
 #endif //SERVER_PLAYER_H_H

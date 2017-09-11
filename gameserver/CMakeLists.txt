@@ -29,6 +29,8 @@ set(SOURCE_FILES
         logicmodule/src/modulemanager.cpp
         logicmodule/src/coremodule.cpp
         logicmodule/src/logicmodule.cpp
+        metadata/inc/parameter_config.h
+        metadata/src/parameter_config.cpp
         )
 
 include_directories(
