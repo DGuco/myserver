@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 #include "performance.h"
-#include "../log/log.h"
 
 CPerfInfo::CPerfInfo()
 : mPerfLog(1), mTotalCalled(0),mCostTime(0), mMostCostTime(0), mLestCostTime(1000)
@@ -77,7 +76,5 @@ void CPerfStat::LogPerfInfo()
 	}
 
 	msPerfMap.clear();
-
 	LOG_INFO("Perf", "----------------------------------------------------------------------------------" );
-
 }

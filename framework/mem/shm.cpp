@@ -165,17 +165,17 @@ void CSharedMem::SetStamp()
 	m_nCRC = (size_t)m_nShmKey ^ (size_t)m_nShmSize ^ (size_t)m_tCreateTime ^ (size_t)m_tLastStamp;
 }
 
-static CSharedMem* CSharedMem::CreateInstance()
+CSharedMem* CSharedMem::CreateInstance()
 {
 	return new CSharedMem;
 }
 
-static CSharedMem* CSharedMem::CreateInstance(unsigned int nKey, size_t nSize)
+CSharedMem* CSharedMem::CreateInstance(unsigned int nKey, size_t nSize)
 {
 	return new CSharedMem(nKey,nSize);
 }
 
-static CSharedMem* CSharedMem::CreateInstance(unsigned int nKey, size_t nSize, int nInitFlag)
+CSharedMem* CSharedMem::CreateInstance(unsigned int nKey, size_t nSize, int nInitFlag)
 {
 	return new CSharedMem(nKey,nSize,nInitFlag);
 }

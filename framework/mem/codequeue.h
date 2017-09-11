@@ -50,8 +50,8 @@ public:
 	//清除进程间共享内存管道数据
 	int CleanQueue();
 
-	static CCodeQueue* CreateInsance();
-	static CCodeQueue* CreateInsance(int nTotalSize, int iLockIdx = -1 );
+	static CCodeQueue* CreateInstance();
+	static CCodeQueue* CreateInstance(int nTotalSize, int iLockIdx = -1 );
 	//codequeue大小
 	static size_t CountQueueSize(int iBufSize);
 	//获取共享内管道的其实地址

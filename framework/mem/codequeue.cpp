@@ -825,12 +825,12 @@ int CCodeQueue::CleanQueue()
 	return 0;
 }
 
-static CCodeQueue* CCodeQueue::CreateInsance()
+CCodeQueue* CCodeQueue::CreateInstance()
 {
     return new CCodeQueue;
 }
 
-static CCodeQueue* CCodeQueue::CreateInsance(int nTotalSize, int iLockIdx = -1 )
+CCodeQueue* CCodeQueue::CreateInstance(int nTotalSize, int iLockIdx)
 {
     return new CCodeQueue(nTotalSize,iLockIdx);
 }

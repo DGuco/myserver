@@ -20,6 +20,7 @@ CSceneObjManager::~CSceneObjManager()
 
 int CSceneObjManager::Initialize()
 {
+    m_mPlayerMap.clear();
     return 0;
 }
 

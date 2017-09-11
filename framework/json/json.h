@@ -10,6 +10,8 @@
 
 #include "../include/rapidjson/rapidjson.h"
 #include "../include/rapidjson/document.h"
+using rapidjson::Value;
+
 namespace MyJson {
     class Json {
     public:

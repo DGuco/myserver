@@ -41,7 +41,6 @@ public:
     const int GetServetTick() const {return m_iServerTick;}
     const int GetCheckTimeOutGap() const {return m_iChecktimeOutGap;}
     const int GetSocketTimeOut() const {return m_iSokcetTimeout;}
-    const int GetProxySize() const { return m_iProxySize;}
 
 private:
     string m_sDbIp;
@@ -56,7 +55,6 @@ private:
     int m_iServerTick;
     int m_iChecktimeOutGap;
     int m_iSokcetTimeout;
-    int m_iProxySize;
     std::map<enServerType ,ServerInfo> m_mServerMap;
 };
 

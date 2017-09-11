@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 project(gateserver)
 add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DMEDIUM_SIZE  -D_TGW_ -DUSE_MY_ASSERT)
 #-g -D_DEBUG_ -DUSE_LOG4CPP -DSMALL_SIZE
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -pipe -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -pipe  -std=c++11")
 
 set(SOURCE_FILES
         main.cpp
@@ -31,4 +31,4 @@ link_directories(
 
 add_executable(gateserver ${SOURCE_FILES})
 target_link_libraries(gateserver framework pthread protobuf crypto)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)

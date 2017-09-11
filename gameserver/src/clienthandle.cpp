@@ -71,7 +71,7 @@ int CClientHandle::SendResponse(Message* pMessage,CPlayer* pPlayer) {
 
     MesHead pTmpHead;
     CSocketInfo* pTmpSocket = pTmpHead.mutable_socketinfos()->Add();
-    STConnectInfo* pTmpConnInfo = pPlayer->GetSocketInfoPtr();
+    STConnectInfo* pTmpConnInfo = pPlayer->GetPlayerBase()->GetSocketInfoPtr();
     if (pTmpConnInfo == NULL)
     {
         MY_ASSERT_STR(0, return -1, "CClientHandle::Send failed, Get player connection info failed.");
@@ -123,10 +123,10 @@ int CClientHandle::Push(int cmd,Message* pMessage, stPointList* pTeamList)
         CPlayer* pPlayer = (CPlayer*)pTeamList->GetPointByIdx(i);
         if (pPlayer)
         {
-            if (pPlayer->GetSocketInfoPtr()->m_iSocket != 0)
+            if (pPlayer->GetPlayerBase()->GetSocketInfoPtr()->m_iSocket != 0)
             {
                 CSocketInfo* pTmpSocket = pTmpHead.mutable_socketinfos()->Add();
-                STConnectInfo* pTmpConnInfo = pPlayer->GetSocketInfoPtr();
+                STConnectInfo* pTmpConnInfo = pPlayer->GetPlayerBase()->GetSocketInfoPtr();
                 if (pTmpConnInfo == NULL)
                 {
                     MY_ASSERT_STR(0, return -1, "CClientHandle::Send failed, Get player connection info failed.");
@@ -140,7 +140,7 @@ int CClientHandle::Push(int cmd,Message* pMessage, stPointList* pTeamList)
             }
             else
             {
-                LOG_DEBUG("default", "Client(%d | %lu | %s) has disconnected.", pPlayer->GetEntityID(), pPlayer->GetPlayerId(), pPlayer->GetPlayerName());
+                LOG_DEBUG("default", "Client(%d | %lu | %s) has disconnected.", pPlayer->GetPlayerId(), pPlayer->GetPlayerId(), pPlayer->GetPlayerBase()->GetAccount());
             }
         }
     }

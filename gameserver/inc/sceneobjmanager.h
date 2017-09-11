@@ -6,7 +6,6 @@
 #define SERVER_SCENEOBJMANAGER_H
 
 #include <cstddef>
-#include <bits/unordered_map.h>
 #include <unordered_map>
 #include "../../framework/base/servertool.h"
 #include "../../framework/base/base.h"
@@ -60,7 +59,7 @@ public:
     void AddNewPlayer(CPlayer *pPlayer);
 
 private:
-    std::unordered_map<OBJ_ID,CPlayer*> m_mPlayerMap;
+    std::unordered_map<uint64,CPlayer*> m_mPlayerMap;
 };
 
 

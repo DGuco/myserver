@@ -19,6 +19,7 @@
 #include "../../framework/message/client_comm_engine.h"
 #include "../../framework/mem/codequeue.h"
 #include "../../framework/mem/sharemem.h"
+#include "../../gameserver/inc/clienthandle.h"
 
 CGateCtrl::CGateCtrl()
 {
@@ -51,7 +52,7 @@ int CGateCtrl::Initialize()
     m_pEpollevents = NULL;
     //初始化epoll socket
     iTmpRet = InitEpollSocket((short)CServerConfig::GetSingletonPtr()
-            ->GetServerMap().find(EServerType::SERVER_GATE)->second.m_iPort);
+            ->GetServerMap().find(enServerType::FE_GATESERVER)->second.m_iPort);
     if (0 != iTmpRet)
     {
         LOG_ERROR("default","InitEpollSocket failed! TCPserver init failed. ReusltCode = %d!",iTmpRet);
@@ -63,7 +64,7 @@ int CGateCtrl::Initialize()
     m_astSocketInfo[m_iSocket].m_iSocketType = LISTEN_SOCKET;
     m_astSocketInfo[m_iSocket].m_iSocketFlag = RECV_DATA;
     m_astSocketInfo[m_iSocket].m_iConnectedPort = CServerConfig::GetSingletonPtr()
-            ->GetServerMap().find(EServerType::SERVER_GATE)->second.m_iPort;
+            ->GetServerMap().find(enServerType::FE_GATESERVER)->second.m_iPort;
     m_iMaxfds = m_iSocket + 1;
 
     CreatePipe();
@@ -73,11 +74,6 @@ int CGateCtrl::Initialize()
 int CGateCtrl::Run()
 {
     LOG_NOTICE("default","Tcpserver is runing....");
-#ifdef _DEBUG_
-    time_t tNow = 0;
-    time_t tTick = 0;
-    int iTmpCnt = 0;
-#endif 
 
     while(1)
     {
@@ -128,7 +124,7 @@ int CGateCtrl::CreatePipe()
     MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
     CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
     CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize);
-    mS2CPipe = CCodeQueue::CreateInsance(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_S2C);
+    mS2CPipe = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_S2C);
 
     ////////////////////////////////mC2SPipe/////////////////////////////////////////
     system("touch ./cspipefile");
@@ -143,7 +139,7 @@ int CGateCtrl::CreatePipe()
     MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
     CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
     CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyC2S, iTempSize);
-    mC2SPipe = CCodeQueue::CreateInsance(PIPE_SIZE, EnLockIdx::IDX_PIPELOCK_C2S);
+    mC2SPipe = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_C2S);
     return 0;
 }
 /**
@@ -499,7 +495,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
         MSG_LEN_TYPE unTmpDataLen = 0;
         MesHead tmpHead;
         //解析数据包头部信息，解析完成后指针指向数据包的末尾
-        iTmpRet = ClientCommEngine::ParseClientStream(&(const void *)pTemp1,
+        iTmpRet = ClientCommEngine::ParseClientStream((const void **)&pTemp1,
                                                     nRecvAllLen,
                                                     &tmpHead,
                                                     unTmpDataLen);
@@ -514,7 +510,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
             return iTmpRet;
         }
         //组织转发消息
-        if (0 == iTmpRet && tmpHead.cmd() != CMsgPingRequest::MsgID && unTmpDataLen >= 0)
+        if (0 == iTmpRet /*&& tmpHead.cmd() != CMsgPingRequest::MsgID */&& unTmpDataLen >= 0)
         {
             CSocketInfo *tmpSocketInfo = tmpHead.mutable_socketinfos()->Add();
             tmpSocketInfo->Clear();
@@ -522,7 +518,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
             tmpSocketInfo->set_socketid(m_pSocketInfo->m_iSocket);
             tmpSocketInfo->set_state(0);
 
-            char *pTemp = m_szCSMsgBuf;
+            pTemp = m_szCSMsgBuf;
             MSG_LEN_TYPE tmpSendLen = sizeof(m_szCSMsgBuf);
             char* pDataBuff = pTemp1 - unTmpDataLen;
             iTmpRet = ClientCommEngine::ConverToGameStream(m_szCSMsgBuf,
@@ -745,7 +741,7 @@ int CGateCtrl::CheckWaitSendData()
 {
     int iTmpRet = 0;
     int i = 0;
-    int unTmpCodeLength;
+    int unTmpCodeLength = 0;
 
     //每次最多发送MAX_SEND_PKGS_ONCE个数据
     while(i < MAX_SEND_PKGS_ONCE)

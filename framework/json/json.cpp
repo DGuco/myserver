@@ -6,7 +6,6 @@
 
 namespace MyJson {
 	Json::Json() {
-		Clear();
 	}
 	Json::~Json() {
         Clear();
@@ -30,8 +29,6 @@ namespace MyJson {
 				data += linedata;
 			}
 			fp.close();
-
-           	m_Obj.Clear();
             m_Obj.Parse(data.c_str());
 			int ret = Parse();
 			return ret;

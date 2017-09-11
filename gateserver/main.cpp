@@ -8,6 +8,7 @@
 #include <memory>
 #include <signal.h>
 #include "inc/gatectrl.h"
+#include "../framework/log/log.h"
 
 using namespace std;
 
@@ -37,8 +38,8 @@ int main(int argc,char **argv)
     int iTmpRet;
     Initialize();
     //初始化日志
-    INIT_ROLLINGFILE_LOG("default","../log/tcpsvrd.log",LEVEL_DEBUG);
-    unique_ptr<CServerConfig> pTmpConfig(new CServerConfig);
+    INIT_ROLLINGFILE_LOG("default","../log/gatesvrd.log",LEVEL_DEBUG);
+    CServerConfig* pTmpConfig = new CServerConfig;
     const string filepath = "../config/serverinfo.json";
     if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filepath))
     {
@@ -47,13 +48,6 @@ int main(int argc,char **argv)
     }
 
     g_pGateServer = new CGateCtrl;
-    if (g_pGateServer == NULL)
-    {
-        delete g_pGateServer;
-        LOG_ERROR("default","New TcpCtrl failed.");
-        exit(0);
-    }
-
     iTmpRet = g_pGateServer->Initialize();
     if (0 != iTmpRet)
     {
