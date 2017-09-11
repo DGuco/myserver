@@ -1,1 +1,0 @@
-/usr/bin/g++    -Wall -g -pipe  -std=c++11   CMakeFiles/gateserver.dir/main.cpp.o CMakeFiles/gateserver.dir/src/gatectrl.cpp.o  -o ../../bin/gateserver  -L/usr/local/lib  -L/home/dguco/data/cpppro/myserver/lib ../../lib/libframework.a -lpthread -lprotobuf -lcrypto -llog4cpp -lcrypto -Wl,-rpath,/usr/local/lib:/home/dguco/data/cpppro/myserver/lib 
