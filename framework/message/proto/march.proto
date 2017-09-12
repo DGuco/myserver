@@ -1,0 +1,172 @@
+syntax = "proto2";
+package slg.protocol;
+option java_package="com.bonusstudio.slg.protocol";
+option java_outer_classname="MarchProto";
+import "common.proto";
+
+/// ---------------  DTO  ------------
+enum MarchState {
+    MARCH_STATE_WAIT = 0;           // 集结等待
+    MARCH_STATE_FORWARD = 1;        // 出征中
+    MARCH_STATE_STANDBY = 2;        // 目的地驻守
+    MARCH_STATE_BACKWARD = 3;       // 返回中
+}
+
+enum MarchType {
+    MARCH_PVP = 1;          // PVP
+    MARCH_PVE = 2;          // PVE
+    MARCH_RESOURCE = 3;     // 资源采集
+    MARCH_EVP = 4;          // EVP
+    MARCH_SPY = 5;          // 侦查
+    MARCH_MASS = 6;         // 集结
+    MARCH_JOIN = 7;         // 参与集结
+    MARCH_REINFORCE = 8;    // 增援
+    MARCH_MARKET    = 9;    // 市场贸易
+}
+
+message MarchAllianceDTO {
+    required int32 id = 1;
+    required string shortName = 2;  //联盟名称缩写
+}
+
+message MarchPlayerDTO {
+    required int64 playerId = 1;
+    optional string icon = 2;
+    optional string name = 3;
+    repeated LevelSoldierDTO soldiers = 4;
+    optional MarchAllianceDTO alliance = 5;         // 联盟信息
+}
+
+message MarchAidDTO {
+    repeated MarchPlayerDTO arrivedPlayers = 1;     // 已到达队伍信息
+    repeated MarchPlayerDTO marchingPlayers = 2;    // 正在途中的队伍
+    required int32 troopLimit = 3;                  // 队伍上限  (集结方和被攻击方都生效,被攻击方表示大使馆条件)
+    required int32 armyLimit = 4;                   // 士兵总数上限
+}
+
+message MarchDetailDTO { 
+    required PositionDTO startPos = 1;
+    required PositionDTO endPos = 2;
+    required MarchPlayerDTO attacker = 3;                   // 攻击方
+    required MarchPlayerDTO defender = 4;                   // 防守方
+    optional MarchAidDTO attackerAid = 5;                   // 进攻方援助
+}
+
+message MarchTimerDTO {
+    required int32 startTime = 1;           //起始时间
+    required int32 endTime = 2;             //到达时间
+    required int32 speedUpNum = 3;          //加速次数
+    required int32 originalTime = 4;        //加速前所需时间
+}
+
+message MarchInfoDTO {
+    required int64 marchId = 1;
+    required MarchType type = 2;
+    required MarchDetailDTO detail = 3;
+    required MarchTimerDTO timer = 4;
+    required MarchState state = 5;
+}
+
+/// -------------------COMMAND----------------
+enum MarchCommandId {
+    MARCH_START = 601;      // 发起出征
+    MARCH_SPEED_UP = 602;   // 加速
+    MARCH_RECALL = 603;     // 召回
+    MARCH_DISMISS = 604;    // 解散队伍
+    MARCH_KICK = 605;       // 踢出队伍
+    MARCH_TRADE = 606;      // 贸易
+}
+
+message MarchStartRequest {
+    required PositionDTO position = 1;  // 目标位置
+    required int64 objId = 2;           // 出征目标id
+    repeated SoldierDTO soldiers = 3;   // 出征士兵
+    required MarchType type = 4;        // 出征类型
+
+    optional int32 massTime = 10;        // 集结时间（如果类型为集结则存在）
+    optional int64 joinId = 11;          // 参与目标集结的出征ID （如果类型为参与集结则存在）
+}
+
+message MarchStartResponse {
+    required int64 marchId = 1;
+}
+
+message MarchSpeedUpRequest {
+    required int64 marchId = 1;
+}
+
+message MarchSpeedUpResponse {
+    required int64 marchId = 1;
+}
+
+message MarchRecallRequest {
+    required int64 marchId = 1;
+}
+
+message MarchRecallResponse {
+    required int64 marchId = 1;
+}
+
+message MarchDismissRequest {
+    required int64 marchId = 1;
+}
+
+message MarchDismissResponse {
+    required int64 marchId = 1;
+}
+
+message MarchKickRequest {
+    required int64 marchId = 1;
+    required int64 targetMarchId = 2;
+}
+
+message MarchKickResponse {
+    required int64 marchId = 1;
+}
+
+///  ----------------PUSH MESSAGES------------
+
+enum MarchPushId {
+    MARCH_INFO_LIST_PUSH = 50601;
+    MARCH_RESULT_PUSH = 50602;
+    MARCH_TIMER_PUSH = 50603;
+    MARCH_REMOVE_PUSH = 50607;          // 移除行军队列
+
+    MILITARY_LIST = 50610;              //军情更新
+    MILITARY_DELETE = 50611;            //军情删除
+}
+
+message MarchInfoPush {
+    repeated MarchInfoDTO infos = 1;
+}
+
+message MarchRemovePush {
+    required int64 marchId = 1;
+}
+
+message MarchResultPush {
+	required int64 marchId = 1; //行军队列ID
+	required MarchType type = 2;
+	required PositionDTO attacker = 3; //攻击方坐标
+	required PositionDTO defencer = 4; //防守方坐标
+	repeated SoldierDTO soldiers = 5; //战斗之前的士兵总数
+    required bool won = 6; // 是否胜利
+}
+
+message MarchTimerPush {
+    required int64 marchId = 1;
+    required MarchTimerDTO timer = 2;
+}
+
+message MilitaryDTO {
+    required MarchInfoDTO march = 1;
+    optional MarchAidDTO defenderAid = 2;
+}
+
+message MilitaryPush {
+    repeated MilitaryDTO militaries = 1;
+}
+
+message MilitaryDeletePush {
+    required int64 marchId = 1;
+}

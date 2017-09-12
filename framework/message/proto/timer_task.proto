@@ -1,0 +1,91 @@
+syntax = "proto2";
+package slg.protocol;
+option java_package="com.bonusstudio.slg.protocol";
+option java_outer_classname="TimerTaskProto";
+import "common.proto";
+
+enum TimerTaskTargetType {
+    TIMER_TARGET_BUILDING = 1;              //建造
+    TIMER_TARGET_TECH = 2;                  //科技
+    TIMER_TARGET_TRAIN = 3;                 //士兵训练
+    TIMER_SKILL_UPGRADE = 4;                //技能升级
+}
+
+message TimerTaskTargetDTO {
+    required TimerTaskTargetType type = 1;
+    required int32 targetId = 2;
+}
+
+message TimerTaskDTO {
+    required int32 id = 1;
+    required int32 startTs = 2;
+    required int32 endTs = 3;
+    required TimerTaskTargetDTO target = 4;
+}
+
+/// ---------------- COMMANDS -------------
+
+enum TimerTaskCommandId {
+    TIMER_TASK_SPEED_UP = 301;
+    TIMER_TASK_COMPLETE = 302;
+    TIMER_TASK_CANCEL = 303;
+}
+
+message TimerTaskCompleteRequest {
+    required int32 timerTaskId = 1;
+}
+
+message TimerTaskCompleteResponse {
+    required int32 timerTaskId = 2;
+}
+
+enum TimerTaskSpeedUpType {
+    FREE = 1;
+    USE_DIAMOND = 2;
+    USE_ITEM = 3;
+}
+
+message TimerTaskSpeedUpRequest {
+    required int32 timerTaskId = 1;
+    optional TimerTaskSpeedUpType type = 2;
+    optional ItemDTO item = 3;
+}
+
+message TimerTaskSpeedUpResponse {
+    required int32 timerTaskId = 1;
+    repeated PropertyDTO costProperties = 2;
+    optional ItemDTO costItem = 3;
+    required TimerTaskTargetDTO target = 4;
+}
+
+message TimerTaskCancelRequest {
+    required int32 timerTaskId = 1;
+}
+
+message TimerTaskCancelResponse {
+    required int32 timerTaskId = 1;
+    required TimerTaskTargetDTO target = 2;
+}
+
+//---------------PUSH MESSAGES-----------
+
+enum TimerTaskPushId {
+    TIMER_TASK_LIST_PUSH = 50300;
+    // TIMER_TASK_REMOVE_PUSH = 50301; 
+    TIMER_TASK_COMPLETE_PUSH = 50302; // 时间任务结束
+    TIMER_TASK_ADJUST_PUSH = 50303; // 时间校正
+}
+
+message TimerTaskListPush {
+    repeated TimerTaskDTO timerTasks = 1;
+}
+
+message TimerTaskCompletePush {
+    required int32 timerTaskId = 1;
+    required TimerTaskTargetDTO target = 2;
+}
+
+message TimerTaskAdjustPush {
+    required int32 timerTaskId = 1; // 任务ID
+    required int32 systime = 2; // 系统时间
+}

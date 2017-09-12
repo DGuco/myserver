@@ -1,0 +1,102 @@
+syntax = "proto2";
+package slg.protocol;
+option java_package="com.bonusstudio.slg.protocol";
+option java_outer_classname="TrainingProto";
+import "common.proto";
+
+message ArmyFormationDTO {
+    required int32 id = 1;
+	repeated SoldierDTO soldier = 2;
+}
+
+/// -------------------COMMAND----------------
+enum TrainCommandId {
+    TRAINING_TRAIN          = 500;               //训练士兵
+    TRAINING_DRAW           = 501;               //领取训练士兵
+    TRAINING_ALL_SOLDIER    = 502;               //所有士兵
+    TRAINING_SET_FORMATION  = 503;               //设置编队
+}
+
+//TRAINING_TRAIN:训练士兵
+message TrainingRequest
+{
+	required int32 trainType = 1;   //1立即训练花费钻石，2普通训练花费时间
+	required int32 soldierType = 2; //训练士兵类型
+    required int32 bid = 3;         //训练营建筑id
+	required int32 oper = 4;        //资源不足的情况下，是否钻石购买, 1补充，0不补充
+}
+
+message TrainingResponse
+{
+    required int32 bid = 1;         //训练营建筑id
+    required  SoldierDTO soldierInfo = 2;           //士兵详情
+    required int32 trainType = 3;   //1立即训练花费钻石，2普通训练花费时间
+}
+
+//TRAINING_DRAW:领取训练士兵
+message SoldierDrawRequest
+{
+	required int32 bid = 1;   //训练营建筑id
+}
+
+message SoldierDrawResponse
+{
+    required int32 bid = 1;                     //训练营建筑id
+    required  SoldierDTO soldierInfo = 2;           //士兵详情
+}
+
+
+//TRAINING_ALL_SOLDIER
+message AllSoldierInfoRequest
+{
+
+}
+
+message AllSoldierInfoResponse
+{
+    repeated  SoldierDTO soldierInfo = 1;           //士兵详情
+}
+
+message SetFormationRequest
+{
+	required int32 id = 1;
+	repeated SoldierDTO soldier = 2;
+}
+
+message SetFormationResponse
+{
+	required int32 id = 1;
+	repeated SoldierDTO soldier = 2;
+}
+
+
+///  ----------------PUSH MESSAGES------------
+enum TrainingPushId {
+    TRAINING_SOLDIER_CHANGE         = 50501;              //士兵数量变化推送
+    TRAINING_SOLDIER_TRAINING       = 50502;              //正在训练的士兵
+    TRAINING_FORMATION              = 50503;              //编队信息推送
+    TRAINING_MARCHSOLDIER_CHANGE    = 50504;              //出征士兵变化推送
+}
+
+//TRAINING_SOLDIER_CHANGE 士兵数量变化推送（可出征的士兵）
+message SoldierChangePush
+{
+    repeated SoldierDTO idleSoldiers = 1; // 空闲士兵
+}
+
+message MarchSoldierChangePush
+{
+    repeated SoldierDTO marchSoldiers = 1; // 出征士兵
+}
+
+//TRAINING_SOLDIER_TRAINING 正在训练的士兵
+message SoldierTrainingPush
+{
+    optional  SoldierDTO soldierInfo = 1;           //士兵详情
+    optional  bool isDone = 2;                     //是否训练完成
+}
+
+message FormationPush
+{
+    repeated ArmyFormationDTO formations = 2;
+}

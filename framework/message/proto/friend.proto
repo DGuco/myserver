@@ -1,0 +1,95 @@
+syntax = "proto2";
+package slg.protocol;
+option java_package="com.bonusstudio.slg.protocol";
+option java_outer_classname="FriendProto";
+import "common.proto";
+
+message FriendDTO {
+    required int64 playerId = 1;
+    required string name = 2;
+    required string icon = 3;
+    required int32 level = 4;
+    required VipDTO vip = 5;
+    required Platform platform = 6;
+    optional string serverName = 7;
+}
+
+enum FriendCommandId {
+    FRIEND_APPLY = 2001;  // 申请好友
+    FRIEND_REPLY = 2002;  // 申请回复
+    FRIEND_DELETE = 2003; // 删除好友
+}
+
+message FriendApplyRequest {
+    required int64 playerId = 1;
+}
+
+message FriendApplyResponse {
+    required int64 playerId = 1;
+}
+
+enum FriendReplyResult {
+    ACCEPT = 1;
+    REJECT = 2;
+}
+
+message FriendReplyRequest {
+    required int64 playerId = 1;
+    required FriendReplyResult result = 2;
+}
+
+message FriendReplyResponse {
+    required int64 playerId = 1;
+    required FriendReplyResult result = 2;
+}
+
+message FriendDeleteRequest {
+    required int64 playerId = 1;
+}
+
+message FriendDeleteResponse {
+    required int64 playerId = 1;
+}
+
+enum FriendPushId {
+    FRIEND_LIST_PUSH = 52001;               // 好友列表
+    FRIEND_REMOVE_PUSH = 52002;             // 好友被删除
+    FRIEND_RECOMMEND_LIST_PUSH = 52003;     // 推荐列表
+    FRIEND_APPLY_LIST_PUSH = 52004;         // 被申请列表
+    FRIEND_APPLYING_LIST_PUSH = 52005;      // 申请列表
+}
+
+message FriendListPush {
+    repeated FriendDTO friends = 1;
+}
+
+message FriendRemovePush {
+    required int64 playerId = 1;
+}
+
+enum FriendRecommendReason {
+    DEFAULT = 1;//默认 普通申请
+    ALLIANCE = 2; //联盟
+    FOAF = 3;//二度好友
+    ENEMY = 4; //敌人
+    NEAR_BY = 5;//附近的人
+    SAME_LEVEL = 6; //相同等级
+    SAME_LANGUAGE = 7; //语言相同
+}
+
+message FriendRecommendDTO {
+    required FriendDTO friend = 1;
+    required FriendRecommendReason reason = 2;
+}
+
+message FriendRecommendPush {
+    repeated FriendRecommendDTO recommends = 1;
+}
+
+message FriendApplyListPush {
+    repeated FriendDTO friends = 1;
+}
+
+message FriendApplyingPush {
+    repeated int64 playerIds = 1;
+}

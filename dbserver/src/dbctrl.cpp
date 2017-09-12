@@ -18,14 +18,14 @@ int CDBCtrl::MallocShareMem()
 
     unsigned int tkeydb = MakeKey( "./dbpipefile", 'D' );
     size_t tSize = sizeof(CSharedMem) + INPUTQUEUELENGTH;
-    BYTE* tpDBShm = CreateShareMem ( tkeydb, tSize );
+    BYTE* tpDBShm = CreateShareMem ( tkeydb, tSize);
 
     MY_ASSERT( ( tpDBShm != NULL ), return -1 );
 
     LOG_DEBUG( "default", "DB Shm Size is %lld", tSize );
 
     CSharedMem::pbCurrentShm = tpDBShm;
-    CDBCtrl::mShmPtr = CSharedMem::CreateInstance(tkeydb,tSize);
+    CDBCtrl::mShmPtr = CSharedMem::CreateInstance(tkeydb,tSize,SHM_INIT);
     MY_ASSERT( CDBCtrl::mShmPtr != NULL, return -1);
     return 0;
 }

@@ -587,7 +587,7 @@ void CGameServer::CheckStartSaveAllData(CTimerBase* pTimer)
 {
 }
 
-void CGameServer::SendMsgSystemErrorResponse(int iResult, long lMsgGuid, int iServerID, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff)
+void CGameServer::SendMsgSystemErrorResponse(int iResult, long lMsgGuid, int iServerID, time_t tCreateTime, bool bKickOff)
 {
 }
 

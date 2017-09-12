@@ -203,7 +203,7 @@ public:
     const CProxyClient& GetProxyClient();
 
     // 为找不到CTeam的连接发送消息
-    void SendMsgSystemErrorResponse(int iResult, long lMsgGuid, int iServerID, time_t tCreateTime, unsigned int uiIP, unsigned short unPort, bool bKickOff = false);
+    void SendMsgSystemErrorResponse(int iResult, long lMsgGuid, int iServerID, time_t tCreateTime, bool bKickOff = false);
 };
 
 #endif //SERVER_GAMESERVER_H

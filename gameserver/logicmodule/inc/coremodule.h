@@ -9,25 +9,39 @@
 
 #include "logicmodule.h"
 #include "../../../framework/base/servertool.h"
+#include "../../../framework/const/dblogintype.h"
 
-class CCoreModule : public CLogicModule,public CSingleton<CCoreModule>
-{
+class CCoreModule : public CLogicModule,public CSingleton<CCoreModule> {
 public:
     CCoreModule();
+
     virtual  ~CCoreModule();
+
     int Initialize();
+
     // 启动服务
     int OnLaunchServer();
+
     // 退出服务
     int OnExitServer();
+
     // 路由消息
-    void OnRouterMessage(int cmd,Message* pMsg);
+    void OnRouterMessage(CProxyMessage *pMsg);
+
     // 客户端消息
-    void OnClientMessage(CPlayer* pTeam,int cmd, Message* pMsg);
+    void OnClientMessage(CPlayer *pTeam,CMessage *pMsg);
+
     // 创建实体
-    int OnCreateEntity(CPlayer* pTeam);
+    int OnCreateEntity(CPlayer *pTeam);
+
     // 销毁实体
-    void OnDestroyEntity(CPlayer* pTeam);
+    void OnDestroyEntity(CPlayer *pTeam);
+
+public:
+    // 玩家登陆游戏申请
+    void OnMsgUserLoginRequest(CMessage *pMsg);
+    void OnMsgPlayerLoginRequest(CMessage *pMsg);
+
 };
 
 #endif //SERVER_COREMODULE_H

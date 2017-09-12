@@ -1,0 +1,30 @@
+syntax = "proto2";
+package slg.protocol;
+option java_package="com.bonusstudio.slg.protocol";
+option java_outer_classname="WallProto";
+
+//城防状态
+message WallStatusDTO
+{
+	required int32 wallValue = 1;       //当前城防值
+	required int32 nextRepairTime = 2;  //下次修复时间
+	required int32 fireEndTime = 3;     //燃烧结束时间
+	required int32 perDown = 4;         //每次燃烧间隔时间
+    required int32 lastFreshTime = 5;   //上次刷新时间
+}
+
+/// -------------------COMMAND----------------
+enum WallCommandId {
+    WALL_UNFIRE          = 1301;               //灭火
+    WALL_REPAIR          = 1302;               //修理
+}
+
+///  ----------------PUSH MESSAGES------------
+enum WallPushId {
+    WALL_STATUS_PUSH   = 51301;              //城墙信息推送
+}
+
+message WallStatusPush
+{
+    required  WallStatusDTO wallStatus = 1;           //城墙信息
+}

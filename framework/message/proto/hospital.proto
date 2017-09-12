@@ -1,0 +1,44 @@
+syntax = "proto2";
+package slg.protocol;
+option java_package="com.bonusstudio.slg.protocol";
+option java_outer_classname="HospitalProto";
+import "common.proto";
+
+message CureTimesDTO {
+    required int32 soldierType = 1;//士兵类型
+	required int32 times = 2; //当天
+}
+
+/// -------------------COMMAND----------------
+enum HospitalCommandId {
+    HOSPITAL_RECV_SOLDIER = 1201;     //领取伤兵
+    HOSPITAL_CURE_SOLDIER = 1202;     //治疗伤兵
+}
+
+message RecvSoldierRequest{
+}
+
+message RecvSoldierResponse{
+    repeated SoldierDTO soldiers   = 1;  //领取的伤兵
+}
+
+message CureSoldierRequest{
+    required int32 soldierType     = 1;  //0：全部治疗 其他：治疗兵种类型
+    required bool oper             = 2;  //资源不足是否用钻石补充
+}
+
+message CureSoldierResponse{
+    required int32 soldierType     = 1;
+}
+
+///  ----------------PUSH MESSAGES------------
+enum HospitalPushId {
+    HOSPITAL_INFO_PUSH = 51201;
+}
+
+message HospitalInfoPush {
+    repeated LevelSoldierDTO woundedSoldiers = 1;  //伤兵
+    repeated SoldierDTO curedSoldiers   = 2;  //自动治疗完成的
+    repeated CureTimesDTO cureTimes     = 3;  //当天治疗次数
+    required int32 lastRecvTime         = 4;  //上次领取时间
+}

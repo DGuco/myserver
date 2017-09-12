@@ -9,11 +9,13 @@ set(FRAMEWORK
         base/performance.cpp
         base/servertool.cpp
         base/my_assert.h
-        base/commondef.h
         base/my_macro.h
         base/my_macro.h
         base/objectManager.cpp
         base/objectManager.h
+        const/commondef.h
+        const/errcode.h
+        const/dblogintype.h
         json/json.h
         json/json.cpp
         json/config.h
@@ -28,6 +30,8 @@ set(FRAMEWORK
         message/message_interface.cpp
         message/server_comm_engine.cpp
         message/client_comm_engine.cpp
+        message/player.pb.h
+        message/player.pb.cc
         net/statistics.h
         net/tcp_conn.h
         net/runflag.h

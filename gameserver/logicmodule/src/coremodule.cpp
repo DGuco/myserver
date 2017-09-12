@@ -1,5 +1,7 @@
 #include "../inc/coremodule.h"
 
+template<> CCoreModule* CSingleton<CCoreModule>::spSingleton = NULL;
+
 CCoreModule::CCoreModule()
 {
 
@@ -26,12 +28,12 @@ int CCoreModule::OnExitServer()
 }
 
 
-void CCoreModule::OnRouterMessage(int cmd,Message *pMsg)
+void CCoreModule::OnRouterMessage(CProxyMessage *pMsg)
 {
 
 }
 
-void CCoreModule::OnClientMessage(CPlayer *pTeam, int cmd,Message *pMsg)
+void CCoreModule::OnClientMessage(CPlayer *pTeam,CMessage *pMsg)
 {
 
 }
@@ -42,6 +44,16 @@ int CCoreModule::OnCreateEntity(CPlayer *pTeam)
 }
 
 void CCoreModule::OnDestroyEntity(CPlayer *pTeam)
+{
+
+}
+
+void CCoreModule::OnMsgUserLoginRequest(CMessage *pMsg)
+{
+
+}
+
+void CCoreModule::OnMsgPlayerLoginRequest(CMessage *pMsg)
 {
 
 }

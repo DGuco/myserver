@@ -1,0 +1,39 @@
+syntax = "proto2";
+package slg.protocol;
+option java_package="com.bonusstudio.slg.protocol";
+option java_outer_classname="PrayProto";
+
+message PrayDTO
+{
+	optional int32 freetimes = 1; //(可用)免费次数
+	optional int32 itemtimes = 2; //(可用)道具次数
+	optional int32 cointimes = 3; //金币购买次数
+	optional int32 woodtimes = 4; //木材购买次数
+	optional int32 stonetimes = 5; //石头购买次数
+	optional int32 steeltimes = 6; //铁矿购买次数
+}
+
+/// -------------------COMMAND----------------
+enum PrayCommandId {
+    PRAY_MAKE_PRAY = 1101;      //祈祷
+}
+
+message MakePrayRequest{
+    required int32 type = 1; //类型 1000301:金币许愿 1000302:木材许愿 1000303:石头许愿 1000304:铁矿许愿	
+}
+
+message MakePrayResponse{
+    required int32 type = 1; //类型 1000301:金币许愿 1000302:木材许愿 1000303:石头许愿 1000304:铁矿许愿	
+    required int32 buyTimes = 2; //购买次数	
+    required int32 resourceNum = 3; //获得资源数量
+	required int32 critvalue = 4; //本次暴击倍率
+}
+
+///  ----------------PUSH MESSAGES------------
+enum PrayPushId {
+    PRAY_INFO_PUSH = 51101;
+}
+
+message PrayPush {
+    required PrayDTO prayInfo = 1;
+}

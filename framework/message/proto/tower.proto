@@ -1,0 +1,32 @@
+syntax = "proto2";
+package slg.protocol;
+option java_package="com.bonusstudio.slg.protocol";
+option java_outer_classname="TowerProto";
+
+message TowerDTO {
+    required int32 bid = 1;             //建筑id 
+    required int32 count = 2;           //弹药数量
+}
+/// -------------------COMMAND----------------
+enum TowerCommandId {
+    MARCH_ADD_AMMUNITION = 901;     //添加弹药
+}
+
+message AddAmmunitionRequest{
+    required int32 bid = 1; //建筑id
+    required int32 oper = 2;//资源不足的情况下，是否花费钻石补充, 1补充，0不补充
+    required int32 type  = 3; //1：补充1个 2：全部补充
+}
+
+message AddAmmunitionResponse{
+     required int32 bid = 1; 
+}
+
+///  ----------------PUSH MESSAGES------------
+enum TowerPushId {
+    TOWER_CHANGE_PUSH = 50901;
+}
+
+message TowerPush {
+    repeated TowerDTO towers = 1;
+}

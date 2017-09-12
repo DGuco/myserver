@@ -26,9 +26,11 @@ set(SOURCE_FILES
         logicmodule/inc/coremodule.h
         logicmodule/inc/logicmodule.h
         logicmodule/inc/modulemanager.h
+        logicmodule/inc/dbmodule.h
         logicmodule/src/modulemanager.cpp
         logicmodule/src/coremodule.cpp
         logicmodule/src/logicmodule.cpp
+        logicmodule/src/dbmodule.cpp
         metadata/inc/parameter_config.h
         metadata/src/parameter_config.cpp
         )

@@ -11,7 +11,7 @@
 #include <map>
 #include "../base/servertool.h"
 #include "json.h"
-#include "../base/commondef.h"
+#include "../const/commondef.h"
 #include "../message/message.pb.h"
 
 struct ServerInfo {

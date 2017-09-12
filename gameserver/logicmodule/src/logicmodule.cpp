@@ -4,6 +4,8 @@
 
 #include "../inc/logicmodule.h"
 
+template<> CLogicModule* CSingleton<CLogicModule>::spSingleton = NULL;
+
 CLogicModule::CLogicModule()
 {
     mRegist = false;

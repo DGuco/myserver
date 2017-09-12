@@ -25,7 +25,7 @@ CDBHandle::CDBHandle()
 
     // 初始化输入队列对象
     CCodeQueue::pCurrentShm = ms_pCurrentShm;
-    m_pInputQueue = CCodeQueue::CreateInsance(INPUTQUEUELENGTH);
+    m_pInputQueue = CCodeQueue::CreateInstance(INPUTQUEUELENGTH);
 	if( m_pInputQueue == NULL )
 	{
 		printf( "in CDBHandle::CDBHandle(), new CCodeQueue failed" );
@@ -283,10 +283,10 @@ int CDBHandle::Run()
                                                          mMsgFactory);
         CProxyHead tmpProxyHead = stTempMsg.msghead();
         pbmsg_setproxy(&m_stCurrentProxyHead,
-                       tmpProxyHead.dstfe(),
-                       tmpProxyHead.dstid(),
                        tmpProxyHead.srcfe(),
                        tmpProxyHead.srcid(),
+                       tmpProxyHead.dstfe(),
+                       tmpProxyHead.dstid(),
                        GetMSTime(),
                        enMessageCmd::MESS_REGIST);
 		if( tRet != 0 )  // 如果解析失败则重新取 Code

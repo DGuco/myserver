@@ -28,7 +28,7 @@
 	if((a) == false) 											\
 	{ 															\
 		LOG_ERROR(log, "[%s : %d : %s] ASSERT: (%s) == false.",	\
-			__YQ_FILE__, __LINE__,__FUNCTION__, #a);			\
+			__MY_FILE__, __LINE__,__FUNCTION__, #a);			\
 		fail_handle; 											\
 	}
 
@@ -38,7 +38,7 @@
 		char log_str[1024]; 										\
 		sprintf(log_str, str, ##__VA_ARGS__); 						\
 		LOG_ERROR(log, "[%s : %d : %s] ASSERT: (%s) == false, %s.",	\
-			__YQ_FILE__, __LINE__, __FUNCTION__, #a, log_str); 		\
+			__MY_FILE__, __LINE__, __FUNCTION__, #a, log_str); 		\
 		fail_handle; 												\
 	}
 #else

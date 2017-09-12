@@ -1,0 +1,39 @@
+syntax = "proto2";
+package slg.protocol;
+option java_package="com.bonusstudio.slg.protocol";
+option java_outer_classname="ShopProto";
+
+/// -------------------COMMAND----------------
+enum ShopCommandId {
+    SHOP_ORDINARY_BUY       = 1401;               //商店购买
+    SHOP_QUICK_BUY          = 1402;               //快捷商店购买
+}
+
+message ShopQuickBuyRequest
+{
+	required int32 type = 1;  
+	required int32 shopid = 2;   //商店id	 
+	required int32 num = 3;      //购买数量
+}
+
+message ShopQuickBuyResponse
+{
+	required int32 type = 1;  
+	required int32 shopid = 2;   //商店id	 
+	required int32 num = 3;      //购买数量
+}
+
+
+
+message ShopBuyRequest
+{
+	required int32 shopid = 1;   //商店id	 
+	required int32 num = 2;   //购买数量
+}
+
+message ShopBuyResponse
+{
+	required int32 shopid = 1;   //商店id	 
+	required int32 num = 2;   //购买数量
+}
+

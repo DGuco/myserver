@@ -1,0 +1,176 @@
+syntax = "proto2";
+package slg.protocol;
+option java_package="com.bonusstudio.slg.protocol";
+option java_outer_classname="MapProto";
+import "common.proto";
+
+enum MapGridType {
+    MAP_GRID_TYPE_RESOURCE = 1;
+    MAP_GRID_TYPE_PLAYER = 2;
+    MAP_GRID_TYPE_MONSTER = 3;
+    MAP_GRID_TYPE_ALLIANCE = 4;
+    MAP_GRID_TYPE_OBSTACLE = 5;
+    MAP_GRID_TYPE_EMPTY = 6;  
+}
+
+// generic map grid 
+message MapGridDTO {
+    required PositionDTO    location    = 1;
+    required MapGridType    type        = 2;
+    required bytes          detail      = 3;
+    required int64          objId       = 4;
+}
+
+message MapPlayerProfileDTO { 
+    required int64 playerId     = 1;
+    required string nickName    = 2;
+    required string icon         = 3;
+    required int32 castleLevel  = 4;
+}
+
+message MapResourceOccupierDTO {
+    required MapPlayerProfileDTO player     = 1;
+    repeated LevelSoldierDTO soldiers       = 2;
+    required int32 gatherTime               = 4;
+    required int32 gatherNum                = 5; // 采集结算量
+    required int32 gatherRate               = 6; // 采集速率
+    optional int32 addRate                  = 7; // 加成速率
+    optional int64 marchid                  = 8; // 加成速率
+}
+
+// player type
+message MapPlayerGridDTO {
+    required MapPlayerProfileDTO player = 1;
+}
+
+// resource type
+message MapResourceGridDTO {
+    required int32 type = 1; //资源类型
+	required int32 level = 2; //资源等级
+    required int32 remain = 3; //当前剩余量
+	optional MapResourceOccupierDTO occupier = 9;// 占领者
+}
+
+message MapMonsterGridDTO {
+    required int32 configId = 1;
+}
+
+message MapObstacleGridDTO {
+    required int32 configId = 1;
+}
+
+//subtype 资源田类型
+//subtype 怪物id
+message FaroriteDTO
+{
+	required MapGridType type = 1;
+    required PositionDTO location    = 2;
+    optional int32 subtype = 3;
+	optional int32 level = 4; //等级
+	optional string icon = 5;  //玩家icon
+	optional string playernme = 6; //玩家名称
+	optional int32 resourceNum = 7;  //资源田剩余资源量
+	optional string alliancename = 8; //联盟缩写	
+}
+// ------------------COMMANDS ---------------
+
+enum MapCommandId {
+    MAP_QUERY = 701; // 查询地图信息
+    MAP_EXIT = 702; // 离开地图
+    MAP_ENTER = 703;    //进入大地图
+    MAP_PLAYER_MIGRATE = 704; // 地图玩家迁移
+    MAP_GRID_SEARCH = 705; // 地图类型查询
+    MAP_FAVORITE_LIST = 706;    //收藏列表信息
+    MAP_ADD_FAVORITE = 707;     //添加到收藏列表
+    MAP_REMOVE_FAVORITE = 708;  //删除收藏
+}
+
+message MapQueryRequest {
+	required PositionDTO start = 1;
+	required PositionDTO end = 2;
+	required PositionDTO center = 3;
+}
+
+message MapPlayerMigrateRequest {
+    required PositionDTO target = 1; 
+    required bool useItem = 2; // 使用道具
+}
+
+message MapPlayerMigrateResponse {
+    required PositionDTO target = 1; 
+}
+
+enum MapGridSearchType {
+    MAP_MONSTER = 1;
+    MAP_GOLD_GRID = 2;
+    MAP_WOOD_GRID = 3;
+    MAP_STONE_GRID = 4;
+    MAP_IRON_GRID = 5;
+    MAP_DIAMOND_GRID = 6;
+}
+
+message MapGridSearchRequest {
+    required MapGridSearchType type = 1;
+    required int32 level = 2;
+}
+
+message MapGridSearchResponse {
+    required PositionDTO position = 1;
+}
+
+message FaroriteListRequest 
+{
+	required int32 type = 1;     //0:收藏夹 1:敌人列表
+}
+
+message FaroriteListResponse
+{
+	required int32 type = 1;     //0:收藏夹 1:敌人列表
+  	repeated FaroriteDTO favoritelist = 3;
+}
+
+message FaroriteRequest 
+{
+    required PositionDTO position = 1;
+}
+
+message FavoriteResponse
+{
+  	required FaroriteDTO favorite = 2;
+}
+
+message FaroriteRemoveRequest 
+{
+	required int32 type = 1;     //0:收藏夹 1:敌人列表
+	required int32 index = 2;    //在列表中的索引位置
+}
+
+message FaroriteRemoveResponse
+{
+	required int32 type = 1;     //0:收藏夹 1:敌人列表	
+ 	required int32 index = 2;    //在列表中的索引位置
+}
+
+// -------------------PUSHES------------------
+enum MapPushId {
+    MAP_PUSH_GRID_LIST = 50701;
+    MAP_PUSH_GRID_REMOVE = 50702;
+    MAP_PUSH_MONSTER_PROGRESSES = 50703;
+}
+
+message MapGridListPush {
+    repeated MapGridDTO mapGrids = 1;
+}
+
+message MapGridRemovePush {
+    required PositionDTO position = 1;
+}
+
+message MonsterProgress {
+    required int32 type = 1;
+    required int32 monsterTroopId = 2;
+}
+
+message MapMonsterProgressPush {
+    repeated MonsterProgress progresses = 1;
+}

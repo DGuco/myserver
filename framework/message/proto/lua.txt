@@ -1,0 +1,17 @@
+common
+report
+march
+pray
+hospital
+wall
+shop
+alliance
+equipment
+player
+tech
+task
+rank
+map
+timer_task
+friend
+chat

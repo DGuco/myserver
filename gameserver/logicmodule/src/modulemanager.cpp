@@ -22,7 +22,7 @@ int CModuleManager::Initialize()
     }
     //游戏主模块
     CCoreModule* pTmpCoreModule = new CCoreModule;
-    RegisterModule(EModuleType::EMODULETYPE_CORE,pTmpCoreModule);
+    RegisterModule(EModuleType::EMODULETYPE_PLAYER,pTmpCoreModule);
 }
 
 int CModuleManager::RegisterModule(EModuleType eType, CLogicModule *pModule)
@@ -74,8 +74,7 @@ void CModuleManager::OnRouterMessage(int iModuleType, CProxyMessage * pMsg)
         return;
     }
 
-    mpLogicModules[iModuleType]->OnRouterMessage(pMsg->msghead().messageid(),
-                                                 (Message*)pMsg->msgpara());
+    mpLogicModules[iModuleType]->OnRouterMessage(pMsg);
 }
 
 void CModuleManager::OnClientMessage(int iModuleType, CPlayer *pTeam, CMessage *pMsg)
@@ -86,9 +85,7 @@ void CModuleManager::OnClientMessage(int iModuleType, CPlayer *pTeam, CMessage *
         return;
     }
 
-    mpLogicModules[iModuleType]->OnClientMessage(pTeam,
-                                                 pMsg->msghead().cmd(),
-                                                 (Message*)pMsg->msgpara());
+    mpLogicModules[iModuleType]->OnClientMessage(pTeam,pMsg);
 }
 
 int CModuleManager::OnCreateEntity(CPlayer *pTeam)
