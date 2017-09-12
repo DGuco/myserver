@@ -135,6 +135,7 @@ public:
     int Push(unsigned int iMsgID, Message* pMsgPara, CPlayer* pPlayer);
     // 回复客户端上行的请求
     int SendResponse(Message* pMsgPara, CPlayer* pPlayer);
+    int SendResponse(Message* pMsgPara, MesHead* mesHead);
 
     // 通过消息ID获取模块类型
     int GetModuleClass(int iMsgID);

@@ -389,6 +389,13 @@ int CGameServer::SendResponse(Message* pMsgPara, CPlayer* pPlayer)
     return m_pClientHandle->SendResponse(pMsgPara, pPlayer);
 }
 
+// 回复客户端上行的请求
+int CGameServer::SendResponse(Message* pMsgPara, MesHead* mesHead)
+{
+    MY_ASSERT( mesHead != NULL && pMsgPara != NULL,return -1 );
+    return m_pClientHandle->SendResponse(pMsgPara, mesHead);
+}
+
 // 连接到Proxy
 bool CGameServer::Connect2Proxy()
 {

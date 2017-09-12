@@ -103,6 +103,41 @@ int CClientHandle::SendResponse(Message* pMessage,CPlayer* pPlayer) {
     return 0;
 }
 
+
+int CClientHandle::SendResponse(Message* pMessage,MesHead* mesHead) {
+    MY_ASSERT((pMessage != NULL && mesHead != NULL), return -1);
+    char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
+    MSG_LEN_TYPE unTmpCodeLength = sizeof(aTmpCodeBuf);
+
+    MesHead pTmpHead;
+    CSocketInfo* pTmpSocket = pTmpHead.mutable_socketinfos()->Add();
+    pTmpSocket->set_createtime(pTmpSocket->createtime());
+    pTmpSocket->set_socketid(pTmpSocket->socketid());
+    pTmpHead.set_cmd(mesHead->cmd());
+    pTmpHead.set_seq(mesHead->seq());
+    pTmpHead.set_serial(mesHead->serial());
+
+    // 是否需要加密，在这里修改参数
+    int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
+                                                     unTmpCodeLength,
+                                                     &pTmpHead,
+                                                     pMessage);
+    if (iRet != 0)
+    {
+        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertGameServerMessageToStream failed.");
+    }
+
+    iRet = mS2CPipe->AppendOneCode((BYTE*)aTmpCodeBuf, unTmpCodeLength);
+    if (iRet < 0)
+    {
+        MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
+    }
+
+    LOG_DEBUG("default", "---- Send To Client Succeed ----");
+    return 0;
+}
+
+
 int CClientHandle::Push(int cmd,Message* pMessage, stPointList* pTeamList)
 {
     MY_ASSERT((pMessage != NULL && pTeamList != NULL), return -1);

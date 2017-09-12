@@ -15,11 +15,17 @@ CSceneObjManager::CSceneObjManager()
 
 CSceneObjManager::~CSceneObjManager()
 {
+    if (m_pPlayerManager != NULL)
+    {
+        delete m_pPlayerManager;
+        m_pPlayerManager = NULL;
+    }
 
 }
 
 int CSceneObjManager::Initialize()
 {
+    m_pPlayerManager = new CObjectManager(EnObjType::OBJ_PLAYER_ENTRY);
     m_mPlayerMap.clear();
     return 0;
 }
@@ -106,3 +112,7 @@ void CSceneObjManager::AddNewPlayer(CPlayer *pPlayer)
     m_mPlayerMap[pPlayer->GetPlayerId()] = pPlayer;
 }
 
+CObjectManager* CSceneObjManager::GetPlayerManager()
+{
+    return m_pPlayerManager;
+}

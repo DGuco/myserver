@@ -66,7 +66,7 @@ message CProxyHead
 	required	uint64			TimeStamp		= 5;							// 时间戳(毫秒)
 	optional	enMessageCmd	OpFlag			= 6[default = MESS_NULL];	    // 指令类型
     optional    uint32          messageId       = 7;                            // 消息id
-    optional	CSocketInfo		SocketInfo		= 8;	                        //发送目标信息
+    optional	MesHead		    msgHead		    = 8;	                        // 发送目标信息(创建玩家实体之前用)
 };
 
 // 单个消息

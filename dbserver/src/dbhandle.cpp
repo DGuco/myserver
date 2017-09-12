@@ -10,6 +10,7 @@
 #include "../inc/queryresultmysql.h"
 #include "../inc/databasemysql.h"
 #include "../../framework/json/config.h"
+#include "../../framework/message/client_comm_engine.h"
 
 CSharedMem* CDBHandle::ms_pCurrentShm = NULL;
 int CDBHandle::m_iDBSvrID = -1;
@@ -386,7 +387,17 @@ int CDBHandle::ProcessExecuteSqlRequest( CProxyMessage* pMsg )
 
 		TRACE_DEBUG("Execute SQL: %s", sqlStr.c_str());	// 用于在日志中查看SQL查询语句
 
-		tMsg.mutable_msghead()->set_messageid( CMsgExecuteSqlResponse::MsgID );
+		CProxyHead* pTmpHead = tMsg.mutable_msghead();
+		pTmpHead->set_messageid( CMsgExecuteSqlResponse::MsgID );
+		if (pMsg->has_msghead())
+		{
+			if (pMsg->mutable_msghead()->has_msghead())
+			{
+				ClientCommEngine::CopyMesHead(pMsg->mutable_msghead()->mutable_msghead(),
+											  pTmpHead->mutable_msghead());
+			}
+		}
+
 		tMsg.set_msgpara( (uint64)&tSqlResMsg );
 
 		if( pReqMsg->sqltype() == SELECT || pReqMsg->sqltype() == CALL )

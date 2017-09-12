@@ -48,7 +48,7 @@ private:
                    int nProduOutNumber,
                    CALLBACK nIsCallBack,
                    const char* pSql,
-                   CSocketInfo* pSocketInfo, ... );
+                   MesHead* mesHead, ... );
 
     int ExecuteSqlForBlob(emDBLogicType nLogicType,
                           unsigned long ulTeamID,
@@ -60,11 +60,13 @@ private:
                           const int iBlobSize,
                           const char* pBlob,
                           const char* pSQLWhere,
-                          CSocketInfo* pSocketInfo, ... );
+                          MesHead* mesHead, ... );
+
+    void OnMsgExecuteSqlResponse(CProxyMessage* pMsg);
 public:
     //查找玩家帐号信息没有则创建
-    void FindOrCreateUserRequest(std::string& platform,std::string& puid,CSocketInfo* pSocketInfo);
-    void FindOrCreateUserResponse(CSession* pSession, CMsgExecuteSqlResponse* pMsgSql,CSocketInfo* pSocketInfo);
+    void FindOrCreateUserRequest(std::string& platform,std::string& puid,MesHead* mesHead);
+    void FindOrCreateUserResponse(CSession* pSession, CMsgExecuteSqlResponse* pMsgSql,CProxyHead* mesHead);
 };
 
 #endif //SERVER_DBMODULE_H

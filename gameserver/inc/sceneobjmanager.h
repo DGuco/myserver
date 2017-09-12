@@ -7,9 +7,10 @@
 
 #include <cstddef>
 #include <unordered_map>
+#include "../datamodule/inc/player.h"
+#include "../../framework/base/objectManager.h"
 #include "../../framework/base/servertool.h"
 #include "../../framework/base/base.h"
-#include "../datamodule/inc/player.h"
 
 #ifdef _DEBUG_
 #define SERVER_CAP_TEAM				(500)		// 服务器最大战队实体数量
@@ -53,12 +54,14 @@ public:
     CObj* GetObject(OBJ_ID iObjID);
     // 获取玩家
     CPlayer* GetPlayer(OBJ_ID ulPlayerid);
-    //删除玩家
+    // 删除玩家
     int DestroyPlayer(OBJ_ID iObjID);
-    //添加玩家
+    // 添加玩家
     void AddNewPlayer(CPlayer *pPlayer);
-
+    // 获取玩家管理器
+    CObjectManager* GetPlayerManager();
 private:
+    CObjectManager* m_pPlayerManager;
     std::unordered_map<uint64,CPlayer*> m_mPlayerMap;
 };
 

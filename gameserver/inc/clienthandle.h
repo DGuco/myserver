@@ -63,6 +63,7 @@ protected:
 
 public:
     int SendResponse(Message* pMessage,CPlayer* pPlayer);
+    int SendResponse(Message* pMessage,MesHead* mesHead);
     int Push(int cmd,Message* pMessage, stPointList* pPlayerList);
     int Recv();
 

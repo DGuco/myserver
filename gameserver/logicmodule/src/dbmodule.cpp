@@ -4,10 +4,12 @@
 
 #include "../inc/dbmodule.h"
 #include "../../inc/gameserver.h"
-#include "../../../framework/const/dblogintype.h"
-#include "../../../framework/message/message.pb.h"
+#include "../../inc/sceneobjmanager.h"
 #include "../../../framework/message/server_comm_engine.h"
-#include "../../../framework/base/servertool.h"
+#include "../../../framework/message/player.pb.h"
+#include "../../../framework/message/client_comm_engine.h"
+
+using namespace slg::protocol;
 
 template<> CDbModule* CSingleton<CDbModule>::spSingleton = NULL;
 
@@ -31,7 +33,21 @@ int CDbModule::OnExitServer()
 
 void CDbModule::OnRouterMessage(CProxyMessage *pMsg)
 {
-
+    MY_ASSERT_LOG("db", pMsg != NULL , return );
+    switch(pMsg->msghead().messageid())
+    {
+        case CMsgExecuteSqlResponse::MsgID:
+        {
+            OnMsgExecuteSqlResponse(pMsg);
+            break;
+        }
+        default:
+        {
+            LOG_ERROR("db", "[%s : %d : %s] invalid message id(%8x).",
+                      __MY_FILE__, __LINE__, __FUNCTION__, pMsg->msghead().messageid());
+            break;
+        }
+    }
 }
 
 void CDbModule::OnClientMessage(CPlayer *pTeam,CMessage *pMsg)
@@ -49,7 +65,41 @@ void CDbModule::OnDestroyEntity(CPlayer *pTeam)
 
 }
 
+void CDbModule::OnMsgExecuteSqlResponse(CProxyMessage* pMsg) {
+    MY_ASSERT_LOG("db", pMsg != NULL, return);
+    CMsgExecuteSqlResponse *pTmpSqlRsp = (CMsgExecuteSqlResponse *) pMsg->msgpara();
+    MY_ASSERT_LOG("db", pTmpSqlRsp != NULL, return);
 
+    CSession *pTmpSession = NULL;
+    if (pTmpSqlRsp->sessionid() != 0) {
+        // 如果有session
+        pTmpSession = (CSession *) CTimerManager::GetSingletonPtr()->GetObject(pTmpSqlRsp->sessionid());
+
+        if (NULL == pTmpSession) {
+            LOG_ERROR("db", "[%s : %d : %s] Session doesn't exsit (logictype:%d:sessionid:%u ), has been deleted.",
+                      __MY_FILE__, __LINE__, __FUNCTION__,
+                      pTmpSqlRsp->logictype(), pTmpSqlRsp->sessionid());
+            return;
+        }
+        if (pTmpSession->GetTimeout() != (time_t) pTmpSqlRsp->timestamp()) {
+            LOG_ERROR("db", "[%s : %d : %s] Session doesn't exsit (logictype:%d:sessionid:%u ), has been reused.",
+                      __MY_FILE__, __LINE__, __FUNCTION__,
+                      pTmpSqlRsp->logictype(), pTmpSqlRsp->sessionid());
+            return;
+        }
+    }
+
+    switch (pTmpSqlRsp->logictype())
+    {
+        //*********************************************************************************
+        // 读取战队数据
+        //*********************************************************************************
+        case emDBLogicType::emDBTypeFindOrCreateUser : {
+            FindOrCreateUserResponse(pTmpSession, pTmpSqlRsp,pMsg->mutable_msghead());
+            break;
+        }
+    }
+}
 int CDbModule::ExecuteSql(emDBLogicType nLogicType,
                           unsigned long ulTeamID,
                           int iSessionID,
@@ -58,7 +108,7 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
                           int nProduOutNumber,
                           CALLBACK nIsCallBack,
                           const char* pSql,
-                          CSocketInfo* pSocketInfo, ... )
+                          MesHead* mesHead, ... )
 {
     MY_ASSERT_LOG("db", pSql != NULL, return -1);
 
@@ -78,11 +128,9 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
 
     CProxyHead* pTmpHead = tmpMsg.mutable_msghead();
     pbmsg_setmessagehead(pTmpHead, CMsgExecuteSqlRequest::MsgID );
-    if (pSocketInfo != NULL)
+    if (mesHead != NULL)
     {
-        CSocketInfo* socketInfo = pTmpHead->mutable_socketinfo();
-        socketInfo->set_socketid(pSocketInfo->socketid());
-        socketInfo->set_createtime(pSocketInfo->createtime());
+        ClientCommEngine::CopyMesHead(mesHead,pTmpHead->mutable_msghead());
     }
 
     tmpMsgSqlRqt.set_logictype(nLogicType);
@@ -114,7 +162,7 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
                                  const int iBlobSize,
                                  const char* pBlob,
                                  const char* pSQLWhere,
-                                 CSocketInfo* pSocketInfo,... )
+                                 MesHead* mesHead,... )
 {
     MY_ASSERT_LOG("db", pSql != NULL && pBlob != NULL && pSQLWhere != NULL, return -1);
 
@@ -126,11 +174,9 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
 
     CProxyHead* pTmpHead = tmpMsg.mutable_msghead();
     pbmsg_setmessagehead(pTmpHead, CMsgExecuteSqlRequest::MsgID );
-    if (pSocketInfo != NULL)
+    if (mesHead != NULL)
     {
-        CSocketInfo* socketInfo = pTmpHead->mutable_socketinfo();
-        socketInfo->set_socketid(pSocketInfo->socketid());
-        socketInfo->set_createtime(pSocketInfo->createtime());
+        ClientCommEngine::CopyMesHead(mesHead,pTmpHead->mutable_msghead());
     }
 
     tmpMsgSqlRqt.set_logictype(nLogicType);
@@ -153,7 +199,7 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
     return 0;
 }
 
-void CDbModule::FindOrCreateUserRequest(std::string &platform, std::string &puid,CSocketInfo* pSocketInfo)
+void CDbModule::FindOrCreateUserRequest(std::string &platform, std::string &puid,MesHead* mesHead)
 {
     char* pcTmpSql = (char*)"SELECT `player_id` FROM user WHERE `platform` = %s AND `puid` = %s";
     int iRet = CDbModule::GetSingletonPtr()->ExecuteSql(
@@ -165,7 +211,7 @@ void CDbModule::FindOrCreateUserRequest(std::string &platform, std::string &puid
             0,
             MUSTCALLBACK,
             pcTmpSql,
-            pSocketInfo,
+            mesHead,
             platform,
             puid
     );
@@ -177,31 +223,36 @@ void CDbModule::FindOrCreateUserRequest(std::string &platform, std::string &puid
     }
 }
 
-void CDbModule::FindOrCreateUserResponse(CSession *pSession, CMsgExecuteSqlResponse *pMsgSql,CSocketInfo* pSocketInfo)
+void CDbModule::FindOrCreateUserResponse(CSession *pSession, CMsgExecuteSqlResponse *pMsgSql,CProxyHead* proxyHead)
 {
-    MY_ASSERT_LOG("db",  pMsgSql != NULL && pSession != NULL && pSocketInfo != NULL, return);
+    MY_ASSERT_LOG("db",  pMsgSql != NULL && pSession != NULL && proxyHead != NULL, return);
 
     int iTmpRowCount = pMsgSql->rowcount();		// 行数
     int iTmpColCount = pMsgSql->colcount();		// 列数
 
     // 必须对行数列数判断
-    if ( 1 == pMsgSql->resultcode() && iTmpRowCount > 0
-         &&  emCol1 == iTmpColCount && emRow1 == iTmpRowCount )
+    if ( 1 == pMsgSql->resultcode() &&  emCol1 == iTmpColCount )
     {
-        unsigned long	player_id = 0;	// 帐号
-
+        OBJ_ID player_id = 0;	// 帐号
         // 表示有返回结果
         for(int i = 0; i < iTmpRowCount ; i++)
         {
-            player_id		= atoll((char*)pMsgSql->fieldvalue( 0 + i * iTmpColCount ).c_str());
+            player_id = atol((char*)pMsgSql->fieldvalue( 0 + i * iTmpColCount ).c_str());
         }
+
+        if (player_id == 0)
+        {
+            player_id = (OBJ_ID)CSceneObjManager::GetSingletonPtr()->GetPlayerManager()->GetValidId();
+        }
+        UserAccountLoginResponse response;
+        response.set_playerid(player_id);
+        CGameServer::GetSingletonPtr()->SendResponse(&response,proxyHead->mutable_msghead());
     }
     else
     {
         // 拉取数据失败,则退出
         LOG_ERROR("db", "[%s : %d : %s] LoadAllAccountResponse failed, resultcode=%d, row=%d, col=%d.",
-                  __YQ_FILE__, __LINE__, __FUNCTION__, pMsgSql->resultcode(), iTmpRowCount, iTmpColCount);
+                  __MY_FILE__, __LINE__, __FUNCTION__, pMsgSql->resultcode(), iTmpRowCount, iTmpColCount);
         return;
     }
-    LoadAllDataFinish(pTmpTeam, ELSF_ACCOUNTDATA);
 }
