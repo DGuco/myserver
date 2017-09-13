@@ -16,7 +16,7 @@
 #include <netinet/tcp.h>
 #include "../inc/gatectrl.h"
 #include "../../framework/const/commondef.h"
-#include "../../framework/message/client_comm_engine.h"
+#include "../../framework/net/client_comm_engine.h"
 #include "../../framework/mem/codequeue.h"
 #include "../../framework/mem/sharemem.h"
 #include "../../gameserver/inc/clienthandle.h"

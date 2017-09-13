@@ -6,7 +6,7 @@
 #define SERVER_MESSAGEFACTORY_H
 
 #include "../inc/messagefactory.h"
-#include "../../framework/message/message_interface.h"
+#include "../../framework/net/message_interface.h"
 
 class CMessageFactory : public CFactory
 {

@@ -7,7 +7,7 @@
 #include "../inc/proxy_ctrl.h"
 #include "../../framework/net/runflag.h"
 #include "../../framework/message/message.pb.h"
-#include "../../framework/message/client_comm_engine.h"
+#include "../../framework/net/client_comm_engine.h"
 
 extern CRunFlag g_byRunFlag;
 

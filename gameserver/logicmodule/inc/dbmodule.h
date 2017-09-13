@@ -6,7 +6,7 @@
 #define SERVER_DBMODULE_H
 
 #include "../../datamodule/inc/player.h"
-#include "../../../framework/message/message_interface.h"
+#include "../../../framework/net/message_interface.h"
 #include "logicmodule.h"
 #include "../../../framework/timer/timer.h"
 #include "../../../framework/message/dbmessage.pb.h"

@@ -12,7 +12,7 @@
 #include "../../framework/mem/codequeue.h"
 #include "../../framework/const/errcode.h"
 #include "../../framework/mem/sharemem.h"
-#include "../../framework/message/client_comm_engine.h"
+#include "../../framework/net/client_comm_engine.h"
 #include "../../framework/message/player.pb.h"
 using namespace slg::protocol;
 

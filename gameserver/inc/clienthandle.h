@@ -8,7 +8,7 @@
 
 #include "../datamodule/inc/player.h"
 #include "../../framework/base/base.h"
-#include "../../framework/message/message_interface.h"
+#include "../../framework/net/message_interface.h"
 #include "../../framework/message/message.pb.h"
 
 // 管道标识符

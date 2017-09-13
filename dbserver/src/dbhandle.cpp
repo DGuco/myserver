@@ -2,7 +2,7 @@
 // Created by DGuco on 17-7-13.
 //
 
-#include "../../framework/message/server_comm_engine.h"
+#include "../../framework/net/server_comm_engine.h"
 #include "../../framework/mem/codequeue.h"
 #include "../../framework/message/dbmessage.pb.h"
 #include "../inc/dbhandle.h"
@@ -10,7 +10,7 @@
 #include "../inc/queryresultmysql.h"
 #include "../inc/databasemysql.h"
 #include "../../framework/json/config.h"
-#include "../../framework/message/client_comm_engine.h"
+#include "../../framework/net/client_comm_engine.h"
 
 CSharedMem* CDBHandle::ms_pCurrentShm = NULL;
 int CDBHandle::m_iDBSvrID = -1;

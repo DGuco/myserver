@@ -5,7 +5,7 @@
 #include "../inc/dbctrl.h"
 #include "../../framework/mem/sharemem.h"
 #include "../../framework/json/config.h"
-#include "../../framework/message/server_comm_engine.h"
+#include "../../framework/net/server_comm_engine.h"
 
 CSharedMem* CDBCtrl::mShmPtr = NULL;
 template<> CDBCtrl* CSingleton< CDBCtrl >::spSingleton = NULL;

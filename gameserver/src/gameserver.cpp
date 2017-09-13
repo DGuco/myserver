@@ -4,7 +4,7 @@
 #include "../inc/gameserver.h"
 #include "../inc/messagefactory.h"
 #include "../../framework/json/config.h"
-#include "../../framework/message/server_comm_engine.h"
+#include "../../framework/net/server_comm_engine.h"
 
 template<> CGameServer* CSingleton<CGameServer>::spSingleton = NULL;
 

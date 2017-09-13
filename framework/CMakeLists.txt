@@ -24,12 +24,6 @@ set(FRAMEWORK
         log/log.cpp
         message/message.pb.h
         message/message.pb.cc
-        message/client_comm_engine.h
-        message/server_comm_engine.h
-        message/message_interface.h
-        message/message_interface.cpp
-        message/server_comm_engine.cpp
-        message/client_comm_engine.cpp
         message/player.pb.h
         message/player.pb.cc
         net/statistics.h
@@ -43,6 +37,12 @@ set(FRAMEWORK
         net/statistics.cpp
         net/ccrypto.h
         net/ccrypto.cpp
+        net/client_comm_engine.h
+        net/server_comm_engine.h
+        net/message_interface.h
+        net/message_interface.cpp
+        net/server_comm_engine.cpp
+        net/client_comm_engine.cpp
         mem/sharemem.h
         mem/shm.h/
         mem/sharemem.cpp

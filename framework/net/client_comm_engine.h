@@ -3,7 +3,7 @@
 
 #include "message_interface.h"
 #include "message.pb.h"
-#include "../net/ccrypto.h"
+#include "ccrypto.h"
 
 
 class ClientCommEngine

@@ -13,7 +13,7 @@
 #include "../../framework/base/base.h"
 #include "../../framework/net/tcp_conn.h"
 #include "../../framework/timer/timer.h"
-#include "../../framework/message/message_interface.h"
+#include "../../framework/net/message_interface.h"
 #include "../../framework/message/message.pb.h"
 #include "../../framework/message/dbmessage.pb.h"
 #include "../datamodule/inc/player.h"

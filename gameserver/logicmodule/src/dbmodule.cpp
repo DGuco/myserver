@@ -5,9 +5,9 @@
 #include "../inc/dbmodule.h"
 #include "../../inc/gameserver.h"
 #include "../../inc/sceneobjmanager.h"
-#include "../../../framework/message/server_comm_engine.h"
+#include "../../../framework/net/server_comm_engine.h"
 #include "../../../framework/message/player.pb.h"
-#include "../../../framework/message/client_comm_engine.h"
+#include "../../../framework/net/client_comm_engine.h"
 
 using namespace slg::protocol;
 
