@@ -5,12 +5,15 @@
 #include "message.pb.h"
 #include "../net/ccrypto.h"
 
+
 class ClientCommEngine
 {
 public:
 	static unsigned char tKey[16];
 	static unsigned char* tpKey;
-	/**
+    static void CopyMesHead(MesHead* from,MesHead* to);
+
+    /**
 	 * @param pBuff         client上行数据
 	 * @param unBuffLen     上行数据长度
 	 * @param pHead         转发给gameserver的消息C2SHead

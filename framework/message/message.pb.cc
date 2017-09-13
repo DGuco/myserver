@@ -97,7 +97,7 @@ void protobuf_AssignDesc_message_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(CMessage));
   CProxyHead_descriptor_ = file->message_type(3);
-  static const int CProxyHead_offsets_[7] = {
+  static const int CProxyHead_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, srcfe_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, srcid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, dstfe_),
@@ -105,6 +105,7 @@ void protobuf_AssignDesc_message_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, timestamp_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, opflag_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, messageid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CProxyHead, msghead_),
   };
   CProxyHead_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -186,21 +187,22 @@ void protobuf_AddDesc_message_2eproto() {
     "\001(\005\"V\n\007MesHead\022!\n\013SocketInfos\030\001 \003(\0132\014.CS"
     "ocketInfo\022\013\n\003Cmd\030\002 \001(\005\022\016\n\006Serial\030\003 \001(\005\022\013"
     "\n\003Seq\030\004 \001(\005\"9\n\010CMessage\022\031\n\007MsgHead\030\001 \002(\013"
-    "2\010.MesHead\022\022\n\007MsgPara\030\002 \001(\006:\0010\"\230\001\n\nCProx"
+    "2\010.MesHead\022\022\n\007MsgPara\030\002 \001(\006:\0010\"\263\001\n\nCProx"
     "yHead\022\r\n\005SrcFE\030\001 \002(\r\022\r\n\005SrcID\030\002 \002(\r\022\r\n\005D"
     "stFE\030\003 \002(\r\022\r\n\005DstID\030\004 \002(\r\022\021\n\tTimeStamp\030\005"
     " \002(\004\022(\n\006OpFlag\030\006 \001(\0162\r.enMessageCmd:\tMES"
-    "S_NULL\022\021\n\tmessageId\030\007 \001(\r\"A\n\rCProxyMessa"
-    "ge\022\034\n\007MsgHead\030\001 \002(\0132\013.CProxyHead\022\022\n\007MsgP"
-    "ara\030\002 \001(\006:\0010*\200\002\n\014enServerType\022\014\n\010FE_TIME"
-    "R\020\000\022\r\n\tFE_CLIENT\020\001\022\021\n\rFE_GAMESERVER\020\002\022\022\n"
-    "\016FE_LOGINSERVER\020\003\022\017\n\013FE_DBSERVER\020\004\022\022\n\016FE"
-    "_PROXYSERVER\020\005\022\022\n\016FE_WORLDSERVER\020\006\022\020\n\014FE"
-    "_WEBSERVER\020\007\022\024\n\020FE_OFFLINESERVER\020\010\022\022\n\016FE"
-    "_CHECKSERVER\020\t\022\021\n\rFE_HALLSERVER\020\n\022\021\n\rFE_"
-    "GATESERVER\020\013\022\021\n\rFE_ROOMSERVER\020\014*B\n\014enMes"
-    "sageCmd\022\r\n\tMESS_NULL\020\000\022\017\n\013MESS_REGIST\020\001\022"
-    "\022\n\016MESS_KEEPALIVE\020\002B\002H\001", 783);
+    "S_NULL\022\021\n\tmessageId\030\007 \001(\r\022\031\n\007msgHead\030\010 \001"
+    "(\0132\010.MesHead\"A\n\rCProxyMessage\022\034\n\007MsgHead"
+    "\030\001 \002(\0132\013.CProxyHead\022\022\n\007MsgPara\030\002 \001(\006:\0010*"
+    "\200\002\n\014enServerType\022\014\n\010FE_TIMER\020\000\022\r\n\tFE_CLI"
+    "ENT\020\001\022\021\n\rFE_GAMESERVER\020\002\022\022\n\016FE_LOGINSERV"
+    "ER\020\003\022\017\n\013FE_DBSERVER\020\004\022\022\n\016FE_PROXYSERVER\020"
+    "\005\022\022\n\016FE_WORLDSERVER\020\006\022\020\n\014FE_WEBSERVER\020\007\022"
+    "\024\n\020FE_OFFLINESERVER\020\010\022\022\n\016FE_CHECKSERVER\020"
+    "\t\022\021\n\rFE_HALLSERVER\020\n\022\021\n\rFE_GATESERVER\020\013\022"
+    "\021\n\rFE_ROOMSERVER\020\014*B\n\014enMessageCmd\022\r\n\tME"
+    "SS_NULL\020\000\022\017\n\013MESS_REGIST\020\001\022\022\n\016MESS_KEEPA"
+    "LIVE\020\002B\002H\001", 810);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message.proto", &protobuf_RegisterTypes);
   CSocketInfo::default_instance_ = new CSocketInfo();
@@ -1142,6 +1144,7 @@ const int CProxyHead::kDstIDFieldNumber;
 const int CProxyHead::kTimeStampFieldNumber;
 const int CProxyHead::kOpFlagFieldNumber;
 const int CProxyHead::kMessageIdFieldNumber;
+const int CProxyHead::kMsgHeadFieldNumber;
 #endif  // !_MSC_VER
 
 CProxyHead::CProxyHead()
@@ -1150,6 +1153,7 @@ CProxyHead::CProxyHead()
 }
 
 void CProxyHead::InitAsDefaultInstance() {
+  msghead_ = const_cast< ::MesHead*>(&::MesHead::default_instance());
 }
 
 CProxyHead::CProxyHead(const CProxyHead& from)
@@ -1167,6 +1171,7 @@ void CProxyHead::SharedCtor() {
   timestamp_ = GOOGLE_ULONGLONG(0);
   opflag_ = 0;
   messageid_ = 0u;
+  msghead_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1176,6 +1181,7 @@ CProxyHead::~CProxyHead() {
 
 void CProxyHead::SharedDtor() {
   if (this != default_instance_) {
+    delete msghead_;
   }
 }
 
@@ -1209,6 +1215,9 @@ void CProxyHead::Clear() {
     timestamp_ = GOOGLE_ULONGLONG(0);
     opflag_ = 0;
     messageid_ = 0u;
+    if (has_msghead()) {
+      if (msghead_ != NULL) msghead_->::MesHead::Clear();
+    }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -1332,6 +1341,20 @@ bool CProxyHead::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(66)) goto parse_msgHead;
+        break;
+      }
+
+      // optional .MesHead msgHead = 8;
+      case 8: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_msgHead:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_msghead()));
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1390,6 +1413,12 @@ void CProxyHead::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(7, this->messageid(), output);
   }
 
+  // optional .MesHead msgHead = 8;
+  if (has_msghead()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      8, this->msghead(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1432,6 +1461,13 @@ void CProxyHead::SerializeWithCachedSizes(
   // optional uint32 messageId = 7;
   if (has_messageid()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(7, this->messageid(), target);
+  }
+
+  // optional .MesHead msgHead = 8;
+  if (has_msghead()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        8, this->msghead(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1493,6 +1529,13 @@ int CProxyHead::ByteSize() const {
           this->messageid());
     }
 
+    // optional .MesHead msgHead = 8;
+    if (has_msghead()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->msghead());
+    }
+
   }
   if (!unknown_fields().empty()) {
     total_size +=
@@ -1541,6 +1584,9 @@ void CProxyHead::MergeFrom(const CProxyHead& from) {
     if (from.has_messageid()) {
       set_messageid(from.messageid());
     }
+    if (from.has_msghead()) {
+      mutable_msghead()->::MesHead::MergeFrom(from.msghead());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1572,6 +1618,7 @@ void CProxyHead::Swap(CProxyHead* other) {
     std::swap(timestamp_, other->timestamp_);
     std::swap(opflag_, other->opflag_);
     std::swap(messageid_, other->messageid_);
+    std::swap(msghead_, other->msghead_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

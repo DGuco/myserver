@@ -504,6 +504,15 @@ class CProxyHead : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 messageid() const;
   inline void set_messageid(::google::protobuf::uint32 value);
 
+  // optional .MesHead msgHead = 8;
+  inline bool has_msghead() const;
+  inline void clear_msghead();
+  static const int kMsgHeadFieldNumber = 8;
+  inline const ::MesHead& msghead() const;
+  inline ::MesHead* mutable_msghead();
+  inline ::MesHead* release_msghead();
+  inline void set_allocated_msghead(::MesHead* msghead);
+
   // @@protoc_insertion_point(class_scope:CProxyHead)
  private:
   inline void set_has_srcfe();
@@ -520,6 +529,8 @@ class CProxyHead : public ::google::protobuf::Message {
   inline void clear_has_opflag();
   inline void set_has_messageid();
   inline void clear_has_messageid();
+  inline void set_has_msghead();
+  inline void clear_has_msghead();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -530,9 +541,10 @@ class CProxyHead : public ::google::protobuf::Message {
   ::google::protobuf::uint64 timestamp_;
   int opflag_;
   ::google::protobuf::uint32 messageid_;
+  ::MesHead* msghead_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
 
   friend void  protobuf_AddDesc_message_2eproto();
   friend void protobuf_AssignDesc_message_2eproto();
@@ -1024,6 +1036,44 @@ inline ::google::protobuf::uint32 CProxyHead::messageid() const {
 inline void CProxyHead::set_messageid(::google::protobuf::uint32 value) {
   set_has_messageid();
   messageid_ = value;
+}
+
+// optional .MesHead msgHead = 8;
+inline bool CProxyHead::has_msghead() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void CProxyHead::set_has_msghead() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void CProxyHead::clear_has_msghead() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void CProxyHead::clear_msghead() {
+  if (msghead_ != NULL) msghead_->::MesHead::Clear();
+  clear_has_msghead();
+}
+inline const ::MesHead& CProxyHead::msghead() const {
+  return msghead_ != NULL ? *msghead_ : *default_instance_->msghead_;
+}
+inline ::MesHead* CProxyHead::mutable_msghead() {
+  set_has_msghead();
+  if (msghead_ == NULL) msghead_ = new ::MesHead;
+  return msghead_;
+}
+inline ::MesHead* CProxyHead::release_msghead() {
+  clear_has_msghead();
+  ::MesHead* temp = msghead_;
+  msghead_ = NULL;
+  return temp;
+}
+inline void CProxyHead::set_allocated_msghead(::MesHead* msghead) {
+  delete msghead_;
+  msghead_ = msghead;
+  if (msghead) {
+    set_has_msghead();
+  } else {
+    clear_has_msghead();
+  }
 }
 
 // -------------------------------------------------------------------

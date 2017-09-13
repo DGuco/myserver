@@ -10,6 +10,25 @@
 unsigned char ClientCommEngine::tKey[16] = {1,2,3,4,5,6,7,8,9,0,2,2,4,4,5,6};
 unsigned char* ClientCommEngine::tpKey = &tKey[0];
 
+void ClientCommEngine::CopyMesHead(MesHead* from,MesHead* to)
+{
+    if (from != NULL && to != NULL)
+    {
+        for (int i = 0;i < from->socketinfos_size();++i)
+        {
+            CSocketInfo* pSocketInfo = to->mutable_socketinfos()->Add();
+            CSocketInfo socketInfo = from->socketinfos(i);
+            pSocketInfo->set_socketid(socketInfo.socketid());
+            pSocketInfo->set_createtime(socketInfo.createtime());
+            pSocketInfo->set_state(socketInfo.state());
+        }
+        to->set_cmd(from->cmd());
+        to->set_seq(from->seq());
+        to->set_serial(from->serial());
+    }
+
+}
+
 int ClientCommEngine::ParseClientStream(const void** pBuff,
                                         int nRecvAllLen,
                                         MesHead* pHead,
