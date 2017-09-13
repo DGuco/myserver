@@ -2,7 +2,7 @@
 #define SERVER_COMM_ENGINE_H_
 
 
-#include "message.pb.h"
+#include "../message/message.pb.h"
 #include "message_interface.h"
 
 

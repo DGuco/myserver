@@ -2,7 +2,7 @@
 #define CLIENT_COMM_ENGINE_H_
 
 #include "message_interface.h"
-#include "message.pb.h"
+#include "../message/message.pb.h"
 #include "ccrypto.h"
 
 
