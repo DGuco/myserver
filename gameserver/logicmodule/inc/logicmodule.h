@@ -59,6 +59,9 @@ public:
     // 创建实体
     virtual int OnCreateEntity(CPlayer* pTeam) {return 0;}
 
+    // 创建实体
+    virtual int OnPlayerLogin(CPlayer* pTeam) {return 0;}
+
     // 销毁实体
     virtual void OnDestroyEntity(CPlayer* pTeam) {}
 };

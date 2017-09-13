@@ -109,18 +109,10 @@ int CClientHandle::SendResponse(Message* pMessage,MesHead* mesHead) {
     char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     MSG_LEN_TYPE unTmpCodeLength = sizeof(aTmpCodeBuf);
 
-    MesHead pTmpHead;
-    CSocketInfo* pTmpSocket = pTmpHead.mutable_socketinfos()->Add();
-    pTmpSocket->set_createtime(pTmpSocket->createtime());
-    pTmpSocket->set_socketid(pTmpSocket->socketid());
-    pTmpHead.set_cmd(mesHead->cmd());
-    pTmpHead.set_seq(mesHead->seq());
-    pTmpHead.set_serial(mesHead->serial());
-
     // 是否需要加密，在这里修改参数
     int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
                                                      unTmpCodeLength,
-                                                     &pTmpHead,
+                                                     mesHead,
                                                      pMessage);
     if (iRet != 0)
     {

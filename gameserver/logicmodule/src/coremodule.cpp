@@ -1,4 +1,7 @@
 #include "../inc/coremodule.h"
+#include "../inc/dbmodule.h"
+#include "../../../framework/message/player.pb.h"
+using namespace slg::protocol;
 
 template<> CCoreModule* CSingleton<CCoreModule>::spSingleton = NULL;
 
@@ -50,10 +53,14 @@ void CCoreModule::OnDestroyEntity(CPlayer *pTeam)
 
 void CCoreModule::OnMsgUserLoginRequest(CMessage *pMsg)
 {
-
+    MY_ASSERT_LOG("core", pMsg != NULL, return);
+    UserAccountLoginRequest* request = (UserAccountLoginRequest*)pMsg->msgpara();
+    CDbModule::GetSingletonPtr()->FindOrCreateUserRequest(request->platform(),request->puid(),pMsg->mutable_msghead());
 }
 
 void CCoreModule::OnMsgPlayerLoginRequest(CMessage *pMsg)
 {
+    MY_ASSERT_LOG("core", pMsg != NULL, return);
+    PlayerLoginRequest* request = (PlayerLoginRequest*)pMsg->msgpara();
 
 }

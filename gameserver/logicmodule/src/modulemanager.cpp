@@ -102,6 +102,20 @@ int CModuleManager::OnCreateEntity(CPlayer *pTeam)
     return iRet;
 }
 
+int CModuleManager::OnPlayerLogin(CPlayer *pTeam)
+{
+    int iRet = 0;
+    for (int i = EMODULETYPE_START; i < EMODULETYPE_NUM; i++)
+    {
+        iRet = mpLogicModules[i]->OnPlayerLogin(pTeam);
+        if (iRet != 0)
+        {
+            return iRet;
+        }
+    }
+    return iRet;
+}
+
 void CModuleManager::OnDestroyEntity(CPlayer *pTeam)
 {
     for (int i = EMODULETYPE_START; i < EMODULETYPE_NUM; i++)

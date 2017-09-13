@@ -65,7 +65,7 @@ private:
     void OnMsgExecuteSqlResponse(CProxyMessage* pMsg);
 public:
     //查找玩家帐号信息没有则创建
-    void FindOrCreateUserRequest(std::string& platform,std::string& puid,MesHead* mesHead);
+    void FindOrCreateUserRequest(const std::string& platform,const std::string& puid,MesHead* mesHead);
     void FindOrCreateUserResponse(CSession* pSession, CMsgExecuteSqlResponse* pMsgSql,CProxyHead* mesHead);
 };
 

@@ -199,7 +199,7 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
     return 0;
 }
 
-void CDbModule::FindOrCreateUserRequest(std::string &platform, std::string &puid,MesHead* mesHead)
+void CDbModule::FindOrCreateUserRequest(const std::string &platform,const std::string &puid,MesHead* mesHead)
 {
     char* pcTmpSql = (char*)"SELECT `player_id` FROM user WHERE `platform` = %s AND `puid` = %s";
     int iRet = CDbModule::GetSingletonPtr()->ExecuteSql(

@@ -432,7 +432,6 @@ int CDBHandle::ProcessExecuteSqlRequest( CProxyMessage* pMsg )
 						if( pField == NULL )
 						{
 							TRACE_ERROR("ERROR: do sql %s success, row[%d], col[%d], but some row is null\n",sqlStr.c_str(), res->GetRowCount(), res->GetFieldCount() );
-
 							//TODO: 出错设为0
 							tSqlResMsg.set_rowcount( 0 );
 							break;

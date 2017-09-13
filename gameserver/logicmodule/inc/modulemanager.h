@@ -41,6 +41,9 @@ public:
     // 创建实体
     int OnCreateEntity(CPlayer* pTeam);
 
+    // 玩家登陆成功
+    int OnPlayerLogin(CPlayer* pTeam);
+
     // 销毁实体
     void OnDestroyEntity(CPlayer* pTeam);
 
