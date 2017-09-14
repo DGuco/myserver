@@ -1,7 +1,5 @@
 syntax = "proto2";
-package slg.protocol;
-option java_package="com.bonusstudio.slg.protocol";
-option java_outer_classname="CommonProto";
+option optimize_for = SPEED;
 
 message EmptyMessage {
 }

@@ -26,6 +26,10 @@ set(FRAMEWORK
         message/message.pb.cc
         message/player.pb.h
         message/player.pb.cc
+        message/dbmessage.pb.h
+        message/dbmessage.pb.cc
+        message/common.pb.h
+        message/common.pb.cc
         net/statistics.h
         net/tcp_conn.h
         net/runflag.h

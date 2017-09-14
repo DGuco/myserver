@@ -40,8 +40,6 @@ void ignore_pipe()
 
 int main(int argc, char **argv)
 {
-    int iInitFlag = 1;
-
     INIT_ROLLINGFILE_LOG( "default", "../log/dbserver.log", LEVEL_DEBUG, 10 * 1024 * 1024, 20 );
 //	INIT_ROLLINGFILE_LOG( "dbctrl", "../log/dbserver.log", LEVEL_DEBUG, 10 * 1024 * 1024, 20 );
 

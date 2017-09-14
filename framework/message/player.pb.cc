@@ -16,9 +16,6 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 
-namespace slg {
-namespace protocol {
-
 namespace {
 
 const ::google::protobuf::Descriptor* PlayerDTO_descriptor_ = NULL;
@@ -864,14 +861,13 @@ void protobuf_AddDesc_player_2eproto() {
   already_here = true;
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::slg::protocol::protobuf_AddDesc_common_2eproto();
+  ::protobuf_AddDesc_common_2eproto();
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014player.proto\022\014slg.protocol\032\014common.pro"
-    "to\"\325\001\n\tPlayerDTO\022\020\n\010playerId\030\001 \002(\004\022\014\n\004na"
-    "me\030\002 \001(\t\022\r\n\005level\030\003 \002(\005\022-\n\nproperties\030\004 "
-    "\003(\0132\031.slg.protocol.PropertyDTO\022\020\n\010langua"
-    "ge\030\005 \001(\t\0222\n\017mapGridPosition\030\006 \002(\0132\031.slg."
-    "protocol.PositionDTO\022\026\n\016hasChangedName\030\007"
+    "\n\014player.proto\032\014common.proto\"\273\001\n\tPlayerD"
+    "TO\022\020\n\010playerId\030\001 \002(\004\022\014\n\004name\030\002 \001(\t\022\r\n\005le"
+    "vel\030\003 \002(\005\022 \n\nproperties\030\004 \003(\0132\014.Property"
+    "DTO\022\020\n\010language\030\005 \001(\t\022%\n\017mapGridPosition"
+    "\030\006 \002(\0132\014.PositionDTO\022\026\n\016hasChangedName\030\007"
     " \002(\010\022\014\n\004icon\030\010 \002(\t\"$\n\010GuideDTO\022\n\n\002id\030\002 \002"
     "(\005\022\014\n\004jump\030\003 \002(\010\"9\n\027UserAccountLoginRequ"
     "est\022\020\n\010platform\030\001 \002(\t\022\014\n\004puid\030\002 \002(\t\",\n\030U"
@@ -880,66 +876,63 @@ void protobuf_AddDesc_player_2eproto() {
     "\004\"Q\n\023PlayerLoginResponse\022\021\n\tsessionId\030\001 "
     "\002(\004\022\017\n\007systime\030\002 \002(\003\022\026\n\016timeZoneOffset\030\003"
     " \002(\005\"\?\n\026PlayerReconnectRequest\022\021\n\tsessio"
-    "nId\030\001 \002(\004\022\022\n\nlastPushId\030\002 \002(\005\"F\n\027PlayerR"
-    "econnectResponse\022+\n\005state\030\001 \001(\0162\034.slg.pr"
-    "otocol.ReconnectState\"\025\n\023PlayerReloadReq"
-    "uest\"\?\n\024PlayerReloadResponse\022\017\n\007systime\030"
-    "\001 \002(\003\022\026\n\016timeZoneOffset\030\002 \002(\005\"\030\n\026PlayerH"
-    "eartBeatRequest\"*\n\027PlayerHeartBeatRespon"
-    "se\022\017\n\007systime\030\001 \002(\003\"3\n\020SetTalentRequest\022"
-    "\r\n\005level\030\001 \002(\005\022\020\n\010talentId\030\002 \002(\005\"4\n\021SetT"
-    "alentResponse\022\r\n\005level\030\001 \002(\005\022\020\n\010talentId"
-    "\030\002 \002(\005\" \n\017SetImageRequest\022\r\n\005image\030\001 \002(\005"
-    "\"!\n\020SetImageResponse\022\r\n\005image\030\002 \001(\005\"6\n\024Q"
-    "ueryLordInfoRequest\022\020\n\010playerId\030\001 \001(\003\022\014\n"
-    "\004name\030\002 \001(\t\"\325\001\n\025QueryLordInfoResponse\022\020\n"
-    "\010playerId\030\001 \001(\003\022\020\n\010nickname\030\002 \001(\t\022\022\n\nall"
-    "ianceid\030\003 \001(\005\022\024\n\014alliancename\030\004 \001(\t\022\013\n\003e"
-    "xp\030\005 \001(\005\022\r\n\005level\030\006 \001(\005\022\020\n\010isfriend\030\007 \001("
-    "\010\022\r\n\005image\030\010 \001(\005\0221\n\requipmentlist\030\t \003(\0132"
-    "\032.slg.protocol.EquipmentDTO\".\n\016SetIconRe"
-    "quest\022\016\n\006iconID\030\001 \002(\t\022\014\n\004oper\030\002 \002(\005\"!\n\017S"
-    "etIconResponse\022\016\n\006iconID\030\002 \001(\t\"6\n\021Change"
-    "NameRequest\022\020\n\010nickname\030\001 \002(\t\022\017\n\007useItem"
-    "\030\002 \002(\010\"T\n\022ChangeNameResponse\022\023\n\013isAvaila"
-    "ble\030\001 \002(\010\022)\n\006reward\030\002 \001(\0132\031.slg.protocol"
-    ".PropertyDTO\"\035\n\017SetGuideRequest\022\n\n\002id\030\001 "
-    "\002(\005\"9\n\016PlayerDataPush\022\'\n\006player\030\001 \002(\0132\027."
-    "slg.protocol.PlayerDTO\"I\n\030PlayerProperty"
-    "ChangePush\022-\n\nproperties\030\001 \003(\0132\031.slg.pro"
-    "tocol.PropertyDTO\"\"\n\021PlayerLevelUpPush\022\r"
-    "\n\005level\030\001 \002(\005\"e\n\021PlayerProtectPush\022\032\n\022bo"
-    "rnProtectEndTime\030\001 \002(\005\022\031\n\021atkProtectEndT"
-    "ime\030\002 \002(\005\022\031\n\021spyProtectEndTime\030\003 \002(\005\"N\n\013"
-    "PlayerCount\022\014\n\004type\030\001 \002(\005\022\r\n\005point\030\002 \002(\005"
-    "\022\020\n\010defCount\030\003 \002(\005\022\020\n\010addCount\030\004 \001(\005\"<\n\017"
-    "PlayerCountPush\022)\n\006counts\030\001 \003(\0132\031.slg.pr"
-    "otocol.PlayerCount\"&\n\017PlayeBattlePush\022\023\n"
-    "\013battleValue\030\001 \002(\005\"\037\n\nTalentPush\022\021\n\ttale"
-    "ntIds\030\001 \003(\005\"4\n\013VipInfoPush\022\n\n\002lv\030\001 \002(\005\022\013"
-    "\n\003exp\030\002 \002(\005\022\014\n\004sign\030\003 \002(\005\"&\n\021VipActiveIn"
-    "foPush\022\021\n\tactiveEnd\030\001 \002(\005\"\037\n\013SysTimePush"
-    "\022\020\n\010currTime\030\001 \002(\003\"2\n\tGuidePush\022%\n\005guide"
-    "\030\001 \002(\0132\026.slg.protocol.GuideDTO*\232\002\n\017Playe"
-    "rCommandId\022\026\n\022USER_ACCOUNT_LOGIN\020d\022\020\n\014PL"
-    "AYER_LOGIN\020e\022\024\n\020PLAYER_RECONNECT\020f\022\024\n\020PL"
-    "AYRE_HEARTBEAT\020g\022\021\n\rPLAYRE_RELOAD\020h\022\025\n\021P"
-    "LAYER_TALENT_SET\020i\022\024\n\020PLAYER_IMAGE_SET\020j"
-    "\022\027\n\023PLAYER_QUERY_PLAYER\020k\022\023\n\017PLAYER_ICON"
-    "_SET\020l\022\026\n\022PLAYER_CHANGE_NAME\020m\022\024\n\020PLAYER"
-    "_SET_GUIDE\020n\022\025\n\021PLAYER_JUMP_GUIDE\020o*7\n\016R"
-    "econnectState\022\014\n\010CONTINUE\020\001\022\n\n\006RELOAD\020\002\022"
-    "\013\n\007RELOGIN\020\003*\345\002\n\014PlayerPushId\022\026\n\020PLAYRE_"
-    "DATA_PUSH\020\265\207\003\022\032\n\024PROPERTY_CHANGE_PUSH\020\266\207"
-    "\003\022\032\n\024PLAYER_LEVEL_UP_PUSH\020\267\207\003\022\031\n\023PLAYER_"
-    "PROTECT_PUSH\020\270\207\003\022\024\n\016PLAYER_RELOGIN\020\276\207\003\022\027"
-    "\n\021PLAYER_COUNT_PUSH\020\310\207\003\022\030\n\022PLAYER_BATTLE"
-    "_PUSH\020\311\207\003\022\030\n\022PLAYER_TALENT_PUSH\020\312\207\003\022\025\n\017P"
-    "LAYER_VIP_PUSH\020\313\207\003\022\034\n\026PLAYER_VIP_ACTIVE_"
-    "PUSH\020\314\207\003\022\032\n\024PLAYER_SYS_TIME_PUSH\020\315\207\003\022\035\n\027"
-    "PLAYER_ONLINE_OTHER_DAY\020\316\207\003\022\027\n\021PLAYER_GU"
-    "IDE_PUSH\020\317\207\003B+\n\034com.bonusstudio.slg.prot"
-    "ocolB\013PlayerProto", 2937);
+    "nId\030\001 \002(\004\022\022\n\nlastPushId\030\002 \002(\005\"9\n\027PlayerR"
+    "econnectResponse\022\036\n\005state\030\001 \001(\0162\017.Reconn"
+    "ectState\"\025\n\023PlayerReloadRequest\"\?\n\024Playe"
+    "rReloadResponse\022\017\n\007systime\030\001 \002(\003\022\026\n\016time"
+    "ZoneOffset\030\002 \002(\005\"\030\n\026PlayerHeartBeatReque"
+    "st\"*\n\027PlayerHeartBeatResponse\022\017\n\007systime"
+    "\030\001 \002(\003\"3\n\020SetTalentRequest\022\r\n\005level\030\001 \002("
+    "\005\022\020\n\010talentId\030\002 \002(\005\"4\n\021SetTalentResponse"
+    "\022\r\n\005level\030\001 \002(\005\022\020\n\010talentId\030\002 \002(\005\" \n\017Set"
+    "ImageRequest\022\r\n\005image\030\001 \002(\005\"!\n\020SetImageR"
+    "esponse\022\r\n\005image\030\002 \001(\005\"6\n\024QueryLordInfoR"
+    "equest\022\020\n\010playerId\030\001 \001(\003\022\014\n\004name\030\002 \001(\t\"\310"
+    "\001\n\025QueryLordInfoResponse\022\020\n\010playerId\030\001 \001"
+    "(\003\022\020\n\010nickname\030\002 \001(\t\022\022\n\nallianceid\030\003 \001(\005"
+    "\022\024\n\014alliancename\030\004 \001(\t\022\013\n\003exp\030\005 \001(\005\022\r\n\005l"
+    "evel\030\006 \001(\005\022\020\n\010isfriend\030\007 \001(\010\022\r\n\005image\030\010 "
+    "\001(\005\022$\n\requipmentlist\030\t \003(\0132\r.EquipmentDT"
+    "O\".\n\016SetIconRequest\022\016\n\006iconID\030\001 \002(\t\022\014\n\004o"
+    "per\030\002 \002(\005\"!\n\017SetIconResponse\022\016\n\006iconID\030\002"
+    " \001(\t\"6\n\021ChangeNameRequest\022\020\n\010nickname\030\001 "
+    "\002(\t\022\017\n\007useItem\030\002 \002(\010\"G\n\022ChangeNameRespon"
+    "se\022\023\n\013isAvailable\030\001 \002(\010\022\034\n\006reward\030\002 \001(\0132"
+    "\014.PropertyDTO\"\035\n\017SetGuideRequest\022\n\n\002id\030\001"
+    " \002(\005\",\n\016PlayerDataPush\022\032\n\006player\030\001 \002(\0132\n"
+    ".PlayerDTO\"<\n\030PlayerPropertyChangePush\022 "
+    "\n\nproperties\030\001 \003(\0132\014.PropertyDTO\"\"\n\021Play"
+    "erLevelUpPush\022\r\n\005level\030\001 \002(\005\"e\n\021PlayerPr"
+    "otectPush\022\032\n\022bornProtectEndTime\030\001 \002(\005\022\031\n"
+    "\021atkProtectEndTime\030\002 \002(\005\022\031\n\021spyProtectEn"
+    "dTime\030\003 \002(\005\"N\n\013PlayerCount\022\014\n\004type\030\001 \002(\005"
+    "\022\r\n\005point\030\002 \002(\005\022\020\n\010defCount\030\003 \002(\005\022\020\n\010add"
+    "Count\030\004 \001(\005\"/\n\017PlayerCountPush\022\034\n\006counts"
+    "\030\001 \003(\0132\014.PlayerCount\"&\n\017PlayeBattlePush\022"
+    "\023\n\013battleValue\030\001 \002(\005\"\037\n\nTalentPush\022\021\n\tta"
+    "lentIds\030\001 \003(\005\"4\n\013VipInfoPush\022\n\n\002lv\030\001 \002(\005"
+    "\022\013\n\003exp\030\002 \002(\005\022\014\n\004sign\030\003 \002(\005\"&\n\021VipActive"
+    "InfoPush\022\021\n\tactiveEnd\030\001 \002(\005\"\037\n\013SysTimePu"
+    "sh\022\020\n\010currTime\030\001 \002(\003\"%\n\tGuidePush\022\030\n\005gui"
+    "de\030\001 \002(\0132\t.GuideDTO*\232\002\n\017PlayerCommandId\022"
+    "\026\n\022USER_ACCOUNT_LOGIN\020d\022\020\n\014PLAYER_LOGIN\020"
+    "e\022\024\n\020PLAYER_RECONNECT\020f\022\024\n\020PLAYRE_HEARTB"
+    "EAT\020g\022\021\n\rPLAYRE_RELOAD\020h\022\025\n\021PLAYER_TALEN"
+    "T_SET\020i\022\024\n\020PLAYER_IMAGE_SET\020j\022\027\n\023PLAYER_"
+    "QUERY_PLAYER\020k\022\023\n\017PLAYER_ICON_SET\020l\022\026\n\022P"
+    "LAYER_CHANGE_NAME\020m\022\024\n\020PLAYER_SET_GUIDE\020"
+    "n\022\025\n\021PLAYER_JUMP_GUIDE\020o*7\n\016ReconnectSta"
+    "te\022\014\n\010CONTINUE\020\001\022\n\n\006RELOAD\020\002\022\013\n\007RELOGIN\020"
+    "\003*\345\002\n\014PlayerPushId\022\026\n\020PLAYRE_DATA_PUSH\020\265"
+    "\207\003\022\032\n\024PROPERTY_CHANGE_PUSH\020\266\207\003\022\032\n\024PLAYER"
+    "_LEVEL_UP_PUSH\020\267\207\003\022\031\n\023PLAYER_PROTECT_PUS"
+    "H\020\270\207\003\022\024\n\016PLAYER_RELOGIN\020\276\207\003\022\027\n\021PLAYER_CO"
+    "UNT_PUSH\020\310\207\003\022\030\n\022PLAYER_BATTLE_PUSH\020\311\207\003\022\030"
+    "\n\022PLAYER_TALENT_PUSH\020\312\207\003\022\025\n\017PLAYER_VIP_P"
+    "USH\020\313\207\003\022\034\n\026PLAYER_VIP_ACTIVE_PUSH\020\314\207\003\022\032\n"
+    "\024PLAYER_SYS_TIME_PUSH\020\315\207\003\022\035\n\027PLAYER_ONLI"
+    "NE_OTHER_DAY\020\316\207\003\022\027\n\021PLAYER_GUIDE_PUSH\020\317\207"
+    "\003B\002H\001", 2765);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "player.proto", &protobuf_RegisterTypes);
   PlayerDTO::default_instance_ = new PlayerDTO();
@@ -1105,7 +1098,7 @@ PlayerDTO::PlayerDTO()
 }
 
 void PlayerDTO::InitAsDefaultInstance() {
-  mapgridposition_ = const_cast< ::slg::protocol::PositionDTO*>(&::slg::protocol::PositionDTO::default_instance());
+  mapgridposition_ = const_cast< ::PositionDTO*>(&::PositionDTO::default_instance());
 }
 
 PlayerDTO::PlayerDTO(const PlayerDTO& from)
@@ -1181,7 +1174,7 @@ void PlayerDTO::Clear() {
       }
     }
     if (has_mapgridposition()) {
-      if (mapgridposition_ != NULL) mapgridposition_->::slg::protocol::PositionDTO::Clear();
+      if (mapgridposition_ != NULL) mapgridposition_->::PositionDTO::Clear();
     }
     haschangedname_ = false;
     if (has_icon()) {
@@ -1249,7 +1242,7 @@ bool PlayerDTO::MergePartialFromCodedStream(
         break;
       }
 
-      // repeated .slg.protocol.PropertyDTO properties = 4;
+      // repeated .PropertyDTO properties = 4;
       case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -1281,7 +1274,7 @@ bool PlayerDTO::MergePartialFromCodedStream(
         break;
       }
 
-      // required .slg.protocol.PositionDTO mapGridPosition = 6;
+      // required .PositionDTO mapGridPosition = 6;
       case 6: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -1365,7 +1358,7 @@ void PlayerDTO::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->level(), output);
   }
 
-  // repeated .slg.protocol.PropertyDTO properties = 4;
+  // repeated .PropertyDTO properties = 4;
   for (int i = 0; i < this->properties_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       4, this->properties(i), output);
@@ -1380,7 +1373,7 @@ void PlayerDTO::SerializeWithCachedSizes(
       5, this->language(), output);
   }
 
-  // required .slg.protocol.PositionDTO mapGridPosition = 6;
+  // required .PositionDTO mapGridPosition = 6;
   if (has_mapgridposition()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       6, this->mapgridposition(), output);
@@ -1428,7 +1421,7 @@ void PlayerDTO::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->level(), target);
   }
 
-  // repeated .slg.protocol.PropertyDTO properties = 4;
+  // repeated .PropertyDTO properties = 4;
   for (int i = 0; i < this->properties_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -1445,7 +1438,7 @@ void PlayerDTO::SerializeWithCachedSizes(
         5, this->language(), target);
   }
 
-  // required .slg.protocol.PositionDTO mapGridPosition = 6;
+  // required .PositionDTO mapGridPosition = 6;
   if (has_mapgridposition()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -1506,7 +1499,7 @@ int PlayerDTO::ByteSize() const {
           this->language());
     }
 
-    // required .slg.protocol.PositionDTO mapGridPosition = 6;
+    // required .PositionDTO mapGridPosition = 6;
     if (has_mapgridposition()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -1526,7 +1519,7 @@ int PlayerDTO::ByteSize() const {
     }
 
   }
-  // repeated .slg.protocol.PropertyDTO properties = 4;
+  // repeated .PropertyDTO properties = 4;
   total_size += 1 * this->properties_size();
   for (int i = 0; i < this->properties_size(); i++) {
     total_size +=
@@ -1574,7 +1567,7 @@ void PlayerDTO::MergeFrom(const PlayerDTO& from) {
       set_language(from.language());
     }
     if (from.has_mapgridposition()) {
-      mutable_mapgridposition()->::slg::protocol::PositionDTO::MergeFrom(from.mapgridposition());
+      mutable_mapgridposition()->::PositionDTO::MergeFrom(from.mapgridposition());
     }
     if (from.has_haschangedname()) {
       set_haschangedname(from.haschangedname());
@@ -3191,7 +3184,7 @@ bool PlayerReconnectResponse::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .slg.protocol.ReconnectState state = 1;
+      // optional .ReconnectState state = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -3199,8 +3192,8 @@ bool PlayerReconnectResponse::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          if (::slg::protocol::ReconnectState_IsValid(value)) {
-            set_state(static_cast< ::slg::protocol::ReconnectState >(value));
+          if (::ReconnectState_IsValid(value)) {
+            set_state(static_cast< ::ReconnectState >(value));
           } else {
             mutable_unknown_fields()->AddVarint(1, value);
           }
@@ -3229,7 +3222,7 @@ bool PlayerReconnectResponse::MergePartialFromCodedStream(
 
 void PlayerReconnectResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional .slg.protocol.ReconnectState state = 1;
+  // optional .ReconnectState state = 1;
   if (has_state()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->state(), output);
@@ -3243,7 +3236,7 @@ void PlayerReconnectResponse::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* PlayerReconnectResponse::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // optional .slg.protocol.ReconnectState state = 1;
+  // optional .ReconnectState state = 1;
   if (has_state()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->state(), target);
@@ -3260,7 +3253,7 @@ int PlayerReconnectResponse::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional .slg.protocol.ReconnectState state = 1;
+    // optional .ReconnectState state = 1;
     if (has_state()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->state());
@@ -5521,7 +5514,7 @@ bool QueryLordInfoResponse::MergePartialFromCodedStream(
         break;
       }
 
-      // repeated .slg.protocol.EquipmentDTO equipmentlist = 9;
+      // repeated .EquipmentDTO equipmentlist = 9;
       case 9: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -5602,7 +5595,7 @@ void QueryLordInfoResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(8, this->image(), output);
   }
 
-  // repeated .slg.protocol.EquipmentDTO equipmentlist = 9;
+  // repeated .EquipmentDTO equipmentlist = 9;
   for (int i = 0; i < this->equipmentlist_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       9, this->equipmentlist(i), output);
@@ -5666,7 +5659,7 @@ void QueryLordInfoResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(8, this->image(), target);
   }
 
-  // repeated .slg.protocol.EquipmentDTO equipmentlist = 9;
+  // repeated .EquipmentDTO equipmentlist = 9;
   for (int i = 0; i < this->equipmentlist_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -5739,7 +5732,7 @@ int QueryLordInfoResponse::ByteSize() const {
     }
 
   }
-  // repeated .slg.protocol.EquipmentDTO equipmentlist = 9;
+  // repeated .EquipmentDTO equipmentlist = 9;
   total_size += 1 * this->equipmentlist_size();
   for (int i = 0; i < this->equipmentlist_size(); i++) {
     total_size +=
@@ -6616,7 +6609,7 @@ ChangeNameResponse::ChangeNameResponse()
 }
 
 void ChangeNameResponse::InitAsDefaultInstance() {
-  reward_ = const_cast< ::slg::protocol::PropertyDTO*>(&::slg::protocol::PropertyDTO::default_instance());
+  reward_ = const_cast< ::PropertyDTO*>(&::PropertyDTO::default_instance());
 }
 
 ChangeNameResponse::ChangeNameResponse(const ChangeNameResponse& from)
@@ -6667,7 +6660,7 @@ void ChangeNameResponse::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     isavailable_ = false;
     if (has_reward()) {
-      if (reward_ != NULL) reward_->::slg::protocol::PropertyDTO::Clear();
+      if (reward_ != NULL) reward_->::PropertyDTO::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -6695,7 +6688,7 @@ bool ChangeNameResponse::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .slg.protocol.PropertyDTO reward = 2;
+      // optional .PropertyDTO reward = 2;
       case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -6732,7 +6725,7 @@ void ChangeNameResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->isavailable(), output);
   }
 
-  // optional .slg.protocol.PropertyDTO reward = 2;
+  // optional .PropertyDTO reward = 2;
   if (has_reward()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->reward(), output);
@@ -6751,7 +6744,7 @@ void ChangeNameResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->isavailable(), target);
   }
 
-  // optional .slg.protocol.PropertyDTO reward = 2;
+  // optional .PropertyDTO reward = 2;
   if (has_reward()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -6774,7 +6767,7 @@ int ChangeNameResponse::ByteSize() const {
       total_size += 1 + 1;
     }
 
-    // optional .slg.protocol.PropertyDTO reward = 2;
+    // optional .PropertyDTO reward = 2;
     if (has_reward()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -6812,7 +6805,7 @@ void ChangeNameResponse::MergeFrom(const ChangeNameResponse& from) {
       set_isavailable(from.isavailable());
     }
     if (from.has_reward()) {
-      mutable_reward()->::slg::protocol::PropertyDTO::MergeFrom(from.reward());
+      mutable_reward()->::PropertyDTO::MergeFrom(from.reward());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -7079,7 +7072,7 @@ PlayerDataPush::PlayerDataPush()
 }
 
 void PlayerDataPush::InitAsDefaultInstance() {
-  player_ = const_cast< ::slg::protocol::PlayerDTO*>(&::slg::protocol::PlayerDTO::default_instance());
+  player_ = const_cast< ::PlayerDTO*>(&::PlayerDTO::default_instance());
 }
 
 PlayerDataPush::PlayerDataPush(const PlayerDataPush& from)
@@ -7128,7 +7121,7 @@ PlayerDataPush* PlayerDataPush::New() const {
 void PlayerDataPush::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (has_player()) {
-      if (player_ != NULL) player_->::slg::protocol::PlayerDTO::Clear();
+      if (player_ != NULL) player_->::PlayerDTO::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -7141,7 +7134,7 @@ bool PlayerDataPush::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required .slg.protocol.PlayerDTO player = 1;
+      // required .PlayerDTO player = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -7172,7 +7165,7 @@ bool PlayerDataPush::MergePartialFromCodedStream(
 
 void PlayerDataPush::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required .slg.protocol.PlayerDTO player = 1;
+  // required .PlayerDTO player = 1;
   if (has_player()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->player(), output);
@@ -7186,7 +7179,7 @@ void PlayerDataPush::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* PlayerDataPush::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required .slg.protocol.PlayerDTO player = 1;
+  // required .PlayerDTO player = 1;
   if (has_player()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -7204,7 +7197,7 @@ int PlayerDataPush::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required .slg.protocol.PlayerDTO player = 1;
+    // required .PlayerDTO player = 1;
     if (has_player()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -7239,7 +7232,7 @@ void PlayerDataPush::MergeFrom(const PlayerDataPush& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_player()) {
-      mutable_player()->::slg::protocol::PlayerDTO::MergeFrom(from.player());
+      mutable_player()->::PlayerDTO::MergeFrom(from.player());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -7351,7 +7344,7 @@ bool PlayerPropertyChangePush::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .slg.protocol.PropertyDTO properties = 1;
+      // repeated .PropertyDTO properties = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -7384,7 +7377,7 @@ bool PlayerPropertyChangePush::MergePartialFromCodedStream(
 
 void PlayerPropertyChangePush::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // repeated .slg.protocol.PropertyDTO properties = 1;
+  // repeated .PropertyDTO properties = 1;
   for (int i = 0; i < this->properties_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->properties(i), output);
@@ -7398,7 +7391,7 @@ void PlayerPropertyChangePush::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* PlayerPropertyChangePush::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // repeated .slg.protocol.PropertyDTO properties = 1;
+  // repeated .PropertyDTO properties = 1;
   for (int i = 0; i < this->properties_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -7415,7 +7408,7 @@ void PlayerPropertyChangePush::SerializeWithCachedSizes(
 int PlayerPropertyChangePush::ByteSize() const {
   int total_size = 0;
 
-  // repeated .slg.protocol.PropertyDTO properties = 1;
+  // repeated .PropertyDTO properties = 1;
   total_size += 1 * this->properties_size();
   for (int i = 0; i < this->properties_size(); i++) {
     total_size +=
@@ -8384,7 +8377,7 @@ bool PlayerCountPush::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .slg.protocol.PlayerCount counts = 1;
+      // repeated .PlayerCount counts = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -8417,7 +8410,7 @@ bool PlayerCountPush::MergePartialFromCodedStream(
 
 void PlayerCountPush::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // repeated .slg.protocol.PlayerCount counts = 1;
+  // repeated .PlayerCount counts = 1;
   for (int i = 0; i < this->counts_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->counts(i), output);
@@ -8431,7 +8424,7 @@ void PlayerCountPush::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* PlayerCountPush::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // repeated .slg.protocol.PlayerCount counts = 1;
+  // repeated .PlayerCount counts = 1;
   for (int i = 0; i < this->counts_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -8448,7 +8441,7 @@ void PlayerCountPush::SerializeWithCachedSizes(
 int PlayerCountPush::ByteSize() const {
   int total_size = 0;
 
-  // repeated .slg.protocol.PlayerCount counts = 1;
+  // repeated .PlayerCount counts = 1;
   total_size += 1 * this->counts_size();
   for (int i = 0; i < this->counts_size(); i++) {
     total_size +=
@@ -9662,7 +9655,7 @@ GuidePush::GuidePush()
 }
 
 void GuidePush::InitAsDefaultInstance() {
-  guide_ = const_cast< ::slg::protocol::GuideDTO*>(&::slg::protocol::GuideDTO::default_instance());
+  guide_ = const_cast< ::GuideDTO*>(&::GuideDTO::default_instance());
 }
 
 GuidePush::GuidePush(const GuidePush& from)
@@ -9711,7 +9704,7 @@ GuidePush* GuidePush::New() const {
 void GuidePush::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (has_guide()) {
-      if (guide_ != NULL) guide_->::slg::protocol::GuideDTO::Clear();
+      if (guide_ != NULL) guide_->::GuideDTO::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -9724,7 +9717,7 @@ bool GuidePush::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required .slg.protocol.GuideDTO guide = 1;
+      // required .GuideDTO guide = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -9755,7 +9748,7 @@ bool GuidePush::MergePartialFromCodedStream(
 
 void GuidePush::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required .slg.protocol.GuideDTO guide = 1;
+  // required .GuideDTO guide = 1;
   if (has_guide()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->guide(), output);
@@ -9769,7 +9762,7 @@ void GuidePush::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* GuidePush::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required .slg.protocol.GuideDTO guide = 1;
+  // required .GuideDTO guide = 1;
   if (has_guide()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -9787,7 +9780,7 @@ int GuidePush::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required .slg.protocol.GuideDTO guide = 1;
+    // required .GuideDTO guide = 1;
     if (has_guide()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -9822,7 +9815,7 @@ void GuidePush::MergeFrom(const GuidePush& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_guide()) {
-      mutable_guide()->::slg::protocol::GuideDTO::MergeFrom(from.guide());
+      mutable_guide()->::GuideDTO::MergeFrom(from.guide());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -9868,8 +9861,5 @@ void GuidePush::Swap(GuidePush* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
-
-}  // namespace protocol
-}  // namespace slg
 
 // @@protoc_insertion_point(global_scope)

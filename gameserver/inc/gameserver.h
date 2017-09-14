@@ -197,7 +197,6 @@ private:
     CRunFlag 					m_RunFlag;					// 服务器运行状态
     CProxyClient				m_ProxyClient;	            // 服务器间通信的连接
 
-
     int										miServerState;	// 服务器状态
     unsigned long long						mLastTickCount; // tick
 public:
@@ -206,5 +205,4 @@ public:
     // 为找不到CTeam的连接发送消息
     void SendMsgSystemErrorResponse(int iResult, long lMsgGuid, int iServerID, time_t tCreateTime, bool bKickOff = false);
 };
-
 #endif //SERVER_GAMESERVER_H

@@ -5,7 +5,6 @@
 #include "../message/message.pb.h"
 #include "ccrypto.h"
 
-
 class ClientCommEngine
 {
 public:

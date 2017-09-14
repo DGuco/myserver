@@ -4,21 +4,26 @@
 
 #include "../inc/player.h"
 
-CPlayerData::CPlayerData(std::shared_ptr <CPlayer> pPlayer)
+CPlayerData::CPlayerData(CPlayer* pPlayer) : m_pPlayer(pPlayer)
 {
 
 }
 
-const std::shared_ptr<CPlayer> CPlayerData::GetPlayer()
+CPlayerData::~CPlayerData() {
+    //这里不释放指针指向的空间，为了方便拿到其他模块的数据这里保存了一个指向玩家数据的
+    //指针，在真正销毁玩家数据的时候释放=>CSceneObjManager::DestroyPlayer
+    m_pPlayer = NULL;
+}
+
+const CPlayer* CPlayerData::GetPlayer()
 {
-    std::shared_ptr player = m_wpPlayer.lock();
-    if (player == NULL) {
+    if (m_pPlayer == NULL) {
         char msg[128];
         sprintf(msg, "[%s : %d : %s] Get player data error.,player id = %d",
                 __MY_FILE__, __LINE__, __FUNCTION__);
         throw std::logic_error(msg);
     }
-    return m_wpPlayer.lock();
+    return m_pPlayer;
 }
 
 OBJ_ID CPlayerData::GetPlayerId()

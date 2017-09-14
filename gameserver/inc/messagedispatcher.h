@@ -8,10 +8,6 @@
 #include "../../framework/base/servertool.h"
 #include "../../framework/message/message.pb.h"
 
-class CMessage;
-class CCSHead;
-class CProxyHead;
-
 class CMessageDispatcher : public CSingleton<CMessageDispatcher>
 {
 public:

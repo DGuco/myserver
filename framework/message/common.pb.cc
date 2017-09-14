@@ -16,9 +16,6 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 
-namespace slg {
-namespace protocol {
-
 namespace {
 
 const ::google::protobuf::Descriptor* EmptyMessage_descriptor_ = NULL;
@@ -269,21 +266,20 @@ void protobuf_AddDesc_common_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014common.proto\022\014slg.protocol\"\016\n\014EmptyMes"
-    "sage\"/\n\014ErrorMessage\022\021\n\terrorCode\030\001 \002(\005\022"
-    "\014\n\004args\030\002 \003(\t\"#\n\013PositionDTO\022\t\n\001x\030\001 \002(\005\022"
-    "\t\n\001y\030\002 \002(\005\"*\n\013PropertyDTO\022\014\n\004type\030\001 \002(\005\022"
-    "\r\n\005value\030\002 \002(\005\"(\n\007ItemDTO\022\016\n\006itemId\030\001 \002("
-    "\005\022\r\n\005count\030\002 \002(\005\"/\n\nSoldierDTO\022\020\n\010armyTy"
-    "pe\030\001 \002(\005\022\017\n\007armyNum\030\002 \002(\005\"K\n\017LevelSoldie"
-    "rDTO\022)\n\007soldier\030\001 \002(\0132\030.slg.protocol.Sol"
-    "dierDTO\022\r\n\005level\030\002 \002(\005\"Z\n\014EquipmentDTO\022\n"
-    "\n\002id\030\001 \002(\005\022\r\n\005level\030\002 \002(\005\022\013\n\003exp\030\003 \002(\005\022\024"
-    "\n\014gemstonelist\030\004 \003(\005\022\014\n\004type\030\005 \002(\005\"-\n\006Vi"
-    "pDTO\022\020\n\010vipLevel\030\001 \002(\005\022\021\n\tactivated\030\002 \002("
-    "\010*&\n\016ErrorCommandId\022\024\n\020ERROR_COMMAND_ID\020"
-    "c*\027\n\010Platform\022\013\n\007IN_GAME\020\001B+\n\034com.bonuss"
-    "tudio.slg.protocolB\013CommonProto", 591);
+    "\n\014common.proto\"\016\n\014EmptyMessage\"/\n\014ErrorM"
+    "essage\022\021\n\terrorCode\030\001 \002(\005\022\014\n\004args\030\002 \003(\t\""
+    "#\n\013PositionDTO\022\t\n\001x\030\001 \002(\005\022\t\n\001y\030\002 \002(\005\"*\n\013"
+    "PropertyDTO\022\014\n\004type\030\001 \002(\005\022\r\n\005value\030\002 \002(\005"
+    "\"(\n\007ItemDTO\022\016\n\006itemId\030\001 \002(\005\022\r\n\005count\030\002 \002"
+    "(\005\"/\n\nSoldierDTO\022\020\n\010armyType\030\001 \002(\005\022\017\n\007ar"
+    "myNum\030\002 \002(\005\">\n\017LevelSoldierDTO\022\034\n\007soldie"
+    "r\030\001 \002(\0132\013.SoldierDTO\022\r\n\005level\030\002 \002(\005\"Z\n\014E"
+    "quipmentDTO\022\n\n\002id\030\001 \002(\005\022\r\n\005level\030\002 \002(\005\022\013"
+    "\n\003exp\030\003 \002(\005\022\024\n\014gemstonelist\030\004 \003(\005\022\014\n\004typ"
+    "e\030\005 \002(\005\"-\n\006VipDTO\022\020\n\010vipLevel\030\001 \002(\005\022\021\n\ta"
+    "ctivated\030\002 \002(\010*&\n\016ErrorCommandId\022\024\n\020ERRO"
+    "R_COMMAND_ID\020c*\027\n\010Platform\022\013\n\007IN_GAME\020\001B"
+    "\002H\001", 523);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "common.proto", &protobuf_RegisterTypes);
   EmptyMessage::default_instance_ = new EmptyMessage();
@@ -1762,7 +1758,7 @@ LevelSoldierDTO::LevelSoldierDTO()
 }
 
 void LevelSoldierDTO::InitAsDefaultInstance() {
-  soldier_ = const_cast< ::slg::protocol::SoldierDTO*>(&::slg::protocol::SoldierDTO::default_instance());
+  soldier_ = const_cast< ::SoldierDTO*>(&::SoldierDTO::default_instance());
 }
 
 LevelSoldierDTO::LevelSoldierDTO(const LevelSoldierDTO& from)
@@ -1812,7 +1808,7 @@ LevelSoldierDTO* LevelSoldierDTO::New() const {
 void LevelSoldierDTO::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (has_soldier()) {
-      if (soldier_ != NULL) soldier_->::slg::protocol::SoldierDTO::Clear();
+      if (soldier_ != NULL) soldier_->::SoldierDTO::Clear();
     }
     level_ = 0;
   }
@@ -1826,7 +1822,7 @@ bool LevelSoldierDTO::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required .slg.protocol.SoldierDTO soldier = 1;
+      // required .SoldierDTO soldier = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -1873,7 +1869,7 @@ bool LevelSoldierDTO::MergePartialFromCodedStream(
 
 void LevelSoldierDTO::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required .slg.protocol.SoldierDTO soldier = 1;
+  // required .SoldierDTO soldier = 1;
   if (has_soldier()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->soldier(), output);
@@ -1892,7 +1888,7 @@ void LevelSoldierDTO::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* LevelSoldierDTO::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required .slg.protocol.SoldierDTO soldier = 1;
+  // required .SoldierDTO soldier = 1;
   if (has_soldier()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -1915,7 +1911,7 @@ int LevelSoldierDTO::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required .slg.protocol.SoldierDTO soldier = 1;
+    // required .SoldierDTO soldier = 1;
     if (has_soldier()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -1957,7 +1953,7 @@ void LevelSoldierDTO::MergeFrom(const LevelSoldierDTO& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_soldier()) {
-      mutable_soldier()->::slg::protocol::SoldierDTO::MergeFrom(from.soldier());
+      mutable_soldier()->::SoldierDTO::MergeFrom(from.soldier());
     }
     if (from.has_level()) {
       set_level(from.level());
@@ -2631,8 +2627,5 @@ void VipDTO::Swap(VipDTO* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
-
-}  // namespace protocol
-}  // namespace slg
 
 // @@protoc_insertion_point(global_scope)

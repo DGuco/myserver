@@ -1,7 +1,8 @@
 #include "../inc/coremodule.h"
 #include "../inc/dbmodule.h"
 #include "../../../framework/message/player.pb.h"
-using namespace slg::protocol;
+#include "../../inc/sceneobjmanager.h"
+#include "../inc/modulemanager.h"
 
 template<> CCoreModule* CSingleton<CCoreModule>::spSingleton = NULL;
 
@@ -62,5 +63,12 @@ void CCoreModule::OnMsgPlayerLoginRequest(CMessage *pMsg)
 {
     MY_ASSERT_LOG("core", pMsg != NULL, return);
     PlayerLoginRequest* request = (PlayerLoginRequest*)pMsg->msgpara();
-
+    CPlayer* pPlayer = CSceneObjManager::GetSingletonPtr()->GetPlayer(request->playerid());
+    if (pPlayer == NULL)
+    {
+        pPlayer = new CPlayer(request->playerid());
+        CSceneObjManager::GetSingletonPtr()->AddNewPlayer(pPlayer);
+        CModuleManager::GetSingletonPtr()->OnCreateEntity(pPlayer);
+    }
+    CModuleManager::GetSingletonPtr()->OnPlayerLogin(pPlayer);
 }

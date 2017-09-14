@@ -257,6 +257,7 @@ int ClientCommEngine::ConvertToGameStream(const void * pBuff,
     *(short*) pTemp = iTmpAddlen;
 
     unBuffLen = unLength;
+    return 0;
 }
 
 int ClientCommEngine::ConvertToGateStream(const void * pBuff,
@@ -352,6 +353,7 @@ int ClientCommEngine::ConvertToGateStream(const void * pBuff,
     *(short*) pTemp = iTmpAddlen;
 
     unBuffLen = unLength;
+    return 0;
 }
 
 int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,

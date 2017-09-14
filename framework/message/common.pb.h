@@ -27,9 +27,6 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 
-namespace slg {
-namespace protocol {
-
 // Internal implementation detail -- do not call these.
 void  protobuf_AddDesc_common_2eproto();
 void protobuf_AssignDesc_common_2eproto();
@@ -137,7 +134,7 @@ class EmptyMessage : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.EmptyMessage)
+  // @@protoc_insertion_point(class_scope:EmptyMessage)
  private:
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
@@ -232,7 +229,7 @@ class ErrorMessage : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& args() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_args();
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.ErrorMessage)
+  // @@protoc_insertion_point(class_scope:ErrorMessage)
  private:
   inline void set_has_errorcode();
   inline void clear_has_errorcode();
@@ -322,7 +319,7 @@ class PositionDTO : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 y() const;
   inline void set_y(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PositionDTO)
+  // @@protoc_insertion_point(class_scope:PositionDTO)
  private:
   inline void set_has_x();
   inline void clear_has_x();
@@ -414,7 +411,7 @@ class PropertyDTO : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 value() const;
   inline void set_value(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PropertyDTO)
+  // @@protoc_insertion_point(class_scope:PropertyDTO)
  private:
   inline void set_has_type();
   inline void clear_has_type();
@@ -506,7 +503,7 @@ class ItemDTO : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 count() const;
   inline void set_count(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.ItemDTO)
+  // @@protoc_insertion_point(class_scope:ItemDTO)
  private:
   inline void set_has_itemid();
   inline void clear_has_itemid();
@@ -598,7 +595,7 @@ class SoldierDTO : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 armynum() const;
   inline void set_armynum(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.SoldierDTO)
+  // @@protoc_insertion_point(class_scope:SoldierDTO)
  private:
   inline void set_has_armytype();
   inline void clear_has_armytype();
@@ -676,14 +673,14 @@ class LevelSoldierDTO : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required .slg.protocol.SoldierDTO soldier = 1;
+  // required .SoldierDTO soldier = 1;
   inline bool has_soldier() const;
   inline void clear_soldier();
   static const int kSoldierFieldNumber = 1;
-  inline const ::slg::protocol::SoldierDTO& soldier() const;
-  inline ::slg::protocol::SoldierDTO* mutable_soldier();
-  inline ::slg::protocol::SoldierDTO* release_soldier();
-  inline void set_allocated_soldier(::slg::protocol::SoldierDTO* soldier);
+  inline const ::SoldierDTO& soldier() const;
+  inline ::SoldierDTO* mutable_soldier();
+  inline ::SoldierDTO* release_soldier();
+  inline void set_allocated_soldier(::SoldierDTO* soldier);
 
   // required int32 level = 2;
   inline bool has_level() const;
@@ -692,7 +689,7 @@ class LevelSoldierDTO : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 level() const;
   inline void set_level(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.LevelSoldierDTO)
+  // @@protoc_insertion_point(class_scope:LevelSoldierDTO)
  private:
   inline void set_has_soldier();
   inline void clear_has_soldier();
@@ -701,7 +698,7 @@ class LevelSoldierDTO : public ::google::protobuf::Message {
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::slg::protocol::SoldierDTO* soldier_;
+  ::SoldierDTO* soldier_;
   ::google::protobuf::int32 level_;
 
   mutable int _cached_size_;
@@ -810,7 +807,7 @@ class EquipmentDTO : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 type() const;
   inline void set_type(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.EquipmentDTO)
+  // @@protoc_insertion_point(class_scope:EquipmentDTO)
  private:
   inline void set_has_id();
   inline void clear_has_id();
@@ -909,7 +906,7 @@ class VipDTO : public ::google::protobuf::Message {
   inline bool activated() const;
   inline void set_activated(bool value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.VipDTO)
+  // @@protoc_insertion_point(class_scope:VipDTO)
  private:
   inline void set_has_viplevel();
   inline void clear_has_viplevel();
@@ -1204,7 +1201,7 @@ inline void SoldierDTO::set_armynum(::google::protobuf::int32 value) {
 
 // LevelSoldierDTO
 
-// required .slg.protocol.SoldierDTO soldier = 1;
+// required .SoldierDTO soldier = 1;
 inline bool LevelSoldierDTO::has_soldier() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -1215,24 +1212,24 @@ inline void LevelSoldierDTO::clear_has_soldier() {
   _has_bits_[0] &= ~0x00000001u;
 }
 inline void LevelSoldierDTO::clear_soldier() {
-  if (soldier_ != NULL) soldier_->::slg::protocol::SoldierDTO::Clear();
+  if (soldier_ != NULL) soldier_->::SoldierDTO::Clear();
   clear_has_soldier();
 }
-inline const ::slg::protocol::SoldierDTO& LevelSoldierDTO::soldier() const {
+inline const ::SoldierDTO& LevelSoldierDTO::soldier() const {
   return soldier_ != NULL ? *soldier_ : *default_instance_->soldier_;
 }
-inline ::slg::protocol::SoldierDTO* LevelSoldierDTO::mutable_soldier() {
+inline ::SoldierDTO* LevelSoldierDTO::mutable_soldier() {
   set_has_soldier();
-  if (soldier_ == NULL) soldier_ = new ::slg::protocol::SoldierDTO;
+  if (soldier_ == NULL) soldier_ = new ::SoldierDTO;
   return soldier_;
 }
-inline ::slg::protocol::SoldierDTO* LevelSoldierDTO::release_soldier() {
+inline ::SoldierDTO* LevelSoldierDTO::release_soldier() {
   clear_has_soldier();
-  ::slg::protocol::SoldierDTO* temp = soldier_;
+  ::SoldierDTO* temp = soldier_;
   soldier_ = NULL;
   return temp;
 }
-inline void LevelSoldierDTO::set_allocated_soldier(::slg::protocol::SoldierDTO* soldier) {
+inline void LevelSoldierDTO::set_allocated_soldier(::SoldierDTO* soldier) {
   delete soldier_;
   soldier_ = soldier;
   if (soldier) {
@@ -1432,20 +1429,17 @@ inline void VipDTO::set_activated(bool value) {
 
 // @@protoc_insertion_point(namespace_scope)
 
-}  // namespace protocol
-}  // namespace slg
-
 #ifndef SWIG
 namespace google {
 namespace protobuf {
 
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::slg::protocol::ErrorCommandId>() {
-  return ::slg::protocol::ErrorCommandId_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::ErrorCommandId>() {
+  return ::ErrorCommandId_descriptor();
 }
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::slg::protocol::Platform>() {
-  return ::slg::protocol::Platform_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::Platform>() {
+  return ::Platform_descriptor();
 }
 
 }  // namespace google

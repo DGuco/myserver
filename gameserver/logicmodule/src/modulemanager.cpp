@@ -8,6 +8,7 @@ template<> CModuleManager* CSingleton<CModuleManager>::spSingleton = NULL;
 
 CModuleManager::CModuleManager()
 {
+    Initialize();
 }
 
 CModuleManager::~CModuleManager()
@@ -23,6 +24,7 @@ int CModuleManager::Initialize()
     //游戏主模块
     CCoreModule* pTmpCoreModule = new CCoreModule;
     RegisterModule(EModuleType::EMODULETYPE_PLAYER,pTmpCoreModule);
+    return 0;
 }
 
 int CModuleManager::RegisterModule(EModuleType eType, CLogicModule *pModule)

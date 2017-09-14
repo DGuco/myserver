@@ -14,19 +14,17 @@ enum EModuleType
 {
     EMODULETYPE_INVALID			= -1,	// 无效的模块
 
-    EMODULETYPE_PLAYER			= 1,	// 核心模块
-    EMODULETYPE_BUILD			= 2,	// 城建模块
-    EMODULETYPE_TIMER			= 3,	// 定时任务模块
-    EMODULETYPE_RESOURCE		= 4,	// 资源田模块
-    EMODULETYPE_TRAIN		    = 5,	// 士兵训练模块
-    EMODULETYPE_ITEM		    = 6,	// 道具模块
+    EMODULETYPE_PLAYER			= 0,	// 核心模块
+//    EMODULETYPE_BUILD			= 2,	// 城建模块
+//    EMODULETYPE_TIMER			= 3,	// 定时任务模块
+//    EMODULETYPE_RESOURCE		= 4,	// 资源田模块
+//    EMODULETYPE_TRAIN		    = 5,	// 士兵训练模块
+//    EMODULETYPE_ITEM		    = 6,	// 道具模块
 
     EMODULETYPE_NUM						// 模块数量
 };
 
 #define EMODULETYPE_START (EMODULETYPE_INVALID + 1)	// 模块起始下标
-
-class CMessage;
 
 class CLogicModule
 {

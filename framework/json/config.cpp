@@ -3,6 +3,7 @@
 //
 #include "config.h"
 
+template<> CServerConfig* CSingleton<CServerConfig>::spSingleton = NULL;
 CServerConfig::CServerConfig()
 {
     Clear();
@@ -40,6 +41,13 @@ int CServerConfig::Parse()
     dbServer.m_iPort =  dbinfo["port"].GetInt();
     dbServer.m_sHost =  dbinfo["host"].GetString();
     m_mServerMap[enServerType::FE_DBSERVER] = gameServer;
+
+    ServerInfo proxyServer;
+    Value& proxyinfo = m_Obj["proxyinfo"];
+    dbServer.m_iServerId =  proxyinfo["serverid"].GetInt();
+    dbServer.m_iPort =  proxyinfo["port"].GetInt();
+    dbServer.m_sHost =  proxyinfo["host"].GetString();
+    m_mServerMap[enServerType::FE_PROXYSERVER] = gameServer;
 
     m_sDblInfo = m_Obj["mysqlinfo"].GetString();
     m_iDbSleepTime = m_Obj["sleeptime"].GetInt();

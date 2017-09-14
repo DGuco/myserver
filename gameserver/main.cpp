@@ -11,7 +11,6 @@
 #include "inc/gameserver.h"
 #include "../framework/json/config.h"
 
-
 void sigusr1_handle(int iSigVal)
 {
     CGameServer::GetSingletonPtr()->SetRunFlag(ERF_RELOAD);

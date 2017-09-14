@@ -3,8 +3,9 @@
 //
 #include "../inc/player.h"
 
-CPlayer::CPlayer()
+CPlayer::CPlayer(OBJ_ID playerId)
 {
+    set_id(playerId);
     Initialize();
 }
 
@@ -15,7 +16,7 @@ CPlayer::~CPlayer()
 int CPlayer::Initialize()
 {
     m_oPackage.Initialize();
-    m_spPlayerBase = std::make_shared(CPlayerBase(this));
-    m_spPlayerCity = std::make_shared(CPlayerCity(this));
+    m_spPlayerBase = new CPlayerBase(this);
+    m_spPlayerCity = new CPlayerCity(this);
     return 0;
 }

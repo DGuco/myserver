@@ -50,6 +50,7 @@ int CGameServer::Initialize()
     m_pMessageDispatcher = new CMessageDispatcher;
     m_pMessageFactory = new CMessageFactory;
     m_pTimerManager = new CTimerManager;
+    return 0;
 }
 
 // 读取配置
@@ -102,7 +103,7 @@ int CGameServer::PrepareToRun()
 // 开启所有定时器
 int CGameServer::StartAllTimers()
 {
-
+    return 0;
 }
 
 // 服务器间心跳检测
@@ -125,6 +126,7 @@ void CGameServer::Run()
 
     while(true)
     {
+        tTmpNow = GetMSTime();
         m_pTimerManager->CheckTimerQueue(tTmpNow);
         // 处理客户端上传请求
         iRet = RecvClientMsg(tTmpNow);
@@ -587,6 +589,7 @@ void CGameServer::StartSaveAllData()
 // 限制玩家登陆
 int CGameServer::LimitTeamLogin( unsigned int iTeamID, time_t iTimes )// itimes 暂定为小时
 {
+    return 0;
 }
 
 // 检测是否停服存储数据

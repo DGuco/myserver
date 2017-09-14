@@ -28,9 +28,6 @@
 #include "common.pb.h"
 // @@protoc_insertion_point(includes)
 
-namespace slg {
-namespace protocol {
-
 // Internal implementation detail -- do not call these.
 void  protobuf_AddDesc_player_2eproto();
 void protobuf_AssignDesc_player_2eproto();
@@ -233,16 +230,16 @@ class PlayerDTO : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 level() const;
   inline void set_level(::google::protobuf::int32 value);
 
-  // repeated .slg.protocol.PropertyDTO properties = 4;
+  // repeated .PropertyDTO properties = 4;
   inline int properties_size() const;
   inline void clear_properties();
   static const int kPropertiesFieldNumber = 4;
-  inline const ::slg::protocol::PropertyDTO& properties(int index) const;
-  inline ::slg::protocol::PropertyDTO* mutable_properties(int index);
-  inline ::slg::protocol::PropertyDTO* add_properties();
-  inline const ::google::protobuf::RepeatedPtrField< ::slg::protocol::PropertyDTO >&
+  inline const ::PropertyDTO& properties(int index) const;
+  inline ::PropertyDTO* mutable_properties(int index);
+  inline ::PropertyDTO* add_properties();
+  inline const ::google::protobuf::RepeatedPtrField< ::PropertyDTO >&
       properties() const;
-  inline ::google::protobuf::RepeatedPtrField< ::slg::protocol::PropertyDTO >*
+  inline ::google::protobuf::RepeatedPtrField< ::PropertyDTO >*
       mutable_properties();
 
   // optional string language = 5;
@@ -257,14 +254,14 @@ class PlayerDTO : public ::google::protobuf::Message {
   inline ::std::string* release_language();
   inline void set_allocated_language(::std::string* language);
 
-  // required .slg.protocol.PositionDTO mapGridPosition = 6;
+  // required .PositionDTO mapGridPosition = 6;
   inline bool has_mapgridposition() const;
   inline void clear_mapgridposition();
   static const int kMapGridPositionFieldNumber = 6;
-  inline const ::slg::protocol::PositionDTO& mapgridposition() const;
-  inline ::slg::protocol::PositionDTO* mutable_mapgridposition();
-  inline ::slg::protocol::PositionDTO* release_mapgridposition();
-  inline void set_allocated_mapgridposition(::slg::protocol::PositionDTO* mapgridposition);
+  inline const ::PositionDTO& mapgridposition() const;
+  inline ::PositionDTO* mutable_mapgridposition();
+  inline ::PositionDTO* release_mapgridposition();
+  inline void set_allocated_mapgridposition(::PositionDTO* mapgridposition);
 
   // required bool hasChangedName = 7;
   inline bool has_haschangedname() const;
@@ -285,7 +282,7 @@ class PlayerDTO : public ::google::protobuf::Message {
   inline ::std::string* release_icon();
   inline void set_allocated_icon(::std::string* icon);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerDTO)
+  // @@protoc_insertion_point(class_scope:PlayerDTO)
  private:
   inline void set_has_playerid();
   inline void clear_has_playerid();
@@ -306,11 +303,11 @@ class PlayerDTO : public ::google::protobuf::Message {
 
   ::google::protobuf::uint64 playerid_;
   ::std::string* name_;
-  ::google::protobuf::RepeatedPtrField< ::slg::protocol::PropertyDTO > properties_;
+  ::google::protobuf::RepeatedPtrField< ::PropertyDTO > properties_;
   ::std::string* language_;
   ::google::protobuf::int32 level_;
   bool haschangedname_;
-  ::slg::protocol::PositionDTO* mapgridposition_;
+  ::PositionDTO* mapgridposition_;
   ::std::string* icon_;
 
   mutable int _cached_size_;
@@ -393,7 +390,7 @@ class GuideDTO : public ::google::protobuf::Message {
   inline bool jump() const;
   inline void set_jump(bool value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.GuideDTO)
+  // @@protoc_insertion_point(class_scope:GuideDTO)
  private:
   inline void set_has_id();
   inline void clear_has_id();
@@ -495,7 +492,7 @@ class UserAccountLoginRequest : public ::google::protobuf::Message {
   inline ::std::string* release_puid();
   inline void set_allocated_puid(::std::string* puid);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.UserAccountLoginRequest)
+  // @@protoc_insertion_point(class_scope:UserAccountLoginRequest)
  private:
   inline void set_has_platform();
   inline void clear_has_platform();
@@ -580,7 +577,7 @@ class UserAccountLoginResponse : public ::google::protobuf::Message {
   inline ::google::protobuf::uint64 playerid() const;
   inline void set_playerid(::google::protobuf::uint64 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.UserAccountLoginResponse)
+  // @@protoc_insertion_point(class_scope:UserAccountLoginResponse)
  private:
   inline void set_has_playerid();
   inline void clear_has_playerid();
@@ -662,7 +659,7 @@ class PlayerLoginRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::uint64 playerid() const;
   inline void set_playerid(::google::protobuf::uint64 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerLoginRequest)
+  // @@protoc_insertion_point(class_scope:PlayerLoginRequest)
  private:
   inline void set_has_playerid();
   inline void clear_has_playerid();
@@ -758,7 +755,7 @@ class PlayerLoginResponse : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 timezoneoffset() const;
   inline void set_timezoneoffset(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerLoginResponse)
+  // @@protoc_insertion_point(class_scope:PlayerLoginResponse)
  private:
   inline void set_has_sessionid();
   inline void clear_has_sessionid();
@@ -853,7 +850,7 @@ class PlayerReconnectRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 lastpushid() const;
   inline void set_lastpushid(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerReconnectRequest)
+  // @@protoc_insertion_point(class_scope:PlayerReconnectRequest)
  private:
   inline void set_has_sessionid();
   inline void clear_has_sessionid();
@@ -931,14 +928,14 @@ class PlayerReconnectResponse : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional .slg.protocol.ReconnectState state = 1;
+  // optional .ReconnectState state = 1;
   inline bool has_state() const;
   inline void clear_state();
   static const int kStateFieldNumber = 1;
-  inline ::slg::protocol::ReconnectState state() const;
-  inline void set_state(::slg::protocol::ReconnectState value);
+  inline ::ReconnectState state() const;
+  inline void set_state(::ReconnectState value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerReconnectResponse)
+  // @@protoc_insertion_point(class_scope:PlayerReconnectResponse)
  private:
   inline void set_has_state();
   inline void clear_has_state();
@@ -1013,7 +1010,7 @@ class PlayerReloadRequest : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerReloadRequest)
+  // @@protoc_insertion_point(class_scope:PlayerReloadRequest)
  private:
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
@@ -1099,7 +1096,7 @@ class PlayerReloadResponse : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 timezoneoffset() const;
   inline void set_timezoneoffset(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerReloadResponse)
+  // @@protoc_insertion_point(class_scope:PlayerReloadResponse)
  private:
   inline void set_has_systime();
   inline void clear_has_systime();
@@ -1177,7 +1174,7 @@ class PlayerHeartBeatRequest : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerHeartBeatRequest)
+  // @@protoc_insertion_point(class_scope:PlayerHeartBeatRequest)
  private:
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
@@ -1256,7 +1253,7 @@ class PlayerHeartBeatResponse : public ::google::protobuf::Message {
   inline ::google::protobuf::int64 systime() const;
   inline void set_systime(::google::protobuf::int64 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerHeartBeatResponse)
+  // @@protoc_insertion_point(class_scope:PlayerHeartBeatResponse)
  private:
   inline void set_has_systime();
   inline void clear_has_systime();
@@ -1345,7 +1342,7 @@ class SetTalentRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 talentid() const;
   inline void set_talentid(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.SetTalentRequest)
+  // @@protoc_insertion_point(class_scope:SetTalentRequest)
  private:
   inline void set_has_level();
   inline void clear_has_level();
@@ -1437,7 +1434,7 @@ class SetTalentResponse : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 talentid() const;
   inline void set_talentid(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.SetTalentResponse)
+  // @@protoc_insertion_point(class_scope:SetTalentResponse)
  private:
   inline void set_has_level();
   inline void clear_has_level();
@@ -1522,7 +1519,7 @@ class SetImageRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 image() const;
   inline void set_image(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.SetImageRequest)
+  // @@protoc_insertion_point(class_scope:SetImageRequest)
  private:
   inline void set_has_image();
   inline void clear_has_image();
@@ -1604,7 +1601,7 @@ class SetImageResponse : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 image() const;
   inline void set_image(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.SetImageResponse)
+  // @@protoc_insertion_point(class_scope:SetImageResponse)
  private:
   inline void set_has_image();
   inline void clear_has_image();
@@ -1698,7 +1695,7 @@ class QueryLordInfoRequest : public ::google::protobuf::Message {
   inline ::std::string* release_name();
   inline void set_allocated_name(::std::string* name);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.QueryLordInfoRequest)
+  // @@protoc_insertion_point(class_scope:QueryLordInfoRequest)
  private:
   inline void set_has_playerid();
   inline void clear_has_playerid();
@@ -1842,19 +1839,19 @@ class QueryLordInfoResponse : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 image() const;
   inline void set_image(::google::protobuf::int32 value);
 
-  // repeated .slg.protocol.EquipmentDTO equipmentlist = 9;
+  // repeated .EquipmentDTO equipmentlist = 9;
   inline int equipmentlist_size() const;
   inline void clear_equipmentlist();
   static const int kEquipmentlistFieldNumber = 9;
-  inline const ::slg::protocol::EquipmentDTO& equipmentlist(int index) const;
-  inline ::slg::protocol::EquipmentDTO* mutable_equipmentlist(int index);
-  inline ::slg::protocol::EquipmentDTO* add_equipmentlist();
-  inline const ::google::protobuf::RepeatedPtrField< ::slg::protocol::EquipmentDTO >&
+  inline const ::EquipmentDTO& equipmentlist(int index) const;
+  inline ::EquipmentDTO* mutable_equipmentlist(int index);
+  inline ::EquipmentDTO* add_equipmentlist();
+  inline const ::google::protobuf::RepeatedPtrField< ::EquipmentDTO >&
       equipmentlist() const;
-  inline ::google::protobuf::RepeatedPtrField< ::slg::protocol::EquipmentDTO >*
+  inline ::google::protobuf::RepeatedPtrField< ::EquipmentDTO >*
       mutable_equipmentlist();
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.QueryLordInfoResponse)
+  // @@protoc_insertion_point(class_scope:QueryLordInfoResponse)
  private:
   inline void set_has_playerid();
   inline void clear_has_playerid();
@@ -1882,7 +1879,7 @@ class QueryLordInfoResponse : public ::google::protobuf::Message {
   ::google::protobuf::int32 exp_;
   ::google::protobuf::int32 level_;
   bool isfriend_;
-  ::google::protobuf::RepeatedPtrField< ::slg::protocol::EquipmentDTO > equipmentlist_;
+  ::google::protobuf::RepeatedPtrField< ::EquipmentDTO > equipmentlist_;
   ::google::protobuf::int32 image_;
 
   mutable int _cached_size_;
@@ -1970,7 +1967,7 @@ class SetIconRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 oper() const;
   inline void set_oper(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.SetIconRequest)
+  // @@protoc_insertion_point(class_scope:SetIconRequest)
  private:
   inline void set_has_iconid();
   inline void clear_has_iconid();
@@ -2060,7 +2057,7 @@ class SetIconResponse : public ::google::protobuf::Message {
   inline ::std::string* release_iconid();
   inline void set_allocated_iconid(::std::string* iconid);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.SetIconResponse)
+  // @@protoc_insertion_point(class_scope:SetIconResponse)
  private:
   inline void set_has_iconid();
   inline void clear_has_iconid();
@@ -2154,7 +2151,7 @@ class ChangeNameRequest : public ::google::protobuf::Message {
   inline bool useitem() const;
   inline void set_useitem(bool value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.ChangeNameRequest)
+  // @@protoc_insertion_point(class_scope:ChangeNameRequest)
  private:
   inline void set_has_nickname();
   inline void clear_has_nickname();
@@ -2239,16 +2236,16 @@ class ChangeNameResponse : public ::google::protobuf::Message {
   inline bool isavailable() const;
   inline void set_isavailable(bool value);
 
-  // optional .slg.protocol.PropertyDTO reward = 2;
+  // optional .PropertyDTO reward = 2;
   inline bool has_reward() const;
   inline void clear_reward();
   static const int kRewardFieldNumber = 2;
-  inline const ::slg::protocol::PropertyDTO& reward() const;
-  inline ::slg::protocol::PropertyDTO* mutable_reward();
-  inline ::slg::protocol::PropertyDTO* release_reward();
-  inline void set_allocated_reward(::slg::protocol::PropertyDTO* reward);
+  inline const ::PropertyDTO& reward() const;
+  inline ::PropertyDTO* mutable_reward();
+  inline ::PropertyDTO* release_reward();
+  inline void set_allocated_reward(::PropertyDTO* reward);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.ChangeNameResponse)
+  // @@protoc_insertion_point(class_scope:ChangeNameResponse)
  private:
   inline void set_has_isavailable();
   inline void clear_has_isavailable();
@@ -2257,7 +2254,7 @@ class ChangeNameResponse : public ::google::protobuf::Message {
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::slg::protocol::PropertyDTO* reward_;
+  ::PropertyDTO* reward_;
   bool isavailable_;
 
   mutable int _cached_size_;
@@ -2333,7 +2330,7 @@ class SetGuideRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 id() const;
   inline void set_id(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.SetGuideRequest)
+  // @@protoc_insertion_point(class_scope:SetGuideRequest)
  private:
   inline void set_has_id();
   inline void clear_has_id();
@@ -2408,23 +2405,23 @@ class PlayerDataPush : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required .slg.protocol.PlayerDTO player = 1;
+  // required .PlayerDTO player = 1;
   inline bool has_player() const;
   inline void clear_player();
   static const int kPlayerFieldNumber = 1;
-  inline const ::slg::protocol::PlayerDTO& player() const;
-  inline ::slg::protocol::PlayerDTO* mutable_player();
-  inline ::slg::protocol::PlayerDTO* release_player();
-  inline void set_allocated_player(::slg::protocol::PlayerDTO* player);
+  inline const ::PlayerDTO& player() const;
+  inline ::PlayerDTO* mutable_player();
+  inline ::PlayerDTO* release_player();
+  inline void set_allocated_player(::PlayerDTO* player);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerDataPush)
+  // @@protoc_insertion_point(class_scope:PlayerDataPush)
  private:
   inline void set_has_player();
   inline void clear_has_player();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::slg::protocol::PlayerDTO* player_;
+  ::PlayerDTO* player_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
@@ -2492,24 +2489,24 @@ class PlayerPropertyChangePush : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // repeated .slg.protocol.PropertyDTO properties = 1;
+  // repeated .PropertyDTO properties = 1;
   inline int properties_size() const;
   inline void clear_properties();
   static const int kPropertiesFieldNumber = 1;
-  inline const ::slg::protocol::PropertyDTO& properties(int index) const;
-  inline ::slg::protocol::PropertyDTO* mutable_properties(int index);
-  inline ::slg::protocol::PropertyDTO* add_properties();
-  inline const ::google::protobuf::RepeatedPtrField< ::slg::protocol::PropertyDTO >&
+  inline const ::PropertyDTO& properties(int index) const;
+  inline ::PropertyDTO* mutable_properties(int index);
+  inline ::PropertyDTO* add_properties();
+  inline const ::google::protobuf::RepeatedPtrField< ::PropertyDTO >&
       properties() const;
-  inline ::google::protobuf::RepeatedPtrField< ::slg::protocol::PropertyDTO >*
+  inline ::google::protobuf::RepeatedPtrField< ::PropertyDTO >*
       mutable_properties();
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerPropertyChangePush)
+  // @@protoc_insertion_point(class_scope:PlayerPropertyChangePush)
  private:
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::RepeatedPtrField< ::slg::protocol::PropertyDTO > properties_;
+  ::google::protobuf::RepeatedPtrField< ::PropertyDTO > properties_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
@@ -2584,7 +2581,7 @@ class PlayerLevelUpPush : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 level() const;
   inline void set_level(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerLevelUpPush)
+  // @@protoc_insertion_point(class_scope:PlayerLevelUpPush)
  private:
   inline void set_has_level();
   inline void clear_has_level();
@@ -2680,7 +2677,7 @@ class PlayerProtectPush : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 spyprotectendtime() const;
   inline void set_spyprotectendtime(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerProtectPush)
+  // @@protoc_insertion_point(class_scope:PlayerProtectPush)
  private:
   inline void set_has_bornprotectendtime();
   inline void clear_has_bornprotectendtime();
@@ -2789,7 +2786,7 @@ class PlayerCount : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 addcount() const;
   inline void set_addcount(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerCount)
+  // @@protoc_insertion_point(class_scope:PlayerCount)
  private:
   inline void set_has_type();
   inline void clear_has_type();
@@ -2873,24 +2870,24 @@ class PlayerCountPush : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // repeated .slg.protocol.PlayerCount counts = 1;
+  // repeated .PlayerCount counts = 1;
   inline int counts_size() const;
   inline void clear_counts();
   static const int kCountsFieldNumber = 1;
-  inline const ::slg::protocol::PlayerCount& counts(int index) const;
-  inline ::slg::protocol::PlayerCount* mutable_counts(int index);
-  inline ::slg::protocol::PlayerCount* add_counts();
-  inline const ::google::protobuf::RepeatedPtrField< ::slg::protocol::PlayerCount >&
+  inline const ::PlayerCount& counts(int index) const;
+  inline ::PlayerCount* mutable_counts(int index);
+  inline ::PlayerCount* add_counts();
+  inline const ::google::protobuf::RepeatedPtrField< ::PlayerCount >&
       counts() const;
-  inline ::google::protobuf::RepeatedPtrField< ::slg::protocol::PlayerCount >*
+  inline ::google::protobuf::RepeatedPtrField< ::PlayerCount >*
       mutable_counts();
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayerCountPush)
+  // @@protoc_insertion_point(class_scope:PlayerCountPush)
  private:
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::RepeatedPtrField< ::slg::protocol::PlayerCount > counts_;
+  ::google::protobuf::RepeatedPtrField< ::PlayerCount > counts_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
@@ -2965,7 +2962,7 @@ class PlayeBattlePush : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 battlevalue() const;
   inline void set_battlevalue(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.PlayeBattlePush)
+  // @@protoc_insertion_point(class_scope:PlayeBattlePush)
  private:
   inline void set_has_battlevalue();
   inline void clear_has_battlevalue();
@@ -3052,7 +3049,7 @@ class TalentPush : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
       mutable_talentids();
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.TalentPush)
+  // @@protoc_insertion_point(class_scope:TalentPush)
  private:
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
@@ -3146,7 +3143,7 @@ class VipInfoPush : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 sign() const;
   inline void set_sign(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.VipInfoPush)
+  // @@protoc_insertion_point(class_scope:VipInfoPush)
  private:
   inline void set_has_lv();
   inline void clear_has_lv();
@@ -3234,7 +3231,7 @@ class VipActiveInfoPush : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 activeend() const;
   inline void set_activeend(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.VipActiveInfoPush)
+  // @@protoc_insertion_point(class_scope:VipActiveInfoPush)
  private:
   inline void set_has_activeend();
   inline void clear_has_activeend();
@@ -3316,7 +3313,7 @@ class SysTimePush : public ::google::protobuf::Message {
   inline ::google::protobuf::int64 currtime() const;
   inline void set_currtime(::google::protobuf::int64 value);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.SysTimePush)
+  // @@protoc_insertion_point(class_scope:SysTimePush)
  private:
   inline void set_has_currtime();
   inline void clear_has_currtime();
@@ -3391,23 +3388,23 @@ class GuidePush : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required .slg.protocol.GuideDTO guide = 1;
+  // required .GuideDTO guide = 1;
   inline bool has_guide() const;
   inline void clear_guide();
   static const int kGuideFieldNumber = 1;
-  inline const ::slg::protocol::GuideDTO& guide() const;
-  inline ::slg::protocol::GuideDTO* mutable_guide();
-  inline ::slg::protocol::GuideDTO* release_guide();
-  inline void set_allocated_guide(::slg::protocol::GuideDTO* guide);
+  inline const ::GuideDTO& guide() const;
+  inline ::GuideDTO* mutable_guide();
+  inline ::GuideDTO* release_guide();
+  inline void set_allocated_guide(::GuideDTO* guide);
 
-  // @@protoc_insertion_point(class_scope:slg.protocol.GuidePush)
+  // @@protoc_insertion_point(class_scope:GuidePush)
  private:
   inline void set_has_guide();
   inline void clear_has_guide();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::slg::protocol::GuideDTO* guide_;
+  ::GuideDTO* guide_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
@@ -3540,27 +3537,27 @@ inline void PlayerDTO::set_level(::google::protobuf::int32 value) {
   level_ = value;
 }
 
-// repeated .slg.protocol.PropertyDTO properties = 4;
+// repeated .PropertyDTO properties = 4;
 inline int PlayerDTO::properties_size() const {
   return properties_.size();
 }
 inline void PlayerDTO::clear_properties() {
   properties_.Clear();
 }
-inline const ::slg::protocol::PropertyDTO& PlayerDTO::properties(int index) const {
+inline const ::PropertyDTO& PlayerDTO::properties(int index) const {
   return properties_.Get(index);
 }
-inline ::slg::protocol::PropertyDTO* PlayerDTO::mutable_properties(int index) {
+inline ::PropertyDTO* PlayerDTO::mutable_properties(int index) {
   return properties_.Mutable(index);
 }
-inline ::slg::protocol::PropertyDTO* PlayerDTO::add_properties() {
+inline ::PropertyDTO* PlayerDTO::add_properties() {
   return properties_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::slg::protocol::PropertyDTO >&
+inline const ::google::protobuf::RepeatedPtrField< ::PropertyDTO >&
 PlayerDTO::properties() const {
   return properties_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::slg::protocol::PropertyDTO >*
+inline ::google::protobuf::RepeatedPtrField< ::PropertyDTO >*
 PlayerDTO::mutable_properties() {
   return &properties_;
 }
@@ -3635,7 +3632,7 @@ inline void PlayerDTO::set_allocated_language(::std::string* language) {
   }
 }
 
-// required .slg.protocol.PositionDTO mapGridPosition = 6;
+// required .PositionDTO mapGridPosition = 6;
 inline bool PlayerDTO::has_mapgridposition() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
@@ -3646,24 +3643,24 @@ inline void PlayerDTO::clear_has_mapgridposition() {
   _has_bits_[0] &= ~0x00000020u;
 }
 inline void PlayerDTO::clear_mapgridposition() {
-  if (mapgridposition_ != NULL) mapgridposition_->::slg::protocol::PositionDTO::Clear();
+  if (mapgridposition_ != NULL) mapgridposition_->::PositionDTO::Clear();
   clear_has_mapgridposition();
 }
-inline const ::slg::protocol::PositionDTO& PlayerDTO::mapgridposition() const {
+inline const ::PositionDTO& PlayerDTO::mapgridposition() const {
   return mapgridposition_ != NULL ? *mapgridposition_ : *default_instance_->mapgridposition_;
 }
-inline ::slg::protocol::PositionDTO* PlayerDTO::mutable_mapgridposition() {
+inline ::PositionDTO* PlayerDTO::mutable_mapgridposition() {
   set_has_mapgridposition();
-  if (mapgridposition_ == NULL) mapgridposition_ = new ::slg::protocol::PositionDTO;
+  if (mapgridposition_ == NULL) mapgridposition_ = new ::PositionDTO;
   return mapgridposition_;
 }
-inline ::slg::protocol::PositionDTO* PlayerDTO::release_mapgridposition() {
+inline ::PositionDTO* PlayerDTO::release_mapgridposition() {
   clear_has_mapgridposition();
-  ::slg::protocol::PositionDTO* temp = mapgridposition_;
+  ::PositionDTO* temp = mapgridposition_;
   mapgridposition_ = NULL;
   return temp;
 }
-inline void PlayerDTO::set_allocated_mapgridposition(::slg::protocol::PositionDTO* mapgridposition) {
+inline void PlayerDTO::set_allocated_mapgridposition(::PositionDTO* mapgridposition) {
   delete mapgridposition_;
   mapgridposition_ = mapgridposition;
   if (mapgridposition) {
@@ -4131,7 +4128,7 @@ inline void PlayerReconnectRequest::set_lastpushid(::google::protobuf::int32 val
 
 // PlayerReconnectResponse
 
-// optional .slg.protocol.ReconnectState state = 1;
+// optional .ReconnectState state = 1;
 inline bool PlayerReconnectResponse::has_state() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -4145,11 +4142,11 @@ inline void PlayerReconnectResponse::clear_state() {
   state_ = 1;
   clear_has_state();
 }
-inline ::slg::protocol::ReconnectState PlayerReconnectResponse::state() const {
-  return static_cast< ::slg::protocol::ReconnectState >(state_);
+inline ::ReconnectState PlayerReconnectResponse::state() const {
+  return static_cast< ::ReconnectState >(state_);
 }
-inline void PlayerReconnectResponse::set_state(::slg::protocol::ReconnectState value) {
-  assert(::slg::protocol::ReconnectState_IsValid(value));
+inline void PlayerReconnectResponse::set_state(::ReconnectState value) {
+  assert(::ReconnectState_IsValid(value));
   set_has_state();
   state_ = value;
 }
@@ -4756,27 +4753,27 @@ inline void QueryLordInfoResponse::set_image(::google::protobuf::int32 value) {
   image_ = value;
 }
 
-// repeated .slg.protocol.EquipmentDTO equipmentlist = 9;
+// repeated .EquipmentDTO equipmentlist = 9;
 inline int QueryLordInfoResponse::equipmentlist_size() const {
   return equipmentlist_.size();
 }
 inline void QueryLordInfoResponse::clear_equipmentlist() {
   equipmentlist_.Clear();
 }
-inline const ::slg::protocol::EquipmentDTO& QueryLordInfoResponse::equipmentlist(int index) const {
+inline const ::EquipmentDTO& QueryLordInfoResponse::equipmentlist(int index) const {
   return equipmentlist_.Get(index);
 }
-inline ::slg::protocol::EquipmentDTO* QueryLordInfoResponse::mutable_equipmentlist(int index) {
+inline ::EquipmentDTO* QueryLordInfoResponse::mutable_equipmentlist(int index) {
   return equipmentlist_.Mutable(index);
 }
-inline ::slg::protocol::EquipmentDTO* QueryLordInfoResponse::add_equipmentlist() {
+inline ::EquipmentDTO* QueryLordInfoResponse::add_equipmentlist() {
   return equipmentlist_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::slg::protocol::EquipmentDTO >&
+inline const ::google::protobuf::RepeatedPtrField< ::EquipmentDTO >&
 QueryLordInfoResponse::equipmentlist() const {
   return equipmentlist_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::slg::protocol::EquipmentDTO >*
+inline ::google::protobuf::RepeatedPtrField< ::EquipmentDTO >*
 QueryLordInfoResponse::mutable_equipmentlist() {
   return &equipmentlist_;
 }
@@ -5073,7 +5070,7 @@ inline void ChangeNameResponse::set_isavailable(bool value) {
   isavailable_ = value;
 }
 
-// optional .slg.protocol.PropertyDTO reward = 2;
+// optional .PropertyDTO reward = 2;
 inline bool ChangeNameResponse::has_reward() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -5084,24 +5081,24 @@ inline void ChangeNameResponse::clear_has_reward() {
   _has_bits_[0] &= ~0x00000002u;
 }
 inline void ChangeNameResponse::clear_reward() {
-  if (reward_ != NULL) reward_->::slg::protocol::PropertyDTO::Clear();
+  if (reward_ != NULL) reward_->::PropertyDTO::Clear();
   clear_has_reward();
 }
-inline const ::slg::protocol::PropertyDTO& ChangeNameResponse::reward() const {
+inline const ::PropertyDTO& ChangeNameResponse::reward() const {
   return reward_ != NULL ? *reward_ : *default_instance_->reward_;
 }
-inline ::slg::protocol::PropertyDTO* ChangeNameResponse::mutable_reward() {
+inline ::PropertyDTO* ChangeNameResponse::mutable_reward() {
   set_has_reward();
-  if (reward_ == NULL) reward_ = new ::slg::protocol::PropertyDTO;
+  if (reward_ == NULL) reward_ = new ::PropertyDTO;
   return reward_;
 }
-inline ::slg::protocol::PropertyDTO* ChangeNameResponse::release_reward() {
+inline ::PropertyDTO* ChangeNameResponse::release_reward() {
   clear_has_reward();
-  ::slg::protocol::PropertyDTO* temp = reward_;
+  ::PropertyDTO* temp = reward_;
   reward_ = NULL;
   return temp;
 }
-inline void ChangeNameResponse::set_allocated_reward(::slg::protocol::PropertyDTO* reward) {
+inline void ChangeNameResponse::set_allocated_reward(::PropertyDTO* reward) {
   delete reward_;
   reward_ = reward;
   if (reward) {
@@ -5141,7 +5138,7 @@ inline void SetGuideRequest::set_id(::google::protobuf::int32 value) {
 
 // PlayerDataPush
 
-// required .slg.protocol.PlayerDTO player = 1;
+// required .PlayerDTO player = 1;
 inline bool PlayerDataPush::has_player() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -5152,24 +5149,24 @@ inline void PlayerDataPush::clear_has_player() {
   _has_bits_[0] &= ~0x00000001u;
 }
 inline void PlayerDataPush::clear_player() {
-  if (player_ != NULL) player_->::slg::protocol::PlayerDTO::Clear();
+  if (player_ != NULL) player_->::PlayerDTO::Clear();
   clear_has_player();
 }
-inline const ::slg::protocol::PlayerDTO& PlayerDataPush::player() const {
+inline const ::PlayerDTO& PlayerDataPush::player() const {
   return player_ != NULL ? *player_ : *default_instance_->player_;
 }
-inline ::slg::protocol::PlayerDTO* PlayerDataPush::mutable_player() {
+inline ::PlayerDTO* PlayerDataPush::mutable_player() {
   set_has_player();
-  if (player_ == NULL) player_ = new ::slg::protocol::PlayerDTO;
+  if (player_ == NULL) player_ = new ::PlayerDTO;
   return player_;
 }
-inline ::slg::protocol::PlayerDTO* PlayerDataPush::release_player() {
+inline ::PlayerDTO* PlayerDataPush::release_player() {
   clear_has_player();
-  ::slg::protocol::PlayerDTO* temp = player_;
+  ::PlayerDTO* temp = player_;
   player_ = NULL;
   return temp;
 }
-inline void PlayerDataPush::set_allocated_player(::slg::protocol::PlayerDTO* player) {
+inline void PlayerDataPush::set_allocated_player(::PlayerDTO* player) {
   delete player_;
   player_ = player;
   if (player) {
@@ -5183,27 +5180,27 @@ inline void PlayerDataPush::set_allocated_player(::slg::protocol::PlayerDTO* pla
 
 // PlayerPropertyChangePush
 
-// repeated .slg.protocol.PropertyDTO properties = 1;
+// repeated .PropertyDTO properties = 1;
 inline int PlayerPropertyChangePush::properties_size() const {
   return properties_.size();
 }
 inline void PlayerPropertyChangePush::clear_properties() {
   properties_.Clear();
 }
-inline const ::slg::protocol::PropertyDTO& PlayerPropertyChangePush::properties(int index) const {
+inline const ::PropertyDTO& PlayerPropertyChangePush::properties(int index) const {
   return properties_.Get(index);
 }
-inline ::slg::protocol::PropertyDTO* PlayerPropertyChangePush::mutable_properties(int index) {
+inline ::PropertyDTO* PlayerPropertyChangePush::mutable_properties(int index) {
   return properties_.Mutable(index);
 }
-inline ::slg::protocol::PropertyDTO* PlayerPropertyChangePush::add_properties() {
+inline ::PropertyDTO* PlayerPropertyChangePush::add_properties() {
   return properties_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::slg::protocol::PropertyDTO >&
+inline const ::google::protobuf::RepeatedPtrField< ::PropertyDTO >&
 PlayerPropertyChangePush::properties() const {
   return properties_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::slg::protocol::PropertyDTO >*
+inline ::google::protobuf::RepeatedPtrField< ::PropertyDTO >*
 PlayerPropertyChangePush::mutable_properties() {
   return &properties_;
 }
@@ -5400,27 +5397,27 @@ inline void PlayerCount::set_addcount(::google::protobuf::int32 value) {
 
 // PlayerCountPush
 
-// repeated .slg.protocol.PlayerCount counts = 1;
+// repeated .PlayerCount counts = 1;
 inline int PlayerCountPush::counts_size() const {
   return counts_.size();
 }
 inline void PlayerCountPush::clear_counts() {
   counts_.Clear();
 }
-inline const ::slg::protocol::PlayerCount& PlayerCountPush::counts(int index) const {
+inline const ::PlayerCount& PlayerCountPush::counts(int index) const {
   return counts_.Get(index);
 }
-inline ::slg::protocol::PlayerCount* PlayerCountPush::mutable_counts(int index) {
+inline ::PlayerCount* PlayerCountPush::mutable_counts(int index) {
   return counts_.Mutable(index);
 }
-inline ::slg::protocol::PlayerCount* PlayerCountPush::add_counts() {
+inline ::PlayerCount* PlayerCountPush::add_counts() {
   return counts_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::slg::protocol::PlayerCount >&
+inline const ::google::protobuf::RepeatedPtrField< ::PlayerCount >&
 PlayerCountPush::counts() const {
   return counts_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::slg::protocol::PlayerCount >*
+inline ::google::protobuf::RepeatedPtrField< ::PlayerCount >*
 PlayerCountPush::mutable_counts() {
   return &counts_;
 }
@@ -5606,7 +5603,7 @@ inline void SysTimePush::set_currtime(::google::protobuf::int64 value) {
 
 // GuidePush
 
-// required .slg.protocol.GuideDTO guide = 1;
+// required .GuideDTO guide = 1;
 inline bool GuidePush::has_guide() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -5617,24 +5614,24 @@ inline void GuidePush::clear_has_guide() {
   _has_bits_[0] &= ~0x00000001u;
 }
 inline void GuidePush::clear_guide() {
-  if (guide_ != NULL) guide_->::slg::protocol::GuideDTO::Clear();
+  if (guide_ != NULL) guide_->::GuideDTO::Clear();
   clear_has_guide();
 }
-inline const ::slg::protocol::GuideDTO& GuidePush::guide() const {
+inline const ::GuideDTO& GuidePush::guide() const {
   return guide_ != NULL ? *guide_ : *default_instance_->guide_;
 }
-inline ::slg::protocol::GuideDTO* GuidePush::mutable_guide() {
+inline ::GuideDTO* GuidePush::mutable_guide() {
   set_has_guide();
-  if (guide_ == NULL) guide_ = new ::slg::protocol::GuideDTO;
+  if (guide_ == NULL) guide_ = new ::GuideDTO;
   return guide_;
 }
-inline ::slg::protocol::GuideDTO* GuidePush::release_guide() {
+inline ::GuideDTO* GuidePush::release_guide() {
   clear_has_guide();
-  ::slg::protocol::GuideDTO* temp = guide_;
+  ::GuideDTO* temp = guide_;
   guide_ = NULL;
   return temp;
 }
-inline void GuidePush::set_allocated_guide(::slg::protocol::GuideDTO* guide) {
+inline void GuidePush::set_allocated_guide(::GuideDTO* guide) {
   delete guide_;
   guide_ = guide;
   if (guide) {
@@ -5647,24 +5644,21 @@ inline void GuidePush::set_allocated_guide(::slg::protocol::GuideDTO* guide) {
 
 // @@protoc_insertion_point(namespace_scope)
 
-}  // namespace protocol
-}  // namespace slg
-
 #ifndef SWIG
 namespace google {
 namespace protobuf {
 
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::slg::protocol::PlayerCommandId>() {
-  return ::slg::protocol::PlayerCommandId_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::PlayerCommandId>() {
+  return ::PlayerCommandId_descriptor();
 }
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::slg::protocol::ReconnectState>() {
-  return ::slg::protocol::ReconnectState_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::ReconnectState>() {
+  return ::ReconnectState_descriptor();
 }
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::slg::protocol::PlayerPushId>() {
-  return ::slg::protocol::PlayerPushId_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::PlayerPushId>() {
+  return ::PlayerPushId_descriptor();
 }
 
 }  // namespace google

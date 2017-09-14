@@ -14,7 +14,6 @@
 #include "../../framework/mem/sharemem.h"
 #include "../../framework/net/client_comm_engine.h"
 #include "../../framework/message/player.pb.h"
-using namespace slg::protocol;
 
 CClientHandle::CClientHandle()
 {
@@ -134,10 +133,7 @@ int CClientHandle::Push(int cmd,Message* pMessage, stPointList* pTeamList)
 {
     MY_ASSERT((pMessage != NULL && pTeamList != NULL), return -1);
 
-    time_t tTmpNow = time(NULL);
-    bool bTmpKickoff = false;
     // 判断是否发送消息后断开连接(这个主动断开只针对与第一个玩家)
-//    mNetHead.Initialize(tTmpNow, (bTmpKickoff == true ? -1 : 0));
     MesHead pTmpHead;;
     pTmpHead.set_cmd(cmd);
     pTmpHead.set_seq(0);

@@ -7,9 +7,8 @@
 #include "../../inc/sceneobjmanager.h"
 #include "../../../framework/net/server_comm_engine.h"
 #include "../../../framework/message/player.pb.h"
+#include "../../../framework/message/dbmessage.pb.h"
 #include "../../../framework/net/client_comm_engine.h"
-
-using namespace slg::protocol;
 
 template<> CDbModule* CSingleton<CDbModule>::spSingleton = NULL;
 
@@ -21,14 +20,19 @@ CDbModule::~CDbModule() {
 
 }
 
+int CDbModule::Initialize()
+{
+    return 0;
+}
+
 int CDbModule::OnLaunchServer()
 {
-
+    return 0;
 }
 
 int CDbModule::OnExitServer()
 {
-
+    return 0;
 }
 
 void CDbModule::OnRouterMessage(CProxyMessage *pMsg)
@@ -57,7 +61,7 @@ void CDbModule::OnClientMessage(CPlayer *pTeam,CMessage *pMsg)
 
 int CDbModule::OnCreateEntity(CPlayer *pTeam)
 {
-
+    return 0;
 }
 
 void CDbModule::OnDestroyEntity(CPlayer *pTeam)
@@ -107,8 +111,8 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
                           SQLTYPE nSqlType,
                           int nProduOutNumber,
                           CALLBACK nIsCallBack,
-                          const char* pSql,
-                          MesHead* mesHead, ... )
+                          MesHead* mesHead,
+                          const char* pSql, ... )
 {
     MY_ASSERT_LOG("db", pSql != NULL, return -1);
 
@@ -210,10 +214,10 @@ void CDbModule::FindOrCreateUserRequest(const std::string &platform,const std::s
             SELECT,
             0,
             MUSTCALLBACK,
-            pcTmpSql,
             mesHead,
-            platform,
-            puid
+            pcTmpSql,
+            platform.c_str(),
+            puid.c_str()
     );
     if (iRet != 0)
     {

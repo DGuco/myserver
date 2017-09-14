@@ -6,19 +6,18 @@
 #define SERVER_PLAYERDATA_H
 
 #include <memory>
-#include "player.h"
 #include "../../../framework/base/object.h"
 
 class CPlayer;
 class CPlayerData
 {
 public:
-    CPlayerData(std::shared_ptr<CPlayer> pPlayer) : m_wpPlayer(pPlayer){}
-
+    CPlayerData(CPlayer* pPlayer);
+    ~CPlayerData();
 private:
-    std::weak_ptr<CPlayer> m_wpPlayer;
+    CPlayer* m_pPlayer;
 public:
-    const std::shared_ptr<CPlayer> GetPlayer();
+    const CPlayer* GetPlayer();
     OBJ_ID GetPlayerId();
 };
 

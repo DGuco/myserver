@@ -1,8 +1,6 @@
 syntax = "proto2";
-package slg.protocol;
-option java_package="com.bonusstudio.slg.protocol";
-option java_outer_classname="PlayerProto";
 import "common.proto";
+option optimize_for = SPEED;
 
 /// --------------------DTO--------------------
 

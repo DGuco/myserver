@@ -58,5 +58,4 @@ private:
     std::map<enServerType ,ServerInfo> m_mServerMap;
 };
 
-template<class CServerConfig> CServerConfig* CSingleton<CServerConfig>::spSingleton = NULL;
 #endif //SERVER_CONFIG_H_H

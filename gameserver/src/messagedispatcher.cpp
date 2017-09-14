@@ -10,8 +10,6 @@
 #include "../../framework/base/servertool.h"
 #include "../logicmodule/inc/coremodule.h"
 
-using namespace slg::protocol;
-
 template<> CMessageDispatcher* CSingleton<CMessageDispatcher>::spSingleton = NULL;
 
 CMessageDispatcher::CMessageDispatcher()

@@ -10,7 +10,7 @@
 class CPlayerCity : CPlayerData
 {
 public:
-    CPlayerCity(std::shared_ptr<CPlayer> pPlayer);
+    CPlayerCity(CPlayer* pPlayer);
     virtual ~CPlayerCity();
     virtual int Initialize();
 };

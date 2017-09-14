@@ -4,7 +4,7 @@
 
 #include "../inc/playercity.h"
 
-CPlayerCity::CPlayerCity(std::shared_ptr<CPlayer> pPlayer) : CPlayerData(pPlayer)
+CPlayerCity::CPlayerCity(CPlayer* pPlayer) : CPlayerData(pPlayer)
 {
 
 }

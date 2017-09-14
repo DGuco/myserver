@@ -47,8 +47,8 @@ private:
                    SQLTYPE nSqlType,
                    int nProduOutNumber,
                    CALLBACK nIsCallBack,
-                   const char* pSql,
-                   MesHead* mesHead, ... );
+                   MesHead* mesHead,
+                   const char* pSql, ... );
 
     int ExecuteSqlForBlob(emDBLogicType nLogicType,
                           unsigned long ulTeamID,
