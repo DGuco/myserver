@@ -210,20 +210,14 @@ int CClientHandle::Recv()
     }
 
     CMessage tmpMessage;
-    Message* pMessage;
+    ::google::protobuf::Message* pMsgPara = (::google::protobuf::Message*) tmpMessage.msgpara();
     MesHead* pMsgHead = tmpMessage.mutable_msghead();
-    iRet = DecodeNetMsg(abyTmpCodeBuf, iTmpCodeLength,pMsgHead, &tmpMessage);
+    iRet = DecodeNetMsg(abyTmpCodeBuf, iTmpCodeLength,pMsgHead, pMsgPara);
     if (iRet != 0)
     {
         return iRet;
     }
-    if (pMessage == NULL)
-    {
-        return ClienthandleErrCode::CLIENTHANDLE_PARSE_FAILED;
-    }
-    tmpMessage.set_msgpara((unsigned long)pMessage);
     CMessageDispatcher::GetSingletonPtr()->ProcessClientMessage(&tmpMessage);
-
     return CLIENTHANDLE_SUCCESS;
 }
 
@@ -301,13 +295,13 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pC
 //    }
 
     // 服务器数据拉完了才能让玩家正常游戏
-    if (CGameServer::GetSingletonPtr()->CanProcessingClientMsg() == false)
-    {
-        long lTmpMsgGuid = tmpSocketInfo.createtime();
-        // 通知客户端服务器未开启并断开连接
-        CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_noservice, lTmpMsgGuid, iTmpSocket, tTmpCreateTime, true);
-        return CLIENTHANDLE_ISNOTNORMAL;
-    }
+//    if (CGameServer::GetSingletonPtr()->CanProcessingClientMsg() == false)
+//    {
+//        long lTmpMsgGuid = tmpSocketInfo.createtime();
+//        // 通知客户端服务器未开启并断开连接
+//        CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_noservice, lTmpMsgGuid, iTmpSocket, tTmpCreateTime, true);
+//        return CLIENTHANDLE_ISNOTNORMAL;
+//    }
 
 //    CPlayer* pTmpTeam = NULL;
 //    // 如果是登陆消息

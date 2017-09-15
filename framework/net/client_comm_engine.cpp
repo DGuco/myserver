@@ -90,10 +90,8 @@ int ClientCommEngine::ParseClientStream(const void** pBuff,
     pHead->set_cmd(tTmpCmd);
 
     //数据总长度
-    unTmpDataLen = unTmpUseLen;
-    //指针指向当前数据包的末尾
-    pTemp += unRecvLen - unTmpUseLen;
-
+    unTmpDataLen = unRecvLen - unTmpUseLen;
+    (*pBuff) = (void*) pTemp;
     return 0;
 }
 
@@ -118,7 +116,7 @@ int ClientCommEngine::ConverToGameStream(const void * pBuff,
     pTemp += sizeof(unsigned short);
     unLength += sizeof(unsigned short);
 
-    // MesHead
+    // MesHead长度
 	*(MSG_LEN_TYPE*)pTemp = (MSG_LEN_TYPE) pHead->ByteSize();
 	pTemp += sizeof(MSG_LEN_TYPE);
 	unLength += sizeof(MSG_LEN_TYPE);
@@ -153,10 +151,11 @@ int ClientCommEngine::ConverToGameStream(const void * pBuff,
     //     tOutLen = unDataLen;
     // }
 
-	*(MSG_LEN_TYPE*)pTemp = (MSG_LEN_TYPE) pHead->ByteSize();
-	pTemp += sizeof(MSG_LEN_TYPE);
+    // data长度
+    *(MSG_LEN_TYPE*)pTemp = (MSG_LEN_TYPE) unDataLen;
+    pTemp += sizeof(MSG_LEN_TYPE);
     unLength += sizeof(MSG_LEN_TYPE);
-    
+
     // 拷贝消息到发送缓冲区
     memcpy(pTemp, (char*)pDataBuff, unDataLen);
     pTemp += unDataLen;
@@ -408,7 +407,7 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
     pbyTmpBuff += sizeof(MSG_LEN_TYPE);
     unTmpUseLen += sizeof(MSG_LEN_TYPE);
 
-    if (unOffset != NULL)
+    if (!unOffset)
     {
         *(unOffset) = unTmpUseLen;
     }

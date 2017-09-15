@@ -542,9 +542,9 @@ int CProxyCtrl::CheckRoutines()
 int CProxyCtrl::PrepareToRun()
 {
 	int i;
-	ServerInfo gateInfo = CServerConfig::GetSingletonPtr()->GetServerMap().find(enServerType::FE_GATESERVER)->second;
+	ServerInfo proxyInfo = CServerConfig::GetSingletonPtr()->GetServerMap().find(enServerType::FE_PROXYSERVER)->second;
 	//监听socket
-	if(m_stListenSocket.CreateServer(gateInfo.m_iPort))
+	if(m_stListenSocket.CreateServer(proxyInfo.m_iPort))
 	{
 		return -1;
 	}

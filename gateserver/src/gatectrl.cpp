@@ -520,10 +520,10 @@ int CGateCtrl::RecvClientData(int iSocketFd)
 
             pTemp = m_szCSMsgBuf;
             MSG_LEN_TYPE tmpSendLen = sizeof(m_szCSMsgBuf);
-            char* pDataBuff = pTemp1 - unTmpDataLen;
-            iTmpRet = ClientCommEngine::ConverToGameStream(m_szCSMsgBuf,
+//            char* pDataBuff = pTemp1;
+            iTmpRet = ClientCommEngine::ConverToGameStream(pTemp,
                                                             tmpSendLen,
-                                                            pDataBuff,
+                                                            pTemp1,
                                                             unTmpDataLen,
                                                             &tmpHead);
             if (iTmpRet != 0)

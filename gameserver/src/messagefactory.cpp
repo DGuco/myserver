@@ -6,6 +6,7 @@
  */
 
 #include "../inc/messagefactory.h"
+#include "../../framework/message/player.pb.h"
 
 // 静态缓冲区初始化
 unsigned char CMessageFactory::macMessageBuff[MAX_PACKAGE_LEN] = {0};
@@ -41,6 +42,8 @@ Message* CMessageFactory::CreateClientMessage(unsigned int uiMessageID)
 	switch(uiMessageID)
 	{
 		// 只有客户端上行的消息需要在这里生成，下行的消息都是临时变量，不需要在MessageFactory中创建
+		CASE_NEW_MSG(UserAccountLoginRequest,100);
+		CASE_NEW_MSG(PlayerLoginRequest,101);
 		default:
 		{
 			break;

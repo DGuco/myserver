@@ -31,13 +31,12 @@
 #define SECOND_ABOVE_CONVERSION_UNIT	60 				// 秒以上换算单位
 #define SECOND_UNDER_CONVERSION_UNIT	1000			// 秒以下换算单位
 
-//4个字节长度，2个字节序列号，1个字节protobuf版本号，1个字节是否加密，2个字节命令码(4+2+1+1+2=10)
-#define MSG_HEAD_LEN 10  // 接收或发送给客户端消息的最小字节数
+#define MSG_HEAD_LEN 8  // 接收或发送给客户端消息的消息头字节数
 #define MSG_MAX_LEN 			    10*1024 			// 接收或发送给客户端消息的最大字节数
 
 typedef unsigned char BYTE;
 typedef unsigned short MSG_LEN_TYPE;		//表示消息长度的数据类型
-typedef int MSG_CMD_TYPE;			//表示消息指令的数据类型
+typedef unsigned short MSG_CMD_TYPE;			//表示消息指令的数据类型
 
 typedef char TName[32];
 typedef char TFName[64];

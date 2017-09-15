@@ -4,6 +4,7 @@
 
 #include "../inc/messagefactory.h"
 #include "../../framework/message/dbmessage.pb.h"
+#include "../../framework/message/player.pb.h"
 
 CMessageFactory::CMessageFactory()
 {
