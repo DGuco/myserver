@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 project(myserver)
+add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT -D_POSIX_MT_)
+
 set(FRAMEWORK
         base/base.h
         base/object.h

@@ -216,6 +216,7 @@ int CClientHandle::Recv()
     {
         return iRet;
     }
+    ClientCommEngine::CopyMesHead(&tmpMsgHead,tmpMessage.mutable_msghead());
     CMessageDispatcher::GetSingletonPtr()->ProcessClientMessage(&tmpMessage);
     return CLIENTHANDLE_SUCCESS;
 }
