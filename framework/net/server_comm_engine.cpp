@@ -20,7 +20,7 @@ int ServerCommEngine::ConvertStreamToMsg(const void* pBuff,
                                          CProxyMessage* pMsg,
                                          CFactory* pMsgFactory)
 {
-	if ((pBuff == NULL) || (unBuffLen < (sizeof(unsigned short) * 3)) || (pMsg == NULL) || ( pMsgFactory == NULL ) )
+	if ((pBuff == NULL) || (unBuffLen < (sizeof(unsigned short) * 3)) || (pMsg == NULL))
 	{
 		MY_ASSERT_STR(0, return -1, "ServerCommEngine::ConvertStreamToMsg Input param failed.");
 	}

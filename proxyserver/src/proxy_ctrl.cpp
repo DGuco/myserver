@@ -308,13 +308,13 @@ int CProxyCtrl::CheckConnRequest()
             setsockopt(iNewSocketFd,SOL_SOCKET,SO_SNDBUF,(const void*)&iOptVal,iTmpOptLen);
             if (getsockopt(iNewSocketFd,SOL_SOCKET,SO_SNDBUF,(void*)&iOptVal,(socklen_t*)&iTmpOptLen) == 0)
             {
-                LOG_ERROR("default", "socket %d set send bufflen = %d error", iNewSocketFd,iOptVal);
+                LOG_DEBUG("default", "socket %d set send bufflen = %d error", iNewSocketFd,iOptVal);
             }
 		}
 	}
 
     //从后往前遍历，因为在ReceiveAndProcessRegister中会删除
-    for (i = m_iCurrentUnRegisterNum - 1;i >= 0;i++)
+    for (i = m_iCurrentUnRegisterNum - 1;i >= 0;i--)
     {
 		//socket是否仍然在端口集中，如果在读取数据并处理
         if (FD_ISSET(m_astUnRegisterInfo[i].m_iSocketFD,&fds_read))
@@ -355,7 +355,7 @@ int CProxyCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	//如果连接中断
 	if (iRecvedBytes == 0)
 	{
-		LOG_ERROR("default","The remote site may closed this connect fd = %d,errno = %s",iSocketFd,errno);
+		LOG_ERROR("default","The remote site may closed this connect fd = %d,errno = %s",iSocketFd,strerror(errno));
 		DeleteOneUnRegister(iUnRegisterIdx);
 		close(iSocketFd);
 		return -1;
@@ -379,7 +379,6 @@ int CProxyCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 
     CProxyMessage tmpMsg;
     tmpMsg.Clear();
-	unsigned short unOffset = 0;
 	//获取tcphead
 	int iRet = ServerCommEngine::ConvertStreamToMsg(acTmpBuf,iRecvedBytes,&tmpMsg);
 	if (iRet < 0)
@@ -502,7 +501,7 @@ int CProxyCtrl::CheckRoutines()
     if (tCurrentTime - m_tLastCheckTime >= CHECK_INTERVAL_SECONDS)
     {
         m_tLastCheckTime = tCurrentTime;
-        for (int i = m_iCurrentUnRegisterNum; i >= 0;i--)
+        for (int i = m_iCurrentUnRegisterNum - 1; i >= 0;i--)
         {
             //检测连接是否超时
             if (tCurrentTime - m_astUnRegisterInfo[i].m_tAcceptTime > CHECK_TIMEOUT_SECONDS)

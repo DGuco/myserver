@@ -67,7 +67,7 @@ public:
     int Push(int cmd,Message* pMessage, stPointList* pPlayerList);
     int Recv();
 
-    int DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pCSHead, Message* pMsg);
+    int DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pCSHead, CMessage* pMsg);
 
     // 断开玩家连接
     void DisconnectClient(CPlayer* cPlayer);

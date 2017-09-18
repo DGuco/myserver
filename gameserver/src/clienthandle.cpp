@@ -210,9 +210,8 @@ int CClientHandle::Recv()
     }
 
     CMessage tmpMessage;
-    ::google::protobuf::Message* pMsgPara = (::google::protobuf::Message*) tmpMessage.msgpara();
-    MesHead* pMsgHead = tmpMessage.mutable_msghead();
-    iRet = DecodeNetMsg(abyTmpCodeBuf, iTmpCodeLength,pMsgHead, pMsgPara);
+    MesHead tmpMsgHead;
+    iRet = DecodeNetMsg(abyTmpCodeBuf, iTmpCodeLength,&tmpMsgHead, &tmpMessage);
     if (iRet != 0)
     {
         return iRet;
@@ -221,7 +220,7 @@ int CClientHandle::Recv()
     return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pCSHead, Message* pMsg)
+int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pCSHead, CMessage* pMsg)
 {
     //长度小于消息头的长度+数据总长度+字节对齐长度
     if (!pCodeBuff || nLen < int(pCSHead->ByteSize() + (sizeof(unsigned short) * 2)))

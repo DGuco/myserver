@@ -358,7 +358,7 @@ int ClientCommEngine::ConvertToGateStream(const void * pBuff,
 int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
                                                 MSG_LEN_TYPE unBuffLen,
                                                 MesHead* pHead,
-                                                Message* pMessage,                                              
+                                                CMessage* pMessage,
                                                 CFactory* pMsgFactory,
                                                 int* unOffset)
 {
@@ -415,17 +415,21 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
     //序列化消息
     if ((unTmpTotalLen - unTmpUseLen) > 0 && pMsgFactory != NULL && pMessage != NULL)
     {
-        pMessage = pMsgFactory->CreateMessage(pHead->cmd());
-        if (pMessage == NULL) 
+        // MessagePara
+        // 使用消息工厂
+        ClientCommEngine::CopyMesHead(pHead,pMessage->mutable_msghead());
+        Message* tpMsgPara = pMsgFactory->CreateMessage(pMessage->msghead().cmd());
+        if (tpMsgPara == NULL)
         {
             MY_ASSERT_STR(0,return -1,"Message CreateMessage failed");                            
         }
     
-        if (pMessage->ParseFromArray(pbyTmpBuff,tmpDataLen) == false)
+        if (tpMsgPara->ParseFromArray(pbyTmpBuff,tmpDataLen) == false)
         {
             pMessage->~Message();
             MY_ASSERT_STR(0,return -1,"Message ParseFromArray failed");                
         }
+        pMessage->set_msgpara((unsigned long)tpMsgPara);
     }
     return 0;
 }  

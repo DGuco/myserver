@@ -76,7 +76,7 @@ public:
 	static int ConvertStreamToMessage(const void* pBuff,
                                         MSG_LEN_TYPE unBuffLen,
                                         MesHead* pHead,
-                                        Message* pMessage = NULL,
+                                        CMessage* pMessage = NULL,
                                         CFactory* pMsgFactory = NULL,
                                         int* unOffset = NULL);
 };

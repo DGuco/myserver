@@ -179,36 +179,19 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::ConnectTo(u_long ulIPNetAddr, u_shor
 		return -2;
 	}
 
-    //如果是阻塞模式返回错误
-    if (emBlock == em_block_mode)
-    {
-        Close();
-        return -3;
-    }
-
 	memset((void *)&stTempAddr, 0, sizeof(sockaddr_in));
 	stTempAddr.sin_family = AF_INET;
 	stTempAddr.sin_port = htons(unPort);
 	stTempAddr.sin_addr.s_addr = ulIPNetAddr;
 
 	//连接失败ss
-	if(connect(m_iSocketFD, (const struct sockaddr *)&stTempAddr, sizeof(stTempAddr)))
+	if(connect(m_iSocketFD, (const struct sockaddr *)&stTempAddr, sizeof(stTempAddr)) != 0)
 	{
-		//操作进行中忽略
-		if (errno != EINPROGRESS)
-		{
-			Close();
-			return -3;
-		}
-
-		//设置tcp 状态为连接中
-		m_iStatus = tcs_connecting;
-		return 0;
+        Close();
+        return -3;
 	}
 
-	//设置为非阻塞
-    SetNBlock( m_iSocketFD );
-
+	SetNBlock( m_iSocketFD );
 	//设置tcp 状态为连接成功并且设置读写索引
 	m_iReadBegin = m_iReadEnd = 0;
 	m_iPostBegin = m_iPostEnd = 0;

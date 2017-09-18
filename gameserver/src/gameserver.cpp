@@ -88,7 +88,11 @@ int CGameServer::PrepareToRun()
         if (Regist2Proxy())
         {
             m_ProxyClient.InitTimer((time_t) CServerConfig::GetSingletonPtr()->GetSocketTimeOut());
+        }else {
+           return -1;
         }
+    } else{
+        return -1;
     }
 
     // 通知各模块启动
