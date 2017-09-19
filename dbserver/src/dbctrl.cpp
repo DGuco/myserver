@@ -398,7 +398,10 @@ int CDBCtrl::RoutineCheck()
       )
     {
         if ( tNow - m_tLastSendKeepAlive > CServerConfig::GetSingletonPtr()->GetTcpKeepAlive())
-            SendkeepAliveToProxy();
+		{
+			SendkeepAliveToProxy();
+		}
+		return 0;
     }
 
     LOG_ERROR("default", "Proxy(ID = %d) is not connected, try to reconnect it", m_stProxySvrdCon.GetEntityID());
@@ -409,6 +412,8 @@ int CDBCtrl::RoutineCheck()
     {
         LOG_ERROR("default", "Connect proxy failed.");
         return -1;
+    }else{
+        LOG_INFO("default", "Connect to proxy succeeded.");
     }
 
     // 然后注册
@@ -420,7 +425,6 @@ int CDBCtrl::RoutineCheck()
 
     m_tLastSendKeepAlive = GetMSTime();	// 保存这一次的发送的时间
     m_tLastRecvKeepAlive = GetMSTime();	// 由于第一次发送,所以记录当前时间为接收的时间
-    LOG_INFO("default", "Connect to proxy succeeded.");
 	return 0;
 }
 

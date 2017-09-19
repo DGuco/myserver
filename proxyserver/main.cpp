@@ -33,22 +33,8 @@ void ignore_pipe()
 
 int main(int argc, char **argv)
 {
-	for (int i = 1; i < argc; i++)
-	{
-		if (!strcasecmp(argv[i], "-v"))
-		{
-			// 支持版本信息查询
-#ifdef _DEBUG_
-			printf("gateserver debug build at %s %s\n", __DATE__, __TIME__);
-#else
-			printf("gateserver release build at %s %s\n", __DATE__, __TIME__);
-#endif
-			exit(0);
-		}
-	}
-
 	// 初始化日志信息(临时)
-	INIT_ROLLINGFILE_LOG("default", "../log/gateserver.log", LEVEL_DEBUG, 10*1024*1024, 5);
+	INIT_ROLLINGFILE_LOG("default", "../log/proxyserver.log", LEVEL_DEBUG, 10*1024*1024, 5);
 
 	// 读取配置
 	CServerConfig* pTmpConfig = new CServerConfig;
