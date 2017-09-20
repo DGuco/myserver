@@ -33,8 +33,7 @@ void ignore_pipe()
 
 int main(int argc, char **argv)
 {
-
-	// 初始化日志信息(临时)
+    // 初始化日志信息(临时)
 	INIT_ROLLINGFILE_LOG("default", "../log/proxyserver.log", LEVEL_DEBUG, 10*1024*1024, 5);
 
 	// 读取配置

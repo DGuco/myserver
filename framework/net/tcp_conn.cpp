@@ -324,7 +324,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Accept(int iAcceptFD)
 	{
 		LOG_ERROR( "default", "Warning, another connection request from remote, close the previous(%d).", m_iSocketFD);
 		Close();
-		//iTempRet = -2;
+		iTempRet = -2;
 	}
 
 	m_iSocketFD = iAcceptFD;

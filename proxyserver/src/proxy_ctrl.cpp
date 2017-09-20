@@ -477,8 +477,9 @@ int CProxyCtrl::DeleteOneUnRegister(int iUnRegisterIdx)
     }
 
     m_iCurrentUnRegisterNum--;
-    if ((m_iCurrentUnRegisterNum > 0) || (iUnRegisterIdx < m_iCurrentUnRegisterNum))
+    if ((m_iCurrentUnRegisterNum > 0) && (iUnRegisterIdx < m_iCurrentUnRegisterNum))
     {
+		//把最后一个元素拷贝到删除位置，避免数组删除位置后面元素的的整体拷贝
         m_astUnRegisterInfo[iUnRegisterIdx] = m_astUnRegisterInfo[m_iCurrentUnRegisterNum];
         m_astUnRegisterInfo[m_iCurrentUnRegisterNum].Clear();
     }

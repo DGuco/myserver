@@ -194,7 +194,7 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE* pbyCode, bool vCountNum)
 	int iHandleChoice = GetThisRoundHandle();
 	// 解析proxy头
 	CProxyHead tProxyHead;
-	if ( ServerCommEngine::ConvertStreamToProxy(pbyCode+sizeof(int), nCodeLength-sizeof(int), &tProxyHead) < 0 )
+	if ( ServerCommEngine::ConvertStreamToProxy(pbyCode + sizeof(int), nCodeLength - sizeof(int), &tProxyHead) < 0 )
 	{
 		LOG_ERROR( "default", "parse proxy head error!!!!!!!!!!!!!!!");
 		return -1;
@@ -311,8 +311,9 @@ int CDBCtrl::CheckAndDispatchInputMsg()
         m_stProxySvrdCon.GetSocket()->RecvData();  // 接收数据到 m_abyRecvBuffer
         while(1)
         {
-            nTmpCodeLength = sizeof(abyCodeBuf)-sizeof(int);
-            if(!(m_stProxySvrdCon.GetSocket()->GetOneCode(nTmpCodeLength, (BYTE *)&abyCodeBuf[sizeof(int)]) > 0))  // 将单条消息接收到 abyCodeBuf
+            nTmpCodeLength = sizeof(abyCodeBuf) - sizeof(int);
+            // 将单条消息接收到 abyCodeBuf
+            if(!(m_stProxySvrdCon.GetSocket()->GetOneCode(nTmpCodeLength, (BYTE *)&abyCodeBuf[sizeof(int)]) > 0))
             {
                 break;
             }
@@ -423,8 +424,8 @@ int CDBCtrl::RoutineCheck()
         return -1;
     }
 
-    m_tLastSendKeepAlive = GetMSTime();	// 保存这一次的发送的时间
-    m_tLastRecvKeepAlive = GetMSTime();	// 由于第一次发送,所以记录当前时间为接收的时间
+//    m_tLastSendKeepAlive = GetMSTime();	// 保存这一次的发送的时间
+//    m_tLastRecvKeepAlive = GetMSTime();	// 由于第一次发送,所以记录当前时间为接收的时间
 	return 0;
 }
 
