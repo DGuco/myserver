@@ -33,6 +33,7 @@ void ignore_pipe()
 
 int main(int argc, char **argv)
 {
+
 	// 初始化日志信息(临时)
 	INIT_ROLLINGFILE_LOG("default", "../log/proxyserver.log", LEVEL_DEBUG, 10*1024*1024, 5);
 
@@ -81,6 +82,10 @@ int main(int argc, char **argv)
 	signal(SIGUSR1, sigusr1_handle);
 
 	LOG_INFO("default", "CGateCtrl is ready now.");
+
+#ifdef _POSIX_MT_
+	LOG_INFO("default", "CGateCtrl running with multi thread.");
+#endif
 
 	// GateServer Run
 	pProxyCtrl->Run();
