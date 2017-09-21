@@ -189,10 +189,10 @@ bool CGameServer::SendMessageToDB(CProxyMessage* pMsg)
     char acTmpMessageBuffer[MAX_PACKAGE_LEN];
     unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
 
-    ServerInfo gameInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType::FE_GAMESERVER)->second;
-    ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType::FE_DBSERVER)->second;
-    int iTmpServerID = gameInfo.m_iServerId;
-    int iTmpDBServerID = dbInfo.m_iServerId;
+    ServerInfo* gameInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_GAMESERVER);
+    ServerInfo* dbInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
+    int iTmpServerID = gameInfo->m_iServerId;
+    int iTmpDBServerID = dbInfo->m_iServerId;
     pbmsg_setproxy(pHead, FE_GAMESERVER, iTmpServerID, FE_DBSERVER, iTmpDBServerID, GetMSTime(), enMessageCmd::MESS_NULL);
 
     int iRet = ServerCommEngine::ConvertMsgToStream(pMsg, acTmpMessageBuffer, unTmpTotalLen);
@@ -405,19 +405,19 @@ int CGameServer::SendResponse(Message* pMsgPara, MesHead* mesHead)
 // 连接到Proxy
 bool CGameServer::Connect2Proxy()
 {
-    ServerInfo rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerMap().find(enServerType::FE_PROXYSERVER)->second;
-    m_ProxyClient.Initialize(enServerType::FE_PROXYSERVER, rTmpProxy.m_iServerId, inet_addr(rTmpProxy.m_sHost.c_str()), rTmpProxy.m_iPort);
+    ServerInfo* rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+    m_ProxyClient.Initialize(enServerType::FE_PROXYSERVER, rTmpProxy->m_iServerId, inet_addr(rTmpProxy->m_sHost.c_str()), rTmpProxy->m_iPort);
 
-    if (m_ProxyClient.ConnectToServer((char*)rTmpProxy.m_sHost.c_str()))
+    if (m_ProxyClient.ConnectToServer((char*)rTmpProxy->m_sHost.c_str()))
     {
         LOG_ERROR("default", "[%s : %d : %s] Connect to Proxy(%s:%d)(id=%d) failed.",
                   __MY_FILE__, __LINE__, __FUNCTION__,
-                  rTmpProxy.m_sHost.c_str(), rTmpProxy.m_iPort, rTmpProxy.m_iServerId);
+                  rTmpProxy->m_sHost.c_str(), rTmpProxy->m_iPort, rTmpProxy->m_iServerId);
         return false;
     }
 
     LOG_NOTICE("default", "Connect to Proxy(%s:%d)(id=%d) succeed.",
-               rTmpProxy.m_sHost.c_str(), rTmpProxy.m_iPort, rTmpProxy.m_iPort);
+               rTmpProxy->m_sHost.c_str(), rTmpProxy->m_iPort, rTmpProxy->m_iPort);
 
     return true;
 }
@@ -430,8 +430,8 @@ bool CGameServer::Regist2Proxy()
     char acTmpMessageBuffer[1024];
     unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
 
-    ServerInfo rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerMap().find(enServerType::FE_PROXYSERVER)->second;
-    pbmsg_setproxy(tmpMessage.mutable_msghead(), enServerType::FE_GAMESERVER,rTmpProxy.m_iServerId,
+    ServerInfo* rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+    pbmsg_setproxy(tmpMessage.mutable_msghead(), enServerType::FE_GAMESERVER,rTmpProxy->m_iServerId,
                    enServerType::FE_PROXYSERVER, m_ProxyClient.GetEntityID(), GetMSTime(), enMessageCmd::MESS_REGIST);
 
     int iRet = ServerCommEngine::ConvertMsgToStream(&tmpMessage,acTmpMessageBuffer, unTmpTotalLen);
@@ -461,8 +461,8 @@ bool CGameServer::SendKeepAlive2Proxy()
     CProxyMessage tmpMessage;
     char acTmpMessageBuffer[1024];
     unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
-    ServerInfo rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerMap().find(enServerType::FE_PROXYSERVER)->second;
-    pbmsg_setproxy(tmpMessage.mutable_msghead(), enServerType::FE_GAMESERVER, rTmpProxy.m_iServerId,
+    ServerInfo* rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+    pbmsg_setproxy(tmpMessage.mutable_msghead(), enServerType::FE_GAMESERVER, rTmpProxy->m_iServerId,
                    enServerType::FE_PROXYSERVER, m_ProxyClient.GetEntityID(), GetMSTime(), enMessageCmd::MESS_KEEPALIVE);
 
     int iRet = ServerCommEngine::ConvertMsgToStream(&tmpMessage,acTmpMessageBuffer, unTmpTotalLen);

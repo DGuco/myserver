@@ -24,7 +24,7 @@
   "checktimeOutGap" : 5,
   "socketTimeout" : 30,
   "proxySize" : 1,
-  "mysqlinfo" : "127.0.0.1;3306;root;;marble_game",
+  "mysqlinfo" : "127.0.0.1;3306;root;123456;my_game",
   "sleeptime":0,
   "loop":1
 }

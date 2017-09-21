@@ -29,7 +29,7 @@ public:
     void Clear();
 
 public:
-    const std::map<enServerType ,ServerInfo>& GetServerMap() const {return m_mServerMap;}
+//    const std::map<enServerType ,ServerInfo>& GetServerMap() const {return m_mServerMap;}
     const string GetDbInfo() const {return m_sDblInfo;}
     const string GetDbIp() const { return m_sDbIp;}
     const int GetDbSleep() const {return m_iDbSleepTime;}
@@ -42,6 +42,7 @@ public:
     const int GetCheckTimeOutGap() const {return m_iChecktimeOutGap;}
     const int GetSocketTimeOut() const {return m_iSokcetTimeout;}
 
+    ServerInfo* GetServerInfo(enServerType type);
 private:
     string m_sDbIp;
     string m_sDblInfo;

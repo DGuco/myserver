@@ -64,3 +64,14 @@ void CServerConfig::Clear()
     m_iServerTick = 0;
     m_mServerMap.clear();
 }
+
+
+ServerInfo* CServerConfig::GetServerInfo(enServerType type)
+{
+    auto it =  m_mServerMap.find(type);
+    if (it != m_mServerMap.end())
+    {
+        return &(it->second);
+    }
+    return NULL;
+}

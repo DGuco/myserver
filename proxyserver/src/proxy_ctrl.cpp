@@ -388,10 +388,10 @@ int CProxyCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 	}
 
     CProxyHead stTmpTcpHead = tmpMsg.msghead();
-    ServerInfo proxyInfo = CServerConfig::GetSingletonPtr()->GetServerMap().find(enServerType::FE_PROXYSERVER)->second;
+    ServerInfo* proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	//判断是否是注册消息
 	if (stTmpTcpHead.dstfe () != FE_PROXYSERVER \
-		|| stTmpTcpHead.dstid() != proxyInfo.m_iServerId \
+		|| stTmpTcpHead.dstid() != proxyInfo->m_iServerId \
 		|| stTmpTcpHead.opflag() != enMessageCmd::MESS_REGIST)
 	{
 		LOG_ERROR("default","Error CCSHead is invalid,fd = %d,Src(FE = %d : ID = %d),Dst(FE = %d : ID = %d),OpFlag = %d,TimeStamp = %ld.",
@@ -541,9 +541,9 @@ int CProxyCtrl::CheckRoutines()
 int CProxyCtrl::PrepareToRun()
 {
 	int i;
-	ServerInfo proxyInfo = CServerConfig::GetSingletonPtr()->GetServerMap().find(enServerType::FE_PROXYSERVER)->second;
+	ServerInfo* proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	//监听socket
-	if(m_stListenSocket.CreateServer(proxyInfo.m_iPort))
+	if(m_stListenSocket.CreateServer(proxyInfo->m_iPort))
 	{
 		return -1;
 	}

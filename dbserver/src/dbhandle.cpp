@@ -83,9 +83,7 @@ int CDBHandle::Initialize(int iHandleID, CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH>*
 	// 初始化日志
 	InitLog( NULL, NULL, LEVEL_DEBUG );
 
-    ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType::FE_DBSERVER)->second;
-
-	m_pDatabase->Initialize ( CServerConfig::GetSingleton().GetDbInfo().c_str(),
+    m_pDatabase->Initialize ( CServerConfig::GetSingleton().GetDbInfo().c_str(),
                               CServerConfig::GetSingleton().GetDbRwTimeout(),
                               CServerConfig::GetSingleton().GetDbSleep(),
                               CServerConfig::GetSingleton().GetDbLoop() );  // 初始化到mysql的连接

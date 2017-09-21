@@ -82,28 +82,29 @@ int  CDBCtrl::ConnectToProxyServer()
 {
 	int i = 0;
 
-	ServerInfo proxyInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType ::FE_PROXYSERVER)->second;
+    //如果为null 让程序崩溃
+	ServerInfo* proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType ::FE_PROXYSERVER);
 	m_stProxySvrdCon.Initialize( FE_PROXYSERVER,
-								proxyInfo.m_iServerId,
-								inet_addr(proxyInfo.m_sHost.c_str()),
-								proxyInfo.m_iPort);
+								proxyInfo->m_iServerId,
+								inet_addr(proxyInfo->m_sHost.c_str()),
+								proxyInfo->m_iPort);
 
-	if(m_stProxySvrdCon.ConnectToServer( (char*)proxyInfo.m_sHost.c_str()))
+	if(m_stProxySvrdCon.ConnectToServer( (char*)proxyInfo->m_sHost.c_str()))
 	{
-		LOG_INFO( "default", "Error:connect to Proxy Server %d failed.\n", proxyInfo.m_iServerId);
+		LOG_INFO( "default", "Error:connect to Proxy Server %d failed.\n", proxyInfo->m_iServerId);
 		return -1;
 	}
 
 	if( RegisterToProxyServer() )
 	{
-		LOG_ERROR( "default", "Error: Register to Proxy Server %d failed.\n", proxyInfo.m_iServerId );
+		LOG_ERROR( "default", "Error: Register to Proxy Server %d failed.\n", proxyInfo->m_iServerId );
 		return -1;
 	}
 
 	m_tLastSendKeepAlive = GetMSTime();	// 记录这一次的注册的时间
 	m_tLastRecvKeepAlive = GetMSTime();	// 由于是注册,所以也将第一次收到的时间记录为当下
 
-	LOG_INFO( "default", "Connect to Proxy server %d Succeed.\n", proxyInfo.m_iServerId);
+	LOG_INFO( "default", "Connect to Proxy server %d Succeed.\n", proxyInfo->m_iServerId);
 	return i;
 }
 
@@ -121,8 +122,9 @@ int CDBCtrl::RegisterToProxyServer()
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
 
-	ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType ::FE_DBSERVER)->second;
-	pbmsg_setproxy(message.mutable_msghead(), enServerType::FE_DBSERVER, dbInfo.m_iServerId,
+    //如果为null 让程序崩溃
+    ServerInfo* dbInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType ::FE_DBSERVER);
+	pbmsg_setproxy(message.mutable_msghead(), enServerType::FE_DBSERVER, dbInfo->m_iServerId,
 				   enServerType::FE_PROXYSERVER, m_stProxySvrdCon.GetEntityID(), GetMSTime(), enMessageCmd ::MESS_REGIST);
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
@@ -158,8 +160,9 @@ int CDBCtrl::SendkeepAliveToProxy()
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
 
-	ServerInfo dbInfo = CServerConfig::GetSingleton().GetServerMap().find(enServerType::FE_DBSERVER)->second;
-	pbmsg_setproxy(message.mutable_msghead(), enServerType::FE_DBSERVER,dbInfo.m_iServerId,
+    //如果为null 让程序崩溃
+    ServerInfo* dbInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
+	pbmsg_setproxy(message.mutable_msghead(), enServerType::FE_DBSERVER,dbInfo->m_iServerId,
 				   enServerType::FE_PROXYSERVER, m_stProxySvrdCon. GetEntityID(), GetMSTime(), enMessageCmd::MESS_KEEPALIVE);
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
@@ -408,8 +411,7 @@ int CDBCtrl::RoutineCheck()
     LOG_ERROR("default", "Proxy(ID = %d) is not connected, try to reconnect it", m_stProxySvrdCon.GetEntityID());
 
     // 如果已经断开了,则重新连接
-    if(m_stProxySvrdCon.ConnectToServer((char*)CServerConfig::GetSingleton().GetServerMap()
-            .find(enServerType::FE_PROXYSERVER)->second.m_sHost.c_str()))
+    if(m_stProxySvrdCon.ConnectToServer((char*)CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_PROXYSERVER)->m_sHost.c_str()))
     {
         LOG_ERROR("default", "Connect proxy failed.");
         return -1;
