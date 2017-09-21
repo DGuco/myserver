@@ -101,7 +101,8 @@ int ServerCommEngine::ConvertStreamToMsg(const void* pBuff,
 
 		if (tpMsgPara->ParseFromArray(tpBuff, tTmpLen) != true)
 		{
-			// 使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
+			// 因为使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
+			// 并且是非线程安全的
 			tpMsgPara->~Message();
 			MY_ASSERT_STR(0, return -9, "ServerCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
 		}

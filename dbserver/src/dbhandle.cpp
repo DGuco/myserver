@@ -170,7 +170,7 @@ int CDBHandle::SendMessageTo(CProxyMessage *pMsg)
 
 int CDBHandle::ConnectToLocalDB()
 {
-    bool bInitRet=  m_pDatabase->Initialize ( CServerConfig::GetSingleton().GetDbInfo().c_str(),
+    bool bInitRet =  m_pDatabase->Initialize ( CServerConfig::GetSingleton().GetDbInfo().c_str(),
                                   CServerConfig::GetSingleton().GetDbRwTimeout(),
                                   CServerConfig::GetSingleton().GetDbSleep(),
                                   CServerConfig::GetSingleton().GetDbLoop() );  // 初始化到mysql的连接

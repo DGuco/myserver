@@ -412,7 +412,7 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
         *(unOffset) = unTmpUseLen;
     }
 
-    //序列化消息
+    //序列化消息,消息
     if ((unTmpTotalLen - unTmpUseLen) > 0 && pMsgFactory != NULL && pMessage != NULL)
     {
         // MessagePara
@@ -425,6 +425,8 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
 
         if (tpMsgPara->ParseFromArray(pbyTmpBuff,tmpDataLen) == false)
         {
+            // 因为使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
+            // 并且是非线程安全的
             pMessage->~Message();
             MY_ASSERT_STR(0,return -1,"Message ParseFromArray failed");
         }

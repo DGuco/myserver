@@ -311,7 +311,7 @@ int CDBCtrl::CheckAndDispatchInputMsg()
         m_stProxySvrdCon.GetSocket()->RecvData();  // 接收数据到 m_abyRecvBuffer
         while(1)
         {
-            nTmpCodeLength = sizeof(abyCodeBuf) - sizeof(int);
+            nTmpCodeLength = sizeof(abyCodeBuf)/* - sizeof(int)*/;
             // 将单条消息接收到 abyCodeBuf
             if(!(m_stProxySvrdCon.GetSocket()->GetOneCode(nTmpCodeLength, (BYTE *)&abyCodeBuf[sizeof(int)]) > 0))
             {
@@ -322,8 +322,8 @@ int CDBCtrl::CheckAndDispatchInputMsg()
                     m_stProxySvrdCon.GetEntityType(),
                     m_stProxySvrdCon.GetEntityID(),
                     nTmpCodeLength);
-            memcpy((void *)abyCodeBuf, (const void *)&i, sizeof(int));  // 把 i 的值赋给 abyCodeBuf
-            nTmpCodeLength += sizeof(int);
+//            memcpy((void *)abyCodeBuf, (const void *)&i, sizeof(int));  // 把 i 的值赋给 abyCodeBuf
+//            nTmpCodeLength += sizeof(int);
             DispatchOneCode(nTmpCodeLength, (BYTE *)abyCodeBuf);  // 派发一个消息
             iCount++;
         }
