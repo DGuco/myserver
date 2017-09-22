@@ -33,6 +33,7 @@ set(SOURCE_FILES
         logicmodule/src/dbmodule.cpp
         metadata/inc/parameter_config.h
         metadata/src/parameter_config.cpp
+        metadata/inc/parameter_key.h
         )
 
 include_directories(
