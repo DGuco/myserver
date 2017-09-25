@@ -564,12 +564,13 @@ int CProxyCtrl::PrepareToRun()
 			return -1;
 		}
 	}
+
+	LOG_INFO("default", "CGateCtrl is running at %s : %d",proxyInfo->m_sHost.c_str(),proxyInfo->m_iPort);
 	return 0;
 }
 
 int CProxyCtrl::Run()
 {
-
 	while (True)
 	{
 		CheckRunFlags();  // 检查是否设置了flags

@@ -36,6 +36,12 @@ CTCPSocket<uiRecvBufLen, uiSendBufLen>::~CTCPSocket()
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateClient(char* szLocalAddr /* = NULL  */)
 {
+#ifdef _POSIX_MT_
+	LOG_INFO("default", "Create client in multi thread way.");
+#else
+    LOG_INFO("default", "Create client in single thread way.");
+#endif
+
 	//当前socket是非关闭状态
 	if(m_iStatus != tcs_closed && m_iSocketFD > 0)
 	{
@@ -89,6 +95,11 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateClient(char* szLocalAddr /* = 
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CreateServer(unsigned short unPort, char* szIPAddr/* =NULL  */)
 {
+#ifdef _POSIX_MT_
+    LOG_INFO("default", "Create server in multi thread way.");
+#else
+    LOG_INFO("default", "Create server in single thread way.");
+#endif
 	sockaddr_in stTempSockAddr;
 	int iReusePortFlag = 1;
 	socklen_t iOptVal = 0;

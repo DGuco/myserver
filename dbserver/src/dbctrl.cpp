@@ -330,7 +330,6 @@ int CDBCtrl::CheckAndDispatchInputMsg()
             DispatchOneCode(nTmpCodeLength, (BYTE *)abyCodeBuf);  // 派发一个消息
             iCount++;
         }
-
     }
 
 	return iCount;
@@ -426,8 +425,8 @@ int CDBCtrl::RoutineCheck()
         return -1;
     }
 
-//    m_tLastSendKeepAlive = GetMSTime();	// 保存这一次的发送的时间
-//    m_tLastRecvKeepAlive = GetMSTime();	// 由于第一次发送,所以记录当前时间为接收的时间
+    m_tLastSendKeepAlive = GetMSTime();	// 保存这一次的发送的时间
+    m_tLastRecvKeepAlive = GetMSTime();	// 由于第一次发送,所以记录当前时间为接收的时间
 	return 0;
 }
 

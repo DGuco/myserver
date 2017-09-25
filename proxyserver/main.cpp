@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 
 	if (pProxyCtrl->Initialize())
 	{
-		LOG_ERROR("default", "CGateCtrl initialize failed.");
+		LOG_ERROR("default", "ProxyServer initialize failed.");
 		if (pProxyCtrl)
 		{
 			delete pProxyCtrl;
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 	// 创建EHandleType_NUM个线程
 	if (pProxyCtrl->PrepareToRun())
 	{
-		LOG_ERROR("default", "CGateCtrl prepare to fun failed.");
+		LOG_ERROR("default", "ProxyServer prepare to fun failed.");
 		if (pProxyCtrl)
 		{
 			delete pProxyCtrl;
@@ -80,13 +80,6 @@ int main(int argc, char **argv)
 	// 安装信号处理函数
 	signal(SIGUSR1, sigusr1_handle);
 
-	LOG_INFO("default", "CGateCtrl is ready now.");
-
-#ifdef _POSIX_MT_
-	LOG_INFO("default", "CGateCtrl running with multi thread.");
-#endif
-
-	// GateServer Run
 	pProxyCtrl->Run();
 
 	// 服务器退出

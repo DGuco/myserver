@@ -21,12 +21,12 @@ int CServerConfig::Parse()
     m_iChecktimeOutGap = m_Obj["checktimeOutGap"].GetInt();
     m_iSokcetTimeout = m_Obj["socketTimeout"].GetInt();
 
-    ServerInfo tcpServer;
+    ServerInfo gateServer;
     Value& gateinfo = m_Obj["gateinfo"];
-    tcpServer.m_iPort =  gateinfo["port"].GetInt();
-    tcpServer.m_sHost =  gateinfo["host"].GetString();
-    tcpServer.m_iServerId = gateinfo["serverid"].GetInt();
-    m_mServerMap[enServerType::FE_GATESERVER] = tcpServer;
+    gateServer.m_iPort =  gateinfo["port"].GetInt();
+    gateServer.m_sHost =  gateinfo["host"].GetString();
+    gateServer.m_iServerId = gateinfo["serverid"].GetInt();
+    m_mServerMap[enServerType::FE_GATESERVER] = gateServer;
 
     ServerInfo gameServer;
     Value& gameinfo = m_Obj["gameinfo"];
@@ -44,10 +44,10 @@ int CServerConfig::Parse()
 
     ServerInfo proxyServer;
     Value& proxyinfo = m_Obj["proxyinfo"];
-    dbServer.m_iServerId =  proxyinfo["serverid"].GetInt();
-    dbServer.m_iPort =  proxyinfo["port"].GetInt();
-    dbServer.m_sHost =  proxyinfo["host"].GetString();
-    m_mServerMap[enServerType::FE_PROXYSERVER] = gameServer;
+    proxyServer.m_iServerId =  proxyinfo["serverid"].GetInt();
+    proxyServer.m_iPort =  proxyinfo["port"].GetInt();
+    proxyServer.m_sHost =  proxyinfo["host"].GetString();
+    m_mServerMap[enServerType::FE_PROXYSERVER] = proxyServer;
 
     m_sDblInfo = m_Obj["mysqlinfo"].GetString();
     m_iDbSleepTime = m_Obj["sleeptime"].GetInt();
