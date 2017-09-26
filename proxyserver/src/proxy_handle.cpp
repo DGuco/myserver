@@ -183,6 +183,71 @@ int CProxyHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
                 stTmpHead.srcfe(), stTmpHead.srcid(),
                 stTmpHead.dstfe(), stTmpHead.dstid(), stTmpHead.timestamp());
 
+    // 处理直接发送到 proxy 的消息
+    if (stTmpHead.dstfe() == FE_PROXYSERVER)
+    {
+        switch(stTmpHead.opflag())
+        {
+            case enMessageCmd::MESS_KEEPALIVE:
+            {
+                CProxyHead stRetHead;
+                ServerInfo* serverInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+                stRetHead.set_srcfe(FE_PROXYSERVER);
+                stRetHead.set_srcid(static_cast<uint32>(serverInfo->m_iServerId));
+                stRetHead.set_dstfe(stTmpHead.srcfe());
+                stRetHead.set_dstid(stTmpHead.srcid());
+                stRetHead.set_opflag(enMessageCmd::MESS_KEEPALIVE);
+                stRetHead.set_timestamp(static_cast<uint64>(GetMSTime()));
+
+                // keepalive的包长度一般都很短
+                char message_buffer[1024];
+
+                unsigned short unHeadLen = stRetHead.ByteSize();
+                unsigned short unAddLen = ((6 + unHeadLen) % 8);
+                if (unAddLen > 0)
+                {
+                    unAddLen = (8 - unAddLen);
+                }
+                unsigned short unTotalLen = (unHeadLen + 6 + unAddLen);
+
+                *((unsigned short*) message_buffer) = unTotalLen;
+                *((unsigned short*) (message_buffer + 2)) = unAddLen;
+                *((unsigned short*) (message_buffer + 4)) = unHeadLen;
+
+                if (stRetHead.SerializeToArray((message_buffer + 6), sizeof(message_buffer) - 4) == false)
+                {
+                    TRACE_ERROR("send keepalive to (FE = %d : ID = %d), CProxyHead::SerializeToArray failed.",
+                                stRetHead.dstfe(), stRetHead.dstid());
+                }
+                else
+                {
+                    int iKey = MakeConnKey(stRetHead.dstfe(), stRetHead.dstid());
+                    int iRet = SendOneCodeTo(unTotalLen, (BYTE*)message_buffer, iKey, true);
+                    if (iRet != 0)
+                    {
+                        TRACE_ERROR("send keepalive to (FE = %d : ID = %d), SendOneCodeTo failed, iRet = %d.",
+                                    stRetHead.dstfe(), stRetHead.dstid(), iRet);
+                    }
+                    else
+                    {
+                        TRACE_DEBUG("send keepalive to (FE = %d : ID = %d) succeed.", stRetHead.dstfe(), stRetHead.dstid());
+                    }
+                }
+
+                break;
+            }
+            default:
+            {
+                TRACE_ERROR("unknown command id %d, from(FE = %d : ID = %d) to(FE = %d : ID = %d), timestamp = %ld.",
+                            stTmpHead.opflag(), stTmpHead.srcfe(), stTmpHead.srcid(),
+                            stTmpHead.dstfe(), stTmpHead.dstid(), stTmpHead.timestamp());
+                break;
+            }
+        }
+
+        return 0;
+    }
+
     int iKey = MakeConnKey(stTmpHead.dstfe(), stTmpHead.dstid());
     iTempRet = SendOneCodeTo(nCodeLength, pbyCode, iKey);
     m_stStatLog.iSndCnt++;

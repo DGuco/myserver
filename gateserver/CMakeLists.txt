@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(gateserver)
-add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DMEDIUM_SIZE  -D_TGW_ -DUSE_MY_ASSERT)
+add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DMEDIUM_SIZE  -D_TGW_ -DUSE_MY_ASSERT -DLINUX)
 #-g -D_DEBUG_ -DUSE_LOG4CPP -DSMALL_SIZE
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -pipe  -std=c++11")
 

@@ -305,9 +305,9 @@ int CProxyCtrl::CheckConnRequest()
 			int iTmpOptLen = sizeof(socklen_t);
 			int iOptVal = SENDBUFSIZE;
             setsockopt(iNewSocketFd,SOL_SOCKET,SO_SNDBUF,(const void*)&iOptVal,iTmpOptLen);
-            if (getsockopt(iNewSocketFd,SOL_SOCKET,SO_SNDBUF,(void*)&iOptVal,(socklen_t*)&iTmpOptLen) == 0)
+            if (getsockopt(iNewSocketFd,SOL_SOCKET,SO_SNDBUF,(void*)&iOptVal,(socklen_t*)&iTmpOptLen))
             {
-                LOG_DEBUG("default", "socket %d set send bufflen = %d error", iNewSocketFd,iOptVal);
+                LOG_ERROR( "default", "Socket(%d) Set send buffer size to %d failed!", iNewSocketFd, iOptVal);
             }
 		}
 	}
@@ -389,7 +389,7 @@ int CProxyCtrl::ReceiveAndProcessRegister(int iUnRegisterIdx)
 
     CProxyHead stTmpTcpHead = tmpMsg.msghead();
     ServerInfo* proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
-	//判断是否是注册消息
+	//判断是否是注册消息,如果不是直接关闭连接
 	if (stTmpTcpHead.dstfe () != FE_PROXYSERVER \
 		|| stTmpTcpHead.dstid() != proxyInfo->m_iServerId \
 		|| stTmpTcpHead.opflag() != enMessageCmd::MESS_REGIST)
