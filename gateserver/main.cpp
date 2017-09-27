@@ -55,6 +55,10 @@ int main(int argc,char **argv)
         exit(0);
     }
 
-    LOG_INFO("default", "tcp server is going to run...");
+    {
+        printf("-------------------------------------------------\n");
+        printf("|          gateserver startup success!          |\n");
+        printf("-------------------------------------------------\n");
+    }
     g_pGateServer->Run();
 }

@@ -78,7 +78,10 @@ CCodeQueue::CCodeQueue(int nTotalSize, int iLockIdx /* = -1  */)
 	if( pCurrentShm->GetInitMode() == SHM_INIT )
 	{
 		m_stQueueHead.m_iLockIdx = iLockIdx;
-		Initialize( nTotalSize );
+		if (Initialize( nTotalSize ))
+        {
+            exit(0);
+        }
 	}
 	else
 	{

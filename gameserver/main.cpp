@@ -60,9 +60,11 @@ int main(int argc, char* argv[])
     signal(SIGUSR1, sigusr1_handle);
     signal(SIGUSR2, sigusr2_handle);
 
-    printf("-------------------------------------------------\n");
-    printf("|          gameserver startup success!          |\n");
-    printf("-------------------------------------------------\n");
+    {
+        printf("-------------------------------------------------\n");
+        printf("|          gameserver startup success!          |\n");
+        printf("-------------------------------------------------\n");
+    }
 
     // 启动服务器
     pTmpGameServer->Run();

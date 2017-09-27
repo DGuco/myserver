@@ -565,7 +565,7 @@ int CProxyCtrl::PrepareToRun()
 		}
 	}
 
-	LOG_INFO("default", "CGateCtrl is running at %s : %d",proxyInfo->m_sHost.c_str(),proxyInfo->m_iPort);
+	LOG_INFO("default", "ProxyServer is going to run at %s : %d",proxyInfo->m_sHost.c_str(),proxyInfo->m_iPort);
 	return 0;
 }
 

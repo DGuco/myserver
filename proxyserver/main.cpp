@@ -80,6 +80,12 @@ int main(int argc, char **argv)
 	// 安装信号处理函数
 	signal(SIGUSR1, sigusr1_handle);
 
+	{
+		printf("-------------------------------------------------\n");
+		printf("|          proxyserver startup success!          |\n");
+		printf("-------------------------------------------------\n");
+	}
+
 	pProxyCtrl->Run();
 
 	// 服务器退出

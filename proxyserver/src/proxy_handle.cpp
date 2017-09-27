@@ -193,11 +193,11 @@ int CProxyHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
                 CProxyHead stRetHead;
                 ServerInfo* serverInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
                 stRetHead.set_srcfe(FE_PROXYSERVER);
-                stRetHead.set_srcid(static_cast<uint32>(serverInfo->m_iServerId));
+                stRetHead.set_srcid(serverInfo->m_iServerId);
                 stRetHead.set_dstfe(stTmpHead.srcfe());
                 stRetHead.set_dstid(stTmpHead.srcid());
                 stRetHead.set_opflag(enMessageCmd::MESS_KEEPALIVE);
-                stRetHead.set_timestamp(static_cast<uint64>(GetMSTime()));
+                stRetHead.set_timestamp(GetMSTime());
 
                 // keepalive的包长度一般都很短
                 char message_buffer[1024];
@@ -214,7 +214,7 @@ int CProxyHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
                 *((unsigned short*) (message_buffer + 2)) = unAddLen;
                 *((unsigned short*) (message_buffer + 4)) = unHeadLen;
 
-                if (stRetHead.SerializeToArray((message_buffer + 6), sizeof(message_buffer) - 4) == false)
+                if (stRetHead.SerializeToArray((message_buffer + 6), sizeof(message_buffer) - 6) == false)
                 {
                     TRACE_ERROR("send keepalive to (FE = %d : ID = %d), CProxyHead::SerializeToArray failed.",
                                 stRetHead.dstfe(), stRetHead.dstid());

@@ -17,8 +17,10 @@ int CDBCtrl::MallocShareMem()
     system(szCmd);
 
     unsigned int tkeydb = MakeKey( "./dbpipefile", 'D' );
-    size_t tSize = sizeof(CSharedMem) + INPUTQUEUELENGTH;
-    BYTE* tpDBShm = CreateShareMem ( tkeydb, tSize);
+//    size_t tSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(INPUTQUEUELENGTH);
+	size_t tSize = sizeof(CSharedMem) + INPUTQUEUELENGTH;
+
+	BYTE* tpDBShm = CreateShareMem ( tkeydb, tSize);
 
     MY_ASSERT( ( tpDBShm != NULL ), return -1 );
 

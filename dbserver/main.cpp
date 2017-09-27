@@ -66,7 +66,9 @@ int main(int argc, char **argv)
 	signal(SIGQUIT, sigusr_handle);
 
 	{
-		printf( "dataserver begin to run ...\n" );
+		printf("-------------------------------------------------\n");
+		printf("|          dbserver startup success!          |\n");
+		printf("-------------------------------------------------\n");
 	}
 
 	tpDBCtrl->Run();

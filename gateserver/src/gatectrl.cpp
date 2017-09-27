@@ -48,11 +48,12 @@ int CGateCtrl::Initialize()
         m_astSocketInfo[i].m_iSocket = INVALID_SOCKET;
     }
 
+
+    ServerInfo *gateInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GATESERVER);
     //初始化epoll
     m_pEpollevents = NULL;
     //初始化epoll socket
-    iTmpRet = InitEpollSocket((short)CServerConfig::GetSingletonPtr()
-            ->GetServerInfo(enServerType::FE_GATESERVER)->m_iPort);
+    iTmpRet = InitEpollSocket((short)gateInfo->m_iPort);
     if (0 != iTmpRet)
     {
         LOG_ERROR("default","InitEpollSocket failed! TCPserver init failed. ReusltCode = %d!",iTmpRet);
@@ -68,6 +69,8 @@ int CGateCtrl::Initialize()
     m_iMaxfds = m_iSocket + 1;
 
     CreatePipe();
+
+    LOG_INFO("default", "GateServer is going to run at %s : %d",gateInfo->m_sHost.c_str(),gateInfo->m_iPort);
     return 0;
 }
 
