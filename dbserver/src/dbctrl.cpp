@@ -10,43 +10,6 @@
 CSharedMem* CDBCtrl::mShmPtr = NULL;
 template<> CDBCtrl* CSingleton< CDBCtrl >::spSingleton = NULL;
 
-int CDBCtrl::MallocShareMem()
-{
-    char szCmd[ 128 ] = {0};
-    snprintf(szCmd, sizeof(szCmd)-1, "touch %s", "./dbpipefile");
-    system(szCmd);
-
-    unsigned int tkeydb = MakeKey( "./dbpipefile", 'D' );
-    size_t tSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(INPUTQUEUELENGTH);
-	BYTE* tpDBShm = CreateShareMem ( tkeydb, tSize);
-
-    MY_ASSERT( ( tpDBShm != NULL ), return -1 );
-
-    LOG_DEBUG( "default", "DB Shm Size is %lld", tSize );
-
-    CSharedMem::pbCurrentShm = tpDBShm;
-    CDBCtrl::mShmPtr = CSharedMem::CreateInstance(tkeydb,tSize,SHM_INIT);
-    MY_ASSERT( CDBCtrl::mShmPtr != NULL, return -1);
-    return 0;
-}
-
-void CDBCtrl::SetRunFlag( int iFlag )
-{
-	m_iRunFlag = iFlag;
-	LOG_INFO( "default", "Set Run Flag %d, All Flag Is %d", iFlag, m_iRunFlag );
-}
-
-void CDBCtrl::ClearRunFlag( int iFlag )
-{
-	m_iRunFlag = 0;
-	LOG_INFO( "default", "Clear Run Flag %d", iFlag );
-}
-
-bool CDBCtrl::IsRunFlagSet( int iFlag )
-{
-	return iFlag == m_iRunFlag;
-}
-
 CDBCtrl::CDBCtrl()
 {
     m_iRunFlag = 0;
@@ -56,6 +19,48 @@ CDBCtrl::CDBCtrl()
 
 CDBCtrl::~CDBCtrl()
 {
+}
+
+int CDBCtrl::MallocShareMem()
+{
+    char szCmd[ 128 ] = {0};
+    snprintf(szCmd, sizeof(szCmd)-1, "touch %s", "./dbpipefile");
+    system(szCmd);
+
+    unsigned int tkeydb = MakeKey( "./dbpipefile", 'D' );
+    size_t tSize = sizeof(CSharedMem) +  MAXHANDLENUMBER * CCodeQueue::CountQueueSize(INPUTQUEUELENGTH);
+    BYTE* tpDBShm = CreateShareMem ( tkeydb, tSize);
+
+    if (tpDBShm == NULL)
+    {
+        return -1;
+    }
+    LOG_DEBUG( "default", "DB Shm Size is %lld", tSize );
+    CSharedMem::pbCurrentShm = tpDBShm;
+    CDBCtrl::mShmPtr = CSharedMem::CreateInstance(tkeydb,tSize,SHM_INIT);
+    if (CDBCtrl::mShmPtr == NULL)
+    {
+        return -1;
+    }
+    CDBHandle::ms_pCurrentShm = CDBCtrl::mShmPtr;
+    return 0;
+}
+
+void CDBCtrl::SetRunFlag( int iFlag )
+{
+    m_iRunFlag = iFlag;
+    LOG_INFO( "default", "Set Run Flag %d, All Flag Is %d", iFlag, m_iRunFlag );
+}
+
+void CDBCtrl::ClearRunFlag( int iFlag )
+{
+    m_iRunFlag = 0;
+    LOG_INFO( "default", "Clear Run Flag %d", iFlag );
+}
+
+bool CDBCtrl::IsRunFlagSet( int iFlag )
+{
+    return iFlag == m_iRunFlag;
 }
 
 int CDBCtrl::Initialize( )
@@ -68,10 +73,14 @@ int CDBCtrl::Initialize( )
         return -1;
     }
 
-    CDBHandle::ms_pCurrentShm = mShmPtr;
     for( i = 0; i < MAXHANDLENUMBER; i++ )
     {
-        m_apHandles[i] = new CDBHandle;
+        CDBHandle* cdbHandle = new CDBHandle;
+        if (!cdbHandle)
+        {
+            return -1;
+        }
+        m_apHandles[i] = cdbHandle;
     }
 
 	return 0;

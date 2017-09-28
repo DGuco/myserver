@@ -19,11 +19,6 @@ std::mutex CDBHandle::m_sMutex;
 
 CDBHandle::CDBHandle()
 {
-    if(!ms_pCurrentShm)
-    {
-        return ;
-    }
-
     // 初始化输入队列对象
     CCodeQueue::pCurrentShm = ms_pCurrentShm;
     m_pInputQueue = CCodeQueue::CreateInstance(INPUTQUEUELENGTH);
