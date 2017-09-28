@@ -83,9 +83,9 @@ int CProxyCtrl::WakeUp2Work(CMyTCPConn* pConn)
     //找出handle连接数最好的handle
     for (int i = 1; i < EHandleType_NUM;i++)
     {
-        if (minNum > m_stHandleInfos->miConnNum)
+        if (minNum > m_stHandleInfos[i].miConnNum)
         {
-            minNum = m_stHandleInfos->miConnNum;
+            minNum = m_stHandleInfos[i].miConnNum;
             iIndex = i;
         }
     }

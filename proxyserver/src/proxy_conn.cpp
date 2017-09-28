@@ -31,7 +31,7 @@ int CMyTCPConn::IsConnCanRecv()
 #ifdef _POSIX_MT_
 	std::lock_guard<std::mutex> guard(m_stMutex);
 #endif
-    if (GetSocket()->GetSocketFD() < 0 && GetSocket()->GetStatus() == tcs_connected)
+    if (GetSocket()->GetSocketFD() > 0 && GetSocket()->GetStatus() == tcs_connected)
     {
         return  True;
     }

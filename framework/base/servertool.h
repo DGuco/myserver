@@ -286,10 +286,7 @@ class CDoubleLinker
 public:
 	CDoubleLinker()
 	{
-//		if (CObj::msCreateMode)
-//		{
-//			Clear();
-//		}
+		Clear();
 	}
 	~CDoubleLinker() {}
 
@@ -334,10 +331,7 @@ class CDoubleLinkerInfo
 public:
 	CDoubleLinkerInfo()
 	{
-//		if (CObj::msCreateMode)
-//		{
-//			Clear();
-//		}
+		Clear();
 	}
 
 	CDoubleLinkerInfo(const CDoubleLinkerInfo& info)

@@ -113,7 +113,7 @@ int  CDBCtrl::ConnectToProxyServer()
 	m_tLastSendKeepAlive = GetMSTime();	// 记录这一次的注册的时间
 	m_tLastRecvKeepAlive = GetMSTime();	// 由于是注册,所以也将第一次收到的时间记录为当下
 
-	LOG_INFO( "default", "Connect to Proxy server %d Succeed.\n", proxyInfo->m_iServerId);
+	LOG_INFO( "default", "Connect to Proxy server %s:%d Succeed.\n", proxyInfo->m_sHost.c_str(),proxyInfo->m_iPort);
 	return i;
 }
 
@@ -190,7 +190,7 @@ int CDBCtrl::SendkeepAliveToProxy()
 
 	m_tLastSendKeepAlive = GetMSTime(); // 保存这一次的发送的时间
 
-	LOG_INFO("default", "SendkeepAliveto Proxy now.");
+	LOG_INFO("default", "SendkeepAlive to Proxy now.");
 	return 0;
 }
 
@@ -206,7 +206,7 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE* pbyCode, bool vCountNum)
 	int iHandleChoice = GetThisRoundHandle();
 	// 解析proxy头
 	CProxyHead tProxyHead;
-	if ( ServerCommEngine::ConvertStreamToProxy(pbyCode + sizeof(int), nCodeLength - sizeof(int), &tProxyHead) < 0 )
+	if ( ServerCommEngine::ConvertStreamToProxy(pbyCode/* + sizeof(int)*/, nCodeLength/* - sizeof(int)*/, &tProxyHead) < 0 )
 	{
 		LOG_ERROR( "default", "parse proxy head error!!!!!!!!!!!!!!!");
 		return -1;
@@ -325,7 +325,7 @@ int CDBCtrl::CheckAndDispatchInputMsg()
         {
             nTmpCodeLength = sizeof(abyCodeBuf)/* - sizeof(int)*/;
             // 将单条消息接收到 abyCodeBuf
-            if(!(m_stProxySvrdCon.GetSocket()->GetOneCode(nTmpCodeLength, (BYTE *)&abyCodeBuf[sizeof(int)]) > 0))
+            if(!(m_stProxySvrdCon.GetSocket()->GetOneCode(nTmpCodeLength, (BYTE *)&abyCodeBuf/*[sizeof(int)]*/) > 0))
             {
                 break;
             }
