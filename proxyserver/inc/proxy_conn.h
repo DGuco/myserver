@@ -71,7 +71,7 @@ public:
 	//获取上次活跃时间
     time_t GetLastKeepalive();
 
-public:
+private:
     int m_iConnState;
     time_t m_tLastKeepalive;
 
