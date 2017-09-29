@@ -473,6 +473,12 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 			iTempRet = ERR_RECV_FALIED;
 			break;
 		}
+        else
+        {
+            getpeername(m_iSocketFD, (struct sockaddr*)&stPeerAddr, &iPeerAddrLen);
+            SockAddrToString(&stPeerAddr, szPeerAddr);
+            LOG_DEBUG( "default", "socket fd = %d, remote site %s. has no data read",m_iSocketFD, szPeerAddr);
+        }
 	} while( iRecvedBytes > 0 );
 
 	return iTempRet;
