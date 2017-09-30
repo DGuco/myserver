@@ -169,7 +169,6 @@ int CDBCtrl::SendkeepAliveToProxy()
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
 
-    //如果为null 让程序崩溃
     ServerInfo* dbInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
 	pbmsg_setproxy(message.mutable_msghead(), enServerType::FE_DBSERVER,dbInfo->m_iServerId,
 				   enServerType::FE_PROXYSERVER, m_stProxySvrdCon. GetEntityID(), GetMSTime(), enMessageCmd::MESS_KEEPALIVE);
