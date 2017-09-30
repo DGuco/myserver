@@ -403,6 +403,7 @@ int CDBCtrl::RoutineCheck()
 		return 0;
 	}
 
+	m_lastTick = tNow;
 	// 和 proxy 保持心跳
     if( (m_stProxySvrdCon.GetSocket()->GetStatus() == tcs_connected)  // 已经连接
             && (m_stProxySvrdCon.GetSocket()->GetSocketFD() > 0)  // 文件描述符
