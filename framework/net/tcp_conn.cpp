@@ -184,7 +184,6 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::ConnectTo(u_long ulIPNetAddr, u_shor
 {
 	sockaddr_in stTempAddr;
 
-	//如果当前socket没有开放或者socket非法
 	if( m_iStatus != tcs_opened || m_iSocketFD < 0 )
 	{
 		return -2;
@@ -195,19 +194,37 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::ConnectTo(u_long ulIPNetAddr, u_shor
 	stTempAddr.sin_port = htons(unPort);
 	stTempAddr.sin_addr.s_addr = ulIPNetAddr;
 
-	//连接失败ss
-	if(connect(m_iSocketFD, (const struct sockaddr *)&stTempAddr, sizeof(stTempAddr)) != 0)
+	if ( emBlock == em_nblock_mode )
 	{
-        Close();
-        return -3;
+		SetNBlock(m_iSocketFD);
 	}
 
-	SetNBlock( m_iSocketFD );
-	//设置tcp 状态为连接成功并且设置读写索引
+	if( connect(m_iSocketFD, (const struct sockaddr *)&stTempAddr, sizeof(stTempAddr)) )
+	{
+		if (emBlock == em_block_mode)
+		{
+			Close();
+			return -3;
+		}
+
+		// emBlock == nblock_mode
+		if (errno != EINPROGRESS)
+		{
+			Close();
+			return -3;
+		}
+		m_iStatus = tcs_connecting;
+		return 0;
+	}
+
+	if ( emBlock == em_block_mode)
+	{
+		SetNBlock( m_iSocketFD );
+	}
+
 	m_iReadBegin = m_iReadEnd = 0;
 	m_iPostBegin = m_iPostEnd = 0;
 	m_iStatus = tcs_connected;
-
 	return 0;
 }
 
@@ -477,7 +494,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
         {
             getpeername(m_iSocketFD, (struct sockaddr*)&stPeerAddr, &iPeerAddrLen);
             SockAddrToString(&stPeerAddr, szPeerAddr);
-            LOG_DEBUG( "default", "socket fd = %d, remote site %s. has no data read",m_iSocketFD, szPeerAddr);
+			LOG_ERROR( "default", "socket fd = %d, remote site %s. has no data read",m_iSocketFD, szPeerAddr);
         }
 	} while( iRecvedBytes > 0 );
 
