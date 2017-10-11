@@ -87,7 +87,7 @@ int ServerCommEngine::ConvertStreamToMsg(const void* pBuff,
 		MY_ASSERT_STR(0, return -7, "ServerCommEngine::ConvertStreamToMsg failed, tTotalLen(%d) != tTmpLen.(%d)", tTotalLen, tTmpLen);
 	}
 
-	if (pMsgFactory != NULL) {
+	if (pMsgFactory) {
 		// MessagePara
 		// 使用消息工厂
 		Message* tpMsgPara = NULL;

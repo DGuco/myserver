@@ -12,7 +12,7 @@ unsigned char* ClientCommEngine::tpKey = &tKey[0];
 
 void ClientCommEngine::CopyMesHead(MesHead* from,MesHead* to)
 {
-    if (from != NULL && to != NULL)
+    if (from && to)
     {
         for (int i = 0;i < from->socketinfos_size();++i)
         {
@@ -217,7 +217,7 @@ int ClientCommEngine::ConvertToGameStream(const void * pBuff,
     pTemp += pHead->GetCachedSize();
     unLength += pHead->GetCachedSize();
 
-    if (pMsg != NULL)
+    if (pMsg)
     {
         char tEncryBuff[MAX_PACKAGE_LEN] = {0};
         char* tpEncryBuff = &tEncryBuff[0];
@@ -368,11 +368,11 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
 	}
 
     char* pbyTmpBuff = (char*)pBuff;
-    unOffset = 0;
+    MSG_LEN_TYPE unTmpUseLen = 0;
     //取出数据总长度
     MSG_LEN_TYPE unTmpTotalLen = *(MSG_LEN_TYPE*) pbyTmpBuff;
     pbyTmpBuff += sizeof(MSG_LEN_TYPE);		// 指针指向数据处
-    unOffset += sizeof(MSG_LEN_TYPE);
+    unTmpUseLen += sizeof(MSG_LEN_TYPE);
 
     // 总长度不匹配
     if (unTmpTotalLen != unBuffLen)
@@ -380,7 +380,6 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
         MY_ASSERT_STR(0,return -1,"the package len is not equal to datalen ,package len %d,data len",unBuffLen,unTmpTotalLen);
     }
 
-    MSG_LEN_TYPE unTmpUseLen = 0;
 	// 字节对齐补充长度（采用8字节对齐）
     unsigned short unTmpAddlLen = *(unsigned short*) pbyTmpBuff;
     pbyTmpBuff += sizeof(unsigned short);
@@ -407,7 +406,7 @@ int ClientCommEngine::ConvertStreamToMessage(const void* pBuff,
     pbyTmpBuff += sizeof(MSG_LEN_TYPE);
     unTmpUseLen += sizeof(MSG_LEN_TYPE);
 
-    if (!unOffset)
+    if (unOffset)
     {
         *(unOffset) = unTmpUseLen;
     }
