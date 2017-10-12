@@ -36,10 +36,6 @@ set(FRAMEWORK
         net/statistics.h
         net/tcp_conn.h
         net/runflag.h
-        net/daemon.h
-        net/oi_tea.h
-        net/daemon.cpp
-        net/oi_tea.cpp
         net/runflag.cpp
         net/statistics.cpp
         net/ccrypto.h
@@ -60,6 +56,7 @@ set(FRAMEWORK
         mem/mempoolsafty.h
         thread/mythread.h
         thread/mythread.cpp
+        thread/threadpool.h
         timer/clock.cpp
         timer/clock.h
         timer/timer.h
