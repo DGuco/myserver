@@ -57,6 +57,7 @@ set(FRAMEWORK
         thread/mythread.h
         thread/mythread.cpp
         thread/threadpool.h
+        thread/threadpool.cpp
         timer/clock.cpp
         timer/clock.h
         timer/timer.h
