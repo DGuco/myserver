@@ -4,18 +4,17 @@
 
 #include "threadpool.h"
 
-inline ThreadPool::ThreadPool() :
-        ThreadPool(thread::hardware_concurrency()), m_stop(false)
+inline CThreadPool::CThreadPool() :
+        CThreadPool(thread::hardware_concurrency())
 {
 
 }
 
-
-inline ThreadPool::ThreadPool(size_t threads) :  m_stop(false)
+inline CThreadPool::CThreadPool(size_t threads) :  m_stop(false)
 {
     for(size_t i = 0;i<threads;++i)
     {
-        thread* th = CreateThread();
+        thread* th = new thread(std::mem_fn(&CThreadPool::ThreadFunc),this);
         if (th)
         {
             m_mWorkers[th->get_id()] = th;
@@ -24,7 +23,7 @@ inline ThreadPool::ThreadPool(size_t threads) :  m_stop(false)
 }
 
 // the destructor joins all threads
-inline ThreadPool::~ThreadPool()
+inline CThreadPool::~CThreadPool()
 {
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -35,36 +34,12 @@ inline ThreadPool::~ThreadPool()
         it->second->join();
 }
 
-
-inline std::thread* ThreadPool::CreateThread()
-{
-    std::thread* thread =
-            new thread(
-                [this]
-                {
-                    for(;;)
-                    {
-                        std::function<void()> task;
-                        std::unique_lock<std::mutex> lock(this->m_mutex);
-                        this->m_condition.wait(lock,
-                                              [this]{ return this->m_stop || !this->m_qTasks.empty(); });
-                        if(this->m_stop && this->m_qTasks.empty())
-                           return;
-                        task = std::move(this->m_qTasks.front());
-                        this->m_qTasks.pop_front();
-                        lock.unlock();
-                        task();
-                    }
-                });
-    return thread;
-}
-
-bool ThreadPool::IsThisThreadIn() {
+bool CThreadPool::IsThisThreadIn() {
     auto it = m_mWorkers.find(this_thread::get_id());
     return it != m_mWorkers.end();
 }
 
-bool ThreadPool::IsThisThreadIn(thread* thrd) {
+bool CThreadPool::IsThisThreadIn(thread* thrd) {
     if (thrd) {
         auto it = m_mWorkers.find(thrd->get_id());
         return it != m_mWorkers.end();
@@ -73,10 +48,8 @@ bool ThreadPool::IsThisThreadIn(thread* thrd) {
     }
 }
 
-// add new work item to the pool
 template<class F, class... Args>
-auto ThreadPool::PushTaskBack(F &&f, Args &&args)
--> std::future<typename std::result_of<F(Args...)>::type>
+auto CThreadPool::PushTaskBack(F &&f, Args &&... args)
 {
     using return_type = typename std::result_of<F(Args...)>::type;
 
@@ -111,8 +84,7 @@ auto ThreadPool::PushTaskBack(F &&f, Args &&args)
 
 
 template<class F, class... Args>
-auto ThreadPool::PushTaskFront(F &&f, Args &&args)
--> std::future<typename std::result_of<F(Args...)>::type>
+auto CThreadPool::PushTaskFront(F &&f, Args &&... args)
 {
     using return_type = typename std::result_of<F(Args...)>::type;
 
@@ -138,7 +110,25 @@ auto ThreadPool::PushTaskFront(F &&f, Args &&args)
         {
             m_qTasks.emplace_front([task](){ (*task)(); });
         }
+        m_condition.notify_one();
     }
-    m_condition.notify_one();
     return res;
 }
+
+void CThreadPool::ThreadFunc()
+{
+    while(true)
+    {
+        std::function<void()> task;
+        std::unique_lock<std::mutex> lock(this->m_mutex);
+        this->m_condition.wait(lock,
+                              [this]{ return this->m_stop || !this->m_qTasks.empty(); });
+        if(this->m_stop && this->m_qTasks.empty())
+           return;
+        task = std::move(this->m_qTasks.front());
+        this->m_qTasks.pop_front();
+        lock.unlock();
+        task();
+    }
+}
+

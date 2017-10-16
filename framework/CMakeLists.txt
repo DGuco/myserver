@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.6)
 project(myserver)
 add_definitions(-DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -pipe -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -pipe -std=c++14")
+set(CMAKE_CXX_STANDARD 14)
 
 set(FRAMEWORK
         base/base.h

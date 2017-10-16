@@ -15,29 +15,28 @@
 #include <unordered_map>
 #include <functional>
 #include <stdexcept>
-
 #include <bits/unordered_map.h>
-#include "../base/servertool.h"
 
 using  namespace std;
 
-class ThreadPool{
+class CThreadPool{
 public:
-    ThreadPool();
-    ThreadPool(size_t);
-    ~ThreadPool();
+    CThreadPool();
+    CThreadPool(size_t);
+    ~CThreadPool();
     //向后添加任务
     template<class F, class... Args>
-    auto PushTaskBack(F&& f, Args&&... args) -> std::future<typename std::result_of<F(Args...)>::type>;
+    auto PushTaskBack(F&& f, Args&&... args);
     //向前添加任务
     template<class F, class... Args>
-    auto PushTaskFront(F&& f, Args&&... args) -> std::future<typename std::result_of<F(Args...)>::type>;
-    std::thread* CreateThread();
+    auto PushTaskFront(F&& f, Args&&... args);
     bool IsThisThreadIn();
     bool IsThisThreadIn(thread* thrd);
 
 private:
-    std::unordered_map<std::thread::id,std::thread* > m_mWorkers;
+    void ThreadFunc();
+private:
+    std::unordered_map<std::thread::id,std::thread*> m_mWorkers;
     std::deque< std::function<void()> > m_qTasks;
 
     std::mutex m_mutex;

@@ -6,10 +6,10 @@
 //
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <signal.h>
 #include "inc/gameserver.h"
 #include "../framework/json/config.h"
+#include "../framework/thread/threadpool.h"
 
 void sigusr1_handle(int iSigVal)
 {
@@ -25,6 +25,26 @@ void sigusr2_handle(int iSigVal)
 
 int main(int argc, char* argv[])
 {
+    CThreadPool pool(4);
+    std::vector< std::future<int> > results;
+
+    for(int i = 0; i < 8; ++i) {
+        results.emplace_back(
+                pool.PushTaskBack([i] {
+                    std::cout << "hello " << i << std::endl;
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    std::cout << "world " << i << std::endl;
+                    return i*i;
+                })
+        );
+    }
+
+    for(auto && result: results)
+        std::cout << result.get() << ' ';
+    std::cout << std::endl;
+
+    return 0;
+
     // 初始化日志
     INIT_ROLLINGFILE_LOG("default", "../log/gameserver.log", LEVEL_DEBUG);
 
