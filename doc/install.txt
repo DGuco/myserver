@@ -10,8 +10,9 @@
         ./configure
         make & make install
 2 服务器启动步骤
-    # 在myserver目录下一次创建build和bin目录
+    # 在myserver目录下一次创建build
     # 执行
       cd build
       cmake ..
       make
+    # 执行bin目录下的启动脚本

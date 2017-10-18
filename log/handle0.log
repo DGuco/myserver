@@ -1,0 +1,182 @@
+DEBUG   : Thread would blocked.
+DEBUG   : Thread waked up.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711139292 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711139292.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711149381 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711149381.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711159481 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711159481.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711169497 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711169497.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711179522 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711179522.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711189541 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711189541.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711199640 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711199640.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711209742 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711209742.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711219845 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711219845.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711229904 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711229904.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(4, 20002) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(32).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711239908 OpFlag: MESS_KEEPALIVE]
+DEBUG   : Transfer code begin, from(FE = 4 : ID = 20002) to(FE = 5 : ID = 20004), timestamp = 1507711239908.
+DEBUG   : The real rcver is (4, 20002)
+DEBUG   : send keepalive to (FE = 4 : ID = 20002) succeed.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : Thread would blocked.
+DEBUG   : Thread waked up.
+DEBUG   : Thread would blocked.
+DEBUG   : Thread would blocked.
+DEBUG   : Thread waked up.
+DEBUG   : Thread would blocked.
+DEBUG   : Thread waked up.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(2, 20004) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(152).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 2 SrcID: 20002 DstFE: 4 DstID: 20002 TimeStamp: 1507718586986 OpFlag: MESS_NULL messageId: 65537 msgHead { SocketInfos { SocketID: 6 CreateTime: 1507718566 State: 0 } Cmd: 100 Serial: 0 Seq: 1024 }]
+DEBUG   : Transfer code begin, from(FE = 2 : ID = 20002) to(FE = 4 : ID = 20002), timestamp = 1507718586986.
+ERROR   : While send one code to (key=282146), invalid key.
+ERROR   : transfer one code from (FE = 2 : ID = 20002) to (FE = 4 : ID = 20002) failed of -10002.
+DEBUG   : Transfer code ended.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(2, 20004) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(152).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 2 SrcID: 20002 DstFE: 4 DstID: 20002 TimeStamp: 1507718599414 OpFlag: MESS_NULL messageId: 65537 msgHead { SocketInfos { SocketID: 6 CreateTime: 1507718566 State: 0 } Cmd: 100 Serial: 0 Seq: 1024 }]
+DEBUG   : Transfer code begin, from(FE = 2 : ID = 20002) to(FE = 4 : ID = 20002), timestamp = 1507718599414.
+ERROR   : While send one code to (key=282146), invalid key.
+ERROR   : transfer one code from (FE = 2 : ID = 20002) to (FE = 4 : ID = 20002) failed of -10002.
+DEBUG   : Transfer code ended.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(2, 20004) has some data to transfer.
+DEBUG   : Now transfer data...
+DEBUG   : TransMsg(152).
+DEBUG   : ---- Recv Msg ----
+DEBUG   : [SrcFE: 2 SrcID: 20002 DstFE: 4 DstID: 20002 TimeStamp: 1507718604782 OpFlag: MESS_NULL messageId: 65537 msgHead { SocketInfos { SocketID: 6 CreateTime: 1507718566 State: 0 } Cmd: 100 Serial: 0 Seq: 1024 }]
+DEBUG   : Transfer code begin, from(FE = 2 : ID = 20002) to(FE = 4 : ID = 20002), timestamp = 1507718604782.
+ERROR   : While send one code to (key=282146), invalid key.
+ERROR   : transfer one code from (FE = 2 : ID = 20002) to (FE = 4 : ID = 20002) failed of -10002.
+DEBUG   : Transfer code ended.
+DEBUG   : DoTransfer : GetOneCode iTempRet = 0
+DEBUG   : All data transfered.
+DEBUG   : ------ Thread 0 do transfer OK -------.
+DEBUG   : --------Some entity has data to transfer----------.
+DEBUG   : conn(2, 20004) has some data to transfer.

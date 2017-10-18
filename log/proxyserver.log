@@ -1,0 +1,68 @@
+INFO    : Create server in multi thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : ProxyServer is going to run at 127.0.0.1 : 9004
+INFO    : Get a conn request from 127.0.0.1:53606 socket fd = 8
+DEBUG   : ************** Recv Msg ****************
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507711129206 OpFlag: MESS_REGIST]
+INFO    : Conn(FE = 4, ID = 20002, KEY = 282146) connected OK, the FD is 8.
+INFO    : insert conn(key=282146) into m_mapConns succeed.
+DEBUG   : Wake up handle(0) start to work.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:53606. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : Create server in multi thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : ProxyServer is going to run at 127.0.0.1 : 9004
+INFO    : Get a conn request from 127.0.0.1:56272 socket fd = 8
+DEBUG   : ************** Recv Msg ****************
+DEBUG   : [SrcFE: 4 SrcID: 20002 DstFE: 5 DstID: 20004 TimeStamp: 1507716762967 OpFlag: MESS_REGIST]
+INFO    : Conn(FE = 4, ID = 20002, KEY = 282146) connected OK, the FD is 8.
+INFO    : insert conn(key=282146) into m_mapConns succeed.
+DEBUG   : Wake up handle(0) start to work.
+INFO    : Create server in multi thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : ProxyServer is going to run at 127.0.0.1 : 9004
+INFO    : Create server in multi thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : ProxyServer is going to run at 127.0.0.1 : 9004
+INFO    : Get a conn request from 127.0.0.1:41323 socket fd = 8
+DEBUG   : ************** Recv Msg ****************
+DEBUG   : [SrcFE: 2 SrcID: 20004 DstFE: 5 DstID: 20004 TimeStamp: 1507716857383 OpFlag: MESS_REGIST]
+INFO    : Conn(FE = 2, ID = 20004, KEY = 151076) connected OK, the FD is 8.
+INFO    : insert conn(key=151076) into m_mapConns succeed.
+DEBUG   : Wake up handle(0) start to work.
+INFO    : Create server in multi thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : ProxyServer is going to run at 127.0.0.1 : 9004
+INFO    : Get a conn request from 127.0.0.1:33495 socket fd = 8
+DEBUG   : ************** Recv Msg ****************
+DEBUG   : [SrcFE: 2 SrcID: 20004 DstFE: 5 DstID: 20004 TimeStamp: 1507718530915 OpFlag: MESS_REGIST]
+INFO    : Conn(FE = 2, ID = 20004, KEY = 151076) connected OK, the FD is 8.
+INFO    : insert conn(key=151076) into m_mapConns succeed.
+DEBUG   : Wake up handle(0) start to work.
+ERROR   : socket fd = 8, remote site 127.0.0.1:33495. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:33495. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : socket fd = 8, remote site 127.0.0.1:33495. has no data read
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+ERROR   : recv error! RecvedBytes(0) from 127.0.0.1:33495 , fd = 8, errno = 11.

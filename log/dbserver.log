@@ -1,0 +1,119 @@
+NOTICE  : Try to malloc share memory of 33554552 bytes...
+NOTICE  : Successfully alloced share memory block, key = 440119E6, id = 327687, size = 33554552
+DEBUG   : DB Shm Size is 33554552
+INFO    : Create client in single thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : Regist to Proxy now.
+INFO    : Connect to Proxy server 127.0.0.1:9004 Succeed.
+
+INFO    : Handles initialized OK, now begin to create threads.
+
+INFO    : Successfully create 2 threads to handle request.
+
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+INFO    : SendkeepAlive to Proxy now.
+INFO    : Proxy(index:0,entityid:20004) had req to process.
+ERROR   : socket fd = 4, remote site 127.0.0.1:9004. has no data read
+DEBUG   : Get one code from ( EntityType:5, EntityID:20004 ) Len=32, dispatch it
+ERROR   : GetOneCode Failed : iDataLength(0) <= 0.
+NOTICE  : Try to malloc share memory of 33554552 bytes...
+NOTICE  : Same shm seg (key=440119E6) exist, now try to attach it...
+NOTICE  : Attach to share memory succeed.
+NOTICE  : Successfully alloced share memory block, key = 440119E6, id = 327687, size = 33554552
+DEBUG   : DB Shm Size is 33554552
+INFO    : Create client in single thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : Regist to Proxy now.
+INFO    : Connect to Proxy server 127.0.0.1:9004 Succeed.
+
+INFO    : Handles initialized OK, now begin to create threads.
+
+INFO    : Successfully create 2 threads to handle request.
+
+NOTICE  : Try to malloc share memory of 33554552 bytes...
+NOTICE  : Successfully alloced share memory block, key = 440119E6, id = 229380, size = 33554552
+DEBUG   : DB Shm Size is 33554552
+INFO    : Create client in single thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : Error:connect to Proxy Server 20004 failed.
+
+ERROR   : Error: in CDBCtrl::PrepareToRun connect proxy  server  failed!
+
+NOTICE  : Try to malloc share memory of 33554552 bytes...
+NOTICE  : Successfully alloced share memory block, key = 440119E6, id = 393226, size = 33554552
+DEBUG   : DB Shm Size is 33554552
+INFO    : Create client in single thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : Error:connect to Proxy Server 20004 failed.
+
+ERROR   : Error: in CDBCtrl::PrepareToRun connect proxy  server  failed!
+
+NOTICE  : Try to malloc share memory of 33554552 bytes...
+NOTICE  : Successfully alloced share memory block, key = 440119E6, id = 1409027, size = 33554552
+DEBUG   : DB Shm Size is 33554552
+INFO    : Create client in single thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : Error:connect to Proxy Server 20004 failed.
+
+ERROR   : Error: in CDBCtrl::PrepareToRun connect proxy  server  failed!
+
+NOTICE  : Try to malloc share memory of 33554552 bytes...
+NOTICE  : Same shm seg (key=440119E6) exist, now try to attach it...
+NOTICE  : Attach to share memory succeed.
+NOTICE  : Successfully alloced share memory block, key = 440119E6, id = 1409027, size = 33554552
+DEBUG   : DB Shm Size is 33554552
+INFO    : Create client in single thread way.
+INFO    : Set Send buf of socket is 262142.
+INFO    : Error:connect to Proxy Server 20004 failed.
+
+ERROR   : Error: in CDBCtrl::PrepareToRun connect proxy  server  failed!
+
