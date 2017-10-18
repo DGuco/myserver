@@ -1,6 +1,6 @@
 //
 // Created by DGuco on 17-10-12.
-// 基于c++11简单的线程池
+// 基于c++14简单的线程池
 //
 
 #ifndef SERVER_THREADPOOL_H
