@@ -79,7 +79,7 @@ int CMyTCPConn::RecvAllData()
 **/
 int CMyTCPConn::GetOneCode(short &nCodeLength, BYTE *pCode)
 {
-	return GetSocket()->GetOneCode((unsigned short int &)nCodeLength, pCode);
+    return GetSocket()->GetOneCode((unsigned short int &)nCodeLength, pCode);
 }
 
 /**

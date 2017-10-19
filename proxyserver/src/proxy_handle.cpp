@@ -139,7 +139,8 @@ int CProxyHandle::SendOneCodeTo(short nCodeLength, BYTE* pbyCode, int  iKey, boo
         return -10002;
     }
 
-    TRACE_DEBUG( "The real rcver is (%d, %d)", pWriteConn->GetEntityType(), pWriteConn->GetEntityID() );
+    TRACE_DEBUG( "The real rcver is (%d, %d),send data len %d", pWriteConn->GetEntityType(),
+                 pWriteConn->GetEntityID(),nCodeLength);
 
     iTempRet = pWriteConn->SendCode(nCodeLength, pbyCode);
     if (iTempRet == 0 && bKeepalive == true)
@@ -331,12 +332,27 @@ int CProxyHandle::DoTransfer()
                         vecConns[i]->GetEntityType(), vecConns[i]->GetEntityID());
 
             // 接收所能得到的所有数据
-            vecConns[i]->RecvAllData();
+            iTempRet = vecConns[i]->RecvAllData();
+
+            if (iTempRet < 0 && iTempRet != ERR_RECV_NOBUFF)
+            {
+                TRACE_ERROR("Get Error Len : %d Code from Conn (FE = %d , ID = %d)",
+                            nTmpCodeLength, vecConns[i]->GetEntityType(), vecConns[i]->GetEntityID());
+                // 关闭掉连接
+                vecConns[i]->GetSocket()->Close();
+                vecConns[i]->SetConnState(ENTITY_OFF);
+                m_stStatLog.iRcvErrCnt++;
+                break;
+            }
 
             TRACE_DEBUG("Now transfer data...");
 
             while (1)
             {
+                if (!vecConns[i]->GetSocket()->HasReadData())
+                {
+                    break;
+                }
                 nTmpCodeLength = sizeof(abyCodeBuf);
                 // 从接收到的数据队列中取数据
                 iTempRet = vecConns[i]->GetOneCode(nTmpCodeLength, (BYTE *)abyCodeBuf);

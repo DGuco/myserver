@@ -107,8 +107,10 @@ public:
 	//设置非阻塞
 	int SetNBlock(int iSock);
 	//是否有数据要发送
-	int HasReserveData();
-	//发送发送缓冲去数据
+    bool HasReserveData();
+    //是否有数据可读
+    bool HasReadData();
+    //发送发送缓冲去数据
 	int CleanReserveData();
     //打印socket状态
 	int PrintfSocketStat();
@@ -118,6 +120,11 @@ public:
 	void GetCriticalData(int& iReadBegin,int& iReadEnd, int& iPostBegin, int& iPostEnd);
     //关闭socket
 	int Close();
+
+	int GetReadBegin() {return m_iReadBegin;}
+	int GetReadEnd() {return m_iReadEnd;}
+	int GetPosBegin() {return m_iPostBegin;}
+	int GetPostEnd()  { return m_iPostEnd;}
 
 protected:
 	int m_iSocketFD;					//Socket描述子

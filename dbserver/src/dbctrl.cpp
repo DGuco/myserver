@@ -165,6 +165,8 @@ Others:
  ********************************************************/
 int CDBCtrl::SendkeepAliveToProxy()
 {
+
+
     CProxyMessage message;
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
@@ -215,6 +217,7 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE* pbyCode, bool vCountNum)
 	if( enServerType ::FE_PROXYSERVER == tProxyHead.srcfe() && enMessageCmd::MESS_KEEPALIVE == tProxyHead.opflag() )
 	{
 		m_tLastRecvKeepAlive = GetMSTime(); // 保存这一次的注册的时间
+		LOG_DEBUG("default","Recv proxyServer keepalive");
 		return 0;
 	}
 
@@ -322,6 +325,11 @@ int CDBCtrl::CheckAndDispatchInputMsg()
         m_stProxySvrdCon.GetSocket()->RecvData();  // 接收数据到 m_abyRecvBuffer
         while(1)
         {
+            if (!m_stProxySvrdCon.GetSocket()->HasReadData())
+            {
+                break;
+            }
+
             nTmpCodeLength = sizeof(abyCodeBuf)/* - sizeof(int)*/;
             // 将单条消息接收到 abyCodeBuf
             if(!(m_stProxySvrdCon.GetSocket()->GetOneCode(nTmpCodeLength, (BYTE *)&abyCodeBuf/*[sizeof(int)]*/) > 0))

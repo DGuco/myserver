@@ -468,8 +468,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 		if( m_iReadEnd == sizeof(m_abyRecvBuffer) )
 		{
 			LOG_ERROR( "default", "The recv buffer is full now(%d, %d), stop recv data, fd = %d.", m_iReadBegin, m_iReadEnd, m_iSocketFD);
-			iTempRet = ERR_RECV_NOBUFF;
-			break;
+            return ERR_RECV_NOBUFF;
 		}
 
         //接收数据，接受长度接受缓冲区剩余大小 sizeof(m_abyRecvBuffer) - m_iReadEnd
@@ -488,8 +487,7 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 			SockAddrToString(&stPeerAddr, szPeerAddr);
 			LOG_ERROR( "default", "recv error! RecvedBytes(%d) from %s , fd = %d, errno = %d.", iRecvedBytes, szPeerAddr, m_iSocketFD, errno);
 			Close();
-			iTempRet = ERR_RECV_REMOTE;
-			break;
+			return ERR_RECV_REMOTE;
 		}
 		//EAGAIN：套接字已标记为非阻塞，无数据可读
 		else if( errno != EAGAIN )
@@ -498,23 +496,17 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::RecvData()
 			SockAddrToString(&stPeerAddr, szPeerAddr);
 			LOG_ERROR( "default", "Error in read, %s, socket fd = %d, remote site %s.", strerror(errno), m_iSocketFD, szPeerAddr);
 			Close();
-			iTempRet = ERR_RECV_FALIED;
-			break;
+            return ERR_RECV_FALIED;
 		}
-        else
-        {
-            getpeername(m_iSocketFD, (struct sockaddr*)&stPeerAddr, &iPeerAddrLen);
-            SockAddrToString(&stPeerAddr, szPeerAddr);
-			LOG_ERROR( "default", "socket fd = %d, remote site %s. has no data read",m_iSocketFD, szPeerAddr);
-        }
 	} while( iRecvedBytes > 0 );
 
-	return iTempRet;
+    return iTempRet;
 }
 
 /**
   *函数名          : GetOneCode
   *功能描述        : 从读缓冲区读取一个数据包
+  * 返回值        : 0 数据不足继续接收 负 错误 正 成功
 **/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLength, BYTE *pCode, eByteMode emByte)
@@ -537,7 +529,8 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short &nCodeLeng
 
 	if( iDataLength <= 0 )
 	{
-		LOG_ERROR("default", "GetOneCode Failed : iDataLength(%d) <= 0.", iDataLength);
+		LOG_ERROR("default", "GetOneCode FaileD,m_iReadBegin = %d,m_iReadEnd = %d",
+                  m_iReadBegin,m_iReadEnd);
 		return 0;
 	}
 
@@ -849,13 +842,35 @@ void CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetCriticalData(int& iReadBegin,int
   *功能描述        : 是否有数据要发送
 **/
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPSocket<uiRecvBufLen, uiSendBufLen>::HasReserveData()
+bool CTCPSocket<uiRecvBufLen, uiSendBufLen>::HasReserveData()
 {
     {
         #ifdef _POSIX_MT_
             std::lock_guard<std::mutex> lock(m_stMutex);
         #endif
         if(m_iPostEnd - m_iPostBegin > 0)
+        {
+            return True;
+        }
+        else
+        {
+            return False;
+        }
+    }
+}
+
+/**
+  *函数名          : HasReadData
+  *功能描述        : 是否有数据可读
+**/
+template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
+bool CTCPSocket<uiRecvBufLen, uiSendBufLen>::HasReadData()
+{
+    {
+#ifdef _POSIX_MT_
+        std::lock_guard<std::mutex> lock(m_stMutex);
+#endif
+        if(m_iReadEnd - m_iReadBegin > 0)
         {
             return True;
         }
