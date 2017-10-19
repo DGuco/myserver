@@ -13,12 +13,14 @@
 **/
 int CMyTCPConn::EstConn(int iAcceptFD)
 {
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
-	int iTempRet = 0;
-	iTempRet = GetSocket()->Accept(iAcceptFD);
-	m_iConnState = ENTITY_OFF;
+    int iTempRet = 0;
+    iTempRet = GetSocket()->Accept(iAcceptFD);
+    {
+        #ifdef _POSIX_MT_
+                std::lock_guard<std::mutex> guard(m_stMutex);
+        #endif
+        m_iConnState = ENTITY_OFF;
+    }
 	return iTempRet;
 }
 
@@ -26,19 +28,18 @@ int CMyTCPConn::EstConn(int iAcceptFD)
   *函数名          : IsConnCanRecv
   *功能描述        : 检测连接是否准备好接受数据
 **/
-int CMyTCPConn::IsConnCanRecv()
+bool CMyTCPConn::IsConnCanRecv()
 {
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
+    bool iTmpRet;
     if (GetSocket()->GetSocketFD() > 0 && GetSocket()->GetStatus() == tcs_connected)
     {
-        return  True;
+        iTmpRet  = True;
     }
     else
     {
-        return False;
+        iTmpRet =  False;
     }
+    return iTmpRet;
 }
 /**
   *函数名          : RegToCheckSet
@@ -46,9 +47,6 @@ int CMyTCPConn::IsConnCanRecv()
 **/
 int CMyTCPConn::RegToCheckSet(fd_set *pCheckSet) {
     int iTmpRet = 0;
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
     iTmpRet = GetSocket()->AddToCheckSet(pCheckSet);
 	return iTmpRet;
 }
@@ -59,9 +57,6 @@ int CMyTCPConn::RegToCheckSet(fd_set *pCheckSet) {
 **/
 int CMyTCPConn::IsFDSetted(fd_set *pCheckSet) {
 	int iTmpRet = 0;
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
 	// 查看该套接字的FD是否在套接字集合中
 	iTmpRet = GetSocket()->IsFDSetted(pCheckSet);
 	return iTmpRet;
@@ -74,10 +69,7 @@ int CMyTCPConn::IsFDSetted(fd_set *pCheckSet) {
 int CMyTCPConn::RecvAllData()
 {
 	int iTmpRet = 0;
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
-	iTmpRet =  GetSocket()->RecvData();
+    iTmpRet =  GetSocket()->RecvData();
 	return iTmpRet;
 }
 
@@ -87,9 +79,6 @@ int CMyTCPConn::RecvAllData()
 **/
 int CMyTCPConn::GetOneCode(short &nCodeLength, BYTE *pCode)
 {
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
 	return GetSocket()->GetOneCode((unsigned short int &)nCodeLength, pCode);
 }
 
@@ -100,9 +89,6 @@ int CMyTCPConn::GetOneCode(short &nCodeLength, BYTE *pCode)
 int CMyTCPConn::SendCode(short nCodeLength, BYTE *pCode, int iFlag /* = FLG_CONN_IGNORE */)
 {
 	int iTmpRet = 0;
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
     //无效的socket连接，直接返回
     if (GetEntityID() < 0 || GetEntityID() < 0)
 	{
@@ -161,10 +147,12 @@ int CMyTCPConn::CleanBlockQueue(int iQueueLength)
 **/
 int CMyTCPConn::SetConnState(int iConnState)
 {
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
-    m_iConnState = iConnState;
+    {
+        #ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> guard(m_stMutex);
+        #endif
+        m_iConnState = iConnState;
+    }
 	return 0;
 }
 
@@ -174,10 +162,15 @@ int CMyTCPConn::SetConnState(int iConnState)
 **/
 bool CMyTCPConn::IsStateOn()
 {
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
-	return (m_iConnState == ENTITY_ON);
+    bool isOn;
+    {
+        #ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> guard(m_stMutex);
+        #endif
+        isOn = (m_iConnState == ENTITY_ON);
+    }
+
+	return isOn;
 }
 
 /**
@@ -185,10 +178,13 @@ bool CMyTCPConn::IsStateOn()
 **/
 int CMyTCPConn::SetLastKeepalive(time_t tNow)
 {
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
-    m_tLastKeepalive = tNow;
+    {
+        #ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> guard(m_stMutex);
+        #endif
+        m_tLastKeepalive = tNow;
+    }
+
 	return 0;
 }
 
@@ -198,10 +194,12 @@ int CMyTCPConn::SetLastKeepalive(time_t tNow)
 time_t CMyTCPConn::GetLastKeepalive()
 {
     time_t  tTime = 0;
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> guard(m_stMutex);
-#endif
-    tTime = m_tLastKeepalive;
+    {
+        #ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> guard(m_stMutex);
+        #endif
+        tTime = m_tLastKeepalive;
+    }
 	return tTime;
 }
 

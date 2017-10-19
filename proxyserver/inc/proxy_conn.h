@@ -51,7 +51,7 @@ public:
     //建立连接
     int EstConn(int iAcceptFD);
     //连接是否可以接收数据
-    int IsConnCanRecv();
+	bool IsConnCanRecv();
 	//把socket添加到select集合中
     int RegToCheckSet(fd_set *pCheckSet);
 	//判断socket是否在select集合和从

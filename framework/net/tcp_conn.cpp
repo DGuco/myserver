@@ -12,7 +12,8 @@ CTCPSocket<uiRecvBufLen, uiSendBufLen>::CTCPSocket()
 	m_iStatus = tcs_closed;
 	m_iReadBegin = 0;
 	m_iReadEnd = 0;
-	m_iPostBegin = m_iPostEnd = 0;
+	m_iPostBegin = 0;
+    m_iPostEnd = 0;
 }
 
 /**
@@ -282,6 +283,9 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::CheckNoblockConnecting(int nto)
 		return -7;
 	}
 
+#ifdef _POSIX_MT_
+    std::lock_guard<std::mutex> lock(m_stMutex);
+#endif
 	m_iReadBegin = m_iReadEnd = 0;
 	m_iPostBegin = m_iPostEnd = 0;
 	m_iStatus = tcs_connected;
@@ -345,23 +349,25 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Accept(int iAcceptFD)
 	{
 		return -1;
 	}
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
-	if( m_iSocketFD > 0 && m_iStatus == tcs_connected )
-	{
-		LOG_ERROR( "default", "Warning, another connection request from remote, close the previous(%d).", m_iSocketFD);
-		Close();
-		iTempRet = -2;
-	}
+    {
+		#ifdef _POSIX_MT_
+			std::lock_guard<std::mutex> lock(m_stMutex);
+		#endif
+		if( m_iSocketFD > 0 && m_iStatus == tcs_connected )
+		{
+			LOG_ERROR( "default", "Warning, another connection request from remote, close the previous(%d).", m_iSocketFD);
+			Close();
+			iTempRet = -2;
+		}
 
-	m_iSocketFD = iAcceptFD;
-	m_iSocketType = sot_conn;
-	m_iStatus = tcs_connected;
-	m_iReadBegin = 0;
-	m_iReadEnd = 0;
-	m_iPostBegin = m_iPostEnd = 0;
-	SetNBlock( m_iSocketFD );
+		m_iSocketFD = iAcceptFD;
+		m_iSocketType = sot_conn;
+		m_iStatus = tcs_connected;
+		m_iReadBegin = 0;
+		m_iReadEnd = 0;
+		m_iPostBegin = m_iPostEnd = 0;
+		SetNBlock( m_iSocketFD );
+    }
 
 	return iTempRet;
 }
@@ -373,17 +379,17 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Accept(int iAcceptFD)
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::Close()
 {
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
-	if( m_iSocketFD > 0 )
-	{
-		close(m_iSocketFD);
-	}
-
-	m_iSocketFD = -1;
-	m_iStatus = tcs_closed;
-
+    {
+        #ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> lock(m_stMutex);
+        #endif
+        if( m_iSocketFD > 0 )
+        {
+            close(m_iSocketFD);
+        }
+        m_iSocketFD = -1;
+        m_iStatus = tcs_closed;
+    }
 	return 0;
 }
 
@@ -395,10 +401,12 @@ template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetSocketFD()
 {
 	int iTmpFD = -1;
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
-	iTmpFD = m_iSocketFD;
+    {
+		#ifdef _POSIX_MT_
+			std::lock_guard<std::mutex> lock(m_stMutex);
+		#endif
+        iTmpFD = m_iSocketFD;
+    }
 	return iTmpFD;
 }
 
@@ -410,10 +418,13 @@ template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetStatus()
 {
 	int iTmpStatus = tcs_closed;
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
-	iTmpStatus = m_iStatus;
+	{
+		#ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> lock(m_stMutex);
+		#endif
+		iTmpStatus = m_iStatus;
+	}
+
 	return iTmpStatus;
 }
 
@@ -754,18 +765,19 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::AddToCheckSet(fd_set *pCheckSet)
 		return -1;
 	}
 
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
-
-	if( m_iSocketFD > 0 && m_iStatus == tcs_connected )
 	{
-		FD_SET( m_iSocketFD, pCheckSet );
-	}
-	else if( m_iSocketFD > 0 )
-	{
-		Close();
-		iTempRet = -2;
+		#ifdef _POSIX_MT_
+				std::lock_guard<std::mutex> lock(m_stMutex);
+		#endif
+		if( m_iSocketFD > 0 && m_iStatus == tcs_connected )
+		{
+			FD_SET( m_iSocketFD, pCheckSet );
+		}
+		else if( m_iSocketFD > 0 )
+		{
+			Close();
+			iTempRet = -2;
+		}
 	}
 
 	return iTempRet;
@@ -785,18 +797,19 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::IsFDSetted(fd_set *pCheckSet)
 		return False;
 	}
 
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
-
-	if( m_iSocketFD > 0 && m_iStatus == tcs_connected )
-	{
-		iTempRet = FD_ISSET( m_iSocketFD, pCheckSet );
-	}
-	else
-	{
-		iTempRet = False;
-	}
+    {
+        #ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> lock(m_stMutex);
+        #endif
+        if( m_iSocketFD > 0 && m_iStatus == tcs_connected )
+        {
+            iTempRet = FD_ISSET( m_iSocketFD, pCheckSet );
+        }
+        else
+        {
+            iTempRet = False;
+        }
+    }
 
 	return iTempRet;
 }
@@ -820,13 +833,15 @@ int CTCPSocket<uiRecvBufLen, uiSendBufLen>::SetNBlock(int iSock)
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 void CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetCriticalData(int& iReadBegin,int& iReadEnd, int& iPostBegin, int& iPostEnd)
 {
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
-	iReadBegin = m_iReadBegin;
-	iReadEnd = m_iReadEnd;
-	iPostBegin = m_iPostBegin;
-	iPostEnd = m_iPostEnd;
+    {
+        #ifdef _POSIX_MT_
+                std::lock_guard<std::mutex> lock(m_stMutex);
+        #endif
+        iReadBegin = m_iReadBegin;
+        iReadEnd = m_iReadEnd;
+        iPostBegin = m_iPostBegin;
+        iPostEnd = m_iPostEnd;
+    }
 }
 
 /**
@@ -836,17 +851,19 @@ void CTCPSocket<uiRecvBufLen, uiSendBufLen>::GetCriticalData(int& iReadBegin,int
 template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
 int CTCPSocket<uiRecvBufLen, uiSendBufLen>::HasReserveData()
 {
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
-	if(m_iPostEnd - m_iPostBegin > 0)
-	{
-		return True;
-	}
-	else
-	{
-		return False;
-	}
+    {
+        #ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> lock(m_stMutex);
+        #endif
+        if(m_iPostEnd - m_iPostBegin > 0)
+        {
+            return True;
+        }
+        else
+        {
+            return False;
+        }
+    }
 }
 
 /**

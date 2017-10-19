@@ -61,23 +61,25 @@ bool CProxyHandle::IsToBeBlocked()
 		return true;
 	}
 
-// 该过程需要在线程锁内完成
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> guard(CProxyCtrl::stLinkMutex[m_eHandleType]);
-#endif
+    {
+        // 该过程需要在线程锁内完成
+        #ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> guard(CProxyCtrl::stLinkMutex[m_eHandleType]);
+        #endif
 
-	//检查当前线程的所有连接是否可读
-	CMyTCPConn* tcpConn = (CMyTCPConn*) m_pInfo->GetHead();
-	while(tcpConn != NULL)
-	{
-        //如果有一个连接可读，则唤醒改线程
-		if (tcpConn->IsConnCanRecv())
-		{
-			iRet = false;
-			break;
-		}
-		tcpConn = (CMyTCPConn*) tcpConn->GetNext();
-	}
+        //检查当前线程的所有连接是否可读
+        CMyTCPConn* tcpConn = (CMyTCPConn*) m_pInfo->GetHead();
+        while(tcpConn != NULL)
+        {
+            //如果有一个连接可读，则唤醒改线程
+            if (tcpConn->IsConnCanRecv())
+            {
+                iRet = false;
+                break;
+            }
+            tcpConn = (CMyTCPConn*) tcpConn->GetNext();
+        }
+    }
 
 	return iRet;
 }

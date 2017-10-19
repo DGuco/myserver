@@ -47,14 +47,15 @@ int CProxyCtrl::Initialize()
 CMyTCPConn* CProxyCtrl::GetConnByKey(int iKey)
 {
 	CMyTCPConn* tcpConn = NULL;
-#ifdef _POSIX_MT_
-	std::lock_guard<std::mutex> guard(stMutex[MUTEX_HASHMAP]);
-#endif
-
-	auto iter = m_mapConns.find(iKey);
-	if (iter != m_mapConns.end())
 	{
-		tcpConn = iter->second;
+		#ifdef _POSIX_MT_
+			std::lock_guard<std::mutex> guard(stMutex[MUTEX_HASHMAP]);
+		#endif
+		auto iter = m_mapConns.find(iKey);
+		if (iter != m_mapConns.end())
+		{
+			tcpConn = iter->second;
+		}
 	}
 	return tcpConn;
 }
@@ -159,8 +160,9 @@ int CProxyCtrl::InsertConnIntoMap(CMyTCPConn* pConn, int iIndex)
 
     //生成key
     int iKey = MakeConnKey(pConn->GetEntityType(),pConn->GetEntityID());
+
 #ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> guard(stMutex[MUTEX_HASHMAP]);
+    std::unique_lock<std::mutex> mapMute(stMutex[MUTEX_HASHMAP]);
 #endif
     //超过最大连接数
     if (m_mapConns.size() > MAX_CONNS_NUM)
@@ -171,11 +173,15 @@ int CProxyCtrl::InsertConnIntoMap(CMyTCPConn* pConn, int iIndex)
     else
     {
         m_mapConns.insert(std::make_pair(iKey,pConn));
+        mapMute.unlock();
         m_stHandleInfos[iIndex].miConnNum++;
-#ifdef _POSIX_MT_
-        std::lock_guard<std::mutex> guard(stLinkMutex[iIndex]);
-#endif
-        m_stHandleInfos[iIndex].mLinkerInfo.insert(pConn);
+
+        {
+            #ifdef _POSIX_MT_
+                std::lock_guard<std::mutex> guard(stLinkMutex[iIndex]);
+            #endif
+            m_stHandleInfos[iIndex].mLinkerInfo.insert(pConn);
+        }
         LOG_INFO("default", "insert conn(key=%d) into m_mapConns succeed.", iKey);
     }
 
@@ -195,13 +201,21 @@ int CProxyCtrl::EraseConnFromMap(CMyTCPConn* pConn, int iIndex)
 
     //生成key
     int iKey = MakeConnKey(pConn->GetEntityType(),pConn->GetEntityID());
-#ifdef _POSIX_MT_
-    std::lock_guard<std::mutex> guard(stMutex[MUTEX_HASHMAP]);
-#endif
-    m_mapConns.erase(iKey);
+    {
+        #ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> guard(stMutex[MUTEX_HASHMAP]);
+        #endif
+        m_mapConns.erase(iKey);
+    }
     LOG_INFO("default", "erase conn(key=%d) from m_mapConns.", iKey);
     m_stHandleInfos[iIndex].miConnNum--;
-    m_stHandleInfos[iIndex].mLinkerInfo.erase(pConn);
+    {
+        #ifdef _POSIX_MT_
+            std::lock_guard<std::mutex> guard(stLinkMutex[iIndex]);
+        #endif
+        m_stHandleInfos[iIndex].mLinkerInfo.erase(pConn);
+    }
+
     return 0;
 }
 
@@ -520,9 +534,9 @@ int CProxyCtrl::CheckRoutines()
             std::lock_guard<std::mutex> guard(stLinkMutex[i]);
 #endif
             CMyTCPConn* tpConn = (CMyTCPConn*) m_stHandleInfos[i].mLinkerInfo.GetHead();
-            while (tpConn != NULL)
+            while (tpConn != nullptr)
             {
-                if (tpConn->IsStateOn() == false || (tCurrentTime - tpConn->GetLastKeepalive() >= CHECK_TIMEOUT_SECONDS))
+                if (!tpConn->IsStateOn() || (tCurrentTime - tpConn->GetLastKeepalive() >= CHECK_TIMEOUT_SECONDS))
                 {
                     // 连接已改为关闭状态或者keepalive超时
                     tpConn = RecycleUnuseConn(tpConn, i);
