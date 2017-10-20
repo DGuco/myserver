@@ -271,8 +271,8 @@ int CDBHandle::Run()
 		}
 
 		// 将解析出的消息头和消息体分别存放在 m_stCurrentProxyHead stTempMsg
-		int tRet = ServerCommEngine::ConvertStreamToMsg( (BYTE*)(abyCodeBuf+sizeof(int)),
-                                                         nTempCodeLength-sizeof(int),
+		int tRet = ServerCommEngine::ConvertStreamToMsg( (BYTE*)(abyCodeBuf/*+sizeof(int)*/),
+                                                         nTempCodeLength/*-sizeof(int)*/,
                                                          &stTempMsg,
                                                          mMsgFactory);
         CProxyHead tmpProxyHead = stTempMsg.msghead();

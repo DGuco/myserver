@@ -449,11 +449,11 @@ int CDBCtrl::RoutineCheck()
 
 int CDBCtrl::GetThisRoundHandle()
 {
-	int tWhich = m_which_handle++ ;
-	if ( tWhich >= MAXHANDLENUMBER )
+	m_which_handle++ ;
+	if ( m_which_handle >= MAXHANDLENUMBER )
 	{
 		m_which_handle = 0;
 	}
 
-	return tWhich;
+	return m_which_handle;
 }
