@@ -450,7 +450,7 @@ int CDBCtrl::RoutineCheck()
 int CDBCtrl::GetThisRoundHandle()
 {
 	int tWhich = m_which_handle++ ;
-	if ( tWhich >= MAX_HANDLE_SZ )
+	if ( tWhich >= MAXHANDLENUMBER )
 	{
 		m_which_handle = 0;
 	}

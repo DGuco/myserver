@@ -72,7 +72,7 @@ private:
 	
 	int m_iRunFlag;	// 运行标志
     CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH> m_stProxySvrdCon;
-    CDBHandle *	m_apHandles[MAXHANDLENUMBER];
+    CDBHandle *m_apHandles[MAXHANDLENUMBER];
 	int		m_which_handle;								// 收到消息放到哪个线程
     time_t	m_tLastSendKeepAlive;		// 最后发送proxy心跳消息时间
     time_t	m_tLastRecvKeepAlive;		// 最后接收proxy心跳消息时间
