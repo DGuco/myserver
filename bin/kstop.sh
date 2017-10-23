@@ -4,7 +4,7 @@ user=$USER
 curpwd=`pwd`
 curpwd=${curpwd%/*}
 
-target='proxysvrd'
+target='proxyserver'
 echo "Stop $target"
 pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
 echo "pid $pids"
@@ -19,7 +19,7 @@ do
 	fi
 done
 
-target='gamesvrd'
+target='gameserver'
 echo "Stop $target"
 pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
 echo "pid $pids"
@@ -34,22 +34,7 @@ do
 	fi
 done
 
-target='offlinesvrd'
-echo "Stop $target"
-pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
-echo "pid $pids"
-for pid in $pids
-do
-	svrdpwd=`ls -l /proc/$pid/exe|awk '{print $11}'`
-	svrdpwd=${svrdpwd%/*}
-	svrdpwd=${svrdpwd%/*}
-	svrdpwd=${svrdpwd%/*}
-	if [ $curpwd = $svrdpwd ] ; then
- 		kill -9 $pid
-	fi
-done
-
-target='dbsvrd'
+target='dbserver'
 echo "Stop $target"
 pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
 echo "pid $pids"
@@ -66,67 +51,7 @@ do
 	fi
 done
 
-target='worldsvrd'
-echo "Stop $target"
-pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
-echo "pid $pids"
-for pid in $pids
-do
-	svrdpwd=`ls -l /proc/$pid/exe|awk '{print $11}'`
-	svrdpwd=${svrdpwd%/*}
-	svrdpwd=${svrdpwd%/*}
-	svrdpwd=${svrdpwd%/*}
-	if [ $curpwd = $svrdpwd ] ; then
- 		kill -9 $pid
-	fi
-done
-
-target='tcpsvrd'
-echo "Stop $target"
-pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
-echo "pid $pids"
-for pid in $pids
-do
-	svrdpwd=`ls -l /proc/$pid/exe|awk '{print $11}'`
-	svrdpwd=${svrdpwd%/*}
-	svrdpwd=${svrdpwd%/*}
-	svrdpwd=${svrdpwd%/*}
-	if [ $curpwd = $svrdpwd ] ; then
- 		kill -9 $pid
-	fi
-done
-
-target='websvrd'
-echo "Stop $target"
-pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
-echo "pid $pids"
-for pid in $pids
-do
-	svrdpwd=`ls -l /proc/$pid/exe|awk '{print $11}'`
-	svrdpwd=${svrdpwd%/*}
-	svrdpwd=${svrdpwd%/*}
-	svrdpwd=${svrdpwd%/*}
-	if [ $curpwd = $svrdpwd ] ; then
- 		kill -9 $pid
-	fi
-done
-
-target='offlinesvrd'
-echo "Stop $target"
-pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
-echo "pid $pids"
-for pid in $pids
-do
-	svrdpwd=`ls -l /proc/$pid/exe|awk '{print $11}'`
-	svrdpwd=${svrdpwd%/*}
-	svrdpwd=${svrdpwd%/*}
-	svrdpwd=${svrdpwd%/*}
-	if [ $curpwd = $svrdpwd ] ; then
- 		kill -9 $pid
-	fi
-done
-
-target='logsvrd'
+target='gateserver'
 echo "Stop $target"
 pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
 echo "pid $pids"

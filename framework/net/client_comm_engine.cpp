@@ -30,7 +30,7 @@ void ClientCommEngine::CopyMesHead(MesHead* from,MesHead* to)
 }
 
 int ClientCommEngine::ParseClientStream(const void** pBuff,
-                                        int nRecvAllLen,
+                                        int& nRecvAllLen,
                                         MesHead* pHead,
                                         MSG_LEN_TYPE& unTmpDataLen)
 {
@@ -62,6 +62,9 @@ int ClientCommEngine::ParseClientStream(const void** pBuff,
         MY_ASSERT_STR(0,return 1, "Receive client part data left len = %d,real len = %d",nRecvAllLen,unRecvLen);
     }
 
+    //总长度减去当前数据包的从长度
+    nRecvAllLen -= unRecvLen;
+
     //数据指针向后移动指向未读取位置
     pTemp += sizeof(MSG_LEN_TYPE);
     unTmpUseLen += sizeof(MSG_LEN_TYPE);
@@ -83,7 +86,7 @@ int ClientCommEngine::ParseClientStream(const void** pBuff,
     memcpy(&tTmpCmd,(void*)pTemp,sizeof(MSG_CMD_TYPE));
     tTmpCmd = ntohs(tTmpCmd);
     pTemp += sizeof(MSG_CMD_TYPE);
-    unTmpUseLen += sizeof(MSG_CMD_TYPE);  
+    unTmpUseLen += sizeof(MSG_CMD_TYPE);
 
     pHead->set_serial(tTmpSerial);
     pHead->set_seq(tTmpSeq);

@@ -1,15 +1,15 @@
 #!/bin/bash
 user=$USER
-export TRITON_HOME=/home/kay/kaige/trunk
+export TRITON_HOME=/home/dguco/data/cpppro/myserver
 
 #服务正常,监控退出
-(( `ps -ef| grep svrd |grep -w $USER| grep -v grep |wc -l ` == 6 )) && exit
+(( `ps -ef| grep server |grep -w $USER| grep -v grep |wc -l ` == 6 )) && exit
 
 #停服状态,不进行监控,退出
-(( `ps -ef | grep svrd | grep -v grep |wc -l` == 0 )) && exit
+(( `ps -ef | grep server | grep -v grep |wc -l` == 0 )) && exit
 
 #如果有其他monitoring.sh脚本在执行,不进行监控,退出
-#((`ps -ef | grep  "monitoring.sh" | grep -v grep |wc -l` > 2 )) && exit
+((`ps -ef | grep  "monitoring.sh" | grep -v grep |wc -l` > 2 )) && exit
 name=`basename $0`
 pidFile=/tmp/${name/.sh/.pid}
 if [ -f $pidFile ]
@@ -39,11 +39,11 @@ ps -ef | grep -E "shutdown.sh|stop.sh|restart.sh|start.sh" | grep -vq grep && ex
 #5）正常启动所有服务器start.sh
 checkProxysvrd()
 {
-        svrd="proxysvrd"
-        if ! ps -ef | grep $svrd | grep -w $user | grep -vq grep
+        svrd="proxyserver"
+        if ! ps -ef | grep server | grep -w $user | grep -vq grep
         then
-                target='proxysvrd'
-                cd $TRITON_HOME/proxyserver/bin
+                target='proxyserver'
+                cd $TRITON_HOME/bin
                 ##1) 启动proxysvrd -D
                 ./$target
 echo "`date +"%F %T"` ...$target..."
@@ -67,11 +67,11 @@ echo "`date +"%F %T"` ...$target..."
 #5）正常启动所有服务器start.sh
 checkDBsvrd()
 {
-        svrd="dbsvrd"
+        svrd="dbserver"
         if ! ps -ef | grep $svrd | grep -w $user | grep -vq grep
         then
-                target='dbsvrd'
-                cd $TRITON_HOME/dbserver/bin
+                target='dbserver'
+                cd $TRITON_HOME/bin
                 ##1) 启动dbsvrd -D
                 ./$target
 echo "`date +"%F %T"` ...$target..."
@@ -101,15 +101,15 @@ checkGamesvrd()
 		export SC_PIPE_ID=2
 		export CS_PIPE_ID=3
 		export SL_PIPE_ID=4
-		target='gamesvrd -Resume'
-		cd $TRITON_HOME/gameserver/bin
+		target='gameserver -Resume'
+		cd $TRITON_HOME/bin
 		##1）scenesvrd -Resume
 		./$target
 		echo "`date +"%F %T"` ...$target..."
 		##2）等待gamesvrd自动退出
 		wait
 		##3）启动gamesvrd
-		target='gamesvrd'
+		target='gameserver'
 		./$target
 		exit
 	fi
@@ -117,39 +117,39 @@ checkGamesvrd()
 
 #监控logsvrd,websvrd
 #挂掉,直接重启  -D
-checkSvrds()
-{
-	svrds="logsvrd websvrd"
-	for svrd in $svrds
-	do
-		if ! ps -ef | grep $svrd | grep -w $user | grep -vq grep 
-		then
-			case $svrd in 
-				logsvrd)
-					export PIPE_ID=1
-					export SC_PIPE_ID=2
-					export CS_PIPE_ID=3
-					export SL_PIPE_ID=4
-					target='logsvrd'
-					cd $TRITON_HOME/logserver/bin
-					./$target
-					echo "`date +"%F %T"` ...$target..."
-					sleep 3
-					;; 
-				websvrd)
-					target='websvrd'
-					cd $TRITON_HOME/webserver/bin
-					nohup ./$target &
-					echo "`date +"%F %T"` ...$target..."
-					sleep 3
-					;; 
-			esac
-		fi
-	done
-}
+#checkSvrds()
+#{
+#	svrds="logsvrd websvrd"
+#	for svrd in $svrds
+#	do
+#		if ! ps -ef | grep $svrd | grep -w $user | grep -vq grep
+#		then
+#			case $svrd in
+#				logsvrd)
+#					export PIPE_ID=1
+#					export SC_PIPE_ID=2
+#					export CS_PIPE_ID=3
+#					export SL_PIPE_ID=4
+#					target='logsvrd'
+#					cd $TRITON_HOME/logserver/bin
+#					./$target
+#					echo "`date +"%F %T"` ...$target..."
+#					sleep 3
+#					;;
+#				websvrd)
+#					target='websvrd'
+#					cd $TRITON_HOME/webserver/bin
+#					nohup ./$target &
+#					echo "`date +"%F %T"` ...$target..."
+#					sleep 3
+#					;;
+#			esac
+#		fi
+#	done
+#}
 
 checkProxysvrd
 checkDBsvrd
-checkSvrds
+#checkSvrds
 checkGamesvrd
 rm -f $pidFile

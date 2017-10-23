@@ -2,7 +2,7 @@
 
 user=$USER
 
-target='gamesvrd'
+target='gameserver'
 stoptime=`date +%s`
 pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
 for pid in $pids

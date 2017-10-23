@@ -2,7 +2,7 @@
 
 user=$USER
 
-target='proxysvrd'
+target='proxyserver'
 echo "Stop $target"
 pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
 echo "pid $pids"
@@ -11,7 +11,7 @@ do
 	kill -9 $pid
 done
 
-target='gamesvrd'
+target='gameserver'
 echo "Stop $target"
 pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
 echo "pid $pids"
@@ -20,7 +20,7 @@ do
 	kill -9 $pid
 done
 
-target='dbsvrd'
+target='dbserver'
 echo "Stop $target"
 pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
 echo "pid $pids"
@@ -29,7 +29,7 @@ do
 	kill -9 $pid
 done
 
-target='gatesvrd'
+target='gateserver'
 echo "Stop $target"
 pids=`ps -ef | grep $target | grep -w $user | grep -v grep | awk '{print $2}'`
 echo "pid $pids"

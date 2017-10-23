@@ -20,7 +20,7 @@ public:
 	 * @return          0：成功 1：数据不完整继续接收  其他：错误
 	 */
 	static int ParseClientStream(const void** pBuff,
-                                    int nRecvAllLen,
+                                    int& nRecvAllLen,
                                     MesHead* pHead,
                                     MSG_LEN_TYPE & unTmpDataLen);
                       

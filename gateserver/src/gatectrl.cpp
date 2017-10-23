@@ -474,7 +474,7 @@ int CGateCtrl::RecvClientData(int iSocketFd)
     //客户端关闭连接
     if (iTmpRecvBytes <= 0)
     {
-        LOG_ERROR("default","Client[%s] close the tcp connection,socket id = %d,the client's port = ",
+        LOG_ERROR("default","Client[%s] close the tcp connection,socket id = %d,the client's port = %d",
             m_pSocketInfo->m_szClientIP,m_pSocketInfo->m_iSocket,m_pSocketInfo->m_iConnectedPort);
         ClearSocketInfo(Err_ClientClose);
         return -1;
@@ -494,6 +494,10 @@ int CGateCtrl::RecvClientData(int iSocketFd)
 
     while(1)
     {
+        if (nRecvAllLen <= 0)
+        {
+            break;
+        }
         //客户端上行数据长度(除去头部)
         MSG_LEN_TYPE unTmpDataLen = 0;
         MesHead tmpHead;
