@@ -694,9 +694,9 @@ int CGateCtrl::TcpWrite(int iSocket, char *pBuf, int iPackLen)
 **/
 void CGateCtrl::ClearSocketInfo(short enError)
 {
-    if ( TCP_SUCCESS == enError)
+    if ( TCP_SUCCESS != enError)
     {
-
+        DisConnect(enError);
     }
 
     //关闭socket
