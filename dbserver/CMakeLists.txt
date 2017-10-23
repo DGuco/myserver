@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(dbeserver)
+project(dbserver)
 add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX)
 
 set(SOURCE_FILES
@@ -39,6 +39,6 @@ link_directories(
         /usr/local/lib/
         ${CMAKE_SOURCE_DIR}/lib
 )
-add_executable(dbeserver ${SOURCE_FILES})
-target_link_libraries(dbeserver framework protobuf crypto mysqlclient)
+add_executable(dbserver ${SOURCE_FILES})
+target_link_libraries(dbserver framework protobuf crypto mysqlclient)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)
