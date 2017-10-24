@@ -54,6 +54,8 @@ public:
     CObj* GetObject(OBJ_ID iObjID);
     // 获取玩家
     CPlayer* GetPlayer(OBJ_ID ulPlayerid);
+    // 获取玩家
+    CPlayer* GetPlayerBySocket(int socket);
     // 删除玩家
     int DestroyPlayer(OBJ_ID iObjID);
     // 添加玩家
@@ -62,6 +64,7 @@ public:
     CObjectManager* GetPlayerManager();
 private:
     CObjectManager* m_pPlayerManager;
+    //key:玩家id value:玩家
     std::unordered_map<uint64,CPlayer*> m_mPlayerMap;
 };
 

@@ -27,6 +27,7 @@ int CSceneObjManager::Initialize()
 {
     m_pPlayerManager = new CObjectManager(EnObjType::OBJ_PLAYER_ENTRY);
     m_mPlayerMap.clear();
+    m_mSocketMap.clear();
     return 0;
 }
 
@@ -39,11 +40,7 @@ int CSceneObjManager::DestroyObject(OBJ_ID iObjID)
     {
         case EnObjType::OBJ_PLAYER_ENTRY :
         {
-            auto it = m_mPlayerMap.find(iObjID);
-            if (it != m_mPlayerMap.end()) {
-                delete it->second;
-            }
-            m_mPlayerMap.erase(iObjID);
+            MAP_SAFE_DELETE(m_mPlayerMap,iObjID);
             return 0;
         }
         default:
@@ -69,11 +66,7 @@ CObj* CSceneObjManager::GetObject(OBJ_ID iObjID)
     {
         case EnObjType::OBJ_PLAYER_ENTRY :
         {
-            auto it = m_mPlayerMap.find(iObjID);
-            if (it != m_mPlayerMap.end()) {
-                return it->second;
-            }
-            return NULL;
+            return MAP_SAFE_FIND(m_mPlayerMap,iObjID);
         }
         default:
         {
@@ -87,11 +80,7 @@ CObj* CSceneObjManager::GetObject(OBJ_ID iObjID)
 
 CPlayer* CSceneObjManager::GetPlayer(OBJ_ID ulPlayerid)
 {
-    auto it = m_mPlayerMap.find(ulPlayerid);
-    if (it != m_mPlayerMap.end()) {
-        return it->second;
-    }
-    return NULL;
+    return MAP_SAFE_FIND(m_mPlayerMap,ulPlayerid);
 }
 
 //删除玩家
