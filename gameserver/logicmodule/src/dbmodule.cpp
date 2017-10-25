@@ -4,7 +4,7 @@
 
 #include "../inc/dbmodule.h"
 #include "../../inc/gameserver.h"
-#include "../../inc/sceneobjmanager.h"
+#include "../../datamodule/inc/sceneobjmanager.h"
 #include "../../../framework/net/server_comm_engine.h"
 #include "../../../framework/message/player.pb.h"
 #include "../../../framework/message/dbmessage.pb.h"

@@ -2,7 +2,7 @@
 // Created by DGuco on 17-7-27.
 //
 #include "../datamodule/inc/player.h"
-#include "../inc/sceneobjmanager.h"
+#include "../datamodule/inc/sceneobjmanager.h"
 #include "../inc/messagedispatcher.h"
 #include "../inc/gameserver.h"
 #include "../../framework/base/performance.h"

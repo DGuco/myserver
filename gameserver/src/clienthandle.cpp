@@ -14,7 +14,7 @@
 #include "../../framework/mem/sharemem.h"
 #include "../../framework/net/client_comm_engine.h"
 #include "../../framework/message/player.pb.h"
-#include "../inc/sceneobjmanager.h"
+#include "../datamodule/inc/sceneobjmanager.h"
 
 CClientHandle::CClientHandle()
 {

@@ -1,12 +1,13 @@
 //
 //  coremodule.h
-//  coremodule.h类头文件
+//  coremodule.h类头文件 服务器全局的逻辑，非玩家个人的逻辑
 //  Created by DGuco on 17-3-1.
 //  Copyright © 2017年 DGuco. All rights reserved.
 //
 #ifndef SERVER_COREMODULE_H
 #define SERVER_COREMODULE_H
 
+#include <unordered_map>
 #include "logicmodule.h"
 #include "../../../framework/base/servertool.h"
 #include "../../../framework/const/dblogintype.h"
@@ -41,7 +42,6 @@ public:
     // 玩家登陆游戏申请
     void OnMsgUserLoginRequest(CMessage *pMsg);
     void OnMsgPlayerLoginRequest(CMessage *pMsg);
-
 };
 
 #endif //SERVER_COREMODULE_H

@@ -1,19 +1,17 @@
 #include "../inc/coremodule.h"
 #include "../inc/dbmodule.h"
 #include "../../../framework/message/player.pb.h"
-#include "../../inc/sceneobjmanager.h"
+#include "../../datamodule/inc/sceneobjmanager.h"
 #include "../inc/modulemanager.h"
 
 template<> CCoreModule* CSingleton<CCoreModule>::spSingleton = NULL;
 
 CCoreModule::CCoreModule()
 {
-
 }
 
 CCoreModule::~CCoreModule()
 {
-
 }
 
 int CCoreModule::Initialize()

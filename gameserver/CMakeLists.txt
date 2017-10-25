@@ -8,12 +8,12 @@ set(SOURCE_FILES
         inc/clienthandle.h
         inc/messagefactory.h
         inc/messagedispatcher.h
-        inc/sceneobjmanager.h
+        datamodule/inc/sceneobjmanager.h
         src/gameserver.cpp
         src/clienthandle.cpp
         src/messagefactory.cpp
         src/messagedispatcher.cpp
-        src/sceneobjmanager.cpp
+        datamodule/src/sceneobjmanager.cpp
         datamodule/inc/player.h
         datamodule/inc/playerdata.h
         datamodule/inc/playerbase.h
