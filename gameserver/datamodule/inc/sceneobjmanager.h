@@ -61,7 +61,7 @@ public:
 private:
     CObjectManager* m_pPlayerManager;
     //key:玩家id value:玩家
-    std::unordered_map<uint64,CPlayer*> m_mPlayerMap;
+    std::unordered_map<OBJ_ID, CPlayer*> m_mPlayerMap;
     //key:在线玩家socket value:玩家id
     std::unordered_map<int,OBJ_ID> m_mSocketMap;
 };

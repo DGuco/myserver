@@ -12,6 +12,7 @@ public:
     ~CObjectManager();
     OBJ_ID  GetValidId();
 
+private:
     void SetLastUsedId(OBJ_ID m_ulLastUsedId);
     void SetLastGetTIme(time_t time);
 private:

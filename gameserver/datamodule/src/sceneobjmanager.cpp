@@ -41,7 +41,7 @@ int CSceneObjManager::DestroyPlayer(OBJ_ID iObjID)
 {
     auto it = m_mPlayerMap.find(iObjID);
     if (it != m_mPlayerMap.end()) {
-        MAP_SAFE_DELETE(m_mSocketMap,it->second->GetPlayerBase()->GetSocketInfoPtr()->m_iSocket);
+        MAP_SAFE_DELETE(m_mSocketMap,it->second->GetPlayerBase()->GetSocket());
         delete it->second;
     }
     m_mPlayerMap.erase(iObjID);
@@ -53,7 +53,7 @@ void CSceneObjManager::AddNewPlayer(CPlayer *pPlayer)
         return;
     }
     m_mPlayerMap[pPlayer->GetPlayerId()] = pPlayer;
-    m_mSocketMap[pPlayer->GetPlayerBase()->GetSocketInfoPtr()->m_iSocket] = pPlayer->GetPlayerId();
+    m_mSocketMap[pPlayer->GetPlayerBase()->GetSocket()] = pPlayer->GetPlayerId();
 }
 
 CObjectManager* CSceneObjManager::GetPlayerManager()

@@ -15,7 +15,7 @@
 //即每秒可生成16777216个同类型对象(足够了) (注意:服务器时间不能往回调)
 #define OBJ_ID_BITS (24)
 #define INVALID_OBJ_ID	0
-typedef __uint64_t  OBJ_ID;
+typedef unsigned long  OBJ_ID;
 
 //同一秒id范围
 #define OBJ_ID_START(type)			(((type) << OBJ_ID_BITS) + 1)

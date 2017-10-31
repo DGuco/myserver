@@ -24,8 +24,8 @@ OBJ_ID CObjectManager::GetValidId()
         m_ulLastUsedId++;
     }else
     {
-        m_tLastGetTime = timeNow;
-        m_ulLastUsedId = OBJ_ID_START(m_enObjType);
+        SetLastGetTIme(timeNow);
+        SetLastUsedId(OBJ_ID_START(m_enObjType));
     }
     if (m_ulLastUsedId > OBJ_ID_END(m_enObjType))
     {

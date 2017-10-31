@@ -118,6 +118,10 @@ public:
     void SetCreateTime(time_t v) {m_tCreateTime = v;}
     time_t GetCreateTime() {return m_tCreateTime;}
 
+    int GetSocket() {return m_SocketInfo.m_iSocket;}
+    int GetSocketCreateTime() { return  m_SocketInfo.m_tCreateTime;}
+    int GetLastActiveTime() {return m_SocketInfo.m_tLastActiveTime;}
+    int GetLoginTime() {return m_SocketInfo.m_tLoginTime;}
     // 帐号
     void SetAccount(const char* p)
     {
