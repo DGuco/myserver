@@ -5,6 +5,7 @@
 #include "../../framework/net/server_comm_engine.h"
 #include "../../framework/mem/codequeue.h"
 #include "../../framework/message/dbmessage.pb.h"
+#include "../../framework/base/base.h"
 #include "../inc/dbhandle.h"
 #include "../inc/dbctrl.h"
 #include "../inc/queryresultmysql.h"

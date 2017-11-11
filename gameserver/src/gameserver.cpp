@@ -113,11 +113,36 @@ int CGameServer::StartAllTimers()
 // 服务器间心跳检测
 void CGameServer::OnTimeCheckStateInServer(CTimerBase* pTimer)
 {
+    MY_ASSERT_LOG("default", pTimer != NULL, return);
+
+    time_t tTmpNow = GetMSTime();
+    // 检测服务器与proxy的连接状态，如果状态异常则重新连接，状态正常则发送心跳消息
+    CGameServer* pTmpGameServer = CGameServer::GetSingletonPtr();//		LOG_DEBUG("default", "in loop %d, size=%d.", i, pTmpGameServer->mConfig.gameconfig().proxyinfo_size());
+    if ((pTmpGameServer->m_ProxyClient.IsConnected() == false)
+        || pTmpGameServer->m_ProxyClient.IsTimeout(tTmpNow))
+    {
+        // 清除proxy已连接状态
+        CGameServer::GetSingletonPtr()->EraseServerState(CGameServer::ESS_CONNECTPROXY);
+        LOG_WARN("default", "[%s : %d : %s] mProxyClient maybe closed, current status(%d) .",
+                 __MY_FILE__, __LINE__, __FUNCTION__, pTmpGameServer->m_ProxyClient.GetStatus());
+        if (pTmpGameServer->Connect2Proxy() == true)
+        {
+            if (pTmpGameServer->Regist2Proxy() == true)
+            {
+                pTmpGameServer->m_ProxyClient.ResetTimeout(tTmpNow);
+            }
+        }
+        else
+        {
+            pTmpGameServer->SendKeepAlive2Proxy();
+        }
+    }
 }
 
 // perf日志打印
 void CGameServer::OnTimePerfLog(CTimerBase* pTimer)
 {
+
 }
 
 // 运行
@@ -225,7 +250,8 @@ bool CGameServer::SendMessageToDB(CProxyMessage* pMsg)
 // 通过消息ID获取模块类型
 int CGameServer::GetModuleClass(int iMsgID)
 {
-    return ((iMsgID >> 16) & 0xFF);
+//    return ((iMsgID >> 16) & 0xFF);
+    return iMsgID / 100;
 }
 
 

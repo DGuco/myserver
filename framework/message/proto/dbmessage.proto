@@ -28,7 +28,7 @@ enum BLOB
 message CMsgExecuteSqlRequest
 {
 	enum Msg{
-	    MsgID	= 0x00010001;
+	    MsgID	= 10001;
 	}
 	optional uint32 	LogicType 		= 1; 							// 业务逻辑类型
 	optional uint32		SessionID		= 2[default = 0]; 				// 会话ID
@@ -47,7 +47,7 @@ message CMsgExecuteSqlRequest
 message CMsgExecuteSqlResponse
 {
 	enum Msg{
-		MsgID	= 0x00010002;
+		MsgID	= 10002;
 	}
 	optional uint32 LogicType 		= 1; 							// 业务逻辑类型
 	optional uint32	SessionID		= 2; 							// 会话ID

@@ -3,6 +3,7 @@
 //
 #include "../inc/modulemanager.h"
 #include "../inc/coremodule.h"
+#include "../inc/dbmodule.h"
 
 template<> CModuleManager* CSingleton<CModuleManager>::spSingleton = NULL;
 
@@ -24,6 +25,8 @@ int CModuleManager::Initialize()
     //游戏主模块
     CCoreModule* pTmpCoreModule = new CCoreModule;
     RegisterModule(EModuleType::EMODULETYPE_PLAYER,pTmpCoreModule);
+    CDbModule* pTmpDbModule = new CDbModule;
+    RegisterModule(EModuleType::EMODULETYPE_DB,pTmpDbModule);
     return 0;
 }
 

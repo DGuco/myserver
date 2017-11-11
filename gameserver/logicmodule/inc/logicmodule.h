@@ -20,7 +20,7 @@ enum EModuleType
 //    EMODULETYPE_RESOURCE		= 4,	// 资源田模块
 //    EMODULETYPE_TRAIN		    = 5,	// 士兵训练模块
 //    EMODULETYPE_ITEM		    = 6,	// 道具模块
-
+    EMODULETYPE_DB              = 100,  // 数据模块
     EMODULETYPE_NUM						// 模块数量
 };
 

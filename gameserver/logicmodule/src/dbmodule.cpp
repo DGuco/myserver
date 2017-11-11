@@ -234,17 +234,18 @@ void CDbModule::FindOrCreateUserResponse(CSession *pSession, CMsgExecuteSqlRespo
     int iTmpRowCount = pMsgSql->rowcount();		// 行数
     int iTmpColCount = pMsgSql->colcount();		// 列数
 
-    // 必须对行数列数判断
-    if ( 1 == pMsgSql->resultcode() &&  emCol1 == iTmpColCount )
+    if ( 1 == pMsgSql->resultcode())
     {
-        OBJ_ID player_id = 0;	// 帐号
-        // 表示有返回结果
-        for(int i = 0; i < iTmpRowCount ; i++)
+        OBJ_ID player_id = -1;	// 帐号
+        //没有找到玩家
+        if (0 == iTmpRowCount || 0 == iTmpColCount)
         {
-            player_id = atol((char*)pMsgSql->fieldvalue( 0 + i * iTmpColCount ).c_str());
+            player_id = (OBJ_ID)CSceneObjManager::GetSingletonPtr()->GetPlayerManager()->GetValidId();
+        } else{
+            // 表示有返回结果
+            player_id = atol((char*)pMsgSql->fieldvalue( 0).c_str());
         }
-
-        if (player_id == 0)
+        if (player_id == -1)
         {
             player_id = (OBJ_ID)CSceneObjManager::GetSingletonPtr()->GetPlayerManager()->GetValidId();
         }
