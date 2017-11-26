@@ -14,12 +14,11 @@
 #include <sys/epoll.h>
 #include <string.h>
 #include <netinet/tcp.h>
+#include "commondef.h"
+#include "client_comm_engine.h"
+#include "codequeue.h"
+#include "sharemem.h"
 #include "../inc/gatectrl.h"
-#include "../../framework/const/commondef.h"
-#include "../../framework/net/client_comm_engine.h"
-#include "../../framework/mem/codequeue.h"
-#include "../../framework/mem/sharemem.h"
-#include "../../gameserver/inc/clienthandle.h"
 
 CGateCtrl::CGateCtrl()
 {

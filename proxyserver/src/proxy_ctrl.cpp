@@ -5,9 +5,9 @@
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 #include "../inc/proxy_ctrl.h"
-#include "../../framework/net/runflag.h"
-#include "../../framework/net/client_comm_engine.h"
-#include "../../framework/net/server_comm_engine.h"
+#include "runflag.h"
+#include "client_comm_engine.h"
+#include "server_comm_engine.h"
 
 extern CRunFlag g_byRunFlag;
 

@@ -5,8 +5,8 @@
  *  Author      : DGuco
  */
 
+#include "player.pb.h"
 #include "../inc/messagefactory.h"
-#include "../../framework/message/player.pb.h"
 
 // 静态缓冲区初始化
 unsigned char CMessageFactory::macMessageBuff[MAX_PACKAGE_LEN] = {0};

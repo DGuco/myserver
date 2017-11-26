@@ -6,8 +6,8 @@
 #ifndef SERVER_LOGIC_MODULE_H
 #define SERVER_LOGIC_MODULE_H
 
+#include "message.pb.h"
 #include "../../datamodule/inc/player.h"
-#include "../../../framework/message/message.pb.h"
 
 // 模块类型
 enum EModuleType

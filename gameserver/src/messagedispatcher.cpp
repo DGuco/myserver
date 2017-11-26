@@ -1,14 +1,14 @@
 //
 // Created by DGuco on 17-7-27.
 //
+#include "performance.h"
+#include "player.pb.h"
+#include "servertool.h"
+#include "../logicmodule/inc/coremodule.h"
 #include "../datamodule/inc/player.h"
 #include "../datamodule/inc/sceneobjmanager.h"
 #include "../inc/messagedispatcher.h"
 #include "../inc/gameserver.h"
-#include "../../framework/base/performance.h"
-#include "../../framework/message/player.pb.h"
-#include "../../framework/base/servertool.h"
-#include "../logicmodule/inc/coremodule.h"
 
 template<> CMessageDispatcher* CSingleton<CMessageDispatcher>::spSingleton = NULL;
 

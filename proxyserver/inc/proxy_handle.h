@@ -10,8 +10,8 @@
 
 #include <unordered_map>
 #include <bits/unordered_map.h>
-#include "../../framework/thread/mythread.h"
-#include "../../framework/json/config.h"
+#include "mythread.h"
+#include "config.h"
 #include "proxy_conn.h"
 
 enum EMHandleType {

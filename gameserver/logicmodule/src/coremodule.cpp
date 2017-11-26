@@ -1,8 +1,8 @@
+#include "player.pb.h"
 #include "../inc/coremodule.h"
 #include "../inc/dbmodule.h"
-#include "../../../framework/message/player.pb.h"
-#include "../../datamodule/inc/sceneobjmanager.h"
 #include "../inc/modulemanager.h"
+#include "../../datamodule/inc/sceneobjmanager.h"
 
 template<> CCoreModule* CSingleton<CCoreModule>::spSingleton = NULL;
 

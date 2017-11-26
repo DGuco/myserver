@@ -10,12 +10,12 @@
 
 #include <sys/epoll.h>
 #include "gatedef.h"
-#include "../../framework/net/tcp_conn.h"
-#include "../../framework/log/log.h"
-#include "../../framework/base/servertool.h"
-#include "../../framework/message/message.pb.h"
-#include "../../framework/base/base.h"
-#include "../../framework/json/config.h"
+#include "tcp_conn.h"
+#include "log.h"
+#include "servertool.h"
+#include "message.pb.h"
+#include "base.h"
+#include "config.h"
 
 #define MAX_ERRNO_NUM 10
 #define READSTAT      0

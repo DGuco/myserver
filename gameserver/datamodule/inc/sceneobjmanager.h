@@ -8,9 +8,9 @@
 #include <cstddef>
 #include <unordered_map>
 #include "player.h"
-#include "../../../framework/base/objectManager.h"
-#include "../../../framework/base/servertool.h"
-#include "../../../framework/base/base.h"
+#include "objectManager.h"
+#include "servertool.h"
+#include "base.h"
 
 #ifdef _DEBUG_
 #define SERVER_CAP_TEAM				(500)		// 服务器最大战队实体数量

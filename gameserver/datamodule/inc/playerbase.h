@@ -12,9 +12,9 @@
 #include <iostream>
 #include "playerdata.h"
 #include "player.h"
-#include "../../../framework/base/base.h"
-#include "../../../framework/base/object.h"
-#include "../../../framework/base/my_macro.h"
+#include "base.h"
+#include "object.h"
+#include "my_macro.h"
 
 // 玩家链接信息
 struct STConnectInfo

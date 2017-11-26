@@ -8,8 +8,8 @@
 #include <sys/time.h>
 #include "../inc/proxy_handle.h"
 #include "../inc/proxy_ctrl.h"
-#include "../../framework/message/message.pb.h"
-#include "../../framework/net/server_comm_engine.h"
+#include "message.pb.h"
+#include "server_comm_engine.h"
 
 
 CProxyHandle::CProxyHandle()

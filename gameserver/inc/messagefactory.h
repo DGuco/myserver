@@ -9,7 +9,7 @@
 #ifndef SERVER_MESSAGE_FACTORY_H_
 #define SERVER_MESSAGE_FACTORY_H_
 
-#include "../../framework/net/message_interface.h"
+#include "message_interface.h"
 
 class CMessageFactory : public CFactory, public CSingleton<CMessageFactory>
 {

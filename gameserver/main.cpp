@@ -7,9 +7,9 @@
 
 #include <stdio.h>
 #include <signal.h>
+#include "config.h"
+#include "threadpool.h"
 #include "inc/gameserver.h"
-#include "../framework/json/config.h"
-#include "../framework/thread/threadpool.h"
 
 void sigusr1_handle(int iSigVal)
 {

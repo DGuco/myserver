@@ -8,10 +8,10 @@
 #ifndef SERVER_MODULE_MANAGER_H
 #define SERVER_MODULE_MANAGER_H
 
-#include "../../../framework/base/servertool.h"
+#include "message.pb.h"
+#include "servertool.h"
 #include "logicmodule.h"
 #include "../../datamodule/inc/player.h"
-#include "../../../framework/message/message.pb.h"
 
 class CLogicModule;
 

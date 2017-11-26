@@ -8,8 +8,8 @@
 #ifndef _PROXY_CONN_H_
 #define _PROXY_CONN_H_
 
-#include "../../framework/net/tcp_conn.h"
-#include "../../framework/base/servertool.h"
+#include "tcp_conn.h"
+#include "servertool.h"
 
 typedef CTCPSocket<RECVBUFLENGTH, POSTBUFLENGTH> CMyTCPSocket;
 

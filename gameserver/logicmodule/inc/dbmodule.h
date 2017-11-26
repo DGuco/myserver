@@ -5,13 +5,14 @@
 #ifndef SERVER_DBMODULE_H
 #define SERVER_DBMODULE_H
 
-#include "../../datamodule/inc/player.h"
-#include "../../../framework/net/message_interface.h"
+#include "message_interface.h"
 #include "logicmodule.h"
-#include "../../../framework/timer/timer.h"
-#include "../../../framework/message/dbmessage.pb.h"
-#include "../../../framework/const/dblogintype.h"
-#include "../../../framework/message/message.pb.h"
+#include "timer.h"
+#include "dbmessage.pb.h"
+#include "dblogintype.h"
+#include "message.pb.h"
+#include "../../datamodule/inc/player.h"
+
 
 class CDbModule : public CLogicModule, public CSingleton<CDbModule> {
 public:

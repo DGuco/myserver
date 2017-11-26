@@ -2,13 +2,13 @@
 // Created by dguco on 17-9-12.
 //
 
+#include "server_comm_engine.h"
+#include "player.pb.h"
+#include "dbmessage.pb.h"
+#include "client_comm_engine.h"
 #include "../inc/dbmodule.h"
 #include "../../inc/gameserver.h"
 #include "../../datamodule/inc/sceneobjmanager.h"
-#include "../../../framework/net/server_comm_engine.h"
-#include "../../../framework/message/player.pb.h"
-#include "../../../framework/message/dbmessage.pb.h"
-#include "../../../framework/net/client_comm_engine.h"
 
 template<> CDbModule* CSingleton<CDbModule>::spSingleton = NULL;
 

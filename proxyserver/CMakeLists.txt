@@ -14,16 +14,17 @@ set(SOURCE_FILES
 
 include_directories(
         /usr/local/include/
-        ${CMAKE_SOURCE_DIR/framework/include}
-        ${CMAKE_SOURCE_DIR/framework/base}
-        ${CMAKE_SOURCE_DIR/framework/config}
-        ${CMAKE_SOURCE_DIR/framework/log}
-        ${CMAKE_SOURCE_DIR/framework/message}
-        ${CMAKE_SOURCE_DIR/framework/mystd}
-        ${CMAKE_SOURCE_DIR/framework/net}
-        ${CMAKE_SOURCE_DIR/framework/sharemem}
-        ${CMAKE_SOURCE_DIR/framework/thread}
-        ${CMAKE_SOURCE_DIR/framework/timer}
+        ${CMAKE_SOURCE_DIR}/framework/base
+        ${CMAKE_SOURCE_DIR}/framework/const
+        ${CMAKE_SOURCE_DIR}/framework/event
+        ${CMAKE_SOURCE_DIR}/framework/include
+        ${CMAKE_SOURCE_DIR}/framework/json
+        ${CMAKE_SOURCE_DIR}/framework/log
+        ${CMAKE_SOURCE_DIR}/framework/mem
+        ${CMAKE_SOURCE_DIR}/framework/message
+        ${CMAKE_SOURCE_DIR}/framework/net
+        ${CMAKE_SOURCE_DIR}/framework/thread
+        ${CMAKE_SOURCE_DIR}/framework/timer
 )
 
 link_directories(

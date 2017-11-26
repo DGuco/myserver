@@ -8,18 +8,18 @@
 #ifndef SERVER_GAMESERVER_H
 #define SERVER_GAMESERVER_H
 
-#include "../../framework/base/servertool.h"
-#include "../../framework/net/runflag.h"
-#include "../../framework/base/base.h"
-#include "../../framework/net/tcp_conn.h"
-#include "../../framework/timer/timer.h"
-#include "../../framework/net/message_interface.h"
-#include "../../framework/message/message.pb.h"
-#include "../../framework/message/dbmessage.pb.h"
-#include "../datamodule/inc/player.h"
-#include "../logicmodule/inc/modulemanager.h"
+#include "servertool.h"
+#include "runflag.h"
+#include "base.h"
+#include "tcp_conn.h"
+#include "timer.h"
+#include "message_interface.h"
+#include "message.pb.h"
+#include "dbmessage.pb.h"
 #include "messagedispatcher.h"
 #include "clienthandle.h"
+#include "../datamodule/inc/player.h"
+#include "../logicmodule/inc/modulemanager.h"
 
 #define MAX_PROXY_NUM	(2)	// proxy服务器的最大数量
 

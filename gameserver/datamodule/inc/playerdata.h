@@ -6,7 +6,7 @@
 #define SERVER_PLAYERDATA_H
 
 #include <memory>
-#include "../../../framework/base/object.h"
+#include "object.h"
 
 class CPlayer;
 class CPlayerData

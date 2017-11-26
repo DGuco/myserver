@@ -8,8 +8,8 @@
 #include <string.h>
 #include "playerbase.h"
 #include "playercity.h"
-#include "../../../framework/base/base.h"
-#include "../../../framework/base/object.h"
+#include "base.h"
+#include "object.h"
 
 //下行客户端数据包信息
 struct Package

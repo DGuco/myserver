@@ -2,18 +2,19 @@
 // Created by DGuco on 17-6-21.
 //
 
-#include "../datamodule/inc/player.h"
+#include <commondef.h>
+#include "shm.h"
+#include "codequeue.h"
+#include "errcode.h"
+#include "sharemem.h"
+#include "client_comm_engine.h"
+#include "player.pb.h"
 #include "../inc/messagedispatcher.h"
 #include "../inc/messagefactory.h"
-#include "../logicmodule/inc/coremodule.h"
 #include "../inc/clienthandle.h"
 #include "../inc/gameserver.h"
-#include "../../framework/mem/shm.h"
-#include "../../framework/mem/codequeue.h"
-#include "../../framework/const/errcode.h"
-#include "../../framework/mem/sharemem.h"
-#include "../../framework/net/client_comm_engine.h"
-#include "../../framework/message/player.pb.h"
+#include "../datamodule/inc/player.h"
+#include "../logicmodule/inc/coremodule.h"
 #include "../datamodule/inc/sceneobjmanager.h"
 
 CClientHandle::CClientHandle()
@@ -250,7 +251,7 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pC
     if (tmpSocketInfo.state() < 0)
     {
         // 客户端主动关闭连接，也有可能是连接错误被关闭
-        LOG_INFO("default", "client(%d : %d) commhandle closed by err = %d. ", iTmpSocket, tTmpCreateTime, tmpSocketInfo->state());
+        LOG_INFO("default", "client(%d : %d) commhandle closed by err = %d. ", iTmpSocket, tTmpCreateTime, tmpSocketInfo.state());
         // 从连接容器中取出玩家实体
         CPlayer* pTmpTeam = CSceneObjManager::GetSingletonPtr()->GetPlayerBySocket(iTmpSocket);
         if (NULL == pTmpTeam)

@@ -1,10 +1,10 @@
 //
 // Created by DGuco on 17-3-1.
 //
+#include "config.h"
+#include "server_comm_engine.h"
 #include "../inc/gameserver.h"
 #include "../inc/messagefactory.h"
-#include "../../framework/json/config.h"
-#include "../../framework/net/server_comm_engine.h"
 
 template<> CGameServer* CSingleton<CGameServer>::spSingleton = NULL;
 

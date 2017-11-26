@@ -6,19 +6,10 @@
 #ifndef SERVER_CLIENT_HANDLE_H
 #define SERVER_CLIENT_HANDLE_H
 
+#include "base.h"
+#include "message_interface.h"
+#include "message.pb.h"
 #include "../datamodule/inc/player.h"
-#include "../../framework/base/base.h"
-#include "../../framework/net/message_interface.h"
-#include "../../framework/message/message.pb.h"
-
-// 管道标识符
-enum enLockIdx
-{
-    IDX_PIPELOCK_C2S = 0,
-    IDX_PIPELOCK_S2C = 1,
-    IDX_PIPELOCK_A2C = 2,
-    IDX_PIPELOCK_S2L = 3,
-};
 
 
 // 提取消息错误码
