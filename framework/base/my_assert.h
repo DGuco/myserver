@@ -5,7 +5,7 @@
 #include "base.h"
 
 #ifdef USE_MY_ASSERT
-#include "../log/log.h"
+#include "log.h"
 #define MY_ASSERT(a, fail_handle) 										\
 	if ((a) == false) 													\
 	{ 																	\

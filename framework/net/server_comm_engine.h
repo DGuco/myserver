@@ -2,7 +2,7 @@
 #define SERVER_COMM_ENGINE_H_
 
 
-#include "../message/message.pb.h"
+#include "message.pb.h"
 #include "message_interface.h"
 
 void pbmsg_setproxy(CProxyHead* pHead, int iSrcFE, int iSrcID, int iDstFE, int iDstID, time_t tTimestamp, enMessageCmd eCmd);

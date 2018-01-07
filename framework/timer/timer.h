@@ -4,9 +4,9 @@
 #include <map>
 #include <unordered_map>
 #include <bits/unordered_map.h>
-#include "../base/object.h"
-#include "../base/servertool.h"
-#include "../base/objectManager.h"
+#include "object.h"
+#include "servertool.h"
+#include "objectManager.h"
 
 // 类型取值 0 ~ 255 为了防止越界，去掉头尾边界，所以有效取值范围为 1 ~ 254
 // 由于游戏内部的objmanager从1开始，为了不与游戏内的类型重复，所以这里取值从254（0xFE）开始递减

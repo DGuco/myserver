@@ -3,7 +3,7 @@
 
 #include <string>
 #include <map>
-#include "../log/log.h"
+#include "log.h"
 
 class CPerfInfo
 {

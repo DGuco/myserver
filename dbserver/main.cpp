@@ -2,8 +2,8 @@
 // Created by DGuco on 17-7-12.
 //
 
-#include "../framework/mem/sharemem.h"
-#include "../framework/json/config.h"
+#include "sharemem.h"
+#include "config.h"
 #include "./inc/dbctrl.h"
 #include <signal.h>
 

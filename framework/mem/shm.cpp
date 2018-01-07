@@ -1,5 +1,5 @@
 #include "shm.h"
-#include "../log/log.h"
+#include "log.h"
 
 BYTE* CSharedMem::pbCurrentShm = NULL;
 

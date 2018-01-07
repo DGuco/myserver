@@ -13,10 +13,10 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../timer/clock.h"
+#include "clock.h"
 #include "object.h"
-#include "../base/my_assert.h"
-#include "../log/log.h"
+#include "my_assert.h"
+#include "log.h"
 
 using namespace std;
 

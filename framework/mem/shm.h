@@ -8,7 +8,7 @@
 #ifndef _SHM_H_
 #define _SHM_H_
 
-#include "../base/base.h"
+#include "base.h"
 
 #define YEARSEC 31536000
 

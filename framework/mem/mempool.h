@@ -6,7 +6,7 @@
 #ifndef SERVER_MEMPOOL_H
 #define SERVER_MEMPOOL_H
 
-#include "../base/base.h"
+#include "base.h"
 #include <clocale>
 template<class Type>
 class CMemoryPool

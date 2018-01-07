@@ -5,16 +5,16 @@
 #ifndef SERVER_DBHANDLE_H
 #define SERVER_DBHANDLE_H
 
-#include "../../framework/base/servertool.h"
-#include "../../framework/thread/mythread.h"
-#include "../../framework/net/tcp_conn.h"
-#include "../../framework/mem/shm.h"
-#include "../../framework/mem/codequeue.h"
-#include "../../framework/message/message.pb.h"
-#include "../inc/basedb.h"
-#include "../inc/queryresultmysql.h"
-#include "../inc/database.h"
-#include "../inc/messagefactory.h"
+#include "servertool.h"
+#include "mythread.h"
+#include "tcp_conn.h"
+#include "shm.h"
+#include "codequeue.h"
+#include "message.pb.h"
+#include "basedb.h"
+#include "queryresultmysql.h"
+#include "database.h"
+#include "messagefactory.h"
 
 
 #define HASHVALUE					512

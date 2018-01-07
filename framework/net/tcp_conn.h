@@ -18,8 +18,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <pthread.h>
-#include "../base/base.h"
-#include "../log/log.h"
+#include "base.h"
+#include "log.h"
 #ifdef _POSIX_MT_
 #include <mutex>
 #endif

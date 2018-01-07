@@ -59,15 +59,20 @@ set(FRAMEWORK
         timer/clock.cpp
         timer/clock.h
         timer/timer.h
-        timer/timer.cpp
-        event/event.h
-        event/eventbus.h
-        event/eventHandler.h
-        event/eventbus.cpp
-        event/handlerregistration.h)
+        timer/timer.cpp)
 
 include_directories(
+        /usr/include
         /usr/local/include
+        ${CMAKE_SOURCE_DIR}/framework/base
+        ${CMAKE_SOURCE_DIR}/framework/const
+        ${CMAKE_SOURCE_DIR}/framework/json
+        ${CMAKE_SOURCE_DIR}/framework/log
+        ${CMAKE_SOURCE_DIR}/framework/mem
+        ${CMAKE_SOURCE_DIR}/framework/message
+        ${CMAKE_SOURCE_DIR}/framework/net
+        ${CMAKE_SOURCE_DIR}/framework/thread
+        ${CMAKE_SOURCE_DIR}/framework/timer
 )
 
 link_directories(

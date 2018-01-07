@@ -5,8 +5,8 @@
 #ifndef SERVER_MESSAGEFACTORY_H
 #define SERVER_MESSAGEFACTORY_H
 
-#include "../inc/messagefactory.h"
-#include "../../framework/net/message_interface.h"
+#include "messagefactory.h"
+#include "message_interface.h"
 
 class CMessageFactory : public CFactory
 {

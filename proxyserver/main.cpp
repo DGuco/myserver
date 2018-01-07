@@ -6,10 +6,10 @@
 //
 #include <signal.h>
 
-#include "../framework/net/runflag.h"
+#include "runflag.h"
 #include "inc/proxy_ctrl.h"
-#include "../framework/log/log.h"
-#include "../framework/base/base.h"
+#include "log.h"
+#include "base.h"
 
 CRunFlag g_byRunFlag;
 

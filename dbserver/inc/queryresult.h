@@ -5,7 +5,7 @@
 #ifndef SERVER_QUERYRESULT_H
 #define SERVER_QUERYRESULT_H
 
-#include "../../framework/base/base.h"
+#include "base.h"
 #include <map>
 #include <string>
 #include <assert.h>

@@ -5,8 +5,8 @@
 #ifndef SERVER_FILED_H
 #define SERVER_FILED_H
 
-#include "../../framework/base/base.h"
-#include "../inc/basedb.h"
+#include "base.h"
+#include "basedb.h"
 #include <string>
 
 class Field

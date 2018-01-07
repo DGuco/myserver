@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 #include "sharemem.h"
-#include "../log/log.h"
+#include "log.h"
 
 /**
   *函数名          : MakeKey

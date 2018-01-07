@@ -40,7 +40,6 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const
         ${CMAKE_SOURCE_DIR}/framework/event
-        ${CMAKE_SOURCE_DIR}/framework/include
         ${CMAKE_SOURCE_DIR}/framework/json
         ${CMAKE_SOURCE_DIR}/framework/log
         ${CMAKE_SOURCE_DIR}/framework/mem

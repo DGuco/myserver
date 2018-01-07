@@ -8,8 +8,8 @@
 #ifndef _JSON_H_
 #define _JSON_H_
 
-#include "../include/rapidjson/rapidjson.h"
-#include "../include/rapidjson/document.h"
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/document.h>
 using rapidjson::Value;
 
 namespace MyJson {

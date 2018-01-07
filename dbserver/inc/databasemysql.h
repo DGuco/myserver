@@ -5,7 +5,7 @@
 #ifndef SERVER_DATABASEMYSQL_H
 #define SERVER_DATABASEMYSQL_H
 
-#include "../inc/database.h"
+#include "database.h"
 #include <mysql/mysql.h>
 #include <mysql/errmsg.h>
 

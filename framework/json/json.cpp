@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "../log/log.h"
+#include "log.h"
 
 namespace MyJson {
 	Json::Json() {

@@ -2,8 +2,8 @@
 #define MESSAGE_INTERFACE_H_
 
 #include <google/protobuf/message.h>
-#include "../base/servertool.h"
-#include "../base/base.h"
+#include "servertool.h"
+#include "base.h"
 
 typedef ::google::protobuf::Message Message;
 

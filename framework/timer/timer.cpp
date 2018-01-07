@@ -1,5 +1,5 @@
 #include "timer.h"
-#include "../base/my_macro.h"
+#include "my_macro.h"
 
 char* GetTimerTypeName(ETimerType eType)
 {

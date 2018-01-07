@@ -8,7 +8,7 @@
 #ifndef __SHARE_MEM_H__
 #define __SHARE_MEM_H__
 
-#include "../base/base.h"
+#include "base.h"
 
 //生成共享内存的唯一标识key
 key_t MakeKey( const char* pFile, int vId );

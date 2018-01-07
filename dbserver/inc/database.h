@@ -5,7 +5,7 @@
 #ifndef SERVER_DATABASE_H
 #define SERVER_DATABASE_H
 
-#include "../../framework/log/log.h"
+#include "log.h"
 #include <string>
 #include <string.h>
 

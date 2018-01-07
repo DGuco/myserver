@@ -1,5 +1,5 @@
 #include "ccrypto.h"
-#include "../base/base.h"
+#include "base.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

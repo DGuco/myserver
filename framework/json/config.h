@@ -9,10 +9,10 @@
 #define SERVER_CONFIG_H_H
 #include <memory>
 #include <map>
-#include "../base/servertool.h"
+#include "servertool.h"
 #include "json.h"
-#include "../const/commondef.h"
-#include "../message/message.pb.h"
+#include "commondef.h"
+#include "message.pb.h"
 
 struct ServerInfo {
     int m_iServerId;

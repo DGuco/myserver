@@ -1,8 +1,8 @@
 #include <stdarg.h>
 #include <string.h>
-#include "../base/base.h"
+#include "base.h"
 #include "mythread.h"
-#include "../log/log.h"
+#include "log.h"
 
 void* ThreadProc( void *pvArgs )
 {
