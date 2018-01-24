@@ -397,7 +397,7 @@ int CGateCtrl::GetExMessage()
             {
                 LOG_ERROR("default","socket is too big %d",iTmpNewSocket);
                 //关闭socket连接
-                closesocket(iTmpNewSocket);
+                CloseSocket(iTmpNewSocket);
                 continue;
             }
 
@@ -407,7 +407,7 @@ int CGateCtrl::GetExMessage()
                  fcntl(iTmpNewSocket, F_SETFL, iTmpFlags | O_NONBLOCK) < 0))
             {
                 LOG_ERROR("default","operate on socket %d error connect port %d!", iTmpNewSocket, m_pSocketInfo->m_iConnectedPort);
-                closesocket(iTmpNewSocket);
+                CloseSocket(iTmpNewSocket);
                 continue;
             }
             //把socket 添加到epoll event 监听集合中，监听可读事件（这里只监听可读事件）
@@ -415,7 +415,7 @@ int CGateCtrl::GetExMessage()
             if (iTmpRet != 0)
             {
                 LOG_ERROR("default","add to epoll failed [socket %d connect port %d]!", iTmpNewSocket,m_pSocketInfo->m_iConnectedPort);
-                closesocket(iTmpNewSocket);
+                CloseSocket(iTmpNewSocket);
                 continue;
             }
 
@@ -707,7 +707,7 @@ void CGateCtrl::ClearSocketInfo(short enError)
             LOG_ERROR("default","epoll remove socket error,socket fd = %d",m_pSocketInfo->m_iSocket);
         }
         //关闭socket
-        closesocket(m_pSocketInfo->m_iSocket);
+        CloseSocket(m_pSocketInfo->m_iSocket);
         //更改当前对大分配socket
         if(m_pSocketInfo->m_iSocket >= m_iMaxfds)
         {

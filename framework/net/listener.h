@@ -1,49 +1,58 @@
-#pragma once
+//
+//  CListener.h
+//  Created by DGuco on 18/01/20.
+//  Copyright © 2018年 DGuco. All rights reserved.
+//
+
+#ifndef _LISTENER_H
+#define _LISTENER_H
 
 #include "event_reactor.h"
 #include "net_addr.h"
-#include "Socket.h"
+#include "socket.h"
 #include "network_interface.h"
-#include "event.h"
+#include <event.h>
+#include <event2/listener.h>
 
-namespace Net
-{
-	enum eListenerState
-	{
-		eLS_UnListen=0,
-		eLS_Listened,
-	};
-	
-	class NETWORK_API listener : public IListener
-	{
-	public:
-		listener(IEventReactor* pReactor);
-		virtual ~listener(void);
+enum eListenerState {
+  eLS_UnListen = 0,
+  eLS_Listened,
+};
 
-		bool Listen(CNetAddr& addr, ListenerFuncOnAccept pFunc);
-		IEventReactor*  GetReactor();
+class CListener : public IReactorHandler {
+public:
+  CListener(IEventReactor *pReactor);
+  virtual ~CListener(void);
 
-		void ShutDown();
-		void Release();
+  bool Listen(CNetAddr &addr, FuncListenerOnAccept pFunc);
+  IEventReactor *GetReactor();
 
-		bool IsListened();
+  void ShutDown();
+  void Release();
 
-	private:
+  bool IsListened();
 
-		void SetState(eListenerState eState);
+private:
 
-		bool RegisterToReactor();
-		bool UnRegisterFromReactor();
+  void SetState(eListenerState eState);
 
-		static void lcb_Accept(int Socket, short nEventMask, void* arg);
-		void HandleInput(int Socket, short nEventMask, void *arg);
+  bool RegisterToReactor();
+  bool UnRegisterFromReactor();
 
-	private:
-		ListenerFuncOnAccept                m_pFuncOnAccept;
-		eListenerState                      m_eState;
-		CNetAddr                            m_ListenAddress;
-		IEventReactor*                      m_pEventReactor;
-		CSocket                             m_Socket;
-		event								m_event;
-	};
-}
+  static void lcb_Accept(struct evconnlistener *listener,
+						 evutil_socket_t fd,
+						 struct sockaddr *sa,
+						 int socklen, void *arg);
+
+  void HandleInput(int Socket,struct sockaddr *sa);
+
+private:
+  FuncListenerOnAccept m_pFuncOnAccept;
+  eListenerState m_eState;
+  CNetAddr m_ListenAddress;
+  IEventReactor *m_pEventReactor;
+  struct evconnlistener *m_pListener;
+  CSocket m_Socket;
+  event m_event;
+};
+#endif
