@@ -64,6 +64,7 @@ set(FRAMEWORK
 include_directories(
         /usr/include
         /usr/local/include
+        /usr/local/include/rapidjson/include
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const
         ${CMAKE_SOURCE_DIR}/framework/json

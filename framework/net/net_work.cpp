@@ -12,14 +12,14 @@
 template<> CNetWork *CSingleton<CNetWork>::spSingleton = NULL;
 
 CNetWork::CNetWork() :
-	m_pEventReactor(NULL),
-	m_uGcTime(0),
-	m_uCheckPingTickTime(0),
-	m_pListener(NULL),
-	m_pOnNew(NULL),
-	m_pOnDisconnected(NULL),
-	m_pOnSomeDataSend(NULL),
-	m_pOnSomeDataRecv(NULL) {
+    m_pEventReactor(NULL),
+    m_uGcTime(0),
+    m_uCheckPingTickTime(0),
+    m_pListener(NULL),
+    m_pOnNew(NULL),
+    m_pOnDisconnected(NULL),
+    m_pOnSomeDataSend(NULL),
+    m_pOnSomeDataRecv(NULL) {
 }
 
 CNetWork::~CNetWork(void) {
@@ -32,20 +32,20 @@ void CNetWork::Init(eNetModule netModule) {
 
 void CNetWork::Release(void) {
   for (auto it : m_mapConnectorExs) {
-	it.second->ShutDown();
-	SAFE_DELETE(it.second);
+    it.second->ShutDown();
+    SAFE_DELETE(it.second);
   }
   m_mapConnectorExs.clear();
 
   for (auto it : m_mapAcceptorExs) {
-	it.second->ShutDown();
-	SAFE_DELETE(it.second);
+    it.second->ShutDown();
+    SAFE_DELETE(it.second);
   }
   m_mapAcceptorExs.clear();
   while (!m_quSystemSignals.empty()) {
-	CSystemSignal *pSystemSignal = m_quSystemSignals.front();
-	SAFE_DELETE(pSystemSignal);
-	m_quSystemSignals.pop();
+    CSystemSignal *pSystemSignal = m_quSystemSignals.front();
+    SAFE_DELETE(pSystemSignal);
+    m_quSystemSignals.pop();
   }
   OnTick();
   SAFE_DELETE(m_pEventReactor);
@@ -71,22 +71,22 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa)
   SOCKET socket = pAcceptor->GetSocket().GetSocket();
   CAcceptorEx *pAcceptorEx = new CAcceptorEx(socket, pAcceptor);
   pAcceptorEx->SetCallbackFunc(m_pOnDisconnected,
-							   m_pOnSomeDataSend,
-							   m_pOnSomeDataRecv,
-							   m_uCheckPingTickTime);
+                               m_pOnSomeDataSend,
+                               m_pOnSomeDataRecv,
+                               m_uCheckPingTickTime);
   m_mapAcceptorExs.insert(std::make_pair(socket, pAcceptorEx));
   m_pOnNew(socket, pAcceptorEx);
 }
 
 bool CNetWork::BeginListen(const char *szNetAddr, uint16 uPort,
-						   FuncAcceptorExOnNew pOnNew,
-						   FuncAcceptorExOnDisconnected pOnDisconnected,
-						   FuncAcceptorExOnSomeDataSend pOnSomeDataSend,
-						   FuncAcceptorExOnSomeDataRecv pOnSomeDataRecv,
-						   uint32 uCheckPingTickTime) {
+                           FuncAcceptorExOnNew pOnNew,
+                           FuncAcceptorExOnDisconnected pOnDisconnected,
+                           FuncAcceptorExOnSomeDataSend pOnSomeDataSend,
+                           FuncAcceptorExOnSomeDataRecv pOnSomeDataRecv,
+                           uint32 uCheckPingTickTime) {
   m_pListener = new CListener(m_pEventReactor);
   if (m_pListener == NULL) {
-	return false;
+    return false;
   }
   CNetAddr addr(szNetAddr, uPort);
 
@@ -105,20 +105,20 @@ void CNetWork::EndListen() {
 }
 
 uint32 CNetWork::Connect(const char *szNetAddr,
-						 uint16 uPort,
-						 FuncConnectorExOnDisconnected pOnDisconnected,
-						 FuncConnectorExOnConnectFailed pOnConnectFailed,
-						 FuncConnectorExOnConnectted pOnConnectted,
-						 FuncConnectorExOnSomeDataSend pOnSomeDataSend,
-						 FuncConnectorExOnSomeDataRecv pOnSomeDataRecv,
-						 FuncConnectorExOnPingServer pOnPingServer,
-						 uint32 uPingTick /* = 45000 */, uint32 uTimeOut) {
+                         uint16 uPort,
+                         FuncConnectorExOnDisconnected pOnDisconnected,
+                         FuncConnectorExOnConnectFailed pOnConnectFailed,
+                         FuncConnectorExOnConnectted pOnConnectted,
+                         FuncConnectorExOnSomeDataSend pOnSomeDataSend,
+                         FuncConnectorExOnSomeDataRecv pOnSomeDataRecv,
+                         FuncConnectorExOnPingServer pOnPingServer,
+                         uint32 uPingTick /* = 45000 */, uint32 uTimeOut) {
   CConnector *pConnector = new CConnector(m_pEventReactor);
   CConnectorEx *pConnectorEx = new CConnectorEx(uId, pConnector);
   pConnectorEx->SetCallbackFunc(pOnDisconnected, pOnConnectFailed,
-								pOnConnectted, pOnSomeDataSend,
-								pOnSomeDataRecv, pOnPingServer,
-								uPingTick);
+                                pOnConnectted, pOnSomeDataSend,
+                                pOnSomeDataRecv, pOnPingServer,
+                                uPingTick);
 
   CNetAddr addr(szNetAddr, uPort);
   timeval time;
@@ -132,9 +132,9 @@ uint32 CNetWork::Connect(const char *szNetAddr,
 uint32 CNetWork::GetConnectorExPingValue(uint32 uId) {
   CConnectorEx *pEx = FindConnectorEx(uId);
   if (pEx) {
-	return pEx->GetPingValue();
+    return pEx->GetPingValue();
   } else {
-	return 9999999;
+    return 9999999;
   }
 }
 
@@ -146,44 +146,44 @@ bool CNetWork::ShutDownConnectorEx(uint32 uId) {
   Map_ConnectorExs::iterator iter = m_mapConnectorExs.find(uId);
 
   if (m_mapConnectorExs.end() != iter) {
-	CConnectorEx *pConnectorEx = iter->second;
+    CConnectorEx *pConnectorEx = iter->second;
 
-	pConnectorEx->ShutDown();
+    pConnectorEx->ShutDown();
 
-	m_quIdleConnectorExs.push(pConnectorEx);
+    m_quIdleConnectorExs.push(pConnectorEx);
 
-	m_mapConnectorExs.erase(iter);
-	return true;
+    m_mapConnectorExs.erase(iter);
+    return true;
   } else {
-	return false;
+    return false;
   }
 }
 
 void CNetWork::OnTick() {
   if (!m_quIdleConnectorExs.empty()) {
-	while (!m_quIdleConnectorExs.empty()) {
-	  CConnectorEx *pConnectorEx = m_quIdleConnectorExs.front();
-	  pConnectorEx->Release();
-	  m_quIdleConnectorExs.pop();
-	}
+    while (!m_quIdleConnectorExs.empty()) {
+      CConnectorEx *pConnectorEx = m_quIdleConnectorExs.front();
+      pConnectorEx->Release();
+      m_quIdleConnectorExs.pop();
+    }
   }
 }
 
 CConnectorEx *CNetWork::FindConnectorEx(unsigned int uId) {
   auto iter = m_mapConnectorExs.find(uId);
   if (m_mapConnectorExs.end() == iter) {
-	return NULL;
+    return NULL;
   } else {
-	return iter->second;
+    return iter->second;
   }
 }
 
 PipeResult CNetWork::ConnectorExSendData(uint32 uId, const void *pData, uint32 uSize) {
   CConnectorEx *pConnectorEx = FindConnectorEx(uId);
   if (pConnectorEx) {
-	PipeResult eRes = pConnectorEx->Send(pData, uSize);
-	GH_ASSERT(ePR_OK == eRes);
-	return ePR_OK;
+    PipeResult eRes = pConnectorEx->Send(pData, uSize);
+    GH_ASSERT(ePR_OK == eRes);
+    return ePR_OK;
   }
   return ePR_Disconnected;
 }

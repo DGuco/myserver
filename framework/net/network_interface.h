@@ -31,18 +31,18 @@ enum PipeResult {
 /** Interface for IEventReactor
  */
 INTER_FACE IEventReactor {
-  virtual bool Register(IReactorHandler *pHandler)=0;
-  virtual bool UnRegister(IReactorHandler *pHandler)=0;
-  virtual event_base *GetEventBase()    =0;
-  virtual void Init()=0;
-  virtual void DispatchEvents()=0;
-  virtual void Release()=0;
+  virtual bool Register(IReactorHandler *pHandler) = 0;
+  virtual bool UnRegister(IReactorHandler *pHandler) = 0;
+  virtual event_base *GetEventBase()=0;
+  virtual void Init() = 0;
+  virtual void DispatchEvents() = 0;
+  virtual void Release() = 0;
 };
 
 INTER_FACE IReactorHandler {
-  virtual bool RegisterToReactor()=0;
-  virtual bool UnRegisterFromReactor()=0;
-  virtual IEventReactor *GetReactor()=0;
+  virtual bool RegisterToReactor() = 0;
+  virtual bool UnRegisterFromReactor() = 0;
+  virtual IEventReactor *GetReactor() = 0;
 };
 
 //CAcceptorEx相关的函数回调

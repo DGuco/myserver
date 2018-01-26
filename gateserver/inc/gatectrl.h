@@ -16,6 +16,7 @@
 #include "message.pb.h"
 #include "base.h"
 #include "config.h"
+#include "net_work.h"
 
 #define MAX_ERRNO_NUM 10
 #define READSTAT      0
@@ -26,14 +27,14 @@
 class CCodeQueue;
 class CSharedMem;
 
-typedef CTCPConn<RECVBUFLENGTH,POSTBUFLENGTH> MyTcpConn;
+typedef CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH> MyTcpConn;
 
 class CGateCtrl
 {
 public:
     CGateCtrl();
     ~CGateCtrl();
-    int Initialize();		// 初始化
+    int Initialize();        // 初始化
     int Run();
     int SetRunFlag(int iRunFlag);
     int CreatePipe();
@@ -42,17 +43,7 @@ private:
 
     //*****************Epoll***********************/
     //初始化socket
-    int InitEpollSocket(short shPort);
-    //初始化epoll
-    int EphInit();
-    //设置epoll socket
-    int EphSocket(int iDomain,int iType,int iProtocol);
-    //添加新的连接
-    int EphNewConn(int iSocketFd);
-    //关闭epoll
-    int EphClose(int iSocketFd);
-    //清除epoll
-    int EphCleanUp();
+    void BeginListen();
 
     //******************数据处理**********************/
     //检测epoll事件消息
@@ -71,42 +62,47 @@ private:
     //通知game玩家断开连接
     void DisConnect(int iError);
     //接收gate数据
-    int  RecvServerData();
+    int RecvServerData();
     //检测发送队列
     int CheckWaitSendData();
     //向client下行数据
     int SendClientData();
-
+protected:
+    static void OnAcceptCns(uint32 uId, CAcceptorEx* pAcceptorEx);
+    static void OnCnsDisconnected(CAcceptorEx* pAcceptorEx);
+    static void OnCnsSomeDataSend(CAcceptorEx* pAcceptorEx);
+    static void OnCnsSomeDataRecv(CAcceptorEx* pAcceptorEx);
 private:
 
-    int                 m_iRunFlag;
-    time_t              m_iLastTime;                     	// 上次检测超时的时间
-    time_t              m_iNowTime;                      	// 当前时间
-    int 				m_iSocket;                       	// 监听socket
-    struct sockaddr_in  m_stSockAddr;                    	// 网络地址
-    TSocketInfo 		m_astSocketInfo[MAX_SOCKET_NUM]; 	// socket结构数组，用于记录客户端的信息
-    TSocketInfo* 		m_pSocketInfo;                   	// 当前的socket结构指针
+    int m_iRunFlag;
+    time_t m_iLastTime;                             // 上次检测超时的时间
+    time_t m_iNowTime;                              // 当前时间
+    int m_iSocket;                                  // 监听socket
+    struct sockaddr_in m_stSockAddr;                        // 网络地址
+    TSocketInfo m_astSocketInfo[MAX_SOCKET_NUM];    // socket结构数组，用于记录客户端的信息
+    TSocketInfo *m_pSocketInfo;                     // 当前的socket结构指针
 
-    int                 m_iTimeout;
-    TTcpStat            m_stTcpStat;                         // 当前tcp连接信息
+    int m_iTimeout;
+    TTcpStat m_stTcpStat;                           // 当前tcp连接信息
 
-    struct epoll_event* m_pEpollevents;                      //epoll event集合(大小MAX_SOCKET_NUM)
-    int                 m_iKdpfd;                            //epoll描述符
-    int                 m_iMaxfds;
-    struct epoll_event  m_stEpollEvent;
+    struct epoll_event *m_pEpollevents;             //epoll event集合(大小MAX_SOCKET_NUM)
+    int m_iKdpfd;                                   //epoll描述符
+    int m_iMaxfds;
+    struct epoll_event m_stEpollEvent;
 
-    char        m_szCSMsgBuf[MAX_PACKAGE_LEN]; 		         // 发送客户端上行消息给gameserver缓冲
-    char 		m_szSCMsgBuf[MAX_PACKAGE_LEN]; 		         // 下行客户端发送消息缓冲区
-    unsigned short 		m_iSCIndex; 					 	 // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
-    short 				m_nSCLength; 					 	 // 实际发送的数据长度
+    char m_szCSMsgBuf[MAX_PACKAGE_LEN];             // 发送客户端上行消息给gameserver缓冲
+    char m_szSCMsgBuf[MAX_PACKAGE_LEN];             // 下行客户端发送消息缓冲区
+    unsigned short m_iSCIndex;                      // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
+    short m_nSCLength;                              // 实际发送的数据长度
 
-    MesHead    m_S2CHead;
+    MesHead m_S2CHead;
     // tcp --> game通信共享内存管道
-    CCodeQueue* mC2SPipe;
+    CCodeQueue *mC2SPipe;
     // game --> tcp通信共享内存管道
-    CCodeQueue* mS2CPipe;
-    int					m_iSendIndex;				        // 带要发送数据过去的client socket索引
-    bool				m_bHasRecv;					        // 是否接收过数据(只用于第一次接收数据使用,防止没有RecvData直接GetOneCode报错)
+    CCodeQueue *mS2CPipe;
+    int m_iSendIndex;                               // 带要发送数据过去的client socket索引
+    bool m_bHasRecv;                                // 是否接收过数据(只用于第一次接收数据使用,防止没有RecvData直接GetOneCode报错)
+    CNetWork* m_pNetWork;
 };
 
 #endif
