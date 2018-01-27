@@ -10,11 +10,10 @@
 
 #include <map>
 #include <queue>
-#include <unordered_map>
+#include <bits/unordered_map.h>
 #include <servertool.h>
 #include "network_interface.h"
 #include "event_reactor.h"
-#include "connectorex.h"
 
 class CNetWork : public CSingleton<CNetWork> {
 public:
@@ -26,57 +25,42 @@ public:
   void Init(eNetModule netModule);
   //开始监听
   bool BeginListen(const char *szNetAddr,
-				   uint16 uPort,
-				   FuncAcceptorExOnNew pOnNew,
-				   FuncAcceptorExOnDisconnected pOnDisconnected,
-				   FuncAcceptorExOnSomeDataSend pOnSomeDataSend,
-				   FuncAcceptorExOnSomeDataRecv pOnSomeDataRecv,
-				   uint32 uCheckPingTickTime = 0);
+                   uint16 uPort,
+                   FuncAcceptorOnNew pOnNew,
+                   FuncAcceptorOnDisconnected pOnDisconnected,
+                   FuncAcceptorOnSomeDataSend pOnSomeDataSend,
+                   FuncAcceptorOnSomeDataRecv pOnSomeDataRecv,
+                   uint32 uCheckPingTickTime = 0);
   //结束监听
   void EndListen();
-  uint32 Connect(const char *szNetAddr, uint16 uPort,
-				 FuncConnectorExOnDisconnected pOnDisconnected,
-				 FuncConnectorExOnConnectFailed pOnConnectFailed,
-				 FuncConnectorExOnConnectted pOnConnectted,
-				 FuncConnectorExOnSomeDataSend pOnSomeDataSend,
-				 FuncConnectorExOnSomeDataRecv pOnSomeDataRecv,
-				 FuncConnectorExOnPingServer pOnPingServer,
-				 uint32 uPingTick = 4500,
-				 uint32 uTimeOut = 30);
+  uint32 Connect(const char *szNetAddr,
+                 uint16 uPort,
+                 FuncConnectorOnDisconnected pOnDisconnected,
+                 FuncConnectorOnConnectFailed pOnConnectFailed,
+                 FuncConnectorOnConnectted pOnConnectted,
+                 FuncConnectorOnSomeDataSend pOnSomeDataSend,
+                 FuncConnectorOnSomeDataRecv pOnSomeDataRecv,
+                 FuncConnectorOnPingServer pOnPingServer,
+                 uint32 uPingTick = 4500,
+                 uint32 uTimeOut = 30);
 
   bool ShutDownAcceptorEx(uint32 uId);
-
   void SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop = false);
-
   PipeResult ConnectorExSendData(uint32 uId, const void *pData, uint32 uSize);
-
-  void EnumAcceptorEx(FuncEnumAcceptorExCallback pFunc, void *pContext);
-
   bool ShutDownConnectorEx(uint32 uId);
-
   void DispatchEvents();
-
   uint32 GetConnectorExPingValue(uint32 uId);
-
   CConnectorEx *FindConnectorEx(uint32 uId);
   CAcceptorEx *FindAcceptorEx(uint32 uId);
 
 private:
-
-  struct EnumContex {
-	FuncEnumAcceptorExCallback pFunc;
-	void *pContext;
-  };
-
   void OnTick();
   const char *GetTickName() { return "NetWork Tick"; };
 
   static void OnAccept(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa);
   void NewAcceptor(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa);
-
 protected:
   virtual void Release();
-
 private:
   uint32 m_uGcTime;
 
@@ -84,22 +68,22 @@ private:
 
   IEventReactor *m_pEventReactor;
 
-  typedef std::unordered_map<unsigned int, CConnectorEx *> Map_ConnectorExs;
-  typedef std::unordered_map<unsigned int, CAcceptorEx *> Map_AcceptorExs;
+  typedef std::unordered_map<unsigned int, CConnector *> Map_Connector;
+  typedef std::unordered_map<unsigned int, CAcceptor *> Map_Acceptor;
   typedef std::queue<CSystemSignal *> Queue_SystemSignals;
 
-  Map_ConnectorExs m_mapConnectorExs;
-  Map_AcceptorExs m_mapAcceptorExs;
+  Map_Connector m_mapConnector;
+  Map_Acceptor m_mapAcceptor;
   Queue_SystemSignals m_quSystemSignals;
 
   typedef std::queue<CConnectorEx *> Queue_IdleConnectorExs;
   Queue_IdleConnectorExs m_quIdleConnectorExs;
 
   CListener *m_pListener;
-  FuncAcceptorExOnNew m_pOnNew;
-  FuncAcceptorExOnDisconnected m_pOnDisconnected;
-  FuncAcceptorExOnSomeDataSend m_pOnSomeDataSend;
-  FuncAcceptorExOnSomeDataRecv m_pOnSomeDataRecv;
+  FuncAcceptorOnNew m_pOnNew;
+  FuncAcceptorOnDisconnected m_pOnDisconnected;
+  FuncAcceptorOnSomeDataSend m_pOnSomeDataSend;
+  FuncAcceptorOnSomeDataRecv m_pOnSomeDataRecv;
 };
 
 #endif

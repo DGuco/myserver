@@ -1,8 +1,10 @@
 #include <my_assert.h>
 #include "connector.h"
+#include "../../gateserver/inc/gatedef.h"
 
 CConnector::CConnector(IEventReactor *pReactor)
-	: m_pReactor(pReactor),
+	: IBufferEvent(pReactor, NULL),
+	  m_pReactor(pReactor),
 	  m_pStBufEv(NULL),
 	  m_uMaxInBufferSize(RECVBUFLENGTH),
 	  m_uMaxOutBufferSize(POSTBUFLENGTH),
@@ -11,314 +13,207 @@ CConnector::CConnector(IEventReactor *pReactor)
 	  m_pFuncOnConnectFailed(NULL),
 	  m_pFuncOnConnectted(NULL),
 	  m_pFuncOnSomeDataSend(NULL),
-	  m_pFuncOnSomeDataRecv(NULL) {
+	  m_pFuncOnSomeDataRecv(NULL)
+{
 }
 
-CConnector::~CConnector(void) {
+CConnector::~CConnector(void)
+{
+	ShutDown();
 }
 
-void CConnector::GetRemoteIpAddress(char *szBuf, uint32 uBufSize) {
-  strncpy(szBuf, m_Addr.GetAddress(), 16);
+void CConnector::GetRemoteIpAddress(char *szBuf, uint32 uBufSize)
+{
+	strncpy(szBuf, m_Addr.GetAddress(), 16);
 }
 
-bool CConnector::Connect(const CNetAddr &addr, const timeval *time /* = NULL */) {
-  EPipeConnFailedReason eReason;
-  m_Socket.Open();
-  sockaddr_in saiAddress;
-  m_Addr.Copy(addr);
-  CSocket::Address2sockaddr_in(saiAddress, addr);
-  m_Socket.SetNonblocking();
-  int nResult = connect(m_Socket.GetSystemSocket(), reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
-  GH_ASSERT(SOCKET_ERROR == nResult);
+bool CConnector::Connect(const CNetAddr &addr, const timeval *time /* = NULL */)
+{
+	m_Socket.Open();
+	sockaddr_in saiAddress;
+	m_Addr.Copy(addr);
+	CSocket::Address2sockaddr_in(saiAddress, addr);
+	m_Socket.SetNonblocking();
+	int nResult = connect(m_Socket.GetSystemSocket(), reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
+	MY_ASSERT(SOCKET_ERROR != nResult, return false);
 
-  int nError = PpeGetLastError();
-  switch (nError) {
+	switch (errno) {
 #if defined(GH_OS_WIN32)
-	case EWOULDBLOCK:
+		case EWOULDBLOCK:
 #else
-  case EINPROGRESS:
+	case EINPROGRESS:
 #endif
-	nResult = 1;
-	break;
+		nResult = 1;
+		break;
 #ifdef GH_OS_WIN32
-	case ENOBUFS:
-		nResult=2;
-		eReason=ePCFR_NOBUFFER;
-		GH_INFO("connect return error ENOBUFS : %d", ENOBUFS);
-		return false;
+		case ENOBUFS:
+			nResult=2;
+			eReason=ePCFR_NOBUFFER;
+			GH_INFO("connect return error ENOBUFS : %d", ENOBUFS);
+			return false;
 #endif
-  case EADDRINUSE:nResult = 2;
-	eReason = ePCFR_LOCALADDRINUSE;
+	case EADDRINUSE:
+	case ECONNREFUSED:
+	case ETIMEDOUT:
+	case ENETUNREACH:
+	case ECONNRESET: return false;
+	default: return false;
+	}
 
-	GH_INFO("connect return error EADDRINUSE : %d", EADDRINUSE);
-	return false;
-  case ECONNREFUSED:nResult = 2;
-	eReason = ePCFR_REFUSED;
+	event_set(&m_ConnectEvent, (int) m_Socket.GetSystemSocket(), EV_WRITE, CConnector::lcb_OnConnectResult, this);
+	event_base_set(GetReactor()->GetEventBase(), &m_ConnectEvent);
+	event_add(&m_ConnectEvent, time);
+	SetState(eCS_Connecting);
 
-	GH_INFO("connect return error ECONNREFUSED : %d", ECONNREFUSED);
-	return false;
-  case ETIMEDOUT:nResult = 2;
-	eReason = ePCFR_TIMEDOUT;
-	GH_INFO("connect return error ETIMEDOUT : %d", ETIMEDOUT);
-	return false;
-  case ENETUNREACH:nResult = 2;
-	eReason = ePCFR_UNREACH;
-	GH_INFO("connect return error ENETUNREACH : %d", ENETUNREACH);
-	return false;
-  case ECONNRESET:nResult = 2;
-	eReason = ePCFR_RESET;
-	GH_INFO("connect return error ECONNRESET : %d", ECONNRESET);
-	return false;
-  default: {
-
-	GH_INFO("connect return error  unkown : %d", nError);
-	GH_ASSERT(false);
-  }
-  }
-
-  event_set(&m_ConnectEvent, (int) m_Socket.GetSystemSocket(), EV_WRITE, CConnector::lcb_OnConnectResult, this);
-  event_base_set(static_cast<event_base *>(GetReactor()->GetEventBase()), &m_ConnectEvent);
-  event_add(&m_ConnectEvent, time);
-  SetState(eCS_Connecting);
-
-  return true;
+	return true;
 }
 
 void CConnector::SetCallbackFunc(FuncConnectorOnDisconnected pOnDisconnected,
 								 FuncConnectorOnConnectFailed pOnConnectFailed,
 								 FuncConnectorOnConnectted pOnConnectted,
 								 FuncConnectorOnSomeDataSend pOnSomeDataSend,
-								 FuncConnectorOnSomeDataRecv pOnSomeDataRecv) {
-  m_pFuncOnDisconnected = pOnDisconnected;
-  m_pFuncOnConnectFailed = pOnConnectFailed;
-  m_pFuncOnConnectted = pOnConnectted;
-  m_pFuncOnSomeDataSend = pOnSomeDataSend;
-  m_pFuncOnSomeDataRecv = pOnSomeDataRecv;
+								 FuncConnectorOnSomeDataRecv pOnSomeDataRecv)
+{
+	m_pFuncOnDisconnected = pOnDisconnected;
+	m_pFuncOnConnectFailed = pOnConnectFailed;
+	m_pFuncOnConnectted = pOnConnectted;
+	m_pFuncOnSomeDataSend = pOnSomeDataSend;
+	m_pFuncOnSomeDataRecv = pOnSomeDataRecv;
 }
 
-void CConnector::lcb_OnConnectResult(int Socket, short nEventMask, void *arg) {
-  CConnector *pConnector = static_cast<CConnector *>(arg);
-  pConnector->HandleInput(Socket, nEventMask, NULL);
+void CConnector::lcb_OnConnectResult(int Socket, short nEventMask, void *arg)
+{
+	CConnector *pConnector = static_cast<CConnector *>(arg);
+	pConnector->HandleInput(Socket, nEventMask, NULL);
 }
 
-void CConnector::HandleInput(int32 Socket, int16 nEventMask, void *arg) {
-  switch (nEventMask) {
-  case EV_WRITE: {
-
-	GH_INFO("OnConnectted %s : %d ", m_Addr.GetAddress(), m_Addr.GetPort());
-	OnConnectted();
-	return;
-  }
-	break;
-  case EV_TIMEOUT: {
-	GH_INFO("connect %s : %d EV_TIMEOUT", m_Addr.GetAddress(), m_Addr.GetPort());
-	GH_ASSERT(IsConnecting());
-	ShutDown();
-	m_pFuncOnConnectFailed(this);
-  }
-	break;
-  default: {
-	GH_DEBUG_ASSERT(false, "connect failed, unkown error!!!");
-  }
-	break;
-  }
+void CConnector::HandleInput(int32 Socket, int16 nEventMask, void *arg)
+{
+	switch (nEventMask) {
+	case EV_WRITE: {
+		OnConnectted();
+		MY_ASSERT_STR(false, return, "OnConnectted %s : %d ", m_Addr.GetAddress(), m_Addr.GetPort());
+	}
+	case EV_TIMEOUT: {
+		ShutDown();
+		m_pFuncOnConnectFailed(this);
+		MY_ASSERT_STR(false, return, "connect %s : %d EV_TIMEOUT", m_Addr.GetAddress(), m_Addr.GetPort());
+	}
+	default: MY_ASSERT_STR(false, return, "connect failed, unkown error!!!");
+	}
 }
 
-void CConnector::OnConnectted() {
-  GetReactor()->Register(this);
-  m_pFuncOnConnectted(this);
+void CConnector::OnConnectted()
+{
+	GetReactor()->Register(this);
+	m_pFuncOnConnectted(this);
 }
 
-bool CConnector::RegisterToReactor() {
-  m_pStBufEv = bufferevent_new(static_cast<int>(m_Socket.GetSystemSocket()),
-							   CConnector::lcb_OnPipeRead,
-							   CConnector::lcb_OnPipeWrite,
-							   CConnector::lcb_OnPipeError, this);
-
-  if (NULL == m_pStBufEv)
-	GH_DEBUG_ASSERT(false, "bufferevent_new failed!!");
-
-  bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);
-  bufferevent_setwatermark(m_pStBufEv, EV_WRITE, 0, m_uMaxOutBufferSize);
-  bufferevent_base_set(static_cast<event_base *>(GetReactor()->GetEventBase()), m_pStBufEv);
-
-  int32 nRes = bufferevent_enable(m_pStBufEv, EV_READ | EV_WRITE);
-  GH_ASSERT(0 == nRes);
-  SetState(eCS_Connected);
-  return true;
+void CConnector::ShutDown()
+{
+	if (IsConnecting()) {
+		event_del(&m_ConnectEvent);
+		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connecting: %s : %d", m_Addr.GetAddress(), m_Addr.GetPort());
+	}
+	else if (IsConnected()) {
+		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connected: %s : %d", m_Addr.GetAddress(), m_Addr.GetPort());
+		GetReactor()->UnRegister(this);
+	}
+	m_Socket.Shutdown();
+	SetState(eCS_Disconnected);
 }
 
-bool CConnector::UnRegisterFromReactor() {
-  GH_ASSERT(NULL != m_pStBufEv);
-  bufferevent_disable(m_pStBufEv, EV_READ | EV_WRITE);
-  return true;
+void CConnector::lcb_OnPipeRead(struct bufferevent *bev, void *arg)
+{
+	CConnector *pConnector = static_cast<CConnector *>(arg);
+	pConnector->m_pFuncOnSomeDataRecv(pConnector);
 }
 
-void CConnector::ShutDown() {
-  if (IsConnecting()) {
-	GH_INFO("ShutDown In Connecting: %s : %d", m_Addr.GetAddress(), m_Addr.GetPort());
-
-	event_del(&m_ConnectEvent);
-  } else if (IsConnected()) {
-	GH_INFO("ShutDown In Connected: %s : %d", m_Addr.GetAddress(), m_Addr.GetPort());
-	GetReactor()->UnRegister(this);
-  }
-  m_Socket.Shutdown();
-  SetState(eCS_Disconnected);
+void CConnector::lcb_OnPipeWrite(bufferevent *bev, void *arg)
+{
+	CConnector *pConnector = static_cast<CConnector *>(arg);
+	pConnector->m_pFuncOnSomeDataSend(pConnector);
 }
 
-void CConnector::Release() {
-  ShutDown();
-  if (m_pStBufEv) {
-	bufferevent_free(m_pStBufEv);
-	m_pStBufEv = NULL;
-  }
-  GH_DELETE_T(this, CConnector, MEMCATEGORY_GENERAL);
+void CConnector::lcb_OnPipeError(bufferevent *bev, int16 nWhat, void *arg)
+{
+
+	CConnector *pConnector = static_cast<CConnector *>(arg);
+
+	MY_ASSERT_STR(false, DO_NOTHING, "%s, %d lcb_OnPipeError With PpeGetLastError %d", pConnector->m_Addr.GetAddress(),
+				  pConnector->m_Addr.GetPort(), PpeGetLastError());
+
+	pConnector->ShutDown();
+
+	if (nWhat & EVBUFFER_EOF) {
+
+		MY_ASSERT_STR(false, DO_NOTHING, "%s, %d lcb_OnPipeError EVBUFFER_EOF %d",
+					  pConnector->m_Addr.GetAddress(),
+					  pConnector->m_Addr.GetPort(),
+					  nWhat);
+		pConnector->m_pFuncOnDisconnected(pConnector);
+		return;
+	}
+
+	if (nWhat & EVBUFFER_ERROR) {
+		MY_ASSERT_STR(false, DO_NOTHING, "%s, %d lcb_OnPipeError EVBUFFER_ERROR %d", pConnector->m_Addr.GetAddress(),
+					  pConnector->m_Addr.GetPort(), nWhat);
+		pConnector->m_pFuncOnDisconnected(pConnector);
+		return;
+	}
 }
 
-void CConnector::lcb_OnPipeRead(struct bufferevent *bev, void *arg) {
-  CConnector *pConnector = static_cast<CConnector *>(arg);
-  pConnector->m_pFuncOnSomeDataRecv(pConnector);
+bool CConnector::IsConnected()
+{
+	return m_eState == eCS_Connected;
 }
 
-void CConnector::lcb_OnPipeWrite(bufferevent *bev, void *arg) {
-  CConnector *pConnector = static_cast<CConnector *>(arg);
-  pConnector->m_pFuncOnSomeDataSend(pConnector);
+bool CConnector::IsConnecting()
+{
+	return m_eState == eCS_Connecting;
 }
 
-void CConnector::lcb_OnPipeError(bufferevent *bev, int16 nWhat, void *arg) {
-
-  CConnector *pConnector = static_cast<CConnector *>(arg);
-
-  GH_INFO("%s, %d lcb_OnPipeError With PpeGetLastError %d", pConnector->m_Addr.GetAddress(),
-		  pConnector->m_Addr.GetPort(), PpeGetLastError());
-
-  pConnector->ShutDown();
-
-  if (nWhat & EVBUFFER_EOF) {
-
-	GH_INFO("%s, %d lcb_OnPipeError EVBUFFER_EOF %d", pConnector->m_Addr.GetAddress(), pConnector->m_Addr.GetPort(),
-			nWhat);
-	pConnector->m_pFuncOnDisconnected(pConnector);
-	return;
-  }
-
-  if (nWhat & EVBUFFER_ERROR) {
-	GH_INFO("%s, %d lcb_OnPipeError EVBUFFER_ERROR %d", pConnector->m_Addr.GetAddress(),
-			pConnector->m_Addr.GetPort(), nWhat);
-	pConnector->m_pFuncOnDisconnected(pConnector);
-	return;
-  }
-  GH_ASSERT(false);
+bool CConnector::IsDisconnected()
+{
+	return m_eState == eCS_Disconnected;
 }
 
-void *CConnector::GetContext(void) const {
-  return m_pContext;
+CConnector::eConnectorState CConnector::GetState()
+{
+	return m_eState;
 }
 
-void CConnector::SetContext(void *pContext) {
-  m_pContext = pContext;
+void CConnector::SetState(eConnectorState eState)
+{
+	m_eState = eState;
 }
 
-PipeResult CConnector::Send(const void *pData, uint32 uSize) {
-  if (!IsConnected())
-	return ePR_Disconnected;
-
-  if (m_pStBufEv->output->off + uSize > m_uMaxOutBufferSize) {
-
-	GH_INFO("%s %d CConnector send buffer out of size", m_Addr.GetAddress(), m_Addr.GetPort());
-	ShutDown();
-	m_pFuncOnDisconnected(this);
-	return ePR_OutPipeBuf;
-  }
-
-  int32 nRes = bufferevent_write(m_pStBufEv, pData, uSize);
-  GH_ASSERT(0 == nRes);
-  return ePR_OK;
+void CConnector::ProcessSocketError()
+{
+	switch (m_Socket.GetSocketError()) {
+	case ePCFR_UNREACH:
+	case ePCFR_REFUSED:
+	case ePCFR_RESET:
+	case ePCFR_LOCALADDRINUSE:
+	case ePCFR_NOBUFFER:
+	case ePCFR_TIMEDOUT : m_pFuncOnDisconnected(this);
+		break;
+	default:MY_ASSERT_STR(false, break, "unknown socket error!!!");
+	}
 }
 
-void *CConnector::GetRecvData() const {
-  GH_ASSERT(NULL != m_pStBufEv);
-  return m_pStBufEv->input->buffer;
+void CConnector::BuffEventAvailableCall()
+{
+
 }
 
-uint32 CConnector::GetRecvDataSize() {
-  GH_ASSERT(NULL != m_pStBufEv);
-  return static_cast<uint32>(m_pStBufEv->input->off);
-}
+void CConnector::AfterBuffEventCreated()
+{
+	bufferevent_setcb(m_pStBufEv,
+					  CConnector::lcb_OnPipeRead,
+					  CConnector::lcb_OnPipeWrite,
+					  CConnector::lcb_OnPipeError,
+					  (void *) this);
+	SetState(eCS_Connected);
 
-uint32 CConnector::GetSendDataSize() {
-  GH_ASSERT(NULL != m_pStBufEv);
-  return static_cast<uint32>(m_pStBufEv->output->off);
-}
-
-void CConnector::PopRecvData(uint32 uSize) {
-  GH_ASSERT(NULL != m_pStBufEv);
-  GH_ASSERT(m_pStBufEv->input->off >= uSize);
-  GH_ASSERT(uSize >= 0);
-  if (uSize > 0)
-	evbuffer_drain(m_pStBufEv->input, uSize);
-}
-
-void CConnector::SetMaxSendBufSize(uint32 uSize) {
-  GH_ASSERT(uSize > 0);
-  m_uMaxOutBufferSize = uSize;
-  if (IsConnected()) {
-	GH_ASSERT(NULL != m_pStBufEv);
-	bufferevent_setwatermark(m_pStBufEv, EV_WRITE, 0, m_uMaxOutBufferSize);
-  }
-}
-
-uint32 CConnector::GetMaxSendBufSize() {
-  return m_uMaxOutBufferSize;
-}
-
-void CConnector::SetMaxRecvBufSize(uint32 uSize) {
-  GH_ASSERT(uSize > 0);
-  m_uMaxInBufferSize = uSize;
-  if (IsConnected()) {
-	GH_ASSERT(NULL != m_pStBufEv);
-	bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);
-  }
-}
-
-uint32 CConnector::GetMaxRecvBufSize() {
-  return m_uMaxInBufferSize;
-}
-
-bool CConnector::IsConnected() {
-  return m_eState == eCS_Connected;
-}
-
-bool CConnector::IsConnecting() {
-  return m_eState == eCS_Connecting;
-}
-
-bool CConnector::IsDisconnected() {
-  return m_eState == eCS_Disconnected;
-}
-
-IEventReactor *CConnector::GetReactor() {
-  return m_pReactor;
-}
-
-CConnector::eConnectorState CConnector::GetState() {
-  return m_eState;
-}
-
-void CConnector::SetState(eConnectorState eState) {
-  m_eState = eState;
-}
-
-void CConnector::ProcessSocketError() {
-  switch (m_Socket.GetSocketError()) {
-  case ePCFR_UNREACH:
-  case ePCFR_REFUSED:
-  case ePCFR_RESET:
-  case ePCFR_LOCALADDRINUSE:
-  case ePCFR_NOBUFFER:
-  case ePCFR_TIMEDOUT : m_pFuncOnDisconnected(this);
-	break;
-  default:MY_ASSERT_STR(false, break, "unknown socket error!!!");
-  }
 }

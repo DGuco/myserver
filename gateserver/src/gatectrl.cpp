@@ -18,6 +18,8 @@
 #include "client_comm_engine.h"
 #include "codequeue.h"
 #include "sharemem.h"
+#include "acceptorex.h"
+#include "acceptor.h"
 #include "../inc/gatectrl.h"
 
 CGateCtrl::CGateCtrl()
@@ -52,7 +54,7 @@ int CGateCtrl::Initialize()
     //初始化epoll
     m_pEpollevents = NULL;
     //初始化epoll socket
-    iTmpRet = InitEpollSocket((short) gateInfo->m_iPort);
+//    iTmpRet = InitEpollSocket((short) gateInfo->m_iPort);
     if (0 != iTmpRet) {
         LOG_ERROR("default", "InitEpollSocket failed! TCPserver init failed. ReusltCode = %d!", iTmpRet);
         return iTmpRet;
@@ -75,22 +77,8 @@ int CGateCtrl::Initialize()
 int CGateCtrl::Run()
 {
     LOG_NOTICE("default", "Tcpserver is runing....");
-
-    while (1) {
-        if (tcpexit == m_iRunFlag) {
-            LOG_NOTICE("default", "TcpServer exit!");
-            return 0;
-        }
-
-        if (reloadcfg == m_iRunFlag) {
-            LOG_NOTICE("default", "Reload tcpsvrd config file ok!");
-            m_iRunFlag = 0;
-        }
-
-        GetExMessage();              //读取客户端输入
-        CheckWaitSendData();         //发送缓存数据
-        CheckTimeOut();              //检测超时
-    }
+    BeginListen();
+    m_pNetWork>DispatchEvents();
     return 0;
 }
 
@@ -742,4 +730,6 @@ static void CGateCtrl::OnCnsSomeDataSend(CAcceptorEx *pAcceptorEx)
 
 static void CGateCtrl::OnCnsSomeDataRecv(CAcceptorEx *pAcceptorEx)
 {
+    unsigned int iTmpLen = 0;
+    pAcceptorEx->PopRecvData(iTmpLen);
 }

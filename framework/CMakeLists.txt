@@ -33,7 +33,6 @@ set(FRAMEWORK
         message/common.pb.h
         message/common.pb.cc
         net/statistics.h
-        net/tcp_conn.h
         net/runflag.h
         net/runflag.cpp
         net/statistics.cpp
@@ -45,6 +44,25 @@ set(FRAMEWORK
         net/message_interface.cpp
         net/server_comm_engine.cpp
         net/client_comm_engine.cpp
+        net/acceptor.h
+        net/acceptor.cpp
+        net/connector.h
+        net/connector.cpp
+        net/event_reactor.h
+        net/event_reactor.cpp
+        net/listener.h
+        net/listener.cpp
+        net/net_addr.h
+        net/net_inc.h
+        net/net_work.h
+        net/net_work.cpp
+        net/network_interface.h
+        net/ppe_signal.h
+        net/ppe_signal.cpp
+        net/socket.h
+        net/socket.cpp
+        net/buffev_interface.cpp
+        net/buffev_interface.h
         mem/sharemem.h
         mem/shm.h/
         mem/sharemem.cpp

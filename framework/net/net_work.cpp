@@ -1,17 +1,17 @@
 #include <my_macro.h>
+#include <bits/unordered_map.h>
 #include "net_addr.h"
 #include "network_interface.h"
-
-#include "connectorex.h"
-#include "acceptorex.h"
 #include "net_work.h"
 #include "ppe_signal.h"
 #include "listener.h"
 #include "connector.h"
+#include "acceptor.h"
 
 template<> CNetWork *CSingleton<CNetWork>::spSingleton = NULL;
 
-CNetWork::CNetWork() :
+CNetWork::CNetWork()
+    :
     m_pEventReactor(NULL),
     m_uGcTime(0),
     m_uCheckPingTickTime(0),
@@ -31,17 +31,17 @@ void CNetWork::Init(eNetModule netModule) {
 }
 
 void CNetWork::Release(void) {
-  for (auto it : m_mapConnectorExs) {
+  for (auto it : m_mapConnector) {
     it.second->ShutDown();
     SAFE_DELETE(it.second);
   }
-  m_mapConnectorExs.clear();
+  m_mapConnector.clear();
 
-  for (auto it : m_mapAcceptorExs) {
+  for (auto it : m_mapAcceptor) {
     it.second->ShutDown();
     SAFE_DELETE(it.second);
   }
-  m_mapAcceptorExs.clear();
+  m_mapAcceptor.clear();
   while (!m_quSystemSignals.empty()) {
     CSystemSignal *pSystemSignal = m_quSystemSignals.front();
     SAFE_DELETE(pSystemSignal);
@@ -69,20 +69,18 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa)
   sprintf(ip, inet_ntoa(sin.sin_addr));
   CAcceptor *pAcceptor = new CAcceptor(Socket, pReactor, new CNetAddr(ip, sin.sin_port));
   SOCKET socket = pAcceptor->GetSocket().GetSocket();
-  CAcceptorEx *pAcceptorEx = new CAcceptorEx(socket, pAcceptor);
-  pAcceptorEx->SetCallbackFunc(m_pOnDisconnected,
-                               m_pOnSomeDataSend,
-                               m_pOnSomeDataRecv,
-                               m_uCheckPingTickTime);
-  m_mapAcceptorExs.insert(std::make_pair(socket, pAcceptorEx));
-  m_pOnNew(socket, pAcceptorEx);
+  pAcceptor->SetCallbackFunc(m_pOnDisconnected,
+                             m_pOnSomeDataSend,
+                             m_pOnSomeDataRecv);
+  m_mapAcceptor.insert(std::make_pair(socket, pAcceptor));
+  m_pOnNew(socket, pAcceptor);
 }
 
 bool CNetWork::BeginListen(const char *szNetAddr, uint16 uPort,
-                           FuncAcceptorExOnNew pOnNew,
-                           FuncAcceptorExOnDisconnected pOnDisconnected,
-                           FuncAcceptorExOnSomeDataSend pOnSomeDataSend,
-                           FuncAcceptorExOnSomeDataRecv pOnSomeDataRecv,
+                           FuncAcceptorOnNew pOnNew,
+                           FuncAcceptorOnDisconnected pOnDisconnected,
+                           FuncAcceptorOnSomeDataSend pOnSomeDataSend,
+                           FuncAcceptorOnSomeDataRecv pOnSomeDataRecv,
                            uint32 uCheckPingTickTime) {
   m_pListener = new CListener(m_pEventReactor);
   if (m_pListener == NULL) {
@@ -106,12 +104,12 @@ void CNetWork::EndListen() {
 
 uint32 CNetWork::Connect(const char *szNetAddr,
                          uint16 uPort,
-                         FuncConnectorExOnDisconnected pOnDisconnected,
-                         FuncConnectorExOnConnectFailed pOnConnectFailed,
-                         FuncConnectorExOnConnectted pOnConnectted,
-                         FuncConnectorExOnSomeDataSend pOnSomeDataSend,
-                         FuncConnectorExOnSomeDataRecv pOnSomeDataRecv,
-                         FuncConnectorExOnPingServer pOnPingServer,
+                         FuncConnectorOnDisconnected pOnDisconnected,
+                         FuncConnectorOnConnectFailed pOnConnectFailed,
+                         FuncConnectorOnConnectted pOnConnectted,
+                         FuncConnectorOnSomeDataSend pOnSomeDataSend,
+                         FuncConnectorOnSomeDataRecv pOnSomeDataRecv,
+                         FuncConnectorOnPingServer pOnPingServer,
                          uint32 uPingTick /* = 45000 */, uint32 uTimeOut) {
   CConnector *pConnector = new CConnector(m_pEventReactor);
   CConnectorEx *pConnectorEx = new CConnectorEx(uId, pConnector);
@@ -143,8 +141,7 @@ void CNetWork::DispatchEvents() {
 }
 
 bool CNetWork::ShutDownConnectorEx(uint32 uId) {
-  Map_ConnectorExs::iterator iter = m_mapConnectorExs.find(uId);
-
+  auto iter = m_mapConnectorExs.find(uId);
   if (m_mapConnectorExs.end() != iter) {
     CConnectorEx *pConnectorEx = iter->second;
 

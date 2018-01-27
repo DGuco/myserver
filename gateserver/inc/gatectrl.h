@@ -40,7 +40,6 @@ public:
     int CreatePipe();
 
 private:
-
     //*****************Epoll***********************/
     //初始化socket
     void BeginListen();
@@ -67,13 +66,14 @@ private:
     int CheckWaitSendData();
     //向client下行数据
     int SendClientData();
+
 protected:
     static void OnAcceptCns(uint32 uId, CAcceptorEx* pAcceptorEx);
     static void OnCnsDisconnected(CAcceptorEx* pAcceptorEx);
     static void OnCnsSomeDataSend(CAcceptorEx* pAcceptorEx);
     static void OnCnsSomeDataRecv(CAcceptorEx* pAcceptorEx);
-private:
 
+private:
     int m_iRunFlag;
     time_t m_iLastTime;                             // 上次检测超时的时间
     time_t m_iNowTime;                              // 当前时间

@@ -14,45 +14,49 @@
 #include <event.h>
 #include <event2/listener.h>
 
-enum eListenerState {
-  eLS_UnListen = 0,
-  eLS_Listened,
+enum eListenerState
+{
+	eLS_UnListen = 0,
+	eLS_Listened,
 };
 
-class CListener : public IReactorHandler {
+class CListener: public IReactorHandler
+{
 public:
-  CListener(IEventReactor *pReactor);
-  virtual ~CListener(void);
-
-  bool Listen(CNetAddr &addr, FuncListenerOnAccept pFunc);
-  IEventReactor *GetReactor();
-
-  void ShutDown();
-  void Release();
-
-  bool IsListened();
-
-private:
-
-  void SetState(eListenerState eState);
-
-  bool RegisterToReactor();
-  bool UnRegisterFromReactor();
-
-  static void lcb_Accept(struct evconnlistener *listener,
-						 evutil_socket_t fd,
-						 struct sockaddr *sa,
-						 int socklen, void *arg);
-
-  void HandleInput(int Socket,struct sockaddr *sa);
+	//构造函数
+	CListener(IEventReactor *pReactor);
+	//析构函数
+	virtual ~CListener(void);
+	//监听
+	bool Listen(CNetAddr &addr, FuncListenerOnAccept pFunc);
+	//获取event_base
+	IEventReactor *GetReactor();
+	//关闭
+	void ShutDown();
+	//是否监听中
+	bool IsListened();
 
 private:
-  FuncListenerOnAccept m_pFuncOnAccept;
-  eListenerState m_eState;
-  CNetAddr m_ListenAddress;
-  IEventReactor *m_pEventReactor;
-  struct evconnlistener *m_pListener;
-  CSocket m_Socket;
-  event m_event;
+	//设置状态
+	void SetState(eListenerState eState);
+	//注册
+	bool RegisterToReactor();
+	//卸载
+	bool UnRegisterFromReactor();
+	//监听回调
+	static void lcb_Accept(struct evconnlistener *listener,
+						   evutil_socket_t fd,
+						   struct sockaddr *sa,
+						   int socklen, void *arg);
+	//处理监听
+	void HandleInput(int Socket, struct sockaddr *sa);
+private:
+	FuncListenerOnAccept m_pFuncOnAccept;
+	eListenerState m_eState;
+	CNetAddr m_ListenAddress;
+	IEventReactor *m_pEventReactor;
+	struct evconnlistener *m_pListener;
+	CSocket m_Socket;
+	event m_event;
 };
 #endif

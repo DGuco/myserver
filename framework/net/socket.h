@@ -9,51 +9,55 @@
 #define _SOCKET_H_
 
 #include <base.h>
-#include "net_inc.h"
 #include "event.h"
+#include "net_inc.h"
 
 class CNetAddr;
 
-class CSocket {
- public:
-  CSocket(SOCKET Socket);
-  CSocket(int32 nType = SOCK_STREAM, int32 nProtocolFamily = AF_INET, int32 nProtocol = 0);
-  virtual ~CSocket();
+class CSocket
+{
+public:
+	//构造函数
+	CSocket(SOCKET Socket);
+	CSocket(int32 nType = SOCK_STREAM, int32 nProtocolFamily = AF_INET, int32 nProtocol = 0);
+	//析构函数
+	~CSocket();
+	//打开
+	bool Open();
+	//关闭
+	void Close();
+	void Shutdown();
+	void ShutdownRead();
+	void ShutdownWrite();
 
-  virtual bool Open();
+	void SetNonblocking();
 
-  virtual void Close();
+	uint32 Bind(const CNetAddr &Address);
 
-  void Shutdown();
-  void ShutdownRead();
-  void ShutdownWrite();
+	bool GetLocalAddress(CNetAddr &Address) const;
+	bool GetRemoteAddress(CNetAddr &Address) const;
 
-  void SetNonblocking();
+	SOCKET GetSystemSocket() const
+	{ return m_Socket; }
 
-  uint32 Bind(const CNetAddr &Address);
+	void SetSystemSocket(SOCKET Socket)
+	{ m_Socket = Socket; }
 
-  bool GetLocalAddress(CNetAddr &Address) const;
-  bool GetRemoteAddress(CNetAddr &Address) const;
+	int GetSocketError() const;
+	SOCKET GetSocket() const;
 
-  SOCKET GetSystemSocket() const { return m_Socket; }
+	static SOCKET CreateSocket(int32 Type = SOCK_STREAM, int32 ProtocolFamily = AF_INET, int32 Protocol = 0);
+	static SOCKET CreateBindedSocket(const CNetAddr &address);
+	static void MakeSocketNonblocking(SOCKET Socket);
+	static void Address2sockaddr_in(sockaddr_in &saiAddress, const CNetAddr &Address);
 
-  void SetSystemSocket(SOCKET Socket) { m_Socket = Socket; }
+protected:
+	SOCKET m_Socket;
 
-  int GetSocketError() const;
-  SOCKET GetSocket() const;
-
-  static SOCKET CreateSocket(int32 Type = SOCK_STREAM, int32 ProtocolFamily = AF_INET, int32 Protocol = 0);
-  static SOCKET CreateBindedSocket(const CNetAddr &address);
-  static void MakeSocketNonblocking(SOCKET Socket);
-  static void Address2sockaddr_in(sockaddr_in &saiAddress, const CNetAddr &Address);
-
- protected:
-  SOCKET m_Socket;
-
- private:
-  int32 m_nType;
-  int32 m_nProtocolFamily;
-  int32 m_nProtocol;
+private:
+	int32 m_nType;
+	int32 m_nProtocolFamily;
+	int32 m_nProtocol;
 };
 
 #endif
