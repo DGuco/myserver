@@ -51,12 +51,13 @@ private:
 	//处理监听
 	void HandleInput(int Socket, struct sockaddr *sa);
 private:
-	FuncListenerOnAccept m_pFuncOnAccept;
-	eListenerState m_eState;
 	CNetAddr m_ListenAddress;
-	IEventReactor *m_pEventReactor;
-	struct evconnlistener *m_pListener;
 	CSocket m_Socket;
 	event m_event;
+
+	IEventReactor *m_pEventReactor;
+	eListenerState m_eState;
+	FuncListenerOnAccept m_pFuncOnAccept;
+	struct evconnlistener *m_pListener;
 };
 #endif

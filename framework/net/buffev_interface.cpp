@@ -6,8 +6,10 @@
 #include "buffev_interface.h"
 
 IBufferEvent::IBufferEvent()
+	: m_pReactor(NULL),
+	  m_pStBufEv(NULL)
 {
-	IBufferEvent(NULL, NULL);
+
 }
 
 IBufferEvent::IBufferEvent(IEventReactor *pReactor, bufferevent *buffevent)

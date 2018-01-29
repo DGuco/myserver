@@ -23,8 +23,6 @@ typedef struct linger LINGER;
 #define INVALID_SOCKET        -1
 #define SD_SEND            SHUT_WR
 
-#endif
-
 #define INTER_FACE struct
 
 enum EPipeDisconnectReason {

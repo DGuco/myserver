@@ -8,13 +8,12 @@
 #define _ACCEPTOR_H_
 
 #include "base.h"
-#include "network_interface.h"
+#include "buffev_interface.h"
 #include "net_inc.h"
 #include "socket.h"
 #include "event_reactor.h"
 #include "event.h"
 #include "net_addr.h"
-#include "buffev_interface.h"
 
 class CAcceptor: public IBufferEvent
 {
@@ -64,15 +63,15 @@ private:
 	void ProcessSocketError();
 
 private:
+	CSocket m_Socket;
+	CNetAddr *m_pNetAddr;
+	unsigned int m_uMaxOutBufferSize;
+	unsigned int m_uMaxInBufferSize;
+	eAcceptorState m_eState;
+
 	FuncAcceptorOnDisconnected m_pFuncOnDisconnected;
 	FuncAcceptorOnSomeDataSend m_pFuncOnSomeDataSend;
 	FuncAcceptorOnSomeDataRecv m_pFuncOnSomeDataRecv;
-
-	CSocket m_Socket;
-	CNetAddr *m_pNetAddr;
-	eAcceptorState m_eState;
-	unsigned int m_uMaxOutBufferSize;
-	unsigned int m_uMaxInBufferSize;
 };
 
 #endif

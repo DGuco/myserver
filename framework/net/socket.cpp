@@ -84,7 +84,7 @@ void CSocket::ShutdownWrite()
 //-----------------------------------------------------------------
 void CSocket::SetNonblocking()
 {
-	//ArkAst(m_Socket != INVALID_SOCKET);
+	//ArkAst(m_oSocket != INVALID_SOCKET);
 	MakeSocketNonblocking(m_Socket);
 }
 
@@ -168,7 +168,7 @@ SOCKET CSocket::GetSocket() const
 //-----------------------------------------------------------------
 uint32 CSocket::Bind(const CNetAddr &Address)
 {
-	//ArkAst(m_Socket != INVALID_SOCKET);
+	//ArkAst(m_oSocket != INVALID_SOCKET);
 
 	sockaddr_in saiAddress;
 	Address2sockaddr_in(saiAddress, Address);

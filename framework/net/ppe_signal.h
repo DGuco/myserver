@@ -10,34 +10,33 @@
 #include "network_interface.h"
 #include "event.h"
 
-class CSystemSignal : public IReactorHandler {
+class CSystemSignal: public IReactorHandler
+{
 public:
-  CSystemSignal(IEventReactor *pReactor);
-
-  ~CSystemSignal();
-
-  void SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop = false);
-
-  void Release();
-
+	//构造函数
+	CSystemSignal(IEventReactor *pReactor);
+	//析构函数
+	~CSystemSignal();
+	//设置信号回调
+	void SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop = false);
 private:
-  bool RegisterToReactor();
-
-  bool UnRegisterFromReactor();
-
-  IEventReactor *GetReactor();
-
-  void OnSignalReceive();
-
-  static void lcb_OnSignal(int fd, short event, void *arg);
-
+	//注册
+	bool RegisterToReactor();
+	//卸载
+	bool UnRegisterFromReactor();
+	//获取event_base
+	IEventReactor *GetReactor();
+	//收到信号
+	void OnSignalReceive();
+	//信号回调
+	static void lcb_OnSignal(int fd, short event, void *arg);
 private:
-  IEventReactor *m_pReactor;
-  event m_EvSignal;
-  uint32 m_uSignal;
-  void *m_pContext;
-  FuncOnSignal m_pFuncOnSignal;
-  bool m_bLoop;
+	IEventReactor *m_pReactor;
+	event m_EvSignal;
+	int m_iSignal;
+	void *m_pContext;
+	FuncOnSignal m_pFuncOnSignal;
+	bool m_bLoop;
 };
 
 #endif

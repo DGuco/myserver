@@ -400,6 +400,13 @@ const CSocketInfo& CSocketInfo::default_instance() {
   return *internal_default_instance();
 }
 
+CSocketInfo* CSocketInfo::New(::google::protobuf::Arena* arena) const {
+  CSocketInfo* n = new CSocketInfo;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void CSocketInfo::Clear() {
 // @@protoc_insertion_point(message_clear_start:CSocketInfo)
@@ -725,6 +732,13 @@ const MesHead& MesHead::default_instance() {
   return *internal_default_instance();
 }
 
+MesHead* MesHead::New(::google::protobuf::Arena* arena) const {
+  MesHead* n = new MesHead;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void MesHead::Clear() {
 // @@protoc_insertion_point(message_clear_start:MesHead)
@@ -757,8 +771,7 @@ bool MesHead::MergePartialFromCodedStream(
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-                input, add_socketinfos()));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(input, add_socketinfos()));
         } else {
           goto handle_unusual;
         }
@@ -837,9 +850,7 @@ void MesHead::SerializeWithCachedSizes(
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->socketinfos_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1,
-      this->socketinfos(static_cast<int>(i)),
-      output);
+      1, this->socketinfos(static_cast<int>(i)), output);
   }
 
   cached_has_bits = _has_bits_[0];
@@ -1016,7 +1027,7 @@ void MesHead::Swap(MesHead* other) {
 }
 void MesHead::InternalSwap(MesHead* other) {
   using std::swap;
-  CastToBase(&socketinfos_)->InternalSwap(CastToBase(&other->socketinfos_));
+  socketinfos_.InternalSwap(&other->socketinfos_);
   swap(cmd_, other->cmd_);
   swap(serial_, other->serial_);
   swap(seq_, other->seq_);
@@ -1096,6 +1107,13 @@ const CMessage& CMessage::default_instance() {
   return *internal_default_instance();
 }
 
+CMessage* CMessage::New(::google::protobuf::Arena* arena) const {
+  CMessage* n = new CMessage;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void CMessage::Clear() {
 // @@protoc_insertion_point(message_clear_start:CMessage)
@@ -1179,7 +1197,7 @@ void CMessage::SerializeWithCachedSizes(
   // required .MesHead MsgHead = 1;
   if (cached_has_bits & 0x00000001u) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, *msghead_, output);
+      1, *this->msghead_, output);
   }
 
   // optional fixed64 MsgPara = 2 [default = 0];
@@ -1206,7 +1224,7 @@ void CMessage::SerializeWithCachedSizes(
   if (cached_has_bits & 0x00000001u) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        1, *msghead_, deterministic, target);
+        1, *this->msghead_, deterministic, target);
   }
 
   // optional fixed64 MsgPara = 2 [default = 0];
@@ -1235,7 +1253,7 @@ size_t CMessage::ByteSizeLong() const {
   if (has_msghead()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *msghead_);
+        *this->msghead_);
   }
   // optional fixed64 MsgPara = 2 [default = 0];
   if (has_msgpara()) {
@@ -1394,6 +1412,13 @@ const CProxyHead& CProxyHead::default_instance() {
   return *internal_default_instance();
 }
 
+CProxyHead* CProxyHead::New(::google::protobuf::Arena* arena) const {
+  CProxyHead* n = new CProxyHead;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void CProxyHead::Clear() {
 // @@protoc_insertion_point(message_clear_start:CProxyHead)
@@ -1607,7 +1632,7 @@ void CProxyHead::SerializeWithCachedSizes(
   // optional .MesHead msgHead = 8;
   if (cached_has_bits & 0x00000001u) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      8, *msghead_, output);
+      8, *this->msghead_, output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1665,7 +1690,7 @@ void CProxyHead::SerializeWithCachedSizes(
   if (cached_has_bits & 0x00000001u) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        8, *msghead_, deterministic, target);
+        8, *this->msghead_, deterministic, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1759,7 +1784,7 @@ size_t CProxyHead::ByteSizeLong() const {
   if (has_msghead()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *msghead_);
+        *this->msghead_);
   }
 
   if (_has_bits_[0 / 32] & 192u) {
@@ -1945,6 +1970,13 @@ const CProxyMessage& CProxyMessage::default_instance() {
   return *internal_default_instance();
 }
 
+CProxyMessage* CProxyMessage::New(::google::protobuf::Arena* arena) const {
+  CProxyMessage* n = new CProxyMessage;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void CProxyMessage::Clear() {
 // @@protoc_insertion_point(message_clear_start:CProxyMessage)
@@ -2028,7 +2060,7 @@ void CProxyMessage::SerializeWithCachedSizes(
   // required .CProxyHead MsgHead = 1;
   if (cached_has_bits & 0x00000001u) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, *msghead_, output);
+      1, *this->msghead_, output);
   }
 
   // optional fixed64 MsgPara = 2 [default = 0];
@@ -2055,7 +2087,7 @@ void CProxyMessage::SerializeWithCachedSizes(
   if (cached_has_bits & 0x00000001u) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        1, *msghead_, deterministic, target);
+        1, *this->msghead_, deterministic, target);
   }
 
   // optional fixed64 MsgPara = 2 [default = 0];
@@ -2084,7 +2116,7 @@ size_t CProxyMessage::ByteSizeLong() const {
   if (has_msghead()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *msghead_);
+        *this->msghead_);
   }
   // optional fixed64 MsgPara = 2 [default = 0];
   if (has_msgpara()) {
@@ -2174,24 +2206,5 @@ void CProxyMessage::InternalSwap(CProxyMessage* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
-namespace google {
-namespace protobuf {
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::CSocketInfo* Arena::Create< ::CSocketInfo >(Arena* arena) {
-  return Arena::CreateInternal< ::CSocketInfo >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::MesHead* Arena::Create< ::MesHead >(Arena* arena) {
-  return Arena::CreateInternal< ::MesHead >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::CMessage* Arena::Create< ::CMessage >(Arena* arena) {
-  return Arena::CreateInternal< ::CMessage >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::CProxyHead* Arena::Create< ::CProxyHead >(Arena* arena) {
-  return Arena::CreateInternal< ::CProxyHead >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::CProxyMessage* Arena::Create< ::CProxyMessage >(Arena* arena) {
-  return Arena::CreateInternal< ::CProxyMessage >(arena);
-}
-}  // namespace protobuf
-}  // namespace google
 
 // @@protoc_insertion_point(global_scope)

@@ -12,10 +12,12 @@
 #include "network_interface.h"
 #include "event.h"
 #include <string>
+
 using namespace std;
 
-static enum eNetModule
+enum eNetModule
 {
+	NET_SYSTEM = -1, //由系统决定
 	NET_SELECT = 0,
 	NET_POLL = 1,
 	NET_EPOLL = 2,
@@ -29,7 +31,7 @@ public:
 	//构造函数
 	CEventReactor(eNetModule netModule);
 	//析构函数
-	virtual ~CEventReactor(void);
+	virtual ~CEventReactor();
 	//初始化event_base
 	void Init(eNetModule netModule);
 	//注册处理
@@ -49,7 +51,7 @@ private:
 	event_config *m_pEventConfig;
 
 private:
-	static string NET_MODULE[3] = {"select", "poll", "epoll"};
+	string NET_MODULE[4] = {"select", "poll", "epoll", "kqueue" /*mac os*/};
 };
 
 #endif

@@ -46,6 +46,8 @@ public:
 	bool IsConnecting();
 	//是否断开连接
 	bool IsDisconnected();
+	//获取socket
+	CSocket GetSocket() const;
 
 private:
 	//bufferEvent 无效处理
@@ -74,18 +76,18 @@ private:
 	void ProcessSocketError();
 
 private:
+	CNetAddr m_oAddr;
+	CSocket m_oSocket;
+	event m_oConnectEvent;
+	uint32 m_uMaxInBufferSize;
+	uint32 m_uMaxOutBufferSize;
+	eConnectorState m_eState;
+
 	FuncConnectorOnDisconnected m_pFuncOnDisconnected;
 	FuncConnectorOnConnectFailed m_pFuncOnConnectFailed;
 	FuncConnectorOnConnectted m_pFuncOnConnectted;
 	FuncConnectorOnSomeDataSend m_pFuncOnSomeDataSend;
 	FuncConnectorOnSomeDataRecv m_pFuncOnSomeDataRecv;
-
-	CNetAddr m_Addr;
-	CSocket m_Socket;
-	eConnectorState m_eState;
-	event m_ConnectEvent;
-	uint32 m_uMaxOutBufferSize;
-	uint32 m_uMaxInBufferSize;
 };
 
 #endif

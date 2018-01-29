@@ -4,55 +4,57 @@ CSystemSignal::CSystemSignal(IEventReactor *pReactor)
 	: m_pFuncOnSignal(NULL),
 	  m_pContext(NULL),
 	  m_pReactor(pReactor),
-	  m_bLoop(false) {
+	  m_bLoop(false)
+{
 }
 
-CSystemSignal::~CSystemSignal() {
+CSystemSignal::~CSystemSignal()
+{
 
 }
 
-IEventReactor *CSystemSignal::GetReactor() {
-  return m_pReactor;
+IEventReactor *CSystemSignal::GetReactor()
+{
+	return m_pReactor;
 }
 
-void CSystemSignal::SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop /* = false */) {
-  m_pFuncOnSignal = pFunc;
-  m_uSignal = uSignal;
-  m_pContext = pContext;
-  m_bLoop = bLoop;
-  GetReactor()->Register(this);
+void CSystemSignal::SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop /* = false */)
+{
+	m_pFuncOnSignal = pFunc;
+	m_iSignal = uSignal;
+	m_pContext = pContext;
+	m_bLoop = bLoop;
+	GetReactor()->Register(this);
 }
 
-bool CSystemSignal::RegisterToReactor() {
-  event_set(&m_EvSignal, m_uSignal, EV_SIGNAL, lcb_OnSignal, this);
-  event_base_set(static_cast<event_base *>(GetReactor()->GetEventBase()), &m_EvSignal);
-  event_add(&m_EvSignal, NULL);
+bool CSystemSignal::RegisterToReactor()
+{
+	event_set(&m_EvSignal, m_iSignal, EV_SIGNAL, lcb_OnSignal, this);
+	event_base_set(static_cast<event_base *>(GetReactor()->GetEventBase()), &m_EvSignal);
+	event_add(&m_EvSignal, NULL);
 
-  return true;
+	return true;
 }
 
-void CSystemSignal::lcb_OnSignal(int fd, short event, void *arg) {
-  CSystemSignal *pSignal = static_cast<CSystemSignal *>(arg);
-  pSignal->OnSignalReceive();
+void CSystemSignal::lcb_OnSignal(int fd, short event, void *arg)
+{
+	CSystemSignal *pSignal = static_cast<CSystemSignal *>(arg);
+	pSignal->OnSignalReceive();
 }
 
-void CSystemSignal::OnSignalReceive() {
-  if (!m_bLoop) {
-	UnRegisterFromReactor();
-  }
+void CSystemSignal::OnSignalReceive()
+{
+	if (!m_bLoop) {
+		UnRegisterFromReactor();
+	}
 
-  GH_ASSERT(m_uSignal == EVENT_SIGNAL(&m_EvSignal));
-  m_pFuncOnSignal(m_uSignal, m_pContext);
+	if (m_iSignal == EVENT_SIGNAL(&m_EvSignal)) {
+		m_pFuncOnSignal(m_iSignal, m_pContext);
+	}
 }
 
-bool CSystemSignal::UnRegisterFromReactor() {
-  event_del(&m_EvSignal);
-
-  return true;
-}
-
-void CSystemSignal::Release() {
-  GetReactor()->UnRegister(this);
-  GH_DELETE
-  this;
+bool CSystemSignal::UnRegisterFromReactor()
+{
+	event_del(&m_EvSignal);
+	return true;
 }

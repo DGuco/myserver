@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(gateserver)
-add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DMEDIUM_SIZE  -D_TGW_ -DUSE_MY_ASSERT -DLINUX)
+add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DMEDIUM_SIZE -D_TGW_ -DUSE_MY_ASSERT -DLINUX)
 #-g -D_DEBUG_ -DUSE_LOG4CPP -DSMALL_SIZE
 
 set(SOURCE_FILES
@@ -10,6 +10,7 @@ set(SOURCE_FILES
         src/gatectrl.cpp)
 
 include_directories(
+        /usr/include
         /usr/local/include/
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const

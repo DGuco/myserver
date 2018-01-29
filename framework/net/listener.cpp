@@ -1,6 +1,5 @@
 #include <sstream>
 #include "listener.h"
-#include <sys/socket.h>
 #include <my_assert.h>
 
 CListener::CListener(IEventReactor *pReactor)

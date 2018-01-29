@@ -8,6 +8,7 @@
 #define _NETWORK_INTERFACE_H_
 
 #include "base.h"
+#include "net_inc.h"
 #include <functional>
 #include <event.h>
 
@@ -18,8 +19,6 @@ class CNetAddr;
 class CAcceptor;
 class CSystemSignal;
 class CListener;
-class CConnectorEx;
-class CAcceptorEx;
 
 enum PipeResult
 {
@@ -34,10 +33,10 @@ enum PipeResult
 class IEventReactor
 {
 public:
+	virtual ~IEventReactor() = default;
 	virtual bool Register(IReactorHandler *pHandler) = 0;
 	virtual bool UnRegister(IReactorHandler *pHandler) = 0;
 	virtual event_base *GetEventBase()=0;
-	virtual void Init() = 0;
 	virtual void DispatchEvents() = 0;
 	virtual void Release() = 0;
 };
@@ -45,6 +44,7 @@ public:
 class IReactorHandler
 {
 public:
+	virtual ~IReactorHandler() = default;
 	virtual bool RegisterToReactor() = 0;
 	virtual bool UnRegisterFromReactor() = 0;
 	virtual IEventReactor *GetReactor() = 0;
