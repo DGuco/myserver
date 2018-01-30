@@ -13,7 +13,7 @@
 #include "net_addr.h"
 #include "buffev_interface.h"
 
-class CConnector: public IBufferEvent
+class CConnector: public IBufferEvent<MAX_PACKAGE_LEN>
 {
 	enum eConnectorState
 	{
@@ -79,8 +79,6 @@ private:
 	CNetAddr m_oAddr;
 	CSocket m_oSocket;
 	event m_oConnectEvent;
-	uint32 m_uMaxInBufferSize;
-	uint32 m_uMaxOutBufferSize;
 	eConnectorState m_eState;
 
 	FuncConnectorOnDisconnected m_pFuncOnDisconnected;

@@ -14,17 +14,17 @@
 #include <servertool.h>
 #include "network_interface.h"
 #include "event_reactor.h"
+#include "mythread.h"
+#include "listener.h"
 
 using namespace std;
-class CNetWork: public CSingleton<CNetWork>
+class CNetWork: CSingleton<CNetWork>
 {
 public:
 	//构造函数
-	CNetWork();
+	CNetWork(eNetModule netModule);
 	//析构函数
 	virtual ~CNetWork();
-	//初始化
-	void Init(eNetModule netModule);
 	//开始监听
 	bool BeginListen(const char *szNetAddr,
 					 uint16 uPort,

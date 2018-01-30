@@ -5,9 +5,13 @@ add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DMEDIUM_SIZE -D_TGW_ -DUSE_MY_ASSERT -D
 
 set(SOURCE_FILES
         main.cpp
-        inc/gatedef.h
-        inc/gatectrl.h
-        src/gatectrl.cpp)
+        inc/gate_def.h
+        inc/gate_ctrl.h
+        src/gate_ctrl.cpp
+        inc/c2s_handle.h
+        src/c2s_handle.cpp
+        src/s2c_handle.cpp
+        inc/s2c_handle.h)
 
 include_directories(
         /usr/include

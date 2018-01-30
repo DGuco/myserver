@@ -23,10 +23,10 @@
 #define MAX_PACKAGE_LEN    (1024*60)        // 单个包的最大长度
 #define MAX_BROADCAST_NUM    (1000)            // 单词最大广播数量
 #define PIPE_SIZE            (0x1000000)    // 共享内存管道大小 16M
-#define BUFF_LENGTH         (1024*30)   // 暂定30K大小
 
-#define RECVBUFLENGTH        (1024*1024*6)    // 接收缓冲区大小
-#define POSTBUFLENGTH        (1024*1024*6)    // 发送缓冲区大小
+#define RECVBUFLENGTH        (1024*1024*6)        // 接收缓冲区大小
+#define POSTBUFLENGTH        (1024*1024*6)        // 发送缓冲区大小
+#define RECV_BUF_LEN          (8 * 1024)   // 接收客户端信息的缓冲区
 
 #define SECOND_ABOVE_CONVERSION_UNIT    60                // 秒以上换算单位
 #define SECOND_UNDER_CONVERSION_UNIT    1000            // 秒以下换算单位

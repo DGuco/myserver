@@ -1,11 +1,8 @@
 #include <my_assert.h>
 #include "connector.h"
-#include "../../gateserver/inc/gatedef.h"
 
 CConnector::CConnector(IEventReactor *pReactor)
 	: IBufferEvent(pReactor, NULL),
-	  m_uMaxInBufferSize(RECVBUFLENGTH),
-	  m_uMaxOutBufferSize(POSTBUFLENGTH),
 	  m_eState(eCS_Disconnected),
 	  m_pFuncOnDisconnected(NULL),
 	  m_pFuncOnConnectFailed(NULL),

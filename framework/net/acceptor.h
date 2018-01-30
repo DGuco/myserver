@@ -15,7 +15,8 @@
 #include "event.h"
 #include "net_addr.h"
 
-class CAcceptor: public IBufferEvent
+
+class CAcceptor: public IBufferEvent<RECV_BUF_LEN>
 {
 	enum eAcceptorState
 	{
@@ -65,8 +66,6 @@ private:
 private:
 	CSocket m_Socket;
 	CNetAddr *m_pNetAddr;
-	unsigned int m_uMaxOutBufferSize;
-	unsigned int m_uMaxInBufferSize;
 	eAcceptorState m_eState;
 
 	FuncAcceptorOnDisconnected m_pFuncOnDisconnected;

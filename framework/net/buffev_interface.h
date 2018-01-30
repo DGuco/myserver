@@ -10,6 +10,7 @@
 
 #include "network_interface.h"
 
+template<unsigned int BUFF_LEN>
 class IBufferEvent: public IReactorHandler
 {
 public:
@@ -21,8 +22,7 @@ public:
 	//发送数据
 	PipeResult Send(const void *pData, unsigned int uSize);
 	//获取数据(返回读取数据长度)
-	unsigned int RecvData(evbuffer *buff);
-	unsigned int RecvData(char *data, unsigned int size);
+	unsigned int RecvData(unsigned int size);
 	//获取读缓冲区数据长度
 	unsigned int GetRecvDataSize();
 	//获取写缓冲区数据长度
@@ -54,6 +54,9 @@ protected:
 	bufferevent *m_pStBufEv;
 	unsigned int m_uMaxOutBufferSize;
 	unsigned int m_uMaxInBufferSize;
+private:
+	int m_iRecvBytes;
+	BYTE m_abyRecvBuffer[BUFF_LEN];
 };
 
 

@@ -3,15 +3,14 @@
 #include "network_interface.h"
 #include "net_work.h"
 #include "ppe_signal.h"
-#include "listener.h"
 #include "connector.h"
 #include "acceptor.h"
 
 template<> CNetWork *CSingleton<CNetWork>::spSingleton = NULL;
 
-CNetWork::CNetWork()
+CNetWork::CNetWork(eNetModule netModule)
 	:
-	m_pEventReactor(NULL),
+	m_pEventReactor(new CEventReactor(netModule)),
 	m_uGcTime(0),
 	m_uCheckPingTickTime(0),
 	m_pListener(NULL),
@@ -43,11 +42,6 @@ CNetWork::~CNetWork(void)
 	OnTick();
 	SAFE_DELETE(m_pEventReactor);
 
-}
-
-void CNetWork::Init(eNetModule netModule)
-{
-	m_pEventReactor = new CEventReactor(netModule);
 }
 
 void CNetWork::SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop)
@@ -221,3 +215,4 @@ PipeResult CNetWork::ConnectorSendData(uint32 uId, const void *pData, uint32 uSi
 	}
 	return ePR_Disconnected;
 }
+

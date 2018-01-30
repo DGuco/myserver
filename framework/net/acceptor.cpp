@@ -8,8 +8,6 @@ CAcceptor::CAcceptor(SOCKET socket,
 					 CNetAddr *netAddr)
 	: IBufferEvent(pReactor, NULL),
 	  m_pNetAddr(netAddr),
-	  m_uMaxOutBufferSize(POSTBUFLENGTH),
-	  m_uMaxInBufferSize(RECVBUFLENGTH),
 	  m_eState(eAS_Disconnected),
 	  m_pFuncOnDisconnected(NULL),
 	  m_pFuncOnSomeDataSend(NULL),

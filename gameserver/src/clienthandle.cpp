@@ -487,7 +487,7 @@ void CClientHandle::DisconnectClient(int iSocket,
 //    pucTmpBuff += unRet;
 //    unTmpLen += unRet;
 //
-//    unRet = mS2CPipe->AppendOneCode(abyTmpCodeBuff, unTmpLen);
+//    unRet = m_pS2CPipe->AppendOneCode(abyTmpCodeBuff, unTmpLen);
 //    if (unRet < 0)
 //    {
 //        LOG_ERROR("default", "[%s : %d : %s] AppendOneCode failed, tRet = %d.",
