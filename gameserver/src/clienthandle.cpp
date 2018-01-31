@@ -67,7 +67,7 @@ int CClientHandle::Initialize()
 int CClientHandle::SendResponse(Message* pMessage,CPlayer* pPlayer) {
     MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
     char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
-    MSG_LEN_TYPE unTmpCodeLength = sizeof(aTmpCodeBuf);
+    PACK_LEN unTmpCodeLength = sizeof(aTmpCodeBuf);
 
     MesHead pTmpHead;
     CSocketInfo* pTmpSocket = pTmpHead.mutable_socketinfos()->Add();
@@ -85,13 +85,13 @@ int CClientHandle::SendResponse(Message* pMessage,CPlayer* pPlayer) {
 
     tmpPackage.SetDeal(false);
     // 是否需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
+    int iRet = CClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
                                                         unTmpCodeLength,
                                                         &pTmpHead,
                                                         pMessage);
     if (iRet != 0)
     {
-        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertGameServerMessageToStream failed.");
+        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, CClientCommEngine::ConvertGameServerMessageToStream failed.");
     }
 
     iRet = mS2CPipe->AppendOneCode((BYTE*)aTmpCodeBuf, unTmpCodeLength);
@@ -108,16 +108,16 @@ int CClientHandle::SendResponse(Message* pMessage,CPlayer* pPlayer) {
 int CClientHandle::SendResponse(Message* pMessage,MesHead* mesHead) {
     MY_ASSERT((pMessage != NULL && mesHead != NULL), return -1);
     char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
-    MSG_LEN_TYPE unTmpCodeLength = sizeof(aTmpCodeBuf);
+    PACK_LEN unTmpCodeLength = sizeof(aTmpCodeBuf);
 
     // 是否需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
+    int iRet = CClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
                                                      unTmpCodeLength,
                                                      mesHead,
                                                      pMessage);
     if (iRet != 0)
     {
-        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertGameServerMessageToStream failed.");
+        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, CClientCommEngine::ConvertGameServerMessageToStream failed.");
     }
 
     iRet = mS2CPipe->AppendOneCode((BYTE*)aTmpCodeBuf, unTmpCodeLength);
@@ -172,13 +172,13 @@ int CClientHandle::Push(int cmd,Message* pMessage, stPointList* pTeamList)
     unsigned char aTmpCodeBuf[MAX_PACKAGE_LEN] = { 0 };
     unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
     // 是否需要加密，在这里修改参数
-    int iRet = ClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
+    int iRet = CClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
                                                         unTmpCodeLength,
                                                         &pTmpHead,
                                                         pMessage);
     if (iRet != 0)
     {
-        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, ClientCommEngine::ConvertGameServerMessageToStream failed.");
+        MY_ASSERT_STR(0, return -2, "CClientHandle::Send failed, CClientCommEngine::ConvertGameServerMessageToStream failed.");
     }
 
     iRet = mS2CPipe->AppendOneCode(aTmpCodeBuf, unTmpCodeLength);
@@ -193,7 +193,7 @@ int CClientHandle::Recv()
 {
     BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] =
             { 0 };
-    MSG_LEN_TYPE iTmpCodeLength = sizeof(abyTmpCodeBuf);
+    PACK_LEN iTmpCodeLength = sizeof(abyTmpCodeBuf);
 
     // 从共享内存管道提取消息
     int iRet = mC2SPipe->GetHeadCode((BYTE *) abyTmpCodeBuf,
@@ -218,12 +218,12 @@ int CClientHandle::Recv()
     {
         return iRet;
     }
-    ClientCommEngine::CopyMesHead(&tmpMsgHead,tmpMessage.mutable_msghead());
+    CClientCommEngine::CopyMesHead(&tmpMsgHead,tmpMessage.mutable_msghead());
     CMessageDispatcher::GetSingletonPtr()->ProcessClientMessage(&tmpMessage);
     return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pCSHead, CMessage* pMsg)
+int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, PACK_LEN& nLen, MesHead* pCSHead, CMessage* pMsg)
 {
     //长度小于消息头的长度+数据总长度+字节对齐长度
     if (!pCodeBuff || nLen < int(pCSHead->ByteSize() + (sizeof(unsigned short) * 2)))
@@ -231,7 +231,7 @@ int CClientHandle::DecodeNetMsg(BYTE* pCodeBuff, MSG_LEN_TYPE& nLen, MesHead* pC
         return ClienthandleErrCode::CLIENTHANDLE_SMALL_LENGTH;
     }
 
-    if (ClientCommEngine::ConvertStreamToMessage(pCodeBuff,
+    if (CClientCommEngine::ConvertStreamToMessage(pCodeBuff,
                                                 nLen,
                                                 pCSHead,
                                                 pMsg,

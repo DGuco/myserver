@@ -9,6 +9,7 @@ CAcceptor::CAcceptor(SOCKET socket,
 	: IBufferEvent(pReactor, NULL),
 	  m_pNetAddr(netAddr),
 	  m_eState(eAS_Disconnected),
+	  m_tCreateTime(GetMSTime()),
 	  m_pFuncOnDisconnected(NULL),
 	  m_pFuncOnSomeDataSend(NULL),
 	  m_pFuncOnSomeDataRecv(NULL)
@@ -43,6 +44,11 @@ void CAcceptor::SetCallbackFunc(FuncAcceptorOnDisconnected pOnDisconnected,
 bool CAcceptor::IsConnected()
 {
 	return m_eState == eAS_Connected;
+}
+
+time_t CAcceptor::GetCreateTime()
+{
+	return m_tCreateTime;
 }
 
 void CAcceptor::lcb_OnPipeRead(struct bufferevent *bev, void *arg)

@@ -134,7 +134,7 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
     pbmsg_setmessagehead(pTmpHead, CMsgExecuteSqlRequest::MsgID );
     if (mesHead != NULL)
     {
-        ClientCommEngine::CopyMesHead(mesHead,pTmpHead->mutable_msghead());
+        CClientCommEngine::CopyMesHead(mesHead,pTmpHead->mutable_msghead());
     }
 
     tmpMsgSqlRqt.set_logictype(nLogicType);
@@ -180,7 +180,7 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
     pbmsg_setmessagehead(pTmpHead, CMsgExecuteSqlRequest::MsgID );
     if (mesHead != NULL)
     {
-        ClientCommEngine::CopyMesHead(mesHead,pTmpHead->mutable_msghead());
+        CClientCommEngine::CopyMesHead(mesHead,pTmpHead->mutable_msghead());
     }
 
     tmpMsgSqlRqt.set_logictype(nLogicType);

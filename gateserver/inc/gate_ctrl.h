@@ -31,6 +31,7 @@ public:
 	//run
 	int Run();
 private:
+	CNetWork *m_pNetWork;
 	CC2sHandle *m_pC2sHandle;
 	CS2cHandle *m_pS2cHandle;
 };

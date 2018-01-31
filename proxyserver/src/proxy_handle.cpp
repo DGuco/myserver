@@ -205,18 +205,18 @@ int CProxyHandle::TransferOneCode(short nCodeLength, BYTE* pbyCode)
                 // keepalive的包长度一般都很短
                 char message_buffer[1024];
 
-                MSG_LEN_TYPE unHeadLen = stRetHead.ByteSize();
-                MSG_LEN_TYPE unAddLen = ((6 + unHeadLen) % 8);
+                PACK_LEN unHeadLen = stRetHead.ByteSize();
+                PACK_LEN unAddLen = ((6 + unHeadLen) % 8);
                 if (unAddLen > 0)
                 {
                     unAddLen = (8 - unAddLen);
                 }
-                MSG_LEN_TYPE unTotalLen = (unHeadLen + 6 + unAddLen);
+                PACK_LEN unTotalLen = (unHeadLen + 6 + unAddLen);
 
-                int typeLen = sizeof(MSG_LEN_TYPE);
-                *((MSG_LEN_TYPE*) message_buffer) = unTotalLen;
-                *((MSG_LEN_TYPE*) (message_buffer + typeLen * 1)) = unAddLen;
-                *((MSG_LEN_TYPE*) (message_buffer + typeLen * 2)) = unHeadLen;
+                int typeLen = sizeof(PACK_LEN);
+                *((PACK_LEN*) message_buffer) = unTotalLen;
+                *((PACK_LEN*) (message_buffer + typeLen * 1)) = unAddLen;
+                *((PACK_LEN*) (message_buffer + typeLen * 2)) = unHeadLen;
 
                 if (stRetHead.SerializeToArray((message_buffer + 6), sizeof(message_buffer) - 6) == false)
                 {

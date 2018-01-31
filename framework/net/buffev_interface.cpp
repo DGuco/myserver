@@ -5,30 +5,27 @@
 #include <my_assert.h>
 #include "buffev_interface.h"
 
-template<unsigned int RECV_BUFFLEN>
 IBufferEvent::IBufferEvent()
 	: m_pReactor(NULL),
 	  m_pStBufEv(NULL),
 	  m_uMaxOutBufferSize(MAX_PACKAGE_LEN),
 	  m_uMaxInBufferSize(MAX_PACKAGE_LEN),
-	  m_iRecvBytes(0)
+	  m_uRecvPackLen(0)
 {
 
 }
 
-template<unsigned int RECV_BUFFLEN>
 IBufferEvent::IBufferEvent(IEventReactor *pReactor,
 						   bufferevent *buffevent)
 	: m_pReactor(pReactor),
 	  m_pStBufEv(buffevent),
 	  m_uMaxOutBufferSize(MAX_PACKAGE_LEN),
 	  m_uMaxInBufferSize(MAX_PACKAGE_LEN),
-	  m_iRecvBytes(0)
+	  m_uRecvPackLen(0)
 {
 
 }
 
-template<unsigned int RECV_BUFFLEN>
 IBufferEvent::~IBufferEvent()
 {
 	if (m_pStBufEv != NULL) {
@@ -36,7 +33,6 @@ IBufferEvent::~IBufferEvent()
 	}
 }
 
-template<unsigned int RECV_BUFFLEN>
 PipeResult IBufferEvent::Send(const void *pData, unsigned int uSize)
 {
 	if (uSize > m_uMaxOutBufferSize) {
@@ -48,14 +44,23 @@ PipeResult IBufferEvent::Send(const void *pData, unsigned int uSize)
 	return ePR_OK;
 }
 
-template<unsigned int RECV_BUFFLEN>
-unsigned int IBufferEvent::RecvData(unsigned int size)
+unsigned int IBufferEvent::RecvData(char *data, unsigned int size)
 {
 	MY_ASSERT(IsEventBuffAvailable(), return 0);
-	return bufferevent_read(m_pStBufEv, m_abyRecvBuffer + m_iRecvBytes, size);
+	return bufferevent_read(m_pStBufEv, data, size);
 }
 
-template<unsigned int RECV_BUFFLEN>
+PACK_LEN IBufferEvent::GetRecvPackLen()
+{
+	//包头前两个字节为数据总长度，如果数据长度小于两个字节返回0
+	if (GetRecvDataSize() < sizeof(PACK_LEN)) {
+		return 0;
+	}
+	RecvData((char *) (&m_uRecvPackLen), sizeof(PACK_LEN));
+	m_uRecvPackLen = ntohs(m_uRecvPackLen);
+	return m_uRecvPackLen;
+}
+
 unsigned int IBufferEvent::GetRecvDataSize()
 {
 	MY_ASSERT(IsEventBuffAvailable(), return 0);
@@ -64,7 +69,6 @@ unsigned int IBufferEvent::GetRecvDataSize()
 	return evbuffer_get_length(in);
 }
 
-template<unsigned int RECV_BUFFLEN>
 unsigned int IBufferEvent::GetSendDataSize()
 {
 	MY_ASSERT(IsEventBuffAvailable(), return 0);
@@ -73,7 +77,6 @@ unsigned int IBufferEvent::GetSendDataSize()
 	return evbuffer_get_length(out);
 }
 
-template<unsigned int RECV_BUFFLEN>
 void IBufferEvent::SetMaxSendBufSize(unsigned int uSize)
 {
 	MY_ASSERT(IsEventBuffAvailable() && uSize > 0, return;);
@@ -87,7 +90,6 @@ unsigned int IBufferEvent::GetMaxSendBufSize()
 	return m_uMaxOutBufferSize;
 }
 
-template<unsigned int RECV_BUFFLEN>
 void IBufferEvent::SetMaxRecvBufSize(unsigned int uSize)
 {
 	MY_ASSERT(IsEventBuffAvailable() && uSize > 0, return;);
@@ -95,7 +97,6 @@ void IBufferEvent::SetMaxRecvBufSize(unsigned int uSize)
 	bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);
 }
 
-template<unsigned int RECV_BUFFLEN>
 bool IBufferEvent::IsEventBuffAvailable()
 {
 	if (m_pStBufEv == NULL) {
@@ -105,13 +106,21 @@ bool IBufferEvent::IsEventBuffAvailable()
 	return true;
 }
 
-template<unsigned int RECV_BUFFLEN>
+PACK_LEN IBufferEvent::GetRecvPackLen() const
+{
+	return m_uRecvPackLen;
+}
+
+void IBufferEvent::CurrentPackRecved()
+{
+	m_uRecvPackLen = 0;
+}
+
 unsigned int IBufferEvent::GetMaxRecvBufSize()
 {
 	return m_uMaxInBufferSize;
 }
 
-template<unsigned int RECV_BUFFLEN>
 bool IBufferEvent::RegisterToReactor()
 {
 	m_pStBufEv = bufferevent_socket_new(GetReactor()->GetEventBase(),
@@ -124,13 +133,11 @@ bool IBufferEvent::RegisterToReactor()
 	return true;
 }
 
-template<unsigned int RECV_BUFFLEN>
 IEventReactor *IBufferEvent::GetReactor()
 {
 	return m_pReactor;
 }
 
-template<unsigned int RECV_BUFFLEN>
 bool IBufferEvent::UnRegisterFromReactor()
 {
 	bufferevent_disable(m_pStBufEv, EV_READ | EV_WRITE);

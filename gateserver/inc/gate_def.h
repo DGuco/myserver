@@ -124,27 +124,6 @@ typedef struct _TConfig
     int          m_iCoreFileSize;						// core文件大小
 } TConfig;
 
-
-// 和客户端通讯的socket结构
-typedef struct _TSocketInfo
-{
-    int		m_iSocket;									// socket句柄
-    int		m_iSocketType;								// socket类型：监听socket、连接socket
-    int		m_iSocketFlag;								// socket标志：是否收包
-    int		m_iRecvBytes;								// 接收的字节数
-    char	m_szClientIP[IP_LENGTH];			            // 客户端IP地址
-    char	m_szMsgBuf[RECV_BUF_LEN];		            // 存储发送给gamesvrd的消息
-    time_t	m_tCreateTime;							    // socket的创建时间
-    int		m_iSrcIP;									// 由tcpsvrd发给gamesvrd，记录了该socket的创建时间
-    int		m_iDstIP;									// 由gamesvrd返回给tcpsvrd，值和m_iSrcIP相同
-    short	m_nSrcPort;									// 由tcpsvrd发给gamesvrd，记录了该socket在数组中的位置
-    short	m_nDstPort;									// 由gamesvrd返回给tcpsvrd，值和m_iSrcPort
-    time_t	m_tStamp;									// 接收到数据包的时间戳
-    int		m_iSendFlag;								    // 标识mainsvrd是否向其发送了包
-    int		m_iConnectedPort;
-    int		m_iUin;										// 用户唯一标识
-} TSocketInfo;
-
 typedef struct
 {
     int     m_iConnIncoming;

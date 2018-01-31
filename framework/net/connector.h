@@ -13,7 +13,7 @@
 #include "net_addr.h"
 #include "buffev_interface.h"
 
-class CConnector: public IBufferEvent<MAX_PACKAGE_LEN>
+class CConnector: public IBufferEvent
 {
 	enum eConnectorState
 	{

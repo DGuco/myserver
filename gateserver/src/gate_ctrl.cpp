@@ -9,15 +9,19 @@
 #include "../inc/gate_ctrl.h"
 
 CGateCtrl::~CGateCtrl()
-	: m_pC2sHandle(new CC2sHandle),
+	: m_pNetWork(new CNetWork(eNetModule::NET_EPOLL)),
+	  m_pC2sHandle(new CC2sHandle),
 	  m_pS2cHandle(new CS2cHandle)
 {
 }
 
 int CGateCtrl::Run()
 {
+	m_pC2sHandle->CreateThread();
+	m_pS2cHandle->CreateThread();
 	while (true) {
 		m_pS2cHandle->CheckData();
+		usleep(1000);
 	}
 }
 
@@ -31,7 +35,5 @@ int CGateCtrl::PrepareToRun()
 		LOG_ERROR("default", "Get TcpserverConfig failed");
 		exit(0);
 	}
-	m_pC2sHandle->CreateThread();
-	m_pS2cHandle->CreateThread();
 	return 0;
 }

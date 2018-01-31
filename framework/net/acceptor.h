@@ -16,7 +16,7 @@
 #include "net_addr.h"
 
 
-class CAcceptor: public IBufferEvent<RECV_BUF_LEN>
+class CAcceptor: public IBufferEvent
 {
 	enum eAcceptorState
 	{
@@ -43,6 +43,8 @@ public:
 	void ShutDown();
 	//当前是否连接
 	bool IsConnected();
+	//获取创建时间
+	time_t GetCreateTime();
 
 private:
 	//bufferEvent 无效处理
@@ -67,6 +69,7 @@ private:
 	CSocket m_Socket;
 	CNetAddr *m_pNetAddr;
 	eAcceptorState m_eState;
+	time_t m_tCreateTime;
 
 	FuncAcceptorOnDisconnected m_pFuncOnDisconnected;
 	FuncAcceptorOnSomeDataSend m_pFuncOnSomeDataSend;

@@ -387,7 +387,7 @@ int CDBHandle::ProcessExecuteSqlRequest( CProxyMessage* pMsg )
 		{
 			if (pMsg->mutable_msghead()->has_msghead())
 			{
-				ClientCommEngine::CopyMesHead(pMsg->mutable_msghead()->mutable_msghead(),
+				CClientCommEngine::CopyMesHead(pMsg->mutable_msghead()->mutable_msghead(),
 											  pTmpHead->mutable_msghead());
 			}
 		}

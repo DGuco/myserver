@@ -6,6 +6,7 @@
 #ifndef SERVER_S2C_THREAD_H
 #define SERVER_S2C_THREAD_H
 
+#include <message.pb.h>
 #include "codequeue.h"
 #include "mythread.h"
 
@@ -25,12 +26,23 @@ public:
 	bool IsToBeBlocked() override;
 	//是否有数据
 	bool CheckData();
+	//检测发送队列
+	void CheckWaitSendData();
+	//向client下行数据
+	int SendClientData();
+
+private:
 	//接收gameserver 数据
 	int RecvServerData();
 private:
 	// game --> tcp通信共享内存管道
 	CCodeQueue *m_pS2CPipe;
-	char m_szSCMsgBuf[MAX_PACKAGE_LEN];                 // 下行客户端发送消息缓冲区
+	int m_iSendIndex;
+	bool m_bHasRecv;
+	unsigned short m_iSCIndex;                 // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标
+	short m_nSCLength;                         // 实际发送的数据长度
+	char m_acSCMsgBuf[MAX_PACKAGE_LEN];        // 客户端下行发送消息缓冲区
+	MesHead m_oMesHead;                        // 需要转发的消息头
 };
 
 

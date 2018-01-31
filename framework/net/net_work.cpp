@@ -44,7 +44,7 @@ CNetWork::~CNetWork(void)
 
 }
 
-void CNetWork::SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop)
+void CNetWork::SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop)
 {
 	CSystemSignal *pSystemSignal = new CSystemSignal(m_pEventReactor);
 	pSystemSignal->SetCallBackSignal(uSignal, pFunc, pContext, bLoop);
@@ -64,11 +64,17 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa)
 	char ip[100];
 	sprintf(ip, inet_ntoa(sin.sin_addr));
 	CAcceptor *pAcceptor = new CAcceptor(Socket, pReactor, new CNetAddr(ip, sin.sin_port));
-	SOCKET socket = pAcceptor->GetSocket().GetSocket();
 	pAcceptor->SetCallbackFunc(m_pOnDisconnected,
 							   m_pOnSomeDataSend,
 							   m_pOnSomeDataRecv);
-	m_mapAcceptor.insert(std::make_pair(socket, pAcceptor));
+	SOCKET socket = pAcceptor->GetSocket().GetSocket();
+	{
+#ifdef _POSIX_MT_
+		std::lock_guard<std::mutex> lock(m_stMutex);
+#endif
+		m_mapAcceptor.insert(std::make_pair(socket, pAcceptor));
+	}
+
 	m_pOnNew(socket, pAcceptor);
 }
 
@@ -77,7 +83,7 @@ bool CNetWork::BeginListen(const char *szNetAddr, uint16 uPort,
 						   FuncAcceptorOnDisconnected pOnDisconnected,
 						   FuncAcceptorOnSomeDataSend pOnSomeDataSend,
 						   FuncAcceptorOnSomeDataRecv pOnSomeDataRecv,
-						   uint32 uCheckPingTickTime)
+						   unsigned int uCheckPingTickTime)
 {
 	m_pListener = new CListener(m_pEventReactor);
 	if (m_pListener == NULL) {
@@ -108,7 +114,7 @@ int CNetWork::Connect(const char *szNetAddr,
 					  FuncConnectorOnSomeDataSend pOnSomeDataSend,
 					  FuncConnectorOnSomeDataRecv pOnSomeDataRecv,
 					  FuncConnectorOnPingServer pOnPingServer,
-					  uint32 uPingTick /* = 45000 */, uint32 uTimeOut)
+					  unsigned int uPingTick /* = 45000 */, unsigned int uTimeOut)
 {
 	CConnector *pConnector = new CConnector(m_pEventReactor);
 	pConnector->SetCallbackFunc(std::move(pOnDisconnected),
@@ -123,11 +129,16 @@ int CNetWork::Connect(const char *szNetAddr,
 	time.tv_usec = 0;
 	pConnector->Connect(addr, &time);
 	int fd = pConnector->GetSocket().GetSocket();
-	m_mapConnector.insert(std::make_pair(fd, pConnector));
+	{
+#ifdef _POSIX_MT_
+		std::lock_guard<std::mutex> lock(m_stMutex);
+#endif
+		m_mapConnector.insert(std::make_pair(fd, pConnector));
+	}
 	return fd;
 }
 
-uint32 CNetWork::GetConnectorExPingValue(uint32 uId)
+unsigned int CNetWork::GetConnectorExPingValue(unsigned int uId)
 {
 	CConnector *pConnector = FindConnector(uId);
 	if (pConnector) {
@@ -144,12 +155,13 @@ void CNetWork::DispatchEvents()
 	m_pEventReactor->DispatchEvents();
 }
 
-bool CNetWork::ShutDownAcceptor(uint32 uId)
+bool CNetWork::ShutDownAcceptor(unsigned int uId)
 {
 	auto iter = m_mapAcceptor.find(uId);
 	if (m_mapAcceptor.end() != iter) {
 		CAcceptor *pAcceptor = iter->second;
 		pAcceptor->ShutDown();
+		SAFE_DELETE(pAcceptor);
 		m_mapAcceptor.erase(iter);
 		return true;
 	}
@@ -158,12 +170,13 @@ bool CNetWork::ShutDownAcceptor(uint32 uId)
 	}
 }
 
-bool CNetWork::ShutDownConnectorEx(uint32 uId)
+bool CNetWork::ShutDownConnectorEx(unsigned int uId)
 {
 	auto iter = m_mapConnector.find(uId);
 	if (m_mapConnector.end() != iter) {
 		CConnector *pConnector = iter->second;
 		pConnector->ShutDown();
+		SAFE_DELETE(pConnector);
 		m_quIdleConnectorExs.push(pConnector);
 		m_mapConnector.erase(iter);
 		return true;
@@ -206,7 +219,7 @@ CAcceptor *CNetWork::FindAcceptor(unsigned int uId)
 	}
 }
 
-PipeResult CNetWork::ConnectorSendData(uint32 uId, const void *pData, uint32 uSize)
+PipeResult CNetWork::ConnectorSendData(unsigned int uId, const void *pData, unsigned int uSize)
 {
 	CConnector *pConnectorEx = FindConnector(uId);
 	if (pConnectorEx) {

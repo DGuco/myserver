@@ -27,17 +27,24 @@ public:
 private:
 	//开始监听
 	bool BeginListen();
+	//客户端断开连接
+private:
+	//清除socket
+	static void ClearSocket(CAcceptor *pAcceptor, short iError);
+	//通知gameserver client 断开连接
+	static void DisConnect(CAcceptor *pAcceptor, short iError);
 protected:
 	//客户端连接还回调
-	static void OnAcceptCns(uint32 uId, CAcceptor *pAcceptorEx);
+	static void OnAcceptCns(uint32 uId, CAcceptor *pAcceptor);
 	//客户端断开连接回调
-	static void OnCnsDisconnected(CAcceptor *pAcceptorEx);
+	static void OnCnsDisconnected(CAcceptor *pAcceptor);
 	//发送数据回调
-	static void OnCnsSomeDataSend(CAcceptor *pAcceptorEx);
+	static void OnCnsSomeDataSend(CAcceptor *pAcceptor);
 	//客户端上行数据回调
-	static void OnCnsSomeDataRecv(CAcceptor *pAcceptorEx);
+	static void OnCnsSomeDataRecv(CAcceptor *pAcceptor);
 private:
-	CCodeQueue *m_pC2SPipe;
-	CNetWork *m_pNetWork;
+	static CCodeQueue *m_pC2SPipe;
+	static char m_acRecvBuff[MAX_PACKAGE_LEN];
+	static char m_acSendBuff[MAX_PACKAGE_LEN];
 };
 #endif //SERVER_C2S_THREAD_H
