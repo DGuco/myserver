@@ -37,7 +37,7 @@
 
 #define IP_LENGTH					20					// IP地址长度
 
-#define MAX_SEND_PKGS_ONCE			100				// 一次从内存管道中取的最大的数据包
+#define sMAX_SEND_PKGS_ONCE			100				// 一次从内存管道中取的最大的数据包
 
 
 #define MAIN_HAVE_SEND_DATA			1					// 后端主服务器发送过数据给某Socket

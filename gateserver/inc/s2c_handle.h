@@ -10,7 +10,7 @@
 #include "codequeue.h"
 #include "mythread.h"
 
-class CS2cHandle: CMyThread
+class CS2cHandle: public CMyThread
 {
 public:
 	//构造函数
@@ -25,7 +25,7 @@ public:
 	//线程阻塞条件
 	bool IsToBeBlocked() override;
 	//是否有数据
-	bool CheckData();
+	void CheckData();
 	//检测发送队列
 	void CheckWaitSendData();
 	//向client下行数据

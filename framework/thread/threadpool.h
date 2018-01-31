@@ -25,13 +25,15 @@ public:
 	CThreadPool();
 	CThreadPool(size_t);
 	~CThreadPool();
+	CThreadPool(const CThreadPool &) = delete;
+	const CThreadPool &operator=(CThreadPool &) = delete;
 	//向后添加任务
 	template<class F, class... Args>
 	auto PushTaskBack(F &&f, Args &&... args);
 	//向前添加任务
 	template<class F, class... Args>
 	auto PushTaskFront(F &&f, Args &&... args);
-	bool IsThisThreadIn();
+	bool IsInThisThread();
 	bool IsThisThreadIn(thread *thrd);
 
 private:
@@ -78,7 +80,7 @@ inline CThreadPool::~CThreadPool()
 	}
 }
 
-bool CThreadPool::IsThisThreadIn()
+bool CThreadPool::IsInThisThread()
 {
 	auto it = m_mWorkers.find(this_thread::get_id());
 	return it != m_mWorkers.end();
@@ -130,8 +132,8 @@ auto CThreadPool::PushTaskBack(F &&f, Args &&... args)
 		std::unique_lock<std::mutex> lock(m_mutex);
 		if (m_stop)
 			throw std::runtime_error("enqueue on stopped ThreadPool");
-		//当前没有任务
-		if (IsThisThreadIn() && m_qTasks.size() <= 0) {
+		//如果在当前线程内，则直接执行
+		if (IsInThisThread()) {
 			lock.unlock();
 			(*task)();
 		}
@@ -162,7 +164,8 @@ auto CThreadPool::PushTaskFront(F &&f, Args &&... args)
 		std::unique_lock<std::mutex> lock(m_mutex);
 		if (m_stop)
 			throw std::runtime_error("ThreadPool has stopped");
-		if (IsThisThreadIn()) {
+		//如果在当前线程内，则直接执行
+		if (IsInThisThread()) {
 			lock.unlock();
 			(*task)();
 		}

@@ -6,9 +6,11 @@
 #include <my_assert.h>
 #include <commondef.h>
 #include <acceptor.h>
+#include <client_comm_engine.h>
 #include "net_work.h"
 #include "../inc/s2c_handle.h"
 #include "../inc/gate_def.h"
+#include "../inc/gate_ctrl.h"
 
 CS2cHandle::CS2cHandle()
 	: m_iSendIndex(0),
@@ -45,6 +47,8 @@ int CS2cHandle::Run()
 {
 	while (true) {
 		CondBlock();
+		CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
+			->PushTaskBack(std::bind(&CS2cHandle::CheckWaitSendData, this));
 		CheckWaitSendData();
 	}
 }
@@ -54,7 +58,7 @@ bool CS2cHandle::IsToBeBlocked()
 	return m_pS2CPipe->IsQueueEmpty();
 }
 
-bool CS2cHandle::CheckData()
+void CS2cHandle::CheckData()
 {
 	if (!m_pS2CPipe->IsQueueEmpty()) {
 		WakeUp();
@@ -64,7 +68,6 @@ bool CS2cHandle::CheckData()
 void CS2cHandle::CheckWaitSendData()
 {
 	int iTmpRet = 0;
-	int i = 0;
 	int unTmpCodeLength = 0;
 
 	if (m_iSendIndex < m_oMesHead.socketinfos().size()) {
@@ -78,7 +81,6 @@ void CS2cHandle::CheckWaitSendData()
 			iTmpRet = RecvServerData();
 			//没有数据可接收，则发送队列无数据发送，退出
 			if (iTmpRet == 0) {
-				break;
 			}
 			m_bHasRecv = true;
 		}//处理已经接收到的数据
@@ -88,20 +90,19 @@ void CS2cHandle::CheckWaitSendData()
 			m_iSCIndex = 0;
 			m_nSCLength = 0;
 			//反序列化消息的CTcpHead,取出发送游标和长度,把数据存入发送消息缓冲区m_szMsgBuf
-			iTmpRet = ClientCommEngine::ConvertStreamToMessage(m_acSCMsgBuf,
-															   unTmpCodeLength,
-															   &m_MesHead,
-															   NULL,
-															   NULL,
-															   &m_iSendIndex);
+			iTmpRet = CClientCommEngine::ConvertStreamToMessage(m_acSCMsgBuf,
+																unTmpCodeLength,
+																&m_oMesHead,
+																NULL,
+																NULL,
+																&m_iSendIndex);
 			//序列化失败继续发送
 			if (iTmpRet < 0) {
 				LOG_ERROR("default",
 						  "CTCPCtrl::CheckWaitSendData Error, ClientCommEngine::ConvertMsgToStream return %d.",
 						  iTmpRet);
-				m_MesHead.Clear();
+				m_oMesHead.Clear();
 				m_iSendIndex = 0;
-				continue;
 			}
 
 			//接收成功,取出数据长度
@@ -117,7 +118,6 @@ int CS2cHandle::SendClientData()
 	BYTE *pbTmpSend = NULL;
 	unsigned short unTmpShort;
 	time_t tTmpTimeStamp;
-	int iTmpSendBytes;
 	int nTmpIndex;
 	unsigned short unTmpPackLen;
 	int iTmpCloseFlag;
@@ -145,63 +145,54 @@ int CS2cHandle::SendClientData()
 	 * 接的数据，原来连接的数据,中断发送
 	*/
 	// 该过程需要在线程锁内完成
-	{
-#ifdef _POSIX_MT_
-		std::lock_guard<std::mutex> guard(CNetWork::m_stMutex);
-#endif
-		CAcceptor *pTmpAcceptor = CNetWork::GetSingletonPtr()->FindAcceptor(tmpSocketInfo.socketid());
-		if (pTmpAcceptor == NULL) {
-			LOG_ERROR("default", "CAcceptor has gone socket %d", tmpSocketInfo.socketid());
+	CAcceptor *pTmpAcceptor = CNetWork::GetSingletonPtr()->FindAcceptor(tmpSocketInfo.socketid());
+	if (pTmpAcceptor == NULL) {
+		LOG_ERROR("default", "CAcceptor has gone socket %d", tmpSocketInfo.socketid());
+		return -1;
+	}
+	if (pTmpAcceptor->GetCreateTime() != tTmpTimeStamp) {
+		LOG_ERROR("default",
+				  "sokcet[%d] already closed(tcp createtime:%d:gate createtime:%d) : gate ==> client[%d] bytes failed",
+				  nTmpIndex,
+				  pTmpAcceptor->GetCreateTime(),
+				  tTmpTimeStamp,
+				  m_nSCLength);
+		return -1;
+	}
+	iTmpCloseFlag = tmpSocketInfo.state();
+	unTmpPackLen = m_nSCLength;
+	//发送数据
+	if (unTmpPackLen > 0) {
+		//根据发送给客户端的数据在m_szSCMsgBuf中的数组下标取出数据
+		pbTmpSend = (BYTE *) m_acSCMsgBuf[m_iSCIndex];
+		memcpy((void *) &unTmpShort, (const void *) pbTmpSend, sizeof(unsigned short));
+		if (unTmpShort != unTmpPackLen) {
+			LOG_ERROR("default",
+					  "Code length not matched,left length %u is less than body length %u",
+					  unTmpPackLen,
+					  unTmpShort);
 			return -1;
 		}
-		if (pTmpAcceptor->GetCreateTime() != tTmpTimeStamp) {
-			LOG_ERROR("default", "sokcet[%d] already closed(tcp createtime:%d:gate createtime:%d) : gate ==> client[%d] bytes \
-                failed", nTmpIndex, pTmpAcceptor->GetCreateTime(), tTmpTimeStamp, m_nSCLength);
-			return -1;
-		}
-		iTmpCloseFlag = tmpSocketInfo.state();
-		unTmpPackLen = m_nSCLength;
-		//发送数据
-		if (unTmpPackLen > 0) {
-			//根据发送给客户端的数据在m_szSCMsgBuf中的数组下标取出数据
-			pbTmpSend = (BYTE *) m_acSCMsgBuf[m_iSCIndex];
-			memcpy((void *) &unTmpShort, (const void *) pbTmpSend, sizeof(unsigned short));
-			if (unTmpShort != unTmpPackLen) {
-				LOG_ERROR("default",
-						  "Code length not matched,left length %u is less than body length %u",
-						  unTmpPackLen,
-						  unTmpShort);
-				return -1;
-			}
-			iTmpSendBytes = TcpWrite(m_pSocketInfo->m_iSocket, (char *) pbTmpSend, unTmpPackLen);
-			if (unTmpPackLen == iTmpSendBytes) {
-#ifdef _DEBUG_
-				LOG_DEBUG("default", "[us:%lu]TCP gate ==> client[%d][%s][%d Bytes]", GetUSTime(), nTmpIndex, \
-                    m_astSocketInfo[nTmpIndex].m_szClientIP, iTmpSendBytes);
-#endif
-				//统计信息
-				m_stTcpStat.m_iPkgSend++;
-				m_stTcpStat.m_iPkgSizeSend += iTmpSendBytes;
-				//设置发送标志位已发送
-				m_pSocketInfo->m_iSendFlag = MAIN_HAVE_SEND_DATA;
-			}
-			else {
-				//发送失败
-				ClearSocketInfo(Err_ClientClose);
-				LOG_ERROR("default", "send to client %s Failed due to error %d", m_pSocketInfo->m_szClientIP, errno);
-				return 0;
-			}
-		}
-		if (unTmpPackLen > 0 && iTmpCloseFlag == 0) {
+		int iRet = pTmpAcceptor->Send((char *) pbTmpSend, unTmpPackLen);
+		if (iRet != 0) {
+			//发送失败
+			CC2sHandle::ClearSocket(pTmpAcceptor, Err_ClientClose);
+			LOG_ERROR("default",
+					  "send to client %s Failed due to error %d",
+					  pTmpAcceptor->GetSocket().GetSocket(),
+					  errno);
 			return 0;
 		}
-
-		if (iTmpCloseFlag == -1) {
-			//
-		}
-		ClearSocketInfo(TCP_SUCCESS);
+	}
+	if (unTmpPackLen > 0 && iTmpCloseFlag == 0) {
 		return 0;
 	}
+
+	//gameserver 主动关闭
+	if (iTmpCloseFlag < 0) {
+		CC2sHandle::ClearSocket(pTmpAcceptor, Client_Succeed);
+	}
+	return 0;
 }
 
 int CS2cHandle::RecvServerData()

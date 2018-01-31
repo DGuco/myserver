@@ -16,12 +16,9 @@
 #include "event_reactor.h"
 #include "mythread.h"
 #include "listener.h"
-#ifdef _POSIX_MT_
-#include <mutex>
-#endif
 
 using namespace std;
-class CNetWork: CSingleton<CNetWork>
+class CNetWork: public CSingleton<CNetWork>
 {
 public:
 	//构造函数
@@ -54,7 +51,7 @@ public:
 	//设置信号回调
 	void SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop = false);
 	//发送数据
-	PipeResult ConnectorSendData(unsigned int uId, const void *pData, unsigned int uSize);
+	int ConnectorSendData(unsigned int uId, const void *pData, unsigned int uSize);
 	//关闭connector
 	bool ShutDownConnectorEx(unsigned int uId);
 	//启动
@@ -92,10 +89,6 @@ private:
 	FuncAcceptorOnDisconnected m_pOnDisconnected;
 	FuncAcceptorOnSomeDataSend m_pOnSomeDataSend;
 	FuncAcceptorOnSomeDataRecv m_pOnSomeDataRecv;
-public:
-#ifdef _POSIX_MT_
-	std::mutex m_stMutex;			//操作的互斥变量
-#endif
 };
 
 #endif

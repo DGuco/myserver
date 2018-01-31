@@ -35,8 +35,6 @@ public:
 						 FuncAcceptorOnSomeDataRecv pOnSomeDataRecv);
 	//获取该连接的ip
 	void GetRemoteIpAddress(char *szBuf, unsigned int uBufSize);
-	//发送数据
-	PipeResult Send(const void *pData, unsigned int uSize);
 	//获取连接socket
 	CSocket GetSocket() const;
 	//关闭连接

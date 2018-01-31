@@ -5,8 +5,10 @@
 #include <config.h>
 #include <sharemem.h>
 #include <client_comm_engine.h>
+#include "threadpool.h"
 #include "../inc/c2s_handle.h"
 #include "../inc/gate_def.h"
+#include "../inc/gate_ctrl.h"
 
 CC2sHandle::CC2sHandle()
 {
@@ -40,10 +42,29 @@ bool CC2sHandle::BeginListen()
 													&OnCnsSomeDataRecv);
 }
 
+void CC2sHandle::OnAcceptCns(uint32 uId, CAcceptor *pAcceptor)
+{
+}
+
+void CC2sHandle::OnCnsDisconnected(CAcceptor *pAcceptor)
+{    //客户端主动断开连接
+	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()->PushTaskBack(ClearSocket, pAcceptor, Err_ClientClose);
+}
+
+void CC2sHandle::OnCnsSomeDataSend(CAcceptor *pAcceptor)
+{
+}
+
+void CC2sHandle::OnCnsSomeDataRecv(CAcceptor *pAcceptor)
+{
+	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()->PushTaskBack(&CC2sHandle::SendToClient, pAcceptor);
+}
+
 void CC2sHandle::ClearSocket(CAcceptor *pAcceptor, short iError)
 {
+	MY_ASSERT(pAcceptor != NULL, return)
 	//非gameserver 主动请求关闭
-	if (TCP_SUCCESS != iError) {
+	if (Client_Succeed != iError) {
 		DisConnect(pAcceptor, iError);
 	}
 	CNetWork::GetSingletonPtr()->ShutDownAcceptor(pAcceptor->GetSocket().GetSocket());
@@ -51,6 +72,7 @@ void CC2sHandle::ClearSocket(CAcceptor *pAcceptor, short iError)
 
 void CC2sHandle::DisConnect(CAcceptor *pAcceptor, short iError)
 {
+	MY_ASSERT(pAcceptor != NULL, return)
 	MesHead tmpHead;
 	CSocketInfo *pSocketInfo = tmpHead.mutable_socketinfos()->Add();
 	if (pSocketInfo == NULL) {
@@ -77,22 +99,9 @@ void CC2sHandle::DisConnect(CAcceptor *pAcceptor, short iError)
 	}
 }
 
-static void CC2sHandle::OnAcceptCns(uint32 uId, CAcceptor *pAcceptor)
+void CC2sHandle::SendToClient(CAcceptor *pAcceptor)
 {
-}
-
-static void CC2sHandle::OnCnsDisconnected(CAcceptor *pAcceptor)
-{
-	//客户端主动断开连接
-	ClearSocket(pAcceptor, Err_ClientClose);
-}
-
-static void CC2sHandle::OnCnsSomeDataSend(CAcceptor *pAcceptor)
-{
-}
-
-static void CC2sHandle::OnCnsSomeDataRecv(CAcceptor *pAcceptor)
-{
+	MY_ASSERT(pAcceptor != NULL, return)
 	PACK_LEN tmpPackLen = pAcceptor->GetRecvPackLen();
 	//如果当前包长度为0，则为新的数据包，重新读取数据包总长度
 	if (tmpPackLen <= 0) {

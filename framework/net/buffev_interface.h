@@ -19,7 +19,7 @@ public:
 	//析构函数
 	virtual ~IBufferEvent();
 	//发送数据
-	PipeResult Send(const void *pData, unsigned int uSize);
+	int Send(const void *pData, unsigned int uSize);
 	//获取数据(返回读取数据长度)
 	unsigned int RecvData(char *data, unsigned int size);
 	//读取读缓冲区当前数据包的总长度

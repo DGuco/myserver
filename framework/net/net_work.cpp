@@ -1,4 +1,4 @@
-#include "my_macro.h"
+#include <my_macro.h>
 #include "net_addr.h"
 #include "network_interface.h"
 #include "net_work.h"
@@ -69,9 +69,6 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa)
 							   m_pOnSomeDataRecv);
 	SOCKET socket = pAcceptor->GetSocket().GetSocket();
 	{
-#ifdef _POSIX_MT_
-		std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
 		m_mapAcceptor.insert(std::make_pair(socket, pAcceptor));
 	}
 
@@ -130,9 +127,6 @@ int CNetWork::Connect(const char *szNetAddr,
 	pConnector->Connect(addr, &time);
 	int fd = pConnector->GetSocket().GetSocket();
 	{
-#ifdef _POSIX_MT_
-		std::lock_guard<std::mutex> lock(m_stMutex);
-#endif
 		m_mapConnector.insert(std::make_pair(fd, pConnector));
 	}
 	return fd;
@@ -219,11 +213,11 @@ CAcceptor *CNetWork::FindAcceptor(unsigned int uId)
 	}
 }
 
-PipeResult CNetWork::ConnectorSendData(unsigned int uId, const void *pData, unsigned int uSize)
+int CNetWork::ConnectorSendData(unsigned int uId, const void *pData, unsigned int uSize)
 {
 	CConnector *pConnectorEx = FindConnector(uId);
 	if (pConnectorEx) {
-		PipeResult eRes = pConnectorEx->Send(pData, uSize);
+		int eRes = pConnectorEx->Send(pData, uSize);
 		return eRes;
 	}
 	return ePR_Disconnected;

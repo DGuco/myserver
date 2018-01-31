@@ -23,9 +23,9 @@ class CListener;
 enum PipeResult
 {
 	ePR_OK = 0,
-	ePR_Disconnected,
-	ePR_OutPipeBuf,
-	ePR_BufNull,
+	ePR_Disconnected = -1,
+	ePR_OutPipeBuf = -2,
+	ePR_BufNull = -3,
 };
 
 /** Interface for IEventReactor

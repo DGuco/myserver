@@ -18,8 +18,9 @@
 #include "net_work.h"
 #include "c2s_handle.h"
 #include "s2c_handle.h"
+#include "threadpool.h"
 
-class CGateCtrl
+class CGateCtrl: public CSingleton<CGateCtrl>
 {
 public:
 	//构造函数
@@ -30,10 +31,16 @@ public:
 	int PrepareToRun();
 	//run
 	int Run();
+	//获取线程池
+	CThreadPool *GetSingThreadPool();
+	CC2sHandle* GetCC2sHandle();
+	CS2cHandle *GetCS2cHandle();
+
 private:
 	CNetWork *m_pNetWork;
 	CC2sHandle *m_pC2sHandle;
 	CS2cHandle *m_pS2cHandle;
+	CThreadPool *m_pSingThead;
 };
 
 #endif

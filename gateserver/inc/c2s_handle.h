@@ -24,15 +24,17 @@ public:
 	int Run() override;
 	//线程阻塞条件
 	bool IsToBeBlocked() override;
-private:
-	//开始监听
-	bool BeginListen();
-	//客户端断开连接
-private:
+public:
 	//清除socket
 	static void ClearSocket(CAcceptor *pAcceptor, short iError);
 	//通知gameserver client 断开连接
 	static void DisConnect(CAcceptor *pAcceptor, short iError);
+	//发送数据给gameserver
+	static void SendToClient(CAcceptor *pAcceptor);
+private:
+	//开始监听
+	bool BeginListen();
+	//客户端断开连接
 protected:
 	//客户端连接还回调
 	static void OnAcceptCns(uint32 uId, CAcceptor *pAcceptor);

@@ -90,20 +90,6 @@ void CAcceptor::ShutDown()
 	SetState(eAS_Disconnected);
 }
 
-PipeResult CAcceptor::Send(const void *pData, unsigned int uSize)
-{
-	if (!IsConnected())
-		return ePR_Disconnected;
-
-	if (uSize > m_uMaxOutBufferSize) {
-		return ePR_OutPipeBuf;
-	}
-
-	MY_ASSERT(IsEventBuffAvailable(), return ePR_BufNull);
-	bufferevent_write(m_pStBufEv, pData, uSize);
-	return ePR_OK;
-}
-
 CAcceptor::eAcceptorState CAcceptor::GetState()
 {
 	return m_eState;

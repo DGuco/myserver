@@ -6,13 +6,25 @@
 //
 
 
+#include <my_macro.h>
 #include "../inc/gate_ctrl.h"
 
-CGateCtrl::~CGateCtrl()
+template<> CGateCtrl *CSingleton<CGateCtrl>::spSingleton = NULL;
+
+CGateCtrl::CGateCtrl()
 	: m_pNetWork(new CNetWork(eNetModule::NET_EPOLL)),
 	  m_pC2sHandle(new CC2sHandle),
-	  m_pS2cHandle(new CS2cHandle)
+	  m_pS2cHandle(new CS2cHandle),
+	  m_pSingThead(new CThreadPool(1))
 {
+}
+
+CGateCtrl::~CGateCtrl()
+{
+	SAFE_DELETE(m_pNetWork);
+	SAFE_DELETE(m_pC2sHandle);
+	SAFE_DELETE(m_pS2cHandle);
+	SAFE_DELETE(m_pSingThead);
 }
 
 int CGateCtrl::Run()
@@ -23,6 +35,21 @@ int CGateCtrl::Run()
 		m_pS2cHandle->CheckData();
 		usleep(1000);
 	}
+}
+
+CThreadPool *CGateCtrl::GetSingThreadPool()
+{
+	return m_pSingThead;
+}
+
+CC2sHandle *CGateCtrl::GetCC2sHandle()
+{
+	return m_pC2sHandle;
+}
+
+CS2cHandle *CGateCtrl::GetCS2cHandle()
+{
+	return m_pS2cHandle;
 }
 
 int CGateCtrl::PrepareToRun()

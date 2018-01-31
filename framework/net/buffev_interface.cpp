@@ -33,15 +33,14 @@ IBufferEvent::~IBufferEvent()
 	}
 }
 
-PipeResult IBufferEvent::Send(const void *pData, unsigned int uSize)
+int IBufferEvent::Send(const void *pData, unsigned int uSize)
 {
 	if (uSize > m_uMaxOutBufferSize) {
 		return ePR_OutPipeBuf;
 	}
 
 	MY_ASSERT(IsEventBuffAvailable(), return ePR_BufNull);
-	bufferevent_write(m_pStBufEv, pData, uSize);
-	return ePR_OK;
+	return bufferevent_write(m_pStBufEv, pData, uSize);
 }
 
 unsigned int IBufferEvent::RecvData(char *data, unsigned int size)
@@ -84,7 +83,6 @@ void IBufferEvent::SetMaxSendBufSize(unsigned int uSize)
 	bufferevent_setwatermark(m_pStBufEv, EV_WRITE, 0, m_uMaxOutBufferSize);
 }
 
-template<unsigned int RECV_BUFFLEN>
 unsigned int IBufferEvent::GetMaxSendBufSize()
 {
 	return m_uMaxOutBufferSize;

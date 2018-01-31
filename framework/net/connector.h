@@ -36,8 +36,6 @@ public:
 						 FuncConnectorOnConnectted pOnConnectted,
 						 FuncConnectorOnSomeDataSend pOnSomeDataSend,
 						 FuncConnectorOnSomeDataRecv pOnSomeDataRecv);
-	//发送数据
-	PipeResult Send(const void *pData, uint32 uSize);
 	//关闭连接
 	void ShutDown();
 	//是否连接成功
