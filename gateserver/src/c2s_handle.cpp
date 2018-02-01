@@ -3,8 +3,8 @@
 //
 
 #include <config.h>
-#include <sharemem.h>
 #include <client_comm_engine.h>
+#include <my_macro.h>
 #include "../inc/c2s_handle.h"
 #include "../inc/gate_def.h"
 #include "../inc/gate_ctrl.h"
@@ -15,23 +15,26 @@ char CC2sHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
 
 char CC2sHandle::m_acSendBuff[MAX_PACKAGE_LEN] = {0};
 
-CC2sHandle::CC2sHandle()
+CC2sHandle::CC2sHandle(eNetModule netModule)
+	: m_pNetWork(new CNetWork(netModule))
 {
 }
 
 CC2sHandle::~CC2sHandle()
 {
+	SAFE_DELETE(m_pNetWork);
 }
 
 bool CC2sHandle::BeginListen()
 {
 	ServerInfo *gateInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GATESERVER);
-	bool iRet = CNetWork::GetSingletonPtr()->BeginListen(gateInfo->m_sHost.c_str(),
-														 (short) gateInfo->m_iPort,
-														 &OnAcceptCns,
-														 &OnCnsDisconnected,
-														 &OnCnsSomeDataSend,
-														 &OnCnsSomeDataRecv);
+	bool iRet = m_pNetWork->BeginListen(gateInfo->m_sHost.c_str(),
+										gateInfo->m_iPort,
+										&OnAcceptCns,
+										&OnCnsDisconnected,
+										&OnCnsSomeDataSend,
+										&OnCnsSomeDataRecv,
+										RECV_QUEUQ_MAX);
 	if (iRet) {
 		LOG_INFO("default", "Server listen success at %s : %d", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
 		return true;
@@ -41,18 +44,27 @@ bool CC2sHandle::BeginListen()
 	}
 }
 
-void CC2sHandle::OnAcceptCns(uint32 uId, CAcceptor *pAcceptor)
+void CC2sHandle::OnAcceptCns(unsigned int uId, CAcceptor *pAcceptor)
 {
+	//客户端主动断开连接
+	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
+		->PushTaskBack([uId, pAcceptor]
+					   {
+						   CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, pAcceptor);
+					   }
+		);
 }
 
 void CC2sHandle::OnCnsDisconnected(CAcceptor *pAcceptor)
-{    //客户端主动断开连接
+{
+	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
 		->PushTaskBack(CC2sHandle::ClearSocket, pAcceptor, Err_ClientClose);
 }
 
 void CC2sHandle::OnCnsSomeDataSend(CAcceptor *pAcceptor)
 {
+
 }
 
 void CC2sHandle::OnCnsSomeDataRecv(CAcceptor *pAcceptor)
@@ -173,12 +185,14 @@ int CC2sHandle::PrepareToRun()
 
 int CC2sHandle::Run()
 {
+	LOG_INFO("default", "Libevent run with net module %s",
+			 event_base_get_method(reinterpret_cast<const event_base *>(CNetWork::GetSingletonPtr()
+				 ->GetEventReactor()->GetEventBase())));
 	//libevent事件循环
-	CNetWork::GetSingletonPtr()->DispatchEvents();
-	return 0;
+	m_pNetWork->DispatchEvents();
 }
 
-bool CC2sHandle::IsToBeBlocked()
+CNetWork *CC2sHandle::GetNetWork()
 {
-	return false;
+	return m_pNetWork;
 }

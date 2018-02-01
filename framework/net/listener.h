@@ -24,7 +24,7 @@ class CListener: public IReactorHandler
 {
 public:
 	//构造函数
-	CListener(IEventReactor *pReactor);
+	CListener(IEventReactor *pReactor, int listenQueue);
 	//析构函数
 	virtual ~CListener(void);
 	//监听
@@ -52,12 +52,12 @@ private:
 	void HandleInput(int Socket, struct sockaddr *sa);
 private:
 	CNetAddr m_ListenAddress;
-	CSocket m_Socket;
 	event m_event;
 
 	IEventReactor *m_pEventReactor;
 	eListenerState m_eState;
 	FuncListenerOnAccept m_pFuncOnAccept;
+	int m_iListenQueueMax;
 	struct evconnlistener *m_pListener;
 };
 #endif

@@ -1,4 +1,5 @@
 #include <my_assert.h>
+#include <cstring>
 #include "event_reactor.h"
 
 CEventReactor::CEventReactor(eNetModule netModule)
@@ -17,7 +18,7 @@ void CEventReactor::Init(eNetModule netModule)
 {
 	m_pEventConfig = event_config_new();
 	MY_ASSERT_STR(m_pEventConfig != NULL, exit(0), "Create event_config failed");
-	if (netModule != eNetModule::NET_SYSTEM) {
+	if (netModule == eNetModule::NET_SYSTEM) {
 		m_pEventBase = event_base_new();
 	}
 	else {
@@ -29,7 +30,6 @@ void CEventReactor::Init(eNetModule netModule)
 		m_pEventBase = event_base_new_with_config(m_pEventConfig);
 	}
 	MY_ASSERT_STR(NULL != m_pEventBase, exit(0), "Create Event Base error Init error");
-	LOG_INFO("default", "Create event with net module %s", event_base_get_method(m_pEventBase));
 }
 
 event_base *CEventReactor::GetEventBase()
@@ -45,7 +45,8 @@ void CEventReactor::Release()
 
 void CEventReactor::DispatchEvents()
 {
-	event_base_loop(m_pEventBase, EVLOOP_ONCE | EVLOOP_NONBLOCK);
+	int iRet = event_base_dispatch(m_pEventBase);
+	MY_ASSERT_STR(iRet == 0, exit(0), "Event loop failed,error msg %s,",strerror(errno))
 }
 
 bool CEventReactor::Register(IReactorHandler *pHandler)

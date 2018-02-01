@@ -68,21 +68,18 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa)
 							   m_pOnSomeDataSend,
 							   m_pOnSomeDataRecv);
 	SOCKET socket = pAcceptor->GetSocket().GetSocket();
-	{
-		m_mapAcceptor.insert(std::make_pair(socket, pAcceptor));
-	}
-
 	m_pOnNew(socket, pAcceptor);
 }
 
-bool CNetWork::BeginListen(const char *szNetAddr, uint16 uPort,
+bool CNetWork::BeginListen(const char *szNetAddr, unsigned int uPort,
 						   FuncAcceptorOnNew pOnNew,
 						   FuncAcceptorOnDisconnected pOnDisconnected,
 						   FuncAcceptorOnSomeDataSend pOnSomeDataSend,
 						   FuncAcceptorOnSomeDataRecv pOnSomeDataRecv,
+						   int listenQueue,
 						   unsigned int uCheckPingTickTime)
 {
-	m_pListener = new CListener(m_pEventReactor);
+	m_pListener = new CListener(m_pEventReactor, listenQueue);
 	if (m_pListener == NULL) {
 		return false;
 	}
@@ -211,6 +208,17 @@ CAcceptor *CNetWork::FindAcceptor(unsigned int uId)
 	else {
 		return iter->second;
 	}
+}
+
+void CNetWork::InsertNewAcceptor(unsigned int socket, CAcceptor *pCAcceptor)
+{
+	MY_ASSERT(pCAcceptor != NULL, return;)
+	m_mapAcceptor.insert(std::make_pair(socket, pCAcceptor));
+}
+
+IEventReactor *CNetWork::GetEventReactor()
+{
+	return m_pEventReactor;
 }
 
 int CNetWork::ConnectorSendData(unsigned int uId, const void *pData, unsigned int uSize)

@@ -13,8 +13,7 @@
 template<> CGateCtrl *CSingleton<CGateCtrl>::spSingleton = NULL;
 
 CGateCtrl::CGateCtrl()
-	: m_pNetWork(new CNetWork(eNetModule::NET_EPOLL)),
-	  m_pC2sHandle(new CC2sHandle),
+	: m_pC2sHandle(new CC2sHandle(eNetModule::NET_SYSTEM)),
 	  m_pS2cHandle(new CS2cHandle),
 	  m_pSingThead(new CThreadPool(1))
 {
@@ -48,7 +47,6 @@ CGateCtrl::CGateCtrl()
 
 CGateCtrl::~CGateCtrl()
 {
-	SAFE_DELETE(m_pNetWork);
 	SAFE_DELETE(m_pC2sHandle);
 	SAFE_DELETE(m_pS2cHandle);
 	SAFE_DELETE(m_pSingThead);
@@ -56,11 +54,8 @@ CGateCtrl::~CGateCtrl()
 
 int CGateCtrl::Run()
 {
-	m_pC2sHandle->CreateThread();
 	m_pS2cHandle->CreateThread();
-	m_pS2cHandle->Join();
-	m_pS2cHandle->Join();
-	return 0;
+	m_pC2sHandle->Run();
 }
 
 CThreadPool *CGateCtrl::GetSingThreadPool()
@@ -88,5 +83,6 @@ int CGateCtrl::PrepareToRun()
 		LOG_ERROR("default", "Get TcpserverConfig failed");
 		exit(0);
 	}
+	m_pC2sHandle->PrepareToRun();
 	return 0;
 }

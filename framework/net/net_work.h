@@ -27,11 +27,12 @@ public:
 	virtual ~CNetWork();
 	//开始监听
 	bool BeginListen(const char *szNetAddr,
-					 uint16 uPort,
+					 unsigned int uPort,
 					 FuncAcceptorOnNew pOnNew,
 					 FuncAcceptorOnDisconnected pOnDisconnected,
 					 FuncAcceptorOnSomeDataSend pOnSomeDataSend,
 					 FuncAcceptorOnSomeDataRecv pOnSomeDataRecv,
+					 int listenQueue = -1,
 					 unsigned int uCheckPingTickTime = 0);
 	//结束监听
 	void EndListen();
@@ -62,6 +63,10 @@ public:
 	CConnector *FindConnector(unsigned int uId);
 	//查找acceptor
 	CAcceptor *FindAcceptor(unsigned int uId);
+	//添加新的acceptor
+	void InsertNewAcceptor(unsigned int socket, CAcceptor *pCAcceptor);
+	//获取event
+	IEventReactor *GetEventReactor();
 private:
 	void OnTick();
 	//新的连接 accept回调

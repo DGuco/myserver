@@ -339,7 +339,7 @@ int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
 	if (unTmpTotalLen != unBuffLen) {
 		MY_ASSERT_STR(0,
 					  return -1,
-					  "the package len is not equal to datalen ,package len %d,data len",
+					  "the package len is not equal to datalen %d ,package len %d,data len",
 					  unBuffLen,
 					  unTmpTotalLen);
 	}

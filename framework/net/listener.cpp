@@ -2,10 +2,11 @@
 #include "listener.h"
 #include <my_assert.h>
 
-CListener::CListener(IEventReactor *pReactor)
+CListener::CListener(IEventReactor *pReactor, int listenQueue)
 	: m_pEventReactor(pReactor),
 	  m_eState(eLS_UnListen),
-	  m_pFuncOnAccept(NULL)
+	  m_pFuncOnAccept(NULL),
+	  m_iListenQueueMax(listenQueue)
 {
 
 }
@@ -23,9 +24,10 @@ bool CListener::RegisterToReactor()
 	sin.sin_port = htons(m_ListenAddress.GetPort());
 	sin.sin_addr.s_addr = inet_addr(m_ListenAddress.GetAddress());
 	m_pListener = evconnlistener_new_bind(GetReactor()->GetEventBase(),
-										  CListener::lcb_Accept,
-										  this,
-										  LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE, -1,
+										  &CListener::lcb_Accept,
+										  (void *) this,
+										  LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE,
+										  -1,
 										  (struct sockaddr *) &sin,
 										  sizeof(sin));
 
@@ -58,7 +60,6 @@ void CListener::ShutDown()
 	if (m_pListener != NULL) {
 		evconnlistener_free(m_pListener);
 	}
-	m_Socket.Shutdown();
 }
 
 IEventReactor *CListener::GetReactor()
@@ -85,12 +86,7 @@ bool CListener::Listen(CNetAddr &addr, FuncListenerOnAccept pFunc)
 {
 	m_ListenAddress.SetAddress(addr.GetAddress());
 	m_ListenAddress.SetPort(addr.GetPort());
-	bool iRet = m_Socket.Open();
-	MY_ASSERT_STR(iRet, return false, "Open Socket  failed with error code: %s", strerror(errno))
-	if (listen(m_Socket.GetSystemSocket(), SOMAXCONN)) {
-		MY_ASSERT_STR(false, return false, "Listen failed with error code: %s", strerror(errno))
-	}
-	GetReactor()->Register(this);//ע���reactor
 	m_pFuncOnAccept = pFunc;
+	GetReactor()->Register(this);
 	return true;
 }

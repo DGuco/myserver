@@ -11,19 +11,19 @@
 #include <net_work.h>
 #include "mythread.h"
 
-class CC2sHandle: public CMyThread
+class CC2sHandle
 {
 public:
 	//构造函数
-	CC2sHandle();
+	CC2sHandle(eNetModule netModule);
 	//析构函数
 	virtual ~CC2sHandle();
 	//准备run
-	int PrepareToRun() override;
+	int PrepareToRun();
 	//run
-	int Run() override;
-	//线程阻塞条件
-	bool IsToBeBlocked() override;
+	int Run();
+	//获取CNetWork
+	CNetWork *GetNetWork();
 public:
 	//清除socket
 	static void ClearSocket(CAcceptor *pAcceptor, short iError);
@@ -45,6 +45,7 @@ protected:
 	//客户端上行数据回调
 	static void OnCnsSomeDataRecv(CAcceptor *pAcceptor);
 public:
+	CNetWork *m_pNetWork;
 	static CCodeQueue *m_pC2SPipe;
 	static char m_acRecvBuff[MAX_PACKAGE_LEN];
 	static char m_acSendBuff[MAX_PACKAGE_LEN];

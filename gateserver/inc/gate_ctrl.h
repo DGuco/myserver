@@ -35,9 +35,7 @@ public:
 	CThreadPool *GetSingThreadPool();
 	CC2sHandle *GetCC2sHandle();
 	CS2cHandle *GetCS2cHandle();
-
 private:
-	CNetWork *m_pNetWork;
 	CC2sHandle *m_pC2sHandle;
 	CS2cHandle *m_pS2cHandle;
 	CThreadPool *m_pSingThead;

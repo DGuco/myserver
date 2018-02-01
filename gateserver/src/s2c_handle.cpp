@@ -36,8 +36,7 @@ int CS2cHandle::Run()
 	while (true) {
 		//如果有数据需要发送
 		if (!IsToBeBlocked()) {
-			CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
-				->PushTaskBack(std::mem_fn(&CS2cHandle::CheckWaitSendData), this);
+			CheckWaitSendData();
 		}
 		else {
 			usleep(500);
@@ -88,6 +87,7 @@ void CS2cHandle::CheckWaitSendData()
 						  iTmpRet);
 				m_oMesHead.Clear();
 				m_iSendIndex = 0;
+				return;
 			}
 
 			//接收成功,取出数据长度
@@ -102,49 +102,14 @@ int CS2cHandle::SendClientData()
 {
 	BYTE *pbTmpSend = NULL;
 	unsigned short unTmpShort;
-	time_t tTmpTimeStamp;
 	int nTmpIndex;
 	unsigned short unTmpPackLen;
-	int iTmpCloseFlag;
 
 	auto *pSendList = m_oMesHead.mutable_socketinfos();
 	//client socket索引非法，不存在要发送的client
 	if (m_iSendIndex >= pSendList->size())
 		return 0;
-	CSocketInfo tmpSocketInfo = pSendList->Get(m_iSendIndex);
 
-	//向后移动socket索引
-	m_iSendIndex++;
-	nTmpIndex = tmpSocketInfo.socketid();
-	tTmpTimeStamp = tmpSocketInfo.createtime();
-
-	//socket 非法
-	if (nTmpIndex <= 0 || MAX_SOCKET_NUM <= nTmpIndex) {
-		LOG_ERROR("default", "Invalid socket index %d", nTmpIndex);
-		return -1;
-	}
-
-	/*
-	 * 时间不一样，说明这个socket是个新的连接，原来的连接已经关闭,注(原来的
-	 * 的连接断开后，新的客户端用了原来的socket fd ，因此数据不是现在这个连
-	 * 接的数据，原来连接的数据,中断发送
-	*/
-	// 该过程需要在线程锁内完成
-	CAcceptor *pTmpAcceptor = CNetWork::GetSingletonPtr()->FindAcceptor(tmpSocketInfo.socketid());
-	if (pTmpAcceptor == NULL) {
-		LOG_ERROR("default", "CAcceptor has gone socket %d", tmpSocketInfo.socketid());
-		return -1;
-	}
-	if (pTmpAcceptor->GetCreateTime() != tTmpTimeStamp) {
-		LOG_ERROR("default",
-				  "sokcet[%d] already closed(tcp createtime:%d:gate createtime:%d) : gate ==> client[%d] bytes failed",
-				  nTmpIndex,
-				  pTmpAcceptor->GetCreateTime(),
-				  tTmpTimeStamp,
-				  m_nSCLength);
-		return -1;
-	}
-	iTmpCloseFlag = tmpSocketInfo.state();
 	unTmpPackLen = m_nSCLength;
 	//发送数据
 	if (unTmpPackLen > 0) {
@@ -158,24 +123,24 @@ int CS2cHandle::SendClientData()
 					  unTmpShort);
 			return -1;
 		}
-		int iRet = pTmpAcceptor->Send((char *) pbTmpSend, unTmpPackLen);
-		if (iRet != 0) {
-			//发送失败
-			CC2sHandle::ClearSocket(pTmpAcceptor, Err_ClientClose);
-			LOG_ERROR("default",
-					  "send to client %s Failed due to error %d",
-					  pTmpAcceptor->GetSocket().GetSocket(),
-					  errno);
-			return 0;
-		}
-	}
-	if (unTmpPackLen > 0 && iTmpCloseFlag == 0) {
-		return 0;
 	}
 
-	//gameserver 主动关闭
-	if (iTmpCloseFlag < 0) {
-		CC2sHandle::ClearSocket(pTmpAcceptor, Client_Succeed);
+	for (int i = 0; i < pSendList->size(); ++i) {
+		//向后移动socket索引
+		m_iSendIndex++;
+		CSocketInfo tmpSocketInfo = pSendList->Get(m_iSendIndex);
+		nTmpIndex = tmpSocketInfo.socketid();
+		//socket 非法
+		if (nTmpIndex <= 0 || MAX_SOCKET_NUM <= nTmpIndex) {
+			LOG_ERROR("default", "Invalid socket index %d", nTmpIndex);
+			continue;
+		}
+		CGateCtrl::GetSingletonPtr()->GetSingThreadPool()->PushTaskBack(
+			[&tmpSocketInfo, pbTmpSend, unTmpPackLen, this]
+			{
+				SendToClient(tmpSocketInfo, (const char *) pbTmpSend, unTmpPackLen);
+			}
+		);
 	}
 	return 0;
 }
@@ -187,4 +152,44 @@ int CS2cHandle::RecvServerData()
 		unTmpCodeLength = 0;
 	}
 	return unTmpCodeLength;
+}
+
+void CS2cHandle::SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len)
+{
+// 该过程需要在线程锁内完成
+	CAcceptor *pTmpAcceptor = CNetWork::GetSingletonPtr()->FindAcceptor(socketInfo.socketid());
+	if (pTmpAcceptor == NULL) {
+		LOG_ERROR("default", "CAcceptor has gone socket %d", socket);
+		return;
+	}
+	/*
+	 * 时间不一样，说明这个socket是个新的连接，原来的连接已经关闭,注(原来的
+	 * 的连接断开后，新的客户端用了原来的socket fd ，因此数据不是现在这个连
+	 * 接的数据，原来连接的数据,中断发送
+	*/
+	if (pTmpAcceptor->GetCreateTime() != socketInfo.createtime()) {
+		LOG_ERROR("default",
+				  "sokcet[%d] already closed(tcp createtime:%d:gate createtime:%d) : gate ==> client[%d] bytes failed",
+				  socket,
+				  pTmpAcceptor->GetCreateTime(),
+				  socketInfo.createtime(),
+				  m_nSCLength);
+		return;
+	}
+	int iTmpCloseFlag = socketInfo.state();
+	int iRet = pTmpAcceptor->Send(data, len);
+	if (iRet != 0) {
+		//发送失败
+		CC2sHandle::ClearSocket(pTmpAcceptor, Err_ClientClose);
+		LOG_ERROR("default",
+				  "send to client %s Failed due to error %d",
+				  pTmpAcceptor->GetSocket().GetSocket(),
+				  errno);
+		return;
+	}
+
+	//gameserver 主动关闭
+	if (iTmpCloseFlag < 0) {
+		CC2sHandle::ClearSocket(pTmpAcceptor, Client_Succeed);
+	}
 }

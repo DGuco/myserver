@@ -1,6 +1,5 @@
 #include <my_assert.h>
 #include <event2/bufferevent.h>
-#include <event2/buffer.h>
 #include "acceptor.h"
 
 CAcceptor::CAcceptor(SOCKET socket,
@@ -67,17 +66,6 @@ void CAcceptor::lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg)
 {
 	CAcceptor *pAcceptor = static_cast<CAcceptor *>(arg);
 	MY_ASSERT_STR(pAcceptor != NULL, return, "CAcceptor Pipe Error with code %d", PpeGetLastError());
-
-	pAcceptor->ShutDown();
-	if (nWhat & EVBUFFER_EOF) {
-		pAcceptor->m_pFuncOnDisconnected(pAcceptor);
-		return;
-	}
-	else if (nWhat & EVBUFFER_ERROR) {
-		pAcceptor->m_pFuncOnDisconnected(pAcceptor);
-		return;
-	}
-
 	pAcceptor->ProcessSocketError();
 }
 

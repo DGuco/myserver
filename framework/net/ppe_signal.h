@@ -31,12 +31,12 @@ private:
 	//信号回调
 	static void lcb_OnSignal(int fd, short event, void *arg);
 private:
+	FuncOnSignal m_pFuncOnSignal;
+	void *m_pContext;
 	IEventReactor *m_pReactor;
+	bool m_bLoop;
 	event m_EvSignal;
 	int m_iSignal;
-	void *m_pContext;
-	FuncOnSignal m_pFuncOnSignal;
-	bool m_bLoop;
 };
 
 #endif

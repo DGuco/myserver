@@ -76,7 +76,7 @@ public:
 									  MesHead *pHead,
 									  CMessage *pMessage = NULL,
 									  CFactory *pMsgFactory = NULL,
-									  int *unOffset = NULL);
+									  int *unOffset = 0x0);
 };
 
 #endif /* CLIENT_COMM_ENGINE_H_ */
