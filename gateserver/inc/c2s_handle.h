@@ -44,7 +44,7 @@ protected:
 	static void OnCnsSomeDataSend(CAcceptor *pAcceptor);
 	//客户端上行数据回调
 	static void OnCnsSomeDataRecv(CAcceptor *pAcceptor);
-private:
+public:
 	static CCodeQueue *m_pC2SPipe;
 	static char m_acRecvBuff[MAX_PACKAGE_LEN];
 	static char m_acSendBuff[MAX_PACKAGE_LEN];

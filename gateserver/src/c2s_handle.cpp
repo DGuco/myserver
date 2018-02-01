@@ -5,26 +5,18 @@
 #include <config.h>
 #include <sharemem.h>
 #include <client_comm_engine.h>
-#include "threadpool.h"
 #include "../inc/c2s_handle.h"
 #include "../inc/gate_def.h"
 #include "../inc/gate_ctrl.h"
 
+CCodeQueue *CC2sHandle::m_pC2SPipe = NULL;
+
+char CC2sHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
+
+char CC2sHandle::m_acSendBuff[MAX_PACKAGE_LEN] = {0};
+
 CC2sHandle::CC2sHandle()
 {
-	int iTempSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(PIPE_SIZE);
-	system("touch ./cspipefile");
-	char *pcTmpCSPipeID = getenv("CS_PIPE_ID");
-	int iTmpCSPipeID = 0;
-	if (pcTmpCSPipeID) {
-		iTmpCSPipeID = atoi(pcTmpCSPipeID);
-	}
-	key_t iTmpKeyC2S = MakeKey("./cspipefile", iTmpCSPipeID);
-	BYTE *pbyTmpC2SPipe = CreateShareMem(iTmpKeyC2S, iTempSize);
-	MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
-	CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
-	CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyC2S, iTempSize, EIMode::SHM_INIT);
-	m_pC2SPipe = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_C2S);
 }
 
 CC2sHandle::~CC2sHandle()
@@ -34,12 +26,19 @@ CC2sHandle::~CC2sHandle()
 bool CC2sHandle::BeginListen()
 {
 	ServerInfo *gateInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GATESERVER);
-	return CNetWork::GetSingletonPtr()->BeginListen(gateInfo->m_sHost.c_str(),
-													(short) gateInfo->m_iPort,
-													&OnAcceptCns,
-													&OnCnsDisconnected,
-													&OnCnsSomeDataSend,
-													&OnCnsSomeDataRecv);
+	bool iRet = CNetWork::GetSingletonPtr()->BeginListen(gateInfo->m_sHost.c_str(),
+														 (short) gateInfo->m_iPort,
+														 &OnAcceptCns,
+														 &OnCnsDisconnected,
+														 &OnCnsSomeDataSend,
+														 &OnCnsSomeDataRecv);
+	if (iRet) {
+		LOG_INFO("default", "Server listen success at %s : %d", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
+		return true;
+	}
+	else {
+		exit(0);
+	}
 }
 
 void CC2sHandle::OnAcceptCns(uint32 uId, CAcceptor *pAcceptor)
@@ -48,7 +47,8 @@ void CC2sHandle::OnAcceptCns(uint32 uId, CAcceptor *pAcceptor)
 
 void CC2sHandle::OnCnsDisconnected(CAcceptor *pAcceptor)
 {    //客户端主动断开连接
-	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()->PushTaskBack(ClearSocket, pAcceptor, Err_ClientClose);
+	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
+		->PushTaskBack(CC2sHandle::ClearSocket, pAcceptor, Err_ClientClose);
 }
 
 void CC2sHandle::OnCnsSomeDataSend(CAcceptor *pAcceptor)
@@ -167,10 +167,7 @@ void CC2sHandle::SendToClient(CAcceptor *pAcceptor)
 
 int CC2sHandle::PrepareToRun()
 {
-	bool iRet = BeginListen();
-	if (!iRet) {
-		LOG_ERROR("default", "Listen failed...");
-	}
+	BeginListen();
 	return 0;
 }
 

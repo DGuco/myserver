@@ -7,6 +7,7 @@
 
 
 #include <my_macro.h>
+#include <sharemem.h>
 #include "../inc/gate_ctrl.h"
 
 template<> CGateCtrl *CSingleton<CGateCtrl>::spSingleton = NULL;
@@ -17,6 +18,32 @@ CGateCtrl::CGateCtrl()
 	  m_pS2cHandle(new CS2cHandle),
 	  m_pSingThead(new CThreadPool(1))
 {
+	int iTempSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(PIPE_SIZE);
+	system("touch ./cspipefile");
+	char *pcTmpCSPipeID = getenv("CS_PIPE_ID");
+	int iTmpCSPipeID = 0;
+	if (pcTmpCSPipeID) {
+		iTmpCSPipeID = atoi(pcTmpCSPipeID);
+	}
+	key_t iTmpKeyC2S = MakeKey("./cspipefile", iTmpCSPipeID);
+	BYTE *pbyTmpC2SPipe = CreateShareMem(iTmpKeyC2S, iTempSize);
+	MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
+	CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
+	CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyC2S, iTempSize, EIMode::SHM_INIT);
+	CC2sHandle::m_pC2SPipe = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_C2S);
+
+	system("touch ./scpipefile");
+	char *pcTmpSCPipeID = getenv("SC_PIPE_ID");
+	int iTmpSCPipeID = 0;
+	if (pcTmpSCPipeID) {
+		iTmpSCPipeID = atoi(pcTmpSCPipeID);
+	}
+	key_t iTmpKeyS2C = MakeKey("./scpipefile", iTmpSCPipeID);
+	BYTE *pbyTmpS2CPipe = CreateShareMem(iTmpKeyS2C, iTempSize);
+	MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
+	CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
+	CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize, EIMode::SHM_INIT);
+	CS2cHandle::m_pS2CPipe = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_S2C);
 }
 
 CGateCtrl::~CGateCtrl()
@@ -31,10 +58,9 @@ int CGateCtrl::Run()
 {
 	m_pC2sHandle->CreateThread();
 	m_pS2cHandle->CreateThread();
-	while (true) {
-		m_pS2cHandle->CheckData();
-		usleep(1000);
-	}
+	m_pS2cHandle->Join();
+	m_pS2cHandle->Join();
+	return 0;
 }
 
 CThreadPool *CGateCtrl::GetSingThreadPool()

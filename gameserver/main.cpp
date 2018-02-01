@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include "config.h"
-#include "threadpool.h"
+#include "thread_pool.h"
 #include "inc/gameserver.h"
 
 void sigusr1_handle(int iSigVal)

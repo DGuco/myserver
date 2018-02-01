@@ -4,7 +4,6 @@
 
 #include <sharemem.h>
 #include <my_assert.h>
-#include <commondef.h>
 #include <acceptor.h>
 #include <client_comm_engine.h>
 #include "net_work.h"
@@ -12,25 +11,14 @@
 #include "../inc/gate_def.h"
 #include "../inc/gate_ctrl.h"
 
+CCodeQueue *CS2cHandle::m_pS2CPipe = NULL;
+
 CS2cHandle::CS2cHandle()
 	: m_iSendIndex(0),
 	  m_bHasRecv(false),
 	  m_iSCIndex(0),
 	  m_nSCLength(0)
 {
-	int iTempSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(PIPE_SIZE);
-	system("touch ./scpipefile");
-	char *pcTmpSCPipeID = getenv("SC_PIPE_ID");
-	int iTmpSCPipeID = 0;
-	if (pcTmpSCPipeID) {
-		iTmpSCPipeID = atoi(pcTmpSCPipeID);
-	}
-	key_t iTmpKeyS2C = MakeKey("./scpipefile", iTmpSCPipeID);
-	BYTE *pbyTmpS2CPipe = CreateShareMem(iTmpKeyS2C, iTempSize);
-	MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
-	CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
-	CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize, EIMode::SHM_INIT);
-	m_pS2CPipe = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_S2C);
 }
 
 CS2cHandle::~CS2cHandle()
@@ -46,23 +34,20 @@ int CS2cHandle::PrepareToRun()
 int CS2cHandle::Run()
 {
 	while (true) {
-		CondBlock();
-		CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
-			->PushTaskBack(std::bind(&CS2cHandle::CheckWaitSendData, this));
-		CheckWaitSendData();
+		//如果有数据需要发送
+		if (!IsToBeBlocked()) {
+			CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
+				->PushTaskBack(std::mem_fn(&CS2cHandle::CheckWaitSendData), this);
+		}
+		else {
+			usleep(500);
+		}
 	}
 }
 
 bool CS2cHandle::IsToBeBlocked()
 {
 	return m_pS2CPipe->IsQueueEmpty();
-}
-
-void CS2cHandle::CheckData()
-{
-	if (!m_pS2CPipe->IsQueueEmpty()) {
-		WakeUp();
-	}
 }
 
 void CS2cHandle::CheckWaitSendData()

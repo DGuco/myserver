@@ -19,6 +19,9 @@
 
 using namespace std;
 
+/**
+ * 成员函数生命为ininle，避免multiple definition error
+ */
 class CThreadPool
 {
 public:
@@ -47,6 +50,9 @@ private:
 	bool m_stop;
 };
 
+/*
+ * inline成员函数定义和生命在同一个源文件中
+ */
 inline CThreadPool::CThreadPool()
 	:
 	CThreadPool(thread::hardware_concurrency())
@@ -54,6 +60,9 @@ inline CThreadPool::CThreadPool()
 
 }
 
+/*
+ * inline成员函数定义和生命在同一个源文件中
+ */
 inline CThreadPool::CThreadPool(size_t threads)
 	: m_stop(false)
 {
@@ -65,7 +74,9 @@ inline CThreadPool::CThreadPool(size_t threads)
 	}
 }
 
-// the destructor joins all threads
+/*
+ * inline成员函数定义和生命在同一个源文件中
+ */
 inline CThreadPool::~CThreadPool()
 {
 	{
@@ -80,13 +91,19 @@ inline CThreadPool::~CThreadPool()
 	}
 }
 
-bool CThreadPool::IsInThisThread()
+/*
+ * inline成员函数定义和生命在同一个源文件中
+ */
+inline bool CThreadPool::IsInThisThread()
 {
 	auto it = m_mWorkers.find(this_thread::get_id());
 	return it != m_mWorkers.end();
 }
 
-bool CThreadPool::IsThisThreadIn(thread *thrd)
+/*
+ * inline成员函数定义和生命在同一个源文件中
+ */
+inline bool CThreadPool::IsThisThreadIn(thread *thrd)
 {
 	if (thrd) {
 		auto it = m_mWorkers.find(thrd->get_id());
@@ -97,7 +114,10 @@ bool CThreadPool::IsThisThreadIn(thread *thrd)
 	}
 }
 
-void CThreadPool::ThreadFunc()
+/*
+ * inline成员函数定义和生命在同一个源文件中
+ */
+inline void CThreadPool::ThreadFunc()
 {
 	while (true) {
 		std::function<void()> task;
@@ -114,6 +134,9 @@ void CThreadPool::ThreadFunc()
 	}
 }
 
+/*
+ * 和函数声明放在统一个源文件中，避免 use of ‘auto...’ before deduction of ‘auto’ .. error
+ */
 template<class F, class... Args>
 auto CThreadPool::PushTaskBack(F &&f, Args &&... args)
 {
@@ -146,6 +169,9 @@ auto CThreadPool::PushTaskBack(F &&f, Args &&... args)
 	return res;
 }
 
+/*
+ * 和函数声明放在统一个源文件中，避免 use of ‘auto...’ before deduction of ‘auto’ .. error
+ */
 template<class F, class... Args>
 auto CThreadPool::PushTaskFront(F &&f, Args &&... args)
 {

@@ -100,5 +100,5 @@ link_directories(
 )
 
 add_library(framework ${FRAMEWORK})
-target_link_libraries(framework pthread protobuf log4cpp crypto)
+target_link_libraries(framework pthread event event_pthreads protobuf log4cpp crypto)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

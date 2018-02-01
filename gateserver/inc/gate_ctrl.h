@@ -33,7 +33,7 @@ public:
 	int Run();
 	//获取线程池
 	CThreadPool *GetSingThreadPool();
-	CC2sHandle* GetCC2sHandle();
+	CC2sHandle *GetCC2sHandle();
 	CS2cHandle *GetCS2cHandle();
 
 private:

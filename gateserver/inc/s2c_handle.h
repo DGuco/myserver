@@ -24,8 +24,6 @@ public:
 	int Run() override;
 	//线程阻塞条件
 	bool IsToBeBlocked() override;
-	//是否有数据
-	void CheckData();
 	//检测发送队列
 	void CheckWaitSendData();
 	//向client下行数据
@@ -34,9 +32,10 @@ public:
 private:
 	//接收gameserver 数据
 	int RecvServerData();
-private:
+public:
 	// game --> tcp通信共享内存管道
-	CCodeQueue *m_pS2CPipe;
+	static CCodeQueue *m_pS2CPipe;
+private:
 	int m_iSendIndex;
 	bool m_bHasRecv;
 	unsigned short m_iSCIndex;                 // 去掉nethead头的实际发送给客户端的数据在m_szSCMsgBuf中的数组下标

@@ -34,5 +34,5 @@ link_directories(
 )
 
 add_executable(gateserver ${SOURCE_FILES})
-target_link_libraries(gateserver framework pthread event event_pthreads pthread protobuf crypto)
+target_link_libraries(gateserver framework protobuf crypto)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)

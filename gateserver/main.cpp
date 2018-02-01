@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 	int iTmpRet;
 	g_pGateServer = new CGateCtrl;
 	iTmpRet = g_pGateServer->PrepareToRun();
-	if (!iTmpRet) {
+	if (iTmpRet != 0) {
 		delete g_pGateServer;
 		LOG_ERROR("default", "Tcpserver PrepareToRun failed,iRet = %d", iTmpRet);
 		exit(0);

@@ -85,8 +85,10 @@ bool CListener::Listen(CNetAddr &addr, FuncListenerOnAccept pFunc)
 {
 	m_ListenAddress.SetAddress(addr.GetAddress());
 	m_ListenAddress.SetPort(addr.GetPort());
+	bool iRet = m_Socket.Open();
+	MY_ASSERT_STR(iRet, return false, "Open Socket  failed with error code: %s", strerror(errno))
 	if (listen(m_Socket.GetSystemSocket(), SOMAXCONN)) {
-		MY_ASSERT_STR(false, exit(0), "Listen failed with error code: %s", strerror(errno))
+		MY_ASSERT_STR(false, return false, "Listen failed with error code: %s", strerror(errno))
 	}
 	GetReactor()->Register(this);//ע���reactor
 	m_pFuncOnAccept = pFunc;
