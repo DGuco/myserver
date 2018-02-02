@@ -48,6 +48,8 @@ private:
 						   evutil_socket_t fd,
 						   struct sockaddr *sa,
 						   int socklen, void *arg);
+	//监听出错
+	static void accept_error_cb(struct evconnlistener *listener, void *ctx);
 	//处理监听
 	void HandleInput(int Socket, struct sockaddr *sa);
 private:

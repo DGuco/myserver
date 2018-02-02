@@ -36,13 +36,13 @@ enum LogLevel
 	LEVEL_WARN		= 400,
 	LEVEL_NOTICE	= 500,
 	LEVEL_INFO		= 600,
-	LEVEL_DEBUG	= 700,
+	LEVEL_DEBUG		= 700,
 	LEVEL_NOTSET	= 800,
 };
 
 
 // ***************************************************************
-//  Function: 	InitLog   
+//  Function: 	InitLog
 //  Description:初始化一种类型的日志：如果该类型日志已存在，则重新初始化； 
 //				如果不存在，则创建。
 //  Date: 		05/23/2008
@@ -58,7 +58,7 @@ int InitLog( const char*	vLogName,						/*日志类型的名称(关键字,由此
 
 
 // ***************************************************************
-//  Function: 	InitLog   
+//  Function: 	InitLog
 //  Description:重新给已存在的日志赋值，但是不能改变日志的名称，以及定位的文件。
 //  Date: 		05/23/2008
 // 

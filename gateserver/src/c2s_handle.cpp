@@ -69,7 +69,7 @@ void CC2sHandle::OnCnsSomeDataSend(CAcceptor *pAcceptor)
 
 void CC2sHandle::OnCnsSomeDataRecv(CAcceptor *pAcceptor)
 {
-	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()->PushTaskBack(&CC2sHandle::SendToClient, pAcceptor);
+	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()->PushTaskBack(&CC2sHandle::SendToGame, pAcceptor);
 }
 
 void CC2sHandle::ClearSocket(CAcceptor *pAcceptor, short iError)
@@ -111,7 +111,7 @@ void CC2sHandle::DisConnect(CAcceptor *pAcceptor, short iError)
 	}
 }
 
-void CC2sHandle::SendToClient(CAcceptor *pAcceptor)
+void CC2sHandle::SendToGame(CAcceptor *pAcceptor)
 {
 	MY_ASSERT(pAcceptor != NULL, return)
 	PACK_LEN tmpPackLen = pAcceptor->GetRecvPackLen();

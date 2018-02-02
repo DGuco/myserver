@@ -44,8 +44,6 @@ public:
 	bool IsConnecting();
 	//是否断开连接
 	bool IsDisconnected();
-	//获取socket
-	CSocket GetSocket() const;
 
 private:
 	//bufferEvent 无效处理
@@ -75,7 +73,6 @@ private:
 
 private:
 	CNetAddr m_oAddr;
-	CSocket m_oSocket;
 	event m_oConnectEvent;
 	eConnectorState m_eState;
 

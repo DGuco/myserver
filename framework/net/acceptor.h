@@ -35,8 +35,6 @@ public:
 						 FuncAcceptorOnSomeDataRecv pOnSomeDataRecv);
 	//获取该连接的ip
 	void GetRemoteIpAddress(char *szBuf, unsigned int uBufSize);
-	//获取连接socket
-	CSocket GetSocket() const;
 	//关闭连接
 	void ShutDown();
 	//当前是否连接
@@ -64,7 +62,6 @@ private:
 	void ProcessSocketError();
 
 private:
-	CSocket m_Socket;
 	CNetAddr *m_pNetAddr;
 	eAcceptorState m_eState;
 	time_t m_tCreateTime;

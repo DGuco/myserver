@@ -3,27 +3,19 @@
 //
 
 #include <my_assert.h>
+#include <cstring>
 #include "buffev_interface.h"
 
-IBufferEvent::IBufferEvent()
-	: m_pReactor(NULL),
-	  m_pStBufEv(NULL),
-	  m_uMaxOutBufferSize(MAX_PACKAGE_LEN),
-	  m_uMaxInBufferSize(MAX_PACKAGE_LEN),
-	  m_uRecvPackLen(0)
-{
-
-}
-
 IBufferEvent::IBufferEvent(IEventReactor *pReactor,
-						   bufferevent *buffevent)
+						   bufferevent *buffevent,
+						   int socket)
 	: m_pReactor(pReactor),
 	  m_pStBufEv(buffevent),
 	  m_uMaxOutBufferSize(MAX_PACKAGE_LEN),
 	  m_uMaxInBufferSize(MAX_PACKAGE_LEN),
 	  m_uRecvPackLen(0)
 {
-
+	m_oSocket.SetSystemSocket(socket);
 }
 
 IBufferEvent::~IBufferEvent()
@@ -114,6 +106,11 @@ void IBufferEvent::CurrentPackRecved()
 	m_uRecvPackLen = 0;
 }
 
+CSocket IBufferEvent::GetSocket() const
+{
+	return m_oSocket;
+}
+
 unsigned int IBufferEvent::GetMaxRecvBufSize()
 {
 	return m_uMaxInBufferSize;
@@ -121,12 +118,13 @@ unsigned int IBufferEvent::GetMaxRecvBufSize()
 
 bool IBufferEvent::RegisterToReactor()
 {
+	MY_ASSERT_STR(m_oSocket.GetSocket() >= 0, return false, "RegisterToReactor error ,socket is invalid");
 	m_pStBufEv = bufferevent_socket_new(GetReactor()->GetEventBase(),
-										-1,
+										m_oSocket.GetSocket(),
 										BEV_OPT_CLOSE_ON_FREE | BEV_OPT_THREADSAFE);
+	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent_new failed!,error msg: %s", strerror(errno));
 	bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);
 	bufferevent_setwatermark(m_pStBufEv, EV_WRITE, 0, m_uMaxOutBufferSize);
-	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent_new failed!!");
 	AfterBuffEventCreated();
 	return true;
 }

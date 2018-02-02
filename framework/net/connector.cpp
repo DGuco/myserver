@@ -211,8 +211,3 @@ void CConnector::AfterBuffEventCreated()
 					  (void *) this);
 	SetState(eCS_Connected);
 }
-
-CSocket CConnector::GetSocket() const
-{
-	return m_oSocket;
-}

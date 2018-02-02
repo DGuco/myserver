@@ -9,13 +9,13 @@
 
 
 #include "network_interface.h"
+#include "socket.h"
 
 class IBufferEvent: public IReactorHandler
 {
 public:
 	//构造函数
-	IBufferEvent();
-	IBufferEvent(IEventReactor *pReactor, bufferevent *buffevent);
+	IBufferEvent(IEventReactor *pReactor, bufferevent *buffevent, int socket = INVALID_SOCKET);
 	//析构函数
 	virtual ~IBufferEvent();
 	//发送数据
@@ -42,7 +42,8 @@ public:
 	PACK_LEN GetRecvPackLen() const;
 	//当前数据包已读取
 	void CurrentPackRecved();
-
+	//获取socket
+	CSocket GetSocket() const;
 public:    //获取event base
 	IEventReactor *GetReactor() override;
 	//注册event
@@ -57,6 +58,7 @@ private:
 protected:
 	IEventReactor *m_pReactor;
 	bufferevent *m_pStBufEv;
+	CSocket m_oSocket;
 	unsigned int m_uMaxOutBufferSize;
 	unsigned int m_uMaxInBufferSize;
 private:

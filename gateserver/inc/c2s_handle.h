@@ -30,7 +30,7 @@ public:
 	//通知gameserver client 断开连接
 	static void DisConnect(CAcceptor *pAcceptor, short iError);
 	//发送数据给gameserver
-	static void SendToClient(CAcceptor *pAcceptor);
+	static void SendToGame(CAcceptor *pAcceptor);
 private:
 	//开始监听
 	bool BeginListen();

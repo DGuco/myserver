@@ -36,6 +36,11 @@ public:
 	CC2sHandle *GetCC2sHandle();
 	CS2cHandle *GetCS2cHandle();
 private:
+	//创建共享内存管道
+	void CreatePipe();
+	//读取配置文件
+	void ReadConfig();
+private:
 	CC2sHandle *m_pC2sHandle;
 	CS2cHandle *m_pS2cHandle;
 	CThreadPool *m_pSingThead;

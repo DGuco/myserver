@@ -5,7 +5,7 @@
 CAcceptor::CAcceptor(SOCKET socket,
 					 IEventReactor *pReactor,
 					 CNetAddr *netAddr)
-	: IBufferEvent(pReactor, NULL),
+	: IBufferEvent(pReactor, NULL, socket),
 	  m_pNetAddr(netAddr),
 	  m_eState(eAS_Disconnected),
 	  m_tCreateTime(GetMSTime()),
@@ -13,8 +13,6 @@ CAcceptor::CAcceptor(SOCKET socket,
 	  m_pFuncOnSomeDataSend(NULL),
 	  m_pFuncOnSomeDataRecv(NULL)
 {
-	m_Socket.SetSystemSocket(socket);
-	m_Socket.SetNonblocking();
 	m_pReactor->Register(this);
 }
 
@@ -27,7 +25,7 @@ void CAcceptor::GetRemoteIpAddress(char *szBuf, unsigned int uBufSize)
 {
 	MY_ASSERT_STR(uBufSize >= 16, return, "uBufSize is too small");
 	CNetAddr addr;
-	m_Socket.GetRemoteAddress(addr);
+	m_oSocket.GetRemoteAddress(addr);
 	strncpy(szBuf, addr.GetAddress(), 16);
 }
 
@@ -74,7 +72,7 @@ void CAcceptor::ShutDown()
 	if (!IsConnected())
 		return;
 	GetReactor()->UnRegister(this);
-	m_Socket.Close();
+	m_oSocket.Close();
 	SetState(eAS_Disconnected);
 }
 
@@ -88,14 +86,9 @@ void CAcceptor::SetState(eAcceptorState eState)
 	m_eState = eState;
 }
 
-CSocket CAcceptor::GetSocket() const
-{
-	return m_Socket;
-}
-
 void CAcceptor::ProcessSocketError()
 {
-	switch (m_Socket.GetSocketError()) {
+	switch (m_oSocket.GetSocketError()) {
 	case ePCFR_UNREACH:
 	case ePCFR_REFUSED:
 	case ePCFR_RESET:
