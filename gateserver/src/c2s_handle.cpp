@@ -32,7 +32,6 @@ bool CC2sHandle::BeginListen()
 										gateInfo->m_iPort,
 										&OnAcceptCns,
 										&OnCnsDisconnected,
-										&OnCnsSomeDataSend,
 										&OnCnsSomeDataRecv,
 										RECV_QUEUQ_MAX);
 	if (iRet) {
@@ -60,11 +59,6 @@ void CC2sHandle::OnCnsDisconnected(CAcceptor *pAcceptor)
 	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
 		->PushTaskBack(CC2sHandle::ClearSocket, pAcceptor, Err_ClientClose);
-}
-
-void CC2sHandle::OnCnsSomeDataSend(CAcceptor *pAcceptor)
-{
-
 }
 
 void CC2sHandle::OnCnsSomeDataRecv(CAcceptor *pAcceptor)

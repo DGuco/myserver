@@ -74,8 +74,6 @@ typedef std::function<void(uint32, CAcceptor *)> FuncAcceptorOnNew;
 
 typedef std::function<void(CAcceptor *)> FuncAcceptorOnDisconnected;
 
-typedef std::function<void(CAcceptor *)> FuncAcceptorOnSomeDataSend;
-
 typedef std::function<void(CAcceptor *)> FuncAcceptorOnSomeDataRecv;
 
 /** CallBack for Signal

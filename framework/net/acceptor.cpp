@@ -10,7 +10,6 @@ CAcceptor::CAcceptor(SOCKET socket,
 	  m_eState(eAS_Disconnected),
 	  m_tCreateTime(GetMSTime()),
 	  m_pFuncOnDisconnected(NULL),
-	  m_pFuncOnSomeDataSend(NULL),
 	  m_pFuncOnSomeDataRecv(NULL)
 {
 	m_pReactor->Register(this);
@@ -30,11 +29,9 @@ void CAcceptor::GetRemoteIpAddress(char *szBuf, unsigned int uBufSize)
 }
 
 void CAcceptor::SetCallbackFunc(FuncAcceptorOnDisconnected pOnDisconnected,
-								FuncAcceptorOnSomeDataSend pOnSomeDataSend,
 								FuncAcceptorOnSomeDataRecv pOnSomeDataRecv)
 {
 	m_pFuncOnDisconnected = pOnDisconnected;
-	m_pFuncOnSomeDataSend = pOnSomeDataSend;
 	m_pFuncOnSomeDataRecv = pOnSomeDataRecv;
 }
 
@@ -52,12 +49,6 @@ void CAcceptor::lcb_OnPipeRead(struct bufferevent *bev, void *arg)
 {
 	CAcceptor *pAcceptor = static_cast<CAcceptor *>(arg);
 	pAcceptor->m_pFuncOnSomeDataRecv(pAcceptor);
-}
-
-void CAcceptor::lcb_OnPipeWrite(bufferevent *bev, void *arg)
-{
-	CAcceptor *pAcceptor = static_cast<CAcceptor *>(arg);
-	pAcceptor->m_pFuncOnSomeDataSend(pAcceptor);
 }
 
 void CAcceptor::lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg)
@@ -85,7 +76,6 @@ void CAcceptor::SetState(eAcceptorState eState)
 {
 	m_eState = eState;
 }
-
 void CAcceptor::ProcessSocketError()
 {
 	switch (m_oSocket.GetSocketError()) {
@@ -111,7 +101,7 @@ void CAcceptor::AfterBuffEventCreated()
 {
 	bufferevent_setcb(m_pStBufEv,
 					  CAcceptor::lcb_OnPipeRead,
-					  CAcceptor::lcb_OnPipeWrite,
+					  NULL,
 					  CAcceptor::lcb_OnEvent,
 					  (void *) this);
 	SetState(eAS_Connected);

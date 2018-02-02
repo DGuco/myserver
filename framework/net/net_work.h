@@ -30,7 +30,6 @@ public:
 					 unsigned int uPort,
 					 FuncAcceptorOnNew pOnNew,
 					 FuncAcceptorOnDisconnected pOnDisconnected,
-					 FuncAcceptorOnSomeDataSend pOnSomeDataSend,
 					 FuncAcceptorOnSomeDataRecv pOnSomeDataRecv,
 					 int listenQueue = -1,
 					 unsigned int uCheckPingTickTime = 0);
@@ -92,7 +91,6 @@ private:
 	CListener *m_pListener;
 	FuncAcceptorOnNew m_pOnNew;
 	FuncAcceptorOnDisconnected m_pOnDisconnected;
-	FuncAcceptorOnSomeDataSend m_pOnSomeDataSend;
 	FuncAcceptorOnSomeDataRecv m_pOnSomeDataRecv;
 };
 

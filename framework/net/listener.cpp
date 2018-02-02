@@ -27,7 +27,7 @@ bool CListener::RegisterToReactor()
 	m_pListener = evconnlistener_new_bind(GetReactor()->GetEventBase(),
 										  &CListener::lcb_Accept,
 										  (void *) this,
-										  LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE,
+										  LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE /*| LEV_OPT_THREADSAFE */,
 										  m_iListenQueueMax,
 										  (struct sockaddr *) &sin,
 										  sizeof(sin));

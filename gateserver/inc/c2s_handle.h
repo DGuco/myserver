@@ -40,8 +40,6 @@ protected:
 	static void OnAcceptCns(uint32 uId, CAcceptor *pAcceptor);
 	//客户端断开连接回调
 	static void OnCnsDisconnected(CAcceptor *pAcceptor);
-	//发送数据回调
-	static void OnCnsSomeDataSend(CAcceptor *pAcceptor);
 	//客户端上行数据回调
 	static void OnCnsSomeDataRecv(CAcceptor *pAcceptor);
 public:

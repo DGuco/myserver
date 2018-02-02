@@ -31,7 +31,6 @@ public:
 	virtual ~CAcceptor();
 	//设置读写回调
 	void SetCallbackFunc(FuncAcceptorOnDisconnected pOnDisconnected,
-						 FuncAcceptorOnSomeDataSend pOnSomeDataSend,
 						 FuncAcceptorOnSomeDataRecv pOnSomeDataRecv);
 	//获取该连接的ip
 	void GetRemoteIpAddress(char *szBuf, unsigned int uBufSize);
@@ -50,8 +49,6 @@ private:
 private:
 	//读回调
 	static void lcb_OnPipeRead(struct bufferevent *bev, void *arg);
-	//写回调
-	static void lcb_OnPipeWrite(bufferevent *bev, void *arg);
 	//事件回调
 	static void lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg);
 	//获取连接状态
@@ -67,7 +64,6 @@ private:
 	time_t m_tCreateTime;
 
 	FuncAcceptorOnDisconnected m_pFuncOnDisconnected;
-	FuncAcceptorOnSomeDataSend m_pFuncOnSomeDataSend;
 	FuncAcceptorOnSomeDataRecv m_pFuncOnSomeDataRecv;
 };
 

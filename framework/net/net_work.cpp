@@ -16,7 +16,6 @@ CNetWork::CNetWork(eNetModule netModule)
 	m_pListener(NULL),
 	m_pOnNew(NULL),
 	m_pOnDisconnected(NULL),
-	m_pOnSomeDataSend(NULL),
 	m_pOnSomeDataRecv(NULL)
 {
 }
@@ -65,7 +64,6 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa)
 	sprintf(ip, inet_ntoa(sin.sin_addr));
 	CAcceptor *pAcceptor = new CAcceptor(Socket, pReactor, new CNetAddr(ip, sin.sin_port));
 	pAcceptor->SetCallbackFunc(m_pOnDisconnected,
-							   m_pOnSomeDataSend,
 							   m_pOnSomeDataRecv);
 	SOCKET socket = pAcceptor->GetSocket().GetSocket();
 	m_pOnNew(socket, pAcceptor);
@@ -74,7 +72,6 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa)
 bool CNetWork::BeginListen(const char *szNetAddr, unsigned int uPort,
 						   FuncAcceptorOnNew pOnNew,
 						   FuncAcceptorOnDisconnected pOnDisconnected,
-						   FuncAcceptorOnSomeDataSend pOnSomeDataSend,
 						   FuncAcceptorOnSomeDataRecv pOnSomeDataRecv,
 						   int listenQueue,
 						   unsigned int uCheckPingTickTime)
@@ -89,7 +86,6 @@ bool CNetWork::BeginListen(const char *szNetAddr, unsigned int uPort,
 	m_uCheckPingTickTime = uCheckPingTickTime;
 	m_pOnNew = pOnNew;
 	m_pOnDisconnected = pOnDisconnected;
-	m_pOnSomeDataSend = pOnSomeDataSend;
 	m_pOnSomeDataRecv = pOnSomeDataRecv;
 
 	return bRes;
@@ -151,7 +147,6 @@ bool CNetWork::ShutDownAcceptor(unsigned int uId)
 	auto iter = m_mapAcceptor.find(uId);
 	if (m_mapAcceptor.end() != iter) {
 		CAcceptor *pAcceptor = iter->second;
-		pAcceptor->ShutDown();
 		SAFE_DELETE(pAcceptor);
 		m_mapAcceptor.erase(iter);
 		return true;
@@ -166,7 +161,6 @@ bool CNetWork::ShutDownConnectorEx(unsigned int uId)
 	auto iter = m_mapConnector.find(uId);
 	if (m_mapConnector.end() != iter) {
 		CConnector *pConnector = iter->second;
-		pConnector->ShutDown();
 		SAFE_DELETE(pConnector);
 		m_quIdleConnectorExs.push(pConnector);
 		m_mapConnector.erase(iter);
