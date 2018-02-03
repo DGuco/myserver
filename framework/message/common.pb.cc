@@ -499,6 +499,13 @@ const EmptyMessage& EmptyMessage::default_instance() {
   return *internal_default_instance();
 }
 
+EmptyMessage* EmptyMessage::New(::google::protobuf::Arena* arena) const {
+  EmptyMessage* n = new EmptyMessage;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void EmptyMessage::Clear() {
 // @@protoc_insertion_point(message_clear_start:EmptyMessage)
@@ -694,6 +701,13 @@ const ErrorMessage& ErrorMessage::default_instance() {
   return *internal_default_instance();
 }
 
+ErrorMessage* ErrorMessage::New(::google::protobuf::Arena* arena) const {
+  ErrorMessage* n = new ErrorMessage;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void ErrorMessage::Clear() {
 // @@protoc_insertion_point(message_clear_start:ErrorMessage)
@@ -911,7 +925,7 @@ void ErrorMessage::Swap(ErrorMessage* other) {
 }
 void ErrorMessage::InternalSwap(ErrorMessage* other) {
   using std::swap;
-  args_.InternalSwap(CastToBase(&other->args_));
+  args_.InternalSwap(&other->args_);
   swap(errorcode_, other->errorcode_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -983,6 +997,13 @@ const PositionDTO& PositionDTO::default_instance() {
   return *internal_default_instance();
 }
 
+PositionDTO* PositionDTO::New(::google::protobuf::Arena* arena) const {
+  PositionDTO* n = new PositionDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PositionDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:PositionDTO)
@@ -1289,6 +1310,13 @@ const PropertyDTO& PropertyDTO::default_instance() {
   return *internal_default_instance();
 }
 
+PropertyDTO* PropertyDTO::New(::google::protobuf::Arena* arena) const {
+  PropertyDTO* n = new PropertyDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PropertyDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:PropertyDTO)
@@ -1595,6 +1623,13 @@ const ItemDTO& ItemDTO::default_instance() {
   return *internal_default_instance();
 }
 
+ItemDTO* ItemDTO::New(::google::protobuf::Arena* arena) const {
+  ItemDTO* n = new ItemDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void ItemDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:ItemDTO)
@@ -1901,6 +1936,13 @@ const SoldierDTO& SoldierDTO::default_instance() {
   return *internal_default_instance();
 }
 
+SoldierDTO* SoldierDTO::New(::google::protobuf::Arena* arena) const {
+  SoldierDTO* n = new SoldierDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void SoldierDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:SoldierDTO)
@@ -2213,6 +2255,13 @@ const LevelSoldierDTO& LevelSoldierDTO::default_instance() {
   return *internal_default_instance();
 }
 
+LevelSoldierDTO* LevelSoldierDTO::New(::google::protobuf::Arena* arena) const {
+  LevelSoldierDTO* n = new LevelSoldierDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void LevelSoldierDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:LevelSoldierDTO)
@@ -2296,7 +2345,7 @@ void LevelSoldierDTO::SerializeWithCachedSizes(
   // required .SoldierDTO soldier = 1;
   if (cached_has_bits & 0x00000001u) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, *soldier_, output);
+      1, *this->soldier_, output);
   }
 
   // required int32 level = 2;
@@ -2323,7 +2372,7 @@ void LevelSoldierDTO::SerializeWithCachedSizes(
   if (cached_has_bits & 0x00000001u) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        1, *soldier_, deterministic, target);
+        1, *this->soldier_, deterministic, target);
   }
 
   // required int32 level = 2;
@@ -2347,7 +2396,7 @@ size_t LevelSoldierDTO::RequiredFieldsByteSizeFallback() const {
     // required .SoldierDTO soldier = 1;
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *soldier_);
+        *this->soldier_);
   }
 
   if (has_level()) {
@@ -2372,7 +2421,7 @@ size_t LevelSoldierDTO::ByteSizeLong() const {
     // required .SoldierDTO soldier = 1;
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *soldier_);
+        *this->soldier_);
 
     // required int32 level = 2;
     total_size += 1 +
@@ -2527,6 +2576,13 @@ const EquipmentDTO& EquipmentDTO::default_instance() {
   return *internal_default_instance();
 }
 
+EquipmentDTO* EquipmentDTO::New(::google::protobuf::Arena* arena) const {
+  EquipmentDTO* n = new EquipmentDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void EquipmentDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:EquipmentDTO)
@@ -2954,6 +3010,13 @@ const VipDTO& VipDTO::default_instance() {
   return *internal_default_instance();
 }
 
+VipDTO* VipDTO::New(::google::protobuf::Arena* arena) const {
+  VipDTO* n = new VipDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void VipDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:VipDTO)
@@ -3198,36 +3261,5 @@ void VipDTO::InternalSwap(VipDTO* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
-namespace google {
-namespace protobuf {
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::EmptyMessage* Arena::Create< ::EmptyMessage >(Arena* arena) {
-  return Arena::CreateInternal< ::EmptyMessage >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::ErrorMessage* Arena::Create< ::ErrorMessage >(Arena* arena) {
-  return Arena::CreateInternal< ::ErrorMessage >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PositionDTO* Arena::Create< ::PositionDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::PositionDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PropertyDTO* Arena::Create< ::PropertyDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::PropertyDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::ItemDTO* Arena::Create< ::ItemDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::ItemDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SoldierDTO* Arena::Create< ::SoldierDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::SoldierDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::LevelSoldierDTO* Arena::Create< ::LevelSoldierDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::LevelSoldierDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::EquipmentDTO* Arena::Create< ::EquipmentDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::EquipmentDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::VipDTO* Arena::Create< ::VipDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::VipDTO >(arena);
-}
-}  // namespace protobuf
-}  // namespace google
 
 // @@protoc_insertion_point(global_scope)

@@ -371,6 +371,13 @@ const CMsgExecuteSqlRequest& CMsgExecuteSqlRequest::default_instance() {
   return *internal_default_instance();
 }
 
+CMsgExecuteSqlRequest* CMsgExecuteSqlRequest::New(::google::protobuf::Arena* arena) const {
+  CMsgExecuteSqlRequest* n = new CMsgExecuteSqlRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void CMsgExecuteSqlRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:CMsgExecuteSqlRequest)
@@ -382,15 +389,15 @@ void CMsgExecuteSqlRequest::Clear() {
   if (cached_has_bits & 7u) {
     if (cached_has_bits & 0x00000001u) {
       GOOGLE_DCHECK(!sql_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      sql_.UnsafeMutablePointer()->clear();
+      (*sql_.UnsafeRawStringPointer())->clear();
     }
     if (cached_has_bits & 0x00000002u) {
       GOOGLE_DCHECK(!buffer_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      buffer_.UnsafeMutablePointer()->clear();
+      (*buffer_.UnsafeRawStringPointer())->clear();
     }
     if (cached_has_bits & 0x00000004u) {
       GOOGLE_DCHECK(!sqlwhere_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      sqlwhere_.UnsafeMutablePointer()->clear();
+      (*sqlwhere_.UnsafeRawStringPointer())->clear();
     }
   }
   if (cached_has_bits & 248u) {
@@ -1093,6 +1100,13 @@ const CMsgExecuteSqlResponse& CMsgExecuteSqlResponse::default_instance() {
   return *internal_default_instance();
 }
 
+CMsgExecuteSqlResponse* CMsgExecuteSqlResponse::New(::google::protobuf::Arena* arena) const {
+  CMsgExecuteSqlResponse* n = new CMsgExecuteSqlResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void CMsgExecuteSqlResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:CMsgExecuteSqlResponse)
@@ -1552,7 +1566,7 @@ void CMsgExecuteSqlResponse::Swap(CMsgExecuteSqlResponse* other) {
 }
 void CMsgExecuteSqlResponse::InternalSwap(CMsgExecuteSqlResponse* other) {
   using std::swap;
-  fieldvalue_.InternalSwap(CastToBase(&other->fieldvalue_));
+  fieldvalue_.InternalSwap(&other->fieldvalue_);
   fieldvaluelen_.InternalSwap(&other->fieldvaluelen_);
   swap(logictype_, other->logictype_);
   swap(sessionid_, other->sessionid_);
@@ -1573,15 +1587,5 @@ void CMsgExecuteSqlResponse::InternalSwap(CMsgExecuteSqlResponse* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
-namespace google {
-namespace protobuf {
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::CMsgExecuteSqlRequest* Arena::Create< ::CMsgExecuteSqlRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::CMsgExecuteSqlRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::CMsgExecuteSqlResponse* Arena::Create< ::CMsgExecuteSqlResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::CMsgExecuteSqlResponse >(arena);
-}
-}  // namespace protobuf
-}  // namespace google
 
 // @@protoc_insertion_point(global_scope)

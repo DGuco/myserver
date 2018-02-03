@@ -107,7 +107,7 @@ int CProxyCtrl::WakeUp2Work(CMyTCPConn* pConn)
 
 /**
   *函数名          : GetCanUseConn
-  *功能描述        : 获取一个可用连接
+  *功能描述        : 获取一个可用连接l
 **/
 CMyTCPConn* CProxyCtrl::GetCanUseConn()
 {

@@ -1,0 +1,17 @@
+/Users/DGuco/GitHub/myserver/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/framework/CMakeFiles/rebuild_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/framework/CMakeFiles/edit_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/framework/CMakeFiles/framework.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/gateserver/CMakeFiles/rebuild_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/gateserver/CMakeFiles/edit_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/gateserver/CMakeFiles/gateserver.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/proxyserver/CMakeFiles/rebuild_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/proxyserver/CMakeFiles/edit_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/proxyserver/CMakeFiles/proxyserver.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/dbserver/CMakeFiles/rebuild_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/dbserver/CMakeFiles/edit_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/dbserver/CMakeFiles/dbserver.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/gameserver/CMakeFiles/rebuild_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/gameserver/CMakeFiles/edit_cache.dir
+/Users/DGuco/GitHub/myserver/cmake-build-debug/gameserver/CMakeFiles/gameserver.dir

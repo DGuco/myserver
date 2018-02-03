@@ -1603,6 +1603,13 @@ const PlayerDTO& PlayerDTO::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerDTO* PlayerDTO::New(::google::protobuf::Arena* arena) const {
+  PlayerDTO* n = new PlayerDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerDTO)
@@ -1615,15 +1622,15 @@ void PlayerDTO::Clear() {
   if (cached_has_bits & 15u) {
     if (cached_has_bits & 0x00000001u) {
       GOOGLE_DCHECK(!name_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      name_.UnsafeMutablePointer()->clear();
+      (*name_.UnsafeRawStringPointer())->clear();
     }
     if (cached_has_bits & 0x00000002u) {
       GOOGLE_DCHECK(!language_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      language_.UnsafeMutablePointer()->clear();
+      (*language_.UnsafeRawStringPointer())->clear();
     }
     if (cached_has_bits & 0x00000004u) {
       GOOGLE_DCHECK(!icon_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      icon_.UnsafeMutablePointer()->clear();
+      (*icon_.UnsafeRawStringPointer())->clear();
     }
     if (cached_has_bits & 0x00000008u) {
       GOOGLE_DCHECK(mapgridposition_ != NULL);
@@ -1697,8 +1704,7 @@ bool PlayerDTO::MergePartialFromCodedStream(
       case 4: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-                input, add_properties()));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(input, add_properties()));
         } else {
           goto handle_unusual;
         }
@@ -1814,9 +1820,7 @@ void PlayerDTO::SerializeWithCachedSizes(
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->properties_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      4,
-      this->properties(static_cast<int>(i)),
-      output);
+      4, this->properties(static_cast<int>(i)), output);
   }
 
   // optional string language = 5;
@@ -1832,7 +1836,7 @@ void PlayerDTO::SerializeWithCachedSizes(
   // required .PositionDTO mapGridPosition = 6;
   if (cached_has_bits & 0x00000008u) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      6, *mapgridposition_, output);
+      6, *this->mapgridposition_, output);
   }
 
   // required bool hasChangedName = 7;
@@ -1909,7 +1913,7 @@ void PlayerDTO::SerializeWithCachedSizes(
   if (cached_has_bits & 0x00000008u) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        6, *mapgridposition_, deterministic, target);
+        6, *this->mapgridposition_, deterministic, target);
   }
 
   // required bool hasChangedName = 7;
@@ -1951,7 +1955,7 @@ size_t PlayerDTO::RequiredFieldsByteSizeFallback() const {
     // required .PositionDTO mapGridPosition = 6;
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *mapgridposition_);
+        *this->mapgridposition_);
   }
 
   if (has_playerid()) {
@@ -1993,7 +1997,7 @@ size_t PlayerDTO::ByteSizeLong() const {
     // required .PositionDTO mapGridPosition = 6;
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *mapgridposition_);
+        *this->mapgridposition_);
 
     // required uint64 playerId = 1;
     total_size += 1 +
@@ -2127,7 +2131,7 @@ void PlayerDTO::Swap(PlayerDTO* other) {
 }
 void PlayerDTO::InternalSwap(PlayerDTO* other) {
   using std::swap;
-  CastToBase(&properties_)->InternalSwap(CastToBase(&other->properties_));
+  properties_.InternalSwap(&other->properties_);
   name_.Swap(&other->name_);
   language_.Swap(&other->language_);
   icon_.Swap(&other->icon_);
@@ -2205,6 +2209,13 @@ const GuideDTO& GuideDTO::default_instance() {
   return *internal_default_instance();
 }
 
+GuideDTO* GuideDTO::New(::google::protobuf::Arena* arena) const {
+  GuideDTO* n = new GuideDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void GuideDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:GuideDTO)
@@ -2513,6 +2524,13 @@ const UserAccountLoginRequest& UserAccountLoginRequest::default_instance() {
   return *internal_default_instance();
 }
 
+UserAccountLoginRequest* UserAccountLoginRequest::New(::google::protobuf::Arena* arena) const {
+  UserAccountLoginRequest* n = new UserAccountLoginRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void UserAccountLoginRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:UserAccountLoginRequest)
@@ -2524,11 +2542,11 @@ void UserAccountLoginRequest::Clear() {
   if (cached_has_bits & 3u) {
     if (cached_has_bits & 0x00000001u) {
       GOOGLE_DCHECK(!platform_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      platform_.UnsafeMutablePointer()->clear();
+      (*platform_.UnsafeRawStringPointer())->clear();
     }
     if (cached_has_bits & 0x00000002u) {
       GOOGLE_DCHECK(!puid_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      puid_.UnsafeMutablePointer()->clear();
+      (*puid_.UnsafeRawStringPointer())->clear();
     }
   }
   _has_bits_.Clear();
@@ -2846,6 +2864,13 @@ const UserAccountLoginResponse& UserAccountLoginResponse::default_instance() {
   return *internal_default_instance();
 }
 
+UserAccountLoginResponse* UserAccountLoginResponse::New(::google::protobuf::Arena* arena) const {
+  UserAccountLoginResponse* n = new UserAccountLoginResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void UserAccountLoginResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:UserAccountLoginResponse)
@@ -3082,6 +3107,13 @@ const PlayerLoginRequest& PlayerLoginRequest::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerLoginRequest* PlayerLoginRequest::New(::google::protobuf::Arena* arena) const {
+  PlayerLoginRequest* n = new PlayerLoginRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerLoginRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerLoginRequest)
@@ -3324,6 +3356,13 @@ const PlayerLoginResponse& PlayerLoginResponse::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerLoginResponse* PlayerLoginResponse::New(::google::protobuf::Arena* arena) const {
+  PlayerLoginResponse* n = new PlayerLoginResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerLoginResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerLoginResponse)
@@ -3670,6 +3709,13 @@ const PlayerReconnectRequest& PlayerReconnectRequest::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerReconnectRequest* PlayerReconnectRequest::New(::google::protobuf::Arena* arena) const {
+  PlayerReconnectRequest* n = new PlayerReconnectRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerReconnectRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerReconnectRequest)
@@ -3971,6 +4017,13 @@ const PlayerReconnectResponse& PlayerReconnectResponse::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerReconnectResponse* PlayerReconnectResponse::New(::google::protobuf::Arena* arena) const {
+  PlayerReconnectResponse* n = new PlayerReconnectResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerReconnectResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerReconnectResponse)
@@ -4211,6 +4264,13 @@ const PlayerReloadRequest& PlayerReloadRequest::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerReloadRequest* PlayerReloadRequest::New(::google::protobuf::Arena* arena) const {
+  PlayerReloadRequest* n = new PlayerReloadRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerReloadRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerReloadRequest)
@@ -4409,6 +4469,13 @@ const PlayerReloadResponse& PlayerReloadResponse::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerReloadResponse* PlayerReloadResponse::New(::google::protobuf::Arena* arena) const {
+  PlayerReloadResponse* n = new PlayerReloadResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerReloadResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerReloadResponse)
@@ -4707,6 +4774,13 @@ const PlayerHeartBeatRequest& PlayerHeartBeatRequest::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerHeartBeatRequest* PlayerHeartBeatRequest::New(::google::protobuf::Arena* arena) const {
+  PlayerHeartBeatRequest* n = new PlayerHeartBeatRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerHeartBeatRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerHeartBeatRequest)
@@ -4900,6 +4974,13 @@ const PlayerHeartBeatResponse& PlayerHeartBeatResponse::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerHeartBeatResponse* PlayerHeartBeatResponse::New(::google::protobuf::Arena* arena) const {
+  PlayerHeartBeatResponse* n = new PlayerHeartBeatResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerHeartBeatResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerHeartBeatResponse)
@@ -5141,6 +5222,13 @@ const SetTalentRequest& SetTalentRequest::default_instance() {
   return *internal_default_instance();
 }
 
+SetTalentRequest* SetTalentRequest::New(::google::protobuf::Arena* arena) const {
+  SetTalentRequest* n = new SetTalentRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void SetTalentRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:SetTalentRequest)
@@ -5447,6 +5535,13 @@ const SetTalentResponse& SetTalentResponse::default_instance() {
   return *internal_default_instance();
 }
 
+SetTalentResponse* SetTalentResponse::New(::google::protobuf::Arena* arena) const {
+  SetTalentResponse* n = new SetTalentResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void SetTalentResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:SetTalentResponse)
@@ -5748,6 +5843,13 @@ const SetImageRequest& SetImageRequest::default_instance() {
   return *internal_default_instance();
 }
 
+SetImageRequest* SetImageRequest::New(::google::protobuf::Arena* arena) const {
+  SetImageRequest* n = new SetImageRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void SetImageRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:SetImageRequest)
@@ -5984,6 +6086,13 @@ const SetImageResponse& SetImageResponse::default_instance() {
   return *internal_default_instance();
 }
 
+SetImageResponse* SetImageResponse::New(::google::protobuf::Arena* arena) const {
+  SetImageResponse* n = new SetImageResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void SetImageResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:SetImageResponse)
@@ -6227,6 +6336,13 @@ const QueryLordInfoRequest& QueryLordInfoRequest::default_instance() {
   return *internal_default_instance();
 }
 
+QueryLordInfoRequest* QueryLordInfoRequest::New(::google::protobuf::Arena* arena) const {
+  QueryLordInfoRequest* n = new QueryLordInfoRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void QueryLordInfoRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:QueryLordInfoRequest)
@@ -6237,7 +6353,7 @@ void QueryLordInfoRequest::Clear() {
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
     GOOGLE_DCHECK(!name_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-    name_.UnsafeMutablePointer()->clear();
+    (*name_.UnsafeRawStringPointer())->clear();
   }
   playerid_ = GOOGLE_LONGLONG(0);
   _has_bits_.Clear();
@@ -6551,6 +6667,13 @@ const QueryLordInfoResponse& QueryLordInfoResponse::default_instance() {
   return *internal_default_instance();
 }
 
+QueryLordInfoResponse* QueryLordInfoResponse::New(::google::protobuf::Arena* arena) const {
+  QueryLordInfoResponse* n = new QueryLordInfoResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void QueryLordInfoResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:QueryLordInfoResponse)
@@ -6563,11 +6686,11 @@ void QueryLordInfoResponse::Clear() {
   if (cached_has_bits & 3u) {
     if (cached_has_bits & 0x00000001u) {
       GOOGLE_DCHECK(!nickname_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      nickname_.UnsafeMutablePointer()->clear();
+      (*nickname_.UnsafeRawStringPointer())->clear();
     }
     if (cached_has_bits & 0x00000002u) {
       GOOGLE_DCHECK(!alliancename_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      alliancename_.UnsafeMutablePointer()->clear();
+      (*alliancename_.UnsafeRawStringPointer())->clear();
     }
   }
   if (cached_has_bits & 252u) {
@@ -6709,8 +6832,7 @@ bool QueryLordInfoResponse::MergePartialFromCodedStream(
       case 9: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(74u /* 74 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-                input, add_equipmentlist()));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(input, add_equipmentlist()));
         } else {
           goto handle_unusual;
         }
@@ -6798,9 +6920,7 @@ void QueryLordInfoResponse::SerializeWithCachedSizes(
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->equipmentlist_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      9,
-      this->equipmentlist(static_cast<int>(i)),
-      output);
+      9, this->equipmentlist(static_cast<int>(i)), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -7049,7 +7169,7 @@ void QueryLordInfoResponse::Swap(QueryLordInfoResponse* other) {
 }
 void QueryLordInfoResponse::InternalSwap(QueryLordInfoResponse* other) {
   using std::swap;
-  CastToBase(&equipmentlist_)->InternalSwap(CastToBase(&other->equipmentlist_));
+  equipmentlist_.InternalSwap(&other->equipmentlist_);
   nickname_.Swap(&other->nickname_);
   alliancename_.Swap(&other->alliancename_);
   swap(playerid_, other->playerid_);
@@ -7130,6 +7250,13 @@ const SetIconRequest& SetIconRequest::default_instance() {
   return *internal_default_instance();
 }
 
+SetIconRequest* SetIconRequest::New(::google::protobuf::Arena* arena) const {
+  SetIconRequest* n = new SetIconRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void SetIconRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:SetIconRequest)
@@ -7140,7 +7267,7 @@ void SetIconRequest::Clear() {
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
     GOOGLE_DCHECK(!iconid_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-    iconid_.UnsafeMutablePointer()->clear();
+    (*iconid_.UnsafeRawStringPointer())->clear();
   }
   oper_ = 0;
   _has_bits_.Clear();
@@ -7449,6 +7576,13 @@ const SetIconResponse& SetIconResponse::default_instance() {
   return *internal_default_instance();
 }
 
+SetIconResponse* SetIconResponse::New(::google::protobuf::Arena* arena) const {
+  SetIconResponse* n = new SetIconResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void SetIconResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:SetIconResponse)
@@ -7459,7 +7593,7 @@ void SetIconResponse::Clear() {
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
     GOOGLE_DCHECK(!iconid_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-    iconid_.UnsafeMutablePointer()->clear();
+    (*iconid_.UnsafeRawStringPointer())->clear();
   }
   _has_bits_.Clear();
   _internal_metadata_.Clear();
@@ -7710,6 +7844,13 @@ const ChangeNameRequest& ChangeNameRequest::default_instance() {
   return *internal_default_instance();
 }
 
+ChangeNameRequest* ChangeNameRequest::New(::google::protobuf::Arena* arena) const {
+  ChangeNameRequest* n = new ChangeNameRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void ChangeNameRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:ChangeNameRequest)
@@ -7720,7 +7861,7 @@ void ChangeNameRequest::Clear() {
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
     GOOGLE_DCHECK(!nickname_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-    nickname_.UnsafeMutablePointer()->clear();
+    (*nickname_.UnsafeRawStringPointer())->clear();
   }
   useitem_ = false;
   _has_bits_.Clear();
@@ -8036,6 +8177,13 @@ const ChangeNameResponse& ChangeNameResponse::default_instance() {
   return *internal_default_instance();
 }
 
+ChangeNameResponse* ChangeNameResponse::New(::google::protobuf::Arena* arena) const {
+  ChangeNameResponse* n = new ChangeNameResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void ChangeNameResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:ChangeNameResponse)
@@ -8124,7 +8272,7 @@ void ChangeNameResponse::SerializeWithCachedSizes(
   // optional .PropertyDTO reward = 2;
   if (cached_has_bits & 0x00000001u) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      2, *reward_, output);
+      2, *this->reward_, output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8151,7 +8299,7 @@ void ChangeNameResponse::SerializeWithCachedSizes(
   if (cached_has_bits & 0x00000001u) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        2, *reward_, deterministic, target);
+        2, *this->reward_, deterministic, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8179,7 +8327,7 @@ size_t ChangeNameResponse::ByteSizeLong() const {
   if (has_reward()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *reward_);
+        *this->reward_);
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -8318,6 +8466,13 @@ const SetGuideRequest& SetGuideRequest::default_instance() {
   return *internal_default_instance();
 }
 
+SetGuideRequest* SetGuideRequest::New(::google::protobuf::Arena* arena) const {
+  SetGuideRequest* n = new SetGuideRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void SetGuideRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:SetGuideRequest)
@@ -8561,6 +8716,13 @@ const PlayerDataPush& PlayerDataPush::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerDataPush* PlayerDataPush::New(::google::protobuf::Arena* arena) const {
+  PlayerDataPush* n = new PlayerDataPush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerDataPush::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerDataPush)
@@ -8629,7 +8791,7 @@ void PlayerDataPush::SerializeWithCachedSizes(
   // required .PlayerDTO player = 1;
   if (cached_has_bits & 0x00000001u) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, *player_, output);
+      1, *this->player_, output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8651,7 +8813,7 @@ void PlayerDataPush::SerializeWithCachedSizes(
   if (cached_has_bits & 0x00000001u) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        1, *player_, deterministic, target);
+        1, *this->player_, deterministic, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8675,7 +8837,7 @@ size_t PlayerDataPush::ByteSizeLong() const {
   if (has_player()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *player_);
+        *this->player_);
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -8807,6 +8969,13 @@ const PlayerPropertyChangePush& PlayerPropertyChangePush::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerPropertyChangePush* PlayerPropertyChangePush::New(::google::protobuf::Arena* arena) const {
+  PlayerPropertyChangePush* n = new PlayerPropertyChangePush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerPropertyChangePush::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerPropertyChangePush)
@@ -8833,8 +9002,7 @@ bool PlayerPropertyChangePush::MergePartialFromCodedStream(
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-                input, add_properties()));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(input, add_properties()));
         } else {
           goto handle_unusual;
         }
@@ -8871,9 +9039,7 @@ void PlayerPropertyChangePush::SerializeWithCachedSizes(
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->properties_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1,
-      this->properties(static_cast<int>(i)),
-      output);
+      1, this->properties(static_cast<int>(i)), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8983,7 +9149,7 @@ void PlayerPropertyChangePush::Swap(PlayerPropertyChangePush* other) {
 }
 void PlayerPropertyChangePush::InternalSwap(PlayerPropertyChangePush* other) {
   using std::swap;
-  CastToBase(&properties_)->InternalSwap(CastToBase(&other->properties_));
+  properties_.InternalSwap(&other->properties_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(_cached_size_, other->_cached_size_);
@@ -9049,6 +9215,13 @@ const PlayerLevelUpPush& PlayerLevelUpPush::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerLevelUpPush* PlayerLevelUpPush::New(::google::protobuf::Arena* arena) const {
+  PlayerLevelUpPush* n = new PlayerLevelUpPush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerLevelUpPush::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerLevelUpPush)
@@ -9291,6 +9464,13 @@ const PlayerProtectPush& PlayerProtectPush::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerProtectPush* PlayerProtectPush::New(::google::protobuf::Arena* arena) const {
+  PlayerProtectPush* n = new PlayerProtectPush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerProtectPush::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerProtectPush)
@@ -9639,6 +9819,13 @@ const PlayerCount& PlayerCount::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerCount* PlayerCount::New(::google::protobuf::Arena* arena) const {
+  PlayerCount* n = new PlayerCount;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerCount::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerCount)
@@ -10014,6 +10201,13 @@ const PlayerCountPush& PlayerCountPush::default_instance() {
   return *internal_default_instance();
 }
 
+PlayerCountPush* PlayerCountPush::New(::google::protobuf::Arena* arena) const {
+  PlayerCountPush* n = new PlayerCountPush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayerCountPush::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayerCountPush)
@@ -10040,8 +10234,7 @@ bool PlayerCountPush::MergePartialFromCodedStream(
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-                input, add_counts()));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(input, add_counts()));
         } else {
           goto handle_unusual;
         }
@@ -10078,9 +10271,7 @@ void PlayerCountPush::SerializeWithCachedSizes(
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->counts_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1,
-      this->counts(static_cast<int>(i)),
-      output);
+      1, this->counts(static_cast<int>(i)), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -10190,7 +10381,7 @@ void PlayerCountPush::Swap(PlayerCountPush* other) {
 }
 void PlayerCountPush::InternalSwap(PlayerCountPush* other) {
   using std::swap;
-  CastToBase(&counts_)->InternalSwap(CastToBase(&other->counts_));
+  counts_.InternalSwap(&other->counts_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(_cached_size_, other->_cached_size_);
@@ -10256,6 +10447,13 @@ const PlayeBattlePush& PlayeBattlePush::default_instance() {
   return *internal_default_instance();
 }
 
+PlayeBattlePush* PlayeBattlePush::New(::google::protobuf::Arena* arena) const {
+  PlayeBattlePush* n = new PlayeBattlePush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PlayeBattlePush::Clear() {
 // @@protoc_insertion_point(message_clear_start:PlayeBattlePush)
@@ -10491,6 +10689,13 @@ const TalentPush& TalentPush::default_instance() {
   return *internal_default_instance();
 }
 
+TalentPush* TalentPush::New(::google::protobuf::Arena* arena) const {
+  TalentPush* n = new TalentPush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void TalentPush::Clear() {
 // @@protoc_insertion_point(message_clear_start:TalentPush)
@@ -10736,6 +10941,13 @@ const VipInfoPush& VipInfoPush::default_instance() {
   return *internal_default_instance();
 }
 
+VipInfoPush* VipInfoPush::New(::google::protobuf::Arena* arena) const {
+  VipInfoPush* n = new VipInfoPush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void VipInfoPush::Clear() {
 // @@protoc_insertion_point(message_clear_start:VipInfoPush)
@@ -11077,6 +11289,13 @@ const VipActiveInfoPush& VipActiveInfoPush::default_instance() {
   return *internal_default_instance();
 }
 
+VipActiveInfoPush* VipActiveInfoPush::New(::google::protobuf::Arena* arena) const {
+  VipActiveInfoPush* n = new VipActiveInfoPush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void VipActiveInfoPush::Clear() {
 // @@protoc_insertion_point(message_clear_start:VipActiveInfoPush)
@@ -11313,6 +11532,13 @@ const SysTimePush& SysTimePush::default_instance() {
   return *internal_default_instance();
 }
 
+SysTimePush* SysTimePush::New(::google::protobuf::Arena* arena) const {
+  SysTimePush* n = new SysTimePush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void SysTimePush::Clear() {
 // @@protoc_insertion_point(message_clear_start:SysTimePush)
@@ -11556,6 +11782,13 @@ const GuidePush& GuidePush::default_instance() {
   return *internal_default_instance();
 }
 
+GuidePush* GuidePush::New(::google::protobuf::Arena* arena) const {
+  GuidePush* n = new GuidePush;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void GuidePush::Clear() {
 // @@protoc_insertion_point(message_clear_start:GuidePush)
@@ -11624,7 +11857,7 @@ void GuidePush::SerializeWithCachedSizes(
   // required .GuideDTO guide = 1;
   if (cached_has_bits & 0x00000001u) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, *guide_, output);
+      1, *this->guide_, output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -11646,7 +11879,7 @@ void GuidePush::SerializeWithCachedSizes(
   if (cached_has_bits & 0x00000001u) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        1, *guide_, deterministic, target);
+        1, *this->guide_, deterministic, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -11670,7 +11903,7 @@ size_t GuidePush::ByteSizeLong() const {
   if (has_guide()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *guide_);
+        *this->guide_);
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -11747,114 +11980,5 @@ void GuidePush::InternalSwap(GuidePush* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
-namespace google {
-namespace protobuf {
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerDTO* Arena::Create< ::PlayerDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::GuideDTO* Arena::Create< ::GuideDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::GuideDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::UserAccountLoginRequest* Arena::Create< ::UserAccountLoginRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::UserAccountLoginRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::UserAccountLoginResponse* Arena::Create< ::UserAccountLoginResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::UserAccountLoginResponse >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerLoginRequest* Arena::Create< ::PlayerLoginRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerLoginRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerLoginResponse* Arena::Create< ::PlayerLoginResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerLoginResponse >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerReconnectRequest* Arena::Create< ::PlayerReconnectRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerReconnectRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerReconnectResponse* Arena::Create< ::PlayerReconnectResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerReconnectResponse >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerReloadRequest* Arena::Create< ::PlayerReloadRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerReloadRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerReloadResponse* Arena::Create< ::PlayerReloadResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerReloadResponse >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerHeartBeatRequest* Arena::Create< ::PlayerHeartBeatRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerHeartBeatRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerHeartBeatResponse* Arena::Create< ::PlayerHeartBeatResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerHeartBeatResponse >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SetTalentRequest* Arena::Create< ::SetTalentRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::SetTalentRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SetTalentResponse* Arena::Create< ::SetTalentResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::SetTalentResponse >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SetImageRequest* Arena::Create< ::SetImageRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::SetImageRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SetImageResponse* Arena::Create< ::SetImageResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::SetImageResponse >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::QueryLordInfoRequest* Arena::Create< ::QueryLordInfoRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::QueryLordInfoRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::QueryLordInfoResponse* Arena::Create< ::QueryLordInfoResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::QueryLordInfoResponse >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SetIconRequest* Arena::Create< ::SetIconRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::SetIconRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SetIconResponse* Arena::Create< ::SetIconResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::SetIconResponse >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::ChangeNameRequest* Arena::Create< ::ChangeNameRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ChangeNameRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::ChangeNameResponse* Arena::Create< ::ChangeNameResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ChangeNameResponse >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SetGuideRequest* Arena::Create< ::SetGuideRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::SetGuideRequest >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerDataPush* Arena::Create< ::PlayerDataPush >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerDataPush >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerPropertyChangePush* Arena::Create< ::PlayerPropertyChangePush >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerPropertyChangePush >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerLevelUpPush* Arena::Create< ::PlayerLevelUpPush >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerLevelUpPush >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerProtectPush* Arena::Create< ::PlayerProtectPush >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerProtectPush >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerCount* Arena::Create< ::PlayerCount >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerCount >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayerCountPush* Arena::Create< ::PlayerCountPush >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayerCountPush >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PlayeBattlePush* Arena::Create< ::PlayeBattlePush >(Arena* arena) {
-  return Arena::CreateInternal< ::PlayeBattlePush >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::TalentPush* Arena::Create< ::TalentPush >(Arena* arena) {
-  return Arena::CreateInternal< ::TalentPush >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::VipInfoPush* Arena::Create< ::VipInfoPush >(Arena* arena) {
-  return Arena::CreateInternal< ::VipInfoPush >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::VipActiveInfoPush* Arena::Create< ::VipActiveInfoPush >(Arena* arena) {
-  return Arena::CreateInternal< ::VipActiveInfoPush >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SysTimePush* Arena::Create< ::SysTimePush >(Arena* arena) {
-  return Arena::CreateInternal< ::SysTimePush >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::GuidePush* Arena::Create< ::GuidePush >(Arena* arena) {
-  return Arena::CreateInternal< ::GuidePush >(arena);
-}
-}  // namespace protobuf
-}  // namespace google
 
 // @@protoc_insertion_point(global_scope)

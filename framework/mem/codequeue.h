@@ -42,7 +42,7 @@ public:
 	//从进程间共享内存管道获取数据
 	int GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int *psOutLength);
 	//共享内存管道是否空闲
-	int IsQueueEmpty();
+	bool IsQueueEmpty();
 	//向文件中备份数据
 	int DumpToFile(const char *szFileName);
 	//从文件中加载数据

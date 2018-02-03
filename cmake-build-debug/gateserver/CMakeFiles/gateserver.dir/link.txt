@@ -1,0 +1,1 @@
+/usr/bin/g++  -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/gateserver.dir/main.cpp.o CMakeFiles/gateserver.dir/src/gatectrl.cpp.o  -o ../../bin/gateserver  -L/Users/DGuco/GitHub/myserver/lib -Wl,-rpath,/Users/DGuco/GitHub/myserver/lib ../../lib/libframework.a -lpthread -lprotobuf -lcrypto -llog4cpp -lcrypto 
