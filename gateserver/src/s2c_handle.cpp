@@ -31,7 +31,7 @@ int CS2cHandle::PrepareToRun()
 	return 0;
 }
 
-int CS2cHandle::Run()
+int CS2cHandle::RunFunc()
 {
 	while (true) {
 		//如果有数据需要发送

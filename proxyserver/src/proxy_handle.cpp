@@ -429,7 +429,7 @@ int CProxyHandle::PrepareToRun()
 	return 0;
 }
 
-int CProxyHandle::Run()
+int CProxyHandle::RunFunc()
 {
 	while( True )
 	{

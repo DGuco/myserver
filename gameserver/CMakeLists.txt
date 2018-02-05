@@ -4,15 +4,17 @@ add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX)
 
 set(SOURCE_FILES
         main.cpp
-        inc/gameserver.h
-        inc/clienthandle.h
-        inc/messagefactory.h
-        inc/messagedispatcher.h
+        inc/game_server.h
+        inc/client_handle.h
+        inc/message_factory.h
+        inc/message_dispatcher.h
+        src/server_handle.cpp
+        inc/server_handle.h
         datamodule/inc/sceneobjmanager.h
-        src/gameserver.cpp
-        src/clienthandle.cpp
-        src/messagefactory.cpp
-        src/messagedispatcher.cpp
+        src/game_server.cpp
+        src/client_handle.cpp
+        src/message_factory.cpp
+        src/message_dispatcher.cpp
         datamodule/src/sceneobjmanager.cpp
         datamodule/inc/player.h
         datamodule/inc/playerdata.h
@@ -22,18 +24,17 @@ set(SOURCE_FILES
         datamodule/src/playerbase.cpp
         datamodule/src/playerdata.cpp
         datamodule/src/playercity.cpp
-        logicmodule/inc/coremodule.h
-        logicmodule/inc/logicmodule.h
-        logicmodule/inc/modulemanager.h
-        logicmodule/inc/dbmodule.h
-        logicmodule/src/modulemanager.cpp
-        logicmodule/src/coremodule.cpp
-        logicmodule/src/logicmodule.cpp
-        logicmodule/src/dbmodule.cpp
+        logicmodule/inc/coremo_dule.h
+        logicmodule/inc/logic_module.h
+        logicmodule/inc/module_manager.h
+        logicmodule/inc/db_module.h
+        logicmodule/src/module_manager.cpp
+        logicmodule/src/coremo_dule.cpp
+        logicmodule/src/logic_module.cpp
+        logicmodule/src/db_module.cpp
         metadata/inc/parameter_config.h
         metadata/src/parameter_config.cpp
-        metadata/inc/parameter_key.h
-        )
+        metadata/inc/parameter_key.h)
 
 include_directories(
         /usr/local/include/
@@ -55,5 +56,5 @@ link_directories(
 )
 
 add_executable(gameserver ${SOURCE_FILES})
-target_link_libraries(gameserver framework pthread protobuf )
+target_link_libraries(gameserver framework pthread protobuf)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)

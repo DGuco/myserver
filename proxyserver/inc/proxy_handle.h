@@ -67,7 +67,7 @@ public:
 	int Initialize(EMHandleType eHandleType, CDoubleLinkerInfo* pInfo, CONNS_MAP* pMap);
 
 	virtual int PrepareToRun() ;
-	virtual int Run() ;
+	virtual int RunFunc() ;
 	virtual bool IsToBeBlocked();
 
 private:

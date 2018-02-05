@@ -58,7 +58,7 @@ public:
 
     virtual bool IsToBeBlocked();
     virtual int PrepareToRun();
-    virtual int Run();
+    virtual int RunFunc();
     virtual int ProcessThreadEnd();
 
     int Initialize( int iHandleID, CTCPConn<RECVBUFLENGTH, POSTBUFLENGTH>* pGSvrdConns);

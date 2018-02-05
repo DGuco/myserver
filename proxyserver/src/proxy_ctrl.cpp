@@ -573,7 +573,7 @@ int CProxyCtrl::PrepareToRun()
 		//初始化线程
 		m_stHandleInfos[i].mpHandle->Initialize((EMHandleType)i,&(m_stHandleInfos[i].mLinkerInfo),&m_mapConns);
 		//创建线程
-		if (m_stHandleInfos[i].mpHandle->CreateThread())
+		if (m_stHandleInfos[i].mpHandle->Run())
 		{
 			return -1;
 		}

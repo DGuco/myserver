@@ -21,7 +21,7 @@ public:
 	//准备run
 	int PrepareToRun() override;
 	//run
-	int Run() override;
+	int RunFunc() override;
 	//线程阻塞条件
 	bool IsToBeBlocked() override;
 	//检测发送队列

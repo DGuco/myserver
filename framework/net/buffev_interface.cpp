@@ -34,6 +34,23 @@ int IBufferEvent::Send(const void *pData, unsigned int uSize)
 	return bufferevent_write(m_pStBufEv, pData, uSize);
 }
 
+int IBufferEvent::SendBySocket(const void *pData, unsigned int uSize)
+{
+	int iSendBytes;
+	while (true) {
+		iSendBytes = write(m_oSocket.GetSocket(), pData, uSize);
+		if (iSendBytes == uSize) {
+			return iSendBytes;
+		}
+		else {
+			if (0 >= iSendBytes && EINTR == errno) {
+				continue;
+			}
+			return iSendBytes;
+		}
+	}
+}
+
 unsigned int IBufferEvent::RecvData(char *data, unsigned int size)
 {
 	MY_ASSERT(IsEventBuffAvailable(), return 0);

@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include "config.h"
-#include "inc/gameserver.h"
+#include "inc/game_server.h"
 
 void sigusr1_handle(int iSigVal)
 {

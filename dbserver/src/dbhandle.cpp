@@ -241,7 +241,7 @@ int CDBHandle::PrepareToRun()
 	return 0;
 }
 
-int CDBHandle::Run()
+int CDBHandle::RunFunc()
 {
 
 	BYTE abyCodeBuf[MAX_PACKAGE_LEN];

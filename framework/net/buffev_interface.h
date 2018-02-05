@@ -20,6 +20,8 @@ public:
 	virtual ~IBufferEvent();
 	//发送数据
 	int Send(const void *pData, unsigned int uSize);
+	//通过socket发送
+	int SendBySocket(const void *pData, unsigned int uSize);
 	//获取数据(返回读取数据长度)
 	unsigned int RecvData(char *data, unsigned int size);
 	//读取读缓冲区当前数据包的总长度

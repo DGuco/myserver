@@ -28,8 +28,8 @@ CGateCtrl::~CGateCtrl()
 
 int CGateCtrl::Run()
 {
-	m_pS2cHandle->CreateThread();
 	m_pC2sHandle->Run();
+	m_pS2cHandle->Run();
 }
 
 CThreadPool *CGateCtrl::GetSingThreadPool()
@@ -56,6 +56,7 @@ int CGateCtrl::PrepareToRun()
 	//初始化日志
 	INIT_ROLLINGFILE_LOG("default", "../log/gatesvrd.log", LEVEL_DEBUG);
 	m_pC2sHandle->PrepareToRun();
+	m_pS2cHandle->PrepareToRun();
 	return 0;
 }
 

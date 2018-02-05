@@ -39,10 +39,10 @@ public:
 	virtual ~CMyThread();
 
 	virtual int PrepareToRun() = 0;
-	virtual int Run() = 0;
+	virtual int RunFunc() = 0;
 	virtual bool IsToBeBlocked() = 0;
 
-	int CreateThread();
+	int Run();
 	int WakeUp();
 	int StopThread();
 	void ThreadLogInit(char *sPLogBaseName, long lPMaxLogSize, int iPMaxLogNum, int iShow, int iLevel = 0);

@@ -11,13 +11,7 @@ void *ThreadProc(void *pvArgs)
 	}
 
 	CMyThread *pThread = (CMyThread *) pvArgs;
-
-	if (pThread->PrepareToRun())  // handle
-	{
-		return NULL;
-	}
-
-	pThread->Run();
+	pThread->RunFunc();
 
 	return NULL;
 }
@@ -31,7 +25,7 @@ CMyThread::~CMyThread()
 {
 }
 
-int CMyThread::CreateThread()
+int CMyThread::Run()
 {
 	m_iRunStatus = rt_running;
 	//创建线程

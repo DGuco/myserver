@@ -49,13 +49,13 @@ int CDBCtrl::MallocShareMem()
 void CDBCtrl::SetRunFlag( int iFlag )
 {
     m_iRunFlag = iFlag;
-    LOG_INFO( "default", "Set Run Flag %d, All Flag Is %d", iFlag, m_iRunFlag );
+    LOG_INFO( "default", "Set RunFunc Flag %d, All Flag Is %d", iFlag, m_iRunFlag );
 }
 
 void CDBCtrl::ClearRunFlag( int iFlag )
 {
     m_iRunFlag = 0;
-    LOG_INFO( "default", "Clear Run Flag %d", iFlag );
+    LOG_INFO( "default", "Clear RunFunc Flag %d", iFlag );
 }
 
 bool CDBCtrl::IsRunFlagSet( int iFlag )
@@ -372,7 +372,7 @@ int CDBCtrl::PrepareToRun()
 
 	for(i = 0; i < MAXHANDLENUMBER; i++)  // 创建CDBHandle线程
 	{
-		if(m_apHandles[i]->CreateThread())
+		if(m_apHandles[i]->Run())
 		{
 			LOG_ERROR( "default", "Create dbhandle thread %d failed.\n", i);
 			return -1;
