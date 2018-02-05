@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 #include "../../../framework/json/json.h"
-#include "../../../framework/base/servertool.h"
+#include "server_tool.h"
 
 class ParameterItem
 {

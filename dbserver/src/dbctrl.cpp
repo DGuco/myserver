@@ -3,7 +3,7 @@
 //
 
 #include "../inc/dbctrl.h"
-#include "sharemem.h"
+#include "share_mem.h"
 #include "config.h"
 #include "server_comm_engine.h"
 

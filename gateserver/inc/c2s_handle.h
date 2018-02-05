@@ -7,7 +7,7 @@
 #define SERVER_C2S_THREAD_H
 
 #include <acceptor.h>
-#include <codequeue.h>
+#include <code_queue.h>
 #include <net_work.h>
 #include "mythread.h"
 
@@ -30,7 +30,7 @@ public:
 	//通知gameserver client 断开连接
 	static void DisConnect(CAcceptor *pAcceptor, short iError);
 	//发送数据给gameserver
-	static void SendToGame(CAcceptor *pAcceptor);
+	static void SendToGame(CAcceptor *pAcceptor, PACK_LEN len);
 private:
 	//开始监听
 	bool BeginListen();

@@ -50,22 +50,21 @@ void CNetWork::SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void 
 	m_quSystemSignals.push(pSystemSignal);
 }
 
-void CNetWork::OnAccept(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa)
+void CNetWork::lcb_OnAccept(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 {
-	CNetWork::GetSingletonPtr()->NewAcceptor(pReactor, Socket, sa);
+	CNetWork::GetSingletonPtr()->NewAcceptor(pReactor, socket, sa);
 }
 
-void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa)
+void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 {
 	sockaddr_in sin;
 	memcpy(&sin, sa, sizeof(sin));
 	//  取得ip和端口号
-	char ip[100];
+	char ip[16];
 	sprintf(ip, inet_ntoa(sin.sin_addr));
-	CAcceptor *pAcceptor = new CAcceptor(Socket, pReactor, new CNetAddr(ip, sin.sin_port));
-	pAcceptor->SetCallbackFunc(m_pOnDisconnected,
-							   m_pOnSomeDataRecv);
-	SOCKET socket = pAcceptor->GetSocket().GetSocket();
+	CAcceptor *pAcceptor =
+		new CAcceptor(socket, pReactor, new CNetAddr(ip, sin.sin_port), m_pOnDisconnected, m_pOnSomeDataRecv);
+	MY_ASSERT_STR(pAcceptor != NULL, return, "Create CAcceptor failed");
 	m_pOnNew(socket, pAcceptor);
 }
 
@@ -82,7 +81,7 @@ bool CNetWork::BeginListen(const char *szNetAddr, unsigned int uPort,
 	}
 	CNetAddr addr(szNetAddr, uPort);
 
-	bool bRes = m_pListener->Listen(addr, &CNetWork::OnAccept);
+	bool bRes = m_pListener->Listen(addr, &CNetWork::lcb_OnAccept);
 	m_uCheckPingTickTime = uCheckPingTickTime;
 	m_pOnNew = pOnNew;
 	m_pOnDisconnected = pOnDisconnected;
@@ -96,15 +95,15 @@ void CNetWork::EndListen()
 	SAFE_DELETE(m_pListener);
 }
 
-int CNetWork::Connect(const char *szNetAddr,
-					  uint16 uPort,
-					  FuncConnectorOnDisconnected pOnDisconnected,
-					  FuncConnectorOnConnectFailed pOnConnectFailed,
-					  FuncConnectorOnConnectted pOnConnectted,
-					  FuncConnectorOnSomeDataSend pOnSomeDataSend,
-					  FuncConnectorOnSomeDataRecv pOnSomeDataRecv,
-					  FuncConnectorOnPingServer pOnPingServer,
-					  unsigned int uPingTick /* = 45000 */, unsigned int uTimeOut)
+bool CNetWork::Connect(const char *szNetAddr,
+					   uint16 uPort,
+					   FuncConnectorOnDisconnected pOnDisconnected,
+					   FuncConnectorOnConnectFailed pOnConnectFailed,
+					   FuncConnectorOnConnectted pOnConnectted,
+					   FuncConnectorOnSomeDataSend pOnSomeDataSend,
+					   FuncConnectorOnSomeDataRecv pOnSomeDataRecv,
+					   FuncConnectorOnPingServer pOnPingServer,
+					   unsigned int uPingTick /* = 45000 */, unsigned int uTimeOut)
 {
 	CConnector *pConnector = new CConnector(m_pEventReactor);
 	pConnector->SetCallbackFunc(std::move(pOnDisconnected),
@@ -117,12 +116,12 @@ int CNetWork::Connect(const char *szNetAddr,
 	timeval time;
 	time.tv_sec = uTimeOut;
 	time.tv_usec = 0;
-	pConnector->Connect(addr, &time);
+	bool bRet = pConnector->Connect(addr, &time);
 	int fd = pConnector->GetSocket().GetSocket();
 	{
 		m_mapConnector.insert(std::make_pair(fd, pConnector));
 	}
-	return fd;
+	return bRet;
 }
 
 unsigned int CNetWork::GetConnectorExPingValue(unsigned int uId)

@@ -4,7 +4,7 @@
 
 #ifndef SERVER_OBJECTMANAGER_H
 #define SERVER_OBJECTMANAGER_H
-#include "servertool.h"
+#include "server_tool.h"
 
 class CObjectManager{
 public:

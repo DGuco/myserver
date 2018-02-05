@@ -9,7 +9,7 @@
 #include "logicmodule.h"
 #include "timer.h"
 #include "dbmessage.pb.h"
-#include "dblogintype.h"
+#include "dblogin_type.h"
 #include "message.pb.h"
 #include "../../datamodule/inc/player.h"
 

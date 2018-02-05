@@ -2,7 +2,7 @@
 // Created by DGuco on 17-7-12.
 //
 
-#include "sharemem.h"
+#include "share_mem.h"
 #include "config.h"
 #include "./inc/dbctrl.h"
 #include <signal.h>

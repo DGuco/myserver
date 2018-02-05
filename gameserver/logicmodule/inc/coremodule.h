@@ -9,8 +9,8 @@
 
 #include <unordered_map>
 #include "logicmodule.h"
-#include "servertool.h"
-#include "dblogintype.h"
+#include "server_tool.h"
+#include "dblogin_type.h"
 
 class CCoreModule : public CLogicModule,public CSingleton<CCoreModule> {
 public:

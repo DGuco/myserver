@@ -2,11 +2,11 @@
 // Created by DGuco on 17-6-21.
 //
 
-#include <commondef.h>
+#include <common_def.h>
 #include "shm.h"
-#include "codequeue.h"
-#include "errcode.h"
-#include "sharemem.h"
+#include "code_queue.h"
+#include "err_code.h"
+#include "share_mem.h"
 #include "client_comm_engine.h"
 #include "player.pb.h"
 #include "../inc/messagedispatcher.h"

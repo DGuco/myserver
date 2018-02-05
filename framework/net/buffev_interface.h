@@ -15,7 +15,7 @@ class IBufferEvent: public IReactorHandler
 {
 public:
 	//构造函数
-	IBufferEvent(IEventReactor *pReactor, bufferevent *buffevent, int socket = INVALID_SOCKET);
+	IBufferEvent(IEventReactor *pReactor, int socket = INVALID_SOCKET);
 	//析构函数
 	virtual ~IBufferEvent();
 	//发送数据
@@ -52,7 +52,7 @@ public:    //获取event base
 	bool UnRegisterFromReactor() override;
 private:
 	//bufferEvent 无效处理
-	virtual void BuffEventAvailableCall() = 0;
+	virtual void BuffEventUnavailableCall() = 0;
 	//event buffer 创建成功后处理
 	virtual void AfterBuffEventCreated() = 0;
 protected:

@@ -47,7 +47,7 @@ public:
 
 private:
 	//bufferEvent 无效处理
-	void BuffEventAvailableCall() override;
+	void BuffEventUnavailableCall() override;
 	//event buffer 创建成功后处理
 	void AfterBuffEventCreated() override;
 

@@ -9,9 +9,9 @@
 #define SERVER_CONFIG_H_H
 #include <memory>
 #include <map>
-#include "servertool.h"
+#include "server_tool.h"
 #include "json.h"
-#include "commondef.h"
+#include "common_def.h"
 #include "message.pb.h"
 
 struct ServerInfo {

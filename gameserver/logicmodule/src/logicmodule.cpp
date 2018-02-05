@@ -3,7 +3,7 @@
 //
 
 #include "../inc/logicmodule.h"
-#include "servertool.h"
+#include "server_tool.h"
 
 template<> CLogicModule* CSingleton<CLogicModule>::spSingleton = NULL;
 

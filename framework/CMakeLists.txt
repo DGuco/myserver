@@ -6,18 +6,18 @@ set(FRAMEWORK
         base/base.h
         base/object.h
         base/performance.h
-        base/servertool.h
+        base/server_tool.h
         base/base.cpp
         base/performance.cpp
-        base/servertool.cpp
+        base/server_tool.cpp
         base/my_assert.h
         base/my_macro.h
         base/my_macro.h
-        base/objectManager.cpp
-        base/objectManager.h
-        const/commondef.h
-        const/errcode.h
-        const/dblogintype.h
+        base/object_manager.cpp
+        base/object_manager.h
+        const/common_def.h
+        const/err_code.h
+        const/dblogin_type.h
         json/json.h
         json/json.cpp
         json/config.h
@@ -63,17 +63,17 @@ set(FRAMEWORK
         net/socket.cpp
         net/buffev_interface.cpp
         net/buffev_interface.h
-        mem/sharemem.h
+        mem/share_mem.h
         mem/shm.h/
-        mem/sharemem.cpp
+        mem/share_mem.cpp
         mem/shm.cpp
-        mem/codequeue.h
-        mem/codequeue.cpp
-        mem/mempool.h
-        mem/mempoolsafty.h
+        mem/code_queue.h
+        mem/code_queue.cpp
+        mem/mem_pool.h
+        mem/mempool_safty.h
         thread/mythread.h
         thread/mythread.cpp
-        thread/threadpool.h
+        thread/thread_pool.h
         timer/clock.cpp
         timer/clock.h
         timer/timer.h

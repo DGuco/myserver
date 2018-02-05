@@ -10,7 +10,7 @@
 
 #include <mutex>
 #include "proxy_handle.h"
-#include "servertool.h"
+#include "server_tool.h"
 
 #define MAX_TMP_BUF_LEN 		(1024) 				// 注册消息最大长度
 #define MAX_UNREGISTER_NUM 		(MAX_CONNS_NUM) 	// 当前未注册的最大个数

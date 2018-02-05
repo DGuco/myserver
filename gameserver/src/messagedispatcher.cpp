@@ -3,7 +3,7 @@
 //
 #include "performance.h"
 #include "player.pb.h"
-#include "servertool.h"
+#include "server_tool.h"
 #include "../logicmodule/inc/coremodule.h"
 #include "../datamodule/inc/player.h"
 #include "../datamodule/inc/sceneobjmanager.h"

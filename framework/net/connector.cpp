@@ -2,7 +2,7 @@
 #include "connector.h"
 
 CConnector::CConnector(IEventReactor *pReactor)
-	: IBufferEvent(pReactor, NULL),
+	: IBufferEvent(pReactor),
 	  m_eState(eCS_Disconnected),
 	  m_pFuncOnDisconnected(NULL),
 	  m_pFuncOnConnectFailed(NULL),
@@ -132,16 +132,11 @@ void CConnector::lcb_OnPipeWrite(bufferevent *bev, void *arg)
 
 void CConnector::lcb_OnPipeError(bufferevent *bev, int16 nWhat, void *arg)
 {
-
 	CConnector *pConnector = static_cast<CConnector *>(arg);
-
 	MY_ASSERT_STR(false, DO_NOTHING, "%s, %d lcb_OnPipeError With PpeGetLastError %d", pConnector->m_oAddr.GetAddress(),
 				  pConnector->m_oAddr.GetPort(), PpeGetLastError());
-
 	pConnector->ShutDown();
-
 	if (nWhat & EVBUFFER_EOF) {
-
 		MY_ASSERT_STR(false, DO_NOTHING, "%s, %d lcb_OnPipeError EVBUFFER_EOF %d",
 					  pConnector->m_oAddr.GetAddress(),
 					  pConnector->m_oAddr.GetPort(),
@@ -197,7 +192,7 @@ void CConnector::ProcessSocketError()
 	}
 }
 
-void CConnector::BuffEventAvailableCall()
+void CConnector::BuffEventUnavailableCall()
 {
 
 }
@@ -209,5 +204,7 @@ void CConnector::AfterBuffEventCreated()
 					  CConnector::lcb_OnPipeWrite,
 					  CConnector::lcb_OnPipeError,
 					  (void *) this);
+	bufferevent_enable(m_pStBufEv, EV_READ);
+	bufferevent_disable(m_pStBufEv, EV_WRITE);
 	SetState(eCS_Connected);
 }

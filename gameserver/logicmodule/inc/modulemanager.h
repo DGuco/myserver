@@ -9,7 +9,7 @@
 #define SERVER_MODULE_MANAGER_H
 
 #include "message.pb.h"
-#include "servertool.h"
+#include "server_tool.h"
 #include "logicmodule.h"
 #include "../../datamodule/inc/player.h"
 

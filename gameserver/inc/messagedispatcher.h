@@ -5,7 +5,7 @@
 #ifndef SERVER_MESSAGEDISPATCHER_H
 #define SERVER_MESSAGEDISPATCHER_H
 
-#include "servertool.h"
+#include "server_tool.h"
 #include "message.pb.h"
 
 class CMessageDispatcher : public CSingleton<CMessageDispatcher>

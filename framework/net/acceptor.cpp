@@ -4,13 +4,15 @@
 
 CAcceptor::CAcceptor(SOCKET socket,
 					 IEventReactor *pReactor,
-					 CNetAddr *netAddr)
-	: IBufferEvent(pReactor, NULL, socket),
+					 CNetAddr *netAddr,
+					 FuncAcceptorOnDisconnected pOnDisconnected,
+					 FuncAcceptorOnSomeDataRecv pOnSomeDataRecv)
+	: IBufferEvent(pReactor, socket),
 	  m_pNetAddr(netAddr),
 	  m_eState(eAS_Disconnected),
 	  m_tCreateTime(GetMSTime()),
-	  m_pFuncOnDisconnected(NULL),
-	  m_pFuncOnSomeDataRecv(NULL)
+	  m_pFuncOnDisconnected(pOnDisconnected),
+	  m_pFuncOnSomeDataRecv(pOnSomeDataRecv)
 {
 	m_pReactor->Register(this);
 }
@@ -26,13 +28,6 @@ void CAcceptor::GetRemoteIpAddress(char *szBuf, unsigned int uBufSize)
 	CNetAddr addr;
 	m_oSocket.GetRemoteAddress(addr);
 	strncpy(szBuf, addr.GetAddress(), 16);
-}
-
-void CAcceptor::SetCallbackFunc(FuncAcceptorOnDisconnected pOnDisconnected,
-								FuncAcceptorOnSomeDataRecv pOnSomeDataRecv)
-{
-	m_pFuncOnDisconnected = pOnDisconnected;
-	m_pFuncOnSomeDataRecv = pOnSomeDataRecv;
 }
 
 bool CAcceptor::IsConnected()
@@ -92,7 +87,7 @@ void CAcceptor::ProcessSocketError()
 	}
 }
 
-void CAcceptor::BuffEventAvailableCall()
+void CAcceptor::BuffEventUnavailableCall()
 {
 	m_pFuncOnDisconnected(this);
 }
@@ -100,9 +95,11 @@ void CAcceptor::BuffEventAvailableCall()
 void CAcceptor::AfterBuffEventCreated()
 {
 	bufferevent_setcb(m_pStBufEv,
-					  CAcceptor::lcb_OnPipeRead,
+					  &CAcceptor::lcb_OnPipeRead,
 					  NULL,
-					  CAcceptor::lcb_OnEvent,
+					  &CAcceptor::lcb_OnEvent,
 					  (void *) this);
+	bufferevent_enable(m_pStBufEv, EV_READ);
+	bufferevent_disable(m_pStBufEv, EV_WRITE);
 	SetState(eAS_Connected);
 }

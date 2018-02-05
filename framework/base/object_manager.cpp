@@ -2,7 +2,7 @@
 // Created by DGuco on 17-7-7.
 //
 
-#include "objectManager.h"
+#include "object_manager.h"
 
 CObjectManager::CObjectManager(EnObjType objType)
 {

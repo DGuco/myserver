@@ -11,14 +11,14 @@
 #include <sys/epoll.h>
 #include "gate_def.h"
 #include "log.h"
-#include "servertool.h"
+#include "server_tool.h"
 #include "message.pb.h"
 #include "base.h"
 #include "config.h"
 #include "net_work.h"
 #include "c2s_handle.h"
 #include "s2c_handle.h"
-#include "threadpool.h"
+#include "thread_pool.h"
 
 class CGateCtrl: public CSingleton<CGateCtrl>
 {

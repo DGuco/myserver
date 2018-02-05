@@ -9,7 +9,7 @@
 #define _PROXY_CONN_H_
 
 #include "tcp_conn.h"
-#include "servertool.h"
+#include "server_tool.h"
 
 typedef CTCPSocket<RECVBUFLENGTH, POSTBUFLENGTH> CMyTCPSocket;
 

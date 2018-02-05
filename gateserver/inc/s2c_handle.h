@@ -7,7 +7,7 @@
 #define SERVER_S2C_THREAD_H
 
 #include <message.pb.h>
-#include "codequeue.h"
+#include "code_queue.h"
 #include "mythread.h"
 
 class CS2cHandle: public CMyThread

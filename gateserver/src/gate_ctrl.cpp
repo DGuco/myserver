@@ -7,7 +7,7 @@
 
 
 #include <my_macro.h>
-#include <sharemem.h>
+#include <share_mem.h>
 #include "../inc/gate_ctrl.h"
 
 template<> CGateCtrl *CSingleton<CGateCtrl>::spSingleton = NULL;

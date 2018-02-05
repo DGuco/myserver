@@ -26,12 +26,13 @@ class CAcceptor: public IBufferEvent
 
 public:
 	//构造函数
-	CAcceptor(SOCKET socket, IEventReactor *pReactor, CNetAddr *netAddr);
+	CAcceptor(SOCKET socket,
+			  IEventReactor *pReactor,
+			  CNetAddr *netAddr,
+			  FuncAcceptorOnDisconnected pOnDisconnected,
+			  FuncAcceptorOnSomeDataRecv pOnSomeDataRecv);
 	//析构函数
 	virtual ~CAcceptor();
-	//设置读写回调
-	void SetCallbackFunc(FuncAcceptorOnDisconnected pOnDisconnected,
-						 FuncAcceptorOnSomeDataRecv pOnSomeDataRecv);
 	//获取该连接的ip
 	void GetRemoteIpAddress(char *szBuf, unsigned int uBufSize);
 	//关闭连接
@@ -43,7 +44,7 @@ public:
 
 private:
 	//bufferEvent 无效处理
-	void BuffEventAvailableCall() override;
+	void BuffEventUnavailableCall() override;
 	//event buffer 创建成功后处理
 	void AfterBuffEventCreated() override;
 private:

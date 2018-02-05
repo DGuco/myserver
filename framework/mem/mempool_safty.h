@@ -7,7 +7,7 @@
 #define SERVER_MEMPOOLSAFTY_H
 
 #include <mutex>
-#include "mempool.h"
+#include "mem_pool.h"
 
 template<class Type>
 class CMemoryPoolSafty : public CMemoryPool<Type>

@@ -8,8 +8,8 @@
 #include <cstddef>
 #include <unordered_map>
 #include "player.h"
-#include "objectManager.h"
-#include "servertool.h"
+#include "object_manager.h"
+#include "server_tool.h"
 #include "base.h"
 
 #ifdef _DEBUG_

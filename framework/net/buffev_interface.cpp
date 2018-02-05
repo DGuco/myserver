@@ -7,10 +7,9 @@
 #include "buffev_interface.h"
 
 IBufferEvent::IBufferEvent(IEventReactor *pReactor,
-						   bufferevent *buffevent,
 						   int socket)
 	: m_pReactor(pReactor),
-	  m_pStBufEv(buffevent),
+	  m_pStBufEv(NULL),
 	  m_uMaxOutBufferSize(MAX_PACKAGE_LEN),
 	  m_uMaxInBufferSize(MAX_PACKAGE_LEN),
 	  m_uRecvPackLen(0)
@@ -90,7 +89,7 @@ void IBufferEvent::SetMaxRecvBufSize(unsigned int uSize)
 bool IBufferEvent::IsEventBuffAvailable()
 {
 	if (m_pStBufEv == NULL) {
-		BuffEventAvailableCall();
+		BuffEventUnavailableCall();
 		return false;
 	}
 	return true;

@@ -5,10 +5,10 @@
 #ifndef SERVER_DBHANDLE_H
 #define SERVER_DBHANDLE_H
 
-#include "servertool.h"
+#include "server_tool.h"
 #include "mythread.h"
 #include "shm.h"
-#include "codequeue.h"
+#include "code_queue.h"
 #include "message.pb.h"
 #include "basedb.h"
 #include "queryresultmysql.h"

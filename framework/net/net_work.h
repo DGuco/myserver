@@ -11,7 +11,7 @@
 #include <map>
 #include <queue>
 #include <unordered_map>
-#include <servertool.h>
+#include <server_tool.h>
 #include "network_interface.h"
 #include "event_reactor.h"
 #include "mythread.h"
@@ -36,16 +36,16 @@ public:
 	//结束监听
 	void EndListen();
 	//连接
-	int Connect(const char *szNetAddr,
-				uint16 uPort,
-				FuncConnectorOnDisconnected pOnDisconnected,
-				FuncConnectorOnConnectFailed pOnConnectFailed,
-				FuncConnectorOnConnectted pOnConnectted,
-				FuncConnectorOnSomeDataSend pOnSomeDataSend,
-				FuncConnectorOnSomeDataRecv pOnSomeDataRecv,
-				FuncConnectorOnPingServer pOnPingServer,
-				unsigned int uPingTick = 4500,
-				unsigned int uTimeOut = 30);
+	bool Connect(const char *szNetAddr,
+				 uint16 uPort,
+				 FuncConnectorOnDisconnected pOnDisconnected,
+				 FuncConnectorOnConnectFailed pOnConnectFailed,
+				 FuncConnectorOnConnectted pOnConnectted,
+				 FuncConnectorOnSomeDataSend pOnSomeDataSend,
+				 FuncConnectorOnSomeDataRecv pOnSomeDataRecv,
+				 FuncConnectorOnPingServer pOnPingServer,
+				 unsigned int uPingTick = 4500,
+				 unsigned int uTimeOut = 30);
 	//关闭acceptor
 	bool ShutDownAcceptor(unsigned int uId);
 	//设置信号回调
@@ -69,9 +69,9 @@ public:
 private:
 	void OnTick();
 	//新的连接 accept回调
-	static void OnAccept(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa);
+	static void lcb_OnAccept(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
 	//创建acceptor
-	void NewAcceptor(IEventReactor *pReactor, SOCKET Socket, sockaddr *sa);
+	void NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
 private:
 	IEventReactor *m_pEventReactor;
 	unsigned int m_uGcTime;
