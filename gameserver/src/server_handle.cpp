@@ -8,10 +8,13 @@
 #include "../inc/server_handle.h"
 #include "../inc/game_server.h"
 
+int CServerHandle::m_iProxyId = 0;
+
+char CServerHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
+
 CServerHandle::CServerHandle()
 	:
-	m_pNetWork(new CNetWork(eNetModule::NET_SELECT)),
-	m_iProxyId(0)
+	m_pNetWork(new CNetWork(eNetModule::NET_SELECT))
 {
 
 }
@@ -116,11 +119,11 @@ bool CServerHandle::SendKeepAlive2Proxy()
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return false;
 	}
-	SendMessageToProxy(acTmpMessageBuffer, unTmpTotalLen)
+	SendMessageToProxy(acTmpMessageBuffer, unTmpTotalLen);
 	return true;
 }
 
-bool CServerHandle::SendMessageToDB(char *data, PACK_LEN len)
+void CServerHandle::SendMessageToDB(char *data, PACK_LEN len)
 {
 	SendMessageToProxy(data, len);
 }
@@ -154,13 +157,43 @@ void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
 void CServerHandle::lcb_OnCnsDisconnected(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
-
 }
 
 void CServerHandle::lcb_OnCnsSomeDataRecv(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
-
+	//数据不完整
+	if (!pConnector->IsPackageComplete()) {
+		return;
+	}
+	int iTmpLen = pConnector->GetRecvPackLen() - sizeof(PACK_LEN);
+	//读取数据
+	pConnector->RecvData(m_acRecvBuff, iTmpLen);
+	// 将收到的二进制数据转为protobuf格式
+	CProxyMessage tmpMessage;
+	int iRet = ServerCommEngine::ConvertStreamToMsg(m_acRecvBuff,
+													iTmpLen,
+													&tmpMessage,
+													CGameServer::GetSingletonPtr()->GetMessageFactory());
+	if (iRet < 0) {
+		LOG_ERROR("default", "[%s : %d : %s] convert stream to message failed, iRet = %d.",
+				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+		return;
+	}
+	ServerInfo *rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+	CProxyHead tmpProxyHead = tmpMessage.msghead();
+	if (tmpProxyHead.has_srcfe() && tmpProxyHead.srcfe() == FE_PROXYSERVER) {
+		if (tmpProxyHead.has_srcid() && tmpProxyHead.srcid() == (unsigned short) rTmpProxy->m_iServerId
+			&& tmpProxyHead.has_opflag() && tmpProxyHead.opflag() == enMessageCmd::MESS_KEEPALIVE) {
+			// 设置proxy为已连接状态
+//			SetServerState(ESS_CONNECTPROXY);
+//			// 从proxy过来只有keepalive，所以其他的可以直接抛弃
+//			m_ProxyClient.ResetTimeout(GetMSTime());
+		}
+	}
+	// 处理服务器间消息
+	CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskBack(
+		&CMessageDispatcher::ProcessServerMessage, &tmpMessage);
 }
 
 void CServerHandle::lcb_OnCnsSomeDataSend(CConnector *pConnector)

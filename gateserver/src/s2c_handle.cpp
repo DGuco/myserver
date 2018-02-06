@@ -73,13 +73,14 @@ void CS2cHandle::CheckWaitSendData()
 			m_iSendIndex = 0;
 			m_iSCIndex = 0;
 			m_nSCLength = 0;
+			CMessage tmpMes;
 			//反序列化消息的CTcpHead,取出发送游标和长度,把数据存入发送消息缓冲区m_szMsgBuf
 			iTmpRet = CClientCommEngine::ConvertStreamToMessage(m_acSCMsgBuf,
 																unTmpCodeLength,
-																&m_oMesHead,
-																NULL,
+																&tmpMes,
 																NULL,
 																&m_iSendIndex);
+			CClientCommEngine::CopyMesHead(tmpMes.mutable_msghead(), &m_oMesHead);
 			//序列化失败继续发送
 			if (iTmpRet < 0) {
 				LOG_ERROR("default",

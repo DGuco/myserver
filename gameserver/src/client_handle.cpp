@@ -8,13 +8,10 @@
 #include "err_code.h"
 #include "share_mem.h"
 #include "client_comm_engine.h"
-#include "player.pb.h"
 #include "../inc/message_dispatcher.h"
 #include "../inc/message_factory.h"
 #include "../inc/client_handle.h"
 #include "../inc/game_server.h"
-#include "../datamodule/inc/player.h"
-#include "../logicmodule/inc/coremo_dule.h"
 #include "../datamodule/inc/sceneobjmanager.h"
 
 CClientHandle::CClientHandle()
@@ -25,7 +22,37 @@ CClientHandle::~CClientHandle()
 {
 }
 
-int CClientHandle::SendResponse(Message *pMessage, CPlayer *pPlayer)
+int CClientHandle::SendResponseAsync(Message *pMessage, CPlayer *pPlayer)
+{
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([pMessage, pPlayer, this]
+					   {
+						   SendResToPlayer(pMessage, pPlayer);
+					   });
+	return 0;
+}
+
+int CClientHandle::SendResponseAsync(Message *pMessage, MesHead *mesHead)
+{
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([pMessage, mesHead, this]
+					   {
+						   SendResponse(pMessage, mesHead);
+					   });
+	return 0;
+}
+
+int CClientHandle::PushAsync(int cmd, Message *pMessage, stPointList *pPlayerList)
+{
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([cmd, pMessage, pPlayerList, this]
+					   {
+						   Push(cmd, pMessage, pPlayerList);
+					   });
+	return 0;
+}
+
+int CClientHandle::SendResToPlayer(Message *pMessage, CPlayer *pPlayer)
 {
 	MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
 	char aTmpCodeBuf[MAX_PACKAGE_LEN] = {0};
@@ -99,8 +126,6 @@ int CClientHandle::Push(int cmd, Message *pMessage, stPointList *pTeamList)
 	MesHead pTmpHead;;
 	pTmpHead.set_cmd(cmd);
 	pTmpHead.set_seq(0);
-	BYTE aTmpMessageBuf[MAX_PACKAGE_LEN] = {0};
-
 	for (int i = 0; i < pTeamList->GetBroadcastNum(); i++) {
 		// 将列表中的实体信息加入nethead头中
 		CPlayer *pPlayer = (CPlayer *) pTeamList->GetPointByIdx(i);
@@ -168,32 +193,32 @@ int CClientHandle::Recv()
 		return ClienthandleErrCode::CLIENTHANDLE_QUEUE_EMPTY;
 	}
 
-	CMessage tmpMessage;
-	MesHead tmpMsgHead;
-	iRet = DecodeNetMsg(abyTmpCodeBuf, iTmpCodeLength, &tmpMsgHead, &tmpMessage);
-	if (iRet != 0) {
-		return iRet;
-	}
-	CClientCommEngine::CopyMesHead(&tmpMsgHead, tmpMessage.mutable_msghead());
-	CMessageDispatcher::GetSingletonPtr()->ProcessClientMessage(&tmpMessage);
-	return CLIENTHANDLE_SUCCESS;
-}
-
-int CClientHandle::DecodeNetMsg(BYTE *pCodeBuff, PACK_LEN &nLen, MesHead *pCSHead, CMessage *pMsg)
-{
-	//长度小于消息头的长度+数据总长度+字节对齐长度
-	if (!pCodeBuff || nLen < int(pCSHead->ByteSize() + (sizeof(unsigned short) * 2))) {
-		return ClienthandleErrCode::CLIENTHANDLE_SMALL_LENGTH;
-	}
-
-	if (CClientCommEngine::ConvertStreamToMessage(pCodeBuff,
-												  nLen,
-												  pCSHead,
-												  pMsg,
+	m_oMessage.Clear();
+	if (CClientCommEngine::ConvertStreamToMessage(abyTmpCodeBuf,
+												  iTmpCodeLength,
+												  &m_oMessage,
 												  CMessageFactory::GetSingletonPtr()) != 0) {
 		return ClienthandleErrCode::CLIENTHANDLE_PARSE_FAILED;
 	}
 
+//	std::future<int> ret = CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskBack(
+//		std::mem_fn(&CClientHandle::DealClientMessage), &m_oMessage);
+//	iRet = ret.get();
+//	return iRet;
+	CGameServer::GetSingletonPtr()->GetLogicThread()
+		->PushTaskBack([this]
+					   {
+						   DealClientMessage(&m_oMessage);
+					   });
+	return CLIENTHANDLE_SUCCESS;
+}
+
+int CClientHandle::DealClientMessage(CMessage *pMsg)
+{
+	MesHead *pCSHead = pMsg->mutable_msghead();
+	if (pCSHead == NULL) {
+		return CLIENTHANDLE_MSGINVALID;
+	}
 	//gate上行数据必须带client的socket信息
 	if (pCSHead->socketinfos().size() != 1) {
 		return ClienthandleErrCode::CLIENTHANDLE_MSGINVALID;
@@ -250,7 +275,6 @@ int CClientHandle::DecodeNetMsg(BYTE *pCodeBuff, PACK_LEN &nLen, MesHead *pCSHea
 //                pCSHead->set_teamid(pTmpTeam->GetTeamID());
 //                pCSHead->set_entityid(pTmpTeam->GetEntityID());
 //                pCSHead->set_timestamp(mNetHead.m_tStamp);
-
 				return CLIENTHANDLE_SUCCESS;
 			}
 		}
@@ -265,179 +289,179 @@ int CClientHandle::DecodeNetMsg(BYTE *pCodeBuff, PACK_LEN &nLen, MesHead *pCSHea
 		return CLIENTHANDLE_ISNOTNORMAL;
 	}
 
-	CPlayer *pTmpTeam = NULL;
-	// 如果是登陆消息
-	if (pMsg && pCSHead->cmd() == PlayerCommandId::USER_ACCOUNT_LOGIN) {
-		// 5500踢掉断线玩家 检测是否需要踢掉断连玩家
-		if (CCoreModule::GetSingletonPtr()->CheckOnlineIsFull() < 0) {
-			LOG_INFO("default",
-					 "[%s : %d : %s]  login failed, team list is full.",
-					 __YQ_FILE__,
-					 __LINE__,
-					 __FUNCTION__);
-
-			// 通知客户端服务器已满并断开连接
-			CGameServer::GetSingletonPtr()
-				->SendMsgSystemErrorResponse(emSystem_isfull, lTmpMsgGuid, iTmpSocket, tTmpCreateTime,
-											 mNetHead.m_iSrcIP, mNetHead.m_nSrcPort, true);
-			return CLIENTHANDLE_ONLINEFULL;
-		}
-		pTmpTeam = CCoreModule::GetSingletonPtr()->GetTeamBySocket(iTmpSocket);
-		if (pTmpTeam) {
-			// 同一个fd
-			if (tTmpCreateTime == pTmpTeam->GetSocketInfoPtr()->tCreateTime) {
-				// 连续多次发TryLogin消息则直接把消息抛掉
-				LOG_DEBUG("default", "[%s : %d : %s]  Socket(%d) is useed, don't TryLogin again.",
-						  __MY_FILE__, __LINE__, __FUNCTION__, iTmpSocket);
-				// 通知客户端解析消息失败并断开连接
-				CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_msgerr,
-																		   lTmpMsgGuid,
-																		   iTmpSocket,
-																		   tTmpCreateTime,
-																		   mNetHead.m_iSrcIP,
-																		   mNetHead.m_nSrcPort,
-																		   true);
-				return CLIENTHANDLE_MSGINVALID;
-			}
-			else {
-				// 假如是同一个fd,时间戳不一样, 可能socket断掉未检测到
-				LOG_INFO("default",
-						 "[%s : %d : %s]  Socket(%d) is used, old team(TeamID=%lu, EntityID=%d), reset.",
-						 __MY_FILE__,
-						 __LINE__,
-						 __FUNCTION__,
-						 iTmpSocket,
-						 pTmpTeam->GetTeamID(),
-						 pTmpTeam->GetEntityID());
-
-				// 先把老玩家断连
-				CCoreModule::GetSingletonPtr()->LeaveGame(pTmpTeam, false);
-			}
-		}
-
-		// 解析登陆消息
-		CMsgLoginGameRequest *pTmpMsg = (CMsgLoginGameRequest *) pMsg->msgpara();
-		if (pTmpMsg == NULL) {
-			LOG_ERROR("default", "[%s : %d : %s]  team(Account=%s, ServerID=%d) login failed, msg is NULL.",
-					  __MY_FILE__, __LINE__, __FUNCTION__);
-
-			// 通知客户端解析消息失败并断开连接
-			CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_msginvalid,
-																	   lTmpMsgGuid,
-																	   iTmpSocket,
-																	   tTmpCreateTime,
-																	   mNetHead.m_iSrcIP,
-																	   mNetHead.m_nSrcPort,
-																	   true);
-			return CLIENTHANDLE_MSGINVALID;
-		}
-		if (strcmp(pTmpMsg->account().c_str(), "") == 0 || strcmp(pTmpMsg->password().c_str(), "") == 0) {
-			// 通知客户端解析消息失败并断开连接
-			CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_msginvalid,
-																	   lTmpMsgGuid,
-																	   iTmpSocket,
-																	   tTmpCreateTime,
-																	   mNetHead.m_iSrcIP,
-																	   mNetHead.m_nSrcPort,
-																	   true);
-			return CLIENTHANDLE_MSGINVALID;
-		}
-
-		// 登陆时候判断session是否已验证
-		string sSession = CCoreModule::GetSingletonPtr()
-			->GetTeamIDBySession(pTmpMsg->account().c_str(), pTmpMsg->serverid(), pTmpMsg->pfrom());
-		LOG_INFO("default",
-				 "[%s : %d : %s]  uid: %s, new session: %s, old session: %s",
-				 __YQ_FILE__,
-				 __LINE__,
-				 __FUNCTION__,
-				 pTmpMsg->account().c_str(),
-				 pTmpMsg->password().c_str(),
-				 sSession.c_str());
-		// 是否验证sdk登陆
-		bool bSdkCheck = CConfigMgr::GetSingletonPtr()->GetConfig()->gameconfig().sdkcheck();
-		if (bSdkCheck && strcmp(pTmpMsg->password().c_str(), sSession.c_str()) != 0) {
-			CWebModule::GetSingletonPtr()->XiaoMiLoginRequest(pMsg,
-															  iTmpSocket,
-															  tTmpCreateTime,
-															  lTmpMsgGuid,
-															  mNetHead.m_iSrcIP,
-															  mNetHead.m_nSrcPort,
-															  mNetHead.m_tStamp);
-			return CLIENTHANDLE_LOGINCHECK;
-		}
-		else {
-			CCoreModule::GetSingletonPtr()->SDKLoginSucces(pTmpMsg->account().c_str(),
-														   pTmpMsg->password().c_str(),
-														   pTmpMsg->serverid(),
-														   pTmpMsg->pfrom(),
-														   iTmpSocket,
-														   tTmpCreateTime,
-														   lTmpMsgGuid,
-														   mNetHead.m_iSrcIP,
-														   mNetHead.m_nSrcPort,
-														   mNetHead.m_tStamp);
-			return CLIENTHANDLE_LOGINCHECK;
-		}
-	}
-	else {
-		// 消息链接玩家
-		pTmpTeam = CCoreModule::GetSingletonPtr()->GetTeamBySocket(iTmpSocket);
-		// 判断 玩家跟消息合法性
-		if (pTmpTeam == NULL || pMsg == NULL || tTmpCreateTime != pTmpTeam->GetSocketInfoPtr()->tCreateTime
-			|| pCSHead->teamid() != pTmpTeam->GetTeamID()
-			|| pTmpTeam->GetTeamDebug() != 0) {
-			LOG_DEBUG("default",
-					  "teamid[%lu]msgid[%u] return -1008",
-					  pCSHead->teamid(),
-					  pMsg->mutable_msghead()->messageid());
-			// 通知客户端解析消息失败并断开连接
-			CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_msgerr,
-																	   lTmpMsgGuid,
-																	   iTmpSocket,
-																	   tTmpCreateTime,
-																	   mNetHead.m_iSrcIP,
-																	   mNetHead.m_nSrcPort,
-																	   true);
-
-			if (pTmpTeam) {
-				LOG_DEBUG("default", "team leavegame 1008");
-				// 断开链接
-				CCoreModule::GetSingletonPtr()->LeaveGame(pTmpTeam, false);
-				// 测试
-				pTmpTeam->SetTeamDebug(0);
-			}
-
-			return CLIENTHANDLE_MSGINVALID;
-		}
-
-		if (pTmpTeam->IsLoginLimitTime()) {
-			// 通知客户端解析消息失败并断开连接
-			CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_loginlimit,
-																	   lTmpMsgGuid,
-																	   iTmpSocket,
-																	   tTmpCreateTime,
-																	   mNetHead.m_iSrcIP,
-																	   mNetHead.m_nSrcPort,
-																	   true);
-		}
-
-		pTmpTeam->SetTeamState(CTeam::ETS_INGAMECONNECT);
-	}
-
-
-	pTmpTeam->GetSocketInfoPtr()->tLastActiveTime = mNetHead.m_tStamp;
-	pCSHead->set_entityid(pTmpTeam->GetEntityID());
-	if (pTmpTeam->GetSocketInfoPtr()->lMsgGuid == lTmpMsgGuid) {
-		// 如果消息的GUID相等,说明这是客户端重发的消息,服务器已经处理过了,直接抛弃
-		LOG_INFO("default", "[%s : %d : %s] message guid(%ld) is same, ignore it.",
-				 __MY_FILE__, __LINE__, __FUNCTION__, lTmpMsgGuid);
-		return CLIENTHANDLE_SUCCESS;
-	}
-	pTmpTeam->GetSocketInfoPtr()->lMsgGuid = lTmpMsgGuid;
+//	CPlayer *pTmpTeam = NULL;
+//	// 如果是登陆消息
+//	if (pMsg && pCSHead->cmd() == PlayerCommandId::USER_ACCOUNT_LOGIN) {
+//		// 5500踢掉断线玩家 检测是否需要踢掉断连玩家
+//		if (CCoreModule::GetSingletonPtr()->CheckOnlineIsFull() < 0) {
+//			LOG_INFO("default",
+//					 "[%s : %d : %s]  login failed, team list is full.",
+//					 __MY_FILE__,
+//					 __LINE__,
+//					 __FUNCTION__);
+//
+//			// 通知客户端服务器已满并断开连接
+//			CGameServer::GetSingletonPtr()
+//				->SendMsgSystemErrorResponse(emSystem_isfull, lTmpMsgGuid, iTmpSocket, tTmpCreateTime,
+//											 mNetHead.m_iSrcIP, mNetHead.m_nSrcPort, true);
+//			return CLIENTHANDLE_ONLINEFULL;
+//		}
+//		pTmpTeam = CCoreModule::GetSingletonPtr()->GetTeamBySocket(iTmpSocket);
+//		if (pTmpTeam) {
+//			// 同一个fd
+//			if (tTmpCreateTime == pTmpTeam->GetSocketInfoPtr()->tCreateTime) {
+//				// 连续多次发TryLogin消息则直接把消息抛掉
+//				LOG_DEBUG("default", "[%s : %d : %s]  Socket(%d) is useed, don't TryLogin again.",
+//						  __MY_FILE__, __LINE__, __FUNCTION__, iTmpSocket);
+//				// 通知客户端解析消息失败并断开连接
+//				CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_msgerr,
+//																		   lTmpMsgGuid,
+//																		   iTmpSocket,
+//																		   tTmpCreateTime,
+//																		   mNetHead.m_iSrcIP,
+//																		   mNetHead.m_nSrcPort,
+//																		   true);
+//				return CLIENTHANDLE_MSGINVALID;
+//			}
+//			else {
+//				// 假如是同一个fd,时间戳不一样, 可能socket断掉未检测到
+//				LOG_INFO("default",
+//						 "[%s : %d : %s]  Socket(%d) is used, old team(TeamID=%lu, EntityID=%d), reset.",
+//						 __MY_FILE__,
+//						 __LINE__,
+//						 __FUNCTION__,
+//						 iTmpSocket,
+//						 pTmpTeam->GetTeamID(),
+//						 pTmpTeam->GetEntityID());
+//
+//				// 先把老玩家断连
+//				CCoreModule::GetSingletonPtr()->LeaveGame(pTmpTeam, false);
+//			}
+//		}
+//
+//		// 解析登陆消息
+//		CMsgLoginGameRequest *pTmpMsg = (CMsgLoginGameRequest *) pMsg->msgpara();
+//		if (pTmpMsg == NULL) {
+//			LOG_ERROR("default", "[%s : %d : %s]  team(Account=%s, ServerID=%d) login failed, msg is NULL.",
+//					  __MY_FILE__, __LINE__, __FUNCTION__);
+//
+//			// 通知客户端解析消息失败并断开连接
+//			CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_msginvalid,
+//																	   lTmpMsgGuid,
+//																	   iTmpSocket,
+//																	   tTmpCreateTime,
+//																	   mNetHead.m_iSrcIP,
+//																	   mNetHead.m_nSrcPort,
+//																	   true);
+//			return CLIENTHANDLE_MSGINVALID;
+//		}
+//		if (strcmp(pTmpMsg->account().c_str(), "") == 0 || strcmp(pTmpMsg->password().c_str(), "") == 0) {
+//			// 通知客户端解析消息失败并断开连接
+//			CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_msginvalid,
+//																	   lTmpMsgGuid,
+//																	   iTmpSocket,
+//																	   tTmpCreateTime,
+//																	   mNetHead.m_iSrcIP,
+//																	   mNetHead.m_nSrcPort,
+//																	   true);
+//			return CLIENTHANDLE_MSGINVALID;
+//		}
+//
+//		// 登陆时候判断session是否已验证
+//		string sSession = CCoreModule::GetSingletonPtr()
+//			->GetTeamIDBySession(pTmpMsg->account().c_str(), pTmpMsg->serverid(), pTmpMsg->pfrom());
+//		LOG_INFO("default",
+//				 "[%s : %d : %s]  uid: %s, new session: %s, old session: %s",
+//				 __YQ_FILE__,
+//				 __LINE__,
+//				 __FUNCTION__,
+//				 pTmpMsg->account().c_str(),
+//				 pTmpMsg->password().c_str(),
+//				 sSession.c_str());
+//		// 是否验证sdk登陆
+//		bool bSdkCheck = CConfigMgr::GetSingletonPtr()->GetConfig()->gameconfig().sdkcheck();
+//		if (bSdkCheck && strcmp(pTmpMsg->password().c_str(), sSession.c_str()) != 0) {
+//			CWebModule::GetSingletonPtr()->XiaoMiLoginRequest(pMsg,
+//															  iTmpSocket,
+//															  tTmpCreateTime,
+//															  lTmpMsgGuid,
+//															  mNetHead.m_iSrcIP,
+//															  mNetHead.m_nSrcPort,
+//															  mNetHead.m_tStamp);
+//			return CLIENTHANDLE_LOGINCHECK;
+//		}
+//		else {
+//			CCoreModule::GetSingletonPtr()->SDKLoginSucces(pTmpMsg->account().c_str(),
+//														   pTmpMsg->password().c_str(),
+//														   pTmpMsg->serverid(),
+//														   pTmpMsg->pfrom(),
+//														   iTmpSocket,
+//														   tTmpCreateTime,
+//														   lTmpMsgGuid,
+//														   mNetHead.m_iSrcIP,
+//														   mNetHead.m_nSrcPort,
+//														   mNetHead.m_tStamp);
+//			return CLIENTHANDLE_LOGINCHECK;
+//		}
+//	}
+//	else {
+//		// 消息链接玩家
+//		pTmpTeam = CCoreModule::GetSingletonPtr()->GetTeamBySocket(iTmpSocket);
+//		// 判断 玩家跟消息合法性
+//		if (pTmpTeam == NULL || pMsg == NULL || tTmpCreateTime != pTmpTeam->GetSocketInfoPtr()->tCreateTime
+//			|| pCSHead->teamid() != pTmpTeam->GetTeamID()
+//			|| pTmpTeam->GetTeamDebug() != 0) {
+//			LOG_DEBUG("default",
+//					  "teamid[%lu]msgid[%u] return -1008",
+//					  pCSHead->teamid(),
+//					  pMsg->mutable_msghead()->messageid());
+//			// 通知客户端解析消息失败并断开连接
+//			CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_msgerr,
+//																	   lTmpMsgGuid,
+//																	   iTmpSocket,
+//																	   tTmpCreateTime,
+//																	   mNetHead.m_iSrcIP,
+//																	   mNetHead.m_nSrcPort,
+//																	   true);
+//
+//			if (pTmpTeam) {
+//				LOG_DEBUG("default", "team leavegame 1008");
+//				// 断开链接
+//				CCoreModule::GetSingletonPtr()->LeaveGame(pTmpTeam, false);
+//				// 测试
+//				pTmpTeam->SetTeamDebug(0);
+//			}
+//
+//			return CLIENTHANDLE_MSGINVALID;
+//		}
+//
+//		if (pTmpTeam->IsLoginLimitTime()) {
+//			// 通知客户端解析消息失败并断开连接
+//			CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_loginlimit,
+//																	   lTmpMsgGuid,
+//																	   iTmpSocket,
+//																	   tTmpCreateTime,
+//																	   mNetHead.m_iSrcIP,
+//																	   mNetHead.m_nSrcPort,
+//																	   true);
+//		}
+//
+//		pTmpTeam->SetTeamState(CTeam::ETS_INGAMECONNECT);
+//	}
+//
+//
+//	pTmpTeam->GetSocketInfoPtr()->tLastActiveTime = mNetHead.m_tStamp;
+//	pCSHead->set_entityid(pTmpTeam->GetEntityID());
+//	if (pTmpTeam->GetSocketInfoPtr()->lMsgGuid == lTmpMsgGuid) {
+//		// 如果消息的GUID相等,说明这是客户端重发的消息,服务器已经处理过了,直接抛弃
+//		LOG_INFO("default", "[%s : %d : %s] message guid(%ld) is same, ignore it.",
+//				 __MY_FILE__, __LINE__, __FUNCTION__, lTmpMsgGuid);
+//		return CLIENTHANDLE_SUCCESS;
+//	}
+//	pTmpTeam->GetSocketInfoPtr()->lMsgGuid = lTmpMsgGuid;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-
+	CMessageDispatcher::ProcessClientMessage(&m_oMessage);
 	return CLIENTHANDLE_SUCCESS;
 }
 
@@ -571,14 +595,9 @@ int CClientHandle::RunFunc()
 {
 	while (true) {
 		if (!mC2SPipe->IsQueueEmpty()) {
-
-		}
-
-		if (!mS2CPipe->IsQueueEmpty()) {
-			
+			Recv();
 		}
 	}
-	return 0;
 }
 
 bool CClientHandle::IsToBeBlocked()

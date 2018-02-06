@@ -25,7 +25,7 @@ public:
 	//获取数据(返回读取数据长度)
 	unsigned int RecvData(char *data, unsigned int size);
 	//读取读缓冲区当前数据包的总长度
-	PACK_LEN GetRecvPackLen();
+	PACK_LEN ReadRecvPackLen();
 	//获取读缓冲区数据长度
 	unsigned int GetRecvDataSize();
 	//获取写缓冲区数据长度
@@ -46,6 +46,8 @@ public:
 	void CurrentPackRecved();
 	//获取socket
 	CSocket GetSocket() const;
+	//数据是否完整
+	bool IsPackageComplete();
 public:    //获取event base
 	IEventReactor *GetReactor() override;
 	//注册event

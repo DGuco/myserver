@@ -8,16 +8,16 @@
 #include "server_tool.h"
 #include "message.pb.h"
 
-class CMessageDispatcher : public CSingleton<CMessageDispatcher>
+class CMessageDispatcher: public CSingleton<CMessageDispatcher>
 {
 public:
-    CMessageDispatcher();
-    ~CMessageDispatcher();
+	CMessageDispatcher();
+	~CMessageDispatcher();
 
-    // 客户端上传的消息派发
-    int ProcessClientMessage(CMessage* pMsg);
-    // 服务器消息派发
-    int ProcessServerMessage(CProxyMessage* pMessage);
+	// 客户端上传的消息派发
+	static int ProcessClientMessage(CMessage *pMsg);
+	// 服务器消息派发
+	static int ProcessServerMessage(CProxyMessage *pMessage);
 };
 
 #endif //SERVER_MESSAGEDISPATCHER_H

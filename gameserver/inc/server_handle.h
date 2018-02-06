@@ -23,7 +23,7 @@ public:
 	// 发送心跳到Proxy
 	bool SendKeepAlive2Proxy();
 	// 向dbserver发送数据
-	bool SendMessageToDB(char *data, PACK_LEN len);
+	void SendMessageToDB(char *data, PACK_LEN len);
 private:
 	void SendMessageToProxy(char *data, PACK_LEN len);
 private:
@@ -42,7 +42,7 @@ private:
 	CNetWork *m_pNetWork;                // 服务器间通信的连接
 private:
 	static int m_iProxyId;
-	static int m_iDbId;
+	static char m_acRecvBuff[MAX_PACKAGE_LEN];
 };
 
 

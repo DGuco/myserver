@@ -62,7 +62,20 @@ int CGameServer::ReadCfg()
 int CGameServer::PrepareToRun()
 {
 	LOG_NOTICE("default", "CGameServer prepare to run.");
+	// 初始化日志
+	INIT_ROLLINGFILE_LOG("default", "../log/gameserver.log", LEVEL_DEBUG);
 
+	// 读取配置
+	CServerConfig *pTmpConfig = new CServerConfig;
+	const string filepath = "../config/serverinfo.json";
+	if (-1 == CServerConfig::GetSingleton().LoadFromFile(filepath)) {
+		LOG_ERROR("default", "Get TcpserverConfig failed");
+		delete pTmpConfig;
+		pTmpConfig = NULL;
+		exit(0);
+	}
+
+	LOG_INFO("default", "---------- printf server config ----------");
 	// 读取服务器配置信息
 	if (ReadCfg() != 0) {
 		return -1;
@@ -90,27 +103,27 @@ int CGameServer::StartAllTimers()
 // 服务器间心跳检测
 void CGameServer::OnTimeCheckStateInServer(CTimerBase *pTimer)
 {
-	MY_ASSERT_LOG("default", pTimer != NULL, return);
-
-	time_t tTmpNow = GetMSTime();
-	// 检测服务器与proxy的连接状态，如果状态异常则重新连接，状态正常则发送心跳消息
-	CGameServer *pTmpGameServer =
-		CGameServer::GetSingletonPtr();//		LOG_DEBUG("default", "in loop %d, size=%d.", i, pTmpGameServer->mConfig.gameconfig().proxyinfo_size());
-	if ((pTmpGameServer->m_ProxyClient.IsConnected() == false)
-		|| pTmpGameServer->m_ProxyClient.IsTimeout(tTmpNow)) {
-		// 清除proxy已连接状态
-		CGameServer::GetSingletonPtr()->EraseServerState(CGameServer::ESS_CONNECTPROXY);
-		LOG_WARN("default", "[%s : %d : %s] mProxyClient maybe closed, current status(%d) .",
-				 __MY_FILE__, __LINE__, __FUNCTION__, pTmpGameServer->m_ProxyClient.GetStatus());
-		if (pTmpGameServer->Connect2Proxy() == true) {
-			if (pTmpGameServer->Regist2Proxy() == true) {
-				pTmpGameServer->m_ProxyClient.ResetTimeout(tTmpNow);
-			}
-		}
-		else {
-			pTmpGameServer->SendKeepAlive2Proxy();
-		}
-	}
+//	MY_ASSERT_LOG("default", pTimer != NULL, return);
+//
+//	time_t tTmpNow = GetMSTime();
+//	// 检测服务器与proxy的连接状态，如果状态异常则重新连接，状态正常则发送心跳消息
+//	CGameServer *pTmpGameServer =
+//		CGameServer::GetSingletonPtr();//		LOG_DEBUG("default", "in loop %d, size=%d.", i, pTmpGameServer->mConfig.gameconfig().proxyinfo_size());
+//	if ((pTmpGameServer->m_ProxyClient.IsConnected() == false)
+//		|| pTmpGameServer->m_ProxyClient.IsTimeout(tTmpNow)) {
+//		// 清除proxy已连接状态
+//		CGameServer::GetSingletonPtr()->EraseServerState(CGameServer::ESS_CONNECTPROXY);
+//		LOG_WARN("default", "[%s : %d : %s] mProxyClient maybe closed, current status(%d) .",
+//				 __MY_FILE__, __LINE__, __FUNCTION__, pTmpGameServer->m_ProxyClient.GetStatus());
+//		if (pTmpGameServer->Connect2Proxy() == true) {
+//			if (pTmpGameServer->Regist2Proxy() == true) {
+//				pTmpGameServer->m_ProxyClient.ResetTimeout(tTmpNow);
+//			}
+//		}
+//		else {
+//			pTmpGameServer->SendKeepAlive2Proxy();
+//		}
+//	}
 }
 
 // perf日志打印
@@ -123,7 +136,7 @@ void CGameServer::OnTimePerfLog(CTimerBase *pTimer)
 void CGameServer::Run()
 {
 	LOG_NOTICE("default", "CGameServer start to run now.");
-	
+
 	m_pClientHandle->Run();
 	m_pServerHandle->Run();
 //	while (true) {
@@ -202,7 +215,7 @@ bool CGameServer::SendMessageToDB(CProxyMessage *pMsg)
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return false;
 	}
-	iRet = m_ProxyClient.SendOneCode(unTmpTotalLen, (BYTE *) acTmpMessageBuffer);
+//	iRet = m_ProxyClient.SendOneCode(unTmpTotalLen, (BYTE *) acTmpMessageBuffer);
 	if (iRet != 0) {
 		LOG_ERROR("default", "[%s : %d : %s] proxy(index=%d) SendOneCode failed, iRet = %d.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, 0, iRet);
@@ -239,121 +252,6 @@ void CGameServer::SetRunFlag(ERunFlag eRunFlag)
 	m_RunFlag.SetRunFlag(eRunFlag);
 }
 
-// 收取客户端消息
-int CGameServer::RecvClientMsg(time_t tTime)
-{
-	int iTmpRecvCount = 0;
-
-	while (iTmpRecvCount < MAX_CHECK_CLIENT_MSG) {
-		int iRet = m_pClientHandle->Recv();
-		if (iRet == CLIENTHANDLE_QUEUE_EMPTY) {
-			// 队列已空，直接返回
-			return iTmpRecvCount;
-		}
-
-		if (iRet != CLIENTHANDLE_SUCCESS && iRet != CLIENTHANDLE_LOGINCHECK) {
-			LOG_ERROR("default", "[%s : %d : %s] ClientHandle->Recv failed, iRet = %d.",
-					  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
-		}
-
-		// 记数自增长
-		iTmpRecvCount++;
-	}
-
-	return iTmpRecvCount;
-}
-
-// 收取服务器消息
-int CGameServer::RecvServerMsg(time_t tTime)
-{
-	int iTmpRecvCount = 0;
-	fd_set fds_read;
-	// select超时时间 10毫秒
-	struct timeval stTmpMonTime;
-	stTmpMonTime.tv_sec = 0;
-	stTmpMonTime.tv_usec = 10000;
-	int iTmpMaxFD = 0;
-	int iRet = 0;
-
-	FD_ZERO(&fds_read);
-
-	int iTmpFD;
-	iTmpFD = m_ProxyClient.GetSocketFD();
-	if (iTmpFD > 0 && m_ProxyClient.IsConnected()) {
-		FD_SET(iTmpFD, &fds_read);
-		if (iTmpFD > iTmpMaxFD) {
-			iTmpMaxFD = iTmpFD;
-		}
-	}
-	int iTmpOpenFDNum = select(iTmpMaxFD + 1, &fds_read, NULL, NULL, &stTmpMonTime);
-	if (iTmpOpenFDNum <= 0) {
-		return iTmpRecvCount;
-	}
-
-	iTmpFD = m_ProxyClient.GetSocketFD();
-	if (FD_ISSET(iTmpFD, &fds_read)) {
-		iRet = m_ProxyClient.RecvData();
-		if (iRet < 0) {
-			LOG_ERROR("default", "[%s : %d : %s] recv proxy code failed, iRet = %d.",
-					  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
-			return 0;
-		}
-
-		CProxyMessage tmpMessage;
-		BYTE abyTmpBuffer[MAX_PACKAGE_LEN];
-		unsigned short unTmpBuffLen = sizeof(abyTmpBuffer);
-
-		while (true) {
-			unTmpBuffLen = sizeof(abyTmpBuffer);
-			iRet = m_ProxyClient.GetOneCode(unTmpBuffLen, abyTmpBuffer);
-			if (iRet <= 0) {
-				// 等于0说明没数据了
-				if (iRet != 0) {
-					LOG_ERROR("default", "[%s : %d : %s]GetOneCode from mProxyClient failed, iRet = %d.",
-							  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
-				}
-				break;
-			}
-
-			if (unTmpBuffLen > sizeof(abyTmpBuffer)) {
-				// 数据长度异常
-				LOG_ERROR("default", "[%s : %d : %s] code len %d impossible form proxy.",
-						  __MY_FILE__, __LINE__, __FUNCTION__, unTmpBuffLen);
-				break;
-			}
-
-			// 增加已处理消息计数
-			iTmpRecvCount++;
-
-			// 将收到的二进制数据转为protobuf格式
-			iRet = ServerCommEngine::ConvertStreamToMsg(abyTmpBuffer,
-														unTmpBuffLen,
-														&tmpMessage,
-														m_pMessageFactory);
-			if (iRet < 0) {
-				LOG_ERROR("default", "[%s : %d : %s] convert stream to message failed, iRet = %d.",
-						  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
-				continue;
-			}
-
-			CProxyHead tmpProxyHead = tmpMessage.msghead();
-			if (tmpProxyHead.has_srcfe() && tmpProxyHead.srcfe() == FE_PROXYSERVER) {
-				if (tmpProxyHead.has_srcid() && tmpProxyHead.srcid() == (unsigned short) m_ProxyClient.GetEntityID()
-					&& tmpProxyHead.has_opflag() && tmpProxyHead.opflag() == enMessageCmd::MESS_KEEPALIVE) {
-					// 设置proxy为已连接状态
-					SetServerState(ESS_CONNECTPROXY);
-					// 从proxy过来只有keepalive，所以其他的可以直接抛弃
-					m_ProxyClient.ResetTimeout(GetMSTime());
-				}
-				continue;
-			}
-			// 处理服务器间消息
-			m_pMessageDispatcher->ProcessServerMessage(&tmpMessage);
-		}
-	}
-	return iTmpRecvCount;
-}
-
 // 主动断开链接
 void CGameServer::DisconnectClient(CPlayer *pPlayer)
 {
@@ -363,7 +261,8 @@ void CGameServer::DisconnectClient(CPlayer *pPlayer)
 // 广播消息给玩家，广播时，发起人一定放第一个
 int CGameServer::Push(unsigned int iMsgID, Message *pMsg, stPointList *pTeamList)
 {
-	return m_pClientHandle->Push(iMsgID, pMsg, pTeamList);
+	m_pClientHandle->PushAsync(iMsgID, pMsg, pTeamList);
+	return 0;
 }
 
 // 发送消息给单个玩家
@@ -372,21 +271,24 @@ int CGameServer::Push(unsigned int iMsgID, Message *pMsg, CPlayer *pPlayer)
 	MY_ASSERT(pPlayer != NULL && pMsg != NULL, return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
-	return m_pClientHandle->Push(iMsgID, pMsg, &tmpList);
+	m_pClientHandle->PushAsync(iMsgID, pMsg, &tmpList);
+	return 0;
 }
 
 // 回复客户端上行的请求
 int CGameServer::SendResponse(Message *pMsgPara, CPlayer *pPlayer)
 {
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
-	return m_pClientHandle->SendResponse(pMsgPara, pPlayer);
+	m_pClientHandle->SendResponseAsync(pMsgPara, pPlayer);
+	return 0;
 }
 
 // 回复客户端上行的请求
 int CGameServer::SendResponse(Message *pMsgPara, MesHead *mesHead)
 {
 	MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
-	return m_pClientHandle->SendResponse(pMsgPara, mesHead);
+	m_pClientHandle->SendResponseAsync(pMsgPara, mesHead);
+	return 0;
 }
 
 // 检查服务器状态
@@ -527,4 +429,9 @@ CThreadPool *CGameServer::GetLogicThread()
 CThreadPool *CGameServer::GetIoThread()
 {
 	return m_pIoThread;
+}
+
+CFactory *CGameServer::GetMessageFactory()
+{
+	return m_pMessageFactory;
 }

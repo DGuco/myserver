@@ -73,7 +73,6 @@ public:
 	 */
 	static int ConvertStreamToMessage(const void *pBuff,
 									  PACK_LEN unBuffLen,
-									  MesHead *pHead,
 									  CMessage *pMessage = NULL,
 									  CFactory *pMsgFactory = NULL,
 									  int *unOffset = 0x0);

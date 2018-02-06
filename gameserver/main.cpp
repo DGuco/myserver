@@ -24,28 +24,8 @@ void sigusr2_handle(int iSigVal)
 
 int main(int argc, char *argv[])
 {
-	// 初始化日志
-	INIT_ROLLINGFILE_LOG("default", "../log/gameserver.log", LEVEL_DEBUG);
-
-	// 读取配置
-	CServerConfig *pTmpConfig = new CServerConfig;
-	const string filepath = "../config/serverinfo.json";
-	if (-1 == CServerConfig::GetSingleton().LoadFromFile(filepath)) {
-		LOG_ERROR("default", "Get TcpserverConfig failed");
-		delete pTmpConfig;
-		pTmpConfig = NULL;
-		exit(0);
-	}
-
-	LOG_INFO("default", "---------- printf server config ----------");
-
 	// 准备启动服务器
 	CGameServer *pTmpGameServer = new CGameServer;
-	if (pTmpGameServer == NULL) {
-		printf("new CGameServer failed.\n");
-		exit(0);
-	}
-
 	int iRet = pTmpGameServer->PrepareToRun();
 	if (iRet != 0) {
 		printf("CGameServer prepare to run failed, iRet = %d.\n", iRet);

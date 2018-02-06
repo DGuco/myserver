@@ -94,10 +94,6 @@ public:
 	bool SendMessageToDB(CProxyMessage *pMsg);
 	// 给World Server 发消息
 
-	// 收取客户端消息
-	int RecvClientMsg(time_t tTime);
-	// 收取服务器消息
-	int RecvServerMsg(time_t tTime);
 	// 广播消息给玩家，广播时，发起人一定放第一个
 	int Push(unsigned int iMsgID, Message *pMsg, stPointList *pTeamList);
 	// 推送消息给单个玩家
@@ -149,6 +145,8 @@ public:
 	int InitStaticLog();
 	// 限制玩家登陆
 	int LimitTeamLogin(unsigned int iTeamID, time_t iTimes); // itimes 暂定为小时
+	// 获取消息工厂
+	CFactory* GetMessageFactory();
 	// 获取逻辑线程
 	CThreadPool *GetLogicThread();
 	// 获取io线程

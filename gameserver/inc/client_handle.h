@@ -52,26 +52,29 @@ protected:
 	CCodeQueue *mS2CPipe;
 
 public:
-	int SendResponse(Message *pMessage, CPlayer *pPlayer);
-	int SendResponse(Message *pMessage, MesHead *mesHead);
-	int Push(int cmd, Message *pMessage, stPointList *pPlayerList);
+	int SendResponseAsync(Message *pMessage, CPlayer *pPlayer);
+	int SendResponseAsync(Message *pMessage, MesHead *mesHead);
+	int PushAsync(int cmd, Message *pMessage, stPointList *pPlayerList);
 	int Recv();
-
-	int DecodeNetMsg(BYTE *pCodeBuff, PACK_LEN &nLen, MesHead *pCSHead, CMessage *pMsg);
-
+	int DealClientMessage(CMessage *pMsg);
 	// 断开玩家连接
 	void DisconnectClient(CPlayer *cPlayer);
 	// 断开玩家连接
 	void DisconnectClient(int iSocket, time_t tCreateTime);
-
 	// 打印管道状态
 	void Dump(char *pBuffer, unsigned int &uiLen);
+public:
 	int PrepareToRun() override;
 	int RunFunc() override;
 	bool IsToBeBlocked() override;
+private:
+	int SendResToPlayer(Message *pMessage, CPlayer *pPlayer);
+	int SendResponse(Message *pMessage, MesHead *mesHead);
+	int Push(int cmd, Message *pMessage, stPointList *pPlayerList);
 
 private:
 	char m_acMessageBuff[MAX_PACKAGE_LEN];      //下行消息缓冲区
+	CMessage m_oMessage;
 };
 
 #endif //SERVER_CLIENT_HANDLE_H

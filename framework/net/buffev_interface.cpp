@@ -57,7 +57,7 @@ unsigned int IBufferEvent::RecvData(char *data, unsigned int size)
 	return bufferevent_read(m_pStBufEv, data, size);
 }
 
-PACK_LEN IBufferEvent::GetRecvPackLen()
+PACK_LEN IBufferEvent::ReadRecvPackLen()
 {
 	//包头前两个字节为数据总长度，如果数据长度小于两个字节返回0
 	if (GetRecvDataSize() < sizeof(PACK_LEN)) {
@@ -125,6 +125,27 @@ void IBufferEvent::CurrentPackRecved()
 CSocket IBufferEvent::GetSocket() const
 {
 	return m_oSocket;
+}
+
+bool IBufferEvent::IsPackageComplete()
+{
+	PACK_LEN tmpPackLen = GetRecvPackLen();
+	//如果当前包长度为0，则为新的数据包，重新读取数据包总长度保存
+	if (tmpPackLen <= 0) {
+		tmpPackLen = ReadRecvPackLen();
+	}
+	if (tmpPackLen <= 0) {
+		//数据包不完整继续等其他数据到来
+		return false;
+	}
+
+	PACK_LEN tmpLastLen = tmpPackLen - sizeof(PACK_LEN);
+	unsigned int tmpDataLen = GetRecvDataSize();
+	//数据包不完整继续等其他数据到来
+	if (tmpDataLen < tmpLastLen) {
+		return false;
+	}
+	return true;
 }
 
 unsigned int IBufferEvent::GetMaxRecvBufSize()

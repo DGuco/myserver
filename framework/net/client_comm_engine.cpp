@@ -319,12 +319,11 @@ int CClientCommEngine::ConvertToGateStream(const void *pBuff,
 
 int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
 											  PACK_LEN unBuffLen,
-											  MesHead *pHead,
 											  CMessage *pMessage,
 											  CFactory *pMsgFactory,
 											  int *unOffset)
 {
-	if ((pBuff == NULL) || (pHead == NULL)) {
+	if ((pBuff == NULL)) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertStreamToClientMsg Input param failed.");
 	}
 
@@ -357,6 +356,7 @@ int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
 	pbyTmpBuff += sizeof(PACK_LEN);
 	unTmpUseLen += sizeof(PACK_LEN);
 
+	MesHead *pHead = pMessage->mutable_msghead();
 	//反序列化失败
 	if (pHead->ParseFromArray(pbyTmpBuff, tmpHeadLen) == false) {
 		MY_ASSERT_STR(0, return -1, "MesHead ParseFromArray failed");
