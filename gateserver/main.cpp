@@ -6,6 +6,7 @@
 //
 
 #include <memory>
+#include <my_macro.h>
 #include "inc/gate_ctrl.h"
 
 using namespace std;
@@ -23,4 +24,11 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 	g_pGateServer->Run();
+	SAFE_DELETE(CServerConfig::GetSingletonPtr());
+	if (g_pGateServer != NULL) {
+		delete g_pGateServer;
+		g_pGateServer = NULL;
+	}
+	// 关闭日志
+	LOG_SHUTDOWN_ALL;
 }

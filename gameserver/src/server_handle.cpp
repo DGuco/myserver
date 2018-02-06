@@ -209,7 +209,6 @@ void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
 
 void CServerHandle::lcb_OnPingServer(CConnector *pConnector)
 {
-
 }
 
 void CServerHandle::SetProxyId(int id)

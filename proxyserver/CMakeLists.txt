@@ -4,12 +4,8 @@ add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DMEDIUM_SIZE -D_POSIX_MT_ -DLINUX -DUSE
 
 set(SOURCE_FILES
         main.cpp
-        inc/proxy_conn.h
         inc/proxy_ctrl.h
-        inc/proxy_handle.h
-        src/proxy_conn.cpp
         src/proxy_ctrl.cpp
-        src/proxy_handle.cpp
         )
 
 include_directories(

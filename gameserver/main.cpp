@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 		delete pTmpGameServer;
 		pTmpGameServer = NULL;
 	}
-
+	SAFE_DELETE(CServerConfig::GetSingletonPtr());
 	// 关闭日志
 	LOG_SHUTDOWN_ALL;
 	return 0;

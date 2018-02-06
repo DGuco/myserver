@@ -30,9 +30,9 @@ bool CC2sHandle::BeginListen()
 	ServerInfo *gateInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GATESERVER);
 	bool iRet = m_pNetWork->BeginListen(gateInfo->m_sHost.c_str(),
 										gateInfo->m_iPort,
-										&OnAcceptCns,
-										&OnCnsDisconnected,
-										&OnCnsSomeDataRecv,
+										&lcb_OnAcceptCns,
+										&lcb_OnCnsDisconnected,
+										&lcb_OnCnsSomeDataRecv,
 										RECV_QUEUQ_MAX);
 	if (iRet) {
 		LOG_INFO("default", "Server listen success at %s : %d", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
@@ -43,7 +43,7 @@ bool CC2sHandle::BeginListen()
 	}
 }
 
-void CC2sHandle::OnAcceptCns(unsigned int uId, CAcceptor *pAcceptor)
+void CC2sHandle::lcb_OnAcceptCns(unsigned int uId, CAcceptor *pAcceptor)
 {
 	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
@@ -54,14 +54,14 @@ void CC2sHandle::OnAcceptCns(unsigned int uId, CAcceptor *pAcceptor)
 		);
 }
 
-void CC2sHandle::OnCnsDisconnected(CAcceptor *pAcceptor)
+void CC2sHandle::lcb_OnCnsDisconnected(CAcceptor *pAcceptor)
 {
 	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
 		->PushTaskBack(CC2sHandle::ClearSocket, pAcceptor, Err_ClientClose);
 }
 
-void CC2sHandle::OnCnsSomeDataRecv(CAcceptor *pAcceptor)
+void CC2sHandle::lcb_OnCnsSomeDataRecv(CAcceptor *pAcceptor)
 {
 	MY_ASSERT(pAcceptor != NULL, return);
 	//数据不完整

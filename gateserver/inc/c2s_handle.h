@@ -37,11 +37,11 @@ private:
 	//客户端断开连接
 protected:
 	//客户端连接还回调
-	static void OnAcceptCns(uint32 uId, CAcceptor *pAcceptor);
+	static void lcb_OnAcceptCns(uint32 uId, CAcceptor *pAcceptor);
 	//客户端断开连接回调
-	static void OnCnsDisconnected(CAcceptor *pAcceptor);
+	static void lcb_OnCnsDisconnected(CAcceptor *pAcceptor);
 	//客户端上行数据回调
-	static void OnCnsSomeDataRecv(CAcceptor *pAcceptor);
+	static void lcb_OnCnsSomeDataRecv(CAcceptor *pAcceptor);
 public:
 	CNetWork *m_pNetWork;
 	static CCodeQueue *m_pC2SPipe;
