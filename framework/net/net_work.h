@@ -79,11 +79,11 @@ private:
 
 	typedef unordered_map<unsigned int, CConnector *> Map_Connector;
 	typedef unordered_map<unsigned int, CAcceptor *> Map_Acceptor;
-	typedef std::queue<CSystemSignal *> Queue_SystemSignals;
+	typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
 
 	Map_Connector m_mapConnector;
 	Map_Acceptor m_mapAcceptor;
-	Queue_SystemSignals m_quSystemSignals;
+	Queue_TimerOrSignals m_qTimerOrSignals;
 
 	typedef std::queue<CConnector *> Queue_IdleConnectorExs;
 	Queue_IdleConnectorExs m_quIdleConnectorExs;

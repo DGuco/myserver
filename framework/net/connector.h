@@ -67,7 +67,7 @@ private:
 	//连接成功
 	void OnConnectted();
 	//处理
-	void HandleInput(int32 Socket, int16 nEventMask, void *arg);
+	void HandleInput(int32 socket, int16 nEventMask, void *arg);
 	//socket error
 	void ProcessSocketError();
 

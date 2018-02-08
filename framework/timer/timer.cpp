@@ -386,7 +386,7 @@ int CTimerManager::CheckTimerQueue(time_t tNow)
 	int nowTick = tNow / TIMER_PERCISION;
 	while (nowTick > m_tLastCheckTick) {
 		// 先处理待销毁定时器
-		DELETE_LIST::iterator itDel = m_aDeleteList.begin();
+		auto itDel = m_aDeleteList.begin();
 		for (; itDel != m_aDeleteList.end(); itDel++) {
 			RealDestroyTimer((int) *itDel);
 		}
@@ -601,4 +601,25 @@ CObj *CTimerManager::GetObject(OBJ_ID iObjID)
 
 	return pTmpObj;
 }
+
+int CTimerManager::PrepareToRun()
+{
+	return 0;
+}
+
+int CTimerManager::RunFunc()
+{
+	while (true) {
+		CheckTimerQueue(GetMSTime());
+	}
+}
+
+bool CTimerManager::IsToBeBlocked()
+{
+	return false;
+}
+
+
+
+
 

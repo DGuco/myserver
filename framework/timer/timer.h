@@ -3,6 +3,7 @@
 
 #include <map>
 #include <unordered_map>
+#include <mythread.h>
 #include "object.h"
 #include "server_tool.h"
 #include "object_manager.h"
@@ -174,17 +175,12 @@ public:
 public:
 	CSession()
 	{
-//		if (CObj::msCreateMode)
-//		{
 		Initialize();
-//		}
-//		else
-//		{
-//			Resume();
-//		}
 	}
 	~CSession()
-	{}
+	{
+
+	}
 	int Initialize();
 	int Resume();
 
@@ -223,14 +219,15 @@ protected:
 // ----------------------------------------------------------------------------------
 // 定时器管理器（在同一个精度周期里面，不保证定时器顺序）
 // ----------------------------------------------------------------------------------
-class CTimerManager: public CSingleton<CTimerManager>
+class CTimerManager: public CMyThread, CSingleton<CTimerManager>
 {
 public:
 	CTimerManager();
 	~CTimerManager();
-
 	int Initialize();
-
+	int PrepareToRun() override;
+	int RunFunc() override;
+	bool IsToBeBlocked() override;
 	// 统计输出
 	void Dump(char *pcBuffer, unsigned int &uiLen);
 protected:

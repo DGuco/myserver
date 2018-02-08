@@ -1,4 +1,4 @@
-#include "ppe_signal.h"
+#include "system_signal.h"
 
 CSystemSignal::CSystemSignal(IEventReactor *pReactor)
 	: m_pFuncOnSignal(NULL),
@@ -29,10 +29,9 @@ void CSystemSignal::SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *
 
 bool CSystemSignal::RegisterToReactor()
 {
-	event_set(&m_EvSignal, m_iSignal, EV_SIGNAL, lcb_OnSignal, this);
-	event_base_set(static_cast<event_base *>(GetReactor()->GetEventBase()), &m_EvSignal);
-	event_add(&m_EvSignal, NULL);
-
+	event_set(&m_event, m_iSignal, EV_SIGNAL, lcb_OnSignal, this);
+	event_base_set(static_cast<event_base *>(GetReactor()->GetEventBase()), &m_event);
+	event_add(&m_event, NULL);
 	return true;
 }
 
@@ -48,13 +47,13 @@ void CSystemSignal::OnSignalReceive()
 		UnRegisterFromReactor();
 	}
 
-	if (m_iSignal == EVENT_SIGNAL(&m_EvSignal)) {
+	if (m_iSignal == EVENT_SIGNAL(&m_event)) {
 		m_pFuncOnSignal(m_iSignal, m_pContext);
 	}
 }
 
 bool CSystemSignal::UnRegisterFromReactor()
 {
-	event_del(&m_EvSignal);
+	event_del(&m_event);
 	return true;
 }

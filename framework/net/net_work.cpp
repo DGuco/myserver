@@ -2,7 +2,7 @@
 #include "net_addr.h"
 #include "network_interface.h"
 #include "net_work.h"
-#include "ppe_signal.h"
+#include "system_signal.h"
 #include "connector.h"
 #include "acceptor.h"
 
@@ -33,10 +33,10 @@ CNetWork::~CNetWork(void)
 		SAFE_DELETE(it.second);
 	}
 	m_mapAcceptor.clear();
-	while (!m_quSystemSignals.empty()) {
-		CSystemSignal *pSystemSignal = m_quSystemSignals.front();
+	while (!m_qTimerOrSignals.empty()) {
+		CSystemSignal *pSystemSignal = m_qTimerOrSignals.front();
 		SAFE_DELETE(pSystemSignal);
-		m_quSystemSignals.pop();
+		m_qTimerOrSignals.pop();
 	}
 	OnTick();
 	SAFE_DELETE(m_pEventReactor);
@@ -47,7 +47,8 @@ void CNetWork::SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void 
 {
 	CSystemSignal *pSystemSignal = new CSystemSignal(m_pEventReactor);
 	pSystemSignal->SetCallBackSignal(uSignal, pFunc, pContext, bLoop);
-	m_quSystemSignals.push(pSystemSignal);
+	m_qTimerOrSignals.push(pSystemSignal);
+	m_qTimerOrSignals.push(pSystemSignal);
 }
 
 void CNetWork::lcb_OnAccept(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)

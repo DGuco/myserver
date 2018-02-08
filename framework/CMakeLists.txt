@@ -57,12 +57,14 @@ set(FRAMEWORK
         net/net_work.h
         net/net_work.cpp
         net/network_interface.h
-        net/ppe_signal.h
-        net/ppe_signal.cpp
+        net/system_signal.h
+        net/system_signal.cpp
         net/socket.h
         net/socket.cpp
         net/buffev_interface.cpp
         net/buffev_interface.h
+        net/timer_event.h
+        net/timer_event.cpp
         mem/share_mem.h
         mem/shm.h/
         mem/share_mem.cpp

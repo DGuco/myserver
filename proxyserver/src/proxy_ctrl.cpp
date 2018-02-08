@@ -308,7 +308,6 @@ int CProxyCtrl::SendOneCodeTo(short nCodeLength, BYTE *pbyCode, int iKey, bool b
 
 void CProxyCtrl::CloseConnection(int socket)
 {
-
 	auto it = m_mapSocket2Key.find(socket);
 	if (it != m_mapSocket2Key.end()) {
 		m_mapRegister.erase(it->second);

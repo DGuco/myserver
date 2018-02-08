@@ -50,6 +50,14 @@ public:
 	virtual IEventReactor *GetReactor() = 0;
 };
 
+/** CallBack for TimerOut
+*/
+typedef std::function<void(int, short, void *)> FuncOnTimeOut;
+
+/** CallBack for TimerOut Or
+*/
+typedef std::function<void(uint32, void *)> FuncOnSignal;
+
 /** CallBack for Accept
 */
 typedef std::function<void(IEventReactor *, SOCKET, sockaddr *sa)> FuncListenerOnAccept;
@@ -75,9 +83,5 @@ typedef std::function<void(uint32, CAcceptor *)> FuncAcceptorOnNew;
 typedef std::function<void(CAcceptor *)> FuncAcceptorOnDisconnected;
 
 typedef std::function<void(CAcceptor *)> FuncAcceptorOnSomeDataRecv;
-
-/** CallBack for Signal
-*/
-typedef std::function<void(uint32, void *)> FuncOnSignal;
 
 #endif

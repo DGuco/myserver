@@ -39,6 +39,7 @@ event_base *CEventReactor::GetEventBase()
 
 void CEventReactor::Release()
 {
+	event_base_loopexit(m_pEventBase, NULL);
 	event_base_free(m_pEventBase);
 	event_config_free(m_pEventConfig);
 }
@@ -46,7 +47,7 @@ void CEventReactor::Release()
 void CEventReactor::DispatchEvents()
 {
 	int iRet = event_base_dispatch(m_pEventBase);
-	MY_ASSERT_STR(iRet == 0, exit(0), "Event loop failed,error msg %s,",strerror(errno))
+	MY_ASSERT_STR(iRet == 0, exit(0), "Event loop failed,error msg %s,", strerror(errno))
 }
 
 bool CEventReactor::Register(IReactorHandler *pHandler)

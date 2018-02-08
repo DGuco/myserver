@@ -76,13 +76,13 @@ void CConnector::SetCallbackFunc(FuncConnectorOnDisconnected pOnDisconnected,
 	m_pFuncOnSomeDataRecv = pOnSomeDataRecv;
 }
 
-void CConnector::lcb_OnConnectResult(int Socket, short nEventMask, void *arg)
+void CConnector::lcb_OnConnectResult(int socket, short nEventMask, void *arg)
 {
 	CConnector *pConnector = static_cast<CConnector *>(arg);
-	pConnector->HandleInput(Socket, nEventMask, NULL);
+	pConnector->HandleInput(socket, nEventMask, NULL);
 }
 
-void CConnector::HandleInput(int32 Socket, int16 nEventMask, void *arg)
+void CConnector::HandleInput(int32 socket, int16 nEventMask, void *arg)
 {
 	switch (nEventMask) {
 	case EV_WRITE: {
