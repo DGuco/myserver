@@ -41,10 +41,6 @@ public:
 	int PrepareToRun();
 	int Run();
 
-	//创建共享内
-	static int MallocShareMem();
-	static CSharedMem *mShmPtr;
-
 	// 运行标志
 	enum ERunFlag
 	{
@@ -57,16 +53,21 @@ public:
 	void SetRunFlag(int iFlag);
 	void ClearRunFlag(int iFlag);
 	bool IsRunFlagSet(int iFlag);
-
+	int SendMessageTo(CProxyMessage *pMsg);
+	int Event(CProxyMessage *pMsg);
+	int ProcessExecuteSqlRequest(CProxyMessage *pMsg);
+	void ReleaseResult(QueryResult *res)
+	{
+		if (res != NULL) {
+			delete res;
+			res = NULL;
+		}
+	}
 private:
-
 	int ConnectToProxyServer();
 	int RegisterToProxyServer();
 	int SendkeepAliveToProxy();     // 向proxy发送心跳消息
-	int CheckRunFlags();
-	int RoutineCheck();
 	int DispatchOneCode(int nCodeLength, BYTE *pbyCode);
-	int GetThisRoundHandle();
 private:
 	static void lcb_OnConnected(CConnector *pConnector);
 	//断开连接回调
@@ -81,6 +82,9 @@ private:
 	time_t m_tLastSendKeepAlive;        // 最后发送proxy心跳消息时间
 	time_t m_tLastRecvKeepAlive;        // 最后接收proxy心跳消息时间
 	time_t m_lastTick;
+	Database *m_pDatabase;
+	CMessageFactory *mMsgFactory;
+	CProxyHead m_stCurrentProxyHead;    //当前处理请求的Proxy头部
 	CNetWork *m_pNetWork;
 private:
 	static char m_acRecvBuff[MAX_PACKAGE_LEN];

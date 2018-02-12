@@ -9,56 +9,48 @@
 
 int Initialize(int iInitFlag = 0);
 
-void sigusr1_handle( int iSigVal )
+void sigusr1_handle(int iSigVal)
 {
-	CDBCtrl::GetSingletonPtr()->SetRunFlag( CDBCtrl::EFLG_CTRL_RELOAD );
-    signal(SIGUSR1, sigusr1_handle);
+	CDBCtrl::GetSingletonPtr()->SetRunFlag(CDBCtrl::EFLG_CTRL_RELOAD);
+	signal(SIGUSR1, sigusr1_handle);
 }
 
-void sigusr2_handle( int iSigVal )
+void sigusr2_handle(int iSigVal)
 {
-	CDBCtrl::GetSingletonPtr()->SetRunFlag( CDBCtrl::EFLG_CTRL_QUIT );
-    signal(SIGUSR2, sigusr2_handle);
+	CDBCtrl::GetSingletonPtr()->SetRunFlag(CDBCtrl::EFLG_CTRL_QUIT);
+	signal(SIGUSR2, sigusr2_handle);
 }
 
-void sigusr_handle( int iSigVal )
+void sigusr_handle(int iSigVal)
 {
-	CDBCtrl::GetSingletonPtr()->SetRunFlag( CDBCtrl::EFLG_CTRL_SHUTDOWN );
-    signal(SIGQUIT, sigusr_handle);
+	CDBCtrl::GetSingletonPtr()->SetRunFlag(CDBCtrl::EFLG_CTRL_SHUTDOWN);
+	signal(SIGQUIT, sigusr_handle);
 }
 
 void ignore_pipe()
 {
-    struct sigaction sig;
+	struct sigaction sig;
 
-    sig.sa_handler = SIG_IGN;
-    sig.sa_flags = 0;
-    sigemptyset(&sig.sa_mask);
-    sigaction(SIGPIPE,&sig,NULL);
+	sig.sa_handler = SIG_IGN;
+	sig.sa_flags = 0;
+	sigemptyset(&sig.sa_mask);
+	sigaction(SIGPIPE, &sig, NULL);
 }
 
 int main(int argc, char **argv)
 {
-    INIT_ROLLINGFILE_LOG( "default", "../log/dbserver.log", LEVEL_DEBUG, 10 * 1024 * 1024, 20 );
+	INIT_ROLLINGFILE_LOG("default", "../log/dbserver.log", LEVEL_DEBUG, 10 * 1024 * 1024, 20);
 //	INIT_ROLLINGFILE_LOG( "dbctrl", "../log/dbserver.log", LEVEL_DEBUG, 10 * 1024 * 1024, 20 );
 
-	unique_ptr<CServerConfig> pTmpConfig(new CServerConfig);
-    const string filepath = "../config/serverinfo.json";
-    if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filepath))
-    {
-        LOG_ERROR("default","Get TcpserverConfig failed");
-        exit(0);
-    }
-
-	CDBCtrl* tpDBCtrl = new CDBCtrl;
-	if( tpDBCtrl->Initialize () < 0 )  // 读取数据库配置文件
+	CDBCtrl *tpDBCtrl = new CDBCtrl;
+	if (tpDBCtrl->Initialize() < 0)  // 读取数据库配置文件
 	{
 		exit(-1);
 	}
 
-    if( tpDBCtrl->PrepareToRun() < 0 )  // 创建处理线程
-    {
-        exit(-1);
+	if (tpDBCtrl->PrepareToRun() < 0)  // 创建处理线程
+	{
+		exit(-1);
 	}
 
 	signal(SIGUSR1, sigusr1_handle);
@@ -73,8 +65,7 @@ int main(int argc, char **argv)
 
 	tpDBCtrl->Run();
 
-	if (tpDBCtrl)
-	{
+	if (tpDBCtrl) {
 		delete tpDBCtrl;
 		tpDBCtrl = NULL;
 	}
@@ -82,6 +73,6 @@ int main(int argc, char **argv)
 	// 关闭所有日志
 	LOG_SHUTDOWN_ALL;
 
-    return 0;
+	return 0;
 }
 

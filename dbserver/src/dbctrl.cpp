@@ -2,48 +2,24 @@
 // Created by DGuco on 17-7-13.
 //
 
+#include <dbmessage.pb.h>
+#include <client_comm_engine.h>
 #include "../inc/dbctrl.h"
 #include "share_mem.h"
 #include "config.h"
 #include "connector.h"
 #include "server_comm_engine.h"
 
-CSharedMem *CDBCtrl::mShmPtr = NULL;
-
 template<> CDBCtrl *CSingleton<CDBCtrl>::spSingleton = NULL;
 
 CDBCtrl::CDBCtrl()
 {
 	m_iRunFlag = 0;
-	m_which_handle = 0;
 	m_lastTick = 0;
 }
 
 CDBCtrl::~CDBCtrl()
 {
-}
-
-int CDBCtrl::MallocShareMem()
-{
-	char szCmd[128] = {0};
-	snprintf(szCmd, sizeof(szCmd) - 1, "touch %s", "./dbpipefile");
-	system(szCmd);
-
-	unsigned int tkeydb = MakeKey("./dbpipefile", 'D');
-	size_t tSize = sizeof(CSharedMem) + MAXHANDLENUMBER * CCodeQueue::CountQueueSize(INPUTQUEUELENGTH);
-	BYTE *tpDBShm = CreateShareMem(tkeydb, tSize);
-
-	if (tpDBShm == NULL) {
-		return -1;
-	}
-	LOG_DEBUG("default", "DB Shm Size is %lld", tSize);
-	CSharedMem::pbCurrentShm = tpDBShm;
-	CDBCtrl::mShmPtr = CSharedMem::CreateInstance(tkeydb, tSize, SHM_INIT);
-	if (CDBCtrl::mShmPtr == NULL) {
-		return -1;
-	}
-	CDBHandle::ms_pCurrentShm = CDBCtrl::mShmPtr;
-	return 0;
 }
 
 void CDBCtrl::SetRunFlag(int iFlag)
@@ -65,18 +41,248 @@ bool CDBCtrl::IsRunFlagSet(int iFlag)
 
 int CDBCtrl::Initialize()
 {
+	CServerConfig *pTmpConfig = new CServerConfig;
+	const string filepath = "../config/serverinfo.json";
+	if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filepath)) {
+		LOG_ERROR("default", "Get TcpserverConfig failed");
+		return -1;
+	}
+	return 0;
+}
 
-	int i;
-
-	if (MallocShareMem() != 0) {
+int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
+{
+	if (pMsg == NULL) {
+		LOG_ERROR("default", "in CDBHandle::SendMessageTo, pmsg is null");
 		return -1;
 	}
 
-	for (i = 0; i < MAXHANDLENUMBER; i++) {
-		CThreadPool *tmpThread = new CThreadPool(1);
-		m_apHandles[i] = tmpThread;
+	CProxyHead *stProxyHead = pMsg->mutable_msghead();
+	BYTE abyCodeBuf[MAX_PACKAGE_LEN] = {0};
+	unsigned short nCodeLength = sizeof(abyCodeBuf);
+	ServerInfo *dbInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_DBSERVER);
+	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+
+	pbmsg_setproxy(stProxyHead,
+				   enServerType::FE_PROXYSERVER,
+				   proxyInfo->m_iServerId,
+				   enServerType::FE_DBSERVER,
+				   dbInfo->m_iServerId,
+				   GetMSTime(),
+				   enMessageCmd::MESS_REGIST);
+
+	int iRet = ServerCommEngine::ConvertMsgToStream(pMsg, abyCodeBuf, nCodeLength);
+	if (iRet != 0) {
+		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = %d.", iRet);
+		return 0;
 	}
 
+	//int nSendReturn = m_pProxySvrdConns[ m_current_proxy_index ].GetSocket()->SendOneCode( nCodeLength, abyCodeBuf );
+	CConnector *tmpConnector = m_pNetWork->FindConnector(m_iProxyId);
+	if (tmpConnector == NULL) {
+		LOG_ERROR("default", "Connection to proxyserver has gone");
+		return -1;
+	}
+	int nSendReturn = tmpConnector->Send(abyCodeBuf, nCodeLength);
+	if (nSendReturn < 0) {
+		LOG_ERROR("default", "Send Code(len:%d) To Proxy faild(error=%d)", nCodeLength, nSendReturn);
+		return -1;
+	}
+
+	Message *pUnknownMessagePara = (Message *) pMsg->msgpara();
+	MY_ASSERT(pUnknownMessagePara != NULL, return 0);
+	const ::google::protobuf::Descriptor *pDescriptor = pUnknownMessagePara->GetDescriptor();
+	LOG_DEBUG("default", "SendMessageTo: MsgName[%s] ProxyHead[%s] MsgHead[%s] MsgPara[%s]",
+			  pDescriptor->name().c_str(), stProxyHead->ShortDebugString().c_str(),
+			  pMsg->ShortDebugString().c_str(), ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
+
+	return 0;
+}
+
+// 执行相应的指令
+int CDBCtrl::Event(CProxyMessage *pMsg)
+{
+	if (pMsg == NULL) {
+		LOG_ERROR("default", "In CDBHandle::Event, input msg null");
+		return -1;
+	}
+
+	Message *pUnknownMessagePara = (Message *) pMsg->msgpara();
+	MY_ASSERT(pUnknownMessagePara != NULL, return 0);
+	const ::google::protobuf::Descriptor *pDescriptor = pUnknownMessagePara->GetDescriptor();
+	LOG_DEBUG("default", "ReceveMsg: MsgName[%s] MsgHead[%s] MsgPara[%s]",
+			  pDescriptor->name().c_str(),
+			  pMsg->ShortDebugString().c_str(),
+			  ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
+
+	switch (pMsg->msghead().messageid()) {
+	case CMsgExecuteSqlRequest::MsgID:  // 服务器执行SQL请求
+	{
+		ProcessExecuteSqlRequest(pMsg);
+		break;
+	}
+	default: {
+		break;
+	}
+	}
+
+	return 0;
+}
+
+// 执行相应的指令
+int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
+{
+	if (pMsg == NULL) {
+		LOG_ERROR("default", "Error: [%s][%d][%s], invalid input.\n", __MY_FILE__, __LINE__, __FUNCTION__);
+		return -1;
+	}
+
+	CMsgExecuteSqlRequest *pReqMsg = (CMsgExecuteSqlRequest *) (pMsg->msgpara());
+
+	if (pReqMsg == NULL) {
+		LOG_ERROR("default", "Error: [%s][%d][%s], msgpara null.\n", __MY_FILE__, __LINE__, __FUNCTION__);
+		return -1;
+	}
+
+	if (pReqMsg->sql().length() <= 0) {
+		LOG_ERROR("default", "Error: [%s][%d][%s], sql len(%d) invalid.\n",
+				  __MY_FILE__,
+				  __LINE__,
+				  __FUNCTION__,
+				  pReqMsg->sql().length());
+		return -1;
+	}
+
+
+	LOG_ERROR("default", "%s \n", pReqMsg->ShortDebugString().c_str());
+
+	string sqlStr = "";
+	if (pReqMsg->hasblob() == HASBLOB) {
+		// 有blob字段的处理
+		sqlStr += pReqMsg->sql();
+		if (pReqMsg->bufsize() > 0) {
+			if (pReqMsg->bufsize() >= MAX_PACKAGE_LEN) {
+				// blob字段超出长度
+				LOG_ERROR("default", "Error: [%s][%d][%s], exec sql %s faild. sql_len:%d > MAX_PACKAGE_LEN\n",
+						  __MY_FILE__,
+						  __LINE__,
+						  __FUNCTION__,
+						  pReqMsg->sql().c_str(),
+						  pReqMsg->bufsize());
+				return -1;
+			}
+
+			char sqlBuff[MAX_PACKAGE_LEN * 2 + 1] = {0};
+			int len = m_pDatabase->escape_string(sqlBuff, pReqMsg->buffer().c_str(), pReqMsg->bufsize());
+			if (len <= 0) {
+				LOG_ERROR("default",
+						  "Error: [%s][%d][%s], escape_string error!!!!\n",
+						  __MY_FILE__,
+						  __LINE__,
+						  __FUNCTION__);
+				return -1;
+			}
+			sqlStr += sqlBuff;
+		}
+		sqlStr += pReqMsg->sqlwhere();
+	}
+	else {
+		// 没有blob字段的处理
+		sqlStr += pReqMsg->sql();
+	}
+
+	// 需要回执
+	if (MUSTCALLBACK == pReqMsg->callback()) {
+		CProxyMessage tMsg;  // 该消息为回执
+		CMsgExecuteSqlResponse tSqlResMsg;  // tSqlResMsg 为消息体
+		tMsg.Clear();
+		tSqlResMsg.Clear();
+
+		tSqlResMsg.set_logictype(pReqMsg->logictype());
+		tSqlResMsg.set_sessionid(pReqMsg->sessionid());
+		tSqlResMsg.set_timestamp(pReqMsg->timestamp());
+		tSqlResMsg.set_teamid(pReqMsg->teamid());
+
+		LOG_ERROR("default", "Execute SQL: %s", sqlStr.c_str());    // 用于在日志中查看SQL查询语句
+
+		CProxyHead *pTmpHead = tMsg.mutable_msghead();
+		pTmpHead->set_messageid(CMsgExecuteSqlResponse::MsgID);
+		if (pMsg->has_msghead()) {
+			if (pMsg->mutable_msghead()->has_msghead()) {
+				CClientCommEngine::CopyMesHead(pMsg->mutable_msghead()->mutable_msghead(),
+											   pTmpHead->mutable_msghead());
+			}
+		}
+
+		tMsg.set_msgpara((uint64) &tSqlResMsg);
+
+		if (pReqMsg->sqltype() == SELECT || pReqMsg->sqltype() == CALL) {
+			QueryResult *res = NULL;
+			if (pReqMsg->sqltype() == SELECT) {
+				res = m_pDatabase->Query(sqlStr.c_str(), sqlStr.length());
+			}
+			else {
+				res = m_pDatabase->QueryForprocedure(sqlStr.c_str(), sqlStr.length(), pReqMsg->outnumber());
+			}
+			if (res == NULL)  // 无返回结果
+			{
+				LOG_ERROR("default", "sql %s exec, but no resultset returned", sqlStr.c_str());
+				tSqlResMsg.set_resultcode(0);
+			}
+			else  // 有返回结果
+			{
+				tSqlResMsg.set_resultcode(1);
+				tSqlResMsg.set_rowcount(res->GetRowCount());  // 行
+				tSqlResMsg.set_colcount(res->GetFieldCount());  // 列
+
+				//TODO: 列名 + 列类型 暂时不赋值
+				if (res->GetRowCount() > 0) {
+					// 列值 和 值长度
+					do {
+						Field *pField = res->Fetch();
+						if (pField == NULL) {
+							LOG_ERROR("default", "ERROR: do sql %s success, row[%d], col[%d], but some row is null\n",
+									  sqlStr.c_str(),
+									  res->GetRowCount(),
+									  res->GetFieldCount());
+							//TODO: 出错设为0
+							tSqlResMsg.set_rowcount(0);
+							break;
+						}
+
+						for (int j = 0; j < (int) res->GetFieldCount(); j++) {
+							tSqlResMsg.add_fieldvalue(pField[j].GetString(), pField[j].GetValueLen());
+							tSqlResMsg.add_fieldvaluelen(pField[j].GetValueLen());
+						}
+
+					}
+					while (res->NextRow());
+				}
+			}
+
+			// 安全释放结果集
+			ReleaseResult(res);
+		}
+		else  // 非select操作
+		{
+			bool bExecResult = m_pDatabase->RealDirectExecute(sqlStr.c_str(), sqlStr.length());  // 执行操作
+			tSqlResMsg.set_resultcode(bExecResult ? 1 : 0);
+		}
+
+		// 回复客户端
+		SendMessageTo(&tMsg);
+
+	}
+	else {
+		// 同步执行
+		if (m_pDatabase->RealDirectExecute(sqlStr.c_str(), sqlStr.length()) != true) {
+			LOG_ERROR("default", "Error: [%s][%d][%s], direct exec sql %s faild.\n",
+					  __MY_FILE__,
+					  __LINE__,
+					  __FUNCTION__,
+					  sqlStr.c_str());
+		}
+	}
 	return 0;
 }
 
@@ -167,8 +373,6 @@ Others:
  ********************************************************/
 int CDBCtrl::SendkeepAliveToProxy()
 {
-
-
 	CProxyMessage message;
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
@@ -209,7 +413,6 @@ int CDBCtrl::SendkeepAliveToProxy()
 int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 {
 	int iTempRet = 0;
-	int iHandleChoice = GetThisRoundHandle();
 	// 解析proxy头
 	CProxyHead tProxyHead;
 	if (ServerCommEngine::ConvertStreamToProxy(pbyCode/* + sizeof(int)*/, nCodeLength/* - sizeof(int)*/, &tProxyHead)
@@ -225,9 +428,39 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 		return 0;
 	}
 
-	iTempRet = m_apHandles[iHandleChoice]->PostOneCode(nCodeLength, pbyCode);  // 追加一条待处理消息到相应的线程
+	CProxyMessage stTempMsg;
+	// 将解析出的消息头和消息体分别存放在 m_stCurrentProxyHead stTempMsg
+	int tRet = ServerCommEngine::ConvertStreamToMsg((BYTE *) (pbyCode/*+sizeof(int)*/),
+													nCodeLength/*-sizeof(int)*/,
+													&stTempMsg,
+													mMsgFactory);
+	CProxyHead tmpProxyHead = stTempMsg.msghead();
+	pbmsg_setproxy(&m_stCurrentProxyHead,
+				   tmpProxyHead.srcfe(),
+				   tmpProxyHead.srcid(),
+				   tmpProxyHead.dstfe(),
+				   tmpProxyHead.dstid(),
+				   GetMSTime(),
+				   enMessageCmd::MESS_REGIST);
+	if (tRet != 0)  // 如果解析失败则重新取 Code
+	{
+		LOG_ERROR("default", "Convert code to message failed. tRet = %d", tRet);
+		return -1;
+	}
 
-	LOG_DEBUG("default", "Post code to dbhandle_%d returns %d.", iHandleChoice, iTempRet);
+	iTempRet = Event(&stTempMsg);  // 服务器执行相应的 Msg ，其实就是执行 SQL
+
+	if (iTempRet) {
+		LOG_ERROR("default", "Handle event returns %d.\n", iTempRet);
+	}
+
+	// 消息回收
+	Message *pMessagePara = (Message *) (stTempMsg.msgpara());
+	if (pMessagePara) {
+		pMessagePara->~Message();
+		stTempMsg.set_msgpara((unsigned long) NULL);
+	}
+
 	LOG_DEBUG("default",
 			  "PRoxyHead:SrcFE: %d SrcID: %d DstFE: %d DstID: %d OpFlag: %d ",
 			  tProxyHead.srcfe(),
@@ -235,159 +468,28 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 			  tProxyHead.dstfe(),
 			  tProxyHead.dstid(),
 			  tProxyHead.opflag());
-
 	return iTempRet;
-}
-
-int CDBCtrl::CheckRunFlags()
-{
-	int i;
-
-	if (IsRunFlagSet(EFLG_CTRL_RELOAD))  // 如果 flag 设置为 reload ,停止所有处理 sql 的线程
-	{
-		for (i = 0; i < MAXHANDLENUMBER; i++) {
-			m_apHandles[i]->ProcessThreadEnd();
-			m_apHandles[i]->InitLogFile(NULL,
-										NULL,
-										(LogLevel) CServerConfig::GetSingletonPtr()->GetDbLogLevel(),
-										10 * 1024 * 1024,
-										20);
-		}
-
-		ClearRunFlag(EFLG_CTRL_RELOAD);
-	}
-
-	if (IsRunFlagSet(EFLG_CTRL_QUIT) || IsRunFlagSet(EFLG_CTRL_SHUTDOWN)) {
-
-		LOG_INFO("default", "Have got command to stop run, now stop threads ...");  // 从这行起,说明如何停止服务器
-
-		// 停止所有的线程
-		for (i = 0; i < MAXHANDLENUMBER; i++) {
-			m_apHandles[i]->ProcessThreadEnd();
-			m_apHandles[i]->StopThread();
-		}
-
-		LOG_INFO("default", "All threads stopped, main control quit.");
-
-		if (IsRunFlagSet(EFLG_CTRL_SHUTDOWN)) {
-			LOG_INFO("default", "gateserver resume,dbserver shutdown success!");
-		}
-
-		if (IsRunFlagSet(EFLG_CTRL_QUIT)) {
-			LOG_INFO("default", "dbserver shutdown success!");
-		}
-
-		exit(0);
-
-	}
-	return 0;
 }
 
 int CDBCtrl::PrepareToRun()
 {
-	int i;
-
 	if (ConnectToProxyServer() < 0)  // 连接到proxy服务器
 	{
 		LOG_ERROR("default", "Error: in CDBCtrl::PrepareToRun connect proxy  server  failed!\n");
 		return -1;
 	}
-
-	for (i = 0; i < MAXHANDLENUMBER; i++) {
-		m_apHandles[i]->Initialize(i, &m_stProxySvrdCon);
-		m_apHandles[i]->InitLogFile(NULL,
-									NULL,
-									(LogLevel) CServerConfig::GetSingletonPtr()->GetDbLogLevel(),
-									10 * 1024 * 1024,
-									20,
-									"dbhandle_");
-	}
-
-	LOG_INFO("default", "Handles initialized OK, now begin to create threads.\n");
-
-	for (i = 0; i < MAXHANDLENUMBER; i++)  // 创建CDBHandle线程
-	{
-		if (m_apHandles[i]->Run()) {
-			LOG_ERROR("default", "Create dbhandle thread %d failed.\n", i);
-			return -1;
-		}
-	}
-
-	LOG_INFO("default", "Successfully create %d threads to handle request.\n", MAXHANDLENUMBER);
-
-	m_lastTick = GetMSTime();
-
 	return 0;
 }
 
 int CDBCtrl::Run()
 {
-	while (True) {
-		CheckRunFlags();  // 检查是否重新加载或者停止dbserver\
-		RoutineCheck();  // 用于保持和ProxyServer的连接
-		CheckAndDispatchInputMsg();  // 检查和分发数据
-	}
-
-	return 0;
-}
-
-int CDBCtrl::RoutineCheck()
-{
-	time_t tNow = GetMSTime();
-
-	if (tNow - m_lastTick < CServerConfig::GetSingletonPtr()->GetServetTick()) {
-		return 0;
-	}
-
-	m_lastTick = tNow;
-	// 和 proxy 保持心跳
-	if ((m_stProxySvrdCon.GetSocket()->GetStatus() == tcs_connected)  // 已经连接
-		&& (m_stProxySvrdCon.GetSocket()->GetSocketFD() > 0)  // 文件描述符
-		&& ((tNow - m_tLastRecvKeepAlive) < (CServerConfig::GetSingletonPtr()->GetTcpKeepAlive() * 3)) // 与proxy心跳超时
-		) {
-		if (tNow - m_tLastSendKeepAlive > CServerConfig::GetSingletonPtr()->GetTcpKeepAlive()) {
-			SendkeepAliveToProxy();
-		}
-		return 0;
-	}
-
-	LOG_ERROR("default", "Proxy(ID = %d) is not connected, try to reconnect it", m_stProxySvrdCon.GetEntityID());
-
-	// 如果已经断开了,则重新连接
-	if (m_stProxySvrdCon
-		.ConnectToServer((char *) CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_PROXYSERVER)->m_sHost
-			.c_str())) {
-		LOG_ERROR("default", "Connect proxy failed.");
-		return -1;
-	}
-	else {
-		LOG_INFO("default", "Connect to proxy succeeded.");
-	}
-
-	// 然后注册
-	if (RegisterToProxyServer()) {
-		LOG_ERROR("default", "Register proxyfailed.");
-		return -1;
-	}
-
-	m_tLastSendKeepAlive = GetMSTime();    // 保存这一次的发送的时间
-	m_tLastRecvKeepAlive = GetMSTime();    // 由于第一次发送,所以记录当前时间为接收的时间
-	return 0;
-}
-
-int CDBCtrl::GetThisRoundHandle()
-{
-	m_which_handle++;
-	if (m_which_handle >= MAXHANDLENUMBER) {
-		m_which_handle = 0;
-	}
-
-	return m_which_handle;
+	m_pNetWork->DispatchEvents();
 }
 
 void CDBCtrl::lcb_OnConnected(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
+	m_iProxyId = pConnector->GetSocket().GetSocket();
 }
 
 void CDBCtrl::lcb_OnCnsDisconnected(CConnector *pConnector)
