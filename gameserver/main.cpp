@@ -5,7 +5,6 @@
 //  Copyright © 2017年 DGuco. All rights reserved.
 //
 
-#include <stdio.h>
 #include <signal.h>
 #include "config.h"
 #include "inc/game_server.h"

@@ -187,16 +187,6 @@ int CDBHandle::InitLogFile( const char* vLogName, const char* vLogDir, LogLevel 
 	return 0;
 }
 
-int CDBHandle::ProcessThreadEnd()
-{
-	TRACE_DEBUG("---Handle End Process Begin---\n");
-	/* ProcessCheckPonits();*/
-	TRACE_DEBUG("---Handle End Process End---\n");
-	return 0;
-}
-
-
-
 // 执行相应的指令
 int CDBHandle::Event(CProxyMessage *pMsg)
 {

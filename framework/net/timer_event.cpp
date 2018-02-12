@@ -92,6 +92,7 @@ bool CTimerEvent::UnRegisterFromReactor()
 {
 	Cancel();
 }
+
 IEventReactor *CTimerEvent::GetReactor()
 {
 	return m_pReactor;

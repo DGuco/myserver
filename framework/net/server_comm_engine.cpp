@@ -34,7 +34,7 @@ int ServerCommEngine::ConvertStreamToMsg(const void *pBuff,
 
 	// 总长度
 	unsigned short tTotalLen = unBuffLen;
-	
+
 	// 字节对齐补充长度（采用8字节对齐）
 	unsigned short tAddLen = *(unsigned short *) tpBuff;
 	tpBuff += sizeof(unsigned short);

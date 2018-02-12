@@ -77,7 +77,8 @@ bool CServerHandle::Regist2Proxy()
 	unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
 
 	ServerInfo *rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
-	pbmsg_setproxy(tmpMessage.mutable_msghead(), enServerType::FE_GAMESERVER, rTmpProxy->m_iServerId,
+	ServerInfo *rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
+	pbmsg_setproxy(tmpMessage.mutable_msghead(), enServerType::FE_GAMESERVER, rTmpGame->m_iServerId,
 				   enServerType::FE_PROXYSERVER, rTmpProxy->m_iServerId, GetMSTime(), enMessageCmd::MESS_REGIST);
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
@@ -87,7 +88,7 @@ bool CServerHandle::Regist2Proxy()
 		return false;
 	}
 
-	iRet = m_pNetWork->FindConnector(1)->Send((BYTE *) acTmpMessageBuffer, unTmpTotalLen);
+	iRet = m_pNetWork->FindConnector(m_iProxyId)->Send((BYTE *) acTmpMessageBuffer, unTmpTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "[%s : %d : %s] proxy SendOneCode failed, iRet = %d.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
@@ -105,9 +106,10 @@ bool CServerHandle::SendKeepAlive2Proxy()
 	char acTmpMessageBuffer[1024];
 	unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
 	ServerInfo *rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+	ServerInfo *rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
 	pbmsg_setproxy(tmpMessage.mutable_msghead(),
 				   enServerType::FE_GAMESERVER,
-				   rTmpProxy->m_iServerId,
+				   rTmpGame->m_iServerId,
 				   enServerType::FE_PROXYSERVER,
 				   rTmpProxy->m_iServerId,
 				   GetMSTime(),
