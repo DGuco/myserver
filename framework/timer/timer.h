@@ -219,15 +219,12 @@ protected:
 // ----------------------------------------------------------------------------------
 // 定时器管理器（在同一个精度周期里面，不保证定时器顺序）
 // ----------------------------------------------------------------------------------
-class CTimerManager: public CMyThread, CSingleton<CTimerManager>
+class CTimerManager
 {
 public:
 	CTimerManager();
 	~CTimerManager();
 	int Initialize();
-	int PrepareToRun() override;
-	int RunFunc() override;
-	bool IsToBeBlocked() override;
 	// 统计输出
 	void Dump(char *pcBuffer, unsigned int &uiLen);
 protected:

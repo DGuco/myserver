@@ -66,6 +66,8 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 	CAcceptor *pAcceptor =
 		new CAcceptor(socket, pReactor, new CNetAddr(ip, sin.sin_port), m_pOnDisconnected, m_pOnSomeDataRecv);
 	MY_ASSERT_STR(pAcceptor != NULL, return, "Create CAcceptor failed");
+	bool bRet = GetEventReactor()->Register(pAcceptor);
+	MY_ASSERT_STR(bRet, return, "Create CAcceptor failed");
 	m_pOnNew(socket, pAcceptor);
 }
 

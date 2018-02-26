@@ -24,6 +24,15 @@ bool CListener::RegisterToReactor()
 	sin.sin_port = htons(m_ListenAddress.GetPort());
 	sin.sin_addr.s_addr = htonl(0);
 //	sin.sin_addr.s_addr = inet_addr(m_ListenAddress.GetAddress());
+#ifdef EVENT_THREAD_SAVE
+	m_pListener = evconnlistener_new_bind(GetReactor()->GetEventBase(),
+										  &CListener::lcb_Accept,
+										  (void *) this,
+										  LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE | LEV_OPT_THREADSAFE ,
+										  m_iListenQueueMax,
+										  (struct sockaddr *) &sin,
+										  sizeof(sin));
+#else
 	m_pListener = evconnlistener_new_bind(GetReactor()->GetEventBase(),
 										  &CListener::lcb_Accept,
 										  (void *) this,
@@ -31,6 +40,7 @@ bool CListener::RegisterToReactor()
 										  m_iListenQueueMax,
 										  (struct sockaddr *) &sin,
 										  sizeof(sin));
+#endif
 	MY_ASSERT_STR(m_pListener != NULL, exit(0), "Create evconnlistener failed.")
 	evconnlistener_set_error_cb(m_pListener, accept_error_cb);
 	SetState(eLS_Listened);

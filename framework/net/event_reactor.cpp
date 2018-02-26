@@ -1,6 +1,9 @@
 #include <my_assert.h>
 #include <cstring>
 #include "event_reactor.h"
+#ifdef EVENT_THREAD_SAVE
+#include <event2/thread.h>
+#endif
 
 CEventReactor::CEventReactor(eNetModule netModule)
 	: m_uReactorHandlerCounter(0),
@@ -16,6 +19,9 @@ CEventReactor::~CEventReactor()
 
 void CEventReactor::Init(eNetModule netModule)
 {
+#ifdef EVENT_THREAD_SAVE
+	evthread_use_pthreads();
+#endif
 	m_pEventConfig = event_config_new();
 	MY_ASSERT_STR(m_pEventConfig != NULL, exit(0), "Create event_config failed");
 	if (netModule == eNetModule::NET_SYSTEM) {

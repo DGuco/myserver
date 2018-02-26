@@ -5,7 +5,6 @@
 #include <dbmessage.pb.h>
 #include <client_comm_engine.h>
 #include "../inc/dbctrl.h"
-#include "share_mem.h"
 #include "config.h"
 #include "connector.h"
 #include "server_comm_engine.h"
@@ -513,12 +512,11 @@ void CDBCtrl::lcb_OnCnsSomeDataRecv(CConnector *pConnector)
 void CDBCtrl::lcb_OnCnsSomeDataSend(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
-
 }
+
 void CDBCtrl::lcb_OnConnectFailed(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
-
 }
 
 void CDBCtrl::lcb_OnPingServer(CConnector *pConnector)

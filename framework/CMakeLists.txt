@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(myserver)
+#add_definitions(-DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX -DEVENT_THREAD_SAVE)
 add_definitions(-DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX)
 
 set(FRAMEWORK

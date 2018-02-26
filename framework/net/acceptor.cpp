@@ -14,7 +14,6 @@ CAcceptor::CAcceptor(SOCKET socket,
 	  m_pFuncOnDisconnected(pOnDisconnected),
 	  m_pFuncOnSomeDataRecv(pOnSomeDataRecv)
 {
-	m_pReactor->Register(this);
 }
 
 CAcceptor::~CAcceptor()

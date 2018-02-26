@@ -249,8 +249,6 @@ void CSession::Timeout(time_t tNow)
 // ----------------------------------------------------------------------------------
 // 定时器管理器
 // ----------------------------------------------------------------------------------
-template<> CTimerManager *CSingleton<CTimerManager>::spSingleton = NULL;
-//CSharedMem* CTimerManager::mShmPtr = NULL;
 
 CTimerManager::CTimerManager()
 {
@@ -600,23 +598,6 @@ CObj *CTimerManager::GetObject(OBJ_ID iObjID)
 	}
 
 	return pTmpObj;
-}
-
-int CTimerManager::PrepareToRun()
-{
-	return 0;
-}
-
-int CTimerManager::RunFunc()
-{
-	while (true) {
-		CheckTimerQueue(GetMSTime());
-	}
-}
-
-bool CTimerManager::IsToBeBlocked()
-{
-	return false;
 }
 
 
