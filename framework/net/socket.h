@@ -18,7 +18,7 @@ class CSocket
 {
 public:
 	//构造函数
-	CSocket(SOCKET Socket);
+	CSocket(SOCKET socket);
 	CSocket(int32 nType = SOCK_STREAM, int32 nProtocolFamily = AF_INET, int32 nProtocol = 0);
 	//析构函数
 	~CSocket();
@@ -35,17 +35,17 @@ public:
 	//设置为非阻塞
 	void SetNonblocking();
 	//绑定端口
-	uint32 Bind(const CNetAddr &Address);
+	uint32 Bind(const CNetAddr &addr);
 	//获取本地ip
-	bool GetLocalAddress(CNetAddr &Address) const;
+	bool GetLocalAddress(CNetAddr &addr) const;
 	//获取远程ip
-	bool GetRemoteAddress(CNetAddr &Address) const;
+	bool GetRemoteAddress(CNetAddr &add) const;
 	//获取socket fd
 	SOCKET GetSystemSocket() const
 	{ return m_Socket; }
 	//设置socket fd
-	void SetSystemSocket(SOCKET Socket)
-	{ m_Socket = Socket; }
+	void SetSystemSocket(SOCKET socket)
+	{ m_Socket = socket; }
 	//获取socket errpr
 	int GetSocketError() const;
 	//获取socket fd
@@ -56,7 +56,7 @@ public:
 	static SOCKET CreateBindedSocket(const CNetAddr &address);
 	//创建非阻塞socket
 	static void MakeSocketNonblocking(SOCKET Socket);
-	static void Address2sockaddr_in(sockaddr_in &saiAddress, const CNetAddr &Address);
+	static void Address2sockaddr_in(sockaddr_in &saiAddress, const CNetAddr &address);
 protected:
 	SOCKET m_Socket;
 

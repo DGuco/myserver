@@ -2,8 +2,8 @@
 #include "socket.h"
 #include "net_addr.h"
 
-CSocket::CSocket(SOCKET Socket)
-	: m_Socket(Socket)
+CSocket::CSocket(SOCKET socket)
+	: m_Socket(socket)
 {
 
 }
@@ -89,7 +89,7 @@ void CSocket::SetNonblocking()
 }
 
 //-----------------------------------------------------------------
-bool CSocket::GetLocalAddress(CNetAddr &Addr) const
+bool CSocket::GetLocalAddress(CNetAddr &addr) const
 {
 	if (INVALID_SOCKET == m_Socket)
 		return false;
@@ -107,13 +107,13 @@ bool CSocket::GetLocalAddress(CNetAddr &Addr) const
 		//nErrorCode=ArkGetLastError();
 		return false;
 	}
-	Addr.SetPort(ntohs(asiAddress.sin_port));
-	Addr.SetAddress(inet_ntoa(asiAddress.sin_addr));
+	addr.SetPort(ntohs(asiAddress.sin_port));
+	addr.SetAddress(inet_ntoa(asiAddress.sin_addr));
 	return true;
 }
 
 //-----------------------------------------------------------------
-bool CSocket::GetRemoteAddress(CNetAddr &Address) const
+bool CSocket::GetRemoteAddress(CNetAddr &add) const
 {
 	if (INVALID_SOCKET == m_Socket)
 		return false;
@@ -129,8 +129,8 @@ bool CSocket::GetRemoteAddress(CNetAddr &Address) const
 	if (getpeername(m_Socket, reinterpret_cast<sockaddr *>(&asiAddress), &nSize)) {
 		return false;
 	}
-	Address.SetPort(ntohs(asiAddress.sin_port));
-	Address.SetAddress(inet_ntoa(asiAddress.sin_addr));
+	add.SetPort(ntohs(asiAddress.sin_port));
+	add.SetAddress(inet_ntoa(asiAddress.sin_addr));
 	return true;
 }
 
@@ -166,12 +166,12 @@ SOCKET CSocket::GetSocket() const
 	return m_Socket;
 }
 //-----------------------------------------------------------------
-uint32 CSocket::Bind(const CNetAddr &Address)
+uint32 CSocket::Bind(const CNetAddr &addr)
 {
 	//ArkAst(m_oSocket != INVALID_SOCKET);
 
 	sockaddr_in saiAddress;
-	Address2sockaddr_in(saiAddress, Address);
+	Address2sockaddr_in(saiAddress, addr);
 	//bind
 	if (bind(m_Socket, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr))) {
 		CloseSocket(m_Socket);
@@ -182,11 +182,11 @@ uint32 CSocket::Bind(const CNetAddr &Address)
 }
 
 //--------------------------------- *tools* -------------------------------------------------------------------
-void CSocket::Address2sockaddr_in(sockaddr_in &saiAddress, const CNetAddr &Address)
+void CSocket::Address2sockaddr_in(sockaddr_in &saiAddress, const CNetAddr &address)
 {
 	memset(&saiAddress, 0, sizeof(saiAddress));
-	saiAddress.sin_addr.s_addr = inet_addr(Address.GetAddress());
-	saiAddress.sin_port = htons(static_cast<u_short>(Address.GetPort()));
+	saiAddress.sin_addr.s_addr = inet_addr(address.GetAddress());
+	saiAddress.sin_port = htons(static_cast<u_short>(address.GetPort()));
 	saiAddress.sin_family = AF_INET;
 }
 

@@ -64,8 +64,8 @@ set(FRAMEWORK
         net/socket.cpp
         net/buffev_interface.cpp
         net/buffev_interface.h
-        net/timer_event.h
-        net/timer_event.cpp
+        net/event.h
+        net/event.cpp
         mem/share_mem.h
         mem/shm.h/
         mem/share_mem.cpp

@@ -47,7 +47,7 @@ void CC2sHandle::lcb_OnAcceptCns(unsigned int uId, CAcceptor *pAcceptor)
 {
 	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
-		->PushTaskBack([uId, pAcceptor]
+		->PushTaskBack([uId, pAcceptor] ->
 					   {
 						   CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, pAcceptor);
 					   }
@@ -63,18 +63,22 @@ void CC2sHandle::lcb_OnCnsDisconnected(CAcceptor *pAcceptor)
 
 void CC2sHandle::lcb_OnCnsSomeDataRecv(CAcceptor *pAcceptor)
 {
-	MY_ASSERT(pAcceptor != NULL, return);
-	//数据不完整
-	if (!pAcceptor->IsPackageComplete()) {
-		return;
-	}
-	int iTmpLen =  pAcceptor->GetRecvPackLen() - sizeof(PACK_LEN);
-	//读取数据
-	pAcceptor->RecvData(m_acRecvBuff,iTmpLen);
-	//当前数据包已全部读取，清除当前数据包缓存长度
-	pAcceptor->CurrentPackRecved();
-	//发送数据包到game server
-	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()->PushTaskBack(&CC2sHandle::SendToGame, pAcceptor, iTmpLen);
+	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
+		->PushTaskBack([pAcceptor]
+					   {
+						   MY_ASSERT(pAcceptor != NULL, return);
+						   //数据不完整
+						   if (!pAcceptor->IsPackageComplete()) {
+							   return;
+						   }
+						   int iTmpLen = pAcceptor->GetRecvPackLen() - sizeof(PACK_LEN);
+						   //读取数据
+						   pAcceptor->RecvData(m_acRecvBuff, iTmpLen);
+						   //当前数据包已全部读取，清除当前数据包缓存长度
+						   pAcceptor->CurrentPackRecved();
+						   //发送数据包到game server
+						   CC2sHandle::SendToGame(pAcceptor, iTmpLen);
+					   });
 }
 
 void CC2sHandle::ClearSocket(CAcceptor *pAcceptor, short iError)

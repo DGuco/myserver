@@ -12,6 +12,7 @@
 #include "event_reactor.h"
 #include "net_addr.h"
 #include "buffev_interface.h"
+#include "event.h"
 
 class CConnector: public IBufferEvent
 {
@@ -29,7 +30,7 @@ public:
 	//获取连接ip
 	void GetRemoteIpAddress(char *szBuf, uint32 uBufSize);
 	//连接
-	bool Connect(const CNetAddr &addr, const timeval *time = NULL);
+	bool Connect(const CNetAddr &addr, const timeval time);
 	//设置相关回调
 	void SetCallbackFunc(FuncConnectorOnDisconnected pOnDisconnected,
 						 FuncConnectorOnConnectFailed pOnConnectFailed,
@@ -73,7 +74,7 @@ private:
 
 private:
 	CNetAddr m_oAddr;
-	event m_oConnectEvent;
+	CEvent *m_oConnectEvent;
 	eConnectorState m_eState;
 
 	FuncConnectorOnDisconnected m_pFuncOnDisconnected;

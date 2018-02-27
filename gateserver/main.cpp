@@ -6,7 +6,7 @@
 //
 
 #include <memory>
-#include <my_macro.h>
+#include "my_macro.h"
 #include "inc/gate_ctrl.h"
 
 using namespace std;

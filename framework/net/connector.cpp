@@ -22,7 +22,7 @@ void CConnector::GetRemoteIpAddress(char *szBuf, uint32 uBufSize)
 	strncpy(szBuf, m_oAddr.GetAddress(), 16);
 }
 
-bool CConnector::Connect(const CNetAddr &addr, const timeval *time /* = NULL */)
+bool CConnector::Connect(const CNetAddr &addr, const timeval time /* = NULL */)
 {
 	m_oSocket.Open();
 	sockaddr_in saiAddress;
@@ -55,11 +55,15 @@ bool CConnector::Connect(const CNetAddr &addr, const timeval *time /* = NULL */)
 	default: return false;
 	}
 
-	event_set(&m_oConnectEvent, (int) m_oSocket.GetSystemSocket(), EV_WRITE, CConnector::lcb_OnConnectResult, this);
-	event_base_set(GetReactor()->GetEventBase(), &m_oConnectEvent);
-	event_add(&m_oConnectEvent, time);
+	m_oConnectEvent = new CEvent(GetReactor(),
+								 &CConnector::lcb_OnConnectResult,
+								 this,
+								 time.tv_sec,
+								 time.tv_usec,
+								 1,
+								 m_oSocket.GetSocket(),
+								 EV_WRITE);
 	SetState(eCS_Connecting);
-
 	return true;
 }
 
@@ -107,7 +111,7 @@ void CConnector::OnConnectted()
 void CConnector::ShutDown()
 {
 	if (IsConnecting()) {
-		event_del(&m_oConnectEvent);
+		m_oConnectEvent->Cancel();
 		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connecting: %s : %d", m_oAddr.GetAddress(), m_oAddr.GetPort());
 	}
 	else if (IsConnected()) {
