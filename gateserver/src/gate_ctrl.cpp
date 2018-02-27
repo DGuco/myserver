@@ -88,7 +88,6 @@ void CGateCtrl::CreatePipe()
 	CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
 	CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize, EIMode::SHM_INIT);
 	CS2cHandle::m_pS2CPipe = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_S2C);
-
 }
 
 void CGateCtrl::ReadConfig()
