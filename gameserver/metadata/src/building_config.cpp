@@ -110,7 +110,7 @@ BuildingData* BuildingConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("BuildingConfig::item:%d", key);
+//    throw ERROR::MSG("BuildingConfig::item:{}", key);
 }
 
 BuildingData* BuildingConfig::getItemByTypeAndLvl(int type, int level)

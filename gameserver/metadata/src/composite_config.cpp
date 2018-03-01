@@ -83,5 +83,5 @@ CompositeItem* CompositeConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("CompositeConfig::item:%d", key);
+//    throw ERROR::MSG("CompositeConfig::item:{}", key);
 }

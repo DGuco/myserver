@@ -42,17 +42,17 @@ int CMyThread::CondBlock()
 		// 如果线程需要停止则终止线程
 		if (m_iRunStatus == rt_stopped) {
 			//退出线程
-			ThreadLogDebug("Thread exit.");
+			LOG_DEBUG("default", "Thread exit.");
 			pthread_exit((void *) m_abyRetVal);
 		}
-		ThreadLogDebug("Thread would blocked.");
+		LOG_DEBUG("default", "Thread would blocked.");
 		m_iRunStatus = rt_blocked;
 		// 进入休眠状态,直到条件满足
 		data_cond.wait(lk);
 	}
 
 	if (m_iRunStatus != rt_running) {
-		ThreadLogDebug("Thread waked up.");
+		LOG_DEBUG("default", "Thread waked up.");
 	}
 
 	// 线程状态变为rt_running
@@ -83,8 +83,7 @@ int CMyThread::StopThread()
 	if (m_th.joinable()) {
 		m_th.join();
 	}
-	ThreadLogDebug("Thread stopped.");
-
+	LOG_DEBUG("default", "Thread stopped.");
 	return 0;
 }
 
@@ -102,58 +101,4 @@ void CMyThread::ThreadLogInit(char *sPLogBaseName, long lPMaxLogSize, int iPMaxL
 	m_stLogCfg.lMaxLogSize = lPMaxLogSize;
 	m_stLogCfg.iMaxLogNum = iPMaxLogNum;
 	strncpy(m_stLogCfg.szThreadKey, m_stLogCfg.szLogBaseName, sizeof(m_stLogCfg.szThreadKey) - 1);
-
-	INIT_ROLLINGFILE_LOG(m_stLogCfg.szThreadKey,
-						 m_stLogCfg.szLogBaseName,
-						 (LogLevel) iLevel,
-						 m_stLogCfg.lMaxLogSize,
-						 m_stLogCfg.iMaxLogNum);
-}
-
-void CMyThread::ThreadLogDebug(const char *sFormat, ...)
-{
-	va_list va;
-	va_start(va, sFormat);
-	LogDebug_va(m_stLogCfg.szThreadKey, sFormat, va);
-	va_end(va);
-}
-
-void CMyThread::ThreadLogInfo(const char *sFormat, ...)
-{
-	va_list va;
-	va_start(va, sFormat);
-	LogInfo_va(m_stLogCfg.szThreadKey, sFormat, va);
-	va_end(va);
-}
-
-void CMyThread::ThreadLogNotice(const char *sFormat, ...)
-{
-	va_list va;
-	va_start(va, sFormat);
-	LogNotice_va(m_stLogCfg.szThreadKey, sFormat, va);
-	va_end(va);
-}
-
-void CMyThread::ThreadLogWarn(const char *sFormat, ...)
-{
-	va_list va;
-	va_start(va, sFormat);
-	LogWarn_va(m_stLogCfg.szThreadKey, sFormat, va);
-	va_end(va);
-}
-
-void CMyThread::ThreadLogError(const char *sFormat, ...)
-{
-	va_list va;
-	va_start(va, sFormat);
-	LogError_va(m_stLogCfg.szThreadKey, sFormat, va);
-	va_end(va);
-}
-
-void CMyThread::ThreadLogFatal(const char *sFormat, ...)
-{
-	va_list va;
-	va_start(va, sFormat);
-	LogFatal_va(m_stLogCfg.szThreadKey, sFormat, va);
-	va_end(va);
 }

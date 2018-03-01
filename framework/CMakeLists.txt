@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.6)
 project(myserver)
-#add_definitions(-DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX -DEVENT_THREAD_SAVE)
-add_definitions(-DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX)
+#add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DLINUX -DEVENT_THREAD_SAFE -DLOG_THREAD_SAFE)
+add_definitions(-DUSE_MY_ASSERT -DLINUX -DEVENT_THREAD_SAFE -DLOG_THREAD_SAFE)
 
 set(FRAMEWORK
+        log/log.h
+        log/log.cpp
         base/base.h
         base/object.h
         base/performance.h
@@ -23,8 +25,6 @@ set(FRAMEWORK
         json/json.cpp
         json/config.h
         json/config.cpp
-        log/log.h
-        log/log.cpp
         message/message.pb.h
         message/message.pb.cc
         message/player.pb.h
@@ -64,8 +64,8 @@ set(FRAMEWORK
         net/socket.cpp
         net/buffev_interface.cpp
         net/buffev_interface.h
-        net/event.h
-        net/event.cpp
+        net/sys_event.h
+        net/sys_event.cpp
         mem/share_mem.h
         mem/shm.h/
         mem/share_mem.cpp
@@ -79,8 +79,9 @@ set(FRAMEWORK
         thread/thread_pool.h
         timer/clock.cpp
         timer/clock.h
-        timer/timer.h
-        timer/timer.cpp)
+        #        timer/timer.h
+        #        timer/timer.cpp
+        )
 
 include_directories(
         /usr/include

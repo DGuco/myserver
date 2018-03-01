@@ -6,6 +6,7 @@
  */
 
 #include "client_comm_engine.h"
+#include "my_assert.h"
 
 unsigned char CClientCommEngine::tKey[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 2, 2, 4, 4, 5, 6};
 
@@ -38,7 +39,7 @@ int CClientCommEngine::ParseClientStream(const void **pBuff,
 
 	//小于最小长度(包头长度 - 包总长度所占字节长度)
 	if (nLen < MSG_HEAD_LEN - sizeof(PACK_LEN)) {
-		MY_ASSERT_STR(0, return -1, "the package len is less than base len ,receive len %d", nLen);
+		MY_ASSERT_STR(0, return -1, "the package len is less than base len ,receive len {}", nLen);
 	}
 
 	char *pTemp = (char *) (*pBuff);
@@ -338,7 +339,7 @@ int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
 	if (unTmpTotalLen != unBuffLen) {
 		MY_ASSERT_STR(0,
 					  return -1,
-					  "the package len is not equal to datalen %d ,package len %d,data len",
+					  "the package len is not equal to datalen {} ,package len {},data len",
 					  unBuffLen,
 					  unTmpTotalLen);
 	}

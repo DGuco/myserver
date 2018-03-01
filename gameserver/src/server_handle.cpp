@@ -59,12 +59,12 @@ bool CServerHandle::Connect2Proxy()
 							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive(),
 							 CServerConfig::GetSingletonPtr()->GetSocketTimeOut())
 		) {
-		LOG_ERROR("default", "[%s : %d : %s] Connect to Proxy(%s:%d)(id=%d) failed.",
+		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,
 				  rTmpProxy->m_sHost.c_str(), rTmpProxy->m_iPort, rTmpProxy->m_iServerId);
 		return false;
 	}
-	LOG_NOTICE("default", "Connect to Proxy(%s:%d)(id=%d) succeed.",
+	LOG_NOTICE("default", "Connect to Proxy({}:{})(id={}) succeed.",
 			   rTmpProxy->m_sHost.c_str(), rTmpProxy->m_iPort, rTmpProxy->m_iPort);
 	return true;
 }
@@ -83,14 +83,14 @@ bool CServerHandle::Regist2Proxy()
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
 	if (iRet != 0) {
-		LOG_ERROR("default", "[%s : %d : %s] ConvertMsgToStream failed, iRet = %d.",
+		LOG_ERROR("default", "[{} : {} : {}] ConvertMsgToStream failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return false;
 	}
 
 	iRet = m_pNetWork->FindConnector(m_iProxyId)->Send((BYTE *) acTmpMessageBuffer, unTmpTotalLen);
 	if (iRet != 0) {
-		LOG_ERROR("default", "[%s : %d : %s] proxy SendOneCode failed, iRet = %d.",
+		LOG_ERROR("default", "[{} : {} : {}] proxy SendOneCode failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return false;
 	}
@@ -117,7 +117,7 @@ bool CServerHandle::SendKeepAlive2Proxy()
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
 	if (iRet != 0) {
-		LOG_ERROR("default", "[%s : %d : %s] ConvertMsgToStream failed, iRet = %d.",
+		LOG_ERROR("default", "[{} : {} : {}] ConvertMsgToStream failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return false;
 	}
@@ -143,7 +143,7 @@ void CServerHandle::SendMessageToProxy(char *data, PACK_LEN len)
 			//直接通过socket发送，不同过buffer_event保证buffer_event线程安全
 			int iRet = pConn->SendBySocket(data, len);
 			if (iRet <= 0) {
-				LOG_ERROR("default", "[%s : %d : %s] proxy SendOneCode failed, iRet = %d.",
+				LOG_ERROR("default", "[{} : {} : {}] proxy SendOneCode failed, iRet = {}.",
 						  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 				return;
 			}
@@ -178,7 +178,7 @@ void CServerHandle::lcb_OnCnsSomeDataRecv(CConnector *pConnector)
 													&tmpMessage,
 													CGameServer::GetSingletonPtr()->GetMessageFactory());
 	if (iRet < 0) {
-		LOG_ERROR("default", "[%s : %d : %s] convert stream to message failed, iRet = %d.",
+		LOG_ERROR("default", "[{} : {} : {}] convert stream to message failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return;
 	}

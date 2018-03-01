@@ -10,7 +10,7 @@
 
 #include "net_inc.h"
 #include "network_interface.h"
-#include "event.h"
+#include "sys_event.h"
 #include <string>
 
 using namespace std;

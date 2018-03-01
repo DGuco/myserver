@@ -78,5 +78,5 @@ AllianceTechItem* AllianceTechConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("AllianceTechConfig::item:%d", key);
+//    throw ERROR::MSG("AllianceTechConfig::item:{}", key);
 }

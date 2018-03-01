@@ -159,17 +159,17 @@ bool DatabaseMysql::Connect(void)
     //mMysql = mysql_real_connect(mysqlInit, host.c_str(), user.c_str(),
     //   password.c_str(), database.c_str(), port, unix_socket, CLIENT_MULTI_STATEMENTS);
 
-    LOG_INFO( m_logsName.c_str(), "Connected to MySQL database : rwtimeout = %d ; sleeptime = %d ; loop = %d", m_rwtimeout, m_sleeptime, m_loop);
+    LOG_INFO( m_logsName.c_str(), "Connected to MySQL database : rwtimeout = {} ; sleeptime = {} ; loop = {}", m_rwtimeout, m_sleeptime, m_loop);
 
     mMysql = mysql_real_connect(mysqlInit, m_host.c_str(), m_user.c_str(),
                                 m_password.c_str(), m_database.c_str(), port, unix_socket, 0);
-    LOG_INFO( m_logsName.c_str(), "host : %s ; user = %s ; password = %s ; database = %s ; port = %d", m_host.c_str(), m_user.c_str(), m_password.c_str(), m_database.c_str(), port );
+    LOG_INFO( m_logsName.c_str(), "host : {} ; user = {} ; password = {} ; database = {} ; port = {}", m_host.c_str(), m_user.c_str(), m_password.c_str(), m_database.c_str(), port );
 
     if (mMysql)
     {
-        LOG_INFO( m_logsName.c_str(), "Connected to MySQL database at %s", m_host.c_str());
-        LOG_INFO( m_logsName.c_str(), "MySQL client library: %s", mysql_get_client_info());
-        LOG_INFO( m_logsName.c_str(), "MySQL server ver: %s ", mysql_get_server_info( mMysql));
+        LOG_INFO( m_logsName.c_str(), "Connected to MySQL database at {}", m_host.c_str());
+        LOG_INFO( m_logsName.c_str(), "MySQL client library: {}", mysql_get_client_info());
+        LOG_INFO( m_logsName.c_str(), "MySQL server ver: {} ", mysql_get_server_info( mMysql));
 
         /*----------SET AUTOCOMMIT ON---------*/
         // It seems mysql 5.0.x have enabled this feature
@@ -204,7 +204,7 @@ bool DatabaseMysql::Connect(void)
     else
     {
         // int nErrorNo = mysql_errno( mysqlInit );
-        LOG_ERROR( m_logsName.c_str(), "Could not connect to MySQL database at %s: %s\n", m_host.c_str(),mysql_error(mysqlInit));
+        LOG_ERROR( m_logsName.c_str(), "Could not connect to MySQL database at {}: {}\n", m_host.c_str(),mysql_error(mysqlInit));
         mysql_close(mysqlInit);
         // m_connflag = 0;
 
@@ -246,7 +246,7 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
                 // reconnect mysql
                 if ( Reconnect() == true )
                 {
-                    LOG_DEBUG( m_logsName.c_str(), "reinit mysql success on host [%s]", m_hostInfoString.c_str() );
+                    LOG_DEBUG( m_logsName.c_str(), "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
 
                     // re querey  sql statment
                     //--------------------------------------------------
@@ -258,8 +258,8 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
 
             if( ret )
             {
-                LOG_ERROR( m_logsName.c_str(), "SQL: %s", sql );
-                LOG_ERROR( m_logsName.c_str(), "query ERROR(%d): %s", nErrorNo, mysql_error(mMysql) );
+                LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
+                LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
                 return NULL;
             }
 
@@ -324,7 +324,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
                 // reconnect mysql
                 if ( Reconnect() == true )
                 {
-                    LOG_DEBUG( m_logsName.c_str(), "reinit mysql success on host [%s]", m_hostInfoString.c_str() );
+                    LOG_DEBUG( m_logsName.c_str(), "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
                     ret = mysql_query(mMysql, sql);
 
                     if ( !ret )
@@ -334,7 +334,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
                         for ( int i = 1; i < number+1; i++ )
                         {
                             memset( acNumber, 0, sizeof(acNumber));
-                            snprintf(acNumber, sizeof(acNumber), "%d", i);
+                            snprintf(acNumber, sizeof(acNumber), "{}", i);
                             string strNumber = acNumber;
                             string strPara = "@out_para" + strNumber;
                             strProcSql += strPara;
@@ -345,15 +345,15 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
                         }
 
                         mysql_query(mMysql, strProcSql.c_str());
-                        LOG_DEBUG( m_logsName.c_str(), "SQL: %s", strProcSql.c_str() );
+                        LOG_DEBUG( m_logsName.c_str(), "SQL: {}", strProcSql.c_str() );
                     }
                 }
             }
 
             if( ret )
             {
-                LOG_ERROR( m_logsName.c_str(), "SQL: %s", sql );
-                LOG_ERROR( m_logsName.c_str(), "query ERROR(%d): %s", nErrorNo, mysql_error(mMysql) );
+                LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
+                LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
                 return NULL;
             }
 
@@ -365,7 +365,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
             for ( int i = 1; i < number+1; i++ )
             {
                 memset( acNumber, 0, sizeof(acNumber));
-                snprintf(acNumber, sizeof(acNumber), "%d", i);
+                snprintf(acNumber, sizeof(acNumber), "{}", i);
                 string strNumber = acNumber;
                 string strPara = "@out_para" + strNumber;
                 strProcSql += strPara;
@@ -376,7 +376,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
             }
 
             mysql_query(mMysql, strProcSql.c_str());
-            LOG_DEBUG( m_logsName.c_str(), "SQL: %s", strProcSql.c_str() );
+            LOG_DEBUG( m_logsName.c_str(), "SQL: {}", strProcSql.c_str() );
         }
 
         result = mysql_store_result(mMysql);
@@ -431,22 +431,22 @@ bool DatabaseMysql::DirectExecute(const char* sql )
             // reconnect mysql
             if ( Reconnect() == true )  // 重启mysql，再次查询
             {
-                LOG_DEBUG(m_logsName.c_str(), "reinit mysql success on host [%s]", m_hostInfoString.c_str() );
+                LOG_DEBUG(m_logsName.c_str(), "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
                 // re querey  sql statment
                 ret =  mysql_query(mMysql, sql);
             }
 
             if( ret )  // 两次出错就报告取数据失败
             {
-                LOG_ERROR( m_logsName.c_str(), "SQL: %s", sql );
-                LOG_ERROR( m_logsName.c_str(), "query ERROR(%d): %s", nErrorNo, mysql_error(mMysql) );
+                LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
+                LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
                 return false;
             }
         }
         else
         {
-            LOG_ERROR( m_logsName.c_str(), "SQL: %s", sql );
-            LOG_ERROR( m_logsName.c_str(), "query ERROR(%d): %s", nErrorNo, mysql_error(mMysql) );
+            LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
+            LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
             return false;
         }
     }
@@ -482,22 +482,22 @@ bool DatabaseMysql::RealDirectExecute(const char* sql, unsigned long len)
             // reconnect mysql
             if ( Reconnect() == true )  // 重启mysql，再次查询
             {
-                LOG_DEBUG(m_logsName.c_str(), "reinit mysql success on host [%s]", m_hostInfoString.c_str() );
+                LOG_DEBUG(m_logsName.c_str(), "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
                 // re querey  sql statment
                 ret =  mysql_real_query(mMysql, sql, len);
             }
 
             if( ret )  // 两次出错就报告取数据失败
             {
-                LOG_ERROR( m_logsName.c_str(), "SQL: %s", sql );
-                LOG_ERROR( m_logsName.c_str(), "query ERROR(%d): %s", nErrorNo, mysql_error(mMysql) );
+                LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
+                LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
                 return false;
             }
         }
         else
         {
-            LOG_ERROR( m_logsName.c_str(), "SQL: %s", sql );
-            LOG_ERROR( m_logsName.c_str(), "query ERROR(%d): %s", nErrorNo, mysql_error(mMysql) );
+            LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
+            LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
             return false;
         }
     }
@@ -514,13 +514,13 @@ bool DatabaseMysql::_TransactionCmd(const char *sql)
 {
     if (mysql_query(mMysql, sql))
     {
-        LOG_ERROR( m_logsName.c_str(), "SQL: %s", sql);
-        LOG_ERROR( m_logsName.c_str(), "SQL ERROR: %s", mysql_error(mMysql));
+        LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql);
+        LOG_ERROR( m_logsName.c_str(), "SQL ERROR: {}", mysql_error(mMysql));
         return false;
     }
     else
     {
-        LOG_ERROR( m_logsName.c_str(), "SQL: %s", sql);
+        LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql);
     }
     return true;
 }

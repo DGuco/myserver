@@ -61,7 +61,7 @@ OnlineRewardItem* OnlineRewardConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("OnlineRewardConfig::item:%d", key);
+//    throw ERROR::MSG("OnlineRewardConfig::item:{}", key);
 }
 
 void OnlineRewardConfig::clear()

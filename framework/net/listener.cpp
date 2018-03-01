@@ -24,11 +24,11 @@ bool CListener::RegisterToReactor()
 	sin.sin_port = htons(m_ListenAddress.GetPort());
 	sin.sin_addr.s_addr = htonl(0);
 //	sin.sin_addr.s_addr = inet_addr(m_ListenAddress.GetAddress());
-#ifdef EVENT_THREAD_SAVE
+#ifdef EVENT_THREAD_SAFE
 	m_pListener = evconnlistener_new_bind(GetReactor()->GetEventBase(),
 										  &CListener::lcb_Accept,
 										  (void *) this,
-										  LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE | LEV_OPT_THREADSAFE ,
+										  LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE | LEV_OPT_THREADSAFE,
 										  m_iListenQueueMax,
 										  (struct sockaddr *) &sin,
 										  sizeof(sin));
@@ -92,7 +92,7 @@ void CListener::accept_error_cb(struct evconnlistener *listener, void *ctx)
 {
 	struct event_base *base = evconnlistener_get_base(listener);
 	int err = EVUTIL_SOCKET_ERROR();
-	MY_ASSERT_STR(false, DO_NOTHING, "Got an error  (%s) on the listener.\n", evutil_socket_error_to_string(err));
+	MY_ASSERT_STR(false, DO_NOTHING, "Got an error  ({}) on the listener.\n", evutil_socket_error_to_string(err));
 }
 
 void CListener::HandleInput(int socket, struct sockaddr *sa)

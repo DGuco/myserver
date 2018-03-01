@@ -374,7 +374,7 @@ void CTimerManager::RealDestroyTimer(OBJ_ID iObjID)
 	EraseFromFinder(tpItem);
 
 	// 销毁实体
-	LOG_DEBUG("default", "[%s : %d : %s] DeleteObject.", __MY_FILE__, __LINE__, __FUNCTION__);
+	LOG_DEBUG("default", "[{} : {} : {}] DeleteObject.", __MY_FILE__, __LINE__, __FUNCTION__);
 	DeleteObject(iObjID);
 }
 
@@ -427,7 +427,7 @@ CTimerBase *CTimerManager::Timeout(CTimerBase *pTimer, time_t tNow, bool bClear)
 	}
 	else {
 		// 因为该结点已经在上面删除，所以这里直接删除实体
-		LOG_DEBUG("default", "[%s : %d : %s] DeleteObject.", __MY_FILE__, __LINE__, __FUNCTION__);
+		LOG_DEBUG("default", "[{} : {} : {}] DeleteObject.", __MY_FILE__, __LINE__, __FUNCTION__);
 		DeleteObject(pTimer->get_id());
 	}
 
@@ -486,20 +486,20 @@ CObj *CTimerManager::CreateObject(ETimerType eType)
 		break;
 	}
 	default: {
-		LOG_ERROR("default", "CTimerManager::CreateObject failed, object type(%d) invalid.", eType);
+		LOG_ERROR("default", "CTimerManager::CreateObject failed, object type({}) invalid.", eType);
 		break;
 	}
 	}
 
 	if (pTmpObj == NULL) {
 		LOG_ERROR("default",
-				  "CTimerManager::CreateObject failed, object type(%d : %s).",
+				  "CTimerManager::CreateObject failed, object type({} : {}).",
 				  eType,
 				  GetTimerTypeName(eType));
 	}
 	else {
 		LOG_DEBUG("default",
-				  "CTimerManager::CreateObject(%u) type(%d : %s) ok.",
+				  "CTimerManager::CreateObject(%u) type({} : {}) ok.",
 				  pTmpObj->get_id(),
 				  eType,
 				  GetTimerTypeName(eType));
@@ -524,12 +524,12 @@ int CTimerManager::DeleteObject(OBJ_ID iObjID)
 		break;
 	}
 	default: {
-		LOG_ERROR("default", "CTimerManager::DeleteObject failed, object id = %u, type = %d.", iObjID, tType);
+		LOG_ERROR("default", "CTimerManager::DeleteObject failed, object id = %u, type = {}.", iObjID, tType);
 		return -1;
 	}
 	}
 
-	LOG_INFO("default", "DeleteObject Type(%s) ObjID %u.", GetTimerTypeName(tType), iObjID);
+	LOG_INFO("default", "DeleteObject Type({}) ObjID %u.", GetTimerTypeName(tType), iObjID);
 
 	return 0;
 }
@@ -554,7 +554,7 @@ int CTimerManager::DestroyObject(OBJ_ID iObjID)
 	EraseFromFinder(tpItem);
 
 	// 销毁实体
-	LOG_DEBUG("default", "[%s : %d : %s] DeleteObject.", __MY_FILE__, __LINE__, __FUNCTION__);
+	LOG_DEBUG("default", "[{} : {} : {}] DeleteObject.", __MY_FILE__, __LINE__, __FUNCTION__);
 	DeleteObject(iObjID);
 
 	return 0;
@@ -589,7 +589,7 @@ CObj *CTimerManager::GetObject(OBJ_ID iObjID)
 
 	default: {
 		LOG_ERROR("default",
-				  "CTimerManager::GetObject failed, object id(%u), type(%d : %s), not registed.",
+				  "CTimerManager::GetObject failed, object id(%u), type({} : {}), not registed.",
 				  iObjID,
 				  tType,
 				  GetTimerTypeName(tType));

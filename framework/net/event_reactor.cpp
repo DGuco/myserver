@@ -1,7 +1,6 @@
 #include <my_assert.h>
-#include <cstring>
 #include "event_reactor.h"
-#ifdef EVENT_THREAD_SAVE
+#ifdef EVENT_THREAD_SAFE
 #include <event2/thread.h>
 #endif
 
@@ -19,7 +18,7 @@ CEventReactor::~CEventReactor()
 
 void CEventReactor::Init(eNetModule netModule)
 {
-#ifdef EVENT_THREAD_SAVE
+#ifdef EVENT_THREAD_SAFE
 	evthread_use_pthreads();
 #endif
 	m_pEventConfig = event_config_new();
@@ -53,7 +52,7 @@ void CEventReactor::Release()
 void CEventReactor::DispatchEvents()
 {
 	int iRet = event_base_dispatch(m_pEventBase);
-	MY_ASSERT_STR(iRet == 0, exit(0), "Event loop failed,error msg %s,", strerror(errno))
+	MY_ASSERT_STR(iRet == 0, exit(0), "Event loop failed,error msg {},", strerror(errno))
 }
 
 bool CEventReactor::Register(IReactorHandler *pHandler)

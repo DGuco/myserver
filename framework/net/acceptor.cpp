@@ -1,3 +1,4 @@
+#include "log.h"
 #include <my_assert.h>
 #include <event2/bufferevent.h>
 #include "acceptor.h"
@@ -48,7 +49,7 @@ void CAcceptor::lcb_OnPipeRead(struct bufferevent *bev, void *arg)
 void CAcceptor::lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg)
 {
 	CAcceptor *pAcceptor = static_cast<CAcceptor *>(arg);
-	MY_ASSERT_STR(pAcceptor != NULL, return, "CAcceptor Pipe Error with code %d", PpeGetLastError());
+	MY_ASSERT_STR(pAcceptor != NULL, return, "CAcceptor Pipe Error with code {}", PpeGetLastError());
 	pAcceptor->ProcessSocketError();
 }
 

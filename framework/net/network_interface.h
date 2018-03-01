@@ -7,10 +7,11 @@
 #ifndef _NETWORK_INTERFACE_H_
 #define _NETWORK_INTERFACE_H_
 
-#include "base.h"
-#include "net_inc.h"
+
 #include <functional>
 #include <event.h>
+#include "base.h"
+#include "net_inc.h"
 
 class IEventReactor;
 class IReactorHandler;

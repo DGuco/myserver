@@ -71,5 +71,5 @@ PushMessageItem* PushMessageConfig::item(const std::string &key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("PushMessageConfig::item:%s", key.c_str());
+//    throw ERROR::MSG("PushMessageConfig::item:{}", key.c_str());
 }

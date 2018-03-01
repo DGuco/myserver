@@ -97,5 +97,5 @@ AllianceBuildingItem* AllianceBuildingConfig::item(int key)
     }
     
     return NULL;
-   // throw ERROR::MSG("AllianceBuildingConfig::item:%d", key);
+   // throw ERROR::MSG("AllianceBuildingConfig::item:{}", key);
 }

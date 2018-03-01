@@ -54,5 +54,5 @@ AreaLevelItem* AreaLevelConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("AreaLevelConfig::item:%d", key);
+//    throw ERROR::MSG("AreaLevelConfig::item:{}", key);
 }

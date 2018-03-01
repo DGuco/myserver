@@ -5,6 +5,7 @@
 #include <config.h>
 #include <client_comm_engine.h>
 #include <my_macro.h>
+#include "my_assert.h"
 #include "../inc/c2s_handle.h"
 #include "../inc/gate_def.h"
 #include "../inc/gate_ctrl.h"
@@ -35,7 +36,7 @@ bool CC2sHandle::BeginListen()
 										&lcb_OnCnsSomeDataRecv,
 										RECV_QUEUQ_MAX);
 	if (iRet) {
-		LOG_INFO("default", "Server listen success at %s : %d", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
+		LOG_INFO("default", "Server listen success at {} : {}", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
 		return true;
 	}
 	else {
@@ -47,7 +48,7 @@ void CC2sHandle::lcb_OnAcceptCns(unsigned int uId, CAcceptor *pAcceptor)
 {
 	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
-		->PushTaskBack([uId, pAcceptor] ->
+		->PushTaskBack([uId, pAcceptor]
 					   {
 						   CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, pAcceptor);
 					   }
@@ -107,14 +108,14 @@ void CC2sHandle::DisConnect(CAcceptor *pAcceptor, short iError)
 	PACK_LEN unTmpMsgLen = sizeof(m_acSendBuff);
 	int iRet = CClientCommEngine::ConvertToGameStream(m_acSendBuff, unTmpMsgLen, &tmpHead);
 	if (iRet != 0) {
-		LOG_ERROR("default", "[%s: %d : %s] ConvertMsgToStream failed,iRet = %d ",
+		LOG_ERROR("default", "[{}: {} : {}] ConvertMsgToStream failed,iRet = {} ",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return;
 	}
 
 	iRet = m_pC2SPipe->AppendOneCode((BYTE *) m_acSendBuff, unTmpMsgLen);
 	if (iRet != 0) {
-		LOG_ERROR("default", "[%s: %d : %s] Send data to GateServer failed,iRet = %d ",
+		LOG_ERROR("default", "[{}: {} : {}] Send data to GateServer failed,iRet = {} ",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return;
 	}
@@ -157,9 +158,7 @@ void CC2sHandle::SendToGame(CAcceptor *pAcceptor, PACK_LEN tmpLastLen)
 			ClearSocket(pAcceptor, Err_SendToMainSvrd);
 			return;
 		}
-#ifdef _DEBUG_
-		LOG_DEBUG("defalut", "tcp ==>gate [%d bytes]", tmpSendLen);
-#endif
+		LOG_DEBUG("defalut", "tcp ==>gate [{} bytes]", tmpSendLen);
 	}
 	else {
 		//心跳信息不做处理
@@ -174,7 +173,7 @@ int CC2sHandle::PrepareToRun()
 
 int CC2sHandle::Run()
 {
-	LOG_INFO("default", "Libevent run with net module %s",
+	LOG_INFO("default", "Libevent run with net module {}",
 			 event_base_get_method(reinterpret_cast<const event_base *>(CNetWork::GetSingletonPtr()
 				 ->GetEventReactor()->GetEventBase())));
 	//libevent事件循环

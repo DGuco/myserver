@@ -48,7 +48,7 @@ int CMessageDispatcher::ProcessClientMessage(CMessage *pMsg)
 		CPlayer *pPlayer = CSceneObjManager::GetSingletonPtr()->GetPlayer(tmpSocketInfo.socketid());
 		if (NULL == pPlayer) {
 			// 未找到玩家实体
-			LOG_ERROR("default", "[%s : %d : %s] ProcessClientMsg failed, Invalid socket (%d).",
+			LOG_ERROR("default", "[{} : {} : {}] ProcessClientMsg failed, Invalid socket ({}).",
 					  __MY_FILE__, __LINE__, __FUNCTION__, tmpHead.socketinfos(0).socketid());
 			return -3;
 		}
@@ -67,10 +67,10 @@ int CMessageDispatcher::ProcessClientMessage(CMessage *pMsg)
 	}
 //    if ( pMsg->msghead().cmd() != CMsgPingRequest::MsgID )
 //    {
-//        LOG_DEBUG("default", "---- Recv Client(%d : %ld) Msg[ %s ][id: 0x%08x / %d] ----",
+//        LOG_DEBUG("default", "---- Recv Client({} : %ld) Msg[ {} ][id: 0x%08x / {}] ----",
 //                  iTmpPlayerId, tmpSocketInfo->socketid(),
 //                  pTmpDescriptor->name().c_str(), pMsg->msghead().messageid(), pMsg->msghead().messageid());
-//        LOG_DEBUG("default", "[%s]", ((Message*)pMsg->msgpara())->ShortDebugString().c_str());
+//        LOG_DEBUG("default", "[{}]", ((Message*)pMsg->msgpara())->ShortDebugString().c_str());
 //    }
 	// 消息回收
 	if (pMsgPara) {
@@ -96,7 +96,7 @@ int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 	switch (pHead->srcfe()) {
 	case FE_GAMESERVER: {
 		LOG_DEBUG("default",
-				  "---- Recv Game(%d) Msg[ %s ][id: 0x%08x / %d] ----",
+				  "---- Recv Game({}) Msg[ {} ][id: 0x%08x / {}] ----",
 				  pHead->srcid(),
 				  pTmpDescriptor->name().c_str(),
 				  pMsg->msghead().messageid(),
@@ -105,7 +105,7 @@ int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 	}
 	case FE_LOGINSERVER: {
 		LOG_DEBUG("default",
-				  "---- Recv Login(%d) Msg[ %s ][id: 0x%08x / %d] ----",
+				  "---- Recv Login({}) Msg[ {} ][id: 0x%08x / {}] ----",
 				  pHead->srcid(),
 				  pTmpDescriptor->name().c_str(),
 				  pMsg->msghead().messageid(),
@@ -114,7 +114,7 @@ int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 	}
 	case FE_DBSERVER: {
 		LOG_DEBUG("default",
-				  "---- Recv DB(%d) Msg[ %s ][id: 0x%08x / %d] ----",
+				  "---- Recv DB({}) Msg[ {} ][id: 0x%08x / {}] ----",
 				  pHead->srcid(),
 				  pTmpDescriptor->name().c_str(),
 				  pMsg->msghead().messageid(),
@@ -123,7 +123,7 @@ int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 	}
 	case FE_WEBSERVER: {
 		LOG_DEBUG("default",
-				  "---- Recv Web(%d) Msg[ %s ][id: 0x%08x / %d] ----",
+				  "---- Recv Web({}) Msg[ {} ][id: 0x%08x / {}] ----",
 				  pHead->srcid(),
 				  pTmpDescriptor->name().c_str(),
 				  pMsg->msghead().messageid(),
@@ -131,7 +131,7 @@ int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 		break;
 	}
 	default: {
-		LOG_ERROR("default", "[%s : %d : %s] invalid FE = %d.",
+		LOG_ERROR("default", "[{} : {} : {}] invalid FE = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, pHead->srcfe());
 		// 消息回收
 		if (pTmpMsgPara) {
@@ -143,7 +143,7 @@ int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 	}
 	}
 
-	LOG_DEBUG("default", "[%s]", ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
+	LOG_DEBUG("default", "[{}]", ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
 	PERF_FUNC(pTmpDescriptor->name().c_str(), CGameServer::GetSingletonPtr()->ProcessRouterMessage(pMsg));
 
 	// 消息回收

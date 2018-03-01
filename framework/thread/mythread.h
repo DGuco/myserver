@@ -49,13 +49,6 @@ public:
 	void Join();
 protected:
 	int CondBlock();
-	void ThreadLogDebug(const char *sFormat, ...);
-	void ThreadLogInfo(const char *sFormat, ...);
-	void ThreadLogNotice(const char *sFormat, ...);
-	void ThreadLogWarn(const char *sFormat, ...);
-	void ThreadLogError(const char *sFormat, ...);
-	void ThreadLogFatal(const char *sFormat, ...);
-
 public:
 	int m_iRunStatus;
 	char m_abyRetVal[64];

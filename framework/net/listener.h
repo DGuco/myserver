@@ -11,7 +11,7 @@
 #include "net_addr.h"
 #include "socket.h"
 #include "network_interface.h"
-#include <event.h>
+#include <sys_event.h>
 #include <event2/listener.h>
 
 enum eListenerState

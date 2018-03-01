@@ -65,7 +65,7 @@ bool SevenDayConfig::check()
         SevenDayCfgInfo* pCfg = getCfg(i);
         if (NULL == pCfg)
         {
-            printf("[server] seven_day_config fail !!! %d day sign id is err !!!", i);
+            printf("[server] seven_day_config fail !!! {} day sign id is err !!!", i);
             return false;
         }
     }

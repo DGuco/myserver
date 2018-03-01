@@ -56,5 +56,5 @@ AllianceFlagConfigItem* AllianceFlagConfig::item(int key)
     if (it!=_datas.end()){
         return it->second;
     }
-    throw ERROR::MSG("AllianceFlagConfig::item:%d", key);
+    throw ERROR::MSG("AllianceFlagConfig::item:{}", key);
 }

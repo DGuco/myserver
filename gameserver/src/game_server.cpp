@@ -108,12 +108,12 @@ void CGameServer::OnTimeCheckStateInServer(CTimerBase *pTimer)
 //	time_t tTmpNow = GetMSTime();
 //	// 检测服务器与proxy的连接状态，如果状态异常则重新连接，状态正常则发送心跳消息
 //	CGameServer *pTmpGameServer =
-//		CGameServer::GetSingletonPtr();//		LOG_DEBUG("default", "in loop %d, size=%d.", i, pTmpGameServer->mConfig.gameconfig().proxyinfo_size());
+//		CGameServer::GetSingletonPtr();//		LOG_DEBUG("default", "in loop {}, size={}.", i, pTmpGameServer->mConfig.gameconfig().proxyinfo_size());
 //	if ((pTmpGameServer->m_ProxyClient.IsConnected() == false)
 //		|| pTmpGameServer->m_ProxyClient.IsTimeout(tTmpNow)) {
 //		// 清除proxy已连接状态
 //		CGameServer::GetSingletonPtr()->EraseServerState(CGameServer::ESS_CONNECTPROXY);
-//		LOG_WARN("default", "[%s : %d : %s] mProxyClient maybe closed, current status(%d) .",
+//		LOG_WARN("default", "[{} : {} : {}] mProxyClient maybe closed, current status({}) .",
 //				 __MY_FILE__, __LINE__, __FUNCTION__, pTmpGameServer->m_ProxyClient.GetStatus());
 //		if (pTmpGameServer->Connect2Proxy() == true) {
 //			if (pTmpGameServer->Regist2Proxy() == true) {
@@ -174,7 +174,7 @@ void CGameServer::ProcessClientMessage(CMessage *pMsg, CPlayer *pPlayer)
 		m_pModuleManager->OnClientMessage(iTmpType, pPlayer, pMsg);
 	}
 	catch (std::logic_error error) {
-		LOG_ERROR("default", "Catch execption,msg %s", error.what());
+		LOG_ERROR("default", "Catch execption,msg {}", error.what());
 	}
 }
 
@@ -187,7 +187,7 @@ void CGameServer::ProcessRouterMessage(CProxyMessage *pMsg)
 		m_pModuleManager->OnRouterMessage(iTmpType, pMsg);
 	}
 	catch (std::logic_error error) {
-		LOG_ERROR("default", "Catch execption,msg %s", error.what());
+		LOG_ERROR("default", "Catch execption,msg {}", error.what());
 	}
 }
 
@@ -211,13 +211,13 @@ bool CGameServer::SendMessageToDB(CProxyMessage *pMsg)
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(pMsg, acTmpMessageBuffer, unTmpTotalLen);
 	if (iRet != 0) {
-		LOG_ERROR("default", "[%s : %d : %s] ConvertMsgToStream failed, iRet = %d.",
+		LOG_ERROR("default", "[{} : {} : {}] ConvertMsgToStream failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return false;
 	}
 //	iRet = m_ProxyClient.SendOneCode(unTmpTotalLen, (BYTE *) acTmpMessageBuffer);
 	if (iRet != 0) {
-		LOG_ERROR("default", "[%s : %d : %s] proxy(index=%d) SendOneCode failed, iRet = %d.",
+		LOG_ERROR("default", "[{} : {} : {}] proxy(index={}) SendOneCode failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, 0, iRet);
 		return false;
 	}
@@ -229,12 +229,12 @@ bool CGameServer::SendMessageToDB(CProxyMessage *pMsg)
 	MY_ASSERT(pTmpUnknownMessagePara != NULL, return true);
 	const ::google::protobuf::Descriptor *pDescriptor = pTmpUnknownMessagePara->GetDescriptor();
 	LOG_DEBUG("default",
-			  "---- Send DB(%d) Msg[ %s ][id: 0x%08x / %d] ----",
+			  "---- Send DB({}) Msg[ {} ][id: 0x%08x / {}] ----",
 			  pHead->dstid(),
 			  pDescriptor->name().c_str(),
 			  pMsg->msghead().messageid(),
 			  pMsg->msghead().messageid());
-	LOG_DEBUG("default", "[%s]", ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
+	LOG_DEBUG("default", "[{}]", ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
 #endif
 	return true;
 }
@@ -322,7 +322,7 @@ void CGameServer::LoadDataFinish()
 {
 	// 数据拉取完成,处理服务器状态
 	SetServerState(CGameServer::ESS_LOADDATA);
-	LOG_INFO("default", "[%s : %d : %s] Launch server load data finished.", __MY_FILE__, __LINE__, __FUNCTION__);
+	LOG_INFO("default", "[{} : {} : {}] Launch server load data finished.", __MY_FILE__, __LINE__, __FUNCTION__);
 	// 开始处理服务器初始数据
 	StartProcessingInitData();
 }
@@ -336,7 +336,7 @@ void CGameServer::StartProcessingInitData()
 void CGameServer::SaveAllTeamdata()
 {
 //	CSceneObjManagerImp::ObjMng_Team* pTmpObjMngTeam = CSceneObjManager::GetSingletonPtr()->GetObjMngTeam();
-//	LOG_DEBUG("default", "[%s : %d : %s] begin save all teams(num=%d) data.", __YQ_FILE__, __LINE__, __FUNCTION__, pTmpObjMngTeam->size());
+//	LOG_DEBUG("default", "[{} : {} : {}] begin save all teams(num={}) data.", __YQ_FILE__, __LINE__, __FUNCTION__, pTmpObjMngTeam->size());
 //
 //	std::vector<CTeam*> vecDeleteList;
 //

@@ -53,7 +53,7 @@ int CProxyCtrl::PrepareToRun()
 							&CProxyCtrl::lcb_OnCnsSomeDataRecv,
 							-1,
 							CServerConfig::GetSingletonPtr()->GetTcpKeepAlive());
-	LOG_INFO("default", "ProxyServer is going to run at %s : %d", proxyInfo->m_sHost.c_str(), proxyInfo->m_iPort);
+	LOG_INFO("default", "ProxyServer is going to run at {} : {}", proxyInfo->m_sHost.c_str(), proxyInfo->m_iPort);
 	return 0;
 }
 
@@ -123,7 +123,7 @@ int CProxyCtrl::DealRegisterMes(CAcceptor *pAcceptor, char *acTmpBuf)
 	unsigned short iProxyHeadSize = *((unsigned short *) (acTmpBuf + 2));
 	// 获取CProxyHead
 	if (stTmpProxyHead.ParseFromArray(acTmpBuf + 4, iProxyHeadSize) == false) {
-		LOG_ERROR("default", "CProxyHead::ParseFromArray error, stream_length is %d", iProxyHeadSize);
+		LOG_ERROR("default", "CProxyHead::ParseFromArray error, stream_length is {}", iProxyHeadSize);
 		return -1;
 	}
 	SOCKET iSocket = pAcceptor->GetSocket().GetSocket();
@@ -133,7 +133,7 @@ int CProxyCtrl::DealRegisterMes(CAcceptor *pAcceptor, char *acTmpBuf)
 		|| (stTmpProxyHead.dstid() != proxyInfo->m_iServerId)
 		|| (stTmpProxyHead.opflag() != enMessageCmd::MESS_REGIST)) {
 		LOG_ERROR("default",
-				  "Error CProxyHead is invalid, fd = %d, Src(FE = %d : ID = %d), Dst(FE = %d : ID = %d), OpFlag = %d, TimeStamp = %ld.",
+				  "Error CProxyHead is invalid, fd = {}, Src(FE = {} : ID = {}), Dst(FE = {} : ID = {}), OpFlag = {}, TimeStamp = %ld.",
 				  pAcceptor->GetSocket().GetSocket(),
 				  stTmpProxyHead.srcfe(),
 				  stTmpProxyHead.srcid(),
@@ -148,7 +148,7 @@ int CProxyCtrl::DealRegisterMes(CAcceptor *pAcceptor, char *acTmpBuf)
 
 #ifdef _DEBUG_
 	LOG_DEBUG("default", "---- Recv Msg ----");
-	LOG_DEBUG("default", "[%s]", stTmpProxyHead.ShortDebugString().c_str());
+	LOG_DEBUG("default", "[{}]", stTmpProxyHead.ShortDebugString().c_str());
 #endif
 
 	// 检查该链接是否已占用，通过类型和ID判断
@@ -156,7 +156,7 @@ int CProxyCtrl::DealRegisterMes(CAcceptor *pAcceptor, char *acTmpBuf)
 	auto it = m_mapRegister.find(iKey);
 	if (it != m_mapRegister.end()) {
 		// 该连接已经存在
-		LOG_ERROR("default", "conn(fe=%d : id=%d : key=%d) exist, can't regist again.",
+		LOG_ERROR("default", "conn(fe={} : id={} : key={}) exist, can't regist again.",
 				  stTmpProxyHead.srcfe(), stTmpProxyHead.srcid());
 		CloseConnection(iSocket);
 		return -1;
@@ -185,19 +185,19 @@ int CProxyCtrl::TransferOneCode(CAcceptor *pAcceptor, unsigned short nCodeLength
 	unsigned short unOffset = 0;
 	int iRet = ServerCommEngine::ConvertStreamToMsg(m_acRecvBuff, nCodeLength, &stTmpMessage);
 	if (iRet < 0) {
-		LOG_INFO("default", "In TransferOneCode, ConvertStreamToCSHead return %d.", iRet);
+		LOG_INFO("default", "In TransferOneCode, ConvertStreamToCSHead return {}.", iRet);
 		return -1;
 	}
 
 	CProxyHead stTmpHead = stTmpMessage.msghead();
-	LOG_INFO("default", "TransMsg(%d).", nCodeLength);
+	LOG_INFO("default", "TransMsg({}).", nCodeLength);
 
 #ifdef _DEBUG_
 	LOG_INFO("default", "---- Recv Msg ----");
-	LOG_INFO("default", "[%s]", stTmpHead.ShortDebugString().c_str());
+	LOG_INFO("default", "[{}]", stTmpHead.ShortDebugString().c_str());
 #endif
 
-	LOG_INFO("default", "Transfer code begin, from(FE = %d : ID = %d) to(FE = %d : ID = %d), timestamp = %ld.",
+	LOG_INFO("default", "Transfer code begin, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = %ld.",
 			 stTmpHead.srcfe(), stTmpHead.srcid(),
 			 stTmpHead.dstfe(), stTmpHead.dstid(), stTmpHead.timestamp());
 
@@ -230,19 +230,19 @@ int CProxyCtrl::TransferOneCode(CAcceptor *pAcceptor, unsigned short nCodeLength
 			*((PACK_LEN *) (message_buffer + typeLen * 2)) = unHeadLen;
 
 			if (stRetHead.SerializeToArray((message_buffer + 6), sizeof(message_buffer) - 6) == false) {
-				LOG_INFO("default", "send keepalive to (FE = %d : ID = %d), CProxyHead::SerializeToArray failed.",
+				LOG_INFO("default", "send keepalive to (FE = {} : ID = {}), CProxyHead::SerializeToArray failed.",
 						 stRetHead.dstfe(), stRetHead.dstid());
 			}
 			else {
 				int iKey = MakeConnKey(stRetHead.dstfe(), stRetHead.dstid());
 				int iRet = SendOneCodeTo(unTotalLen, (BYTE *) message_buffer, iKey, true);
 				if (iRet != 0) {
-					LOG_INFO("default", "send keepalive to (FE = %d : ID = %d), SendOneCodeTo failed, iRet = %d.",
+					LOG_INFO("default", "send keepalive to (FE = {} : ID = {}), SendOneCodeTo failed, iRet = {}.",
 							 stRetHead.dstfe(), stRetHead.dstid(), iRet);
 				}
 				else {
 					LOG_INFO("default",
-							 "send keepalive to (FE = %d : ID = %d) succeed.",
+							 "send keepalive to (FE = {} : ID = {}) succeed.",
 							 stRetHead.dstfe(),
 							 stRetHead.dstid());
 				}
@@ -252,7 +252,7 @@ int CProxyCtrl::TransferOneCode(CAcceptor *pAcceptor, unsigned short nCodeLength
 		}
 		default: {
 			LOG_INFO("default",
-					 "unknown command id %d, from(FE = %d : ID = %d) to(FE = %d : ID = %d), timestamp = %ld.",
+					 "unknown command id {}, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = %ld.",
 					 stTmpHead.opflag(),
 					 stTmpHead.srcfe(),
 					 stTmpHead.srcid(),
@@ -271,7 +271,7 @@ int CProxyCtrl::TransferOneCode(CAcceptor *pAcceptor, unsigned short nCodeLength
 	m_stStatLog.iSndCnt++;
 	m_stStatLog.iSndSize += nCodeLength;
 	if (iTempRet) {
-		LOG_INFO("default", "transfer one code from (FE = %d : ID = %d) to (FE = %d : ID = %d) failed of %d.",
+		LOG_INFO("default", "transfer one code from (FE = {} : ID = {}) to (FE = {} : ID = {}) failed of {}.",
 				 stTmpHead.srcfe(), stTmpHead.srcid(), stTmpHead.dstfe(), stTmpHead.dstid(), iTempRet);
 		m_stStatLog.iSndCnt--;
 		m_stStatLog.iSndSize -= nCodeLength;
@@ -288,13 +288,13 @@ int CProxyCtrl::SendOneCodeTo(short nCodeLength, BYTE *pbyCode, int iKey, bool b
 	int iTempRet = 0;
 
 	if (nCodeLength <= 0 || !pbyCode) {
-		LOG_ERROR("default", "While send one code to (key=%d), null code.", iKey);
+		LOG_ERROR("default", "While send one code to (key={}), null code.", iKey);
 		return -1;
 	}
 
 	pWriteConn = GetConnByKey(iKey);
 	if (!pWriteConn) {
-		LOG_ERROR("default", "While send one code to (key=%d), invalid key.", iKey);
+		LOG_ERROR("default", "While send one code to (key={}), invalid key.", iKey);
 		return -1;
 	}
 

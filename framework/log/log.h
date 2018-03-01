@@ -1,114 +1,175 @@
+//
+//  log.h
+//  Created by DGuco on 18/02/28.
+//  Copyright © 2018年 DGuco. All rights reserved.
+//
+
 #ifndef _LOG_H_
 #define _LOG_H_
+#include <string>
 #include <stdarg.h>
+#include <spdlog/spdlog.h>
 
-#ifdef USE_LOG4CPP
-	#	define INIT_ROLLINGFILE_LOG	InitLog						// 初始化一种日志类型（基于回卷文件)
-	#	define LOG_SHUTDOWN_ALL		ShutdownAllLog()		// 关闭所有类型日志
-	#	define LOG_DEBUG						LogDebug
-	#	define LOG_NOTICE						LogNotice
-	#	define LOG_INFO						LogInfo
-	#	define LOG_WARN						LogWarn
-	#	define LOG_ERROR						LogError
-	#	define LOG_FATAL						LogFatal
-	#	define LOG									Log
-	#	define RE_INIT_LOG					ReInitLog
-#else
-	#	define INIT_ROLLINGFILE_LOG
-	#	define LOG_SHUTDOWN_ALL
-	#	define LOG_DEBUG
-	#	define LOG_NOTICE
-	#	define LOG_INFO
-	#	define LOG_WARN
-	#	define LOG_ERROR
-	#	define LOG_FATAL
-	#	define LOG
-	#	define RE_INIT_LOG						ReInitLog
-#endif // !USE_LOG4CPP
+using namespace std;
+using namespace spdlog;
+using namespace spdlog::level;
+
+#	define INIT_BASE_LOG    InitBaseLog                        // 初始化基本的文件log
+#	define INIT_ROATING_LOG    InitRoatingLog                        // 初始化一种日志类型（基于回卷文件)
+#	define INIT_DAILY_LOG    InitDailyLog                        // 初始化一种日志类型（每天)
+#	define LOG_SHUTDOWN_ALL        ShutdownAllLog()        // 关闭所有类型日志
+#	define LOG_DEBUG                        LogDebug
+#	define LOG_NOTICE                        LogTrace
+#	define LOG_INFO                        LogInfo
+#	define LOG_WARN                        LogWarn
+#	define LOG_ERROR                        LogError
+#	define LOG_FATAL                        LogCritical
 
 
-//	日志等级
-// NOTSET <  DEBUG < INFO  < WARN < LEVEL_NOTICE < ERROR  < FATAL 
-enum LogLevel
-{	
-	LEVEL_FATAL		= 0,
-	LEVEL_ERROR		= 300,
-	LEVEL_WARN		= 400,
-	LEVEL_NOTICE	= 500,
-	LEVEL_INFO		= 600,
-	LEVEL_DEBUG		= 700,
-	LEVEL_NOTSET	= 800,
-};
+int InitBaseLog(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
+				const char *vLogDir,                        /*文件名称(路径)*/
+				level_enum level,        /*日志等级*/
+				bool vAppend = true);                /*是否截断(默认即可)*/
 
 
-// ***************************************************************
-//  Function: 	InitLog
-//  Description:初始化一种类型的日志：如果该类型日志已存在，则重新初始化； 
-//				如果不存在，则创建。
-//  Date: 		05/23/2008
-// 
-// ***************************************************************
-int InitLog( const char*	vLogName,						/*日志类型的名称(关键字,由此定位到日志文件)*/
-			const char*		vLogDir,						/*文件名称(路径)*/
-			LogLevel		vPriority = LEVEL_NOTSET,		/*日志等级*/
-			unsigned int	vMaxFileSize = 10*1024*1024,	/*回卷文件最大长度*/
-			unsigned int	vMaxBackupIndex = 1,			/*回卷文件个数*/
-			bool			vAppend = true);				/*是否截断(默认即可)*/
+int InitRoatingLog(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
+				   const char *vLogDir,                        /*文件名称(路径)*/
+				   level_enum level,        /*日志等级*/
+				   unsigned int vMaxFileSize = 10 * 1024 * 1024,    /*回卷文件最大长度*/
+				   unsigned int vMaxBackupIndex = 1);            /*回卷文件个数*/
 
+int InitDailyLog(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
+				 const char *vLogDir,                        /*文件名称(路径)*/
+				 level_enum level,        /*日志等级*/
+				 unsigned int hour,
+				 unsigned int minute);
 
+int ShutdownAllLog();
 
-// ***************************************************************
-//  Function: 	InitLog
-//  Description:重新给已存在的日志赋值，但是不能改变日志的名称，以及定位的文件。
-//  Date: 		05/23/2008
-// 
-// ***************************************************************
-int ReInitLog( const char* vLogName, 
-			  LogLevel		vPriority = LEVEL_NOTSET,		/*日志等级*/
-			  unsigned int	vMaxFileSize = 10*1024*1024,	/*回卷文件最大长度*/
-			  unsigned int	vMaxBackupIndex = 1);			/*回卷文件个数*/
-						
+template<typename... Args>
+int LogTrace(const char *vLogName, const char *vFmt, const Args &... args);
+template<typename... Args>
+int LogDebug(const char *vLogName, const char *vFmt, const Args &... args);
+template<typename... Args>
+int LogInfo(const char *vLogName, const char *vFmt, const Args &... args);
+template<typename... Args>
+int LogWarn(const char *vLogName, const char *vFmt, const Args &... args);
+template<typename... Args>
+int LogError(const char *vLogName, const char *vFmt, const Args &... args);
+template<typename... Args>
+int LogCritical(const char *vLogName, const char *vFmt, const Args &... args);
+template<typename... Args>
+int log(const char *vLogName, level_enum vPriority, const char *vFmt, const Args &... args);
 
+template<typename... Args>
+int LogTrace(const char *vLogName, const char *vFmt, const Args &... args)
+{
+	if (NULL == vLogName) {
+		return -1;
+	}
 
-// ***************************************************************
-//  Function: 	ShutdownAllLog   
-//  Description:关闭所有类新的日志，(包括文件句柄和清除相关对象),在程序退出前用.
-//  Date: 		05/23/2008
-// 
-// ***************************************************************
-int ShutdownAllLog( );
+	auto log = spdlog::get(vLogName);
+	if (NULL == log) {
+		return -1;
+	}
 
+	log->log(level_enum::trace, vFmt, args...);
+	return 0;
+}
 
-// ***************************************************************
-//  Function: 	LogXXX   
-//  Description:具体日志记录函数，写入创建时关联的文件.
-//  Date: 		05/23/2008
-// 
-// ***************************************************************
-int LogDebug	( const char* vLogName, const char* vFmt, ... );
-int LogInfo		( const char* vLogName, const char* vFmt, ... );
-int LogNotice	( const char* vLogName, const char* vFmt, ... );
-int LogWarn		( const char* vLogName, const char* vFmt, ... );
-int LogError	( const char* vLogName, const char* vFmt, ... );
-int LogFatal	( const char* vLogName, const char* vFmt, ... );
-int log			( const char* vLogName, int vPriority, const char* vFmt, ... );
+template<typename... Args>
+int LogDebug(const char *vLogName, const char *vFmt, const Args &... args)
+{
+	if (NULL == vLogName) {
+		return -1;
+	}
 
-void Log_bin( const char* vLogName, void* vBin, int vBinLen );
+	auto log = spdlog::get(vLogName);
+	if (NULL == log) {
+		return -1;
+	}
 
-int LogDebug_va	( const char* vLogName, const char* vFmt, va_list ap);
-int LogNotice_va( const char* vLogName, const char* vFmt, va_list ap);
-int LogInfo_va	( const char* vLogName, const char* vFmt, va_list ap );
-int LogWarn_va	( const char* vLogName, const char* vFmt, va_list ap );
-int LogError_va	( const char* vLogName, const char* vFmt, va_list ap );
-int LogFatal_va	( const char* vLogName, const char* vFmt, va_list ap );
-int log_va		( const char* vLogName, int vPriority, const char* vFmt, va_list ap );
+	log->log(level_enum::debug, vFmt, args...);
+	return 0;
+}
 
+template<typename... Args>
+int LogInfo(const char *vLogName, const char *vFmt, const Args &... args)
+{
+	if (NULL == vLogName) {
+		return -1;
+	}
 
-//int LogDebug	( const char* vFmt, ... );
-//int LogInfo		( const char* vFmt, ... );
-//int LogWarn		( const char* vFmt, ... );
-//int LogError	( const char* vFmt, ... );
-//int LogFatal	( const char* vFmt, ... );
-//int log( int vPriority, const char* vFmt, ... );
+	auto log = spdlog::get(vLogName);
+	if (NULL == log) {
+		return -1;
+	}
+
+	log->log(level_enum::info, vFmt, args...);
+	return 0;
+}
+
+template<typename... Args>
+int LogWarn(const char *vLogName, const char *vFmt, const Args &... args)
+{
+	if (NULL == vLogName) {
+		return -1;
+	}
+
+	auto log = spdlog::get(vLogName);
+	if (NULL == log) {
+		return -1;
+	}
+
+	log->log(level_enum::warn, vFmt, args...);
+	return 0;
+}
+
+template<typename... Args>
+int LogError(const char *vLogName, const char *vFmt, const Args &... args)
+{
+	if (NULL == vLogName) {
+		return -1;
+	}
+
+	auto log = spdlog::get(vLogName);
+	if (NULL == log) {
+		return -1;
+	}
+	log->log(level_enum::err, vFmt, args...);
+	return 0;
+}
+
+template<typename... Args>
+int LogCritical(const char *vLogName, const char *vFmt, const Args &... args)
+{
+	if (NULL == vLogName) {
+		return -1;
+	}
+
+	auto log = spdlog::get(vLogName);
+	if (NULL == log) {
+		return -1;
+	}
+
+	log->log(level_enum::critical, vFmt, args...);
+	return 0;
+}
+
+template<typename... Args>
+int log(const char *vLogName, level_enum vPriority, const char *vFmt, const Args &... args)
+{
+	if (NULL == vLogName) {
+		return -1;
+	}
+
+	auto log = spdlog::get(vLogName);
+	if (NULL == log) {
+		return -1;
+	}
+
+	log->log(vPriority, vFmt, args...);
+	return 0;
+}
 
 #endif // _LOG_H_

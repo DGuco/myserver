@@ -25,7 +25,7 @@ Message* CMessageFactory::CreateMessage(unsigned int uiMessageID)
 
 	if (pTmpMessage == NULL)
 	{
-		LOG_ERROR("default", "[%s : %d : %s] invalid message id %u.",__MY_FILE__, __LINE__, __FUNCTION__, uiMessageID);
+		LOG_ERROR("default", "[{} : {} : {}] invalid message id %u.",__MY_FILE__, __LINE__, __FUNCTION__, uiMessageID);
 	}
 	else
 	{

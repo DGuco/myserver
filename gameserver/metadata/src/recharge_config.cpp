@@ -51,5 +51,5 @@ RechargeItem* RechargeConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("RechargeConfig::item:%d", key);
+//    throw ERROR::MSG("RechargeConfig::item:{}", key);
 }

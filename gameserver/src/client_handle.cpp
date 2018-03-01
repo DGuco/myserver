@@ -85,7 +85,7 @@ int CClientHandle::SendResToPlayer(Message *pMessage, CPlayer *pPlayer)
 
 	iRet = mS2CPipe->AppendOneCode((BYTE *) aTmpCodeBuf, unTmpCodeLength);
 	if (iRet < 0) {
-		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
+		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
 	}
 
 	LOG_DEBUG("default", "---- Send To Client Succeed ----");
@@ -111,7 +111,7 @@ int CClientHandle::SendResponse(Message *pMessage, MesHead *mesHead)
 
 	iRet = mS2CPipe->AppendOneCode((BYTE *) aTmpCodeBuf, unTmpCodeLength);
 	if (iRet < 0) {
-		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
+		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
 	}
 
 	LOG_DEBUG("default", "---- Send To Client Succeed ----");
@@ -139,13 +139,13 @@ int CClientHandle::Push(int cmd, Message *pMessage, stPointList *pTeamList)
 				pTmpSocket->set_createtime(pTmpConnInfo->m_tCreateTime);
 				pTmpSocket->set_socketid(pTmpConnInfo->m_iSocket);
 //                mNetHead.AddEntity(pTmpTeam->GetSocketInfoPtr()->iSocket, pTmpTeam->GetSocketInfoPtr()->tCreateTime);
-//                LOG_DEBUG("default", "---- Send To Client( %d | %lu | %s ) socket(%d) createtime(%ld) ----",
+//                LOG_DEBUG("default", "---- Send To Client( {} | %lu | {} ) socket({}) createtime(%ld) ----",
 //                          pTmpTeam->GetEntityID(), pTmpTeam->GetPlayerId(), pTmpTeam->GetPlayerName(),
 //                          pTmpTeam->GetSocketInfoPtr()->iSocket, pTmpTeam->GetSocketInfoPtr()->tCreateTime);
 			}
 			else {
 				LOG_DEBUG("default",
-						  "Client(%d | %lu | %s) has disconnected.",
+						  "Client({} | %lu | {}) has disconnected.",
 						  pPlayer->GetPlayerId(),
 						  pPlayer->GetPlayerId(),
 						  pPlayer->GetPlayerBase()->GetAccount());
@@ -168,7 +168,7 @@ int CClientHandle::Push(int cmd, Message *pMessage, stPointList *pTeamList)
 
 	iRet = mS2CPipe->AppendOneCode(aTmpCodeBuf, unTmpCodeLength);
 	if (iRet < 0) {
-		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return %d.", iRet);
+		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
 	}
 	return iRet;
 }
@@ -184,7 +184,7 @@ int CClientHandle::Recv()
 									 (int *) &iTmpCodeLength);
 
 	if (iRet < 0) {
-		LOG_ERROR("default", "[%s : %d : %s] When GetHeadCode from C2SPipe, error ocurr %d",
+		LOG_ERROR("default", "[{} : {} : {}] When GetHeadCode from C2SPipe, error ocurr {}",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return ClienthandleErrCode::CLIENTHANDLE_QUEUE_CRASH;
 	}
@@ -229,7 +229,7 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 	if (tmpSocketInfo.state() < 0) {
 		// 客户端主动关闭连接，也有可能是连接错误被关闭
 		LOG_INFO("default",
-				 "client(%d : %d) commhandle closed by err = %d. ",
+				 "client({} : {}) commhandle closed by err = {}. ",
 				 iTmpSocket,
 				 tTmpCreateTime,
 				 tmpSocketInfo.state());
@@ -237,7 +237,7 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 		CPlayer *pTmpTeam = CSceneObjManager::GetSingletonPtr()->GetPlayerBySocket(iTmpSocket);
 		if (NULL == pTmpTeam) {
 			// 找不到玩家，连接已经关闭了
-			LOG_ERROR("default", "[%s : %d : %s] socket(%d : %d) EntityID = %d has closed.",
+			LOG_ERROR("default", "[{} : {} : {}] socket({} : {}) EntityID = {} has closed.",
 					  __MY_FILE__, __LINE__, __FUNCTION__, iTmpSocket, tTmpCreateTime);
 			return CLIENTHANDLE_HASCLOSED;
 		}
@@ -247,7 +247,7 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 				&& (connectInfo->m_iSocket != iTmpSocket || connectInfo->m_tCreateTime != tTmpCreateTime)) {
 				// 当前玩家与该连接信息不匹配,说明该玩家的连接已经失效
 				LOG_WARN("default",
-						 "[%s : %d : %s] socket(%d : %d) not match, now(%d : %d).",
+						 "[{} : {} : {}] socket({} : {}) not match, now({} : {}).",
 						 __MY_FILE__,
 						 __LINE__,
 						 __FUNCTION__,
@@ -295,7 +295,7 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 //		// 5500踢掉断线玩家 检测是否需要踢掉断连玩家
 //		if (CCoreModule::GetSingletonPtr()->CheckOnlineIsFull() < 0) {
 //			LOG_INFO("default",
-//					 "[%s : %d : %s]  login failed, team list is full.",
+//					 "[{} : {} : {}]  login failed, team list is full.",
 //					 __MY_FILE__,
 //					 __LINE__,
 //					 __FUNCTION__);
@@ -311,7 +311,7 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 //			// 同一个fd
 //			if (tTmpCreateTime == pTmpTeam->GetSocketInfoPtr()->tCreateTime) {
 //				// 连续多次发TryLogin消息则直接把消息抛掉
-//				LOG_DEBUG("default", "[%s : %d : %s]  Socket(%d) is useed, don't TryLogin again.",
+//				LOG_DEBUG("default", "[{} : {} : {}]  Socket({}) is useed, don't TryLogin again.",
 //						  __MY_FILE__, __LINE__, __FUNCTION__, iTmpSocket);
 //				// 通知客户端解析消息失败并断开连接
 //				CGameServer::GetSingletonPtr()->SendMsgSystemErrorResponse(emSystem_msgerr,
@@ -326,7 +326,7 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 //			else {
 //				// 假如是同一个fd,时间戳不一样, 可能socket断掉未检测到
 //				LOG_INFO("default",
-//						 "[%s : %d : %s]  Socket(%d) is used, old team(TeamID=%lu, EntityID=%d), reset.",
+//						 "[{} : {} : {}]  Socket({}) is used, old team(TeamID=%lu, EntityID={}), reset.",
 //						 __MY_FILE__,
 //						 __LINE__,
 //						 __FUNCTION__,
@@ -342,7 +342,7 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 //		// 解析登陆消息
 //		CMsgLoginGameRequest *pTmpMsg = (CMsgLoginGameRequest *) pMsg->msgpara();
 //		if (pTmpMsg == NULL) {
-//			LOG_ERROR("default", "[%s : %d : %s]  team(Account=%s, ServerID=%d) login failed, msg is NULL.",
+//			LOG_ERROR("default", "[{} : {} : {}]  team(Account={}, ServerID={}) login failed, msg is NULL.",
 //					  __MY_FILE__, __LINE__, __FUNCTION__);
 //
 //			// 通知客户端解析消息失败并断开连接
@@ -371,7 +371,7 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 //		string sSession = CCoreModule::GetSingletonPtr()
 //			->GetTeamIDBySession(pTmpMsg->account().c_str(), pTmpMsg->serverid(), pTmpMsg->pfrom());
 //		LOG_INFO("default",
-//				 "[%s : %d : %s]  uid: %s, new session: %s, old session: %s",
+//				 "[{} : {} : {}]  uid: {}, new session: {}, old session: {}",
 //				 __YQ_FILE__,
 //				 __LINE__,
 //				 __FUNCTION__,
@@ -454,7 +454,7 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 //	pCSHead->set_entityid(pTmpTeam->GetEntityID());
 //	if (pTmpTeam->GetSocketInfoPtr()->lMsgGuid == lTmpMsgGuid) {
 //		// 如果消息的GUID相等,说明这是客户端重发的消息,服务器已经处理过了,直接抛弃
-//		LOG_INFO("default", "[%s : %d : %s] message guid(%ld) is same, ignore it.",
+//		LOG_INFO("default", "[{} : {} : {}] message guid(%ld) is same, ignore it.",
 //				 __MY_FILE__, __LINE__, __FUNCTION__, lTmpMsgGuid);
 //		return CLIENTHANDLE_SUCCESS;
 //	}
@@ -507,13 +507,13 @@ void CClientHandle::DisconnectClient(int iSocket,
 //                                                       MAX_PACKAGE_LEN - unTmpLen);
 //    if (unRet < 0)
 //    {
-//        LOG_ERROR("default", "[%s : %d : %s] SerializeToArray failed, tRet = %d.",
+//        LOG_ERROR("default", "[{} : {} : {}] SerializeToArray failed, tRet = {}.",
 //                  __MY_FILE__, __LINE__, __FUNCTION__, unRet);
 //        return;
 //    }
 //    if (unRet != tmpNetHead.Size())
 //    {
-//        LOG_ERROR("default", "[%s : %d : %s] length is not same (%d : %d).",
+//        LOG_ERROR("default", "[{} : {} : {}] length is not same ({} : {}).",
 //                  __MY_FILE__, __LINE__, __FUNCTION__, unRet, tmpNetHead.Size());
 //        return;
 //    }
@@ -523,12 +523,12 @@ void CClientHandle::DisconnectClient(int iSocket,
 //    unRet = m_pS2CPipe->AppendOneCode(abyTmpCodeBuff, unTmpLen);
 //    if (unRet < 0)
 //    {
-//        LOG_ERROR("default", "[%s : %d : %s] AppendOneCode failed, tRet = %d.",
+//        LOG_ERROR("default", "[{} : {} : {}] AppendOneCode failed, tRet = {}.",
 //                  __MY_FILE__, __LINE__, __FUNCTION__, unRet);
 //        return;
 //    }
 //
-//    LOG_NOTICE("default", "Disconnect Client [Socket = %d : CreateTime = %d].", iSocket, tCreateTime);
+//    LOG_NOTICE("default", "Disconnect Client [Socket = {} : CreateTime = {}].", iSocket, tCreateTime);
 }
 
 // 打印管道状态

@@ -56,5 +56,5 @@ PlayerTalent* PlayerTalentConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("PlayerTalentConfig::item:%d", key);
+//    throw ERROR::MSG("PlayerTalentConfig::item:{}", key);
 }

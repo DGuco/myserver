@@ -9,7 +9,7 @@
 #define _SOCKET_H_
 
 #include <base.h>
-#include "event.h"
+#include "sys_event.h"
 #include "net_inc.h"
 
 class CNetAddr;

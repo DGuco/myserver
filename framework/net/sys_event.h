@@ -3,17 +3,17 @@
 // 基于libevet的timer事件
 //
 
-#ifndef SERVER_TIMER_EVENT_H
-#define SERVER_TIMER_EVENT_H
+#ifndef SERVER_SYS_EVENT_H
+#define SERVER_SYS_EVENT_H
 
-#include "network_interface.h"
 #include <event.h>
+#include "network_interface.h"
 
-class CEvent: public IReactorHandler
+class CSysEvent : public IReactorHandler
 {
 public:
 	//构造函数
-	CEvent(IEventReactor *pReactor,
+	CSysEvent(IEventReactor *pReactor,
 		   FuncOnTimeOut m_pFuncOnTimerOut,
 		   void *param,
 		   int sec,
@@ -22,7 +22,7 @@ public:
 		   int fd = -1,
 		   int eventType = -1);
 	//析构函数
-	~CEvent() override;
+	~CSysEvent();
 	//超时处理
 	void OnTimerOut(int fd, short event);
 	void LaterCall(int sec, int usec);
@@ -31,16 +31,14 @@ public:
 	void Cancel();
 private:
 	//注册
-	bool RegisterToReactor() override;
+	bool RegisterToReactor();
 	//卸载
-	bool UnRegisterFromReactor() override;
+	bool UnRegisterFromReactor();
 	//获取event_base
-	IEventReactor *GetReactor() override;
+	IEventReactor *GetReactor();
 private:
 	//超时回调
 	static void lcb_TimeOut(int fd, short event, void *arg);
-	static int GetNextTimerId();
-	static void setM_lcNnxtTimerId(int m_lcNnxtTimerId);
 private:
 	IEventReactor *m_pReactor;
 	FuncOnTimeOut m_pFuncOnTimerOut;

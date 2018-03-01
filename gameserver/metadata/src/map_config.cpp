@@ -50,5 +50,5 @@ MapItem* MapConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("MapConfig::item:%d", key);
+//    throw ERROR::MSG("MapConfig::item:{}", key);
 }

@@ -65,5 +65,5 @@ BuildingAmountItem* BuildingAmountConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("BuildingAmountConfig::item:%d", key);
+//    throw ERROR::MSG("BuildingAmountConfig::item:{}", key);
 }

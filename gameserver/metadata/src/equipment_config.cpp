@@ -174,5 +174,5 @@ const EquipmentItem* EquipmentConfig::item(const int key) const
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("EquipmentConfig::item:%d", key);
+//    throw ERROR::MSG("EquipmentConfig::item:{}", key);
 }

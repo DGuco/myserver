@@ -140,7 +140,7 @@ int CDBHandle::SendMessageTo(CProxyMessage *pMsg)
 	int iRet = ServerCommEngine::ConvertMsgToStream(pMsg, abyCodeBuf, nCodeLength);
 	if (iRet != 0)
 	{
-		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = %d.", iRet);
+		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = {}.", iRet);
 		return 0;
 	}
 	
@@ -148,14 +148,14 @@ int CDBHandle::SendMessageTo(CProxyMessage *pMsg)
 	int nSendReturn = m_stProxySvrdConns.GetSocket()->SendOneCode( nCodeLength, abyCodeBuf );
 	if( nSendReturn < 0 )
 	{
-		TRACE_ERROR( "Send Code(len:%d) To Proxy faild(error=%d)", nCodeLength, nSendReturn );
+		TRACE_ERROR( "Send Code(len:{}) To Proxy faild(error={})", nCodeLength, nSendReturn );
 		return -1;
 	}
 
 	Message* pUnknownMessagePara = (Message*) pMsg->msgpara();
     MY_ASSERT( pUnknownMessagePara != NULL, return 0 );
 	const ::google::protobuf::Descriptor* pDescriptor= pUnknownMessagePara->GetDescriptor();
-	TRACE_DEBUG("SendMessageTo: MsgName[%s] ProxyHead[%s] MsgHead[%s] MsgPara[%s]",
+	TRACE_DEBUG("SendMessageTo: MsgName[{}] ProxyHead[{}] MsgHead[{}] MsgPara[{}]",
 			pDescriptor->name().c_str(),stProxyHead->ShortDebugString().c_str(),
 			pMsg->ShortDebugString().c_str(), ((Message*) pMsg->msgpara())->ShortDebugString().c_str());
 
@@ -176,7 +176,7 @@ int CDBHandle::InitLogFile( const char* vLogName, const char* vLogDir, LogLevel 
 	TFName szThreadLogFile;
 
 	// 设置服务器日志
-	snprintf( szThreadLogFile, sizeof(szThreadLogFile)-1,"../log/dbhandle%d.log", m_iHandleID);
+	snprintf( szThreadLogFile, sizeof(szThreadLogFile)-1,"../log/dbhandle{}.log", m_iHandleID);
 
 	ThreadLogInit( szThreadLogFile, vMaxFileSize, vMaxBackupIndex, 0, vPriority);
 
@@ -199,7 +199,7 @@ int CDBHandle::Event(CProxyMessage *pMsg)
 	Message* pUnknownMessagePara = (Message*) pMsg->msgpara();
 	MY_ASSERT( pUnknownMessagePara != NULL, return 0 );
 	const ::google::protobuf::Descriptor* pDescriptor= pUnknownMessagePara->GetDescriptor();
-	TRACE_DEBUG("ReceveMsg: MsgName[%s] MsgHead[%s] MsgPara[%s]",
+	TRACE_DEBUG("ReceveMsg: MsgName[{}] MsgHead[{}] MsgPara[{}]",
 			pDescriptor->name().c_str(), pMsg->ShortDebugString().c_str(), ((Message*) pMsg->msgpara())->ShortDebugString().c_str());
 
 	switch ( pMsg->msghead().messageid() )
@@ -220,7 +220,7 @@ int CDBHandle::Event(CProxyMessage *pMsg)
 
 int CDBHandle::PrepareToRun()
 {
-	TRACE_DEBUG("Handle %d prepare to run.\n", m_iHandleID);
+	TRACE_DEBUG("Handle {} prepare to run.\n", m_iHandleID);
 
 	if(ConnectToLocalDB())  // 真正的数据库连接已经在线程建立之前完成
 	{
@@ -245,7 +245,7 @@ int CDBHandle::RunFunc()
 		int iTempRet = GetOneCode(nTempCodeLength, (BYTE *)abyCodeBuf);  // 从队列中取出 Code
 		if(iTempRet < 0)
 		{
-			TRACE_ERROR("Get one code from input queue returns %d.\n", iTempRet);
+			TRACE_ERROR("Get one code from input queue returns {}.\n", iTempRet);
 			continue;
 		}
 
@@ -276,7 +276,7 @@ int CDBHandle::RunFunc()
                        enMessageCmd::MESS_REGIST);
 		if( tRet != 0 )  // 如果解析失败则重新取 Code
 		{  
-			TRACE_ERROR("Convert code to message failed. tRet = %d", tRet);
+			TRACE_ERROR("Convert code to message failed. tRet = {}", tRet);
 			continue;
 		}
 
@@ -284,7 +284,7 @@ int CDBHandle::RunFunc()
 
 		if(iTempRet)
 		{
-			TRACE_ERROR("Handle event returns %d.\n", iTempRet);
+			TRACE_ERROR("Handle event returns {}.\n", iTempRet);
 		}
 
 		// 消息回收

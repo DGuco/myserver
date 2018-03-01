@@ -156,7 +156,7 @@ unsigned int IBufferEvent::GetMaxRecvBufSize()
 bool IBufferEvent::RegisterToReactor()
 {
 	MY_ASSERT_STR(m_oSocket.GetSocket() >= 0, return false, "RegisterToReactor error ,socket is invalid");
-#ifdef EVENT_THREAD_SAVES
+#ifdef EVENT_THREAD_SAFE
 	m_pStBufEv = bufferevent_socket_new(GetReactor()->GetEventBase(),
 										m_oSocket.GetSocket(),
 										BEV_OPT_CLOSE_ON_FREE | BEV_OPT_THREADSAFE);
@@ -166,7 +166,7 @@ bool IBufferEvent::RegisterToReactor()
 										BEV_OPT_CLOSE_ON_FREE /*| BEV_OPT_THREADSAFE */);
 #endif
 
-	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent_new failed!,error msg: %s", strerror(errno));
+	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent_new failed!,error msg: {}", strerror(errno));
 	bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);
 	bufferevent_setwatermark(m_pStBufEv, EV_WRITE, 0, m_uMaxOutBufferSize);
 	AfterBuffEventCreated();

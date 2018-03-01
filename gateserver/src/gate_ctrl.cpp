@@ -8,6 +8,7 @@
 
 #include <my_macro.h>
 #include <share_mem.h>
+#include "my_assert.h"
 #include "../inc/gate_ctrl.h"
 
 template<> CGateCtrl *CSingleton<CGateCtrl>::spSingleton = NULL;
@@ -28,8 +29,8 @@ CGateCtrl::~CGateCtrl()
 
 int CGateCtrl::Run()
 {
-	m_pC2sHandle->Run();
 	m_pS2cHandle->Run();
+	m_pC2sHandle->Run();
 }
 
 CThreadPool *CGateCtrl::GetSingThreadPool()
@@ -49,12 +50,12 @@ CS2cHandle *CGateCtrl::GetCS2cHandle()
 
 int CGateCtrl::PrepareToRun()
 {
+	//初始化日志
+	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::trace);
 	//创建共享内存管道
 	CreatePipe();
 	//读取配置文件
 	ReadConfig();
-	//初始化日志
-	INIT_ROLLINGFILE_LOG("default", "../log/gatesvrd.log", LEVEL_DEBUG);
 	m_pC2sHandle->PrepareToRun();
 	m_pS2cHandle->PrepareToRun();
 	return 0;

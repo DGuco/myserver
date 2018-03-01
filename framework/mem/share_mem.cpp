@@ -15,9 +15,9 @@
   *参数			  : pFile文件路径 vId：
   *返回值         ： 共享内存块唯一标识key
 **/
-key_t MakeKey( const char* pFile, int vId )
+key_t MakeKey(const char *pFile, int vId)
 {
-	return ftok( pFile, vId );
+	return ftok(pFile, vId);
 }
 
 /**
@@ -26,30 +26,27 @@ key_t MakeKey( const char* pFile, int vId )
   *参数			 :  iKey：共享内存块唯一标识key vSize：大小
   *返回值         ： 共享内存块地址
 **/
-BYTE* CreateShareMem( key_t iKey, long vSize )
+BYTE *CreateShareMem(key_t iKey, long vSize)
 {
 	size_t iTempShmSize;
 	int iShmID;
 
-	if( iKey < 0 )
-	{
-		LOG_ERROR("default", "CreateShareMem failed. errno:%s.", strerror(errno));
+	if (iKey < 0) {
+		LOG_ERROR("default", "CreateShareMem failed. errno:{}.", strerror(errno));
 		exit(-1);
 	}
 
-	iTempShmSize = ( size_t ) vSize;
+	iTempShmSize = (size_t) vSize;
 	//iTempShmSize += sizeof(CSharedMem);
 
-	LOG_NOTICE( "default", "Try to malloc share memory of %ld bytes...", iTempShmSize);
+	LOG_NOTICE("default", "Try to malloc share memory of {} bytes...", iTempShmSize);
 
-	iShmID = shmget( iKey, iTempShmSize, IPC_CREAT|IPC_EXCL|0666 );
+	iShmID = shmget(iKey, iTempShmSize, IPC_CREAT | IPC_EXCL | 0666);
 
-	if( iShmID < 0 )
-	{
-		if( errno != EEXIST )
-		{
-			LOG_ERROR( "default", "Alloc share memory failed, iKey:%d, size:%lld, error:%s",
-					iKey, iTempShmSize, strerror(errno));
+	if (iShmID < 0) {
+		if (errno != EEXIST) {
+			LOG_ERROR("default", "Alloc share memory failed, iKey:{}, size:{}, error:{}",
+					  iKey, iTempShmSize, strerror(errno));
 			exit(-1);
 		}
 
@@ -58,50 +55,47 @@ BYTE* CreateShareMem( key_t iKey, long vSize )
 //        iShmID = shmget( iKey, iTempShmSize, IPC_CREAT|IPC_EXCL|0666 );
 //        if (iShmID < 0)
 //        {
-//            LOG_ERROR( "default", "Fatal error, alloc share memory failed, %s", strerror(errno));
+//            LOG_ERROR( "default", "Fatal error, alloc share memory failed, {}", strerror(errno));
 //            exit(-1);
 //        }
-		LOG_NOTICE( "default", "Same shm seg (key=%08X) exist, now try to attach it...", iKey);
+		LOG_NOTICE("default", "Same shm seg (key=0X{0:x}) exist, now try to attach it...", iKey);
 
-		iShmID = shmget( iKey, iTempShmSize, 0666 );
-		if( iShmID < 0 )
-		{
-			LOG_NOTICE( "default", "Attach to share memory %d failed, %s. Now try to touch it", iShmID, strerror(errno));
-			iShmID = shmget( iKey, 0, 0666 );
-			if( iShmID < 0 )
-			{
-				LOG_ERROR( "default", "Fatel error, touch to shm failed, %s.", strerror(errno));
+		iShmID = shmget(iKey, iTempShmSize, 0666);
+		if (iShmID < 0) {
+			LOG_NOTICE("default", "Attach to share memory {} failed, {}. Now try to touch it", iShmID, strerror(errno));
+			iShmID = shmget(iKey, 0, 0666);
+			if (iShmID < 0) {
+				LOG_ERROR("default", "Fatel error, touch to shm failed, {}.", strerror(errno));
 				exit(-1);
 			}
-			else
-			{
-				LOG_NOTICE( "default", "First remove the exist share memory %d", iShmID);
-				if( shmctl(iShmID, IPC_RMID, NULL) )
-				{
-					LOG_ERROR( "default", "Remove share memory failed, %s", strerror(errno));
+			else {
+				LOG_NOTICE("default", "First remove the exist share memory {}", iShmID);
+				if (shmctl(iShmID, IPC_RMID, NULL)) {
+					LOG_ERROR("default", "Remove share memory failed, {}", strerror(errno));
 					exit(-1);
 				}
-				iShmID = shmget( iKey, iTempShmSize, IPC_CREAT|IPC_EXCL|0666 );
-				if( iShmID < 0 )
-				{
-					LOG_ERROR( "default", "Fatal error, alloc share memory failed, %s", strerror(errno));
+				iShmID = shmget(iKey, iTempShmSize, IPC_CREAT | IPC_EXCL | 0666);
+				if (iShmID < 0) {
+					LOG_ERROR("default", "Fatal error, alloc share memory failed, {}", strerror(errno));
 					exit(-1);
 				}
 			}
 		}
-		else
-		{
-			LOG_NOTICE( "default", "Attach to share memory succeed.");
+		else {
+			LOG_NOTICE("default", "Attach to share memory succeed.");
 		}
 	}
 
-	LOG_NOTICE( "default", "Successfully alloced share memory block, key = %08X, id = %d, size = %ld", iKey, iShmID, iTempShmSize);
-	BYTE* tpShm = (BYTE *)shmat(iShmID, NULL, 0);
+	LOG_NOTICE("default",
+			   "Successfully alloced share memory block, key = 0X{0:x}, id = {}, size = {}",
+			   iKey,
+			   iShmID,
+			   iTempShmSize);
+	BYTE *tpShm = (BYTE *) shmat(iShmID, NULL, 0);
 
-	if((void*)-1 == tpShm)
-	{
-		LOG_ERROR("default", "create share memory failed, shmat failed, iShmID = %d, error = %s.",
-				iShmID, strerror(errno));
+	if ((void *) -1 == tpShm) {
+		LOG_ERROR("default", "create share memory failed, shmat failed, iShmID = {}, error = {}.",
+				  iShmID, strerror(errno));
 		exit(0);
 	}
 
@@ -114,33 +108,29 @@ BYTE* CreateShareMem( key_t iKey, long vSize )
   参数			 :  iKey：共享内存块唯一标识key
   返回值         ： 成功0 错误：错误码
 ************************************************/
-int DestroyShareMem( key_t iKey )
+int DestroyShareMem(key_t iKey)
 {
 	int iShmID;
 
-	if( iKey < 0 )
-	{
-		LOG_ERROR( "default", "Error in ftok, %s.", strerror(errno));
+	if (iKey < 0) {
+		LOG_ERROR("default", "Error in ftok, {}.", strerror(errno));
 		return -1;
 	}
 
-	LOG_NOTICE( "default", "Touch to share memory key = 0x%08X...", iKey);
+	LOG_NOTICE("default", "Touch to share memory key = 0X{0:x}...", iKey);
 
-	iShmID = shmget( iKey, 0, 0666 );
-	if( iShmID < 0 )
-	{
-		LOG_ERROR( "default", "Error, touch to shm failed, %s", strerror(errno));
+	iShmID = shmget(iKey, 0, 0666);
+	if (iShmID < 0) {
+		LOG_ERROR("default", "Error, touch to shm failed, {}", strerror(errno));
 		return -1;
 	}
-	else
-	{
-		LOG_NOTICE( "default", "Now remove the exist share memory %d", iShmID);
-		if( shmctl(iShmID, IPC_RMID, NULL) )
-		{
-			LOG_ERROR( "default", "Remove share memory failed, %s", strerror(errno));
+	else {
+		LOG_NOTICE("default", "Now remove the exist share memory {}", iShmID);
+		if (shmctl(iShmID, IPC_RMID, NULL)) {
+			LOG_ERROR("default", "Remove share memory failed, {}", strerror(errno));
 			return -1;
 		}
-		LOG_NOTICE( "default", "Remove shared memory(id = %d, key = 0X%08X) succeed.", iShmID, iKey);
+		LOG_NOTICE("default", "Remove shared memory(id = {}, key = 0X{0:x}) succeed.", iShmID, iKey);
 	}
 
 	return 0;

@@ -64,7 +64,7 @@ MapFieldItem* MapFieldConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("MapFieldConfig::item:%d", key);
+//    throw ERROR::MSG("MapFieldConfig::item:{}", key);
 }
 
 MapFieldItem* MapFieldConfig::find(int type, int level)

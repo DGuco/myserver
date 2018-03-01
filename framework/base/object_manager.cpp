@@ -29,7 +29,7 @@ OBJ_ID CObjectManager::GetValidId()
     }
     if (m_ulLastUsedId > OBJ_ID_END(m_enObjType))
     {
-        LOG_ERROR("default" ,"Id out of range,type = %d, id_start = %d, id_end = %d.",m_enObjType, OBJ_ID_START(m_enObjType), OBJ_ID_START(m_enObjType));
+        LOG_ERROR("default" ,"Id out of range,type = {}, id_start = {}, id_end = {}.",m_enObjType, OBJ_ID_START(m_enObjType), OBJ_ID_START(m_enObjType));
         return INVALID_OBJ_ID;
     }
     id = (unsigned long)timeNow << 32 | m_ulLastUsedId;

@@ -1,4 +1,5 @@
 #include "server_comm_engine.h"
+#include "my_assert.h"
 
 void pbmsg_setproxy(CProxyHead *pHead,
 					int iSrcFE,
@@ -42,7 +43,7 @@ int ServerCommEngine::ConvertStreamToMsg(const void *pBuff,
 
 	// 补齐的长度一定小于8字节
 	if (tAddLen >= 8) {
-		MY_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tAddLen);
+		MY_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertStreamToMsg tAddLen = {} impoosibility.", tAddLen);
 	}
 	// 直接抛掉补充长度
 	tTotalLen -= tAddLen;
@@ -61,7 +62,7 @@ int ServerCommEngine::ConvertStreamToMsg(const void *pBuff,
 	tTotalLen -= tTmpLen;
 
 	if (tTotalLen < 0) {
-		MY_ASSERT_STR(0, return -5, "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d impossibility.", tTotalLen);
+		MY_ASSERT_STR(0, return -5, "ServerCommEngine::ConvertStreamToMsg tTotalLen = {} impossibility.", tTotalLen);
 	}
 
 	if (tTotalLen == 0) {
@@ -77,7 +78,7 @@ int ServerCommEngine::ConvertStreamToMsg(const void *pBuff,
 		// msgpara长度不匹配
 		MY_ASSERT_STR(0,
 					  return -7,
-					  "ServerCommEngine::ConvertStreamToMsg failed, tTotalLen(%d) != tTmpLen.(%d)",
+					  "ServerCommEngine::ConvertStreamToMsg failed, tTotalLen({}) != tTmpLen.({})",
 					  tTotalLen,
 					  tTmpLen);
 	}
@@ -92,7 +93,7 @@ int ServerCommEngine::ConvertStreamToMsg(const void *pBuff,
 		if (tpMsgPara == NULL) {
 			MY_ASSERT_STR(0,
 						  return -8,
-						  "ServerCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.",
+						  "ServerCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = {}.",
 						  pMsg->msghead().messageid());
 		}
 
@@ -219,7 +220,7 @@ int ServerCommEngine::ConvertStreamToProxy(const void *pBuff,
 	if (tTotalLen != unBuffLen) {
 		MY_ASSERT_STR(0,
 					  return -2,
-					  "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d unequal to unBuffLen = %d.",
+					  "ServerCommEngine::ConvertStreamToMsg tTotalLen = {} unequal to unBuffLen = {}.",
 					  tTotalLen,
 					  unBuffLen);
 	}
@@ -234,7 +235,7 @@ int ServerCommEngine::ConvertStreamToProxy(const void *pBuff,
 
 	// 补齐的长度一定小于8字节
 	if (tAddLen >= 8) {
-		MY_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tAddLen);
+		MY_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertStreamToMsg tAddLen = {} impoosibility.", tAddLen);
 	}
 	// 直接抛掉补充长度
 	tTotalLen -= tAddLen;
@@ -252,7 +253,7 @@ int ServerCommEngine::ConvertStreamToProxy(const void *pBuff,
 	tTotalLen -= tTmpLen;
 
 	if (tTotalLen < 0) {
-		MY_ASSERT_STR(0, return -5, "ServerCommEngine::ConvertStreamToMsg tTotalLen = %d impossibility.", tTotalLen);
+		MY_ASSERT_STR(0, return -5, "ServerCommEngine::ConvertStreamToMsg tTotalLen = {} impossibility.", tTotalLen);
 	}
 
 	return 0;

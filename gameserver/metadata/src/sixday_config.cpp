@@ -181,5 +181,5 @@ SixDayItem* SixDayConfig::item(int key)
         return it->second;
     }
     return NULL;
-    //    throw ERROR::MSG("MissionConfig::item:%d", key);
+    //    throw ERROR::MSG("MissionConfig::item:{}", key);
 }

@@ -73,5 +73,5 @@ ShopGuildItem* ShopGuildConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("ShopGuildConfig::item:%d", key);
+//    throw ERROR::MSG("ShopGuildConfig::item:{}", key);
 }

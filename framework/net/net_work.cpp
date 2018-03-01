@@ -5,6 +5,7 @@
 #include "system_signal.h"
 #include "connector.h"
 #include "acceptor.h"
+#include "my_assert.h"
 
 template<> CNetWork *CSingleton<CNetWork>::spSingleton = NULL;
 

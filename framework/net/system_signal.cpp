@@ -57,3 +57,4 @@ bool CSystemSignal::UnRegisterFromReactor()
 	event_del(&m_event);
 	return true;
 }
+

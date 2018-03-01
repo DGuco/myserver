@@ -96,7 +96,7 @@ MonsterItem* MonsterConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("MonsterConfig::item:%d", key);
+//    throw ERROR::MSG("MonsterConfig::item:{}", key);
 }
 
 std::vector<MonsterItem*> MonsterConfig::itemType(int type)

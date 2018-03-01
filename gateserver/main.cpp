@@ -9,8 +9,6 @@
 #include "my_macro.h"
 #include "inc/gate_ctrl.h"
 
-using namespace std;
-
 CGateCtrl *g_pGateServer;
 
 int main(int argc, char **argv)
@@ -20,7 +18,7 @@ int main(int argc, char **argv)
 	iTmpRet = g_pGateServer->PrepareToRun();
 	if (iTmpRet != 0) {
 		delete g_pGateServer;
-		LOG_ERROR("default", "Tcpserver PrepareToRun failed,iRet = %d", iTmpRet);
+		LOG_ERROR("default", "Tcpserver PrepareToRun failed,iRet = {}", iTmpRet);
 		exit(0);
 	}
 	g_pGateServer->Run();

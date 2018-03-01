@@ -73,5 +73,5 @@ DailyItem* DailyConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("DailyConfig::item:%d", key);
+//    throw ERROR::MSG("DailyConfig::item:{}", key);
 }

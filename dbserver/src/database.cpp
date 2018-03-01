@@ -79,7 +79,7 @@ bool Database::PExecuteLog(const char * format,...)
 
     if(res==-1)
     {
-        LOG_ERROR(m_logsName.c_str(), "SQL Query truncated (and not execute) for format: %s",format);
+        LOG_ERROR(m_logsName.c_str(), "SQL Query truncated (and not execute) for format: {}",format);
         return false;
     }
 
@@ -97,13 +97,13 @@ bool Database::PExecuteLog(const char * format,...)
         log_file = fopen(logsDir_fname.c_str(), "a");
         if (log_file)
         {
-            fprintf(log_file, "%s;\n", szQuery);
+            fprintf(log_file, "{};\n", szQuery);
             fclose(log_file);
         }
         else
         {
             // The file could not be opened
-            LOG_ERROR(m_logsName.c_str(), "SQL-Logging is disabled - Log file for the SQL commands could not be openend: %s",fName);
+            LOG_ERROR(m_logsName.c_str(), "SQL-Logging is disabled - Log file for the SQL commands could not be openend: {}",fName);
         }
     }
 
@@ -123,7 +123,7 @@ QueryResult* Database::PQuery(const char *format,...)
 
     if(res==-1)
     {
-        LOG_ERROR( m_logsName.c_str(), "SQL Query truncated (and not execute) for format: %s",format);
+        LOG_ERROR( m_logsName.c_str(), "SQL Query truncated (and not execute) for format: {}",format);
         return NULL;
     }
 
@@ -143,7 +143,7 @@ bool Database::PExecute(const char * format,...)
 
     if(res==-1)
     {
-        LOG_ERROR(m_logsName.c_str(), "SQL Query truncated (and not execute) for format: %s",format);
+        LOG_ERROR(m_logsName.c_str(), "SQL Query truncated (and not execute) for format: {}",format);
         return false;
     }
 
@@ -163,7 +163,7 @@ bool Database::DirectPExecute(const char * format,...)
 
     if(res==-1)
     {
-        LOG_ERROR(m_logsName.c_str(), "SQL Query truncated (and not execute) for format: %s",format);
+        LOG_ERROR(m_logsName.c_str(), "SQL Query truncated (and not execute) for format: {}",format);
         return false;
     }
 

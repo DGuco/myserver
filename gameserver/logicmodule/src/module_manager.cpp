@@ -34,14 +34,14 @@ int CModuleManager::RegisterModule(EModuleType eType, CLogicModule *pModule)
 {
     if (pModule == NULL)
     {
-        LOG_FATAL("default", "[%s : %d : %s] RegisterModule failed, eType(%d) pModule == NULL.",
+        LOG_FATAL("default", "[{} : {} : {}] RegisterModule failed, eType({}) pModule == NULL.",
                   __MY_FILE__, __LINE__, __FUNCTION__, eType);
         return -1;
     }
 
     if (eType <= EModuleType::EMODULETYPE_INVALID || eType >= EModuleType::EMODULETYPE_NUM)
     {
-        LOG_FATAL("default", "[%s : %d : %s] RegisterModule failed, eType(%d)",
+        LOG_FATAL("default", "[{} : {} : {}] RegisterModule failed, eType({})",
                   __MY_FILE__, __LINE__, __FUNCTION__, eType);
         return -2;
     }

@@ -69,5 +69,5 @@ ShopQuickItem* ShopQuickConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("ShopQuickConfig::item:%d", key);
+//    throw ERROR::MSG("ShopQuickConfig::item:{}", key);
 }

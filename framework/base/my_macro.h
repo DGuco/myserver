@@ -57,7 +57,7 @@
 																				int iRet = pTmpSession->SetOtherInfos(iTmpParaNum, aiTmpParas);					\
 																				if (iRet != 0)																														\
 																				{																																			\
-																					LOG_ERROR("db", "[%s : %d : %s] SetOtherInfos failed, iRet=%d.",						\
+																					LOG_ERROR("db", "[{} : {} : {}] SetOtherInfos failed, iRet={}.",						\
 																							__MY_FILE__, __LINE__, __FUNCTION__, iRet);													\
 																					CTimerManager::GetSingletonPtr()->DestroyObject(pTmpSession->get_id());	\
 																					rtn;																																	\
@@ -69,7 +69,7 @@
 																		int iRet = pTmpSession->SetOtherInfos(iTmpParaNum, aiTmpParas);					\
 																		if (iRet != 0)																														\
 																		{																																			\
-																			LOG_ERROR("db", "[%s : %d : %s] SetOtherInfos failed, iRet=%d.",						\
+																			LOG_ERROR("db", "[{} : {} : {}] SetOtherInfos failed, iRet={}.",						\
 																					__MY_FILE__, __LINE__, __FUNCTION__, iRet);													\
 																			CTimerManager::GetSingletonPtr()->DestroyObject(pTmpSession->get_id());	\
 																			rtn;																																	\

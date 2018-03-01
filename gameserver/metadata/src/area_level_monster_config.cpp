@@ -68,7 +68,7 @@ AreaLevelMonsterItem* AreaLevelMonsterConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("AreaLevelMonsterConfig::item:%d", key);
+//    throw ERROR::MSG("AreaLevelMonsterConfig::item:{}", key);
 }
 
 AreaLevelMonsterItem* AreaLevelMonsterConfig::getByLevelAndWeek(int level, int week)
@@ -79,7 +79,7 @@ AreaLevelMonsterItem* AreaLevelMonsterConfig::getByLevelAndWeek(int level, int w
         }
     }
     return NULL;
-//    throw ERROR::MSG("AreaLevelMonsterConfig::getByLevelAndWeek:%d,%d", level, week);
+//    throw ERROR::MSG("AreaLevelMonsterConfig::getByLevelAndWeek:{},{}", level, week);
 }
 
 std::vector<std::string> AreaLevelMonsterConfig::getByLevelAndWeek(int level, int week,int iMonsterId)

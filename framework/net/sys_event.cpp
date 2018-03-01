@@ -2,9 +2,9 @@
 // Created by dguco on 18-2-8.
 //
 
-#include "event.h"
+#include "sys_event.h"
 
-CEvent::CEvent(IEventReactor *pReactor,
+CSysEvent::CSysEvent(IEventReactor *pReactor,
 			   FuncOnTimeOut pFuncOnTimerOut,
 			   void *param,
 			   int sec,
@@ -24,12 +24,12 @@ CEvent::CEvent(IEventReactor *pReactor,
 	GetReactor()->Register(this);
 }
 
-CEvent::~CEvent()
+CSysEvent::~CSysEvent()
 {
 	Cancel();
 }
 
-void CEvent::LaterCall(int sec, int usec)
+void CSysEvent::LaterCall(int sec, int usec)
 {
 	struct timeval tv;
 	tv.tv_sec = sec;    // 秒
@@ -46,18 +46,18 @@ void CEvent::LaterCall(int sec, int usec)
 	}
 }
 
-void CEvent::ReCall(int sec, int usec)
+void CSysEvent::ReCall(int sec, int usec)
 {
 	evtimer_del(&m_event);
 	LaterCall(sec, usec);
 }
 
-void CEvent::Cancel()
+void CSysEvent::Cancel()
 {
 	evtimer_del(&m_event);
 }
 
-void CEvent::OnTimerOut(int fd, short event)
+void CSysEvent::OnTimerOut(int fd, short event)
 {
 	m_pFuncOnTimerOut(fd, event, m_pParam);
 	if (m_iLoopTimes == 0) {
@@ -71,26 +71,28 @@ void CEvent::OnTimerOut(int fd, short event)
 	}
 }
 
-void CEvent::lcb_TimeOut(int fd, short event, void *arg)
+void CSysEvent::lcb_TimeOut(int fd, short event, void *arg)
 {
-	CEvent *pTimer = static_cast<CEvent *>(arg);
+	CSysEvent *pTimer = static_cast<CSysEvent *>(arg);
 	pTimer->OnTimerOut(fd, event);
 }
 
-bool CEvent::RegisterToReactor()
+bool CSysEvent::RegisterToReactor()
 {
 	LaterCall(m_iSec, m_iUsec);
 	return true;
 }
 
-bool CEvent::UnRegisterFromReactor()
+bool CSysEvent::UnRegisterFromReactor()
 {
 	Cancel();
 }
 
-IEventReactor *CEvent::GetReactor()
+IEventReactor *CSysEvent::GetReactor()
 {
 	return m_pReactor;
 }
+
+
 
 

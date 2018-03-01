@@ -3,7 +3,6 @@
 //
 
 #include <share_mem.h>
-#include <my_assert.h>
 #include <acceptor.h>
 #include <client_comm_engine.h>
 #include "net_work.h"
@@ -84,7 +83,7 @@ void CS2cHandle::CheckWaitSendData()
 			//序列化失败继续发送
 			if (iTmpRet < 0) {
 				LOG_ERROR("default",
-						  "CTCPCtrl::CheckWaitSendData Error, ClientCommEngine::ConvertMsgToStream return %d.",
+						  "CTCPCtrl::CheckWaitSendData Error, ClientCommEngine::ConvertMsgToStream return {}.",
 						  iTmpRet);
 				m_oMesHead.Clear();
 				m_iSendIndex = 0;
@@ -119,7 +118,7 @@ int CS2cHandle::SendClientData()
 		memcpy((void *) &unTmpShort, (const void *) pbTmpSend, sizeof(unsigned short));
 		if (unTmpShort != unTmpPackLen) {
 			LOG_ERROR("default",
-					  "Code length not matched,left length %u is less than body length %u",
+					  "Code length not matched,left length {} is less than body length {}",
 					  unTmpPackLen,
 					  unTmpShort);
 			return -1;
@@ -133,7 +132,7 @@ int CS2cHandle::SendClientData()
 		nTmpIndex = tmpSocketInfo.socketid();
 		//socket 非法
 		if (nTmpIndex <= 0 || MAX_SOCKET_NUM <= nTmpIndex) {
-			LOG_ERROR("default", "Invalid socket index %d", nTmpIndex);
+			LOG_ERROR("default", "Invalid socket index {}", nTmpIndex);
 			continue;
 		}
 		CGateCtrl::GetSingletonPtr()->GetSingThreadPool()->PushTaskBack(
@@ -160,7 +159,7 @@ void CS2cHandle::SendToClient(const CSocketInfo &socketInfo, const char *data, u
 // 该过程需要在线程锁内完成
 	CAcceptor *pTmpAcceptor = CNetWork::GetSingletonPtr()->FindAcceptor(socketInfo.socketid());
 	if (pTmpAcceptor == NULL) {
-		LOG_ERROR("default", "CAcceptor has gone socket %d", socket);
+//		LOG_ERROR("default", "CAcceptor has gone, socket = {}", socket);
 		return;
 	}
 	/*
@@ -170,8 +169,8 @@ void CS2cHandle::SendToClient(const CSocketInfo &socketInfo, const char *data, u
 	*/
 	if (pTmpAcceptor->GetCreateTime() != socketInfo.createtime()) {
 		LOG_ERROR("default",
-				  "sokcet[%d] already closed(tcp createtime:%d:gate createtime:%d) : gate ==> client[%d] bytes failed",
-				  socket,
+				  "sokcet[{}] already closed(tcp createtime:{}:gate createtime:{}) : gate ==> client[{}] bytes failed",
+				  socketInfo.socketid(),
 				  pTmpAcceptor->GetCreateTime(),
 				  socketInfo.createtime(),
 				  m_nSCLength);
@@ -183,7 +182,7 @@ void CS2cHandle::SendToClient(const CSocketInfo &socketInfo, const char *data, u
 		//发送失败
 		CC2sHandle::ClearSocket(pTmpAcceptor, Err_ClientClose);
 		LOG_ERROR("default",
-				  "send to client %s Failed due to error %d",
+				  "send to client {} Failed due to error {}",
 				  pTmpAcceptor->GetSocket().GetSocket(),
 				  errno);
 		return;

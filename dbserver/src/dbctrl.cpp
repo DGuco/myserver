@@ -24,13 +24,13 @@ CDBCtrl::~CDBCtrl()
 void CDBCtrl::SetRunFlag(int iFlag)
 {
 	m_iRunFlag = iFlag;
-	LOG_INFO("default", "Set RunFunc Flag %d, All Flag Is %d", iFlag, m_iRunFlag);
+	LOG_INFO("default", "Set RunFunc Flag {}, All Flag Is {}", iFlag, m_iRunFlag);
 }
 
 void CDBCtrl::ClearRunFlag(int iFlag)
 {
 	m_iRunFlag = 0;
-	LOG_INFO("default", "Clear RunFunc Flag %d", iFlag);
+	LOG_INFO("default", "Clear RunFunc Flag {}", iFlag);
 }
 
 bool CDBCtrl::IsRunFlagSet(int iFlag)
@@ -72,7 +72,7 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(pMsg, abyCodeBuf, nCodeLength);
 	if (iRet != 0) {
-		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = %d.", iRet);
+		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = {}.", iRet);
 		return 0;
 	}
 
@@ -84,14 +84,14 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 	}
 	int nSendReturn = tmpConnector->Send(abyCodeBuf, nCodeLength);
 	if (nSendReturn < 0) {
-		LOG_ERROR("default", "Send Code(len:%d) To Proxy faild(error=%d)", nCodeLength, nSendReturn);
+		LOG_ERROR("default", "Send Code(len:{}) To Proxy faild(error={})", nCodeLength, nSendReturn);
 		return -1;
 	}
 
 	Message *pUnknownMessagePara = (Message *) pMsg->msgpara();
 	MY_ASSERT(pUnknownMessagePara != NULL, return 0);
 	const ::google::protobuf::Descriptor *pDescriptor = pUnknownMessagePara->GetDescriptor();
-	LOG_DEBUG("default", "SendMessageTo: MsgName[%s] ProxyHead[%s] MsgHead[%s] MsgPara[%s]",
+	LOG_DEBUG("default", "SendMessageTo: MsgName[{}] ProxyHead[{}] MsgHead[{}] MsgPara[{}]",
 			  pDescriptor->name().c_str(), stProxyHead->ShortDebugString().c_str(),
 			  pMsg->ShortDebugString().c_str(), ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
 
@@ -109,7 +109,7 @@ int CDBCtrl::Event(CProxyMessage *pMsg)
 	Message *pUnknownMessagePara = (Message *) pMsg->msgpara();
 	MY_ASSERT(pUnknownMessagePara != NULL, return 0);
 	const ::google::protobuf::Descriptor *pDescriptor = pUnknownMessagePara->GetDescriptor();
-	LOG_DEBUG("default", "ReceveMsg: MsgName[%s] MsgHead[%s] MsgPara[%s]",
+	LOG_DEBUG("default", "ReceveMsg: MsgName[{}] MsgHead[{}] MsgPara[{}]",
 			  pDescriptor->name().c_str(),
 			  pMsg->ShortDebugString().c_str(),
 			  ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
@@ -132,19 +132,19 @@ int CDBCtrl::Event(CProxyMessage *pMsg)
 int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 {
 	if (pMsg == NULL) {
-		LOG_ERROR("default", "Error: [%s][%d][%s], invalid input.\n", __MY_FILE__, __LINE__, __FUNCTION__);
+		LOG_ERROR("default", "Error: [{}][{}][{}], invalid input.\n", __MY_FILE__, __LINE__, __FUNCTION__);
 		return -1;
 	}
 
 	CMsgExecuteSqlRequest *pReqMsg = (CMsgExecuteSqlRequest *) (pMsg->msgpara());
 
 	if (pReqMsg == NULL) {
-		LOG_ERROR("default", "Error: [%s][%d][%s], msgpara null.\n", __MY_FILE__, __LINE__, __FUNCTION__);
+		LOG_ERROR("default", "Error: [{}][{}][{}], msgpara null.\n", __MY_FILE__, __LINE__, __FUNCTION__);
 		return -1;
 	}
 
 	if (pReqMsg->sql().length() <= 0) {
-		LOG_ERROR("default", "Error: [%s][%d][%s], sql len(%d) invalid.\n",
+		LOG_ERROR("default", "Error: [{}][{}][{}], sql len({}) invalid.\n",
 				  __MY_FILE__,
 				  __LINE__,
 				  __FUNCTION__,
@@ -153,7 +153,7 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 	}
 
 
-	LOG_ERROR("default", "%s \n", pReqMsg->ShortDebugString().c_str());
+	LOG_ERROR("default", "{} \n", pReqMsg->ShortDebugString().c_str());
 
 	string sqlStr = "";
 	if (pReqMsg->hasblob() == HASBLOB) {
@@ -162,7 +162,7 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 		if (pReqMsg->bufsize() > 0) {
 			if (pReqMsg->bufsize() >= MAX_PACKAGE_LEN) {
 				// blob字段超出长度
-				LOG_ERROR("default", "Error: [%s][%d][%s], exec sql %s faild. sql_len:%d > MAX_PACKAGE_LEN\n",
+				LOG_ERROR("default", "Error: [{}][{}][{}], exec sql {} faild. sql_len:{} > MAX_PACKAGE_LEN\n",
 						  __MY_FILE__,
 						  __LINE__,
 						  __FUNCTION__,
@@ -175,7 +175,7 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 			int len = m_pDatabase->escape_string(sqlBuff, pReqMsg->buffer().c_str(), pReqMsg->bufsize());
 			if (len <= 0) {
 				LOG_ERROR("default",
-						  "Error: [%s][%d][%s], escape_string error!!!!\n",
+						  "Error: [{}][{}][{}], escape_string error!!!!\n",
 						  __MY_FILE__,
 						  __LINE__,
 						  __FUNCTION__);
@@ -202,7 +202,7 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 		tSqlResMsg.set_timestamp(pReqMsg->timestamp());
 		tSqlResMsg.set_teamid(pReqMsg->teamid());
 
-		LOG_ERROR("default", "Execute SQL: %s", sqlStr.c_str());    // 用于在日志中查看SQL查询语句
+		LOG_ERROR("default", "Execute SQL: {}", sqlStr.c_str());    // 用于在日志中查看SQL查询语句
 
 		CProxyHead *pTmpHead = tMsg.mutable_msghead();
 		pTmpHead->set_messageid(CMsgExecuteSqlResponse::MsgID);
@@ -225,7 +225,7 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 			}
 			if (res == NULL)  // 无返回结果
 			{
-				LOG_ERROR("default", "sql %s exec, but no resultset returned", sqlStr.c_str());
+				LOG_ERROR("default", "sql {} exec, but no resultset returned", sqlStr.c_str());
 				tSqlResMsg.set_resultcode(0);
 			}
 			else  // 有返回结果
@@ -240,7 +240,7 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 					do {
 						Field *pField = res->Fetch();
 						if (pField == NULL) {
-							LOG_ERROR("default", "ERROR: do sql %s success, row[%d], col[%d], but some row is null\n",
+							LOG_ERROR("default", "ERROR: do sql {} success, row[{}], col[{}], but some row is null\n",
 									  sqlStr.c_str(),
 									  res->GetRowCount(),
 									  res->GetFieldCount());
@@ -275,7 +275,7 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 	else {
 		// 同步执行
 		if (m_pDatabase->RealDirectExecute(sqlStr.c_str(), sqlStr.length()) != true) {
-			LOG_ERROR("default", "Error: [%s][%d][%s], direct exec sql %s faild.\n",
+			LOG_ERROR("default", "Error: [{}][{}][{}], direct exec sql {} faild.\n",
 					  __MY_FILE__,
 					  __LINE__,
 					  __FUNCTION__,
@@ -302,21 +302,21 @@ int CDBCtrl::ConnectToProxyServer()
 							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive(),
 							 CServerConfig::GetSingletonPtr()->GetSocketTimeOut())
 		) {
-		LOG_ERROR("default", "[%s : %d : %s] Connect to Proxy(%s:%d)(id=%d) failed.",
+		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,
 				  proxyInfo->m_sHost.c_str(), proxyInfo->m_iPort, proxyInfo->m_iServerId);
 		return false;
 	}
 
 	if (RegisterToProxyServer()) {
-		LOG_ERROR("default", "Error: Register to Proxy Server %d failed.\n", proxyInfo->m_iServerId);
+		LOG_ERROR("default", "Error: Register to Proxy Server {} failed.\n", proxyInfo->m_iServerId);
 		return -1;
 	}
 
 	m_tLastSendKeepAlive = GetMSTime();    // 记录这一次的注册的时间
 	m_tLastRecvKeepAlive = GetMSTime();    // 由于是注册,所以也将第一次收到的时间记录为当下
 
-	LOG_INFO("default", "Connect to Proxy server %s:%d Succeed.\n", proxyInfo->m_sHost.c_str(), proxyInfo->m_iPort);
+	LOG_INFO("default", "Connect to Proxy server {}:{} Succeed.\n", proxyInfo->m_sHost.c_str(), proxyInfo->m_iPort);
 	return i;
 }
 
@@ -347,13 +347,13 @@ int CDBCtrl::RegisterToProxyServer()
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
 	if (iRet != 0) {
-		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = %d.", iRet);
+		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = {}.", iRet);
 		return 0;
 	}
 
 	iRet = m_pNetWork->FindConnector(m_iProxyId)->Send((BYTE *) message_buffer, tTotalLen);
 	if (iRet != 0) {
-		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer SendOneCode failed, iRet = %d.", iRet);
+		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer SendOneCode failed, iRet = {}.", iRet);
 		return -1;
 	}
 
@@ -388,13 +388,13 @@ int CDBCtrl::SendkeepAliveToProxy()
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
 	if (iRet != 0) {
-		LOG_ERROR("default", "CDBCtrsl::SendkeepAliveToProxy ConvertMsgToStream failed, iRet = %d.", iRet);
+		LOG_ERROR("default", "CDBCtrsl::SendkeepAliveToProxy ConvertMsgToStream failed, iRet = {}.", iRet);
 		return 0;
 	}
 
 	iRet = m_pNetWork->FindConnector(m_iProxyId)->Send((BYTE *) message_buffer, tTotalLen);
 	if (iRet != 0) {
-		LOG_ERROR("default", "CDBCtrl::SendkeepAliveToProxy  proxy SendOneCode failed, iRet = %d.", iRet);
+		LOG_ERROR("default", "CDBCtrl::SendkeepAliveToProxy  proxy SendOneCode failed, iRet = {}.", iRet);
 		return -1;
 	}
 
@@ -443,14 +443,14 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 				   enMessageCmd::MESS_REGIST);
 	if (tRet != 0)  // 如果解析失败则重新取 Code
 	{
-		LOG_ERROR("default", "Convert code to message failed. tRet = %d", tRet);
+		LOG_ERROR("default", "Convert code to message failed. tRet = {}", tRet);
 		return -1;
 	}
 
 	iTempRet = Event(&stTempMsg);  // 服务器执行相应的 Msg ，其实就是执行 SQL
 
 	if (iTempRet) {
-		LOG_ERROR("default", "Handle event returns %d.\n", iTempRet);
+		LOG_ERROR("default", "Handle event returns {}.\n", iTempRet);
 	}
 
 	// 消息回收
@@ -461,7 +461,7 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 	}
 
 	LOG_DEBUG("default",
-			  "PRoxyHead:SrcFE: %d SrcID: %d DstFE: %d DstID: %d OpFlag: %d ",
+			  "PRoxyHead:SrcFE: {} SrcID: {} DstFE: {} DstID: {} OpFlag: {} ",
 			  tProxyHead.srcfe(),
 			  tProxyHead.srcid(),
 			  tProxyHead.dstfe(),

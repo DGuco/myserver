@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 	CGameServer *pTmpGameServer = new CGameServer;
 	int iRet = pTmpGameServer->PrepareToRun();
 	if (iRet != 0) {
-		printf("CGameServer prepare to run failed, iRet = %d.\n", iRet);
+		printf("CGameServer prepare to run failed, iRet = {}.\n", iRet);
 		exit(0);
 	}
 

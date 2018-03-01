@@ -70,5 +70,5 @@ ShopItem* ShopConfig::item(int key)
         return it->second;
     }
     return NULL;
-//    throw ERROR::MSG("ShopConfig::item:%d", key);
+//    throw ERROR::MSG("ShopConfig::item:{}", key);
 }

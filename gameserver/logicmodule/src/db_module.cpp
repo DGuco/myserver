@@ -47,7 +47,7 @@ void CDbModule::OnRouterMessage(CProxyMessage *pMsg)
         }
         default:
         {
-            LOG_ERROR("db", "[%s : %d : %s] invalid message id(%8x).",
+            LOG_ERROR("db", "[{} : {} : {}] invalid message id(%8x).",
                       __MY_FILE__, __LINE__, __FUNCTION__, pMsg->msghead().messageid());
             break;
         }
@@ -80,13 +80,13 @@ void CDbModule::OnMsgExecuteSqlResponse(CProxyMessage* pMsg) {
         pTmpSession = (CSession *) CTimerManager::GetSingletonPtr()->GetObject(pTmpSqlRsp->sessionid());
 
         if (NULL == pTmpSession) {
-            LOG_ERROR("db", "[%s : %d : %s] Session doesn't exsit (logictype:%d:sessionid:%u ), has been deleted.",
+            LOG_ERROR("db", "[{} : {} : {}] Session doesn't exsit (logictype:{}:sessionid:%u ), has been deleted.",
                       __MY_FILE__, __LINE__, __FUNCTION__,
                       pTmpSqlRsp->logictype(), pTmpSqlRsp->sessionid());
             return;
         }
         if (pTmpSession->GetTimeout() != (time_t) pTmpSqlRsp->timestamp()) {
-            LOG_ERROR("db", "[%s : %d : %s] Session doesn't exsit (logictype:%d:sessionid:%u ), has been reused.",
+            LOG_ERROR("db", "[{} : {} : {}] Session doesn't exsit (logictype:{}:sessionid:%u ), has been reused.",
                       __MY_FILE__, __LINE__, __FUNCTION__,
                       pTmpSqlRsp->logictype(), pTmpSqlRsp->sessionid());
             return;
@@ -148,7 +148,7 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
     tmpMsgSqlRqt.set_hasblob(NONEBLOB);
     tmpMsg.set_msgpara((unsigned long)&tmpMsgSqlRqt);
 
-	LOG_DEBUG("db", "[%s]", ((Message*)tmpMsg.msgpara())->ShortDebugString().c_str());
+	LOG_DEBUG("db", "[{}]", ((Message*)tmpMsg.msgpara())->ShortDebugString().c_str());
 
     MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr()->SendMessageToDB(&tmpMsg), return -3);
 
@@ -198,14 +198,14 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
     tmpMsgSqlRqt.set_hasblob(HASBLOB);
 
     tmpMsg.set_msgpara((unsigned long)&tmpMsgSqlRqt);
-	LOG_DEBUG("db", "[%s]", ((Message*)tmpMsg.msgpara())->ShortDebugString().c_str());
+	LOG_DEBUG("db", "[{}]", ((Message*)tmpMsg.msgpara())->ShortDebugString().c_str());
     MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr()->SendMessageToDB(&tmpMsg ), return -2);
     return 0;
 }
 
 void CDbModule::FindOrCreateUserRequest(const std::string &platform,const std::string &puid,MesHead* mesHead)
 {
-    char* pcTmpSql = (char*)"SELECT `player_id` FROM user WHERE `platform` = %s AND `puid` = %s";
+    char* pcTmpSql = (char*)"SELECT `player_id` FROM user WHERE `platform` = {} AND `puid` = {}";
     int iRet = CDbModule::GetSingletonPtr()->ExecuteSql(
             emDBLogicType::emDBTypeFindOrCreateUser,
             0,
@@ -221,7 +221,7 @@ void CDbModule::FindOrCreateUserRequest(const std::string &platform,const std::s
     );
     if (iRet != 0)
     {
-        LOG_ERROR("db", "[%s : %d : %s] ExecuteSql failed, iRet=%d.",
+        LOG_ERROR("db", "[{} : {} : {}] ExecuteSql failed, iRet={}.",
                   __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 //        exit(0);
     }
@@ -256,7 +256,7 @@ void CDbModule::FindOrCreateUserResponse(CSession *pSession, CMsgExecuteSqlRespo
     else
     {
         // 拉取数据失败,则退出
-        LOG_ERROR("db", "[%s : %d : %s] LoadAllAccountResponse failed, resultcode=%d, row=%d, col=%d.",
+        LOG_ERROR("db", "[{} : {} : {}] LoadAllAccountResponse failed, resultcode={}, row={}, col={}.",
                   __MY_FILE__, __LINE__, __FUNCTION__, pMsgSql->resultcode(), iTmpRowCount, iTmpColCount);
         return;
     }
