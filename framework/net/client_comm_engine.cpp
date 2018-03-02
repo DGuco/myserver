@@ -39,7 +39,7 @@ int CClientCommEngine::ParseClientStream(const void **pBuff,
 
 	//小于最小长度(包头长度 - 包总长度所占字节长度)
 	if (nLen < MSG_HEAD_LEN - sizeof(PACK_LEN)) {
-		MY_ASSERT_STR(0, return -1, "the package len is less than base len ,receive len {}", nLen);
+		MY_ASSERT_STR(0, return -1, "The package len is less than base len ,receive len %d", nLen);
 	}
 
 	char *pTemp = (char *) (*pBuff);
@@ -339,7 +339,7 @@ int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
 	if (unTmpTotalLen != unBuffLen) {
 		MY_ASSERT_STR(0,
 					  return -1,
-					  "the package len is not equal to datalen {} ,package len {},data len",
+					  "The package len is not equal to data len %d ,package len %d",
 					  unBuffLen,
 					  unTmpTotalLen);
 	}

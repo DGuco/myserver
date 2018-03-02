@@ -40,7 +40,6 @@ CGameServer::~CGameServer()
 int CGameServer::Initialize()
 {
 	miServerState = 0;
-	mLastTickCount = 0;
 	m_pModuleManager = new CModuleManager;
 	m_pClientHandle = new CClientHandle;
 	m_pMessageDispatcher = new CMessageDispatcher;
@@ -55,16 +54,6 @@ int CGameServer::Initialize()
 // 读取配置
 int CGameServer::ReadCfg()
 {
-	LOG_NOTICE("default", "Read server config begin.");
-	return 0;
-}
-
-// 运行准备
-int CGameServer::PrepareToRun()
-{
-	// 初始化日志
-	INIT_ROATING_LOG("default", "../log/gameserver.log", level_enum::trace);
-	LOG_NOTICE("default", "CGameServer prepare to run.");
 	// 读取配置
 	CServerConfig *pTmpConfig = new CServerConfig;
 	const string filepath = "../config/serverinfo.json";
@@ -74,13 +63,23 @@ int CGameServer::PrepareToRun()
 		pTmpConfig = NULL;
 		exit(0);
 	}
+	return 0;
+}
 
-	LOG_INFO("default", "---------- printf server config ----------");
+// 运行准备
+int CGameServer::PrepareToRun()
+{
+#ifdef _DEBUG_
+	// 初始化日志
+	INIT_ROATING_LOG("default", "../log/gameserver.log", level_enum::trace);
+#else
+	// 初始化日志
+	INIT_ROATING_LOG("default", "../log/gameserver.log", level_enum::info);
+#endif
 	// 读取服务器配置信息
 	if (ReadCfg() != 0) {
 		return -1;
 	}
-
 	if (StartAllTimers() != 0) {
 		return -4;
 	}
@@ -135,26 +134,9 @@ void CGameServer::OnTimePerfLog(CTimerBase *pTimer)
 // 运行
 void CGameServer::Run()
 {
-	LOG_NOTICE("default", "CGameServer start to run now.");
-
+	LOG_INFO("default", "CGameServer start to run now.");
 	m_pClientHandle->Run();
 	m_pServerHandle->Run();
-//	while (true) {
-//		tTmpNow = GetMSTime();
-//		m_pTimerManager->CheckTimerQueue(tTmpNow);
-//		// 处理客户端上传请求
-//		iRet = RecvClientMsg(tTmpNow);
-//		// 处理服务器间请求
-//		iRet += RecvServerMsg(tTmpNow);
-//		// 检查服务器状态
-//		CheckRunFlags();
-//
-//		//当前没有可处理的消息等待1ms
-//		if (iRet == 0) {
-//			usleep(1000);
-//		}
-//
-//	}
 }
 
 // 退出
@@ -434,6 +416,11 @@ CThreadPool *CGameServer::GetLogicThread()
 CThreadPool *CGameServer::GetIoThread()
 {
 	return m_pIoThread;
+}
+
+CTimerManager *CGameServer::GetTimerManager()
+{
+	return m_pTimerManager;
 }
 
 CFactory *CGameServer::GetMessageFactory()

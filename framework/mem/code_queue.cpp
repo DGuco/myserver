@@ -658,13 +658,10 @@ bool CCodeQueue::IsQueueEmpty()
 {
 	int iTempRead;
 	int iTempWrite;
-
 	GetCriticalData(&iTempRead, &iTempWrite);
-
 	if (iTempRead == iTempWrite) {
 		return true;
 	}
-
 	return false;
 }
 

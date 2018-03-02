@@ -41,8 +41,8 @@ bool CListener::RegisterToReactor()
 										  (struct sockaddr *) &sin,
 										  sizeof(sin));
 #endif
-	MY_ASSERT_STR(m_pListener != NULL, exit(0), "Create evconnlistener failed.")
-	evconnlistener_set_error_cb(m_pListener, accept_error_cb);
+	MY_ASSERT_STR(m_pListener != NULL, exit(0), "Create evconnlistener failed,msg : %s", strerror(errno))
+	evconnlistener_set_error_cb(m_pListener, lcb_Accept_error_cb);
 	SetState(eLS_Listened);
 	return true;
 }
@@ -88,11 +88,11 @@ void CListener::lcb_Accept(struct evconnlistener *listener,
 	pListener->HandleInput(fd, sa);
 }
 
-void CListener::accept_error_cb(struct evconnlistener *listener, void *ctx)
+void CListener::lcb_Accept_error_cb(struct evconnlistener *listener, void *ctx)
 {
 	struct event_base *base = evconnlistener_get_base(listener);
 	int err = EVUTIL_SOCKET_ERROR();
-	MY_ASSERT_STR(false, DO_NOTHING, "Got an error  ({}) on the listener.\n", evutil_socket_error_to_string(err));
+	MY_ASSERT_STR(false, DO_NOTHING, "Got an error  (%s) on the listener.\n", evutil_socket_error_to_string(err));
 }
 
 void CListener::HandleInput(int socket, struct sockaddr *sa)

@@ -56,6 +56,7 @@ void CS2cHandle::CheckWaitSendData()
 	if (m_iSendIndex < m_oMesHead.socketinfos().size()) {
 		//有数据未发送，继续发送
 		SendClientData();
+		m_bHasRecv = false;
 	}
 	else {
 		//当前没有接收到数据，先接收数据
@@ -64,10 +65,11 @@ void CS2cHandle::CheckWaitSendData()
 			iTmpRet = RecvServerData();
 			//没有数据可接收，则发送队列无数据发送，退出
 			if (iTmpRet == 0) {
+				return;
 			}
 			m_bHasRecv = true;
 		}//处理已经接收到的数据
-		else {
+		if (m_bHasRecv == true) {
 			//组织服务器发送到客户端的数据信息头，设置相关索引和游标
 			m_iSendIndex = 0;
 			m_iSCIndex = 0;

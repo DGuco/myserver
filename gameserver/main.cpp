@@ -27,19 +27,13 @@ int main(int argc, char *argv[])
 	CGameServer *pTmpGameServer = new CGameServer;
 	int iRet = pTmpGameServer->PrepareToRun();
 	if (iRet != 0) {
-		printf("CGameServer prepare to run failed, iRet = {}.\n", iRet);
+		LOG_ERROR("default", "CGameServer prepare to run failed, iRet = {}.", iRet);
 		exit(0);
 	}
 
 	// 信号
 	signal(SIGUSR1, sigusr1_handle);
 	signal(SIGUSR2, sigusr2_handle);
-
-	{
-		printf("-------------------------------------------------\n");
-		printf("|          gameserver startup success!          |\n");
-		printf("-------------------------------------------------\n");
-	}
 
 	// 启动服务器
 	pTmpGameServer->Run();

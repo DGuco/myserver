@@ -12,7 +12,7 @@
 #define MY_ASSERT(a, fail_handle)                                        \
     if ((a) == false)                                                    \
     {                                                                    \
-        LOG_ERROR("default","[{} : {} : {s}] ASSERT: ({}) == flase.",    \
+        LOG_ERROR("default","[{} : {} : {}] ASSERT: ({}) == flase.",    \
                 __FILE__,__LINE__,__FUNCTION__,#a);                        \
         fail_handle;                                                    \
     }

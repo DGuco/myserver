@@ -49,8 +49,15 @@ void CAcceptor::lcb_OnPipeRead(struct bufferevent *bev, void *arg)
 void CAcceptor::lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg)
 {
 	CAcceptor *pAcceptor = static_cast<CAcceptor *>(arg);
-	MY_ASSERT_STR(pAcceptor != NULL, return, "CAcceptor Pipe Error with code {}", PpeGetLastError());
-	pAcceptor->ProcessSocketError();
+	MY_ASSERT_STR(pAcceptor != NULL, return, "Event param is illegal");
+	if (nWhat & EVBUFFER_EOF) {
+		pAcceptor->m_pFuncOnDisconnected(pAcceptor);
+		return;
+	}
+	if (nWhat & EVBUFFER_ERROR) {
+		pAcceptor->m_pFuncOnDisconnected(pAcceptor);
+	}
+	return;
 }
 
 void CAcceptor::ShutDown()
@@ -70,21 +77,6 @@ CAcceptor::eAcceptorState CAcceptor::GetState()
 void CAcceptor::SetState(eAcceptorState eState)
 {
 	m_eState = eState;
-}
-void CAcceptor::ProcessSocketError()
-{
-	switch (m_oSocket.GetSocketError()) {
-	case ePCFR_UNREACH:
-	case ePCFR_REFUSED:
-	case ePCFR_RESET:
-	case ePCFR_LOCALADDRINUSE:
-	case ePCFR_NOBUFFER:
-	case ePCFR_TIMEDOUT: {
-		m_pFuncOnDisconnected(this);
-		break;
-	}
-	default: MY_ASSERT_STR(false, return, "Unknown socket error");
-	}
 }
 
 void CAcceptor::BuffEventUnavailableCall()

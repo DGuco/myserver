@@ -44,16 +44,8 @@ int main(int argc, char **argv)
 	}
 
 	// 安装信号处理函数
-	signal(SIGUSR1, sigusr1_handle);
-
-	{
-		printf("-------------------------------------------------\n");
-		printf("|          proxyserver startup success!          |\n");
-		printf("-------------------------------------------------\n");
-	}
-
+	signal(SIGUSR1, sigusr1_handle);\
 	pProxyCtrl->Run();
-
 	SAFE_DELETE(CServerConfig::GetSingletonPtr());
 	if (pProxyCtrl != NULL) {
 		delete pProxyCtrl;

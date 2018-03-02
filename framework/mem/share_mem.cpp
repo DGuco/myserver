@@ -39,7 +39,7 @@ BYTE *CreateShareMem(key_t iKey, long vSize)
 	iTempShmSize = (size_t) vSize;
 	//iTempShmSize += sizeof(CSharedMem);
 
-	LOG_NOTICE("default", "Try to malloc share memory of {} bytes...", iTempShmSize);
+	LOG_INFO("default", "Try to malloc share memory of {} bytes...", iTempShmSize);
 
 	iShmID = shmget(iKey, iTempShmSize, IPC_CREAT | IPC_EXCL | 0666);
 
@@ -58,18 +58,18 @@ BYTE *CreateShareMem(key_t iKey, long vSize)
 //            LOG_ERROR( "default", "Fatal error, alloc share memory failed, {}", strerror(errno));
 //            exit(-1);
 //        }
-		LOG_NOTICE("default", "Same shm seg (key={}) exist, now try to attach it...", iKey);
+		LOG_INFO("default", "Same shm seg (key={}) exist, now try to attach it...", iKey);
 
 		iShmID = shmget(iKey, iTempShmSize, 0666);
 		if (iShmID < 0) {
-			LOG_NOTICE("default", "Attach to share memory {} failed, {}. Now try to touch it", iShmID, strerror(errno));
+			LOG_INFO("default", "Attach to share memory {} failed, {}. Now try to touch it", iShmID, strerror(errno));
 			iShmID = shmget(iKey, 0, 0666);
 			if (iShmID < 0) {
 				LOG_ERROR("default", "Fatel error, touch to shm failed, {}.", strerror(errno));
 				exit(-1);
 			}
 			else {
-				LOG_NOTICE("default", "First remove the exist share memory {}", iShmID);
+				LOG_INFO("default", "First remove the exist share memory {}", iShmID);
 				if (shmctl(iShmID, IPC_RMID, NULL)) {
 					LOG_ERROR("default", "Remove share memory failed, {}", strerror(errno));
 					exit(-1);
@@ -82,12 +82,12 @@ BYTE *CreateShareMem(key_t iKey, long vSize)
 			}
 		}
 		else {
-			LOG_NOTICE("default", "Attach to share memory succeed.");
+			LOG_INFO("default", "Attach to share memory succeed.");
 		}
 	}
 
-	LOG_NOTICE("default", "Successfully alloced share memory block, (key={}), id = {}, size = {}",
-			   iKey, iShmID, iTempShmSize);
+	LOG_INFO("default", "Successfully alloced share memory block, (key={}), id = {}, size = {}",
+			 iKey, iShmID, iTempShmSize);
 	BYTE *tpShm = (BYTE *) shmat(iShmID, NULL, 0);
 
 	if ((void *) -1 == tpShm) {
@@ -113,22 +113,19 @@ int DestroyShareMem(key_t iKey)
 		LOG_ERROR("default", "Error in ftok, {}.", strerror(errno));
 		return -1;
 	}
-
-	LOG_NOTICE("default", "Touch to share memory key = {}...", iKey);
-
+	LOG_INFO("default", "Touch to share memory key = {}...", iKey);
 	iShmID = shmget(iKey, 0, 0666);
 	if (iShmID < 0) {
 		LOG_ERROR("default", "Error, touch to shm failed, {}", strerror(errno));
 		return -1;
 	}
 	else {
-		LOG_NOTICE("default", "Now remove the exist share memory {}", iShmID);
+		LOG_INFO("default", "Now remove the exist share memory {}", iShmID);
 		if (shmctl(iShmID, IPC_RMID, NULL)) {
 			LOG_ERROR("default", "Remove share memory failed, {}", strerror(errno));
 			return -1;
 		}
-		LOG_NOTICE("default", "Remove shared memory(id = {}, key = {}) succeed.", iShmID, iKey);
+		LOG_INFO("default", "Remove shared memory(id = {}, key = {}) succeed.", iShmID, iKey);
 	}
-
 	return 0;
 }

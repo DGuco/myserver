@@ -35,7 +35,8 @@ private:
 	static void lcb_OnConnectFailed(CConnector *pConnector);
 	static void lcb_OnCnsSomeDataSend(CConnector *pConnector);
 	static void lcb_OnPingServer(CConnector *pConnector);
-protected:
+private:
+	static void DealServerData(CConnector *pConnector);
 	static void SetProxyId(int id);
 	static int GetProxyId();
 private:

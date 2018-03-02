@@ -79,8 +79,8 @@ set(FRAMEWORK
         thread/thread_pool.h
         timer/clock.cpp
         timer/clock.h
-        #        timer/timer.h
-        #        timer/timer.cpp
+        timer/timer.h
+        timer/timer.cpp
         )
 
 include_directories(

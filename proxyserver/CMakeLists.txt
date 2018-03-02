@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(proxyserver)
-add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DMEDIUM_SIZE -D_POSIX_MT_ -DLINUX -DUSE_MY_ASSERT)
+add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT)
 
 set(SOURCE_FILES
         main.cpp

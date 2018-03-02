@@ -201,11 +201,7 @@ int CClientHandle::Recv()
 												  CMessageFactory::GetSingletonPtr()) != 0) {
 		return ClienthandleErrCode::CLIENTHANDLE_PARSE_FAILED;
 	}
-
-//	std::future<int> ret = CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskBack(
-//		std::mem_fn(&CClientHandle::DealClientMessage), &m_oMessage);
-//	iRet = ret.get();
-//	return iRet;
+	
 	CGameServer::GetSingletonPtr()->GetLogicThread()
 		->PushTaskBack([this]
 					   {

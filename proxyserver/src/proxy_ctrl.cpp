@@ -4,10 +4,10 @@
 //  Created by DGuco on 16/12/6.
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
-#include <config.h>
-#include <map>
-#include "../inc/proxy_ctrl.h"
+#include "config.h"
+#include "my_assert.h"
 #include "acceptor.h"
+#include "../inc/proxy_ctrl.h"
 #include "client_comm_engine.h"
 #include "server_comm_engine.h"
 
@@ -33,8 +33,13 @@ CProxyCtrl::~CProxyCtrl()
 
 int CProxyCtrl::PrepareToRun()
 {
-	// 初始化日志信息(临时)
-	INIT_ROLLINGFILE_LOG("default", "../log/proxyserver.log", LEVEL_DEBUG, 10 * 1024 * 1024, 5);
+#ifdef _DEBUG_
+	// 初始化日志
+	INIT_ROATING_LOG("default", "../log/proxyserver.log", level_enum::trace);
+#else
+	// 初始化日志
+	INIT_ROATING_LOG("default", "../log/proxyserver.log", level_enum::info);
+#endif
 
 	// 读取配置
 	CServerConfig *pTmpConfig = new CServerConfig;
@@ -53,13 +58,19 @@ int CProxyCtrl::PrepareToRun()
 							&CProxyCtrl::lcb_OnCnsSomeDataRecv,
 							-1,
 							CServerConfig::GetSingletonPtr()->GetTcpKeepAlive());
-	LOG_INFO("default", "ProxyServer is going to run at {} : {}", proxyInfo->m_sHost.c_str(), proxyInfo->m_iPort);
 	return 0;
 }
 
 int CProxyCtrl::Run()
 {
+	LOG_INFO("default", "Libevent run with net module {}",
+			 event_base_get_method(reinterpret_cast<const event_base *>(CNetWork::GetSingletonPtr()
+				 ->GetEventReactor()->GetEventBase())));
+	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+	LOG_INFO("default", "ProxyServer is going to run at {} : {}", proxyInfo->m_sHost.c_str(), proxyInfo->m_iPort);
+	LOG_INFO("default", "ProxyServer startup successes");
 	m_pNetWork->DispatchEvents();
+	return 0;
 }
 
 CAcceptor *CProxyCtrl::GetConnByKey(int iKey)
@@ -90,6 +101,7 @@ void CProxyCtrl::lcb_OnAcceptCns(uint32 uId, CAcceptor *pAcceptor)
 void CProxyCtrl::lcb_OnCnsDisconnected(CAcceptor *pAcceptor)
 {
 	MY_ASSERT(pAcceptor != NULL, return);
+	CNetWork::GetSingletonPtr()->ShutDownAcceptor(pAcceptor->GetSocket().GetSocket());
 }
 
 void CProxyCtrl::lcb_OnCnsSomeDataRecv(CAcceptor *pAcceptor)

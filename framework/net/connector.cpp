@@ -33,20 +33,7 @@ bool CConnector::Connect(const CNetAddr &addr, const timeval time /* = NULL */)
 	MY_ASSERT(SOCKET_ERROR != nResult, return false);
 
 	switch (errno) {
-#if defined(GH_OS_WIN32)
-		case EWOULDBLOCK:
-#else
-	case EINPROGRESS:
-#endif
-		nResult = 1;
-		break;
-#ifdef GH_OS_WIN32
-		case ENOBUFS:
-			nResult=2;
-			eReason=ePCFR_NOBUFFER;
-			GH_INFO("connect return error ENOBUFS : {}", ENOBUFS);
-			return false;
-#endif
+	case EINPROGRESS: break;
 	case EADDRINUSE:
 	case ECONNREFUSED:
 	case ETIMEDOUT:
@@ -91,12 +78,12 @@ void CConnector::HandleInput(int32 socket, int16 nEventMask, void *arg)
 	switch (nEventMask) {
 	case EV_WRITE: {
 		OnConnectted();
-		MY_ASSERT_STR(false, return, "OnConnectted {} : {} ", m_oAddr.GetAddress(), m_oAddr.GetPort());
+		MY_ASSERT_STR(false, return, "OnConnectted %s : %s ", m_oAddr.GetAddress(), m_oAddr.GetPort());
 	}
 	case EV_TIMEOUT: {
 		ShutDown();
 		m_pFuncOnConnectFailed(this);
-		MY_ASSERT_STR(false, return, "connect {} : {} EV_TIMEOUT", m_oAddr.GetAddress(), m_oAddr.GetPort());
+		MY_ASSERT_STR(false, return, "connect %s : %d EV_TIMEOUT", m_oAddr.GetAddress(), m_oAddr.GetPort());
 	}
 	default: MY_ASSERT_STR(false, return, "connect failed, unkown error!!!");
 	}
@@ -112,10 +99,10 @@ void CConnector::ShutDown()
 {
 	if (IsConnecting()) {
 		m_pConnectEvent->Cancel();
-		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connecting: {} : {}", m_oAddr.GetAddress(), m_oAddr.GetPort());
+		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connecting: %s : %d", m_oAddr.GetAddress(), m_oAddr.GetPort());
 	}
 	else if (IsConnected()) {
-		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connected: {} : {}", m_oAddr.GetAddress(), m_oAddr.GetPort());
+		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connected: %s : %d", m_oAddr.GetAddress(), m_oAddr.GetPort());
 		GetReactor()->UnRegister(this);
 	}
 	m_oSocket.Shutdown();
@@ -137,11 +124,15 @@ void CConnector::lcb_OnPipeWrite(bufferevent *bev, void *arg)
 void CConnector::lcb_OnPipeError(bufferevent *bev, int16 nWhat, void *arg)
 {
 	CConnector *pConnector = static_cast<CConnector *>(arg);
-	MY_ASSERT_STR(false, DO_NOTHING, "{}, {} lcb_OnPipeError With PpeGetLastError {}", pConnector->m_oAddr.GetAddress(),
-				  pConnector->m_oAddr.GetPort(), PpeGetLastError());
+	MY_ASSERT_STR(false,
+				  DO_NOTHING,
+				  "%s : %d lcb_OnPipeError With PpeGetLastError {}",
+				  pConnector->m_oAddr.GetAddress(),
+				  pConnector->m_oAddr.GetPort(),
+				  PpeGetLastError());
 	pConnector->ShutDown();
 	if (nWhat & EVBUFFER_EOF) {
-		MY_ASSERT_STR(false, DO_NOTHING, "{}, {} lcb_OnPipeError EVBUFFER_EOF {}",
+		MY_ASSERT_STR(false, DO_NOTHING, "%s : %d lcb_OnPipeError EVBUFFER_EOF %d",
 					  pConnector->m_oAddr.GetAddress(),
 					  pConnector->m_oAddr.GetPort(),
 					  nWhat);
@@ -150,7 +141,7 @@ void CConnector::lcb_OnPipeError(bufferevent *bev, int16 nWhat, void *arg)
 	}
 
 	if (nWhat & EVBUFFER_ERROR) {
-		MY_ASSERT_STR(false, DO_NOTHING, "{}, {} lcb_OnPipeError EVBUFFER_ERROR {}", pConnector->m_oAddr.GetAddress(),
+		MY_ASSERT_STR(false, DO_NOTHING, "%s : %d lcb_OnPipeError EVBUFFER_ERROR %d", pConnector->m_oAddr.GetAddress(),
 					  pConnector->m_oAddr.GetPort(), nWhat);
 		pConnector->m_pFuncOnDisconnected(pConnector);
 		return;

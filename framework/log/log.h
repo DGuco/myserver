@@ -18,8 +18,8 @@ using namespace spdlog::level;
 #	define INIT_ROATING_LOG    InitRoatingLog                        // 初始化一种日志类型（基于回卷文件)
 #	define INIT_DAILY_LOG    InitDailyLog                        // 初始化一种日志类型（每天)
 #	define LOG_SHUTDOWN_ALL        ShutdownAllLog()        // 关闭所有类型日志
-#	define LOG_DEBUG                        LogDebug
 #	define LOG_NOTICE                        LogTrace
+#	define LOG_DEBUG                        LogDebug
 #	define LOG_INFO                        LogInfo
 #	define LOG_WARN                        LogWarn
 #	define LOG_ERROR                        LogError

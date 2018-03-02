@@ -1,4 +1,5 @@
 #include "player.pb.h"
+#include "my_assert.h"
 #include "../inc/coremo_dule.h"
 #include "../inc/db_module.h"
 #include "../inc/module_manager.h"
@@ -51,7 +52,8 @@ void CCoreModule::OnDestroyEntity(CPlayer *pTeam)
 
 void CCoreModule::OnMsgUserLoginRequest(CMessage *pMsg)
 {
-	MY_ASSERT_LOG("core", pMsg != NULL, return);
+	MY_ASSERT_LOG("core", pMsg != NULL,
+				  return);
 	UserAccountLoginRequest *request = (UserAccountLoginRequest *) pMsg->msgpara();
 	CDbModule::GetSingletonPtr()
 		->FindOrCreateUserRequest(request->platform(), request->puid(), pMsg->mutable_msghead());
@@ -59,7 +61,8 @@ void CCoreModule::OnMsgUserLoginRequest(CMessage *pMsg)
 
 void CCoreModule::OnMsgPlayerLoginRequest(CMessage *pMsg)
 {
-	MY_ASSERT_LOG("core", pMsg != NULL, return);
+	MY_ASSERT_LOG("core", pMsg != NULL,
+				  return);
 	PlayerLoginRequest *request = (PlayerLoginRequest *) pMsg->msgpara();
 	CPlayer *pPlayer = CSceneObjManager::GetSingletonPtr()->GetPlayer(request->playerid());
 	if (pPlayer == NULL) {

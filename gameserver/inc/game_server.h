@@ -146,31 +146,30 @@ public:
 	// 限制玩家登陆
 	int LimitTeamLogin(unsigned int iTeamID, time_t iTimes); // itimes 暂定为小时
 	// 获取消息工厂
-	CFactory* GetMessageFactory();
+	CFactory *GetMessageFactory();
 	// 获取逻辑线程
 	CThreadPool *GetLogicThread();
 	// 获取io线程
 	CThreadPool *GetIoThread();
-private:
-	CClientHandle *m_pClientHandle;             // 与客户端通信的连接,需要new在共享内存上的
-	CServerHandle *m_pServerHandle;             // 与服务器间的连接管理
-	CModuleManager *m_pModuleManager;            // 模块管理器
-	CMessageDispatcher *m_pMessageDispatcher;        // 消息派发器
-	CFactory *m_pMessageFactory;            // 消息工厂
-	CTimerManager *m_pTimerManager;            // 定时器管理器
-	CRunFlag m_RunFlag;                    // 服务器运行状态
-	CThreadPool *m_pLogicThread;    //逻辑线程
-	CThreadPool *m_pIoThread;        //io线程
-	int miServerState;    // 服务器状态
-	unsigned long long mLastTickCount; // tick
+	//获取timer管理器
+	CTimerManager *GetTimerManager();
 public:
-	const CNetWork *GetNetWork();
-
 	// 为找不到CTeam的连接发送消息
 	void SendMsgSystemErrorResponse(int iResult,
 									long lMsgGuid,
 									int iServerID,
 									time_t tCreateTime,
 									bool bKickOff = false);
+private:
+	CClientHandle *m_pClientHandle;             // 与客户端通信的连接
+	CServerHandle *m_pServerHandle;             // 与服务器的连接管理(proxyserver)
+	CModuleManager *m_pModuleManager;           // 模块管理器
+	CMessageDispatcher *m_pMessageDispatcher;   // 消息派发器
+	CFactory *m_pMessageFactory;                // 消息工厂
+	CTimerManager *m_pTimerManager;             // 定时器管理器
+	CRunFlag m_RunFlag;                         // 服务器运行状态
+	CThreadPool *m_pLogicThread;                // 逻辑线程
+	CThreadPool *m_pIoThread;                   // io线程(收发消息)
+	int miServerState;    // 服务器状态
 };
 #endif //SERVER_GAMESERVER_H

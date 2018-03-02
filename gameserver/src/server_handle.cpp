@@ -5,6 +5,7 @@
 #include <config.h>
 #include <server_comm_engine.h>
 #include "connector.h"
+#include "my_assert.h"
 #include "../inc/server_handle.h"
 #include "../inc/game_server.h"
 
@@ -57,7 +58,7 @@ bool CServerHandle::Connect2Proxy()
 							 &CServerHandle::lcb_OnCnsSomeDataRecv,
 							 &CServerHandle::lcb_OnPingServer,
 							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive(),
-							 CServerConfig::GetSingletonPtr()->GetSocketTimeOut())
+							 2)
 		) {
 		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,
@@ -152,8 +153,12 @@ void CServerHandle::SendMessageToProxy(char *data, PACK_LEN len)
 
 void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
 {
-	MY_ASSERT(pConnector != NULL, return);
-	SetProxyId(pConnector->GetSocket().GetSocket());
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([pConnector]
+					   {
+						   MY_ASSERT(pConnector != NULL, return);
+						   SetProxyId(pConnector->GetSocket().GetSocket());
+					   });
 }
 
 void CServerHandle::lcb_OnCnsDisconnected(CConnector *pConnector)
@@ -162,6 +167,29 @@ void CServerHandle::lcb_OnCnsDisconnected(CConnector *pConnector)
 }
 
 void CServerHandle::lcb_OnCnsSomeDataRecv(CConnector *pConnector)
+{
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([pConnector]
+					   {
+						   DealServerData(pConnector);
+					   });
+}
+
+void CServerHandle::lcb_OnCnsSomeDataSend(CConnector *pConnector)
+{
+	MY_ASSERT(pConnector != NULL, return);
+
+}
+void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
+{
+	MY_ASSERT(pConnector != NULL, return);
+}
+
+void CServerHandle::lcb_OnPingServer(CConnector *pConnector)
+{
+}
+
+void CServerHandle::DealServerData(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 	//数据不完整
@@ -196,21 +224,6 @@ void CServerHandle::lcb_OnCnsSomeDataRecv(CConnector *pConnector)
 	// 处理服务器间消息
 	CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskBack(
 		&CMessageDispatcher::ProcessServerMessage, &tmpMessage);
-}
-
-void CServerHandle::lcb_OnCnsSomeDataSend(CConnector *pConnector)
-{
-	MY_ASSERT(pConnector != NULL, return);
-
-}
-void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
-{
-	MY_ASSERT(pConnector != NULL, return);
-
-}
-
-void CServerHandle::lcb_OnPingServer(CConnector *pConnector)
-{
 }
 
 void CServerHandle::SetProxyId(int id)

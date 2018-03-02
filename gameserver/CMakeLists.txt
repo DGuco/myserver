@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(gameserver)
-add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX)
+add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT)
 
 set(SOURCE_FILES
         main.cpp
@@ -10,12 +10,11 @@ set(SOURCE_FILES
         inc/message_dispatcher.h
         src/server_handle.cpp
         inc/server_handle.h
-        datamodule/inc/sceneobjmanager.h
         src/game_server.cpp
         src/client_handle.cpp
         src/message_factory.cpp
         src/message_dispatcher.cpp
-        datamodule/src/sceneobjmanager.cpp
+        datamodule/inc/sceneobjmanager.h
         datamodule/inc/player.h
         datamodule/inc/playerdata.h
         datamodule/inc/playerbase.h
@@ -24,6 +23,7 @@ set(SOURCE_FILES
         datamodule/src/playerbase.cpp
         datamodule/src/playerdata.cpp
         datamodule/src/playercity.cpp
+        datamodule/src/sceneobjmanager.cpp
         logicmodule/inc/coremo_dule.h
         logicmodule/inc/logic_module.h
         logicmodule/inc/module_manager.h

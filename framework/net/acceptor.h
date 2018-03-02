@@ -56,8 +56,6 @@ private:
 	eAcceptorState GetState();
 	//设置连接状态
 	void SetState(eAcceptorState eState);
-	//处理socket错误
-	void ProcessSocketError();
 
 private:
 	CNetAddr *m_pNetAddr;
