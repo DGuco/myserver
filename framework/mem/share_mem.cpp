@@ -58,7 +58,7 @@ BYTE *CreateShareMem(key_t iKey, long vSize)
 //            LOG_ERROR( "default", "Fatal error, alloc share memory failed, {}", strerror(errno));
 //            exit(-1);
 //        }
-		LOG_NOTICE("default", "Same shm seg (key=0X{0:x}) exist, now try to attach it...", iKey);
+		LOG_NOTICE("default", "Same shm seg (key={}) exist, now try to attach it...", iKey);
 
 		iShmID = shmget(iKey, iTempShmSize, 0666);
 		if (iShmID < 0) {
@@ -86,11 +86,8 @@ BYTE *CreateShareMem(key_t iKey, long vSize)
 		}
 	}
 
-	LOG_NOTICE("default",
-			   "Successfully alloced share memory block, key = 0X{0:x}, id = {}, size = {}",
-			   iKey,
-			   iShmID,
-			   iTempShmSize);
+	LOG_NOTICE("default", "Successfully alloced share memory block, (key={}), id = {}, size = {}",
+			   iKey, iShmID, iTempShmSize);
 	BYTE *tpShm = (BYTE *) shmat(iShmID, NULL, 0);
 
 	if ((void *) -1 == tpShm) {
@@ -117,7 +114,7 @@ int DestroyShareMem(key_t iKey)
 		return -1;
 	}
 
-	LOG_NOTICE("default", "Touch to share memory key = 0X{0:x}...", iKey);
+	LOG_NOTICE("default", "Touch to share memory key = {}...", iKey);
 
 	iShmID = shmget(iKey, 0, 0666);
 	if (iShmID < 0) {
@@ -130,7 +127,7 @@ int DestroyShareMem(key_t iKey)
 			LOG_ERROR("default", "Remove share memory failed, {}", strerror(errno));
 			return -1;
 		}
-		LOG_NOTICE("default", "Remove shared memory(id = {}, key = 0X{0:x}) succeed.", iShmID, iKey);
+		LOG_NOTICE("default", "Remove shared memory(id = {}, key = {}) succeed.", iShmID, iKey);
 	}
 
 	return 0;

@@ -1,6 +1,7 @@
 //
 // Created by DGuco on 17-3-1.
 //
+#include "my_assert.h"
 #include "config.h"
 #include "server_comm_engine.h"
 #include "../inc/game_server.h"
@@ -61,10 +62,9 @@ int CGameServer::ReadCfg()
 // 运行准备
 int CGameServer::PrepareToRun()
 {
-	LOG_NOTICE("default", "CGameServer prepare to run.");
 	// 初始化日志
-	INIT_ROLLINGFILE_LOG("default", "../log/gameserver.log", LEVEL_DEBUG);
-
+	INIT_ROATING_LOG("default", "../log/gameserver.log", level_enum::trace);
+	LOG_NOTICE("default", "CGameServer prepare to run.");
 	// 读取配置
 	CServerConfig *pTmpConfig = new CServerConfig;
 	const string filepath = "../config/serverinfo.json";
@@ -167,7 +167,8 @@ void CGameServer::Exit()
 
 void CGameServer::ProcessClientMessage(CMessage *pMsg, CPlayer *pPlayer)
 {
-	MY_ASSERT(pMsg != NULL && pPlayer != NULL, return);
+	MY_ASSERT(pMsg != NULL && pPlayer != NULL,
+			  return);
 //    MY_ASSERT(pMsg->has_msghead() == true, return);
 	int iTmpType = GetModuleClass(pMsg->msghead().cmd());
 	try {
@@ -180,7 +181,8 @@ void CGameServer::ProcessClientMessage(CMessage *pMsg, CPlayer *pPlayer)
 
 void CGameServer::ProcessRouterMessage(CProxyMessage *pMsg)
 {
-	MY_ASSERT(pMsg != NULL, return);
+	MY_ASSERT(pMsg != NULL,
+			  return);
 //    MY_ASSERT(pMsg->has_msghead() == true, return);
 	int iTmpType = GetModuleClass(pMsg->msghead().messageid());
 	try {
@@ -268,7 +270,8 @@ int CGameServer::Push(unsigned int iMsgID, Message *pMsg, stPointList *pTeamList
 // 发送消息给单个玩家
 int CGameServer::Push(unsigned int iMsgID, Message *pMsg, CPlayer *pPlayer)
 {
-	MY_ASSERT(pPlayer != NULL && pMsg != NULL, return -1);
+	MY_ASSERT(pPlayer != NULL && pMsg != NULL,
+			  return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
 	m_pClientHandle->PushAsync(iMsgID, pMsg, &tmpList);
@@ -278,7 +281,8 @@ int CGameServer::Push(unsigned int iMsgID, Message *pMsg, CPlayer *pPlayer)
 // 回复客户端上行的请求
 int CGameServer::SendResponse(Message *pMsgPara, CPlayer *pPlayer)
 {
-	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
+	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
+			  return -1);
 	m_pClientHandle->SendResponseAsync(pMsgPara, pPlayer);
 	return 0;
 }
@@ -286,7 +290,8 @@ int CGameServer::SendResponse(Message *pMsgPara, CPlayer *pPlayer)
 // 回复客户端上行的请求
 int CGameServer::SendResponse(Message *pMsgPara, MesHead *mesHead)
 {
-	MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
+	MY_ASSERT(mesHead != NULL && pMsgPara != NULL,
+			  return -1);
 	m_pClientHandle->SendResponseAsync(pMsgPara, mesHead);
 	return 0;
 }

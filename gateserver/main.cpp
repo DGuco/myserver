@@ -1,6 +1,6 @@
 //
 //  main.cpp
-//  tcpserver 
+//  gateserver
 //  Created by DGuco on 16/12/8.
 //  Copyright © 2016年 DGuco. All rights reserved.
 //

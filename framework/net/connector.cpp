@@ -56,13 +56,13 @@ bool CConnector::Connect(const CNetAddr &addr, const timeval time /* = NULL */)
 	}
 
 	m_pConnectEvent = new CSysEvent(GetReactor(),
-								 &CConnector::lcb_OnConnectResult,
-								 this,
-								 time.tv_sec,
-								 time.tv_usec,
-								 1,
-								 m_oSocket.GetSocket(),
-								 EV_WRITE);
+									&CConnector::lcb_OnConnectResult,
+									this,
+									time.tv_sec,
+									time.tv_usec,
+									1,
+									m_oSocket.GetSocket(),
+									EV_WRITE);
 	SetState(eCS_Connecting);
 	return true;
 }

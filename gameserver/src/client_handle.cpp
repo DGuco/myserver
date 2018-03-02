@@ -8,6 +8,7 @@
 #include "err_code.h"
 #include "share_mem.h"
 #include "client_comm_engine.h"
+#include "my_assert.h"
 #include "../inc/message_dispatcher.h"
 #include "../inc/message_factory.h"
 #include "../inc/client_handle.h"

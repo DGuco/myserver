@@ -26,7 +26,8 @@ int InitBaseLog(const char *vLogName,                        /*日志类型的�
 	if (log == nullptr) {
 		return -1;
 	}
-	spdlog::set_level(level);
+	log->set_level(level);
+	log->flush_on(level);
 	return 0;
 }
 
@@ -55,7 +56,8 @@ int InitRoatingLog(const char *vLogName,                        /*日志类型�
 	if (log == NULL) {
 		return -1;
 	}
-	spdlog::set_level(level);
+	log->set_level(level);
+	log->flush_on(level);
 	return 0;
 }
 
@@ -72,7 +74,7 @@ int InitDailyLog(const char *vLogName,                        /*日志类型的�
 #ifdef _DEBUG_
 	auto log = spdlog::stdout_color_mt(vLogName);
 #else
-	auto log = spdlog::daily_logger_mt(vLogName, vLogDir, hour, minute);
+	auto log = ::daily_logger_mt(vLogName, vLogDir, hour, minute);
 #endif
 #else
 #ifdef _DEBUG_
@@ -84,7 +86,8 @@ int InitDailyLog(const char *vLogName,                        /*日志类型的�
 	if (log == NULL) {
 		return -1;
 	}
-	spdlog::set_level(level);
+	log->set_level(level);
+	log->flush_on(level);
 	return 0;
 }
 

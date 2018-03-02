@@ -36,7 +36,7 @@ int InitRoatingLog(const char *vLogName,                        /*日志类型�
 				   const char *vLogDir,                        /*文件名称(路径)*/
 				   level_enum level,        /*日志等级*/
 				   unsigned int vMaxFileSize = 10 * 1024 * 1024,    /*回卷文件最大长度*/
-				   unsigned int vMaxBackupIndex = 1);            /*回卷文件个数*/
+				   unsigned int vMaxBackupIndex = 5);            /*回卷文件个数*/
 
 int InitDailyLog(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
 				 const char *vLogDir,                        /*文件名称(路径)*/
