@@ -153,6 +153,8 @@ public:
 	CThreadPool *GetIoThread();
 	//获取timer管理器
 	CTimerManager *GetTimerManager();
+	//获取serverhandle
+	CServerHandle *GetServerHandle();
 public:
 	// 为找不到CTeam的连接发送消息
 	void SendMsgSystemErrorResponse(int iResult,

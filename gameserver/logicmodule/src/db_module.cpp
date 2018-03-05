@@ -81,7 +81,8 @@ void CDbModule::OnMsgExecuteSqlResponse(CProxyMessage *pMsg)
 	CSession *pTmpSession = NULL;
 	if (pTmpSqlRsp->sessionid() != 0) {
 		// 如果有session
-		pTmpSession = (CSession *) CGameServer::GetSingletonPtr()->GetTimerManager()->GetObject(pTmpSqlRsp->sessionid());
+		pTmpSession =
+			(CSession *) CGameServer::GetSingletonPtr()->GetTimerManager()->GetObject(pTmpSqlRsp->sessionid());
 
 		if (NULL == pTmpSession) {
 			LOG_ERROR("db", "[{} : {} : {}] Session doesn't exsit (logictype:{}:sessionid:%u ), has been deleted.",
@@ -117,8 +118,7 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
 						  MesHead *mesHead,
 						  const char *pSql, ...)
 {
-	MY_ASSERT_LOG("db", pSql != NULL,
-				  return -1);
+	MY_ASSERT_LOG("db", pSql != NULL, return -1);
 
 	// 参数整理
 	va_list tmpArgs;
@@ -153,10 +153,7 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
 	tmpMsg.set_msgpara((unsigned long) &tmpMsgSqlRqt);
 
 	LOG_DEBUG("db", "[{}]", ((Message *) tmpMsg.msgpara())->ShortDebugString().c_str());
-
-	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr()->SendMessageToDB(&tmpMsg),
-				  return -3);
-
+	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr()->SendMessageToDB(&tmpMsg), return -3);
 	return 0;
 }
 
@@ -173,8 +170,7 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
 								 const char *pSQLWhere,
 								 MesHead *mesHead, ...)
 {
-	MY_ASSERT_LOG("db", pSql != NULL && pBlob != NULL && pSQLWhere != NULL,
-				  return -1);
+	MY_ASSERT_LOG("db", pSql != NULL && pBlob != NULL && pSQLWhere != NULL, return -1);
 
 	// 发往dbserver消息整理
 	static CProxyMessage tmpMsg;
@@ -234,8 +230,7 @@ void CDbModule::FindOrCreateUserRequest(const std::string &platform, const std::
 
 void CDbModule::FindOrCreateUserResponse(CSession *pSession, CMsgExecuteSqlResponse *pMsgSql, CProxyHead *proxyHead)
 {
-	MY_ASSERT_LOG("db", pMsgSql != NULL && pSession != NULL && proxyHead != NULL,
-				  return);
+	MY_ASSERT_LOG("db", pMsgSql != NULL && pSession != NULL && proxyHead != NULL, return);
 
 	int iTmpRowCount = pMsgSql->rowcount();        // 行数
 	int iTmpColCount = pMsgSql->colcount();        // 列数

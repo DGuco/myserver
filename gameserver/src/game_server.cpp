@@ -206,20 +206,17 @@ bool CGameServer::SendMessageToDB(CProxyMessage *pMsg)
 		return false;
 	}
 
-#ifdef _DEBUG_
-
 	Message *pTmpUnknownMessagePara = (Message *) pMsg->msgpara();
 	// 如果是打印出错依然返回成功
 	MY_ASSERT(pTmpUnknownMessagePara != NULL, return true);
 	const ::google::protobuf::Descriptor *pDescriptor = pTmpUnknownMessagePara->GetDescriptor();
 	LOG_DEBUG("default",
-			  "---- Send DB({}) Msg[ {} ][id: 0x%08x / {}] ----",
+			  "---- Send DB({}) Msg[ {} ][id: {} / {}] ----",
 			  pHead->dstid(),
 			  pDescriptor->name().c_str(),
 			  pMsg->msghead().messageid(),
 			  pMsg->msghead().messageid());
 	LOG_DEBUG("default", "[{}]", ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
-#endif
 	return true;
 }
 

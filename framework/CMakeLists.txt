@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.6)
 project(myserver)
-add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DLINUX -DEVENT_THREAD_SAFE -DLOG_THREAD_SAFE)
+
+#libevent 多线程开启-DEVENT_THREAD_SAFE
+add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DLOG_THREAD_SAFE)
 #add_definitions(-DUSE_MY_ASSERT -DLINUX -DEVENT_THREAD_SAFE -DLOG_THREAD_SAFE)
 
 set(FRAMEWORK

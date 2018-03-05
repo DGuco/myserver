@@ -23,7 +23,7 @@ char CProxyCtrl::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
 
 CProxyCtrl::CProxyCtrl()
 {
-	m_pNetWork = new CNetWork(eNetModule::NET_SELECT);
+	m_pNetWork = new CNetWork(eNetModule::NET_SYSTEM);
 }
 
 CProxyCtrl::~CProxyCtrl()
@@ -96,12 +96,14 @@ void CProxyCtrl::lcb_OnAcceptCns(uint32 uId, CAcceptor *pAcceptor)
 {
 	MY_ASSERT(pAcceptor != NULL, return);
 	CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, pAcceptor);
+	LOG_DEBUG("default", "New acceptor,socket id {}", pAcceptor->GetSocket().GetSocket());
 }
 
 void CProxyCtrl::lcb_OnCnsDisconnected(CAcceptor *pAcceptor)
 {
 	MY_ASSERT(pAcceptor != NULL, return);
 	CNetWork::GetSingletonPtr()->ShutDownAcceptor(pAcceptor->GetSocket().GetSocket());
+	LOG_DEBUG("default", "Acceptor disconnected,socket id {}", pAcceptor->GetSocket().GetSocket());
 }
 
 void CProxyCtrl::lcb_OnCnsSomeDataRecv(CAcceptor *pAcceptor)
@@ -156,13 +158,8 @@ int CProxyCtrl::DealRegisterMes(CAcceptor *pAcceptor, char *acTmpBuf)
 		CloseConnection(iSocket);
 		return -1;
 	}
-
-
-#ifdef _DEBUG_
 	LOG_DEBUG("default", "---- Recv Msg ----");
 	LOG_DEBUG("default", "[{}]", stTmpProxyHead.ShortDebugString().c_str());
-#endif
-
 	// 检查该链接是否已占用，通过类型和ID判断
 	int iKey = MakeConnKey(stTmpProxyHead.srcfe(), stTmpProxyHead.srcid());
 	auto it = m_mapRegister.find(iKey);
@@ -173,7 +170,6 @@ int CProxyCtrl::DealRegisterMes(CAcceptor *pAcceptor, char *acTmpBuf)
 		CloseConnection(iSocket);
 		return -1;
 	}
-
 	//注册成功
 	m_mapRegister.insert(std::make_pair(iKey, iSocket));
 	m_mapSocket2Key.insert(std::make_pair(iSocket, iKey));

@@ -278,13 +278,13 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 	}
 
 	//服务器数据拉完了才能让玩家正常游戏
-	if (CGameServer::GetSingletonPtr()->CanProcessingClientMsg() == false) {
-		long lTmpMsgGuid = tmpSocketInfo.createtime();
-		// 通知客户端服务器未开启并断开连接
-		CGameServer::GetSingletonPtr()
-			->SendMsgSystemErrorResponse(emSystem_noservice, lTmpMsgGuid, iTmpSocket, tTmpCreateTime, true);
-		return CLIENTHANDLE_ISNOTNORMAL;
-	}
+//	if (CGameServer::GetSingletonPtr()->CanProcessingClientMsg() == false) {
+//		long lTmpMsgGuid = tmpSocketInfo.createtime();
+//		// 通知客户端服务器未开启并断开连接
+//		CGameServer::GetSingletonPtr()
+//			->SendMsgSystemErrorResponse(emSystem_noservice, lTmpMsgGuid, iTmpSocket, tTmpCreateTime, true);
+//		return CLIENTHANDLE_ISNOTNORMAL;
+//	}
 
 //	CPlayer *pTmpTeam = NULL;
 //	// 如果是登陆消息

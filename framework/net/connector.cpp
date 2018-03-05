@@ -29,28 +29,30 @@ bool CConnector::Connect(const CNetAddr &addr, const timeval time /* = NULL */)
 	m_oAddr.Copy(addr);
 	CSocket::Address2sockaddr_in(saiAddress, addr);
 	m_oSocket.SetNonblocking();
-	int nResult = connect(m_oSocket.GetSystemSocket(), reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
-	MY_ASSERT(SOCKET_ERROR != nResult, return false);
+	GetReactor()->Register(this);
 
-	switch (errno) {
-	case EINPROGRESS: break;
-	case EADDRINUSE:
-	case ECONNREFUSED:
-	case ETIMEDOUT:
-	case ENETUNREACH:
-	case ECONNRESET: return false;
-	default: return false;
+	int iRet = bufferevent_socket_connect(m_pStBufEv, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
+	if (iRet != 0) {
+		switch (errno) {
+		case EINPROGRESS: break;
+		case EADDRINUSE:
+		case ECONNREFUSED:
+		case ETIMEDOUT:
+		case ENETUNREACH:
+		case ECONNRESET: return false;
+		default: return false;
+		}
 	}
-
-	m_pConnectEvent = new CSysEvent(GetReactor(),
-									&CConnector::lcb_OnConnectResult,
-									this,
-									time.tv_sec,
-									time.tv_usec,
-									1,
-									m_oSocket.GetSocket(),
-									EV_WRITE);
-	SetState(eCS_Connecting);
+	OnConnectted();
+//	m_pConnectEvent = new CSysEvent(GetReactor(),
+//									&CConnector::lcb_OnConnectResult,
+//									this,
+//									time.tv_sec,
+//									time.tv_usec,
+//									1,
+//									m_oSocket.GetSocket(),
+//									EV_WRITE);
+//	SetState(eCS_Connecting);
 	return true;
 }
 
@@ -91,7 +93,6 @@ void CConnector::HandleInput(int32 socket, int16 nEventMask, void *arg)
 
 void CConnector::OnConnectted()
 {
-	GetReactor()->Register(this);
 	m_pFuncOnConnectted(this);
 }
 
