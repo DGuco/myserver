@@ -16,8 +16,8 @@ char CC2sHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
 
 char CC2sHandle::m_acSendBuff[MAX_PACKAGE_LEN] = {0};
 
-CC2sHandle::CC2sHandle(eNetModule netModule)
-	: m_pNetWork(new CNetWork(netModule))
+CC2sHandle::CC2sHandle()
+	: m_pNetWork(new CNetWork())
 {
 }
 

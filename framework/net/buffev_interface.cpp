@@ -3,7 +3,6 @@
 //
 
 #include <my_assert.h>
-#include <cstring>
 #include "buffev_interface.h"
 
 IBufferEvent::IBufferEvent(IEventReactor *pReactor,

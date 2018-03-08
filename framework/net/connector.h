@@ -12,7 +12,7 @@
 #include "event_reactor.h"
 #include "net_addr.h"
 #include "buffev_interface.h"
-#include "sys_event.h"
+#include "timer_event.h"
 
 class CConnector: public IBufferEvent
 {
@@ -74,9 +74,8 @@ private:
 
 private:
 	CNetAddr m_oAddr;
-	CSysEvent *m_pConnectEvent;
 	eConnectorState m_eState;
-
+	event m_oConnectEvent;
 	FuncConnectorOnDisconnected m_pFuncOnDisconnected;
 	FuncConnectorOnConnectFailed m_pFuncOnConnectFailed;
 	FuncConnectorOnConnectted m_pFuncOnConnectted;

@@ -15,7 +15,7 @@ class CC2sHandle
 {
 public:
 	//构造函数
-	CC2sHandle(eNetModule netModule);
+	CC2sHandle();
 	//析构函数
 	virtual ~CC2sHandle();
 	//准备run

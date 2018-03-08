@@ -1,21 +1,21 @@
 {
   "gateinfo": {
-    "host": "0.0.0.0",
+    "host": "127.0.0.1",
     "port": 9000,
     "serverid": 20001
   },
   "gameinfo": {
-    "host": "0.0.0.0",
+    "host": "127.0.0.1",
     "port": 9001,
     "serverid": 20002
   },
   "dbinfo": {
-    "host": "0.0.0.0",
+    "host": "127.0.0.1",
     "port": 9002,
     "serverid": 20003
   },
   "proxyinfo": {
-    "host": "0.0.0.0",
+    "host": "127.0.0.1",
     "port": 9003,
     "serverid": 20004
   },

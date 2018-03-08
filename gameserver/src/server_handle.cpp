@@ -15,7 +15,7 @@ char CServerHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
 
 CServerHandle::CServerHandle()
 	:
-	m_pNetWork(new CNetWork(eNetModule::NET_SELECT))
+	m_pNetWork(new CNetWork())
 {
 
 }

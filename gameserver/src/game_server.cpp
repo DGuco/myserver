@@ -420,6 +420,11 @@ CTimerManager *CGameServer::GetTimerManager()
 	return m_pTimerManager;
 }
 
+CServerHandle *CGameServer::GetServerHandle()
+{
+	return nullptr;
+}
+
 CFactory *CGameServer::GetMessageFactory()
 {
 	return m_pMessageFactory;

@@ -14,7 +14,7 @@
 template<> CGateCtrl *CSingleton<CGateCtrl>::spSingleton = NULL;
 
 CGateCtrl::CGateCtrl()
-	: m_pC2sHandle(new CC2sHandle(eNetModule::NET_SYSTEM)),
+	: m_pC2sHandle(new CC2sHandle()),
 	  m_pS2cHandle(new CS2cHandle),
 	  m_pSingThead(new CThreadPool(1))
 {

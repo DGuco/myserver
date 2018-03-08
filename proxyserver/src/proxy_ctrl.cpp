@@ -23,7 +23,7 @@ char CProxyCtrl::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
 
 CProxyCtrl::CProxyCtrl()
 {
-	m_pNetWork = new CNetWork(eNetModule::NET_SYSTEM);
+	m_pNetWork = new CNetWork();
 }
 
 CProxyCtrl::~CProxyCtrl()

@@ -10,30 +10,20 @@
 
 #include "net_inc.h"
 #include "network_interface.h"
-#include "sys_event.h"
+#include "timer_event.h"
 #include <string>
 
 using namespace std;
-
-enum eNetModule
-{
-	NET_SYSTEM = -1, //由系统决定
-	NET_SELECT = 0,
-	NET_POLL = 1,
-	NET_EPOLL = 2,
-	NET_KQUEUE = 3, //mac os
-	NET_INVALID = 4,
-};
 
 class CEventReactor: public IEventReactor
 {
 public:
 	//构造函数
-	CEventReactor(eNetModule netModule);
+	CEventReactor();
 	//析构函数
 	virtual ~CEventReactor();
 	//初始化event_base
-	void Init(eNetModule netModule);
+	void Init();
 	//注册处理
 	bool Register(IReactorHandler *pHandler);
 	//删除处理
@@ -48,10 +38,6 @@ public:
 private:
 	uint32 m_uReactorHandlerCounter;
 	event_base *m_pEventBase;
-	event_config *m_pEventConfig;
-
-private:
-	string NET_MODULE[4] = {"select", "poll", "epoll", "kqueue" /*mac os*/};
 };
 
 #endif

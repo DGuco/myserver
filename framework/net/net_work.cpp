@@ -9,9 +9,9 @@
 
 template<> CNetWork *CSingleton<CNetWork>::spSingleton = NULL;
 
-CNetWork::CNetWork(eNetModule netModule)
+CNetWork::CNetWork()
 	:
-	m_pEventReactor(new CEventReactor(netModule)),
+	m_pEventReactor(new CEventReactor()),
 	m_uGcTime(0),
 	m_uCheckPingTickTime(0),
 	m_pListener(NULL),

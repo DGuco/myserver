@@ -22,7 +22,7 @@ class CNetWork: public CSingleton<CNetWork>
 {
 public:
 	//构造函数
-	CNetWork(eNetModule netModule);
+	CNetWork();
 	//析构函数
 	virtual ~CNetWork();
 	//开始监听
@@ -45,7 +45,7 @@ public:
 				 FuncConnectorOnSomeDataRecv pOnSomeDataRecv,
 				 FuncConnectorOnPingServer pOnPingServer,
 				 unsigned int uPingTick = 4500,
-				 unsigned int uTimeOut = 30);
+				 unsigned int uTimeOut = 5);
 	//关闭acceptor
 	bool ShutDownAcceptor(unsigned int uId);
 	//设置信号回调

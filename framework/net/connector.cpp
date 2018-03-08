@@ -30,29 +30,15 @@ bool CConnector::Connect(const CNetAddr &addr, const timeval time /* = NULL */)
 	CSocket::Address2sockaddr_in(saiAddress, addr);
 	m_oSocket.SetNonblocking();
 	GetReactor()->Register(this);
-
 	int iRet = bufferevent_socket_connect(m_pStBufEv, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
 	if (iRet != 0) {
-		switch (errno) {
-		case EINPROGRESS: break;
-		case EADDRINUSE:
-		case ECONNREFUSED:
-		case ETIMEDOUT:
-		case ENETUNREACH:
-		case ECONNRESET: return false;
-		default: return false;
-		}
+		return false;
 	}
-	OnConnectted();
-//	m_pConnectEvent = new CSysEvent(GetReactor(),
-//									&CConnector::lcb_OnConnectResult,
-//									this,
-//									time.tv_sec,
-//									time.tv_usec,
-//									1,
-//									m_oSocket.GetSocket(),
-//									EV_WRITE);
-//	SetState(eCS_Connecting);
+
+	event_set(&m_oConnectEvent, m_oSocket.GetSystemSocket(), EV_WRITE, CConnector::lcb_OnConnectResult, this);
+	event_base_set(GetReactor()->GetEventBase(), &m_oConnectEvent);
+	event_add(&m_oConnectEvent, &time);
+	SetState(eCS_Connecting);
 	return true;
 }
 
@@ -93,13 +79,14 @@ void CConnector::HandleInput(int32 socket, int16 nEventMask, void *arg)
 
 void CConnector::OnConnectted()
 {
+	SetState(eCS_Connected);
 	m_pFuncOnConnectted(this);
 }
 
 void CConnector::ShutDown()
 {
 	if (IsConnecting()) {
-		m_pConnectEvent->Cancel();
+		event_del(&m_oConnectEvent);
 		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connecting: %s : %d", m_oAddr.GetAddress(), m_oAddr.GetPort());
 	}
 	else if (IsConnected()) {
@@ -200,7 +187,6 @@ void CConnector::AfterBuffEventCreated()
 					  CConnector::lcb_OnPipeWrite,
 					  CConnector::lcb_OnPipeError,
 					  (void *) this);
-	bufferevent_enable(m_pStBufEv, EV_READ);
-	bufferevent_disable(m_pStBufEv, EV_WRITE);
+	bufferevent_enable(m_pStBufEv, EV_READ | EV_WRITE);
 	SetState(eCS_Connected);
 }

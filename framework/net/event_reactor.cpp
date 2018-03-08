@@ -4,11 +4,11 @@
 #include <event2/thread.h>
 #endif
 
-CEventReactor::CEventReactor(eNetModule netModule)
+CEventReactor::CEventReactor()
 	: m_uReactorHandlerCounter(0),
 	  m_pEventBase(NULL)
 {
-	Init(netModule);
+	Init();
 }
 
 CEventReactor::~CEventReactor()
@@ -16,24 +16,12 @@ CEventReactor::~CEventReactor()
 	Release();
 }
 
-void CEventReactor::Init(eNetModule netModule)
+void CEventReactor::Init()
 {
 #ifdef EVENT_THREAD_SAFE
 	evthread_use_pthreads();
 #endif
-	m_pEventConfig = event_config_new();
-	MY_ASSERT_STR(m_pEventConfig != NULL, exit(0), "Create event_config failed");
-	if (netModule == eNetModule::NET_SYSTEM) {
-		m_pEventBase = event_base_new();
-	}
-	else {
-		for (int i = 0; i < eNetModule::NET_INVALID; ++i) {
-			if (netModule != i) {
-				event_config_avoid_method(m_pEventConfig, NET_MODULE[i].c_str());
-			}
-		}
-		m_pEventBase = event_base_new_with_config(m_pEventConfig);
-	}
+	m_pEventBase = event_base_new();
 	MY_ASSERT_STR(NULL != m_pEventBase, exit(0), "Create Event Base error Init error");
 }
 
@@ -46,7 +34,6 @@ void CEventReactor::Release()
 {
 	event_base_loopexit(m_pEventBase, NULL);
 	event_base_free(m_pEventBase);
-	event_config_free(m_pEventConfig);
 }
 
 void CEventReactor::DispatchEvents()
