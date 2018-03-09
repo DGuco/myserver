@@ -140,7 +140,7 @@ bool IBufferEvent::IsPackageComplete()
 
 	PACK_LEN tmpLastLen = tmpPackLen - sizeof(PACK_LEN);
 	unsigned int tmpDataLen = GetRecvDataSize();
-	//数据包不完整继续等其他数据到来
+	//数据包不完整继续接收
 	if (tmpDataLen < tmpLastLen) {
 		return false;
 	}
@@ -166,9 +166,9 @@ bool IBufferEvent::RegisterToReactor()
 #endif
 
 	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent_new failed!,error msg: %s", strerror(errno));
+	AfterBuffEventCreated();
 	bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);
 	bufferevent_setwatermark(m_pStBufEv, EV_WRITE, 0, m_uMaxOutBufferSize);
-	AfterBuffEventCreated();
 	return true;
 }
 

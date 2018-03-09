@@ -97,6 +97,7 @@ void CListener::lcb_Accept_error_cb(struct evconnlistener *listener, void *ctx)
 
 void CListener::HandleInput(int socket, struct sockaddr *sa)
 {
+	evutil_make_socket_nonblocking(socket);
 	m_pFuncOnAccept(m_pEventReactor, socket, sa);
 }
 

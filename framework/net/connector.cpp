@@ -39,6 +39,7 @@ bool CConnector::Connect(const CNetAddr &addr, const timeval time /* = NULL */)
 	event_base_set(GetReactor()->GetEventBase(), &m_oConnectEvent);
 	event_add(&m_oConnectEvent, &time);
 	SetState(eCS_Connecting);
+	OnConnectted();
 	return true;
 }
 
@@ -188,5 +189,4 @@ void CConnector::AfterBuffEventCreated()
 					  CConnector::lcb_OnPipeError,
 					  (void *) this);
 	bufferevent_enable(m_pStBufEv, EV_READ | EV_WRITE);
-	SetState(eCS_Connected);
 }
