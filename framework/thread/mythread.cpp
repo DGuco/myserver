@@ -1,4 +1,3 @@
-#include <stdarg.h>
 #include <string.h>
 #include "base.h"
 #include "mythread.h"
@@ -21,6 +20,7 @@ CMyThread::CMyThread()
 	m_iRunStatus = rt_init;
 	memset((void *) &m_stLogCfg, 0, sizeof(m_stLogCfg));
 }
+
 CMyThread::~CMyThread()
 {
 }

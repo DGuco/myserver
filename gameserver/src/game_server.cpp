@@ -83,8 +83,14 @@ int CGameServer::PrepareToRun()
 	if (StartAllTimers() != 0) {
 		return -4;
 	}
-	m_pServerHandle->PrepareToRun();
-	m_pClientHandle->PrepareToRun();
+	if (m_pServerHandle->PrepareToRun()) {
+		return -1;
+	}
+
+	if (m_pClientHandle->PrepareToRun()) {
+		return -1;
+	}
+
 	// 通知各模块启动
 	if (m_pModuleManager->OnLaunchServer() != 0) {
 		return -5;

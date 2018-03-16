@@ -49,7 +49,7 @@ private:
 						   struct sockaddr *sa,
 						   int socklen, void *arg);
 	//监听出错
-	static void lcb_Accept_error_cb(struct evconnlistener *listener, void *ctx);
+	static void lcb_AcceptError(struct evconnlistener *listener, void *ctx);
 	//处理监听
 	void HandleInput(int Socket, struct sockaddr *sa);
 private:

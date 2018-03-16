@@ -24,22 +24,35 @@ void CConnector::GetRemoteIpAddress(char *szBuf, uint32 uBufSize)
 
 bool CConnector::Connect(const CNetAddr &addr, const timeval time /* = NULL */)
 {
-	m_oSocket.Open();
-	sockaddr_in saiAddress;
-	m_oAddr.Copy(addr);
-	CSocket::Address2sockaddr_in(saiAddress, addr);
-	m_oSocket.SetNonblocking();
-	GetReactor()->Register(this);
-	int iRet = bufferevent_socket_connect(m_pStBufEv, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
-	if (iRet != 0) {
+	if (!m_oSocket.Open()) {
 		return false;
 	}
-
-	event_set(&m_oConnectEvent, m_oSocket.GetSystemSocket(), EV_WRITE, CConnector::lcb_OnConnectResult, this);
-	event_base_set(GetReactor()->GetEventBase(), &m_oConnectEvent);
-	event_add(&m_oConnectEvent, &time);
-	SetState(eCS_Connecting);
-	OnConnectted();
+	sockaddr_in saiAddress;
+	m_oAddr.Copy(addr);
+	CSocket::Address2SockAddrIn(saiAddress, addr);
+	m_oSocket.SetNonblocking();
+//	int iRet = bufferevent_socket_connect(m_pStBufEv, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
+//	if (iRet != 0) {
+//		return false;
+//	}
+	int iRet = connect(m_oSocket.GetSocket(), reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
+	if (iRet != 0) {
+		//连接操作进行中
+		if (errno == EINPROGRESS) {
+			event_set(&m_oConnectEvent, m_oSocket.GetSocket(), EV_WRITE, &CConnector::lcb_OnConnectResult, this);
+			event_base_set(GetReactor()->GetEventBase(), &m_oConnectEvent);
+			event_add(&m_oConnectEvent, &time);
+			SetState(eCS_Connecting);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		//连接成功
+		OnConnectted();
+	}
 	return true;
 }
 
@@ -81,6 +94,7 @@ void CConnector::HandleInput(int32 socket, int16 nEventMask, void *arg)
 void CConnector::OnConnectted()
 {
 	SetState(eCS_Connected);
+	GetReactor()->Register(this);
 	m_pFuncOnConnectted(this);
 }
 
@@ -94,7 +108,7 @@ void CConnector::ShutDown()
 		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connected: %s : %d", m_oAddr.GetAddress(), m_oAddr.GetPort());
 		GetReactor()->UnRegister(this);
 	}
-	m_oSocket.Shutdown();
+	m_oSocket.Close();
 	SetState(eCS_Disconnected);
 }
 
@@ -188,5 +202,5 @@ void CConnector::AfterBuffEventCreated()
 					  CConnector::lcb_OnPipeWrite,
 					  CConnector::lcb_OnPipeError,
 					  (void *) this);
-	bufferevent_enable(m_pStBufEv, EV_READ | EV_WRITE);
+//	bufferevent_enable(m_pStBufEv, EV_READ | EV_WRITE);
 }

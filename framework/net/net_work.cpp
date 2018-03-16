@@ -121,10 +121,11 @@ bool CNetWork::Connect(const char *szNetAddr,
 	time.tv_sec = uTimeOut;
 	time.tv_usec = 0;
 	bool bRet = pConnector->Connect(addr, time);
-	int fd = pConnector->GetSocket().GetSocket();
-	{
-		m_mapConnector.insert(std::make_pair(fd, pConnector));
+	if (!bRet) {
+		return false;
 	}
+	int fd = pConnector->GetSocket().GetSocket();
+	m_mapConnector.insert(std::make_pair(fd, pConnector));
 	return bRet;
 }
 

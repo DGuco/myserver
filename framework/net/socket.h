@@ -41,22 +41,20 @@ public:
 	//获取远程ip
 	bool GetRemoteAddress(CNetAddr &add) const;
 	//获取socket fd
-	SOCKET GetSystemSocket() const
+	SOCKET GetSocket() const
 	{ return m_Socket; }
 	//设置socket fd
-	void SetSystemSocket(SOCKET socket)
+	void SetSocket(SOCKET socket)
 	{ m_Socket = socket; }
 	//获取socket errpr
 	int GetSocketError() const;
-	//获取socket fd
-	SOCKET GetSocket() const;
 	//创建socket
 	static SOCKET CreateSocket(int32 Type = SOCK_STREAM, int32 ProtocolFamily = AF_INET, int32 Protocol = 0);
 	//创建socket并绑定地址
 	static SOCKET CreateBindedSocket(const CNetAddr &address);
 	//创建非阻塞socket
 	static void MakeSocketNonblocking(SOCKET Socket);
-	static void Address2sockaddr_in(sockaddr_in &saiAddress, const CNetAddr &address);
+	static void Address2SockAddrIn(sockaddr_in &saiAddress, const CNetAddr &address);
 protected:
 	SOCKET m_Socket;
 

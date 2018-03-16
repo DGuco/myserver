@@ -50,6 +50,7 @@ int CProxyCtrl::PrepareToRun()
 		pTmpConfig = NULL;
 		exit(0);
 	}
+
 	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	m_pNetWork->BeginListen(proxyInfo->m_sHost.c_str(),
 							proxyInfo->m_iPort,

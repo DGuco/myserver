@@ -42,7 +42,7 @@ bool CListener::RegisterToReactor()
 										  sizeof(sin));
 #endif
 	MY_ASSERT_STR(m_pListener != NULL, exit(0), "Create evconnlistener failed,msg : %s", strerror(errno))
-	evconnlistener_set_error_cb(m_pListener, lcb_Accept_error_cb);
+	evconnlistener_set_error_cb(m_pListener, lcb_AcceptError);
 	SetState(eLS_Listened);
 	return true;
 }
@@ -88,7 +88,7 @@ void CListener::lcb_Accept(struct evconnlistener *listener,
 	pListener->HandleInput(fd, sa);
 }
 
-void CListener::lcb_Accept_error_cb(struct evconnlistener *listener, void *ctx)
+void CListener::lcb_AcceptError(struct evconnlistener *listener, void *ctx)
 {
 	struct event_base *base = evconnlistener_get_base(listener);
 	int err = EVUTIL_SOCKET_ERROR();

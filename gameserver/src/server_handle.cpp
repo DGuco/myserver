@@ -27,17 +27,16 @@ CServerHandle::~CServerHandle()
 
 int CServerHandle::PrepareToRun()
 {
-	if (Connect2Proxy()) {
-		if (Regist2Proxy()) {
-//			m_ProxyClient.InitTimer((time_t) CServerConfig::GetSingletonPtr()->GetSocketTimeOut());
-		}
-		else {
-			return -1;
-		}
-	}
-	else {
+	if (!Connect2Proxy()) {
+//		if (Regist2Proxy()) {
+//////			m_ProxyClient.InitTimer((time_t) CServerConfig::GetSingletonPtr()->GetSocketTimeOut());
+//		}
+//		else {
+//			return false;
+//		}
 		return -1;
 	}
+	return 0;
 }
 
 void CServerHandle::Run()
@@ -58,7 +57,7 @@ bool CServerHandle::Connect2Proxy()
 							 &CServerHandle::lcb_OnCnsSomeDataRecv,
 							 &CServerHandle::lcb_OnPingServer,
 							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive(),
-							 2)
+							 10)
 		) {
 		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,

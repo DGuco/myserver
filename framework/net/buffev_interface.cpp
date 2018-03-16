@@ -13,7 +13,7 @@ IBufferEvent::IBufferEvent(IEventReactor *pReactor,
 	  m_uMaxInBufferSize(MAX_PACKAGE_LEN),
 	  m_uRecvPackLen(0)
 {
-	m_oSocket.SetSystemSocket(socket);
+	m_oSocket.SetSocket(socket);
 }
 
 IBufferEvent::~IBufferEvent()
@@ -164,7 +164,6 @@ bool IBufferEvent::RegisterToReactor()
 										m_oSocket.GetSocket(),
 										BEV_OPT_CLOSE_ON_FREE /*| BEV_OPT_THREADSAFE */);
 #endif
-
 	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent_new failed!,error msg: %s", strerror(errno));
 	AfterBuffEventCreated();
 	bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);

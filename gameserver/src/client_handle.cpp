@@ -201,7 +201,7 @@ int CClientHandle::Recv()
 												  CMessageFactory::GetSingletonPtr()) != 0) {
 		return ClienthandleErrCode::CLIENTHANDLE_PARSE_FAILED;
 	}
-	
+
 	CGameServer::GetSingletonPtr()->GetLogicThread()
 		->PushTaskBack([this]
 					   {

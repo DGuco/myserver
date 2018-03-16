@@ -171,7 +171,7 @@ uint32 CSocket::Bind(const CNetAddr &addr)
 	//ArkAst(m_oSocket != INVALID_SOCKET);
 
 	sockaddr_in saiAddress;
-	Address2sockaddr_in(saiAddress, addr);
+	Address2SockAddrIn(saiAddress, addr);
 	//bind
 	if (bind(m_Socket, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr))) {
 		CloseSocket(m_Socket);
@@ -182,7 +182,7 @@ uint32 CSocket::Bind(const CNetAddr &addr)
 }
 
 //--------------------------------- *tools* -------------------------------------------------------------------
-void CSocket::Address2sockaddr_in(sockaddr_in &saiAddress, const CNetAddr &address)
+void CSocket::Address2SockAddrIn(sockaddr_in &saiAddress, const CNetAddr &address)
 {
 	memset(&saiAddress, 0, sizeof(saiAddress));
 	saiAddress.sin_addr.s_addr = inet_addr(address.GetAddress());
@@ -196,7 +196,7 @@ SOCKET CSocket::CreateBindedSocket(const CNetAddr &Address)
 	SOCKET Socket = CreateSocket();
 
 	sockaddr_in saiAddress;
-	Address2sockaddr_in(saiAddress, Address);
+	Address2SockAddrIn(saiAddress, Address);
 	//bind
 	if (bind(Socket, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr))) {
 		CloseSocket(Socket);

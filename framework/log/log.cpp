@@ -12,13 +12,13 @@ int InitBaseLog(const char *vLogName,                        /*日志类型的�
 	}
 #ifdef LOG_THREAD_SAFE
 #ifdef _DEBUG_
-	auto log = spdlog::stdout_color_mt(vLogName);
+	auto log = spdlog::stdout_logger_mt(vLogName);
 #else
 	auto log = spdlog::basic_logger_mt(vLogName, vLogDir, vAppend);
 #endif
 #else
 #ifdef _DEBUG_
-	auto log = spdlog::stdout_color_st(vLogName);
+	auto log = spdlog::stdout_logger_st(vLogName);
 #else
 	auto log = spdlog::basic_logger_st(vLogName, vLogDir,vAppend);
 #endif
@@ -42,13 +42,13 @@ int InitRoatingLog(const char *vLogName,                        /*日志类型�
 	}
 #ifdef LOG_THREAD_SAFE
 #ifdef _DEBUG_
-	auto log = spdlog::stdout_color_mt(vLogName);
+	auto log = spdlog::stdout_logger_mt(vLogName);
 #else
 	auto log = spdlog::rotating_logger_mt(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
 #endif
 #else
 #ifdef _DEBUG_
-	auto log = spdlog::stdout_color_st(vLogName);
+	auto log = spdlog::stdout_logger_st(vLogName);
 #else
 	auto log = spdlog::rotating_logger_st(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
 #endif
@@ -72,13 +72,13 @@ int InitDailyLog(const char *vLogName,                        /*日志类型的�
 	}
 #ifdef LOG_THREAD_SAFE
 #ifdef _DEBUG_
-	auto log = spdlog::stdout_color_mt(vLogName);
+	auto log = spdlog::stdout_logger_mt(vLogName);
 #else
 	auto log = ::daily_logger_mt(vLogName, vLogDir, hour, minute);
 #endif
 #else
 #ifdef _DEBUG_
-	auto log = spdlog::stdout_color_st(vLogName);
+	auto log = spdlog::stdout_logger_st(vLogName);
 #else
 	auto log = spdlog::daily_logger_st(vLogName, vLogDir, hour, minute);
 #endif
