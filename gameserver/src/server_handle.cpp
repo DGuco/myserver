@@ -44,11 +44,11 @@ bool CServerHandle::Connect2Proxy()
 	ServerInfo *rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	if (!m_pNetWork->Connect(rTmpProxy->m_sHost.c_str(),
 							 rTmpProxy->m_iPort,
+							 &CServerHandle::lcb_OnCnsSomeDataSend,
+							 &CServerHandle::lcb_OnCnsSomeDataRecv,
 							 &CServerHandle::lcb_OnCnsDisconnected,
 							 &CServerHandle::lcb_OnConnectFailed,
 							 &CServerHandle::lcb_OnConnectted,
-							 &CServerHandle::lcb_OnCnsSomeDataSend,
-							 &CServerHandle::lcb_OnCnsSomeDataRecv,
 							 &CServerHandle::lcb_OnPingServer,
 							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive())
 		) {
@@ -143,7 +143,7 @@ void CServerHandle::SendMessageToProxy(char *data, PACK_LEN len)
 		});
 }
 
-void CServerHandle::lcb_OnConnectted(IBufferEvent *pConnector)
+void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 	CGameServer::GetSingletonPtr()->GetIoThread()
@@ -174,12 +174,12 @@ void CServerHandle::lcb_OnCnsSomeDataSend(IBufferEvent *pConnector)
 	MY_ASSERT(pConnector != NULL, return);
 
 }
-void CServerHandle::lcb_OnConnectFailed(IBufferEvent *pConnector)
+void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 }
 
-void CServerHandle::lcb_OnPingServer(IBufferEvent *pConnector)
+void CServerHandle::lcb_OnPingServer(CConnector *pConnector)
 {
 }
 
