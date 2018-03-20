@@ -15,7 +15,11 @@ class IBufferEvent: public IReactorHandler
 {
 public:
 	//构造函数
-	IBufferEvent(IEventReactor *pReactor, int socket = INVALID_SOCKET);
+	IBufferEvent(IEventReactor *pReactor,
+				 int socket,
+				 FuncBufferEventOnDataSend funcOnDataSend,
+				 FuncBufferEventOnDataRecv funcOnDataRecv,
+				 FuncBufferEventOnDisconnected m_pFuncDisconnected);
 	//析构函数
 	virtual ~IBufferEvent();
 	//发送数据
@@ -48,6 +52,13 @@ public:
 	CSocket GetSocket() const;
 	//数据是否完整
 	bool IsPackageComplete();
+protected:
+	//读回调
+	static void lcb_OnRead(struct bufferevent *bev, void *arg);
+	//写回调
+	static void lcb_OnWrite(bufferevent *bev, void *arg);
+	//错误回调
+	static void lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg);
 public:    //获取event base
 	IEventReactor *GetReactor() override;
 	//注册event
@@ -55,6 +66,8 @@ public:    //获取event base
 	//卸载event
 	bool UnRegisterFromReactor() override;
 private:
+	//事件回调
+	virtual void OnEvent(int16 nWhat) = 0;
 	//bufferEvent 无效处理
 	virtual void BuffEventUnavailableCall() = 0;
 	//event buffer 创建成功后处理
@@ -65,8 +78,10 @@ protected:
 	CSocket m_oSocket;
 	unsigned int m_uMaxOutBufferSize;
 	unsigned int m_uMaxInBufferSize;
-private:
 	PACK_LEN m_uRecvPackLen;
+	FuncBufferEventOnDataSend m_pFuncOnDataSend;
+	FuncBufferEventOnDataRecv m_pFuncOnDataRecv;
+	FuncBufferEventOnDisconnected m_pFuncDisconnected;
 };
 
 

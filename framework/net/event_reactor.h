@@ -38,6 +38,7 @@ public:
 private:
 	uint32 m_uReactorHandlerCounter;
 	event_base *m_pEventBase;
+	event_config *m_pConfig;
 };
 
 #endif

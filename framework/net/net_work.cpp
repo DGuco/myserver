@@ -16,21 +16,20 @@ CNetWork::CNetWork()
 	m_uCheckPingTickTime(0),
 	m_pListener(NULL),
 	m_pOnNew(NULL),
-	m_pOnDisconnected(NULL),
-	m_pOnSomeDataRecv(NULL)
+	m_pFuncAcceptorOnDataSend(NULL),
+	m_pFuncAcceptorOnDataRecv(NULL),
+	m_pFuncAcceptorDisconnected(NULL)
 {
 }
 
 CNetWork::~CNetWork(void)
 {
 	for (auto it : m_mapConnector) {
-		it.second->ShutDown();
 		SAFE_DELETE(it.second);
 	}
 	m_mapConnector.clear();
 
 	for (auto it : m_mapAcceptor) {
-		it.second->ShutDown();
 		SAFE_DELETE(it.second);
 	}
 	m_mapAcceptor.clear();
@@ -41,7 +40,6 @@ CNetWork::~CNetWork(void)
 	}
 	OnTick();
 	SAFE_DELETE(m_pEventReactor);
-
 }
 
 void CNetWork::SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop)
@@ -64,18 +62,23 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 	//  取得ip和端口号
 	char ip[16];
 	sprintf(ip, inet_ntoa(sin.sin_addr));
-	CAcceptor *pAcceptor =
-		new CAcceptor(socket, pReactor, new CNetAddr(ip, sin.sin_port), m_pOnDisconnected, m_pOnSomeDataRecv);
+	CAcceptor *pAcceptor = new CAcceptor(socket, pReactor,
+										 new CNetAddr(ip, sin.sin_port),
+										 m_pFuncAcceptorOnDataSend,
+										 m_pFuncAcceptorOnDataRecv,
+										 m_pFuncAcceptorDisconnected);
 	MY_ASSERT_STR(pAcceptor != NULL, return, "Create CAcceptor failed");
 	bool bRet = GetEventReactor()->Register(pAcceptor);
 	MY_ASSERT_STR(bRet, return, "Create CAcceptor failed");
 	m_pOnNew(socket, pAcceptor);
 }
 
-bool CNetWork::BeginListen(const char *szNetAddr, unsigned int uPort,
+bool CNetWork::BeginListen(const char *szNetAddr,
+						   unsigned int uPort,
 						   FuncAcceptorOnNew pOnNew,
-						   FuncAcceptorOnDisconnected pOnDisconnected,
-						   FuncAcceptorOnSomeDataRecv pOnSomeDataRecv,
+						   FuncBufferEventOnDataSend funcAcceptorOnDataSend,
+						   FuncBufferEventOnDataSend funcAcceptorOnDataRecv,
+						   FuncBufferEventOnDataSend funcAcceptorDisconnected,
 						   int listenQueue,
 						   unsigned int uCheckPingTickTime)
 {
@@ -88,9 +91,9 @@ bool CNetWork::BeginListen(const char *szNetAddr, unsigned int uPort,
 	bool bRes = m_pListener->Listen(addr, &CNetWork::lcb_OnAccept);
 	m_uCheckPingTickTime = uCheckPingTickTime;
 	m_pOnNew = pOnNew;
-	m_pOnDisconnected = pOnDisconnected;
-	m_pOnSomeDataRecv = pOnSomeDataRecv;
-
+	m_pFuncAcceptorOnDataSend = funcAcceptorOnDataSend;
+	m_pFuncAcceptorOnDataRecv = funcAcceptorOnDataRecv;
+	m_pFuncAcceptorDisconnected = funcAcceptorDisconnected;
 	return bRes;
 }
 
@@ -101,26 +104,23 @@ void CNetWork::EndListen()
 
 bool CNetWork::Connect(const char *szNetAddr,
 					   uint16 uPort,
-					   FuncConnectorOnDisconnected pOnDisconnected,
-					   FuncConnectorOnConnectFailed pOnConnectFailed,
-					   FuncConnectorOnConnectted pOnConnectted,
-					   FuncConnectorOnSomeDataSend pOnSomeDataSend,
-					   FuncConnectorOnSomeDataRecv pOnSomeDataRecv,
-					   FuncConnectorOnPingServer pOnPingServer,
-					   unsigned int uPingTick /* = 45000 */, unsigned int uTimeOut)
+					   FuncBufferEventOnDataSend funcOnSomeDataSend,
+					   FuncBufferEventOnDataSend funcOnSomeDataRecv,
+					   FuncBufferEventOnDisconnected funcOnDisconnected,
+					   FuncConnectorOnConnectFailed funcOnConnectFailed,
+					   FuncConnectorOnConnectted funcOnConnectted,
+					   FuncConnectorOnPingServer funcOnPingServer,
+					   unsigned int uPingTick)
 {
-	CConnector *pConnector = new CConnector(m_pEventReactor);
-	pConnector->SetCallbackFunc(std::move(pOnDisconnected),
-								std::move(pOnConnectFailed),
-								std::move(pOnConnectted),
-								std::move(pOnSomeDataSend),
-								std::move(pOnSomeDataRecv));
+	CConnector *pConnector = new CConnector(m_pEventReactor,
+											funcOnSomeDataSend,
+											funcOnSomeDataRecv,
+											funcOnDisconnected);
+	pConnector->SetCallbackFunc(std::move(funcOnConnectFailed),
+								std::move(funcOnConnectted));
 
 	CNetAddr addr(szNetAddr, uPort);
-	timeval time;
-	time.tv_sec = uTimeOut;
-	time.tv_usec = 0;
-	bool bRet = pConnector->Connect(addr, time);
+	bool bRet = pConnector->Connect(addr);
 	if (!bRet) {
 		return false;
 	}
@@ -131,7 +131,7 @@ bool CNetWork::Connect(const char *szNetAddr,
 
 unsigned int CNetWork::GetConnectorExPingValue(unsigned int uId)
 {
-	CConnector *pConnector = FindConnector(uId);
+	IBufferEvent *pConnector = FindConnector(uId);
 	if (pConnector) {
 //		return pConnector->GetPingValue();
 	}
@@ -150,7 +150,7 @@ bool CNetWork::ShutDownAcceptor(unsigned int uId)
 {
 	auto iter = m_mapAcceptor.find(uId);
 	if (m_mapAcceptor.end() != iter) {
-		CAcceptor *pAcceptor = iter->second;
+		IBufferEvent *pAcceptor = iter->second;
 		SAFE_DELETE(pAcceptor);
 		m_mapAcceptor.erase(iter);
 		return true;
@@ -164,7 +164,7 @@ bool CNetWork::ShutDownConnectorEx(unsigned int uId)
 {
 	auto iter = m_mapConnector.find(uId);
 	if (m_mapConnector.end() != iter) {
-		CConnector *pConnector = iter->second;
+		IBufferEvent *pConnector = iter->second;
 		SAFE_DELETE(pConnector);
 		m_quIdleConnectorExs.push(pConnector);
 		m_mapConnector.erase(iter);
@@ -179,14 +179,14 @@ void CNetWork::OnTick()
 {
 	if (!m_quIdleConnectorExs.empty()) {
 		while (!m_quIdleConnectorExs.empty()) {
-			CConnector *pConnector = m_quIdleConnectorExs.front();
+			IBufferEvent *pConnector = m_quIdleConnectorExs.front();
 			SAFE_DELETE(pConnector)
 			m_quIdleConnectorExs.pop();
 		}
 	}
 }
 
-CConnector *CNetWork::FindConnector(unsigned int uId)
+IBufferEvent *CNetWork::FindConnector(unsigned int uId)
 {
 	auto iter = m_mapConnector.find(uId);
 	if (m_mapConnector.end() == iter) {
@@ -197,7 +197,7 @@ CConnector *CNetWork::FindConnector(unsigned int uId)
 	}
 }
 
-CAcceptor *CNetWork::FindAcceptor(unsigned int uId)
+IBufferEvent *CNetWork::FindAcceptor(unsigned int uId)
 {
 	auto iter = m_mapAcceptor.find(uId);
 	if (m_mapAcceptor.end() == iter) {
@@ -208,7 +208,7 @@ CAcceptor *CNetWork::FindAcceptor(unsigned int uId)
 	}
 }
 
-void CNetWork::InsertNewAcceptor(unsigned int socket, CAcceptor *pCAcceptor)
+void CNetWork::InsertNewAcceptor(unsigned int socket, IBufferEvent *pCAcceptor)
 {
 	MY_ASSERT(pCAcceptor != NULL, return;)
 	m_mapAcceptor.insert(std::make_pair(socket, pCAcceptor));
@@ -221,7 +221,7 @@ IEventReactor *CNetWork::GetEventReactor()
 
 int CNetWork::ConnectorSendData(unsigned int uId, const void *pData, unsigned int uSize)
 {
-	CConnector *pConnectorEx = FindConnector(uId);
+	IBufferEvent *pConnectorEx = FindConnector(uId);
 	if (pConnectorEx) {
 		int eRes = pConnectorEx->Send(pData, uSize);
 		return eRes;

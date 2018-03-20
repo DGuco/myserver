@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
 	// 启动服务器
 	pTmpGameServer->Run();
-
+	LOG_INFO("default", "Game server is going to stop...");
 	if (pTmpGameServer) {
 		delete pTmpGameServer;
 		pTmpGameServer = NULL;

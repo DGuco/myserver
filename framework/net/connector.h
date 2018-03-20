@@ -24,19 +24,19 @@ class CConnector: public IBufferEvent
 	};
 public:
 	//构造函数
-	CConnector(IEventReactor *pReactor);
+	CConnector(IEventReactor *pReactor,
+			   FuncBufferEventOnDataSend funcOnDataSend,
+			   FuncBufferEventOnDataRecv funcOnDataRecv,
+			   FuncBufferEventOnDisconnected m_pFuncDisconnected);
 	//析构函数
 	virtual ~CConnector(void);
 	//获取连接ip
 	void GetRemoteIpAddress(char *szBuf, uint32 uBufSize);
 	//连接
-	bool Connect(const CNetAddr &addr, const timeval time);
+	bool Connect(const CNetAddr &addr);
 	//设置相关回调
-	void SetCallbackFunc(FuncConnectorOnDisconnected pOnDisconnected,
-						 FuncConnectorOnConnectFailed pOnConnectFailed,
-						 FuncConnectorOnConnectted pOnConnectted,
-						 FuncConnectorOnSomeDataSend pOnSomeDataSend,
-						 FuncConnectorOnSomeDataRecv pOnSomeDataRecv);
+	void SetCallbackFunc(FuncConnectorOnConnectFailed pOnConnectFailed,
+						 FuncConnectorOnConnectted pOnConnectted);
 	//关闭连接
 	void ShutDown();
 	//是否连接成功
@@ -51,36 +51,25 @@ private:
 	void BuffEventUnavailableCall() override;
 	//event buffer 创建成功后处理
 	void AfterBuffEventCreated() override;
-
+	//事件回调
+	void OnEvent(int16 nWhat) override;
 private:
-	//连接回调
-	static void lcb_OnConnectResult(int Socket, short nEventMask, void *arg);
-	//读回调
-	static void lcb_OnPipeRead(struct bufferevent *bev, void *arg);
-	//写回调
-	static void lcb_OnPipeWrite(bufferevent *bev, void *arg);
 	//错误回调
-	static void lcb_OnPipeError(bufferevent *bev, int16 nWhat, void *arg);
+	static void lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg);
 	//当前连接状态
 	eConnectorState GetState();
 	//设置当前抓状态
 	void SetState(eConnectorState eState);
 	//连接成功
 	void OnConnectted();
-	//处理
-	void HandleInput(int32 socket, int16 nEventMask, void *arg);
-	//socket error
-	void ProcessSocketError();
 
 private:
 	CNetAddr m_oAddr;
 	eConnectorState m_eState;
 	event m_oConnectEvent;
-	FuncConnectorOnDisconnected m_pFuncOnDisconnected;
+
 	FuncConnectorOnConnectFailed m_pFuncOnConnectFailed;
 	FuncConnectorOnConnectted m_pFuncOnConnectted;
-	FuncConnectorOnSomeDataSend m_pFuncOnSomeDataSend;
-	FuncConnectorOnSomeDataRecv m_pFuncOnSomeDataRecv;
 };
 
 #endif

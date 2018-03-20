@@ -29,8 +29,9 @@ public:
 	bool BeginListen(const char *szNetAddr,
 					 unsigned int uPort,
 					 FuncAcceptorOnNew pOnNew,
-					 FuncAcceptorOnDisconnected pOnDisconnected,
-					 FuncAcceptorOnSomeDataRecv pOnSomeDataRecv,
+					 FuncBufferEventOnDataSend funcAcceptorOnDataSend,
+					 FuncBufferEventOnDataSend funcAcceptorOnDataRecv,
+					 FuncBufferEventOnDataSend funcAcceptorDisconnected,
 					 int listenQueue = -1,
 					 unsigned int uCheckPingTickTime = 0);
 	//结束监听
@@ -38,14 +39,13 @@ public:
 	//连接
 	bool Connect(const char *szNetAddr,
 				 uint16 uPort,
-				 FuncConnectorOnDisconnected pOnDisconnected,
-				 FuncConnectorOnConnectFailed pOnConnectFailed,
-				 FuncConnectorOnConnectted pOnConnectted,
-				 FuncConnectorOnSomeDataSend pOnSomeDataSend,
-				 FuncConnectorOnSomeDataRecv pOnSomeDataRecv,
-				 FuncConnectorOnPingServer pOnPingServer,
-				 unsigned int uPingTick = 4500,
-				 unsigned int uTimeOut = 5);
+				 FuncBufferEventOnDataSend funcOnSomeDataSend,
+				 FuncBufferEventOnDataSend funcOnSomeDataRecv,
+				 FuncBufferEventOnDisconnected funcOnDisconnected,
+				 FuncConnectorOnConnectFailed funcOnConnectFailed,
+				 FuncConnectorOnConnectted funcOnConnectted,
+				 FuncConnectorOnPingServer funcOnPingServer,
+				 unsigned int uPingTick = 4500);
 	//关闭acceptor
 	bool ShutDownAcceptor(unsigned int uId);
 	//设置信号回调
@@ -59,11 +59,11 @@ public:
 	//获取ping
 	unsigned int GetConnectorExPingValue(unsigned int uId);
 	//查找connector
-	CConnector *FindConnector(unsigned int uId);
+	IBufferEvent *FindConnector(unsigned int uId);
 	//查找acceptor
-	CAcceptor *FindAcceptor(unsigned int uId);
+	IBufferEvent *FindAcceptor(unsigned int uId);
 	//添加新的acceptor
-	void InsertNewAcceptor(unsigned int socket, CAcceptor *pCAcceptor);
+	void InsertNewAcceptor(unsigned int socket, IBufferEvent *pCAcceptor);
 	//获取event
 	IEventReactor *GetEventReactor();
 private:
@@ -77,21 +77,21 @@ private:
 	unsigned int m_uGcTime;
 	unsigned int m_uCheckPingTickTime;
 
-	typedef unordered_map<unsigned int, CConnector *> Map_Connector;
-	typedef unordered_map<unsigned int, CAcceptor *> Map_Acceptor;
+	typedef unordered_map<unsigned int, IBufferEvent *> Map_Connector;
+	typedef unordered_map<unsigned int, IBufferEvent *> Map_Acceptor;
 	typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
 
 	Map_Connector m_mapConnector;
 	Map_Acceptor m_mapAcceptor;
 	Queue_TimerOrSignals m_qTimerOrSignals;
-
-	typedef std::queue<CConnector *> Queue_IdleConnectorExs;
+	typedef std::queue<IBufferEvent *> Queue_IdleConnectorExs;
 	Queue_IdleConnectorExs m_quIdleConnectorExs;
-
 	CListener *m_pListener;
 	FuncAcceptorOnNew m_pOnNew;
-	FuncAcceptorOnDisconnected m_pOnDisconnected;
-	FuncAcceptorOnSomeDataRecv m_pOnSomeDataRecv;
+
+	FuncBufferEventOnDataSend m_pFuncAcceptorOnDataSend;
+	FuncBufferEventOnDataRecv m_pFuncAcceptorOnDataRecv;
+	FuncBufferEventOnDisconnected m_pFuncAcceptorDisconnected;
 };
 
 #endif

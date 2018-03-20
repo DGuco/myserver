@@ -83,9 +83,6 @@ int CGameServer::PrepareToRun()
 	if (StartAllTimers() != 0) {
 		return -4;
 	}
-	if (m_pServerHandle->PrepareToRun()) {
-		return -1;
-	}
 
 	if (m_pClientHandle->PrepareToRun()) {
 		return -1;
@@ -96,6 +93,10 @@ int CGameServer::PrepareToRun()
 		return -5;
 	}
 
+	if (m_pServerHandle->PrepareToRun()) {
+		return -1;
+	}
+	
 	return 0;
 }
 
@@ -255,8 +256,7 @@ int CGameServer::Push(unsigned int iMsgID, Message *pMsg, stPointList *pTeamList
 // 发送消息给单个玩家
 int CGameServer::Push(unsigned int iMsgID, Message *pMsg, CPlayer *pPlayer)
 {
-	MY_ASSERT(pPlayer != NULL && pMsg != NULL,
-			  return -1);
+	MY_ASSERT(pPlayer != NULL && pMsg != NULL, return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
 	m_pClientHandle->PushAsync(iMsgID, pMsg, &tmpList);

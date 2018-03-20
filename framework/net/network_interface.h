@@ -20,6 +20,7 @@ class CNetAddr;
 class CAcceptor;
 class CSystemSignal;
 class CListener;
+class IBufferEvent;
 
 enum PipeResult
 {
@@ -55,9 +56,17 @@ public:
 */
 typedef std::function<void(int, short, void *)> FuncOnTimeOut;
 
-/** CallBack for TimerOut Or
+/** CallBack for TimerOut
 */
 typedef std::function<void(uint32, void *)> FuncOnSignal;
+
+/** CallBack for IBufferEvent
+*/
+typedef std::function<void(IBufferEvent *)> FuncBufferEventOnDataSend;
+
+typedef std::function<void(IBufferEvent *)> FuncBufferEventOnDataRecv;
+
+typedef std::function<void(IBufferEvent *)> FuncBufferEventOnDisconnected;
 
 /** CallBack for Accept
 */
@@ -65,24 +74,14 @@ typedef std::function<void(IEventReactor *, SOCKET, sockaddr *sa)> FuncListenerO
 
 /** CallBack for Connector
  */
-typedef std::function<void(CConnector *)> FuncConnectorOnDisconnected;
-
 typedef std::function<void(CConnector *)> FuncConnectorOnConnectFailed;
 
 typedef std::function<void(CConnector *)> FuncConnectorOnConnectted;
 
-typedef std::function<void(CConnector *)> FuncConnectorOnSomeDataSend;
-
-typedef std::function<void(CConnector *)> FuncConnectorOnSomeDataRecv;
-
-typedef std::function<void(CConnector *)> FuncConnectorOnPingServer;
+typedef std::function<void(IBufferEvent *)> FuncConnectorOnPingServer;
 
 /** CallBack for CAcceptor
  */
 typedef std::function<void(uint32, CAcceptor *)> FuncAcceptorOnNew;
-
-typedef std::function<void(CAcceptor *)> FuncAcceptorOnDisconnected;
-
-typedef std::function<void(CAcceptor *)> FuncAcceptorOnSomeDataRecv;
 
 #endif

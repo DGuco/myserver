@@ -4,6 +4,7 @@
 
 #include <dbmessage.pb.h>
 #include <client_comm_engine.h>
+#include <my_assert.h>
 #include "../inc/dbctrl.h"
 #include "config.h"
 #include "connector.h"
@@ -77,7 +78,7 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 	}
 
 	//int nSendReturn = m_pProxySvrdConns[ m_current_proxy_index ].GetSocket()->SendOneCode( nCodeLength, abyCodeBuf );
-	CConnector *tmpConnector = m_pNetWork->FindConnector(m_iProxyId);
+	IBufferEvent *tmpConnector = m_pNetWork->FindConnector(m_iProxyId);
 	if (tmpConnector == NULL) {
 		LOG_ERROR("default", "Connection to proxyserver has gone");
 		return -1;
@@ -299,8 +300,7 @@ int CDBCtrl::ConnectToProxyServer()
 							 &CDBCtrl::lcb_OnCnsSomeDataSend,
 							 &CDBCtrl::lcb_OnCnsSomeDataRecv,
 							 &CDBCtrl::lcb_OnPingServer,
-							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive(),
-							 CServerConfig::GetSingletonPtr()->GetSocketTimeOut())
+							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive())
 		) {
 		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,
@@ -485,18 +485,18 @@ int CDBCtrl::Run()
 	m_pNetWork->DispatchEvents();
 }
 
-void CDBCtrl::lcb_OnConnected(CConnector *pConnector)
+void CDBCtrl::lcb_OnConnected(IBufferEvent *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 	m_iProxyId = pConnector->GetSocket().GetSocket();
 }
 
-void CDBCtrl::lcb_OnCnsDisconnected(CConnector *pConnector)
+void CDBCtrl::lcb_OnCnsDisconnected(IBufferEvent *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 }
 
-void CDBCtrl::lcb_OnCnsSomeDataRecv(CConnector *pConnector)
+void CDBCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 	//数据不完整
@@ -509,16 +509,16 @@ void CDBCtrl::lcb_OnCnsSomeDataRecv(CConnector *pConnector)
 	CDBCtrl::GetSingletonPtr()->DispatchOneCode(iTmpLen, (BYTE *) (m_acRecvBuff));
 }
 
-void CDBCtrl::lcb_OnCnsSomeDataSend(CConnector *pConnector)
+void CDBCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 }
 
-void CDBCtrl::lcb_OnConnectFailed(CConnector *pConnector)
+void CDBCtrl::lcb_OnConnectFailed(IBufferEvent *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 }
 
-void CDBCtrl::lcb_OnPingServer(CConnector *pConnector)
+void CDBCtrl::lcb_OnPingServer(IBufferEvent *pConnector)
 {
 }

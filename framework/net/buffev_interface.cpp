@@ -6,12 +6,18 @@
 #include "buffev_interface.h"
 
 IBufferEvent::IBufferEvent(IEventReactor *pReactor,
-						   int socket)
+						   int socket,
+						   FuncBufferEventOnDataSend funcOnDataSend,
+						   FuncBufferEventOnDataRecv funcOnDataRecv,
+						   FuncBufferEventOnDisconnected m_pFuncDisconnected)
 	: m_pReactor(pReactor),
 	  m_pStBufEv(NULL),
 	  m_uMaxOutBufferSize(MAX_PACKAGE_LEN),
 	  m_uMaxInBufferSize(MAX_PACKAGE_LEN),
-	  m_uRecvPackLen(0)
+	  m_uRecvPackLen(0),
+	  m_pFuncOnDataSend(funcOnDataSend),
+	  m_pFuncOnDataRecv(funcOnDataRecv),
+	  m_pFuncDisconnected(m_pFuncDisconnected)
 {
 	m_oSocket.SetSocket(socket);
 }
@@ -147,6 +153,30 @@ bool IBufferEvent::IsPackageComplete()
 	return true;
 }
 
+void IBufferEvent::lcb_OnRead(struct bufferevent *bev, void *arg)
+{
+	IBufferEvent *pEventBuff = (IBufferEvent *) (arg);
+	if (pEventBuff != NULL) {
+		pEventBuff->m_pFuncOnDataRecv(pEventBuff);
+	}
+}
+
+void IBufferEvent::lcb_OnWrite(bufferevent *bev, void *arg)
+{
+	IBufferEvent *pEventBuff = (IBufferEvent *) (arg);
+	if (pEventBuff != NULL) {
+		pEventBuff->m_pFuncOnDataSend(pEventBuff);
+	}
+}
+
+void IBufferEvent::lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg)
+{
+	IBufferEvent *pEventBuff = (IBufferEvent *) (arg);
+	if (pEventBuff != NULL) {
+		pEventBuff->OnEvent(nWhat);
+	}
+}
+
 unsigned int IBufferEvent::GetMaxRecvBufSize()
 {
 	return m_uMaxInBufferSize;
@@ -157,14 +187,19 @@ bool IBufferEvent::RegisterToReactor()
 	MY_ASSERT_STR(m_oSocket.GetSocket() >= 0, return false, "RegisterToReactor error ,socket is invalid");
 #ifdef EVENT_THREAD_SAFE
 	m_pStBufEv = bufferevent_socket_new(GetReactor()->GetEventBase(),
-										m_oSocket.GetSocket(),
+										-1,
 										BEV_OPT_CLOSE_ON_FREE | BEV_OPT_THREADSAFE);
 #else
 	m_pStBufEv = bufferevent_socket_new(GetReactor()->GetEventBase(),
-										m_oSocket.GetSocket(),
+										-1,
 										BEV_OPT_CLOSE_ON_FREE /*| BEV_OPT_THREADSAFE */);
 #endif
 	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent_new failed!,error msg: %s", strerror(errno));
+	bufferevent_setcb(m_pStBufEv,
+					  &IBufferEvent::lcb_OnRead,
+					  &IBufferEvent::lcb_OnWrite,
+					  &IBufferEvent::lcb_OnEvent,
+					  (void *) this);
 	AfterBuffEventCreated();
 	bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);
 	bufferevent_setwatermark(m_pStBufEv, EV_WRITE, 0, m_uMaxOutBufferSize);

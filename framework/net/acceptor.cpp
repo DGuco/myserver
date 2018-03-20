@@ -6,14 +6,13 @@
 CAcceptor::CAcceptor(SOCKET socket,
 					 IEventReactor *pReactor,
 					 CNetAddr *netAddr,
-					 FuncAcceptorOnDisconnected pOnDisconnected,
-					 FuncAcceptorOnSomeDataRecv pOnSomeDataRecv)
-	: IBufferEvent(pReactor, socket),
+					 FuncBufferEventOnDataSend funcOnDataSend,
+					 FuncBufferEventOnDataRecv funcOnDataRecv,
+					 FuncBufferEventOnDisconnected m_pFuncDisconnected)
+	: IBufferEvent(pReactor, socket, funcOnDataSend, funcOnDataRecv, m_pFuncDisconnected),
 	  m_pNetAddr(netAddr),
 	  m_eState(eAS_Disconnected),
-	  m_tCreateTime(GetMSTime()),
-	  m_pFuncOnDisconnected(pOnDisconnected),
-	  m_pFuncOnSomeDataRecv(pOnSomeDataRecv)
+	  m_tCreateTime(GetMSTime())
 {
 }
 
@@ -40,22 +39,14 @@ time_t CAcceptor::GetCreateTime()
 	return m_tCreateTime;
 }
 
-void CAcceptor::lcb_OnPipeRead(struct bufferevent *bev, void *arg)
+void CAcceptor::OnEvent(int16 nWhat)
 {
-	CAcceptor *pAcceptor = static_cast<CAcceptor *>(arg);
-	pAcceptor->m_pFuncOnSomeDataRecv(pAcceptor);
-}
-
-void CAcceptor::lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg)
-{
-	CAcceptor *pAcceptor = static_cast<CAcceptor *>(arg);
-	MY_ASSERT_STR(pAcceptor != NULL, return, "Event param is illegal");
 	if (nWhat & EVBUFFER_EOF) {
-		pAcceptor->m_pFuncOnDisconnected(pAcceptor);
+		m_pFuncDisconnected(this);
 		return;
 	}
 	if (nWhat & EVBUFFER_ERROR) {
-		pAcceptor->m_pFuncOnDisconnected(pAcceptor);
+		m_pFuncDisconnected(this);
 	}
 	return;
 }
@@ -81,16 +72,11 @@ void CAcceptor::SetState(eAcceptorState eState)
 
 void CAcceptor::BuffEventUnavailableCall()
 {
-	m_pFuncOnDisconnected(this);
+	m_pFuncDisconnected(this);
 }
 
 void CAcceptor::AfterBuffEventCreated()
 {
-	bufferevent_setcb(m_pStBufEv,
-					  &CAcceptor::lcb_OnPipeRead,
-					  NULL,
-					  &CAcceptor::lcb_OnEvent,
-					  (void *) this);
 	bufferevent_enable(m_pStBufEv, EV_READ);
 	bufferevent_disable(m_pStBufEv, EV_WRITE);
 	SetState(eAS_Connected);

@@ -18,8 +18,12 @@ CEventReactor::~CEventReactor()
 
 void CEventReactor::Init()
 {
+	m_pConfig = event_config_new();
+	event_config_require_features(m_pConfig, EV_FEATURE_O1);
 #ifdef EVENT_THREAD_SAFE
 	evthread_use_pthreads();
+#else
+	event_config_set_flag(m_pConfig, EVENT_BASE_FLAG_NOLOCK);
 #endif
 	m_pEventBase = event_base_new();
 	MY_ASSERT_STR(NULL != m_pEventBase, exit(0), "Create Event Base error Init error");

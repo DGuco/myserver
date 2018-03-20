@@ -56,6 +56,7 @@ int CProxyCtrl::PrepareToRun()
 							proxyInfo->m_iPort,
 							&CProxyCtrl::lcb_OnAcceptCns,
 							&CProxyCtrl::lcb_OnCnsDisconnected,
+							&CProxyCtrl::lcb_OnCnsSomeDataSend,
 							&CProxyCtrl::lcb_OnCnsSomeDataRecv,
 							-1,
 							CServerConfig::GetSingletonPtr()->GetTcpKeepAlive());
@@ -74,7 +75,7 @@ int CProxyCtrl::Run()
 	return 0;
 }
 
-CAcceptor *CProxyCtrl::GetConnByKey(int iKey)
+IBufferEvent *CProxyCtrl::GetConnByKey(int iKey)
 {
 	auto it = m_mapRegister.find(iKey);
 	if (it != m_mapRegister.end()) {
@@ -93,21 +94,26 @@ int CProxyCtrl::MakeConnKey(const short nType, const short nID)
 	return iKey;
 }
 
-void CProxyCtrl::lcb_OnAcceptCns(uint32 uId, CAcceptor *pAcceptor)
+void CProxyCtrl::lcb_OnAcceptCns(uint32 uId, IBufferEvent *pAcceptor)
 {
 	MY_ASSERT(pAcceptor != NULL, return);
 	CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, pAcceptor);
 	LOG_DEBUG("default", "New acceptor,socket id {}", pAcceptor->GetSocket().GetSocket());
 }
 
-void CProxyCtrl::lcb_OnCnsDisconnected(CAcceptor *pAcceptor)
+void CProxyCtrl::lcb_OnCnsDisconnected(IBufferEvent *pAcceptor)
 {
 	MY_ASSERT(pAcceptor != NULL, return);
 	CNetWork::GetSingletonPtr()->ShutDownAcceptor(pAcceptor->GetSocket().GetSocket());
 	LOG_DEBUG("default", "Acceptor disconnected,socket id {}", pAcceptor->GetSocket().GetSocket());
 }
 
-void CProxyCtrl::lcb_OnCnsSomeDataRecv(CAcceptor *pAcceptor)
+void CProxyCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pAcceptor)
+{
+
+}
+
+void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pAcceptor)
 {
 	MY_ASSERT(pAcceptor != NULL, return);
 	//消息不完整
@@ -127,7 +133,7 @@ void CProxyCtrl::lcb_OnCnsSomeDataRecv(CAcceptor *pAcceptor)
 	}
 }
 
-int CProxyCtrl::DealRegisterMes(CAcceptor *pAcceptor, char *acTmpBuf)
+int CProxyCtrl::DealRegisterMes(IBufferEvent *pAcceptor, char *acTmpBuf)
 {
 	MY_ASSERT(pAcceptor != NULL, return -1);
 //	// 8字节对齐补充长度
@@ -181,7 +187,7 @@ int CProxyCtrl::DealRegisterMes(CAcceptor *pAcceptor, char *acTmpBuf)
   *函数名          : TransferOneCode
   *功能描述        : 转发一个数据包
 **/
-int CProxyCtrl::TransferOneCode(CAcceptor *pAcceptor, unsigned short nCodeLength)
+int CProxyCtrl::TransferOneCode(IBufferEvent *pAcceptor, unsigned short nCodeLength)
 {
 	CProxyMessage stTmpMessage;
 
@@ -293,7 +299,7 @@ int CProxyCtrl::TransferOneCode(CAcceptor *pAcceptor, unsigned short nCodeLength
 
 int CProxyCtrl::SendOneCodeTo(short nCodeLength, BYTE *pbyCode, int iKey, bool bKeepalive/* = false*/)
 {
-	CAcceptor *pWriteConn = NULL;
+	IBufferEvent *pWriteConn = NULL;
 	int iTempRet = 0;
 
 	if (nCodeLength <= 0 || !pbyCode) {

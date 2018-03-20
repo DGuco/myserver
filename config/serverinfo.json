@@ -15,8 +15,8 @@
     "serverid": 20003
   },
   "proxyinfo": {
-    "host": "123.207.137.125",
-    "port": 9002,
+    "host": "127.0.0.1",
+    "port": 9003,
     "serverid": 20004
   },
   "keepalive": 10000,

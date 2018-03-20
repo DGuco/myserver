@@ -161,10 +161,6 @@ int CSocket::GetSocketError() const
 
 }
 
-SOCKET CSocket::GetSocket() const
-{
-	return m_Socket;
-}
 //-----------------------------------------------------------------
 uint32 CSocket::Bind(const CNetAddr &addr)
 {

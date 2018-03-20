@@ -27,16 +27,16 @@ public:
 private:
 	void SendMessageToProxy(char *data, PACK_LEN len);
 private:
-	static void lcb_OnConnectted(CConnector *pConnector);
+	static void lcb_OnConnectted(IBufferEvent *pConnector);
 	//断开连接回调
-	static void lcb_OnCnsDisconnected(CConnector *pConnector);
+	static void lcb_OnCnsDisconnected(IBufferEvent *pConnector);
 	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataRecv(CConnector *pConnector);
-	static void lcb_OnConnectFailed(CConnector *pConnector);
-	static void lcb_OnCnsSomeDataSend(CConnector *pConnector);
-	static void lcb_OnPingServer(CConnector *pConnector);
+	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pConnector);
+	static void lcb_OnConnectFailed(IBufferEvent *pConnector);
+	static void lcb_OnCnsSomeDataSend(IBufferEvent *pConnector);
+	static void lcb_OnPingServer(IBufferEvent *pConnector);
 private:
-	static void DealServerData(CConnector *pConnector);
+	static void DealServerData(IBufferEvent *pConnector);
 	static void SetProxyId(int id);
 	static int GetProxyId();
 private:

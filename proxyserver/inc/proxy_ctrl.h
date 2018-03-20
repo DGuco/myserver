@@ -51,24 +51,26 @@ public:
 	// 执行线程
 	int Run();
 	// 通过KEY获取连接信息
-	CAcceptor *GetConnByKey(int iKey);
+	IBufferEvent *GetConnByKey(int iKey);
 	// 通过FE和ID创建KEY
 	int MakeConnKey(const short nType, const short nID);
 	//处理注册消息
-	int DealRegisterMes(CAcceptor *pAcceptor, char *acTmpBuf);
+	int DealRegisterMes(IBufferEvent *pAcceptor, char *acTmpBuf);
 	// 转发数据
-	int TransferOneCode(CAcceptor *pAcceptor, unsigned short nCodeLength);
+	int TransferOneCode(IBufferEvent *pAcceptor, unsigned short nCodeLength);
 	//关闭socket
 	void CloseConnection(int socket);
 	// 发送数据
 	int SendOneCodeTo(short nCodeLength, BYTE *pbyCode, int iKey, bool bKeepalive);
 protected:
 	//客户端连接还回调
-	static void lcb_OnAcceptCns(uint32 uId, CAcceptor *pAcceptor);
+	static void lcb_OnAcceptCns(uint32 uId, IBufferEvent *pAcceptor);
 	//客户端断开连接回调
-	static void lcb_OnCnsDisconnected(CAcceptor *pAcceptor);
+	static void lcb_OnCnsDisconnected(IBufferEvent *pAcceptor);
 	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataRecv(CAcceptor *pAcceptor);
+	static void lcb_OnCnsSomeDataSend(IBufferEvent *pAcceptor);
+	//客户端上行数据回调
+	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pAcceptor);
 private:
 	CNetWork *m_pNetWork;
 	TStatLog m_stStatLog;

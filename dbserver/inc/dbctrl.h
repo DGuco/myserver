@@ -69,14 +69,14 @@ private:
 	int SendkeepAliveToProxy();     // 向proxy发送心跳消息
 	int DispatchOneCode(int nCodeLength, BYTE *pbyCode);
 private:
-	static void lcb_OnConnected(CConnector *pConnector);
+	static void lcb_OnConnected(IBufferEvent *pConnector);
 	//断开连接回调
-	static void lcb_OnCnsDisconnected(CConnector *pConnector);
+	static void lcb_OnCnsDisconnected(IBufferEvent *pConnector);
 	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataRecv(CConnector *pConnector);
-	static void lcb_OnConnectFailed(CConnector *pConnector);
-	static void lcb_OnCnsSomeDataSend(CConnector *pConnector);
-	static void lcb_OnPingServer(CConnector *pConnector);
+	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pConnector);
+	static void lcb_OnConnectFailed(IBufferEvent *pConnector);
+	static void lcb_OnCnsSomeDataSend(IBufferEvent *pConnector);
+	static void lcb_OnPingServer(IBufferEvent *pConnector);
 private:
 	int m_iRunFlag;    // 运行标志
 	time_t m_tLastSendKeepAlive;        // 最后发送proxy心跳消息时间

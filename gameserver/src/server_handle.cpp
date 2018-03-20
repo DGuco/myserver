@@ -28,12 +28,6 @@ CServerHandle::~CServerHandle()
 int CServerHandle::PrepareToRun()
 {
 	if (!Connect2Proxy()) {
-//		if (Regist2Proxy()) {
-//////			m_ProxyClient.InitTimer((time_t) CServerConfig::GetSingletonPtr()->GetSocketTimeOut());
-//		}
-//		else {
-//			return false;
-//		}
 		return -1;
 	}
 	return 0;
@@ -56,16 +50,15 @@ bool CServerHandle::Connect2Proxy()
 							 &CServerHandle::lcb_OnCnsSomeDataSend,
 							 &CServerHandle::lcb_OnCnsSomeDataRecv,
 							 &CServerHandle::lcb_OnPingServer,
-							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive(),
-							 10)
+							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive())
 		) {
 		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,
 				  rTmpProxy->m_sHost.c_str(), rTmpProxy->m_iPort, rTmpProxy->m_iServerId);
 		return false;
 	}
-	LOG_NOTICE("default", "Connect to Proxy({}:{})(id={}) succeed.",
-			   rTmpProxy->m_sHost.c_str(), rTmpProxy->m_iPort, rTmpProxy->m_iPort);
+	LOG_INFO("default", "Connect to Proxy({}:{})(id={}) succeed.",
+			 rTmpProxy->m_sHost.c_str(), rTmpProxy->m_iPort, rTmpProxy->m_iPort);
 	return true;
 }
 
@@ -135,7 +128,7 @@ void CServerHandle::SendMessageToProxy(char *data, PACK_LEN len)
 	CGameServer::GetSingletonPtr()->GetIoThread()->PushTaskBack(
 		[data, len, this]
 		{
-			CConnector *pConn = m_pNetWork->FindConnector(CServerHandle::GetProxyId());
+			IBufferEvent *pConn = m_pNetWork->FindConnector(CServerHandle::GetProxyId());
 			if (pConn == NULL) {
 				LOG_ERROR("default", "ProxyServer connection has gone");
 				return;
@@ -150,22 +143,24 @@ void CServerHandle::SendMessageToProxy(char *data, PACK_LEN len)
 		});
 }
 
-void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
+void CServerHandle::lcb_OnConnectted(IBufferEvent *pConnector)
 {
+	MY_ASSERT(pConnector != NULL, return);
 	CGameServer::GetSingletonPtr()->GetIoThread()
 		->PushTaskBack([pConnector]
 					   {
 						   MY_ASSERT(pConnector != NULL, return);
 						   SetProxyId(pConnector->GetSocket().GetSocket());
+						   CGameServer::GetSingletonPtr()->GetServerHandle()->Regist2Proxy();
 					   });
 }
 
-void CServerHandle::lcb_OnCnsDisconnected(CConnector *pConnector)
+void CServerHandle::lcb_OnCnsDisconnected(IBufferEvent *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 }
 
-void CServerHandle::lcb_OnCnsSomeDataRecv(CConnector *pConnector)
+void CServerHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pConnector)
 {
 	CGameServer::GetSingletonPtr()->GetIoThread()
 		->PushTaskBack([pConnector]
@@ -174,21 +169,21 @@ void CServerHandle::lcb_OnCnsSomeDataRecv(CConnector *pConnector)
 					   });
 }
 
-void CServerHandle::lcb_OnCnsSomeDataSend(CConnector *pConnector)
+void CServerHandle::lcb_OnCnsSomeDataSend(IBufferEvent *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 
 }
-void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
+void CServerHandle::lcb_OnConnectFailed(IBufferEvent *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 }
 
-void CServerHandle::lcb_OnPingServer(CConnector *pConnector)
+void CServerHandle::lcb_OnPingServer(IBufferEvent *pConnector)
 {
 }
 
-void CServerHandle::DealServerData(CConnector *pConnector)
+void CServerHandle::DealServerData(IBufferEvent *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 	//数据不完整

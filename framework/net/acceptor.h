@@ -29,8 +29,9 @@ public:
 	CAcceptor(SOCKET socket,
 			  IEventReactor *pReactor,
 			  CNetAddr *netAddr,
-			  FuncAcceptorOnDisconnected pOnDisconnected,
-			  FuncAcceptorOnSomeDataRecv pOnSomeDataRecv);
+			  FuncBufferEventOnDataSend funcOnDataSend,
+			  FuncBufferEventOnDataRecv funcOnDataRecv,
+			  FuncBufferEventOnDisconnected m_pFuncDisconnected);
 	//析构函数
 	virtual ~CAcceptor();
 	//获取该连接的ip
@@ -48,22 +49,16 @@ private:
 	//event buffer 创建成功后处理
 	void AfterBuffEventCreated() override;
 private:
-	//读回调
-	static void lcb_OnPipeRead(struct bufferevent *bev, void *arg);
-	//事件回调
-	static void lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg);
 	//获取连接状态
 	eAcceptorState GetState();
 	//设置连接状态
 	void SetState(eAcceptorState eState);
-
+	//事件回调
+	void OnEvent(int16 nWhat) override;
 private:
 	CNetAddr *m_pNetAddr;
 	eAcceptorState m_eState;
 	time_t m_tCreateTime;
-
-	FuncAcceptorOnDisconnected m_pFuncOnDisconnected;
-	FuncAcceptorOnSomeDataRecv m_pFuncOnSomeDataRecv;
 };
 
 #endif
