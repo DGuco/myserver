@@ -19,7 +19,7 @@ public:
 				 int socket,
 				 FuncBufferEventOnDataSend funcOnDataSend,
 				 FuncBufferEventOnDataRecv funcOnDataRecv,
-				 FuncBufferEventOnDisconnected m_pFuncDisconnected);
+				 FuncBufferEventOnDisconnected funcDisconnected);
 	//析构函数
 	virtual ~IBufferEvent();
 	//发送数据

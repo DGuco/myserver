@@ -9,11 +9,11 @@
 #include "share_mem.h"
 #include "client_comm_engine.h"
 #include "my_assert.h"
+#include "../datamodule/inc/sceneobjmanager.h"
 #include "../inc/message_dispatcher.h"
 #include "../inc/message_factory.h"
 #include "../inc/client_handle.h"
 #include "../inc/game_server.h"
-#include "../datamodule/inc/sceneobjmanager.h"
 
 CClientHandle::CClientHandle()
 {
@@ -21,6 +21,8 @@ CClientHandle::CClientHandle()
 
 CClientHandle::~CClientHandle()
 {
+	SAFE_DELETE(mC2SPipe);
+	SAFE_DELETE(mS2CPipe);
 }
 
 int CClientHandle::SendResponseAsync(Message *pMessage, CPlayer *pPlayer)
@@ -51,6 +53,15 @@ int CClientHandle::PushAsync(int cmd, Message *pMessage, stPointList *pPlayerLis
 						   Push(cmd, pMessage, pPlayerList);
 					   });
 	return 0;
+}
+
+void CClientHandle::RecvAsync()
+{
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([this]
+					   {
+						   Recv();
+					   });
 }
 
 int CClientHandle::SendResToPlayer(Message *pMessage, CPlayer *pPlayer)
@@ -552,6 +563,16 @@ void CClientHandle::Dump(char *pBuffer, unsigned int &uiLen)
 					  "s2c pipe", iTmpLeft, PIPE_SIZE);
 }
 
+int CClientHandle::CheckData()
+{
+	if (!IsToBeBlocked() && GetStatus() != eRunStatus::rt_running) {
+		//唤醒线程
+		WakeUp();
+		return 1;
+	}
+	return 0;
+}
+
 int CClientHandle::PrepareToRun()
 {
 	int iTempSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(PIPE_SIZE);
@@ -591,13 +612,13 @@ int CClientHandle::PrepareToRun()
 int CClientHandle::RunFunc()
 {
 	while (true) {
-		if (!mC2SPipe->IsQueueEmpty()) {
-			Recv();
-		}
+		// 一直休眠直到被唤醒
+		CondBlock();
+		RecvAsync();
 	}
 }
 
 bool CClientHandle::IsToBeBlocked()
 {
-	return false;
+	return mC2SPipe->IsQueueEmpty();
 }

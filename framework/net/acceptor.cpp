@@ -8,8 +8,12 @@ CAcceptor::CAcceptor(SOCKET socket,
 					 CNetAddr *netAddr,
 					 FuncBufferEventOnDataSend funcOnDataSend,
 					 FuncBufferEventOnDataRecv funcOnDataRecv,
-					 FuncBufferEventOnDisconnected m_pFuncDisconnected)
-	: IBufferEvent(pReactor, socket, funcOnDataSend, funcOnDataRecv, m_pFuncDisconnected),
+					 FuncBufferEventOnDisconnected funcDisconnected)
+	: IBufferEvent(pReactor,
+				   socket,
+				   funcOnDataSend,
+				   funcOnDataRecv,
+				   funcDisconnected),
 	  m_pNetAddr(netAddr),
 	  m_eState(eAS_Disconnected),
 	  m_tCreateTime(GetMSTime())
@@ -77,7 +81,7 @@ void CAcceptor::BuffEventUnavailableCall()
 
 void CAcceptor::AfterBuffEventCreated()
 {
-	bufferevent_enable(m_pStBufEv, EV_READ);
-	bufferevent_disable(m_pStBufEv, EV_WRITE);
+	bufferevent_setfd(m_pStBufEv, m_oSocket.GetSocket());
+//	bufferevent_enable(m_pStBufEv, EV_READ);
 	SetState(eAS_Connected);
 }

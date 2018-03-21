@@ -4,8 +4,12 @@
 CConnector::CConnector(IEventReactor *pReactor,
 					   FuncBufferEventOnDataSend funcOnDataSend,
 					   FuncBufferEventOnDataRecv funcOnDataRecv,
-					   FuncBufferEventOnDisconnected m_pFuncDisconnected)
-	: IBufferEvent(pReactor, -1, funcOnDataSend, funcOnDataRecv, m_pFuncDisconnected),
+					   FuncBufferEventOnDisconnected funcDisconnected)
+	: IBufferEvent(pReactor,
+				   -1,
+				   funcOnDataSend,
+				   funcOnDataRecv,
+				   funcDisconnected),
 	  m_eState(eCS_Disconnected)
 {
 }
@@ -22,13 +26,9 @@ void CConnector::GetRemoteIpAddress(char *szBuf, uint32 uBufSize)
 
 bool CConnector::Connect(const CNetAddr &addr)
 {
-	if (!m_oSocket.Open()) {
-		return false;
-	}
 	sockaddr_in saiAddress;
 	m_oAddr.Copy(addr);
 	CSocket::Address2SockAddrIn(saiAddress, addr);
-	m_oSocket.SetNonblocking();
 	GetReactor()->Register(this);
 	int iRet = bufferevent_socket_connect(m_pStBufEv, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
 	if (iRet != 0) {
@@ -48,6 +48,7 @@ void CConnector::SetCallbackFunc(FuncConnectorOnConnectFailed pOnConnectFailed,
 void CConnector::OnConnectted()
 {
 	SetState(eCS_Connected);
+	m_oSocket.SetSocket(bufferevent_getfd(m_pStBufEv));
 	m_pFuncOnConnectted(this);
 }
 
@@ -61,13 +62,7 @@ void CConnector::ShutDown()
 		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connected: %s : %d", m_oAddr.GetAddress(), m_oAddr.GetPort());
 		GetReactor()->UnRegister(this);
 	}
-	m_oSocket.Close();
 	SetState(eCS_Disconnected);
-}
-
-void CConnector::lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg)
-{
-
 }
 
 void CConnector::OnEvent(int16 nWhat)
@@ -76,23 +71,8 @@ void CConnector::OnEvent(int16 nWhat)
 		OnConnectted();
 		return;
 	}
-	if (nWhat & EVBUFFER_EOF) {
-		MY_ASSERT_STR(false, DO_NOTHING, "%s : %d lcb_OnEvent EVBUFFER_EOF %d",
-					  m_oAddr.GetAddress(),
-					  m_oAddr.GetPort(),
-					  nWhat);
-		m_pFuncDisconnected(this);
-		return;
-	}
-
-	if (nWhat & EVBUFFER_ERROR) {
-		MY_ASSERT_STR(false, DO_NOTHING, "%s : %d lcb_OnEvent EVBUFFER_ERROR %d",
-					  m_oAddr.GetAddress(),
-					  m_oAddr.GetPort(), nWhat);
-		m_pFuncDisconnected(this);
-		return;
-	}
-	ShutDown();
+	MY_ASSERT_STR(false, DO_NOTHING, "Connect to %s : %d failed", m_oAddr.GetAddress(), m_oAddr.GetPort());
+	m_pFuncDisconnected(this);
 }
 
 bool CConnector::IsConnected()
@@ -127,5 +107,5 @@ void CConnector::BuffEventUnavailableCall()
 
 void CConnector::AfterBuffEventCreated()
 {
-	bufferevent_enable(m_pStBufEv, EV_WRITE);
+//	bufferevent_enable(m_pStBufEv, EV_WRITE);
 }

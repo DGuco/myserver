@@ -62,7 +62,8 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 	//  取得ip和端口号
 	char ip[16];
 	sprintf(ip, inet_ntoa(sin.sin_addr));
-	CAcceptor *pAcceptor = new CAcceptor(socket, pReactor,
+	CAcceptor *pAcceptor = new CAcceptor(socket,
+										 pReactor,
 										 new CNetAddr(ip, sin.sin_port),
 										 m_pFuncAcceptorOnDataSend,
 										 m_pFuncAcceptorOnDataRecv,

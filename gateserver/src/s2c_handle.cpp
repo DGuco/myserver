@@ -33,13 +33,9 @@ int CS2cHandle::PrepareToRun()
 int CS2cHandle::RunFunc()
 {
 	while (true) {
+		CondBlock();
 		//如果有数据需要发送
-		if (!IsToBeBlocked()) {
-			CheckWaitSendData();
-		}
-		else {
-			usleep(500);
-		}
+		CheckWaitSendData();
 	}
 }
 
@@ -143,6 +139,16 @@ int CS2cHandle::SendClientData()
 				SendToClient(tmpSocketInfo, (const char *) pbTmpSend, unTmpPackLen);
 			}
 		);
+	}
+	return 0;
+}
+
+int CS2cHandle::CheckData()
+{
+	if (!IsToBeBlocked() && GetStatus() != eRunStatus::rt_running) {
+		//唤醒线程
+		WakeUp();
+		return 1;
 	}
 	return 0;
 }

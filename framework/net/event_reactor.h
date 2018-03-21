@@ -34,7 +34,6 @@ public:
 	void DispatchEvents();
 	//释放资源
 	void Release();
-
 private:
 	uint32 m_uReactorHandlerCounter;
 	event_base *m_pEventBase;

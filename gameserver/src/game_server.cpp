@@ -16,25 +16,16 @@ CGameServer::CGameServer()
 
 CGameServer::~CGameServer()
 {
-	if (m_pClientHandle != NULL) {
-		delete m_pClientHandle;
-	}
-
-	if (m_pMessageDispatcher != NULL) {
-		delete m_pMessageDispatcher;
-	}
-
-	if (m_pMessageFactory != NULL) {
-		delete m_pMessageFactory;
-	}
-
-	if (m_pModuleManager != NULL) {
-		delete m_pModuleManager;
-	}
-
-	if (m_pTimerManager != NULL) {
-		delete m_pTimerManager;
-	}
+	m_pClientHandle->StopThread();
+	SAFE_DELETE(m_pClientHandle);
+	m_pServerHandle->StopForce();
+	SAFE_DELETE(m_pServerHandle);
+	SAFE_DELETE(m_pModuleManager);
+	SAFE_DELETE(m_pMessageDispatcher);
+	SAFE_DELETE(m_pMessageFactory);
+	SAFE_DELETE(m_pTimerManager);
+	SAFE_DELETE(m_pLogicThread);
+	SAFE_DELETE(m_pIoThread);
 }
 
 int CGameServer::Initialize()
@@ -88,15 +79,15 @@ int CGameServer::PrepareToRun()
 		return -1;
 	}
 
+	if (m_pServerHandle->PrepareToRun()) {
+		return -1;
+	}
+
 	// 通知各模块启动
 	if (m_pModuleManager->OnLaunchServer() != 0) {
 		return -5;
 	}
 
-	if (m_pServerHandle->PrepareToRun()) {
-		return -1;
-	}
-	
 	return 0;
 }
 
@@ -144,6 +135,15 @@ void CGameServer::Run()
 	LOG_INFO("default", "CGameServer start to run now.");
 	m_pClientHandle->Run();
 	m_pServerHandle->Run();
+	int iRet = 0;
+	while (true) {
+		iRet += m_pClientHandle->CheckData();
+		//检测服务起运行状态
+		iRet += CheckRunFlags();
+		if (iRet == 0) {
+			usleep(1000);
+		}
+	}
 }
 
 // 退出
@@ -282,8 +282,26 @@ int CGameServer::SendResponse(Message *pMsgPara, MesHead *mesHead)
 }
 
 // 检查服务器状态
-void CGameServer::CheckRunFlags()
+int CGameServer::CheckRunFlags()
 {
+	if (true == mRunFlag.CheckRunFlag(ERF_RELOAD)) {
+		// 重新加载模板数据
+//		if (CTemplateMgr::GetSingletonPtr()->ReloadAllTemplate() < 0) {
+//			printf("\n 重新加载模板数据失败, 请查看具体的错误!!!!\n");
+//		}
+//		else {
+//			printf("\n 重新加模板数据成功!!!!\n");
+//		}
+		SetRunFlag(ERF_RUNTIME);
+		return 1;
+	}
+	else if (true == mRunFlag.CheckRunFlag(ERF_QUIT)) {
+		// 保存数据,退出游戏
+		StartSaveAllData();
+		SetRunFlag(ERF_RUNTIME);
+		return 1;
+	}
+	return 0;
 }
 
 /*
@@ -428,7 +446,7 @@ CTimerManager *CGameServer::GetTimerManager()
 
 CServerHandle *CGameServer::GetServerHandle()
 {
-	return nullptr;
+	return m_pServerHandle;
 }
 
 CFactory *CGameServer::GetMessageFactory()

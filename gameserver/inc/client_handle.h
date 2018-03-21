@@ -43,19 +43,12 @@ class CClientHandle: public CMyThread
 {
 public:
 	CClientHandle();
-	~CClientHandle();
-
-protected:
-	// tcp --> game 共享内存管道起始地址
-	CCodeQueue *mC2SPipe;
-	// game --> tcp 共享内存管道起始地址
-	CCodeQueue *mS2CPipe;
-
+	virtual ~CClientHandle();
 public:
 	int SendResponseAsync(Message *pMessage, CPlayer *pPlayer);
 	int SendResponseAsync(Message *pMessage, MesHead *mesHead);
 	int PushAsync(int cmd, Message *pMessage, stPointList *pPlayerList);
-	int Recv();
+	void RecvAsync();
 	int DealClientMessage(CMessage *pMsg);
 	// 断开玩家连接
 	void DisconnectClient(CPlayer *cPlayer);
@@ -63,6 +56,8 @@ public:
 	void DisconnectClient(int iSocket, time_t tCreateTime);
 	// 打印管道状态
 	void Dump(char *pBuffer, unsigned int &uiLen);
+	//检查是有数据可读
+	int CheckData();
 public:
 	int PrepareToRun() override;
 	int RunFunc() override;
@@ -71,6 +66,13 @@ private:
 	int SendResToPlayer(Message *pMessage, CPlayer *pPlayer);
 	int SendResponse(Message *pMessage, MesHead *mesHead);
 	int Push(int cmd, Message *pMessage, stPointList *pPlayerList);
+	int Recv();
+
+protected:
+	// tcp --> game 共享内存管道起始地址
+	CCodeQueue *mC2SPipe;
+	// game --> tcp 共享内存管道起始地址
+	CCodeQueue *mS2CPipe;
 
 private:
 	char m_acMessageBuff[MAX_PACKAGE_LEN];      //下行消息缓冲区

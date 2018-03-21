@@ -27,7 +27,7 @@ public:
 	CConnector(IEventReactor *pReactor,
 			   FuncBufferEventOnDataSend funcOnDataSend,
 			   FuncBufferEventOnDataRecv funcOnDataRecv,
-			   FuncBufferEventOnDisconnected m_pFuncDisconnected);
+			   FuncBufferEventOnDisconnected funcDisconnected);
 	//析构函数
 	virtual ~CConnector(void);
 	//获取连接ip
@@ -54,8 +54,6 @@ private:
 	//事件回调
 	void OnEvent(int16 nWhat) override;
 private:
-	//错误回调
-	static void lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg);
 	//当前连接状态
 	eConnectorState GetState();
 	//设置当前抓状态

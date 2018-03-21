@@ -26,6 +26,26 @@ CC2sHandle::~CC2sHandle()
 	SAFE_DELETE(m_pNetWork);
 }
 
+int CC2sHandle::PrepareToRun()
+{
+	BeginListen();
+	return 0;
+}
+
+int CC2sHandle::RunFunc()
+{
+	LOG_INFO("default", "Libevent run with net module {}",
+			 event_base_get_method(reinterpret_cast<const event_base *>(CNetWork::GetSingletonPtr()
+				 ->GetEventReactor()->GetEventBase())));
+	//libevent事件循环
+	m_pNetWork->DispatchEvents();
+}
+
+bool CC2sHandle::IsToBeBlocked()
+{
+	return false;
+}
+
 bool CC2sHandle::BeginListen()
 {
 	ServerInfo *gateInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GATESERVER);
@@ -163,21 +183,6 @@ void CC2sHandle::SendToGame(CAcceptor *pAcceptor, PACK_LEN tmpLastLen)
 	else {
 		//心跳信息不做处理
 	}
-}
-
-int CC2sHandle::PrepareToRun()
-{
-	BeginListen();
-	return 0;
-}
-
-int CC2sHandle::Run()
-{
-	LOG_INFO("default", "Libevent run with net module {}",
-			 event_base_get_method(reinterpret_cast<const event_base *>(CNetWork::GetSingletonPtr()
-				 ->GetEventReactor()->GetEventBase())));
-	//libevent事件循环
-	m_pNetWork->DispatchEvents();
 }
 
 CNetWork *CC2sHandle::GetNetWork()

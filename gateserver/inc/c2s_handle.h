@@ -11,19 +11,20 @@
 #include <net_work.h>
 #include "mythread.h"
 
-class CC2sHandle
+class CC2sHandle: public CMyThread
 {
 public:
 	//构造函数
 	CC2sHandle();
 	//析构函数
 	virtual ~CC2sHandle();
-	//准备run
-	int PrepareToRun();
-	//run
-	int Run();
 	//获取CNetWork
 	CNetWork *GetNetWork();
+public:
+	//准备run
+	int PrepareToRun() override;
+	int RunFunc() override;
+	bool IsToBeBlocked() override;
 public:
 	//清除socket
 	static void ClearSocket(CAcceptor *pAcceptor, short iError);
@@ -31,6 +32,7 @@ public:
 	static void DisConnect(CAcceptor *pAcceptor, short iError);
 	//发送数据给gameserver
 	static void SendToGame(CAcceptor *pAcceptor, PACK_LEN len);
+
 private:
 	//开始监听
 	bool BeginListen();

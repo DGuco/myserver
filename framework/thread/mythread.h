@@ -6,14 +6,6 @@
 #include <mutex>
 #include <thread>
 
-#define TRACE_DEBUG        ThreadLogDebug
-#define TRACE_INFO            ThreadLogInfo
-#define TRACE_NOTICE        ThreadLogNotice
-#define TRACE_WARN        ThreadLogWarn
-#define TRACE_ERROR        ThreadLogError
-#define TRACE_FATAL        ThreadLogFatal
-
-
 enum eRunStatus
 {
 	rt_init = 0,
@@ -45,8 +37,9 @@ public:
 	int Run();
 	int WakeUp();
 	int StopThread();
-	void ThreadLogInit(char *sPLogBaseName, long lPMaxLogSize, int iPMaxLogNum, int iShow, int iLevel = 0);
+	void StopForce();
 	void Join();
+	int GetStatus();
 protected:
 	int CondBlock();
 public:

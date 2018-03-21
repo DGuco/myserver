@@ -31,7 +31,7 @@ public:
 			  CNetAddr *netAddr,
 			  FuncBufferEventOnDataSend funcOnDataSend,
 			  FuncBufferEventOnDataRecv funcOnDataRecv,
-			  FuncBufferEventOnDisconnected m_pFuncDisconnected);
+			  FuncBufferEventOnDisconnected funcDisconnected);
 	//析构函数
 	virtual ~CAcceptor();
 	//获取该连接的ip

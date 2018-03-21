@@ -7,15 +7,11 @@
 #define SERVER_SERVER_HANDLE_H
 #include <net_work.h>
 
-class CServerHandle
+class CServerHandle: public CMyThread
 {
 public:
 	CServerHandle();
-	~CServerHandle();
-	// 运行准备
-	int PrepareToRun();
-	// 运行
-	void Run();
+	virtual ~CServerHandle();
 	// 连接到Proxy
 	bool Connect2Proxy();
 	// 向Proxy注册
@@ -24,6 +20,11 @@ public:
 	bool SendKeepAlive2Proxy();
 	// 向dbserver发送数据
 	void SendMessageToDB(char *data, PACK_LEN len);
+public:
+	// 运行准备
+	int PrepareToRun() override;
+	int RunFunc() override;
+	bool IsToBeBlocked() override;
 private:
 	void SendMessageToProxy(char *data, PACK_LEN len);
 private:

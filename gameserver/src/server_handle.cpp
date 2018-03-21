@@ -33,9 +33,16 @@ int CServerHandle::PrepareToRun()
 	return 0;
 }
 
-void CServerHandle::Run()
+int CServerHandle::RunFunc()
 {
 	m_pNetWork->DispatchEvents();
+	return 0;
+}
+
+bool CServerHandle::IsToBeBlocked()
+{
+	//永远不会阻塞
+	return false;
 }
 
 // 连接到Proxy
@@ -76,15 +83,20 @@ bool CServerHandle::Regist2Proxy()
 
 	int iRet = ServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
 	if (iRet != 0) {
-		LOG_ERROR("default", "[{} : {} : {}] ConvertMsgToStream failed, iRet = {}.",
-				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+		LOG_ERROR("default", "ConvertMsgToStream failed, iRet = {}.", iRet);
 		return false;
 	}
 
-	iRet = m_pNetWork->FindConnector(m_iProxyId)->Send((BYTE *) acTmpMessageBuffer, unTmpTotalLen);
-	if (iRet != 0) {
-		LOG_ERROR("default", "[{} : {} : {}] proxy SendOneCode failed, iRet = {}.",
-				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+	IBufferEvent *pConnector = m_pNetWork->FindConnector(m_iProxyId);
+	if (pConnector != NULL) {
+		iRet = pConnector->Send((BYTE *) acTmpMessageBuffer, unTmpTotalLen);
+		if (iRet != 0) {
+			LOG_ERROR("default", "SendOneCode to proxy failed, iRet = {}.", iRet);
+			return false;
+		}
+	}
+	else {
+		LOG_ERROR("default", "SendOneCode to proxy failed,cannot find connector..");
 		return false;
 	}
 

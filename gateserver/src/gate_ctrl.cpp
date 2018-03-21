@@ -49,6 +49,13 @@ int CGateCtrl::Run()
 {
 	m_pS2cHandle->Run();
 	m_pC2sHandle->Run();
+	int iRet = 0;
+	while (true) {
+		iRet += m_pS2cHandle->CheckData();
+		if (iRet == 0) {
+			usleep(1000);
+		}
+	}
 }
 
 CThreadPool *CGateCtrl::GetSingThreadPool()

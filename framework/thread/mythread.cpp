@@ -80,11 +80,16 @@ int CMyThread::StopThread()
 	m_iRunStatus = rt_stopped;
 	data_cond.notify_one();
 	// 等待该线程终止
-	if (m_th.joinable()) {
-		m_th.join();
-	}
+	Join();
 	LOG_DEBUG("default", "Thread stopped.");
 	return 0;
+}
+
+void CMyThread::StopForce()
+{
+	//退出线程
+	LOG_DEBUG("default", "Thread exit.");
+	pthread_exit((void *) m_abyRetVal);
 }
 
 void CMyThread::Join()
@@ -94,11 +99,7 @@ void CMyThread::Join()
 	}
 }
 
-void CMyThread::ThreadLogInit(char *sPLogBaseName, long lPMaxLogSize, int iPMaxLogNum, int iShow, int iLevel /*= 0*/)
+int CMyThread::GetStatus()
 {
-	memset(m_stLogCfg.szLogBaseName, 0, sizeof(m_stLogCfg.szLogBaseName));
-	strncpy(m_stLogCfg.szLogBaseName, sPLogBaseName, sizeof(m_stLogCfg.szLogBaseName) - 1);
-	m_stLogCfg.lMaxLogSize = lPMaxLogSize;
-	m_stLogCfg.iMaxLogNum = iPMaxLogNum;
-	strncpy(m_stLogCfg.szThreadKey, m_stLogCfg.szLogBaseName, sizeof(m_stLogCfg.szThreadKey) - 1);
+	return m_iRunStatus;
 }

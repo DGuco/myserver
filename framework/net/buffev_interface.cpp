@@ -9,7 +9,7 @@ IBufferEvent::IBufferEvent(IEventReactor *pReactor,
 						   int socket,
 						   FuncBufferEventOnDataSend funcOnDataSend,
 						   FuncBufferEventOnDataRecv funcOnDataRecv,
-						   FuncBufferEventOnDisconnected m_pFuncDisconnected)
+						   FuncBufferEventOnDisconnected funcDisconnected)
 	: m_pReactor(pReactor),
 	  m_pStBufEv(NULL),
 	  m_uMaxOutBufferSize(MAX_PACKAGE_LEN),
@@ -17,7 +17,7 @@ IBufferEvent::IBufferEvent(IEventReactor *pReactor,
 	  m_uRecvPackLen(0),
 	  m_pFuncOnDataSend(funcOnDataSend),
 	  m_pFuncOnDataRecv(funcOnDataRecv),
-	  m_pFuncDisconnected(m_pFuncDisconnected)
+	  m_pFuncDisconnected(funcDisconnected)
 {
 	m_oSocket.SetSocket(socket);
 }
@@ -184,7 +184,6 @@ unsigned int IBufferEvent::GetMaxRecvBufSize()
 
 bool IBufferEvent::RegisterToReactor()
 {
-	MY_ASSERT_STR(m_oSocket.GetSocket() >= 0, return false, "RegisterToReactor error ,socket is invalid");
 #ifdef EVENT_THREAD_SAFE
 	m_pStBufEv = bufferevent_socket_new(GetReactor()->GetEventBase(),
 										-1,
@@ -194,10 +193,11 @@ bool IBufferEvent::RegisterToReactor()
 										-1,
 										BEV_OPT_CLOSE_ON_FREE /*| BEV_OPT_THREADSAFE */);
 #endif
-	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent_new failed!,error msg: %s", strerror(errno));
+	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent new failed!,error msg: %s", strerror(errno));
 	bufferevent_setcb(m_pStBufEv,
 					  &IBufferEvent::lcb_OnRead,
-					  &IBufferEvent::lcb_OnWrite,
+					  NULL,
+//					  &IBufferEvent::lcb_OnWrite,
 					  &IBufferEvent::lcb_OnEvent,
 					  (void *) this);
 	AfterBuffEventCreated();

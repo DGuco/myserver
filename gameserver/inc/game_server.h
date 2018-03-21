@@ -111,7 +111,7 @@ public:
 	// 设置服务器运行状态
 	void SetRunFlag(ERunFlag eRunFlag);
 	// 检查服务器状态
-	void CheckRunFlags();
+	int CheckRunFlags();
 	// 刷新服务器状态
 	void FreshGame();
 
@@ -163,8 +163,8 @@ public:
 									time_t tCreateTime,
 									bool bKickOff = false);
 private:
-	CClientHandle *m_pClientHandle;             // 与客户端通信的连接
-	CServerHandle *m_pServerHandle;             // 与服务器的连接管理(proxyserver)
+	CClientHandle *m_pClientHandle;             // 与客户端通信的连接线程
+	CServerHandle *m_pServerHandle;             // 与服务器的连接管理(proxyserver)线程
 	CModuleManager *m_pModuleManager;           // 模块管理器
 	CMessageDispatcher *m_pMessageDispatcher;   // 消息派发器
 	CFactory *m_pMessageFactory;                // 消息工厂
@@ -172,6 +172,7 @@ private:
 	CRunFlag m_RunFlag;                         // 服务器运行状态
 	CThreadPool *m_pLogicThread;                // 逻辑线程
 	CThreadPool *m_pIoThread;                   // io线程(收发消息)
+	CRunFlag mRunFlag;                                // 服务器运行状态
 	int miServerState;    // 服务器状态
 };
 #endif //SERVER_GAMESERVER_H
