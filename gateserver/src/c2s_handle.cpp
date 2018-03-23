@@ -121,7 +121,7 @@ void CC2sHandle::ClearSocket(IBufferEvent *pAcceptor, short iError)
 
 void CC2sHandle::DisConnect(IBufferEvent *pAcceptor, short iError)
 {
-	MY_ASSERT(pAcceptor != NULL && typeid(pAcceptor) == typeid(CAcceptor), return)
+	MY_ASSERT(pAcceptor != NULL && typeid(*pAcceptor) == typeid(CAcceptor), return)
 
 	CAcceptor *tmpAcceptor = (CAcceptor *) pAcceptor;
 	MesHead tmpHead;
@@ -152,7 +152,7 @@ void CC2sHandle::DisConnect(IBufferEvent *pAcceptor, short iError)
 
 void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, PACK_LEN tmpLastLen)
 {
-	MY_ASSERT(pAcceptor != NULL && typeid(pAcceptor) == typeid(CAcceptor), return)
+	MY_ASSERT(pAcceptor != NULL && typeid(*pAcceptor) == typeid(CAcceptor), return)
 	CAcceptor *tmpAcceptor = (CAcceptor *) pAcceptor;
 
 	MesHead tmpHead;

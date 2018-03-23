@@ -166,7 +166,7 @@ void CS2cHandle::SendToClientAsync(const CSocketInfo &socketInfo, const char *da
 {
 	CAcceptor *pAcceptor = CNetWork::GetSingletonPtr()->FindAcceptor(socketInfo.socketid());
 	if (pAcceptor == NULL) {
-		LOG_ERROR("default", "CAcceptor has gone, socket = {}", socket);
+		LOG_ERROR("default", "CAcceptor has gone, socket = {}", socketInfo.socketid());
 		return;
 	}
 

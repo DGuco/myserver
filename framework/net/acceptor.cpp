@@ -82,6 +82,6 @@ void CAcceptor::BuffEventUnavailableCall()
 void CAcceptor::AfterBuffEventCreated()
 {
 	bufferevent_setfd(m_pStBufEv, m_oSocket.GetSocket());
-//	bufferevent_enable(m_pStBufEv, EV_READ);
+	bufferevent_enable(m_pStBufEv, EV_READ);
 	SetState(eAS_Connected);
 }

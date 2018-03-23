@@ -14,8 +14,7 @@ public:
 	virtual ~CServerHandle();
 	// 连接到Proxy
 	bool Connect2Proxy();
-	// 向Proxy注册
-	bool Regist2Proxy();
+	void Register2ProxyAsync();
 	// 发送心跳到Proxy
 	bool SendKeepAlive2Proxy();
 	// 向dbserver发送数据
@@ -26,7 +25,9 @@ public:
 	int RunFunc() override;
 	bool IsToBeBlocked() override;
 private:
-	void SendMessageToProxy(char *data, PACK_LEN len);
+	void SendMessageToProxyAsync(char *data, PACK_LEN len);
+	// 向Proxy注册
+	bool Register2Proxy();
 private:
 	//客户端上行数据回调
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
@@ -36,7 +37,6 @@ private:
 	static void lcb_OnConnectFailed(CConnector *pConnector);
 	static void lcb_OnConnectted(CConnector *pConnector);
 	static void lcb_OnPingServer(CConnector *pConnector);
-private:
 	static void DealServerData(IBufferEvent *pConnector);
 	static void SetProxyId(int id);
 	static int GetProxyId();

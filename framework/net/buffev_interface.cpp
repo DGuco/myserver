@@ -196,8 +196,7 @@ bool IBufferEvent::RegisterToReactor()
 	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent new failed!,error msg: %s", strerror(errno));
 	bufferevent_setcb(m_pStBufEv,
 					  &IBufferEvent::lcb_OnRead,
-					  NULL,
-//					  &IBufferEvent::lcb_OnWrite,
+					  &IBufferEvent::lcb_OnWrite,
 					  &IBufferEvent::lcb_OnEvent,
 					  (void *) this);
 	AfterBuffEventCreated();

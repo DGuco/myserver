@@ -113,7 +113,7 @@ void CGameServer::OnTimeCheckStateInServer(CTimerBase *pTimer)
 //		LOG_WARN("default", "[{} : {} : {}] mProxyClient maybe closed, current status({}) .",
 //				 __MY_FILE__, __LINE__, __FUNCTION__, pTmpGameServer->m_ProxyClient.GetStatus());
 //		if (pTmpGameServer->Connect2Proxy() == true) {
-//			if (pTmpGameServer->Regist2Proxy() == true) {
+//			if (pTmpGameServer->Register2Proxy() == true) {
 //				pTmpGameServer->m_ProxyClient.ResetTimeout(tTmpNow);
 //			}
 //		}
@@ -165,21 +165,20 @@ void CGameServer::ProcessClientMessage(CMessage *pMsg, CPlayer *pPlayer)
 		m_pModuleManager->OnClientMessage(iTmpType, pPlayer, pMsg);
 	}
 	catch (std::logic_error error) {
-		LOG_ERROR("default", "Catch execption,msg {}", error.what());
+		LOG_ERROR("default", "Catch logic exception,msg {}", error.what());
 	}
 }
 
 void CGameServer::ProcessRouterMessage(CProxyMessage *pMsg)
 {
-	MY_ASSERT(pMsg != NULL,
-			  return);
+	MY_ASSERT(pMsg != NULL, return);
 //    MY_ASSERT(pMsg->has_msghead() == true, return);
 	int iTmpType = GetModuleClass(pMsg->msghead().messageid());
 	try {
 		m_pModuleManager->OnRouterMessage(iTmpType, pMsg);
 	}
 	catch (std::logic_error error) {
-		LOG_ERROR("default", "Catch execption,msg {}", error.what());
+		LOG_ERROR("default", "Catch logic exception,msg {}", error.what());
 	}
 }
 

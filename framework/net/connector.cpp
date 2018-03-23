@@ -110,7 +110,7 @@ void CConnector::BuffEventUnavailableCall()
 
 void CConnector::AfterBuffEventCreated()
 {
-//	bufferevent_enable(m_pStBufEv, EV_WRITE);
+	bufferevent_enable(m_pStBufEv, EV_WRITE);
 }
 
 int CConnector::GetTargetId() const

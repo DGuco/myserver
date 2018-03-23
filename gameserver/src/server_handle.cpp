@@ -73,18 +73,26 @@ bool CServerHandle::Connect2Proxy()
 }
 
 // 向Proxy注册
-bool CServerHandle::Regist2Proxy()
+bool CServerHandle::Register2Proxy()
 {
 	CProxyMessage tmpMessage;
 	char acTmpMessageBuffer[1024];
 	unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
 
-	ServerInfo *rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
-	ServerInfo *rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
-	pbmsg_setproxy(tmpMessage.mutable_msghead(), enServerType::FE_GAMESERVER, rTmpGame->m_iServerId,
-				   enServerType::FE_PROXYSERVER, rTmpProxy->m_iServerId, GetMSTime(), enMessageCmd::MESS_REGIST);
+	ServerInfo *rTmpProxy =
+		CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+	ServerInfo
+		*rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
+	pbmsg_setproxy(tmpMessage.mutable_msghead(),
+				   enServerType::FE_GAMESERVER,
+				   rTmpGame->m_iServerId,
+				   enServerType::FE_PROXYSERVER,
+				   rTmpProxy->m_iServerId,
+				   GetMSTime(),
+				   enMessageCmd::MESS_REGIST);
 
-	int iRet = ServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
+	int iRet =
+		ServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "ConvertMsgToStream failed, iRet = {}.", iRet);
 		return false;
@@ -129,16 +137,16 @@ bool CServerHandle::SendKeepAlive2Proxy()
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return false;
 	}
-	SendMessageToProxy(acTmpMessageBuffer, unTmpTotalLen);
+	SendMessageToProxyAsync(acTmpMessageBuffer, unTmpTotalLen);
 	return true;
 }
 
 void CServerHandle::SendMessageToDB(char *data, PACK_LEN len)
 {
-	SendMessageToProxy(data, len);
+	SendMessageToProxyAsync(data, len);
 }
 
-void CServerHandle::SendMessageToProxy(char *data, PACK_LEN len)
+void CServerHandle::SendMessageToProxyAsync(char *data, PACK_LEN len)
 {
 	CGameServer::GetSingletonPtr()->GetIoThread()->PushTaskBack(
 		[data, len, this]
@@ -158,6 +166,15 @@ void CServerHandle::SendMessageToProxy(char *data, PACK_LEN len)
 		});
 }
 
+void CServerHandle::Register2ProxyAsync()
+{
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([this]
+					   {
+						   Register2Proxy();
+					   });
+}
+
 void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
@@ -167,7 +184,7 @@ void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
 						   MY_ASSERT(pConnector != NULL, return);
 						   CNetWork::GetSingletonPtr()->InsertNewConnector(pConnector->GetTargetId(), pConnector);
 						   SetProxyId(pConnector->GetTargetId());
-						   CGameServer::GetSingletonPtr()->GetServerHandle()->Regist2Proxy();
+						   CGameServer::GetSingletonPtr()->GetServerHandle()->Register2ProxyAsync();
 					   });
 }
 
