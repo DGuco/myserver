@@ -35,7 +35,9 @@ int CServerHandle::PrepareToRun()
 
 int CServerHandle::RunFunc()
 {
-	m_pNetWork->DispatchEvents();
+	while (true) {
+		m_pNetWork->DispatchEvents();
+	}
 	return 0;
 }
 
@@ -51,6 +53,7 @@ bool CServerHandle::Connect2Proxy()
 	ServerInfo *rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	if (!m_pNetWork->Connect(rTmpProxy->m_sHost.c_str(),
 							 rTmpProxy->m_iPort,
+							 rTmpProxy->m_iServerId,
 							 &CServerHandle::lcb_OnCnsSomeDataSend,
 							 &CServerHandle::lcb_OnCnsSomeDataRecv,
 							 &CServerHandle::lcb_OnCnsDisconnected,
@@ -162,28 +165,29 @@ void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
 		->PushTaskBack([pConnector]
 					   {
 						   MY_ASSERT(pConnector != NULL, return);
-						   SetProxyId(pConnector->GetSocket().GetSocket());
+						   CNetWork::GetSingletonPtr()->InsertNewConnector(pConnector->GetTargetId(), pConnector);
+						   SetProxyId(pConnector->GetTargetId());
 						   CGameServer::GetSingletonPtr()->GetServerHandle()->Regist2Proxy();
 					   });
 }
 
-void CServerHandle::lcb_OnCnsDisconnected(IBufferEvent *pConnector)
+void CServerHandle::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pConnector != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL, return);
 }
 
-void CServerHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pConnector)
+void CServerHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
 	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack([pConnector]
+		->PushTaskBack([pBufferEvent]
 					   {
-						   DealServerData(pConnector);
+						   DealServerData(pBufferEvent);
 					   });
 }
 
-void CServerHandle::lcb_OnCnsSomeDataSend(IBufferEvent *pConnector)
+void CServerHandle::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pConnector != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL, return);
 
 }
 void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
@@ -195,16 +199,16 @@ void CServerHandle::lcb_OnPingServer(CConnector *pConnector)
 {
 }
 
-void CServerHandle::DealServerData(IBufferEvent *pConnector)
+void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pConnector != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL, return);
 	//数据不完整
-	if (!pConnector->IsPackageComplete()) {
+	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
-	int iTmpLen = pConnector->GetRecvPackLen() - sizeof(PACK_LEN);
+	int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(PACK_LEN);
 	//读取数据
-	pConnector->RecvData(m_acRecvBuff, iTmpLen);
+	pBufferEvent->RecvData(m_acRecvBuff, iTmpLen);
 	// 将收到的二进制数据转为protobuf格式
 	CProxyMessage tmpMessage;
 	int iRet = ServerCommEngine::ConvertStreamToMsg(m_acRecvBuff,

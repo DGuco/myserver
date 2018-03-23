@@ -135,8 +135,9 @@ void CGameServer::Run()
 	LOG_INFO("default", "CGameServer start to run now.");
 	m_pClientHandle->Run();
 	m_pServerHandle->Run();
-	int iRet = 0;
+	int iRet;
 	while (true) {
+		iRet = 0;
 		iRet += m_pClientHandle->CheckData();
 		//检测服务起运行状态
 		iRet += CheckRunFlags();

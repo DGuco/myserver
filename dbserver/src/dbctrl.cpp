@@ -294,6 +294,7 @@ int CDBCtrl::ConnectToProxyServer()
 	ServerInfo *proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_PROXYSERVER);
 	if (!m_pNetWork->Connect(proxyInfo->m_sHost.c_str(),
 							 proxyInfo->m_iPort,
+							 proxyInfo->m_iServerId,
 							 &CDBCtrl::lcb_OnCnsDisconnected,
 							 &CDBCtrl::lcb_OnConnectFailed,
 							 &CDBCtrl::lcb_OnConnected,

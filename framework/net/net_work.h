@@ -39,6 +39,7 @@ public:
 	//连接
 	bool Connect(const char *szNetAddr,
 				 uint16 uPort,
+				 int targetId,
 				 FuncBufferEventOnDataSend funcOnSomeDataSend,
 				 FuncBufferEventOnDataSend funcOnSomeDataRecv,
 				 FuncBufferEventOnDisconnected funcOnDisconnected,
@@ -59,11 +60,13 @@ public:
 	//获取ping
 	unsigned int GetConnectorExPingValue(unsigned int uId);
 	//查找connector
-	IBufferEvent *FindConnector(unsigned int uId);
+	CConnector *FindConnector(unsigned int uId);
 	//查找acceptor
-	IBufferEvent *FindAcceptor(unsigned int uId);
+	CAcceptor *FindAcceptor(unsigned int uId);
 	//添加新的acceptor
-	void InsertNewAcceptor(unsigned int socket, IBufferEvent *pCAcceptor);
+	void InsertNewAcceptor(unsigned int socket, CAcceptor *pAcceptor);
+	//添加新的connector
+	void InsertNewConnector(unsigned int socket, CConnector *pConnector);
 	//获取event
 	IEventReactor *GetEventReactor();
 private:
@@ -77,8 +80,8 @@ private:
 	unsigned int m_uGcTime;
 	unsigned int m_uCheckPingTickTime;
 
-	typedef unordered_map<unsigned int, IBufferEvent *> Map_Connector;
-	typedef unordered_map<unsigned int, IBufferEvent *> Map_Acceptor;
+	typedef unordered_map<unsigned int, CConnector *> Map_Connector;
+	typedef unordered_map<unsigned int, CAcceptor *> Map_Acceptor;
 	typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
 
 	Map_Connector m_mapConnector;

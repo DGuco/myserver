@@ -34,7 +34,7 @@ private:
 	//接收gameserver 数据
 	int RecvServerData();
 	//给特定client发送数据
-	void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
+	void SendToClientAsync(const CSocketInfo &socketInfo, const char *data, unsigned int len);
 public:
 	// game --> tcp通信共享内存管道
 	static CCodeQueue *m_pS2CPipe;

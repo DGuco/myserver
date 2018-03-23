@@ -136,7 +136,7 @@ int CS2cHandle::SendClientData()
 		CGateCtrl::GetSingletonPtr()->GetSingThreadPool()->PushTaskBack(
 			[&tmpSocketInfo, pbTmpSend, unTmpPackLen, this]
 			{
-				SendToClient(tmpSocketInfo, (const char *) pbTmpSend, unTmpPackLen);
+				SendToClientAsync(tmpSocketInfo, (const char *) pbTmpSend, unTmpPackLen);
 			}
 		);
 	}
@@ -162,42 +162,42 @@ int CS2cHandle::RecvServerData()
 	return unTmpCodeLength;
 }
 
-void CS2cHandle::SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len)
+void CS2cHandle::SendToClientAsync(const CSocketInfo &socketInfo, const char *data, unsigned int len)
 {
-// 该过程需要在线程锁内完成
-	CAcceptor *pTmpAcceptor = CNetWork::GetSingletonPtr()->FindAcceptor(socketInfo.socketid());
-	if (pTmpAcceptor == NULL) {
-//		LOG_ERROR("default", "CAcceptor has gone, socket = {}", socket);
+	CAcceptor *pAcceptor = CNetWork::GetSingletonPtr()->FindAcceptor(socketInfo.socketid());
+	if (pAcceptor == NULL) {
+		LOG_ERROR("default", "CAcceptor has gone, socket = {}", socket);
 		return;
 	}
+
 	/*
 	 * 时间不一样，说明这个socket是个新的连接，原来的连接已经关闭,注(原来的
 	 * 的连接断开后，新的客户端用了原来的socket fd ，因此数据不是现在这个连
 	 * 接的数据，原来连接的数据,中断发送
 	*/
-	if (pTmpAcceptor->GetCreateTime() != socketInfo.createtime()) {
+	if (pAcceptor->GetCreateTime() != socketInfo.createtime()) {
 		LOG_ERROR("default",
 				  "sokcet[{}] already closed(tcp createtime:{}:gate createtime:{}) : gate ==> client[{}] bytes failed",
 				  socketInfo.socketid(),
-				  pTmpAcceptor->GetCreateTime(),
+				  pAcceptor->GetCreateTime(),
 				  socketInfo.createtime(),
 				  m_nSCLength);
 		return;
 	}
 	int iTmpCloseFlag = socketInfo.state();
-	int iRet = pTmpAcceptor->Send(data, len);
+	int iRet = pAcceptor->Send(data, len);
 	if (iRet != 0) {
 		//发送失败
-		CC2sHandle::ClearSocket(pTmpAcceptor, Err_ClientClose);
+		CC2sHandle::ClearSocket(pAcceptor, Err_ClientClose);
 		LOG_ERROR("default",
 				  "send to client {} Failed due to error {}",
-				  pTmpAcceptor->GetSocket().GetSocket(),
+				  pAcceptor->GetSocket().GetSocket(),
 				  errno);
 		return;
 	}
 
 	//gameserver 主动关闭
 	if (iTmpCloseFlag < 0) {
-		CC2sHandle::ClearSocket(pTmpAcceptor, Client_Succeed);
+		CC2sHandle::ClearSocket(pAcceptor, Client_Succeed);
 	}
 }

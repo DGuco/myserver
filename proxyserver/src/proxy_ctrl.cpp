@@ -94,48 +94,48 @@ int CProxyCtrl::MakeConnKey(const short nType, const short nID)
 	return iKey;
 }
 
-void CProxyCtrl::lcb_OnAcceptCns(uint32 uId, IBufferEvent *pAcceptor)
+void CProxyCtrl::lcb_OnAcceptCns(uint32 uId, IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pAcceptor != NULL, return);
-	CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, pAcceptor);
-	LOG_DEBUG("default", "New acceptor,socket id {}", pAcceptor->GetSocket().GetSocket());
+	MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CAcceptor), return);
+	CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, (CAcceptor *) pBufferEvent);
+	LOG_DEBUG("default", "New acceptor,socket id {}", pBufferEvent->GetSocket().GetSocket());
 }
 
-void CProxyCtrl::lcb_OnCnsDisconnected(IBufferEvent *pAcceptor)
+void CProxyCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pAcceptor != NULL, return);
-	CNetWork::GetSingletonPtr()->ShutDownAcceptor(pAcceptor->GetSocket().GetSocket());
-	LOG_DEBUG("default", "Acceptor disconnected,socket id {}", pAcceptor->GetSocket().GetSocket());
+	MY_ASSERT(pBufferEvent != NULL, return);
+	CNetWork::GetSingletonPtr()->ShutDownAcceptor(pBufferEvent->GetSocket().GetSocket());
+	LOG_DEBUG("default", "Acceptor disconnected,socket id {}", pBufferEvent->GetSocket().GetSocket());
 }
 
-void CProxyCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pAcceptor)
+void CProxyCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
 {
 
 }
 
-void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pAcceptor)
+void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pAcceptor != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL, return);
 	//消息不完整
-	if (!pAcceptor->IsPackageComplete()) {
+	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
-	PACK_LEN unTmpLen = pAcceptor->GetRecvPackLen();
-	pAcceptor->RecvData(m_acRecvBuff + sizeof(PACK_LEN), unTmpLen - sizeof(PACK_LEN));
-	auto it = m_mapSocket2Key.find(pAcceptor->GetSocket().GetSocket());
+	PACK_LEN unTmpLen = pBufferEvent->GetRecvPackLen();
+	pBufferEvent->RecvData(m_acRecvBuff + sizeof(PACK_LEN), unTmpLen - sizeof(PACK_LEN));
+	auto it = m_mapSocket2Key.find(pBufferEvent->GetSocket().GetSocket());
 	//未注册
 	if (it != m_mapSocket2Key.end()) {
-		CProxyCtrl::GetSingletonPtr()->DealRegisterMes(pAcceptor, m_acRecvBuff + sizeof(PACK_LEN));
+		CProxyCtrl::GetSingletonPtr()->DealRegisterMes(pBufferEvent, m_acRecvBuff + sizeof(PACK_LEN));
 	}
 	else {    //未注册
-		*(PACK_LEN *) m_acRecvBuff = (pAcceptor->GetRecvPackLen());
-		CProxyCtrl::GetSingletonPtr()->TransferOneCode(pAcceptor, unTmpLen);
+		*(PACK_LEN *) m_acRecvBuff = (pBufferEvent->GetRecvPackLen());
+		CProxyCtrl::GetSingletonPtr()->TransferOneCode(pBufferEvent, unTmpLen);
 	}
 }
 
-int CProxyCtrl::DealRegisterMes(IBufferEvent *pAcceptor, char *acTmpBuf)
+int CProxyCtrl::DealRegisterMes(IBufferEvent *pBufferEvent, char *acTmpBuf)
 {
-	MY_ASSERT(pAcceptor != NULL, return -1);
+	MY_ASSERT(pBufferEvent != NULL, return -1);
 //	// 8字节对齐补充长度
 //	// 这里可以不取，因为不关心
 //	unsigned short unAddLen = *((unsigned short*) (acTmpBuf + 2));
@@ -147,7 +147,7 @@ int CProxyCtrl::DealRegisterMes(IBufferEvent *pAcceptor, char *acTmpBuf)
 		LOG_ERROR("default", "CProxyHead::ParseFromArray error, stream_length is {}", iProxyHeadSize);
 		return -1;
 	}
-	SOCKET iSocket = pAcceptor->GetSocket().GetSocket();
+	SOCKET iSocket = pBufferEvent->GetSocket().GetSocket();
 	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	// 目标服务器是proxy，id不匹配或者不是注册消息，则直接关闭连接
 	if ((stTmpProxyHead.dstfe() != FE_PROXYSERVER)
@@ -155,7 +155,7 @@ int CProxyCtrl::DealRegisterMes(IBufferEvent *pAcceptor, char *acTmpBuf)
 		|| (stTmpProxyHead.opflag() != enMessageCmd::MESS_REGIST)) {
 		LOG_ERROR("default",
 				  "Error CProxyHead is invalid, fd = {}, Src(FE = {} : ID = {}), Dst(FE = {} : ID = {}), OpFlag = {}, TimeStamp = %ld.",
-				  pAcceptor->GetSocket().GetSocket(),
+				  pBufferEvent->GetSocket().GetSocket(),
 				  stTmpProxyHead.srcfe(),
 				  stTmpProxyHead.srcid(),
 				  stTmpProxyHead.srcfe(),
@@ -187,7 +187,7 @@ int CProxyCtrl::DealRegisterMes(IBufferEvent *pAcceptor, char *acTmpBuf)
   *函数名          : TransferOneCode
   *功能描述        : 转发一个数据包
 **/
-int CProxyCtrl::TransferOneCode(IBufferEvent *pAcceptor, unsigned short nCodeLength)
+int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCodeLength)
 {
 	CProxyMessage stTmpMessage;
 

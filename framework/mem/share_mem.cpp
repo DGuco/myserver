@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
-
 #include "share_mem.h"
 #include "log.h"
 

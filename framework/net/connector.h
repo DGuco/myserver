@@ -27,7 +27,8 @@ public:
 	CConnector(IEventReactor *pReactor,
 			   FuncBufferEventOnDataSend funcOnDataSend,
 			   FuncBufferEventOnDataRecv funcOnDataRecv,
-			   FuncBufferEventOnDisconnected funcDisconnected);
+			   FuncBufferEventOnDisconnected funcDisconnected,
+			   int iTargetId);
 	//析构函数
 	virtual ~CConnector(void);
 	//获取连接ip
@@ -45,6 +46,7 @@ public:
 	bool IsConnecting();
 	//是否断开连接
 	bool IsDisconnected();
+	int GetTargetId() const;
 
 private:
 	//bufferEvent 无效处理
@@ -65,6 +67,7 @@ private:
 	CNetAddr m_oAddr;
 	eConnectorState m_eState;
 	event m_oConnectEvent;
+	int m_iTargetId;
 
 	FuncConnectorOnConnectFailed m_pFuncOnConnectFailed;
 	FuncConnectorOnConnectted m_pFuncOnConnectted;

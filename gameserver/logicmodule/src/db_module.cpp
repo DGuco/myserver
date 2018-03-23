@@ -108,6 +108,7 @@ void CDbModule::OnMsgExecuteSqlResponse(CProxyMessage *pMsg)
 	}
 	}
 }
+
 int CDbModule::ExecuteSql(emDBLogicType nLogicType,
 						  unsigned long ulTeamID,
 						  int iSessionID,

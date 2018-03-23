@@ -49,8 +49,9 @@ int CGateCtrl::Run()
 {
 	m_pS2cHandle->Run();
 	m_pC2sHandle->Run();
-	int iRet = 0;
+	int iRet;
 	while (true) {
+		iRet = 0;
 		iRet += m_pS2cHandle->CheckData();
 		if (iRet == 0) {
 			usleep(1000);

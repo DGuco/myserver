@@ -55,22 +55,22 @@ public:
 	// 通过FE和ID创建KEY
 	int MakeConnKey(const short nType, const short nID);
 	//处理注册消息
-	int DealRegisterMes(IBufferEvent *pAcceptor, char *acTmpBuf);
+	int DealRegisterMes(IBufferEvent *pBufferEvent, char *acTmpBuf);
 	// 转发数据
-	int TransferOneCode(IBufferEvent *pAcceptor, unsigned short nCodeLength);
+	int TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCodeLength);
 	//关闭socket
 	void CloseConnection(int socket);
 	// 发送数据
 	int SendOneCodeTo(short nCodeLength, BYTE *pbyCode, int iKey, bool bKeepalive);
 protected:
 	//客户端连接还回调
-	static void lcb_OnAcceptCns(uint32 uId, IBufferEvent *pAcceptor);
+	static void lcb_OnAcceptCns(uint32 uId, IBufferEvent *pBufferEvent);
 	//客户端断开连接回调
-	static void lcb_OnCnsDisconnected(IBufferEvent *pAcceptor);
+	static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
 	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataSend(IBufferEvent *pAcceptor);
+	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
 	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pAcceptor);
+	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
 private:
 	CNetWork *m_pNetWork;
 	TStatLog m_stStatLog;

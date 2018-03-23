@@ -4,14 +4,17 @@
 CConnector::CConnector(IEventReactor *pReactor,
 					   FuncBufferEventOnDataSend funcOnDataSend,
 					   FuncBufferEventOnDataRecv funcOnDataRecv,
-					   FuncBufferEventOnDisconnected funcDisconnected)
+					   FuncBufferEventOnDisconnected funcDisconnected,
+					   int iTargetId)
 	: IBufferEvent(pReactor,
 				   -1,
 				   funcOnDataSend,
 				   funcOnDataRecv,
 				   funcDisconnected),
-	  m_eState(eCS_Disconnected)
+	  m_eState(eCS_Disconnected),
+	  m_iTargetId(iTargetId)
 {
+
 }
 
 CConnector::~CConnector(void)
@@ -108,4 +111,9 @@ void CConnector::BuffEventUnavailableCall()
 void CConnector::AfterBuffEventCreated()
 {
 //	bufferevent_enable(m_pStBufEv, EV_WRITE);
+}
+
+int CConnector::GetTargetId() const
+{
+	return m_iTargetId;
 }

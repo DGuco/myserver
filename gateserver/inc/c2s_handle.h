@@ -27,11 +27,11 @@ public:
 	bool IsToBeBlocked() override;
 public:
 	//清除socket
-	static void ClearSocket(CAcceptor *pAcceptor, short iError);
+	static void ClearSocket(IBufferEvent *pAcceptor, short iError);
 	//通知gameserver client 断开连接
-	static void DisConnect(CAcceptor *pAcceptor, short iError);
+	static void DisConnect(IBufferEvent *pAcceptor, short iError);
 	//发送数据给gameserver
-	static void SendToGame(CAcceptor *pAcceptor, PACK_LEN len);
+	static void SendToGame(IBufferEvent *pAcceptor, PACK_LEN len);
 
 private:
 	//开始监听
@@ -39,11 +39,13 @@ private:
 	//客户端断开连接
 protected:
 	//客户端连接还回调
-	static void lcb_OnAcceptCns(uint32 uId, CAcceptor *pAcceptor);
+	static void lcb_OnAcceptCns(uint32 uId, IBufferEvent *pBufferEvent);
 	//客户端断开连接回调
-	static void lcb_OnCnsDisconnected(CAcceptor *pAcceptor);
+	static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
 	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataRecv(CAcceptor *pAcceptor);
+	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
+	//发送胡据回调
+	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
 public:
 	CNetWork *m_pNetWork;
 	static CCodeQueue *m_pC2SPipe;

@@ -54,8 +54,7 @@ private:
  * inline成员函数定义和生命在同一个源文件中
  */
 inline CThreadPool::CThreadPool()
-	:
-	CThreadPool(thread::hardware_concurrency())
+	: CThreadPool(thread::hardware_concurrency())
 {
 
 }

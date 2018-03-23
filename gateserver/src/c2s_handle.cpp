@@ -52,8 +52,9 @@ bool CC2sHandle::BeginListen()
 	bool iRet = m_pNetWork->BeginListen(gateInfo->m_sHost.c_str(),
 										gateInfo->m_iPort,
 										&lcb_OnAcceptCns,
-										&lcb_OnCnsDisconnected,
+										&lcb_OnCnsSomeDataSend,
 										&lcb_OnCnsSomeDataRecv,
+										&lcb_OnCnsDisconnected,
 										RECV_QUEUQ_MAX);
 	if (iRet) {
 		LOG_INFO("default", "Server listen success at {} : {}", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
@@ -64,45 +65,51 @@ bool CC2sHandle::BeginListen()
 	}
 }
 
-void CC2sHandle::lcb_OnAcceptCns(unsigned int uId, CAcceptor *pAcceptor)
+void CC2sHandle::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *pBufferEvent)
 {
 	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
-		->PushTaskBack([uId, pAcceptor]
+		->PushTaskBack([uId, pBufferEvent]
 					   {
-						   CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, pAcceptor);
+						   MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CAcceptor), return);
+						   CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, (CAcceptor *) pBufferEvent);
 					   }
 		);
 }
 
-void CC2sHandle::lcb_OnCnsDisconnected(CAcceptor *pAcceptor)
+void CC2sHandle::lcb_OnCnsDisconnected(IBufferEvent *pAcceptor)
 {
 	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
 		->PushTaskBack(CC2sHandle::ClearSocket, pAcceptor, Err_ClientClose);
 }
 
-void CC2sHandle::lcb_OnCnsSomeDataRecv(CAcceptor *pAcceptor)
+void CC2sHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
 	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
-		->PushTaskBack([pAcceptor]
+		->PushTaskBack([pBufferEvent]
 					   {
-						   MY_ASSERT(pAcceptor != NULL, return);
+						   MY_ASSERT(pBufferEvent != NULL, return);
 						   //数据不完整
-						   if (!pAcceptor->IsPackageComplete()) {
+						   if (!pBufferEvent->IsPackageComplete()) {
 							   return;
 						   }
-						   int iTmpLen = pAcceptor->GetRecvPackLen() - sizeof(PACK_LEN);
+						   int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(PACK_LEN);
 						   //读取数据
-						   pAcceptor->RecvData(m_acRecvBuff, iTmpLen);
+						   pBufferEvent->RecvData(m_acRecvBuff, iTmpLen);
 						   //当前数据包已全部读取，清除当前数据包缓存长度
-						   pAcceptor->CurrentPackRecved();
+						   pBufferEvent->CurrentPackRecved();
 						   //发送数据包到game server
-						   CC2sHandle::SendToGame(pAcceptor, iTmpLen);
+						   CC2sHandle::SendToGame(pBufferEvent, iTmpLen);
 					   });
 }
 
-void CC2sHandle::ClearSocket(CAcceptor *pAcceptor, short iError)
+void CC2sHandle::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
+{
+
+}
+
+void CC2sHandle::ClearSocket(IBufferEvent *pAcceptor, short iError)
 {
 	MY_ASSERT(pAcceptor != NULL, return)
 	//非gameserver 主动请求关闭
@@ -112,17 +119,19 @@ void CC2sHandle::ClearSocket(CAcceptor *pAcceptor, short iError)
 	CNetWork::GetSingletonPtr()->ShutDownAcceptor(pAcceptor->GetSocket().GetSocket());
 }
 
-void CC2sHandle::DisConnect(CAcceptor *pAcceptor, short iError)
+void CC2sHandle::DisConnect(IBufferEvent *pAcceptor, short iError)
 {
-	MY_ASSERT(pAcceptor != NULL, return)
+	MY_ASSERT(pAcceptor != NULL && typeid(pAcceptor) == typeid(CAcceptor), return)
+
+	CAcceptor *tmpAcceptor = (CAcceptor *) pAcceptor;
 	MesHead tmpHead;
 	CSocketInfo *pSocketInfo = tmpHead.mutable_socketinfos()->Add();
 	if (pSocketInfo == NULL) {
 		LOG_ERROR("default", "CTcpCtrl::DisConnect add_socketinfos ERROR");
 		return;
 	}
-	pSocketInfo->set_socketid(pAcceptor->GetSocket().GetSocket());
-	pSocketInfo->set_createtime(pAcceptor->GetCreateTime());
+	pSocketInfo->set_socketid(tmpAcceptor->GetSocket().GetSocket());
+	pSocketInfo->set_createtime(tmpAcceptor->GetCreateTime());
 	pSocketInfo->set_state(iError);
 
 	PACK_LEN unTmpMsgLen = sizeof(m_acSendBuff);
@@ -141,8 +150,11 @@ void CC2sHandle::DisConnect(CAcceptor *pAcceptor, short iError)
 	}
 }
 
-void CC2sHandle::SendToGame(CAcceptor *pAcceptor, PACK_LEN tmpLastLen)
+void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, PACK_LEN tmpLastLen)
 {
+	MY_ASSERT(pAcceptor != NULL && typeid(pAcceptor) == typeid(CAcceptor), return)
+	CAcceptor *tmpAcceptor = (CAcceptor *) pAcceptor;
+
 	MesHead tmpHead;
 	char *pTmp = m_acRecvBuff;
 	int iTmpRet = CClientCommEngine::ParseClientStream((const void **) &pTmp, tmpLastLen, &tmpHead);
@@ -155,7 +167,7 @@ void CC2sHandle::SendToGame(CAcceptor *pAcceptor, PACK_LEN tmpLastLen)
 	if (0 == iTmpRet /*&& tmpHead.cmd() != CMsgPingRequest::MsgID */&& tmpLastLen >= 0) {
 		CSocketInfo *tmpSocketInfo = tmpHead.mutable_socketinfos()->Add();
 		tmpSocketInfo->Clear();
-		tmpSocketInfo->set_createtime(pAcceptor->GetCreateTime());
+		tmpSocketInfo->set_createtime(tmpAcceptor->GetCreateTime());
 		tmpSocketInfo->set_socketid(pAcceptor->GetSocket().GetSocket());
 		tmpSocketInfo->set_state(0);
 

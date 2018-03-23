@@ -29,10 +29,10 @@ private:
 	void SendMessageToProxy(char *data, PACK_LEN len);
 private:
 	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataSend(IBufferEvent *pConnector);
-	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pConnector);
+	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
+	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
 	//断开连接回调
-	static void lcb_OnCnsDisconnected(IBufferEvent *pConnector);
+	static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
 	static void lcb_OnConnectFailed(CConnector *pConnector);
 	static void lcb_OnConnectted(CConnector *pConnector);
 	static void lcb_OnPingServer(CConnector *pConnector);

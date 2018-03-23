@@ -105,6 +105,7 @@ void CNetWork::EndListen()
 
 bool CNetWork::Connect(const char *szNetAddr,
 					   uint16 uPort,
+					   int iTargetId,
 					   FuncBufferEventOnDataSend funcOnSomeDataSend,
 					   FuncBufferEventOnDataSend funcOnSomeDataRecv,
 					   FuncBufferEventOnDisconnected funcOnDisconnected,
@@ -116,7 +117,8 @@ bool CNetWork::Connect(const char *szNetAddr,
 	CConnector *pConnector = new CConnector(m_pEventReactor,
 											funcOnSomeDataSend,
 											funcOnSomeDataRecv,
-											funcOnDisconnected);
+											funcOnDisconnected,
+											iTargetId);
 	pConnector->SetCallbackFunc(std::move(funcOnConnectFailed),
 								std::move(funcOnConnectted));
 
@@ -187,7 +189,7 @@ void CNetWork::OnTick()
 	}
 }
 
-IBufferEvent *CNetWork::FindConnector(unsigned int uId)
+CConnector *CNetWork::FindConnector(unsigned int uId)
 {
 	auto iter = m_mapConnector.find(uId);
 	if (m_mapConnector.end() == iter) {
@@ -198,7 +200,7 @@ IBufferEvent *CNetWork::FindConnector(unsigned int uId)
 	}
 }
 
-IBufferEvent *CNetWork::FindAcceptor(unsigned int uId)
+CAcceptor *CNetWork::FindAcceptor(unsigned int uId)
 {
 	auto iter = m_mapAcceptor.find(uId);
 	if (m_mapAcceptor.end() == iter) {
@@ -209,10 +211,16 @@ IBufferEvent *CNetWork::FindAcceptor(unsigned int uId)
 	}
 }
 
-void CNetWork::InsertNewAcceptor(unsigned int socket, IBufferEvent *pCAcceptor)
+void CNetWork::InsertNewAcceptor(unsigned int socket, CAcceptor *pAcceptor)
 {
-	MY_ASSERT(pCAcceptor != NULL, return;)
-	m_mapAcceptor.insert(std::make_pair(socket, pCAcceptor));
+	MY_ASSERT(pAcceptor != NULL, return;)
+	m_mapAcceptor.insert(std::make_pair(socket, pAcceptor));
+}
+
+void CNetWork::InsertNewConnector(unsigned int socket, CConnector *pConnector)
+{
+	MY_ASSERT(pConnector != NULL, return;)
+	m_mapConnector.insert(std::make_pair(socket, pConnector));
 }
 
 IEventReactor *CNetWork::GetEventReactor()
