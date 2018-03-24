@@ -35,9 +35,7 @@ int CServerHandle::PrepareToRun()
 
 int CServerHandle::RunFunc()
 {
-	while (true) {
-		m_pNetWork->DispatchEvents();
-	}
+	m_pNetWork->DispatchEvents();
 	return 0;
 }
 

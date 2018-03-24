@@ -72,10 +72,17 @@ void CConnector::OnEvent(int16 nWhat)
 {
 	if (nWhat & BEV_EVENT_CONNECTED) {
 		OnConnectted();
+		SetState(eCS_Connected);
 		return;
 	}
-	MY_ASSERT_STR(false, DO_NOTHING, "Connect to %s : %d failed", m_oAddr.GetAddress(), m_oAddr.GetPort());
-	m_pFuncDisconnected(this);
+	else if (IsConnected()) {
+		SetState(eCS_Disconnected);
+		m_pFuncDisconnected(this);
+		MY_ASSERT_STR(false, return, "Connection disconnected,error code 0x%x", nWhat);
+	}
+	else if (IsConnecting()) {
+		MY_ASSERT_STR(false, return;, "Connect to %s : %d failed,error code", m_oAddr.GetAddress(), m_oAddr.GetPort());
+	}
 }
 
 bool CConnector::IsConnected()
@@ -110,7 +117,7 @@ void CConnector::BuffEventUnavailableCall()
 
 void CConnector::AfterBuffEventCreated()
 {
-	bufferevent_enable(m_pStBufEv, EV_WRITE);
+	bufferevent_enable(m_pStBufEv, EV_READ);
 }
 
 int CConnector::GetTargetId() const

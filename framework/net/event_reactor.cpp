@@ -44,7 +44,7 @@ void CEventReactor::Release()
 
 void CEventReactor::DispatchEvents()
 {
-	event_base_loop(m_pEventBase, EVLOOP_NO_EXIT_ON_EMPTY);
+	event_base_dispatch(m_pEventBase);
 	MY_ASSERT_STR(false, return, "Event loop exited..");
 }
 
