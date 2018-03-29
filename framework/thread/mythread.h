@@ -27,7 +27,7 @@ void *ThreadProc(void *pvArgs);
 class CMyThread
 {
 public:
-	CMyThread();
+	CMyThread(const std::string &threadName);
 	virtual ~CMyThread();
 
 	virtual int PrepareToRun() = 0;
@@ -51,6 +51,7 @@ private:
 	std::mutex m_condMut;
 	std::condition_variable data_cond;
 	std::thread m_th;
+	std::string m_sThreadName;
 };
 
 

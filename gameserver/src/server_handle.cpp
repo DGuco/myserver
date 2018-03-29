@@ -14,8 +14,8 @@ int CServerHandle::m_iProxyId = 0;
 char CServerHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
 
 CServerHandle::CServerHandle()
-	:
-	m_pNetWork(new CNetWork())
+	: CMyThread("CServerHandle"),
+	  m_pNetWork(new CNetWork())
 {
 
 }
@@ -109,7 +109,7 @@ bool CServerHandle::Register2Proxy()
 		return false;
 	}
 
-	LOG_NOTICE("default", "Regist to Proxy now.");
+	LOG_INFO("default", "Register to Proxy sucessed.");
 	return true;
 }
 

@@ -5,7 +5,6 @@
 #include <common_def.h>
 #include "shm.h"
 #include "code_queue.h"
-#include "err_code.h"
 #include "share_mem.h"
 #include "client_comm_engine.h"
 #include "my_assert.h"
@@ -16,6 +15,7 @@
 #include "../inc/game_server.h"
 
 CClientHandle::CClientHandle()
+	: CMyThread("CClientHandle")
 {
 }
 

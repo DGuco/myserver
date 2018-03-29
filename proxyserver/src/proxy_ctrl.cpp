@@ -55,9 +55,9 @@ int CProxyCtrl::PrepareToRun()
 	m_pNetWork->BeginListen(proxyInfo->m_sHost.c_str(),
 							proxyInfo->m_iPort,
 							&CProxyCtrl::lcb_OnAcceptCns,
-							&CProxyCtrl::lcb_OnCnsDisconnected,
 							&CProxyCtrl::lcb_OnCnsSomeDataSend,
 							&CProxyCtrl::lcb_OnCnsSomeDataRecv,
+							&CProxyCtrl::lcb_OnCnsDisconnected,
 							-1,
 							CServerConfig::GetSingletonPtr()->GetTcpKeepAlive());
 	return 0;

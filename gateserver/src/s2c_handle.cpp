@@ -13,7 +13,8 @@
 CCodeQueue *CS2cHandle::m_pS2CPipe = NULL;
 
 CS2cHandle::CS2cHandle()
-	: m_iSendIndex(0),
+	: CMyThread("CS2cHandle"),
+	  m_iSendIndex(0),
 	  m_bHasRecv(false),
 	  m_iSCIndex(0),
 	  m_nSCLength(0)

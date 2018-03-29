@@ -44,7 +44,7 @@ private:
 	//卸载
 	bool UnRegisterFromReactor();
 	//监听回调
-	static void lcb_Accept(struct evconnlistener *listener,
+	static void lcb_Listen(struct evconnlistener *listener,
 						   evutil_socket_t fd,
 						   struct sockaddr *sa,
 						   int socklen, void *arg);

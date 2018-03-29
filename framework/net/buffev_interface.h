@@ -27,7 +27,7 @@ public:
 	//通过socket发送
 	int SendBySocket(const void *pData, unsigned int uSize);
 	//获取数据(返回读取数据长度)
-	unsigned int RecvData(char *data, unsigned int size);
+	unsigned int RecvData(void *data, unsigned int size);
 	//读取读缓冲区当前数据包的总长度
 	PACK_LEN ReadRecvPackLen();
 	//获取读缓冲区数据长度
@@ -49,7 +49,7 @@ public:
 	//当前数据包已读取
 	void CurrentPackRecved();
 	//获取socket
-	CSocket GetSocket() const;
+	const CSocket &GetSocket() const;
 	//数据是否完整
 	bool IsPackageComplete();
 protected:

@@ -17,7 +17,8 @@ char CC2sHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
 char CC2sHandle::m_acSendBuff[MAX_PACKAGE_LEN] = {0};
 
 CC2sHandle::CC2sHandle()
-	: m_pNetWork(new CNetWork())
+	: CMyThread("CC2sHandle"),
+	  m_pNetWork(new CNetWork())
 {
 }
 
@@ -72,6 +73,9 @@ void CC2sHandle::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *pBufferEvent)
 		->PushTaskBack([uId, pBufferEvent]
 					   {
 						   MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CAcceptor), return);
+						   LOG_DEBUG("default",
+									 "Acceptor disconnected,socket id {}",
+									 pBufferEvent->GetSocket().GetSocket());
 						   CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, (CAcceptor *) pBufferEvent);
 					   }
 		);

@@ -70,7 +70,7 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 										 m_pFuncAcceptorDisconnected);
 	MY_ASSERT_STR(pAcceptor != NULL, return, "Create CAcceptor failed");
 	bool bRet = GetEventReactor()->Register(pAcceptor);
-	MY_ASSERT_STR(bRet, return, "Create CAcceptor failed");
+	MY_ASSERT_STR(bRet, return, "Acceptor register failed");
 	m_pOnNew(socket, pAcceptor);
 }
 

@@ -56,7 +56,7 @@ int IBufferEvent::SendBySocket(const void *pData, unsigned int uSize)
 	}
 }
 
-unsigned int IBufferEvent::RecvData(char *data, unsigned int size)
+unsigned int IBufferEvent::RecvData(void *data, unsigned int size)
 {
 	MY_ASSERT(IsEventBuffAvailable(), return 0);
 	return bufferevent_read(m_pStBufEv, data, size);
@@ -68,8 +68,7 @@ PACK_LEN IBufferEvent::ReadRecvPackLen()
 	if (GetRecvDataSize() < sizeof(PACK_LEN)) {
 		return 0;
 	}
-	RecvData((char *) (&m_uRecvPackLen), sizeof(PACK_LEN));
-	m_uRecvPackLen = ntohs(m_uRecvPackLen);
+	RecvData((void *) (&m_uRecvPackLen), sizeof(PACK_LEN));
 	return m_uRecvPackLen;
 }
 
@@ -127,7 +126,7 @@ void IBufferEvent::CurrentPackRecved()
 	m_uRecvPackLen = 0;
 }
 
-CSocket IBufferEvent::GetSocket() const
+const CSocket &IBufferEvent::GetSocket() const
 {
 	return m_oSocket;
 }
@@ -147,10 +146,7 @@ bool IBufferEvent::IsPackageComplete()
 	PACK_LEN tmpLastLen = tmpPackLen - sizeof(PACK_LEN);
 	unsigned int tmpDataLen = GetRecvDataSize();
 	//数据包不完整继续接收
-	if (tmpDataLen < tmpLastLen) {
-		return false;
-	}
-	return true;
+	return tmpDataLen >= tmpLastLen;
 }
 
 void IBufferEvent::lcb_OnRead(struct bufferevent *bev, void *arg)
@@ -186,17 +182,17 @@ bool IBufferEvent::RegisterToReactor()
 {
 #ifdef EVENT_THREAD_SAFE
 	m_pStBufEv = bufferevent_socket_new(GetReactor()->GetEventBase(),
-										-1,
+										m_oSocket.GetSocket(),
 										BEV_OPT_CLOSE_ON_FREE | BEV_OPT_THREADSAFE);
 #else
 	m_pStBufEv = bufferevent_socket_new(GetReactor()->GetEventBase(),
-										-1,
+										m_oSocket.GetSocket(),
 										BEV_OPT_CLOSE_ON_FREE /*| BEV_OPT_THREADSAFE */);
 #endif
 	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent new failed!,error msg: %s", strerror(errno));
 	bufferevent_setcb(m_pStBufEv,
 					  &IBufferEvent::lcb_OnRead,
-					  &IBufferEvent::lcb_OnWrite,
+					  NULL,
 					  &IBufferEvent::lcb_OnEvent,
 					  (void *) this);
 	AfterBuffEventCreated();

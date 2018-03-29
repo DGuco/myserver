@@ -43,7 +43,7 @@ int ServerCommEngine::ConvertStreamToMsg(const void *pBuff,
 
 	// 补齐的长度一定小于8字节
 	if (tAddLen >= 8) {
-		MY_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tAddLen);
+		MY_ASSERT_STR(0, return -3, "ServerCommEngine::ConvertStreamToMsg tAddLen = %d impossibility.", tAddLen);
 	}
 	// 直接抛掉补充长度
 	tTotalLen -= tAddLen;

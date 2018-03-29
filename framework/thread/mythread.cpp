@@ -15,7 +15,8 @@ void *ThreadProc(void *pvArgs)
 	return NULL;
 }
 
-CMyThread::CMyThread()
+CMyThread::CMyThread(const std::string &threadName)
+	: m_sThreadName(threadName)
 {
 	m_iRunStatus = rt_init;
 	memset((void *) &m_stLogCfg, 0, sizeof(m_stLogCfg));
@@ -42,17 +43,17 @@ int CMyThread::CondBlock()
 		// 如果线程需要停止则终止线程
 		if (m_iRunStatus == rt_stopped) {
 			//退出线程
-			LOG_DEBUG("default", "Thread exit.");
+			LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
 			pthread_exit((void *) m_abyRetVal);
 		}
-		LOG_DEBUG("default", "Thread would blocked.");
+		LOG_DEBUG("default", "Thread [{}] would blocked.", m_sThreadName);
 		m_iRunStatus = rt_blocked;
 		// 进入休眠状态,直到条件满足
 		data_cond.wait(lk);
 	}
 
 	if (m_iRunStatus != rt_running) {
-		LOG_DEBUG("default", "Thread waked up.");
+		LOG_DEBUG("default", "Thread [{}] waked up.", m_sThreadName);
 	}
 
 	// 线程状态变为rt_running
@@ -81,14 +82,14 @@ int CMyThread::StopThread()
 	data_cond.notify_one();
 	// 等待该线程终止
 	Join();
-	LOG_DEBUG("default", "Thread stopped.");
+	LOG_DEBUG("default", "Thread [{}] stopped.", m_sThreadName);
 	return 0;
 }
 
 void CMyThread::StopForce()
 {
 	//退出线程
-	LOG_DEBUG("default", "Thread exit.");
+	LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
 	pthread_exit((void *) m_abyRetVal);
 }
 
