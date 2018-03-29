@@ -98,14 +98,19 @@ void CProxyCtrl::lcb_OnAcceptCns(uint32 uId, IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CAcceptor), return);
 	CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, (CAcceptor *) pBufferEvent);
-	LOG_DEBUG("default", "New acceptor,socket id {}", pBufferEvent->GetSocket().GetSocket());
+	LOG_DEBUG("default", "New Connector,socket id {}", pBufferEvent->GetSocket().GetSocket());
 }
 
 void CProxyCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL, return);
-	CNetWork::GetSingletonPtr()->ShutDownAcceptor(pBufferEvent->GetSocket().GetSocket());
-	LOG_DEBUG("default", "Acceptor disconnected,socket id {}", pBufferEvent->GetSocket().GetSocket());
+	SOCKET tmpSocket = pBufferEvent->GetSocket().GetSocket();
+	CNetWork::GetSingletonPtr()->ShutDownAcceptor(tmpSocket);
+	auto it = m_mapSocket2Key.find(tmpSocket);
+	if (it != m_mapRegister.end()) {
+		m_mapRegister.erase(it->second);
+	}
+	LOG_WARN("default", "Connection disconnected,socket id {}", pBufferEvent->GetSocket().GetSocket());
 }
 
 void CProxyCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
@@ -123,13 +128,12 @@ void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 	PACK_LEN unTmpLen = pBufferEvent->GetRecvPackLen();
 	pBufferEvent->RecvData(m_acRecvBuff + sizeof(PACK_LEN), unTmpLen - sizeof(PACK_LEN));
 	auto it = m_mapSocket2Key.find(pBufferEvent->GetSocket().GetSocket());
-	//未注册
 	if (it != m_mapSocket2Key.end()) {
-		CProxyCtrl::GetSingletonPtr()->DealRegisterMes(pBufferEvent, m_acRecvBuff + sizeof(PACK_LEN));
-	}
-	else {    //未注册
 		*(PACK_LEN *) m_acRecvBuff = (pBufferEvent->GetRecvPackLen());
 		CProxyCtrl::GetSingletonPtr()->TransferOneCode(pBufferEvent, unTmpLen);
+	}
+	else {    //未注册
+		CProxyCtrl::GetSingletonPtr()->DealRegisterMes(pBufferEvent, m_acRecvBuff + sizeof(PACK_LEN));
 	}
 }
 
