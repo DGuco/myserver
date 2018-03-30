@@ -49,6 +49,10 @@ void CTimerEvent::Cancel()
 void CTimerEvent::OnTimerOut(int fd, short event)
 {
 	m_pFuncOnTimerOut(fd, event, m_pParam);
+	if (m_iLoopTimes == -1) {
+		LaterCall(m_iSec, m_iUsec);
+		return;
+	}
 	m_iLoopTimes--;
 	if (m_iLoopTimes > 1) {
 		LaterCall(m_iSec, m_iUsec);

@@ -18,7 +18,7 @@ public:
 				void *param,
 				int sec,
 				int usec,
-				int loopTimes);
+				int loopTimes/*-1 永久 > 0 次数*/);
 	//析构函数
 	~CTimerEvent();
 	//超时处理
@@ -43,7 +43,7 @@ private:
 	void *m_pParam; //超时回调参数
 	int m_iSec;  //秒
 	int m_iUsec; //微妙
-	int m_iLoopTimes; //循环次数 0:forever > 0 次数
+	int m_iLoopTimes; //循环次数
 	event m_event;
 };
 

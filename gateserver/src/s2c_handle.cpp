@@ -7,7 +7,6 @@
 #include <client_comm_engine.h>
 #include "net_work.h"
 #include "../inc/s2c_handle.h"
-#include "../inc/gate_def.h"
 #include "../inc/gate_ctrl.h"
 
 CCodeQueue *CS2cHandle::m_pS2CPipe = NULL;

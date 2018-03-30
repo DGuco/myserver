@@ -63,7 +63,7 @@ public:
 
 	int InitLogFile(const char *vLogName,
 					const char *vLogDir,
-					LogLevel vPriority = LEVEL_NOTSET,
+					level_enum vPriority = level_enum::trace,
 					unsigned int vMaxFileSize = 10 * 1024 * 1024,
 					unsigned int vMaxBackupIndex = 1,
 					bool vAppend = true);

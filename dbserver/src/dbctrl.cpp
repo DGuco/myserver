@@ -15,7 +15,9 @@ template<> CDBCtrl *CSingleton<CDBCtrl>::spSingleton = NULL;
 CDBCtrl::CDBCtrl()
 {
 	m_iRunFlag = 0;
-	m_lastTick = 0;
+	m_tLastSendKeepAlive = 0;
+	m_tLastRecvKeepAlive = 0;
+	m_pKeepLiveEvent = NULL;
 }
 
 CDBCtrl::~CDBCtrl()
@@ -37,17 +39,6 @@ void CDBCtrl::ClearRunFlag(int iFlag)
 bool CDBCtrl::IsRunFlagSet(int iFlag)
 {
 	return iFlag == m_iRunFlag;
-}
-
-int CDBCtrl::Initialize()
-{
-	CServerConfig *pTmpConfig = new CServerConfig;
-	const string filepath = "../config/serverinfo.json";
-	if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filepath)) {
-		LOG_ERROR("default", "Get TcpserverConfig failed");
-		return -1;
-	}
-	return 0;
 }
 
 int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
@@ -309,14 +300,9 @@ int CDBCtrl::ConnectToProxyServer()
 		return false;
 	}
 
-	if (RegisterToProxyServer()) {
-		LOG_ERROR("default", "Error: Register to Proxy Server {} failed.\n", proxyInfo->m_iServerId);
-		return -1;
-	}
-
-	m_tLastSendKeepAlive = GetMSTime();    // 记录这一次的注册的时间
-	m_tLastRecvKeepAlive = GetMSTime();    // 由于是注册,所以也将第一次收到的时间记录为当下
-
+	time_t tmpNow = GetMSTime();
+	SetLastRecvKeepAlive(tmpNow);
+	SetLastSendKeepAlive(tmpNow);
 	LOG_INFO("default", "Connect to Proxy server {}:{} Succeed.\n", proxyInfo->m_sHost.c_str(), proxyInfo->m_iPort);
 	return i;
 }
@@ -359,7 +345,8 @@ int CDBCtrl::RegisterToProxyServer()
 	}
 
 	LOG_INFO("default", "Regist to Proxy now.");
-
+	SetLastSendKeepAlive(GetMSTime());
+	m_tLastSendKeepAlive = GetMSTime();    // 记录这一次的注册的时间
 	return 0;
 }
 
@@ -417,7 +404,7 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 	CProxyHead tProxyHead;
 	if (ServerCommEngine::ConvertStreamToProxy(pbyCode/* + sizeof(int)*/, nCodeLength/* - sizeof(int)*/, &tProxyHead)
 		< 0) {
-		LOG_ERROR("default", "parse proxy head error!!!!!!!!!!!!!!!");
+		LOG_ERROR("default", "Parse proxy head error!!!!!!!!!!!!!!!");
 		return -1;
 	}
 
@@ -471,13 +458,44 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 	return iTempRet;
 }
 
+void CDBCtrl::SetLastSendKeepAlive(time_t m_tLastSendKeepAlive)
+{
+	CDBCtrl::m_tLastSendKeepAlive = m_tLastSendKeepAlive;
+}
+
+void CDBCtrl::SetLastRecvKeepAlive(time_t m_tLastRecvKeepAlive)
+{
+	CDBCtrl::m_tLastRecvKeepAlive = m_tLastRecvKeepAlive;
+}
+
+time_t CDBCtrl::GetLastSendKeepAlive() const
+{
+	return m_tLastSendKeepAlive;
+}
+
+time_t CDBCtrl::GetLastRecvKeepAlive() const
+{
+	return m_tLastRecvKeepAlive;
+}
+
 int CDBCtrl::PrepareToRun()
 {
+	INIT_ROATING_LOG("default", "../log/dbserver.log", level_enum::debug, 10 * 1024 * 1024, 20);
+
+	CServerConfig *pTmpConfig = new CServerConfig;
+	const string filepath = "../config/serverinfo.json";
+	if (-1 == pTmpConfig->LoadFromFile(filepath)) {
+		LOG_ERROR("default", "Get TcpserverConfig failed");
+		return -1;
+	}
+
 	if (ConnectToProxyServer() < 0)  // 连接到proxy服务器
 	{
 		LOG_ERROR("default", "Error: in CDBCtrl::PrepareToRun connect proxy  server  failed!\n");
 		return -1;
 	}
+	m_pKeepLiveEvent = new CTimerEvent(m_pNetWork->GetEventReactor(),
+	)
 	return 0;
 }
 
@@ -489,6 +507,12 @@ int CDBCtrl::Run()
 void CDBCtrl::lcb_OnConnected(IBufferEvent *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
+	ServerInfo *proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_PROXYSERVER);
+	if (CDBCtrl::GetSingletonPtr()->RegisterToProxyServer()) {
+		LOG_ERROR("default", "Error: Register to Proxy Server {} failed.\n", proxyInfo->m_iServerId);
+		return;
+	}
+
 	m_iProxyId = pConnector->GetSocket().GetSocket();
 }
 

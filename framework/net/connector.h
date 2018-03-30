@@ -28,7 +28,8 @@ public:
 			   FuncBufferEventOnDataSend funcOnDataSend,
 			   FuncBufferEventOnDataRecv funcOnDataRecv,
 			   FuncBufferEventOnDisconnected funcDisconnected,
-			   int iTargetId);
+			   int iTargetId,
+			   int iPingTick);
 	//析构函数
 	virtual ~CConnector(void);
 	//获取连接ip
@@ -68,7 +69,7 @@ private:
 	eConnectorState m_eState;
 	event m_oConnectEvent;
 	int m_iTargetId;
-
+	CTimerEvent *m_pKeepLiveEvent;
 	FuncConnectorOnConnectFailed m_pFuncOnConnectFailed;
 	FuncConnectorOnConnectted m_pFuncOnConnectted;
 };

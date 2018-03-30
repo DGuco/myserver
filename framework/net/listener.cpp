@@ -33,7 +33,7 @@ bool CListener::RegisterToReactor()
 										  sizeof(sin));
 #else
 	m_pListener = evconnlistener_new_bind(GetReactor()->GetEventBase(),
-										  &CListener::lcb_Accept,
+										  &CListener::lcb_Listen,
 										  (void *) this,
 										  LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE /*| LEV_OPT_THREADSAFE */,
 										  m_iListenQueueMax,

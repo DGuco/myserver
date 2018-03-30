@@ -37,7 +37,6 @@ public:
 	CDBCtrl();
 	~CDBCtrl();
 
-	int Initialize();
 	int PrepareToRun();
 	int Run();
 
@@ -68,6 +67,10 @@ private:
 	int RegisterToProxyServer();
 	int SendkeepAliveToProxy();     // 向proxy发送心跳消息
 	int DispatchOneCode(int nCodeLength, BYTE *pbyCode);
+	time_t GetLastSendKeepAlive() const;
+	time_t GetLastRecvKeepAlive() const;
+	void SetLastSendKeepAlive(time_t m_tLastSendKeepAlive);
+	void SetLastRecvKeepAlive(time_t m_tLastRecvKeepAlive);
 private:
 	static void lcb_OnConnected(IBufferEvent *pConnector);
 	//断开连接回调
@@ -81,7 +84,6 @@ private:
 	int m_iRunFlag;    // 运行标志
 	time_t m_tLastSendKeepAlive;        // 最后发送proxy心跳消息时间
 	time_t m_tLastRecvKeepAlive;        // 最后接收proxy心跳消息时间
-	time_t m_lastTick;
 	Database *m_pDatabase;
 	CMessageFactory *mMsgFactory;
 	CProxyHead m_stCurrentProxyHead;    //当前处理请求的Proxy头部
