@@ -40,11 +40,6 @@ int Initialize(int iInitFlag = 0);
 int main(int argc, char **argv)
 {
 	CDBCtrl *tpDBCtrl = new CDBCtrl;
-	if (tpDBCtrl->Initialize() < 0)  // 读取数据库配置文件
-	{
-		exit(-1);
-	}
-
 	if (tpDBCtrl->PrepareToRun() < 0)  // 创建处理线程
 	{
 		exit(-1);

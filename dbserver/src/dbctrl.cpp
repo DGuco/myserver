@@ -503,9 +503,10 @@ int CDBCtrl::Run()
 
 void CDBCtrl::lcb_OnConnected(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pBufferEvent != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CConnector), return);
+	CConnector *pConnector = (CConnector *) pBufferEvent;
 	ServerInfo *proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_PROXYSERVER);
-	if (CDBCtrl::GetSingletonPtr()->RegisterToProxyServer(pBufferEvent)) {
+	if (CDBCtrl::GetSingletonPtr()->RegisterToProxyServer(pConnector)) {
 		LOG_ERROR("default", "Error: Register to Proxy Server {} failed.\n", proxyInfo->m_iServerId);
 		return;
 	}
