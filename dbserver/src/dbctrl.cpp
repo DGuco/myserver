@@ -17,7 +17,6 @@ CDBCtrl::CDBCtrl()
 	m_iRunFlag = 0;
 	m_tLastSendKeepAlive = 0;
 	m_tLastRecvKeepAlive = 0;
-	m_pKeepLiveEvent = NULL;
 }
 
 CDBCtrl::~CDBCtrl()
@@ -315,7 +314,7 @@ Output:
 Return:       0 :   成功 ，其他失败
 Others:		
  ********************************************************/
-int CDBCtrl::RegisterToProxyServer()
+int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
 {
 	CProxyMessage message;
 	char message_buffer[1024] = {0};
@@ -338,7 +337,7 @@ int CDBCtrl::RegisterToProxyServer()
 		return 0;
 	}
 
-	iRet = m_pNetWork->FindConnector(m_iProxyId)->Send((BYTE *) message_buffer, tTotalLen);
+	iRet = pConnector->Send((BYTE *) message_buffer, tTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer SendOneCode failed, iRet = {}.", iRet);
 		return -1;
@@ -358,7 +357,7 @@ Output:
 Return:       0 :   成功 ，其他失败
 Others:		
  ********************************************************/
-int CDBCtrl::SendkeepAliveToProxy()
+int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
 {
 	CProxyMessage message;
 	char message_buffer[1024] = {0};
@@ -380,7 +379,7 @@ int CDBCtrl::SendkeepAliveToProxy()
 		return 0;
 	}
 
-	iRet = m_pNetWork->FindConnector(m_iProxyId)->Send((BYTE *) message_buffer, tTotalLen);
+	iRet = pConnector->Send((BYTE *) message_buffer, tTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "CDBCtrl::SendkeepAliveToProxy  proxy SendOneCode failed, iRet = {}.", iRet);
 		return -1;
@@ -494,8 +493,6 @@ int CDBCtrl::PrepareToRun()
 		LOG_ERROR("default", "Error: in CDBCtrl::PrepareToRun connect proxy  server  failed!\n");
 		return -1;
 	}
-	m_pKeepLiveEvent = new CTimerEvent(m_pNetWork->GetEventReactor(),
-	)
 	return 0;
 }
 
@@ -504,46 +501,48 @@ int CDBCtrl::Run()
 	m_pNetWork->DispatchEvents();
 }
 
-void CDBCtrl::lcb_OnConnected(IBufferEvent *pConnector)
+void CDBCtrl::lcb_OnConnected(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pConnector != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL, return);
 	ServerInfo *proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_PROXYSERVER);
-	if (CDBCtrl::GetSingletonPtr()->RegisterToProxyServer()) {
+	if (CDBCtrl::GetSingletonPtr()->RegisterToProxyServer(pBufferEvent)) {
 		LOG_ERROR("default", "Error: Register to Proxy Server {} failed.\n", proxyInfo->m_iServerId);
 		return;
 	}
 
-	m_iProxyId = pConnector->GetSocket().GetSocket();
+	m_iProxyId = pBufferEvent->GetSocket().GetSocket();
 }
 
-void CDBCtrl::lcb_OnCnsDisconnected(IBufferEvent *pConnector)
+void CDBCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pConnector != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL, return);
 }
 
-void CDBCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pConnector)
+void CDBCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pConnector != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL, return);
 	//数据不完整
-	if (!pConnector->IsPackageComplete()) {
+	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
-	int iTmpLen = pConnector->GetRecvPackLen() - sizeof(PACK_LEN);
+	int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(PACK_LEN);
 	//读取数据
-	pConnector->RecvData(m_acRecvBuff, iTmpLen);
+	pBufferEvent->RecvData(m_acRecvBuff, iTmpLen);
 	CDBCtrl::GetSingletonPtr()->DispatchOneCode(iTmpLen, (BYTE *) (m_acRecvBuff));
 }
 
-void CDBCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pConnector)
+void CDBCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pConnector != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL, return);
 }
 
-void CDBCtrl::lcb_OnConnectFailed(IBufferEvent *pConnector)
+void CDBCtrl::lcb_OnConnectFailed(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pConnector != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL, return);
 }
 
-void CDBCtrl::lcb_OnPingServer(IBufferEvent *pConnector)
+void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 {
+	MY_ASSERT(pConnector != NULL, return);
+	CDBCtrl::GetSingletonPtr()->SendkeepAliveToProxy(pConnector);
 }

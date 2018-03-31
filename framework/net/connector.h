@@ -38,7 +38,8 @@ public:
 	bool Connect(const CNetAddr &addr);
 	//设置相关回调
 	void SetCallbackFunc(FuncConnectorOnConnectFailed pOnConnectFailed,
-						 FuncConnectorOnConnectted pOnConnectted);
+						 FuncConnectorOnConnectted pOnConnected,
+						 FuncConnectorOnPingServer pOnPingServer);
 	//关闭连接
 	void ShutDown();
 	//是否连接成功
@@ -63,15 +64,19 @@ private:
 	void SetState(eConnectorState eState);
 	//连接成功
 	void OnConnectted();
+private:
+	static void lcb_OnPingServer(int fd, short event, void *param);
 
 private:
 	CNetAddr m_oAddr;
 	eConnectorState m_eState;
 	event m_oConnectEvent;
 	int m_iTargetId;
+	int m_iPingTick;
 	CTimerEvent *m_pKeepLiveEvent;
 	FuncConnectorOnConnectFailed m_pFuncOnConnectFailed;
 	FuncConnectorOnConnectted m_pFuncOnConnectted;
+	FuncConnectorOnPingServer m_pFuncOnPingServer;
 };
 
 #endif

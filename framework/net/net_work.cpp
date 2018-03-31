@@ -118,9 +118,11 @@ bool CNetWork::Connect(const char *szNetAddr,
 											funcOnSomeDataSend,
 											funcOnSomeDataRecv,
 											funcOnDisconnected,
-											iTargetId);
+											iTargetId,
+											uPingTick);
 	pConnector->SetCallbackFunc(std::move(funcOnConnectFailed),
-								std::move(funcOnConnectted));
+								std::move(funcOnConnectted),
+								std::move(funcOnPingServer));
 
 	CNetAddr addr(szNetAddr, uPort);
 	bool bRet = pConnector->Connect(addr);

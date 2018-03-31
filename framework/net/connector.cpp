@@ -14,6 +14,7 @@ CConnector::CConnector(IEventReactor *pReactor,
 				   funcDisconnected),
 	  m_eState(eCS_Disconnected),
 	  m_iTargetId(iTargetId),
+	  m_iPingTick(iPingTick),
 	  m_pKeepLiveEvent(NULL)
 {
 
@@ -44,10 +45,12 @@ bool CConnector::Connect(const CNetAddr &addr)
 }
 
 void CConnector::SetCallbackFunc(FuncConnectorOnConnectFailed pOnConnectFailed,
-								 FuncConnectorOnConnectted pOnConnectted)
+								 FuncConnectorOnConnectted pOnConnected,
+								 FuncConnectorOnPingServer pOnPingServer)
 {
 	m_pFuncOnConnectFailed = pOnConnectFailed;
-	m_pFuncOnConnectted = pOnConnectted;
+	m_pFuncOnConnectted = pOnConnected;
+	m_pFuncOnPingServer = pOnPingServer;
 }
 
 void CConnector::OnConnectted()
@@ -55,6 +58,12 @@ void CConnector::OnConnectted()
 	SetState(eCS_Connected);
 	m_oSocket.SetSocket(bufferevent_getfd(m_pStBufEv));
 	m_pFuncOnConnectted(this);
+	m_pKeepLiveEvent = new CTimerEvent(GetReactor(),
+									   &CConnector::lcb_OnPingServer,
+									   (void *) this,
+									   m_iPingTick,
+									   0,
+									   -1);
 }
 
 void CConnector::ShutDown()
@@ -131,4 +140,13 @@ void CConnector::AfterBuffEventCreated()
 int CConnector::GetTargetId() const
 {
 	return m_iTargetId;
+}
+
+void CConnector::lcb_OnPingServer(int fd, short event, void *param)
+{
+	CConnector *pConnector = (CConnector *) param;
+	MY_ASSERT(pConnector != NULL, return;)
+	if (pConnector->GetState() == eConnectorState::eCS_Connected) {
+		pConnector->m_pFuncOnPingServer(fd, event, pConnector);
+	}
 }

@@ -78,7 +78,7 @@ typedef std::function<void(CConnector *)> FuncConnectorOnConnectFailed;
 
 typedef std::function<void(CConnector *)> FuncConnectorOnConnectted;
 
-typedef std::function<void(CConnector *)> FuncConnectorOnPingServer;
+typedef std::function<void(int, short, CConnector *)> FuncConnectorOnPingServer;
 
 /** CallBack for CAcceptor
  */

@@ -64,22 +64,22 @@ public:
 	}
 private:
 	int ConnectToProxyServer();
-	int RegisterToProxyServer();
-	int SendkeepAliveToProxy();     // 向proxy发送心跳消息
+	int RegisterToProxyServer(CConnector *pConnector);
+	int SendkeepAliveToProxy(CConnector *pConnector);     // 向proxy发送心跳消息
 	int DispatchOneCode(int nCodeLength, BYTE *pbyCode);
 	time_t GetLastSendKeepAlive() const;
 	time_t GetLastRecvKeepAlive() const;
 	void SetLastSendKeepAlive(time_t m_tLastSendKeepAlive);
 	void SetLastRecvKeepAlive(time_t m_tLastRecvKeepAlive);
 private:
-	static void lcb_OnConnected(IBufferEvent *pConnector);
+	static void lcb_OnConnected(IBufferEvent *pBufferEvent);
 	//断开连接回调
-	static void lcb_OnCnsDisconnected(IBufferEvent *pConnector);
+	static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
 	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pConnector);
-	static void lcb_OnConnectFailed(IBufferEvent *pConnector);
-	static void lcb_OnCnsSomeDataSend(IBufferEvent *pConnector);
-	static void lcb_OnPingServer(IBufferEvent *pConnector);
+	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
+	static void lcb_OnConnectFailed(IBufferEvent *pBufferEvent);
+	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
+	static void lcb_OnPingServer(int fd, short event, CConnector *pConnector);
 private:
 	int m_iRunFlag;    // 运行标志
 	time_t m_tLastSendKeepAlive;        // 最后发送proxy心跳消息时间
