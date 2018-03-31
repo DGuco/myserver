@@ -1,3 +1,7 @@
+//
+// Created by DGuco on 17-10-12.
+// 线程基类
+//
 #ifndef _MY_THREAD_HPP_
 #define _MY_THREAD_HPP_
 
