@@ -143,7 +143,6 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 		return -1;
 	}
 
-
 	LOG_ERROR("default", "{} \n", pReqMsg->ShortDebugString().c_str());
 
 	string sqlStr = "";
@@ -516,7 +515,18 @@ void CDBCtrl::lcb_OnConnected(IBufferEvent *pBufferEvent)
 
 void CDBCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pBufferEvent != NULL, return);
+	MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CConnector), return);
+	CConnector *pConnector = (CConnector *) pBufferEvent;
+	if (CDBCtrl::GetSingletonPtr()->ConnectToProxyServer() < 0)  // 连接到proxy服务器
+	{
+		LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
+		return;
+	}
+	else {
+		pConnector->SetState(CConnector::eCS_Connected);
+		LOG_DEBUG("default", "Reconnect to proxyServer succeed..\n");
+	}
+	return;
 }
 
 void CDBCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
@@ -545,5 +555,15 @@ void CDBCtrl::lcb_OnConnectFailed(IBufferEvent *pBufferEvent)
 void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
+	int tNow = GetMSTime();
+	CServerConfig *tmpConfig = CServerConfig::GetSingletonPtr();
+	CDBCtrl *tmpDBCtrl = CDBCtrl::GetSingletonPtr();
 	CDBCtrl::GetSingletonPtr()->SendkeepAliveToProxy(pConnector);
+	if (pConnector->GetState() == CConnector::eCS_Connected &&
+		pConnector->GetSocket().GetSocket() > 0 &&
+		tNow - tmpDBCtrl->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
+		if (tNow - tmpDBCtrl->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
+			tmpDBCtrl->SendkeepAliveToProxy(pConnector);
+		}
+	}
 }

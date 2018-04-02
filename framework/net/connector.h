@@ -49,7 +49,10 @@ public:
 	//是否断开连接
 	bool IsDisconnected();
 	int GetTargetId() const;
-
+	//设置当前状态
+	void SetState(eConnectorState eState);
+	//当前连接状态
+	eConnectorState GetState();
 private:
 	//bufferEvent 无效处理
 	void BuffEventUnavailableCall() override;
@@ -58,10 +61,6 @@ private:
 	//事件回调
 	void OnEvent(int16 nWhat) override;
 private:
-	//当前连接状态
-	eConnectorState GetState();
-	//设置当前抓状态
-	void SetState(eConnectorState eState);
 	//连接成功
 	void OnConnectted();
 private:

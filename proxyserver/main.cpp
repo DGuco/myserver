@@ -7,7 +7,6 @@
 #include <signal.h>
 #include <config.h>
 #include <my_macro.h>
-
 #include "runflag.h"
 #include "inc/proxy_ctrl.h"
 

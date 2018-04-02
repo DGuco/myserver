@@ -6,7 +6,7 @@
     # openssl安装(Ubuntu):
         sudo apt-get install openssl
         sudo apt-get install libssl-dev
-    # log4cpp protobuf 解压压缩文件后进入目录执行
+    # spdylog protobuf 解压压缩文件后进入目录执行
         ./configure
         make & make install
 2 服务器启动步骤
