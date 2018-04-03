@@ -68,7 +68,7 @@ int CClientHandle::SendResToPlayer(Message *pMessage, CPlayer *pPlayer)
 {
 	MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
 	char aTmpCodeBuf[MAX_PACKAGE_LEN] = {0};
-	PACK_LEN unTmpCodeLength = sizeof(aTmpCodeBuf);
+	unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
 
 	MesHead pTmpHead;
 	CSocketInfo *pTmpSocket = pTmpHead.mutable_socketinfos()->Add();
@@ -108,7 +108,7 @@ int CClientHandle::SendResponse(Message *pMessage, MesHead *mesHead)
 {
 	MY_ASSERT((pMessage != NULL && mesHead != NULL), return -1);
 	char aTmpCodeBuf[MAX_PACKAGE_LEN] = {0};
-	PACK_LEN unTmpCodeLength = sizeof(aTmpCodeBuf);
+	unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
 
 	// 是否需要加密，在这里修改参数
 	int iRet = CClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
@@ -189,7 +189,7 @@ int CClientHandle::Recv()
 {
 	BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] =
 		{0};
-	PACK_LEN iTmpCodeLength = sizeof(abyTmpCodeBuf);
+	unsigned short iTmpCodeLength = sizeof(abyTmpCodeBuf);
 
 	// 从共享内存管道提取消息
 	int iRet = mC2SPipe->GetHeadCode((BYTE *) abyTmpCodeBuf,

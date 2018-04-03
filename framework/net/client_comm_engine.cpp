@@ -30,7 +30,7 @@ void CClientCommEngine::CopyMesHead(MesHead *from, MesHead *to)
 }
 
 int CClientCommEngine::ParseClientStream(const void **pBuff,
-										 PACK_LEN &nLen,
+										 unsigned short &nLen,
 										 MesHead *pHead)
 {
 	if ((pBuff == NULL) || (pHead == NULL)) {
@@ -38,7 +38,7 @@ int CClientCommEngine::ParseClientStream(const void **pBuff,
 	}
 
 	//小于最小长度(包头长度 - 包总长度所占字节长度)
-	if (nLen < MSG_HEAD_LEN - sizeof(PACK_LEN)) {
+	if (nLen < MSG_HEAD_LEN - sizeof(unsigned short)) {
 		MY_ASSERT_STR(0, return -1, "The package len is less than base len ,receive len %d", nLen);
 	}
 
@@ -57,11 +57,11 @@ int CClientCommEngine::ParseClientStream(const void **pBuff,
 	nLen -= sizeof(unsigned short);
 
 	//消息指令编号
-	MSG_CMD tTmpCmd = 0;
-	memcpy(&tTmpCmd, (void *) pTemp, sizeof(MSG_CMD));
+	unsigned short tTmpCmd = 0;
+	memcpy(&tTmpCmd, (void *) pTemp, sizeof(unsigned short));
 	tTmpCmd = ntohs(tTmpCmd);
-	pTemp += sizeof(MSG_CMD);
-	nLen -= sizeof(MSG_CMD);
+	pTemp += sizeof(unsigned short);
+	nLen -= sizeof(unsigned short);
 
 	pHead->set_serial(tTmpSerial);
 	pHead->set_seq(tTmpSeq);
@@ -72,9 +72,9 @@ int CClientCommEngine::ParseClientStream(const void **pBuff,
 }
 
 int CClientCommEngine::ConverToGameStream(const void *pBuff,
-										  PACK_LEN &unBuffLen,
+										  unsigned short &unBuffLen,
 										  const void *pDataBuff,
-										  PACK_LEN &unDataLen,
+										  unsigned short &unDataLen,
 										  MesHead *pHead)
 {
 	if ((pBuff == NULL) || (pDataBuff == NULL) || pHead == NULL) {
@@ -84,17 +84,17 @@ int CClientCommEngine::ConverToGameStream(const void *pBuff,
 	char *pTemp = (char *) pBuff;
 
 	//预留总长度
-	PACK_LEN unLength = 0;
-	pTemp += sizeof(PACK_LEN);
-	unLength += sizeof(PACK_LEN);
+	unsigned short unLength = 0;
+	pTemp += sizeof(unsigned short);
+	unLength += sizeof(unsigned short);
 	//预留8字节对齐长度
 	pTemp += sizeof(unsigned short);
 	unLength += sizeof(unsigned short);
 
 	// MesHead长度
-	*(PACK_LEN *) pTemp = (PACK_LEN) pHead->ByteSize();
-	pTemp += sizeof(PACK_LEN);
-	unLength += sizeof(PACK_LEN);
+	*(unsigned short *) pTemp = (unsigned short) pHead->ByteSize();
+	pTemp += sizeof(unsigned short);
+	unLength += sizeof(unsigned short);
 
 	// MesHead
 	if (pHead->SerializeToArray(pTemp, unBuffLen - unLength) == false) {
@@ -126,9 +126,9 @@ int CClientCommEngine::ConverToGameStream(const void *pBuff,
 	// }
 
 	// data长度
-	*(PACK_LEN *) pTemp = (PACK_LEN) unDataLen;
-	pTemp += sizeof(PACK_LEN);
-	unLength += sizeof(PACK_LEN);
+	*(unsigned short *) pTemp = (unsigned short) unDataLen;
+	pTemp += sizeof(unsigned short);
+	unLength += sizeof(unsigned short);
 
 	// 拷贝消息到发送缓冲区
 	memcpy(pTemp, (char *) pDataBuff, unDataLen);
@@ -157,7 +157,7 @@ int CClientCommEngine::ConverToGameStream(const void *pBuff,
 }
 
 int CClientCommEngine::ConvertToGameStream(const void *pBuff,
-										   PACK_LEN &unBuffLen,
+										   unsigned short &unBuffLen,
 										   MesHead *pHead,
 										   Message *pMsg)
 {
@@ -167,18 +167,18 @@ int CClientCommEngine::ConvertToGameStream(const void *pBuff,
 
 	char *pTemp = (char *) pBuff;
 
-	PACK_LEN unLength = 0;
+	unsigned short unLength = 0;
 	//预留总长度
-	pTemp += sizeof(PACK_LEN);
-	unLength += sizeof(PACK_LEN);
+	pTemp += sizeof(unsigned short);
+	unLength += sizeof(unsigned short);
 	//预留8字节对齐长度
-	pTemp += sizeof(PACK_LEN);
-	unLength += sizeof(PACK_LEN);
+	pTemp += sizeof(unsigned short);
+	unLength += sizeof(unsigned short);
 
 	// MesHead长度
-	*(PACK_LEN *) pTemp = (PACK_LEN) pHead->ByteSize();
-	pTemp += sizeof(PACK_LEN);
-	unLength += sizeof(PACK_LEN);
+	*(unsigned short *) pTemp = (unsigned short) pHead->ByteSize();
+	pTemp += sizeof(unsigned short);
+	unLength += sizeof(unsigned short);
 
 	// MesHead
 	if (pHead->SerializeToArray(pTemp, unBuffLen - unLength) == false) {
@@ -190,14 +190,14 @@ int CClientCommEngine::ConvertToGameStream(const void *pBuff,
 	if (pMsg) {
 		char tEncryBuff[MAX_PACKAGE_LEN] = {0};
 		char *tpEncryBuff = &tEncryBuff[0];
-		PACK_LEN iMsgParaLen = MAX_PACKAGE_LEN;
+		unsigned short iMsgParaLen = MAX_PACKAGE_LEN;
 		if (pMsg->SerializeToArray(tpEncryBuff, iMsgParaLen) == false) {
 			MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertToGateStream MsgPara SerializeToArray failed.");
 		}
 		// 消息长度
-		*(PACK_LEN *) pTemp = (PACK_LEN) iMsgParaLen;
-		pTemp += sizeof(PACK_LEN);
-		unLength += sizeof(PACK_LEN);
+		*(unsigned short *) pTemp = (unsigned short) iMsgParaLen;
+		pTemp += sizeof(unsigned short);
+		unLength += sizeof(unsigned short);
 
 		//拷贝消息到缓冲区
 		memcpy(pTemp, tpEncryBuff, iMsgParaLen);
@@ -227,7 +227,7 @@ int CClientCommEngine::ConvertToGameStream(const void *pBuff,
 }
 
 int CClientCommEngine::ConvertToGateStream(const void *pBuff,
-										   PACK_LEN &unBuffLen,
+										   unsigned short &unBuffLen,
 										   MesHead *pHead,
 										   Message *pMsg)
 {
@@ -237,18 +237,18 @@ int CClientCommEngine::ConvertToGateStream(const void *pBuff,
 
 	char *pTemp = (char *) pBuff;
 
-	PACK_LEN unLength = 0;
+	unsigned short unLength = 0;
 	//预留总长度
-	pTemp += sizeof(PACK_LEN);
-	unLength += sizeof(PACK_LEN);
+	pTemp += sizeof(unsigned short);
+	unLength += sizeof(unsigned short);
 	//预留8字节对齐长度
-	pTemp += sizeof(PACK_LEN);
-	unLength += sizeof(PACK_LEN);
+	pTemp += sizeof(unsigned short);
+	unLength += sizeof(unsigned short);
 
 	// MesHead长度
-	*(PACK_LEN *) pTemp = (PACK_LEN) pHead->ByteSize();
-	pTemp += sizeof(PACK_LEN);
-	unLength += sizeof(PACK_LEN);
+	*(unsigned short *) pTemp = (unsigned short) pHead->ByteSize();
+	pTemp += sizeof(unsigned short);
+	unLength += sizeof(unsigned short);
 
 	// MesHead
 	if (pHead->SerializeToArray(pTemp, unBuffLen - unLength) == false) {
@@ -259,7 +259,7 @@ int CClientCommEngine::ConvertToGateStream(const void *pBuff,
 
 	char tEncryBuff[MAX_PACKAGE_LEN] = {0};
 	char *tpEncryBuff = &tEncryBuff[0];
-	PACK_LEN iMsgParaLen = MAX_PACKAGE_LEN;
+	unsigned short iMsgParaLen = MAX_PACKAGE_LEN;
 	if (pMsg->SerializeToArray(tpEncryBuff, iMsgParaLen) == false) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertToGateStream MsgPara SerializeToArray failed.");
 	}
@@ -277,9 +277,9 @@ int CClientCommEngine::ConvertToGateStream(const void *pBuff,
 	// }
 
 	// 消息长度
-	*(PACK_LEN *) pTemp = (PACK_LEN) iMsgParaLen;
-	pTemp += sizeof(PACK_LEN);
-	unLength += sizeof(PACK_LEN);
+	*(unsigned short *) pTemp = (unsigned short) iMsgParaLen;
+	pTemp += sizeof(unsigned short);
+	unLength += sizeof(unsigned short);
 	//应答码
 	*(unsigned short *) pTemp = (unsigned short) pHead->serial();
 	pTemp += sizeof(unsigned short);
@@ -319,7 +319,7 @@ int CClientCommEngine::ConvertToGateStream(const void *pBuff,
 }
 
 int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
-											  PACK_LEN unBuffLen,
+											  unsigned short unBuffLen,
 											  CMessage *pMessage,
 											  CFactory *pMsgFactory,
 											  int *unOffset)
@@ -329,11 +329,11 @@ int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
 	}
 
 	char *pbyTmpBuff = (char *) pBuff;
-	PACK_LEN unTmpUseLen = 0;
+	unsigned short unTmpUseLen = 0;
 	//取出数据总长度
-	PACK_LEN unTmpTotalLen = *(PACK_LEN *) pbyTmpBuff;
-	pbyTmpBuff += sizeof(PACK_LEN);        // 指针指向数据处
-	unTmpUseLen += sizeof(PACK_LEN);
+	unsigned short unTmpTotalLen = *(unsigned short *) pbyTmpBuff;
+	pbyTmpBuff += sizeof(unsigned short);        // 指针指向数据处
+	unTmpUseLen += sizeof(unsigned short);
 
 	// 总长度不匹配
 	if (unTmpTotalLen != unBuffLen) {
@@ -353,9 +353,9 @@ int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
 	unTmpUseLen += unTmpAddlLen;
 
 	// MesHead长度
-	PACK_LEN tmpHeadLen = *(PACK_LEN *) pbyTmpBuff;
-	pbyTmpBuff += sizeof(PACK_LEN);
-	unTmpUseLen += sizeof(PACK_LEN);
+	unsigned short tmpHeadLen = *(unsigned short *) pbyTmpBuff;
+	pbyTmpBuff += sizeof(unsigned short);
+	unTmpUseLen += sizeof(unsigned short);
 
 	MesHead *pHead = pMessage->mutable_msghead();
 	//反序列化失败
@@ -366,9 +366,9 @@ int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
 	unTmpUseLen += tmpHeadLen;
 
 	//消息长度
-	PACK_LEN tmpDataLen = *(PACK_LEN *) pbyTmpBuff;
-	pbyTmpBuff += sizeof(PACK_LEN);
-	unTmpUseLen += sizeof(PACK_LEN);
+	unsigned short tmpDataLen = *(unsigned short *) pbyTmpBuff;
+	pbyTmpBuff += sizeof(unsigned short);
+	unTmpUseLen += sizeof(unsigned short);
 
 	if (unOffset) {
 		*(unOffset) = unTmpUseLen;

@@ -31,7 +31,7 @@ public:
 	//通知gameserver client 断开连接
 	static void DisConnect(IBufferEvent *pAcceptor, short iError);
 	//发送数据给gameserver
-	static void SendToGame(IBufferEvent *pAcceptor, PACK_LEN len);
+	static void SendToGame(IBufferEvent *pAcceptor, unsigned short len);
 
 private:
 	//开始监听

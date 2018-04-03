@@ -29,7 +29,7 @@ public:
 	//获取数据(返回读取数据长度)
 	unsigned int RecvData(void *data, unsigned int size);
 	//读取读缓冲区当前数据包的总长度
-	PACK_LEN ReadRecvPackLen();
+	unsigned short ReadRecvPackLen();
 	//获取读缓冲区数据长度
 	unsigned int GetRecvDataSize();
 	//获取写缓冲区数据长度
@@ -45,7 +45,7 @@ public:
 	//检测event_base是否有效
 	bool IsEventBuffAvailable();
 	//获取当前数据包的总长度
-	PACK_LEN GetRecvPackLen() const;
+	unsigned short GetRecvPackLen() const;
 	//当前数据包已读取
 	void CurrentPackRecved();
 	//获取socket
@@ -78,7 +78,7 @@ protected:
 	CSocket m_oSocket;
 	unsigned int m_uMaxOutBufferSize;
 	unsigned int m_uMaxInBufferSize;
-	PACK_LEN m_uRecvPackLen;
+	unsigned short m_uRecvPackLen;
 	FuncBufferEventOnDataSend m_pFuncOnDataSend;
 	FuncBufferEventOnDataRecv m_pFuncOnDataRecv;
 	FuncBufferEventOnDisconnected m_pFuncDisconnected;

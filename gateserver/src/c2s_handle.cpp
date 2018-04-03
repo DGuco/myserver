@@ -98,7 +98,7 @@ void CC2sHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 						   if (!pBufferEvent->IsPackageComplete()) {
 							   return;
 						   }
-						   int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(PACK_LEN);
+						   int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
 						   //读取数据
 						   pBufferEvent->RecvData(m_acRecvBuff, iTmpLen);
 						   //当前数据包已全部读取，清除当前数据包缓存长度
@@ -138,7 +138,7 @@ void CC2sHandle::DisConnect(IBufferEvent *pAcceptor, short iError)
 	pSocketInfo->set_createtime(tmpAcceptor->GetCreateTime());
 	pSocketInfo->set_state(iError);
 
-	PACK_LEN unTmpMsgLen = sizeof(m_acSendBuff);
+	unsigned short unTmpMsgLen = sizeof(m_acSendBuff);
 	int iRet = CClientCommEngine::ConvertToGameStream(m_acSendBuff, unTmpMsgLen, &tmpHead);
 	if (iRet != 0) {
 		LOG_ERROR("default", "[{}: {} : {}] ConvertMsgToStream failed,iRet = {} ",
@@ -154,7 +154,7 @@ void CC2sHandle::DisConnect(IBufferEvent *pAcceptor, short iError)
 	}
 }
 
-void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, PACK_LEN tmpLastLen)
+void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 {
 	MY_ASSERT(pAcceptor != NULL && typeid(*pAcceptor) == typeid(CAcceptor), return)
 	CAcceptor *tmpAcceptor = (CAcceptor *) pAcceptor;
@@ -175,7 +175,7 @@ void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, PACK_LEN tmpLastLen)
 		tmpSocketInfo->set_socketid(pAcceptor->GetSocket().GetSocket());
 		tmpSocketInfo->set_state(0);
 
-		PACK_LEN tmpSendLen = sizeof(m_acSendBuff);
+		unsigned short tmpSendLen = sizeof(m_acSendBuff);
 		iTmpRet = CClientCommEngine::ConverToGameStream(m_acSendBuff,
 														tmpSendLen,
 														pTmp,

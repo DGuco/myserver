@@ -36,9 +36,6 @@
 
 typedef unsigned char BYTE;
 
-typedef unsigned short PACK_LEN;        //表示消息长度的数据类型
-typedef unsigned short MSG_CMD;        //表示消息指令的数据类型
-
 typedef char TName[32];
 
 typedef char TFName[64];

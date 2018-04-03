@@ -200,7 +200,7 @@ bool CGameServer::SendMessageToDB(CProxyMessage *pMsg)
 				   GetMSTime(),
 				   enMessageCmd::MESS_NULL);
 
-	int iRet = ServerCommEngine::ConvertMsgToStream(pMsg, acTmpMessageBuffer, unTmpTotalLen);
+	int iRet = CServerCommEngine::ConvertMsgToStream(pMsg, acTmpMessageBuffer, unTmpTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "[{} : {} : {}] ConvertMsgToStream failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);

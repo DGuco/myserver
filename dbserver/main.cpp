@@ -50,9 +50,9 @@ int main(int argc, char **argv)
 //	signal(SIGQUIT, sigusr_handle);
 
 	{
-		LOG_INFO("default", "-------------------------------------------------\n");
-		LOG_INFO("default", "|          dbserver startup success!          |\n");
-		LOG_INFO("default", "-------------------------------------------------\n");
+		LOG_INFO("default", "-------------------------------------------------");
+		LOG_INFO("default", "|          dbserver startup success!          |");
+		LOG_INFO("default", "-------------------------------------------------");
 	}
 
 	tpDBCtrl->Run();

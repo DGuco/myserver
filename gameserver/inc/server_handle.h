@@ -18,14 +18,14 @@ public:
 	// 发送心跳到Proxy
 	bool SendKeepAlive2Proxy();
 	// 向dbserver发送数据
-	void SendMessageToDB(char *data, PACK_LEN len);
+	void SendMessageToDB(char *data, unsigned short len);
 public:
 	// 运行准备
 	int PrepareToRun() override;
 	int RunFunc() override;
 	bool IsToBeBlocked() override;
 private:
-	void SendMessageToProxyAsync(char *data, PACK_LEN len);
+	void SendMessageToProxyAsync(char *data, unsigned short len);
 	// 向Proxy注册
 	bool Register2Proxy();
 private:

@@ -55,7 +55,7 @@ public:
 	// 通过FE和ID创建KEY
 	int MakeConnKey(const short nType, const short nID);
 	//处理注册消息
-	int DealRegisterMes(IBufferEvent *pBufferEvent, char *acTmpBuf);
+	int DealRegisterMes(IBufferEvent *pBufferEvent, unsigned short iLen);
 	// 转发数据
 	int TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCodeLength);
 	//关闭socket

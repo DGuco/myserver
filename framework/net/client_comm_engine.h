@@ -20,7 +20,7 @@ public:
 	 * @return          0：成功 1：数据不完整继续接收  其他：错误
 	 */
 	static int ParseClientStream(const void **pBuff,
-								 PACK_LEN &nLen,
+								 unsigned short &nLen,
 								 MesHead *pHead);
 
 	/**
@@ -33,9 +33,9 @@ public:
 	 * @return               0 成功 其他 失败
 	 */
 	static int ConverToGameStream(const void *pBuff,
-								  PACK_LEN &unBuffLen,
+								  unsigned short &unBuffLen,
 								  const void *pDataBuff,
-								  PACK_LEN &unDataLen,
+								  unsigned short &unDataLen,
 								  MesHead *pHead);
 
 	/**
@@ -47,7 +47,7 @@ public:
 	 * @return              0 成功 其他 失败
 	 */
 	static int ConvertToGameStream(const void *pBuff,
-								   PACK_LEN &unBuffLen,
+								   unsigned short &unBuffLen,
 								   MesHead *pHead,
 								   Message *pMsg = NULL);
 
@@ -60,7 +60,7 @@ public:
 	 * @return              0 成功 其他 失败
 	 */
 	static int ConvertToGateStream(const void *pBuff,
-								   PACK_LEN &unBuffLen,
+								   unsigned short &unBuffLen,
 								   MesHead *pHead,
 								   Message *pMsg);
 
@@ -72,7 +72,7 @@ public:
 	 * @return              0 成功 其他:失败错误码
 	 */
 	static int ConvertStreamToMessage(const void *pBuff,
-									  PACK_LEN unBuffLen,
+									  unsigned short unBuffLen,
 									  CMessage *pMessage = NULL,
 									  CFactory *pMsgFactory = NULL,
 									  int *unOffset = 0x0);

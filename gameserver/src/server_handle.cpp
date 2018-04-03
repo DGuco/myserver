@@ -90,7 +90,7 @@ bool CServerHandle::Register2Proxy()
 				   enMessageCmd::MESS_REGIST);
 
 	int iRet =
-		ServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
+		CServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "ConvertMsgToStream failed, iRet = {}.", iRet);
 		return false;
@@ -129,7 +129,7 @@ bool CServerHandle::SendKeepAlive2Proxy()
 				   GetMSTime(),
 				   enMessageCmd::MESS_KEEPALIVE);
 
-	int iRet = ServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
+	int iRet = CServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "[{} : {} : {}] ConvertMsgToStream failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
@@ -139,12 +139,12 @@ bool CServerHandle::SendKeepAlive2Proxy()
 	return true;
 }
 
-void CServerHandle::SendMessageToDB(char *data, PACK_LEN len)
+void CServerHandle::SendMessageToDB(char *data, unsigned short len)
 {
 	SendMessageToProxyAsync(data, len);
 }
 
-void CServerHandle::SendMessageToProxyAsync(char *data, PACK_LEN len)
+void CServerHandle::SendMessageToProxyAsync(char *data, unsigned short len)
 {
 	CGameServer::GetSingletonPtr()->GetIoThread()->PushTaskBack(
 		[data, len, this]
@@ -221,13 +221,13 @@ void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
 	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
-	int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(PACK_LEN);
+	int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
 	//读取数据
 	pBufferEvent->RecvData(m_acRecvBuff, iTmpLen);
 	// 将收到的二进制数据转为protobuf格式
 	CProxyMessage tmpMessage;
-	int iRet = ServerCommEngine::ConvertStreamToMsg(m_acRecvBuff,
-													iTmpLen,
+	int iRet = CServerCommEngine::ConvertStreamToMsg(m_acRecvBuff,
+													iTmpLen - sizeof(unsigned short),
 													&tmpMessage,
 													CGameServer::GetSingletonPtr()->GetMessageFactory());
 	if (iRet < 0) {

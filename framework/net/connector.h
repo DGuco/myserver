@@ -16,6 +16,7 @@
 
 class CConnector: public IBufferEvent
 {
+public:
 	enum eConnectorState
 	{
 		eCS_Disconnected = 0,

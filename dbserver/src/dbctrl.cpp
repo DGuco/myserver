@@ -12,11 +12,16 @@
 
 template<> CDBCtrl *CSingleton<CDBCtrl>::spSingleton = NULL;
 
+int CDBCtrl::m_iProxyId = 0;
+
+char CDBCtrl::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
+
 CDBCtrl::CDBCtrl()
 {
 	m_iRunFlag = 0;
 	m_tLastSendKeepAlive = 0;
 	m_tLastRecvKeepAlive = 0;
+	m_pNetWork = new CNetWork();
 }
 
 CDBCtrl::~CDBCtrl()
@@ -61,14 +66,14 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 				   GetMSTime(),
 				   enMessageCmd::MESS_REGIST);
 
-	int iRet = ServerCommEngine::ConvertMsgToStream(pMsg, abyCodeBuf, nCodeLength);
+	int iRet = CServerCommEngine::ConvertMsgToStream(pMsg, abyCodeBuf, nCodeLength);
 	if (iRet != 0) {
 		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = {}.", iRet);
 		return 0;
 	}
 
 	//int nSendReturn = m_pProxySvrdConns[ m_current_proxy_index ].GetSocket()->SendOneCode( nCodeLength, abyCodeBuf );
-	IBufferEvent *tmpConnector = m_pNetWork->FindConnector(m_iProxyId);
+	IBufferEvent *tmpConnector = m_pNetWork->FindConnector(CDBCtrl::m_iProxyId);
 	if (tmpConnector == NULL) {
 		LOG_ERROR("default", "Connection to proxyserver has gone");
 		return -1;
@@ -260,7 +265,6 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 
 		// 回复客户端
 		SendMessageTo(&tMsg);
-
 	}
 	else {
 		// 同步执行
@@ -284,11 +288,11 @@ int CDBCtrl::ConnectToProxyServer()
 	if (!m_pNetWork->Connect(proxyInfo->m_sHost.c_str(),
 							 proxyInfo->m_iPort,
 							 proxyInfo->m_iServerId,
+							 &CDBCtrl::lcb_OnCnsSomeDataSend,
+							 &CDBCtrl::lcb_OnCnsSomeDataRecv,
 							 &CDBCtrl::lcb_OnCnsDisconnected,
 							 &CDBCtrl::lcb_OnConnectFailed,
 							 &CDBCtrl::lcb_OnConnected,
-							 &CDBCtrl::lcb_OnCnsSomeDataSend,
-							 &CDBCtrl::lcb_OnCnsSomeDataRecv,
 							 &CDBCtrl::lcb_OnPingServer,
 							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive())
 		) {
@@ -321,7 +325,7 @@ int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
 
 	//如果为null 让程序崩溃
 	ServerInfo *dbInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
-	ServerInfo *proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
+	ServerInfo *proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_PROXYSERVER);
 	pbmsg_setproxy(message.mutable_msghead(),
 				   enServerType::FE_DBSERVER,
 				   dbInfo->m_iServerId,
@@ -330,7 +334,7 @@ int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
 				   GetMSTime(),
 				   enMessageCmd::MESS_REGIST);
 
-	int iRet = ServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
+	int iRet = CServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = {}.", iRet);
 		return 0;
@@ -343,7 +347,6 @@ int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
 	}
 
 	LOG_INFO("default", "Regist to Proxy now.");
-	SetLastSendKeepAlive(GetMSTime());
 	m_tLastSendKeepAlive = GetMSTime();    // 记录这一次的注册的时间
 	return 0;
 }
@@ -372,7 +375,7 @@ int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
 				   GetMSTime(),
 				   enMessageCmd::MESS_KEEPALIVE);
 
-	int iRet = ServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
+	int iRet = CServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "CDBCtrsl::SendkeepAliveToProxy ConvertMsgToStream failed, iRet = {}.", iRet);
 		return 0;
@@ -398,39 +401,33 @@ int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
 int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 {
 	int iTempRet = 0;
-	// 解析proxy头
-	CProxyHead tProxyHead;
-	if (ServerCommEngine::ConvertStreamToProxy(pbyCode/* + sizeof(int)*/, nCodeLength/* - sizeof(int)*/, &tProxyHead)
-		< 0) {
-		LOG_ERROR("default", "Parse proxy head error!!!!!!!!!!!!!!!");
-		return -1;
-	}
-
-	// 加入 proxy 命令处理处理心跳消息
-	if (enServerType::FE_PROXYSERVER == tProxyHead.srcfe() && enMessageCmd::MESS_KEEPALIVE == tProxyHead.opflag()) {
-		m_tLastRecvKeepAlive = GetMSTime(); // 保存这一次的注册的时间
-		LOG_DEBUG("default", "Recv proxyServer keepalive");
-		return 0;
-	}
 
 	CProxyMessage stTempMsg;
 	// 将解析出的消息头和消息体分别存放在 m_stCurrentProxyHead stTempMsg
-	int tRet = ServerCommEngine::ConvertStreamToMsg((BYTE *) (pbyCode/*+sizeof(int)*/),
-													nCodeLength/*-sizeof(int)*/,
-													&stTempMsg,
-													mMsgFactory);
-	CProxyHead tmpProxyHead = stTempMsg.msghead();
-	pbmsg_setproxy(&m_stCurrentProxyHead,
-				   tmpProxyHead.srcfe(),
-				   tmpProxyHead.srcid(),
-				   tmpProxyHead.dstfe(),
-				   tmpProxyHead.dstid(),
-				   GetMSTime(),
-				   enMessageCmd::MESS_REGIST);
-	if (tRet != 0)  // 如果解析失败则重新取 Code
-	{
-		LOG_ERROR("default", "Convert code to message failed. tRet = {}", tRet);
+	int tRet = CServerCommEngine::ConvertStreamToMsg((const void *) (pbyCode),
+													 nCodeLength,
+													 &stTempMsg,
+													 mMsgFactory);
+	if (tRet != 0) {
+		LOG_ERROR("default", "In CDBCtrl::DispatchOneCodecode, ConvertStreamToMsg failed. tRet = {}", tRet);
 		return -1;
+	}
+
+	CProxyHead tmpProxyHead = stTempMsg.msghead();
+//	pbmsg_setproxy(&m_stCurrentProxyHead,
+//				   tmpProxyHead.srcfe(),
+//				   tmpProxyHead.srcid(),
+//				   tmpProxyHead.dstfe(),
+//				   tmpProxyHead.dstid(),
+//				   GetMSTime(),
+//				   tmpProxyHead.opflag());
+
+	// 加入 proxy 命令处理处理心跳消息
+	if (enServerType::FE_PROXYSERVER == tmpProxyHead.srcfe()
+		&& enMessageCmd::MESS_KEEPALIVE == tmpProxyHead.opflag()) {
+		m_tLastRecvKeepAlive = GetMSTime(); // 保存这一次的注册的时间
+		LOG_DEBUG("default", "Recv proxyServer keepalive");
+		return 0;
 	}
 
 	iTempRet = Event(&stTempMsg);  // 服务器执行相应的 Msg ，其实就是执行 SQL
@@ -438,7 +435,6 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 	if (iTempRet) {
 		LOG_ERROR("default", "Handle event returns {}.\n", iTempRet);
 	}
-
 	// 消息回收
 	Message *pMessagePara = (Message *) (stTempMsg.msgpara());
 	if (pMessagePara) {
@@ -446,13 +442,6 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 		stTempMsg.set_msgpara((unsigned long) NULL);
 	}
 
-	LOG_DEBUG("default",
-			  "PRoxyHead:SrcFE: {} SrcID: {} DstFE: {} DstID: {} OpFlag: {} ",
-			  tProxyHead.srcfe(),
-			  tProxyHead.srcid(),
-			  tProxyHead.dstfe(),
-			  tProxyHead.dstid(),
-			  tProxyHead.opflag());
 	return iTempRet;
 }
 
@@ -536,9 +525,10 @@ void CDBCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
-	int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(PACK_LEN);
+	unsigned short iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
 	//读取数据
 	pBufferEvent->RecvData(m_acRecvBuff, iTmpLen);
+	pBufferEvent->CurrentPackRecved();
 	CDBCtrl::GetSingletonPtr()->DispatchOneCode(iTmpLen, (BYTE *) (m_acRecvBuff));
 }
 
@@ -564,6 +554,7 @@ void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 		tNow - tmpDBCtrl->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
 		if (tNow - tmpDBCtrl->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
 			tmpDBCtrl->SendkeepAliveToProxy(pConnector);
+			LOG_DEBUG("default", "SendkeepAliveToProxy succeed..");
 		}
 	}
 }

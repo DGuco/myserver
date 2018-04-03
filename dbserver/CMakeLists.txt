@@ -4,8 +4,6 @@ add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX)
 
 set(SOURCE_FILES
         main.cpp
-        inc/dbhandle.h
-        src/dbhandle.cpp
         src/dbctrl.cpp
         inc/dbctrl.h
         inc/basedb.h

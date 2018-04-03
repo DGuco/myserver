@@ -125,32 +125,32 @@ void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
-	PACK_LEN unTmpLen = pBufferEvent->GetRecvPackLen();
-	pBufferEvent->RecvData(m_acRecvBuff + sizeof(PACK_LEN), unTmpLen - sizeof(PACK_LEN));
+	unsigned short unTmpLen = pBufferEvent->GetRecvPackLen();
+	unsigned short unDataLen = unTmpLen - sizeof(unsigned short);
+	pBufferEvent->RecvData(m_acRecvBuff + sizeof(unsigned short), unDataLen);
+	pBufferEvent->CurrentPackRecved();
 	auto it = m_mapSocket2Key.find(pBufferEvent->GetSocket().GetSocket());
 	if (it != m_mapSocket2Key.end()) {
-		*(PACK_LEN *) m_acRecvBuff = (pBufferEvent->GetRecvPackLen());
-		CProxyCtrl::GetSingletonPtr()->TransferOneCode(pBufferEvent, unTmpLen);
+		//转发消息填充数据总长度
+		*(unsigned short *) m_acRecvBuff = unTmpLen;
+		CProxyCtrl::GetSingletonPtr()->TransferOneCode(pBufferEvent, unDataLen);
 	}
 	else {    //未注册
-		CProxyCtrl::GetSingletonPtr()->DealRegisterMes(pBufferEvent, m_acRecvBuff + sizeof(PACK_LEN));
+		CProxyCtrl::GetSingletonPtr()->DealRegisterMes(pBufferEvent, unDataLen);
 	}
 }
 
-int CProxyCtrl::DealRegisterMes(IBufferEvent *pBufferEvent, char *acTmpBuf)
+int CProxyCtrl::DealRegisterMes(IBufferEvent *pBufferEvent, unsigned short iTmpLen)
 {
 	MY_ASSERT(pBufferEvent != NULL, return -1);
-//	// 8字节对齐补充长度
-//	// 这里可以不取，因为不关心
-//	unsigned short unAddLen = *((unsigned short*) (acTmpBuf + 2));
+
 	CProxyHead stTmpProxyHead;
-	// CProxyHead长度
-	unsigned short iProxyHeadSize = *((unsigned short *) (acTmpBuf + 2));
-	// 获取CProxyHead
-	if (stTmpProxyHead.ParseFromArray(acTmpBuf + 4, iProxyHeadSize) == false) {
-		LOG_ERROR("default", "CProxyHead::ParseFromArray error, stream_length is {}", iProxyHeadSize);
+	int iRet = CServerCommEngine::ConvertStreamToProxy(m_acRecvBuff + sizeof(unsigned short), iTmpLen, &stTmpProxyHead);
+	if (iRet < 0) {
+		LOG_ERROR("default", "In DealRegisterMes, ConvertStreamToProxy return {}.", iRet);
 		return -1;
 	}
+
 	SOCKET iSocket = pBufferEvent->GetSocket().GetSocket();
 	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	// 目标服务器是proxy，id不匹配或者不是注册消息，则直接关闭连接
@@ -202,9 +202,9 @@ int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCode
 	}
 
 	unsigned short unOffset = 0;
-	int iRet = ServerCommEngine::ConvertStreamToMsg(m_acRecvBuff, nCodeLength, &stTmpMessage);
+	int iRet = CServerCommEngine::ConvertStreamToMsg(m_acRecvBuff + sizeof(unsigned short), nCodeLength, &stTmpMessage);
 	if (iRet < 0) {
-		LOG_INFO("default", "In TransferOneCode, ConvertStreamToCSHead return {}.", iRet);
+		LOG_ERROR("default", "In TransferOneCode, ConvertStreamToCSHead return {}.", iRet);
 		return -1;
 	}
 
@@ -216,7 +216,7 @@ int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCode
 	LOG_INFO("default", "[{}]", stTmpHead.ShortDebugString().c_str());
 #endif
 
-	LOG_INFO("default", "Transfer code begin, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = %ld.",
+	LOG_INFO("default", "Transfer code begin, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = {}",
 			 stTmpHead.srcfe(), stTmpHead.srcid(),
 			 stTmpHead.dstfe(), stTmpHead.dstid(), stTmpHead.timestamp());
 
@@ -224,46 +224,39 @@ int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCode
 	if (stTmpHead.dstfe() == FE_PROXYSERVER) {
 		switch (stTmpHead.opflag()) {
 		case enMessageCmd::MESS_KEEPALIVE: {
-			CProxyHead stRetHead;
+			CProxyMessage stRetMessage;
+			CProxyHead *stRetHead = stRetMessage.mutable_msghead();
 			ServerInfo *serverInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
-			stRetHead.set_srcfe(FE_PROXYSERVER);
-			stRetHead.set_srcid(serverInfo->m_iServerId);
-			stRetHead.set_dstfe(stTmpHead.srcfe());
-			stRetHead.set_dstid(stTmpHead.srcid());
-			stRetHead.set_opflag(enMessageCmd::MESS_KEEPALIVE);
-			stRetHead.set_timestamp(GetMSTime());
+
+			pbmsg_setproxy(stRetHead,
+						   FE_PROXYSERVER,
+						   serverInfo->m_iServerId,
+						   stTmpHead.srcfe(),
+						   stTmpHead.srcid(),
+						   GetMSTime(),
+						   enMessageCmd::MESS_KEEPALIVE);
 
 			// keepalive的包长度一般都很短
 			char message_buffer[1024];
+			unsigned short tTotalLen = sizeof(message_buffer);
 
-			PACK_LEN unHeadLen = stRetHead.ByteSize();
-			PACK_LEN unAddLen = ((6 + unHeadLen) % 8);
-			if (unAddLen > 0) {
-				unAddLen = (8 - unAddLen);
-			}
-			PACK_LEN unTotalLen = (unHeadLen + 6 + unAddLen);
-
-			int typeLen = sizeof(PACK_LEN);
-			*((PACK_LEN *) message_buffer) = unTotalLen;
-			*((PACK_LEN *) (message_buffer + typeLen * 1)) = unAddLen;
-			*((PACK_LEN *) (message_buffer + typeLen * 2)) = unHeadLen;
-
-			if (stRetHead.SerializeToArray((message_buffer + 6), sizeof(message_buffer) - 6) == false) {
-				LOG_INFO("default", "send keepalive to (FE = {} : ID = {}), CProxyHead::SerializeToArray failed.",
-						 stRetHead.dstfe(), stRetHead.dstid());
+			int iRet = CServerCommEngine::ConvertMsgToStream(&stRetMessage, message_buffer, tTotalLen);
+			if (iRet != 0) {
+				LOG_ERROR("default", "CDBCtrsl::SendkeepAliveToProxy ConvertMsgToStream failed, iRet = {}.", iRet);
+				return 0;
 			}
 			else {
-				int iKey = MakeConnKey(stRetHead.dstfe(), stRetHead.dstid());
-				int iRet = SendOneCodeTo(unTotalLen, (BYTE *) message_buffer, iKey, true);
+				int iKey = MakeConnKey(stRetHead->dstfe(), stRetHead->dstid());
+				int iRet = SendOneCodeTo(tTotalLen, (BYTE *) message_buffer, iKey, true);
 				if (iRet != 0) {
 					LOG_INFO("default", "send keepalive to (FE = {} : ID = {}), SendOneCodeTo failed, iRet = {}.",
-							 stRetHead.dstfe(), stRetHead.dstid(), iRet);
+							 stRetHead->dstfe(), stRetHead->dstid(), iRet);
 				}
 				else {
 					LOG_INFO("default",
 							 "send keepalive to (FE = {} : ID = {}) succeed.",
-							 stRetHead.dstfe(),
-							 stRetHead.dstid());
+							 stRetHead->dstfe(),
+							 stRetHead->dstid());
 				}
 			}
 

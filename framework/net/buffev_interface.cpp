@@ -62,13 +62,13 @@ unsigned int IBufferEvent::RecvData(void *data, unsigned int size)
 	return bufferevent_read(m_pStBufEv, data, size);
 }
 
-PACK_LEN IBufferEvent::ReadRecvPackLen()
+unsigned short IBufferEvent::ReadRecvPackLen()
 {
 	//包头前两个字节为数据总长度，如果数据长度小于两个字节返回0
-	if (GetRecvDataSize() < sizeof(PACK_LEN)) {
+	if (GetRecvDataSize() < sizeof(unsigned short)) {
 		return 0;
 	}
-	RecvData((void *) (&m_uRecvPackLen), sizeof(PACK_LEN));
+	RecvData((void *) (&m_uRecvPackLen), sizeof(unsigned short));
 	return m_uRecvPackLen;
 }
 
@@ -116,7 +116,7 @@ bool IBufferEvent::IsEventBuffAvailable()
 	return true;
 }
 
-PACK_LEN IBufferEvent::GetRecvPackLen() const
+unsigned short IBufferEvent::GetRecvPackLen() const
 {
 	return m_uRecvPackLen;
 }
@@ -133,7 +133,7 @@ const CSocket &IBufferEvent::GetSocket() const
 
 bool IBufferEvent::IsPackageComplete()
 {
-	PACK_LEN tmpPackLen = GetRecvPackLen();
+	unsigned short tmpPackLen = GetRecvPackLen();
 	//如果当前包长度为0，则为新的数据包，重新读取数据包总长度保存
 	if (tmpPackLen <= 0) {
 		tmpPackLen = ReadRecvPackLen();
@@ -143,7 +143,7 @@ bool IBufferEvent::IsPackageComplete()
 		return false;
 	}
 
-	PACK_LEN tmpLastLen = tmpPackLen - sizeof(PACK_LEN);
+	unsigned short tmpLastLen = tmpPackLen - sizeof(unsigned short);
 	unsigned int tmpDataLen = GetRecvDataSize();
 	//数据包不完整继续接收
 	return tmpDataLen >= tmpLastLen;

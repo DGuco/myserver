@@ -7,9 +7,11 @@
 #ifndef _DBCTRL_HPP_
 #define _DBCTRL_HPP_
 
-#include "dbhandle.h"
 #include "net_work.h"
 #include "thread_pool.h"
+#include "queryresult.h"
+#include "database.h"
+#include "messagefactory.h"
 
 //#include "protoconfig.h"
 
@@ -82,17 +84,17 @@ private:
 	static void lcb_OnConnectFailed(IBufferEvent *pBufferEvent);
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
 	static void lcb_OnPingServer(int fd, short event, CConnector *pConnector);
+public:
+	static char m_acRecvBuff[MAX_PACKAGE_LEN];
+	static int m_iProxyId;
 private:
 	int m_iRunFlag;    // 运行标志
 	time_t m_tLastSendKeepAlive;        // 最后发送proxy心跳消息时间
 	time_t m_tLastRecvKeepAlive;        // 最后接收proxy心跳消息时间
 	Database *m_pDatabase;
 	CMessageFactory *mMsgFactory;
-	CProxyHead m_stCurrentProxyHead;    //当前处理请求的Proxy头部
+//	CProxyHead m_stCurrentProxyHead;    //当前处理请求的Proxy头部
 	CNetWork *m_pNetWork;
-private:
-	static char m_acRecvBuff[MAX_PACKAGE_LEN];
-	static int m_iProxyId;
 };
 
 #endif

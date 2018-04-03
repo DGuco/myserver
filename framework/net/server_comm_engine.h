@@ -9,7 +9,7 @@ void pbmsg_setproxy(CProxyHead* pHead, int iSrcFE, int iSrcID, int iDstFE, int i
 void pbmsg_setmessagehead(CProxyHead* pHead, int iMsgID);
 
 
-class ServerCommEngine
+class CServerCommEngine
 {
 public:
 	// --------------------------------------------------------------------------------
