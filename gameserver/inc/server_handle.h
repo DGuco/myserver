@@ -36,7 +36,7 @@ private:
 	static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
 	static void lcb_OnConnectFailed(CConnector *pConnector);
 	static void lcb_OnConnectted(CConnector *pConnector);
-	static void lcb_OnPingServer(CConnector *pConnector);
+	static void lcb_OnPingServer(int fd, short what, CConnector *pConnector);
 	static void DealServerData(IBufferEvent *pConnector);
 	static void SetProxyId(int id);
 	static int GetProxyId();

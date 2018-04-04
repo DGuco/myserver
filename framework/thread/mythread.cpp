@@ -38,27 +38,22 @@ int CMyThread::CondBlock()
 {
 	// 该过程需要在线程锁内完成
 	std::unique_lock<std::mutex> lk(m_condMut);
-	// 线程被阻塞或者停止，这里的while等待主要防止多个线程等待时被意外唤醒，保证当条件满足时，只有一个线程在处理
-	while (IsToBeBlocked() || m_iRunStatus == rt_stopped) {
-		// 如果线程需要停止则终止线程
-		if (m_iRunStatus == rt_stopped) {
-			//退出线程
-			LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
-			pthread_exit((void *) m_abyRetVal);
-		}
-		LOG_DEBUG("default", "Thread [{}] would blocked.", m_sThreadName);
-		m_iRunStatus = rt_blocked;
-		// 进入休眠状态,直到条件满足
-		data_cond.wait(lk);
+	// 如果线程需要停止则终止线程
+	if (m_iRunStatus == rt_stopped) {
+		//退出线程
+		LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
+		pthread_exit((void *) m_abyRetVal);
 	}
+	m_iRunStatus = rt_blocked;
+	LOG_DEBUG("default", "Thread [{}] would blocked.", m_sThreadName);
+	data_cond.wait(lk, [this]
+	{ return !IsToBeBlocked(); });
 
 	if (m_iRunStatus != rt_running) {
 		LOG_DEBUG("default", "Thread [{}] waked up.", m_sThreadName);
 	}
-
 	// 线程状态变为rt_running
 	m_iRunStatus = rt_running;
-	lk.unlock();
 	return 0;
 }
 

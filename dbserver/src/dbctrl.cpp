@@ -395,8 +395,7 @@ int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
 // ***************************************************************
 //  Function: 	DisPatchOneCode   
 //  Description:分派一个消息
-//  Date: 		10/09/2008
-// 
+//
 // ***************************************************************
 int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 {

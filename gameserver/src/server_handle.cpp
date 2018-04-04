@@ -210,7 +210,7 @@ void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
 	MY_ASSERT(pConnector != NULL, return);
 }
 
-void CServerHandle::lcb_OnPingServer(CConnector *pConnector)
+void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 {
 }
 
@@ -227,9 +227,9 @@ void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
 	// 将收到的二进制数据转为protobuf格式
 	CProxyMessage tmpMessage;
 	int iRet = CServerCommEngine::ConvertStreamToMsg(m_acRecvBuff,
-													iTmpLen - sizeof(unsigned short),
-													&tmpMessage,
-													CGameServer::GetSingletonPtr()->GetMessageFactory());
+													 iTmpLen - sizeof(unsigned short),
+													 &tmpMessage,
+													 CGameServer::GetSingletonPtr()->GetMessageFactory());
 	if (iRet < 0) {
 		LOG_ERROR("default", "[{} : {} : {}] convert stream to message failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
