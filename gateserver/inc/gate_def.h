@@ -1,5 +1,5 @@
 //
-//  commdef.cpp
+//  gatedef.h
 //  tcpserver 宏定义
 //  Created by DGuco on 16/12/1.
 //  Copyright © 2016年 DGuco. All rights reserved.
