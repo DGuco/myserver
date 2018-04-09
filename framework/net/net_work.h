@@ -46,7 +46,7 @@ public:
 				 FuncConnectorOnConnectFailed funcOnConnectFailed,
 				 FuncConnectorOnConnectted funcOnConnectted,
 				 FuncConnectorOnPingServer funcOnPingServer,
-				 unsigned int uPingTick = 4500);
+				 unsigned int uPingTick);
 	//关闭acceptor
 	bool ShutDownAcceptor(unsigned int uId);
 	//设置信号回调

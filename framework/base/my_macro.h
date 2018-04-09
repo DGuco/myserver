@@ -38,7 +38,6 @@
         if (pointer != NULL)        \
         {                           \
             delete pointer;         \
-            pointer = NULL;         \
         }                           \
     }while(0);
 

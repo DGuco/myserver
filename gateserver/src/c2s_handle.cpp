@@ -69,7 +69,7 @@ bool CC2sHandle::BeginListen()
 void CC2sHandle::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *pBufferEvent)
 {
 	//客户端主动断开连接
-	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
+	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
 		->PushTaskBack([uId, pBufferEvent]
 					   {
 						   MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CAcceptor), return);
@@ -84,13 +84,13 @@ void CC2sHandle::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *pBufferEvent)
 void CC2sHandle::lcb_OnCnsDisconnected(IBufferEvent *pAcceptor)
 {
 	//客户端主动断开连接
-	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
+	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
 		->PushTaskBack(CC2sHandle::ClearSocket, pAcceptor, Err_ClientClose);
 }
 
 void CC2sHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
-	CGateCtrl::GetSingletonPtr()->GetSingThreadPool()
+	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
 		->PushTaskBack([pBufferEvent]
 					   {
 						   MY_ASSERT(pBufferEvent != NULL, return);

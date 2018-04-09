@@ -133,7 +133,7 @@ int CS2cHandle::SendClientData()
 			LOG_ERROR("default", "Invalid socket index {}", nTmpIndex);
 			continue;
 		}
-		CGateCtrl::GetSingletonPtr()->GetSingThreadPool()->PushTaskBack(
+		CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()->PushTaskBack(
 			[&tmpSocketInfo, pbTmpSend, unTmpPackLen, this]
 			{
 				SendToClientAsync(tmpSocketInfo, (const char *) pbTmpSend, unTmpPackLen);

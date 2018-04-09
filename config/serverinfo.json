@@ -19,7 +19,7 @@
     "port": 9003,
     "serverid": 20004
   },
-  "keepalive": 10,
+  "keepalive": 10000,
   "servertick": 100,
   "checktimeOutGap": 5,
   "socketTimeout": 30,

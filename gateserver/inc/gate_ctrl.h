@@ -32,7 +32,7 @@ public:
 	//run
 	int Run();
 	//获取线程池
-	CThreadPool *GetSingThreadPool();
+	CThreadPool *GetSingleThreadPool();
 	CC2sHandle *GetCC2sHandle();
 	CS2cHandle *GetCS2cHandle();
 private:
@@ -43,7 +43,7 @@ private:
 private:
 	CC2sHandle *m_pC2sHandle;
 	CS2cHandle *m_pS2cHandle;
-	CThreadPool *m_pSingThead;
+	CThreadPool *m_pSingleThead;
 };
 
 #endif

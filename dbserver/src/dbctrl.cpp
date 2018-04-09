@@ -294,7 +294,7 @@ int CDBCtrl::ConnectToProxyServer()
 							 &CDBCtrl::lcb_OnConnectFailed,
 							 &CDBCtrl::lcb_OnConnected,
 							 &CDBCtrl::lcb_OnPingServer,
-							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive())
+							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive() / 1000)
 		) {
 		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,
@@ -413,13 +413,6 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 	}
 
 	CProxyHead tmpProxyHead = stTempMsg.msghead();
-//	pbmsg_setproxy(&m_stCurrentProxyHead,
-//				   tmpProxyHead.srcfe(),
-//				   tmpProxyHead.srcid(),
-//				   tmpProxyHead.dstfe(),
-//				   tmpProxyHead.dstid(),
-//				   GetMSTime(),
-//				   tmpProxyHead.opflag());
 
 	// 加入 proxy 命令处理处理心跳消息
 	if (enServerType::FE_PROXYSERVER == tmpProxyHead.srcfe()
@@ -505,14 +498,10 @@ void CDBCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CConnector), return);
 	CConnector *pConnector = (CConnector *) pBufferEvent;
-	if (CDBCtrl::GetSingletonPtr()->ConnectToProxyServer() < 0)  // 连接到proxy服务器
-	{
+	// 断开连接重新连接到proxy服务器
+	if (CDBCtrl::GetSingletonPtr()->ConnectToProxyServer() < 0) {
 		LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
 		return;
-	}
-	else {
-		pConnector->SetState(CConnector::eCS_Connected);
-		LOG_DEBUG("default", "Reconnect to proxyServer succeed..\n");
 	}
 	return;
 }
@@ -544,7 +533,7 @@ void CDBCtrl::lcb_OnConnectFailed(IBufferEvent *pBufferEvent)
 void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
-	int tNow = GetMSTime();
+	time_t tNow = GetMSTime();
 	CServerConfig *tmpConfig = CServerConfig::GetSingletonPtr();
 	CDBCtrl *tmpDBCtrl = CDBCtrl::GetSingletonPtr();
 	CDBCtrl::GetSingletonPtr()->SendkeepAliveToProxy(pConnector);
@@ -554,6 +543,15 @@ void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 		if (tNow - tmpDBCtrl->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
 			tmpDBCtrl->SendkeepAliveToProxy(pConnector);
 			LOG_DEBUG("default", "SendkeepAliveToProxy succeed..");
+		}
+	}
+	else {
+		//断开连接
+		pConnector->SetState(CConnector::eCS_Disconnected);
+		// 断开连接重新连接到proxy服务器
+		if (CDBCtrl::GetSingletonPtr()->ConnectToProxyServer() < 0) {
+			LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
+			return;
 		}
 	}
 }

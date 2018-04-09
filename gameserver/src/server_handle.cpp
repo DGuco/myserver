@@ -58,7 +58,7 @@ bool CServerHandle::Connect2Proxy()
 							 &CServerHandle::lcb_OnConnectFailed,
 							 &CServerHandle::lcb_OnConnectted,
 							 &CServerHandle::lcb_OnPingServer,
-							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive())
+							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive() / 1000)
 		) {
 		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,

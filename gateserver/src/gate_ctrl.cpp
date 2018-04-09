@@ -16,7 +16,7 @@ template<> CGateCtrl *CSingleton<CGateCtrl>::spSingleton = NULL;
 CGateCtrl::CGateCtrl()
 	: m_pC2sHandle(new CC2sHandle()),
 	  m_pS2cHandle(new CS2cHandle),
-	  m_pSingThead(new CThreadPool(1))
+	  m_pSingleThead(new CThreadPool(1))
 {
 }
 
@@ -24,7 +24,7 @@ CGateCtrl::~CGateCtrl()
 {
 	SAFE_DELETE(m_pC2sHandle);
 	SAFE_DELETE(m_pS2cHandle);
-	SAFE_DELETE(m_pSingThead);
+	SAFE_DELETE(m_pSingleThead);
 }
 
 int CGateCtrl::PrepareToRun()
@@ -59,9 +59,9 @@ int CGateCtrl::Run()
 	}
 }
 
-CThreadPool *CGateCtrl::GetSingThreadPool()
+CThreadPool *CGateCtrl::GetSingleThreadPool()
 {
-	return m_pSingThead;
+	return m_pSingleThead;
 }
 
 CC2sHandle *CGateCtrl::GetCC2sHandle()
