@@ -437,14 +437,14 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 	return iTempRet;
 }
 
-void CDBCtrl::SetLastSendKeepAlive(time_t m_tLastSendKeepAlive)
+void CDBCtrl::SetLastSendKeepAlive(time_t tLastSendKeepAlive)
 {
-	CDBCtrl::m_tLastSendKeepAlive = m_tLastSendKeepAlive;
+	CDBCtrl::m_tLastSendKeepAlive = tLastSendKeepAlive;
 }
 
-void CDBCtrl::SetLastRecvKeepAlive(time_t m_tLastRecvKeepAlive)
+void CDBCtrl::SetLastRecvKeepAlive(time_t tLastRecvKeepAlive)
 {
-	CDBCtrl::m_tLastRecvKeepAlive = m_tLastRecvKeepAlive;
+	CDBCtrl::m_tLastRecvKeepAlive = tLastRecvKeepAlive;
 }
 
 time_t CDBCtrl::GetLastSendKeepAlive() const

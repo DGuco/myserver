@@ -89,9 +89,9 @@ private:
 	//获取上次发送心跳的时间
 	time_t GetLastRecvKeepAlive() const;
 	//设置上次发送心跳的时间
-	void SetLastSendKeepAlive(time_t m_tLastSendKeepAlive);
+	void SetLastSendKeepAlive(time_t tLastSendKeepAlive);
 	//设置上次收到心跳的时间
-	void SetLastRecvKeepAlive(time_t m_tLastRecvKeepAlive);
+	void SetLastRecvKeepAlive(time_t tLastRecvKeepAlive);
 private:
 	//连接成功回调
 	static void lcb_OnConnected(IBufferEvent *pBufferEvent);

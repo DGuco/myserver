@@ -105,12 +105,13 @@ void CProxyCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL, return);
 	SOCKET tmpSocket = pBufferEvent->GetSocket().GetSocket();
-	CNetWork::GetSingletonPtr()->ShutDownAcceptor(tmpSocket);
 	auto it = m_mapSocket2Key.find(tmpSocket);
-	if (it != m_mapRegister.end()) {
+	if (it != m_mapSocket2Key.end()) {
 		m_mapRegister.erase(it->second);
+		m_mapSocket2Key.erase(tmpSocket);
 	}
 	LOG_WARN("default", "Connection disconnected,socket id {}", pBufferEvent->GetSocket().GetSocket());
+	CNetWork::GetSingletonPtr()->ShutDownAcceptor(tmpSocket);
 }
 
 void CProxyCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
@@ -264,7 +265,7 @@ int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCode
 		}
 		default: {
 			LOG_INFO("default",
-					 "unknown command id {}, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = %ld.",
+					 "unknown command id {}, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = {].",
 					 stTmpHead.opflag(),
 					 stTmpHead.srcfe(),
 					 stTmpHead.srcid(),

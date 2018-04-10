@@ -1,3 +1,10 @@
+//
+// mythread.cpp
+// 线程基类
+// Created by DGuco on 17-10-12.
+// Copyright © 2016年 DGuco. All rights reserved.
+//
+
 #include <string.h>
 #include "base.h"
 #include "mythread.h"

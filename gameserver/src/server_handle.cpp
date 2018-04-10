@@ -15,7 +15,9 @@ char CServerHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
 
 CServerHandle::CServerHandle()
 	: CMyThread("CServerHandle"),
-	  m_pNetWork(new CNetWork())
+	  m_pNetWork(new CNetWork()),
+	  m_tLastSendKeepAlive(0),
+	  m_tLastRecvKeepAlive(0)
 {
 
 }
@@ -67,6 +69,8 @@ bool CServerHandle::Connect2Proxy()
 	}
 	LOG_INFO("default", "Connect to Proxy({}:{})(id={}) succeed.",
 			 rTmpProxy->m_sHost.c_str(), rTmpProxy->m_iPort, rTmpProxy->m_iPort);
+	m_tLastRecvKeepAlive = GetMSTime();
+	m_tLastSendKeepAlive = GetMSTime();
 	return true;
 }
 
@@ -96,20 +100,7 @@ bool CServerHandle::Register2Proxy()
 		return false;
 	}
 
-	IBufferEvent *pConnector = m_pNetWork->FindConnector(m_iProxyId);
-	if (pConnector != NULL) {
-		iRet = pConnector->Send((BYTE *) acTmpMessageBuffer, unTmpTotalLen);
-		if (iRet != 0) {
-			LOG_ERROR("default", "SendOneCode to proxy failed, iRet = {}.", iRet);
-			return false;
-		}
-	}
-	else {
-		LOG_ERROR("default", "SendOneCode to proxy failed,cannot find connector..");
-		return false;
-	}
-
-	LOG_INFO("default", "Register to Proxy sucessed.");
+	SendMessageToProxyAsync(acTmpMessageBuffer, unTmpTotalLen);
 	return true;
 }
 
@@ -144,6 +135,25 @@ void CServerHandle::SendMessageToDB(char *data, unsigned short len)
 	SendMessageToProxyAsync(data, len);
 }
 
+time_t CServerHandle::GetLastSendKeepAlive() const
+{
+	return m_tLastSendKeepAlive;
+}
+time_t CServerHandle::GetLastRecvKeepAlive() const
+{
+	return m_tLastRecvKeepAlive;
+}
+
+void CServerHandle::SetLastSendKeepAlive(time_t tLastSendKeepAlive)
+{
+	m_tLastSendKeepAlive = tLastSendKeepAlive;
+}
+
+void CServerHandle::SetLastRecvKeepAlive(time_t tLastRecvKeepAlive)
+{
+	m_tLastRecvKeepAlive = tLastRecvKeepAlive;
+}
+
 void CServerHandle::SendMessageToProxyAsync(char *data, unsigned short len)
 {
 	CGameServer::GetSingletonPtr()->GetIoThread()->PushTaskBack(
@@ -164,15 +174,6 @@ void CServerHandle::SendMessageToProxyAsync(char *data, unsigned short len)
 		});
 }
 
-void CServerHandle::Register2ProxyAsync()
-{
-	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack([this]
-					   {
-						   Register2Proxy();
-					   });
-}
-
 void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
@@ -181,14 +182,20 @@ void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
 					   {
 						   MY_ASSERT(pConnector != NULL, return);
 						   CNetWork::GetSingletonPtr()->InsertNewConnector(pConnector->GetTargetId(), pConnector);
-						   SetProxyId(pConnector->GetTargetId());
-						   CGameServer::GetSingletonPtr()->GetServerHandle()->Register2ProxyAsync();
+						   SetProxyId(pConnector->GetSocket().GetSocket());
+						   CGameServer::GetSingletonPtr()->GetServerHandle()->Register2Proxy();
 					   });
 }
 
 void CServerHandle::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL, return);
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([] ->
+					   {
+						   CGameServer::GetSingletonPtr()->GetServerHandle()->Connect2Proxy();
+					   });
+	//重新连接
 }
 
 void CServerHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
@@ -212,6 +219,32 @@ void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
 
 void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 {
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([] ->
+					   {
+						   MY_ASSERT(pConnector != NULL, return);
+						   time_t tNow = GetMSTime();
+						   CServerConfig *tmpConfig = CServerConfig::GetSingletonPtr();
+						   CServerHandle *tmpServerHandle = CGameServer::GetSingletonPtr()->GetServerHandle();
+						   if (pConnector->GetState() == CConnector::eCS_Connected &&
+							   pConnector->GetSocket().GetSocket() > 0 &&
+							   tNow - tmpServerHandle->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
+							   if (tNow - tmpServerHandle->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
+								   tmpServerHandle->SendKeepAlive2Proxy();
+								   LOG_DEBUG("default", "SendkeepAliveToProxy succeed..");
+							   }
+						   }
+						   else {
+							   //断开连接
+							   pConnector->SetState(CConnector::eCS_Disconnected);
+							   // 断开连接重新连接到proxy服务器
+							   if (tmpServerHandle->Connect2Proxy() < 0) {
+								   LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
+								   return;
+							   }
+						   }
+					   });
+
 }
 
 void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
@@ -221,13 +254,14 @@ void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
 	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
-	int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
+	unsigned short iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
 	//读取数据
 	pBufferEvent->RecvData(m_acRecvBuff, iTmpLen);
+	pBufferEvent->CurrentPackRecved();
 	// 将收到的二进制数据转为protobuf格式
 	CProxyMessage tmpMessage;
 	int iRet = CServerCommEngine::ConvertStreamToMsg(m_acRecvBuff,
-													 iTmpLen - sizeof(unsigned short),
+													 iTmpLen,
 													 &tmpMessage,
 													 CGameServer::GetSingletonPtr()->GetMessageFactory());
 	if (iRet < 0) {
@@ -235,16 +269,16 @@ void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return;
 	}
+
 	ServerInfo *rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	CProxyHead tmpProxyHead = tmpMessage.msghead();
 	if (tmpProxyHead.has_srcfe() && tmpProxyHead.srcfe() == FE_PROXYSERVER) {
 		if (tmpProxyHead.has_srcid() && tmpProxyHead.srcid() == (unsigned short) rTmpProxy->m_iServerId
 			&& tmpProxyHead.has_opflag() && tmpProxyHead.opflag() == enMessageCmd::MESS_KEEPALIVE) {
 			// 设置proxy为已连接状态
-//			SetServerState(ESS_CONNECTPROXY);
-//			// 从proxy过来只有keepalive，所以其他的可以直接抛弃
-//			m_ProxyClient.ResetTimeout(GetMSTime());
+			CGameServer::GetSingletonPtr()->GetServerHandle()->SetLastRecvKeepAlive(GetMSTime());
 		}
+		return;
 	}
 	// 处理服务器间消息
 	CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskBack(

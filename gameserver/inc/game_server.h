@@ -19,9 +19,9 @@
 #include "message_dispatcher.h"
 #include "client_handle.h"
 #include "net_work.h"
+#include "server_handle.h"
 #include "../datamodule/inc/player.h"
 #include "../logicmodule/inc/module_manager.h"
-#include "server_handle.h"
 
 class CGameServer: public CSingleton<CGameServer>
 {
@@ -172,7 +172,7 @@ private:
 	CRunFlag m_RunFlag;                         // 服务器运行状态
 	CThreadPool *m_pLogicThread;                // 逻辑线程
 	CThreadPool *m_pIoThread;                   // io线程(收发消息)
-	CRunFlag mRunFlag;                                // 服务器运行状态
+	CRunFlag mRunFlag;                          // 服务器运行状态
 	int miServerState;    // 服务器状态
 };
 #endif //SERVER_GAMESERVER_H

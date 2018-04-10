@@ -10,30 +10,39 @@
 class CServerHandle: public CMyThread
 {
 public:
+	//构造函数
 	CServerHandle();
+	//系够函数
 	virtual ~CServerHandle();
 	// 连接到Proxy
 	bool Connect2Proxy();
-	void Register2ProxyAsync();
-	// 发送心跳到Proxy
-	bool SendKeepAlive2Proxy();
 	// 向dbserver发送数据
 	void SendMessageToDB(char *data, unsigned short len);
+	//获取收到心跳的时间
+	time_t GetLastSendKeepAlive() const;
+	//获取上次发送心跳的时间
+	time_t GetLastRecvKeepAlive() const;
+	//设置上次发送心跳的时间
+	void SetLastSendKeepAlive(time_t tLastSendKeepAlive);
+	//设置上次收到心跳的时间
+	void SetLastRecvKeepAlive(time_t tLastRecvKeepAlive);
 public:
-	// 运行准备
+	//运行准备
 	int PrepareToRun() override;
 	int RunFunc() override;
 	bool IsToBeBlocked() override;
 private:
 	void SendMessageToProxyAsync(char *data, unsigned short len);
-	// 向Proxy注册
+	//向Proxy注册
 	bool Register2Proxy();
+	//想proxy 发送心跳
+	bool SendKeepAlive2Proxy();
 private:
-	//客户端上行数据回调
+	//客户端上行数据回调（无用）
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
 	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
-	//断开连接回调
 	static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
+	//连接失败（无用）
 	static void lcb_OnConnectFailed(CConnector *pConnector);
 	static void lcb_OnConnectted(CConnector *pConnector);
 	static void lcb_OnPingServer(int fd, short what, CConnector *pConnector);
@@ -42,6 +51,8 @@ private:
 	static int GetProxyId();
 private:
 	CNetWork *m_pNetWork;                // 服务器间通信的连接
+	time_t m_tLastSendKeepAlive;        // 最后发送proxy心跳消息时间
+	time_t m_tLastRecvKeepAlive;        // 最后接收proxy心跳消息时间
 private:
 	static int m_iProxyId;
 	static char m_acRecvBuff[MAX_PACKAGE_LEN];

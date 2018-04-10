@@ -1,7 +1,10 @@
 //
-// Created by DGuco on 17-10-12.
+// mythread.h
 // 基于c++14简单的线程池
+// Created by DGuco on 17-10-12.
+// Copyright © 2016年 DGuco. All rights reserved.
 //
+
 
 #ifndef SERVER_THREADPOOL_H
 #define SERVER_THREADPOOL_H

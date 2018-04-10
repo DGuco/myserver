@@ -1,7 +1,10 @@
 //
-// Created by DGuco on 17-10-12.
+// mythread.h
 // 线程基类
+// Created by DGuco on 17-10-12.
+// Copyright © 2016年 DGuco. All rights reserved.
 //
+
 #ifndef _MY_THREAD_HPP_
 #define _MY_THREAD_HPP_
 
