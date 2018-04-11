@@ -38,7 +38,6 @@ CNetWork::~CNetWork(void)
 		SAFE_DELETE(pSystemSignal);
 		m_qTimerOrSignals.pop();
 	}
-	OnTick();
 	SAFE_DELETE(m_pEventReactor);
 }
 
@@ -130,7 +129,7 @@ bool CNetWork::Connect(const char *szNetAddr,
 		return false;
 	}
 	int fd = pConnector->GetSocket().GetSocket();
-	m_mapConnector.insert(std::make_pair(fd, pConnector));
+	InsertNewConnector(fd, pConnector);
 	return bRet;
 }
 
@@ -169,25 +168,12 @@ bool CNetWork::ShutDownConnectorEx(unsigned int uId)
 {
 	auto iter = m_mapConnector.find(uId);
 	if (m_mapConnector.end() != iter) {
-		IBufferEvent *pConnector = iter->second;
-		SAFE_DELETE(pConnector);
-		m_quIdleConnectorExs.push(pConnector);
+		SAFE_DELETE(iter->second);
 		m_mapConnector.erase(iter);
 		return true;
 	}
 	else {
 		return false;
-	}
-}
-
-void CNetWork::OnTick()
-{
-	if (!m_quIdleConnectorExs.empty()) {
-		while (!m_quIdleConnectorExs.empty()) {
-			IBufferEvent *pConnector = m_quIdleConnectorExs.front();
-			SAFE_DELETE(pConnector)
-			m_quIdleConnectorExs.pop();
-		}
 	}
 }
 

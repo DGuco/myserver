@@ -181,21 +181,23 @@ void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
 		->PushTaskBack([pConnector]
 					   {
 						   MY_ASSERT(pConnector != NULL, return);
-						   CNetWork::GetSingletonPtr()->InsertNewConnector(pConnector->GetTargetId(), pConnector);
-						   SetProxyId(pConnector->GetSocket().GetSocket());
+						   SetProxyId(pConnector->GetTargetId());
 						   CGameServer::GetSingletonPtr()->GetServerHandle()->Register2Proxy();
 					   });
 }
 
 void CServerHandle::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
-	MY_ASSERT(pBufferEvent != NULL, return);
 	CGameServer::GetSingletonPtr()->GetIoThread()
 		->PushTaskBack([] ->
 					   {
-						   CGameServer::GetSingletonPtr()->GetServerHandle()->Connect2Proxy();
+						   MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CConnector), return);
+						   // 断开连接重新连接到proxy服务器
+						   if (((CConnector *) pBufferEvent)->ReConnect() < 0) {
+							   LOG_ERROR("default", "Reconnect to proxyServer failed!");
+							   return;
+						   }
 					   });
-	//重新连接
 }
 
 void CServerHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
@@ -238,7 +240,7 @@ void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 							   //断开连接
 							   pConnector->SetState(CConnector::eCS_Disconnected);
 							   // 断开连接重新连接到proxy服务器
-							   if (tmpServerHandle->Connect2Proxy() < 0) {
+							   if (pConnector->ReConnect() < 0) {
 								   LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
 								   return;
 							   }

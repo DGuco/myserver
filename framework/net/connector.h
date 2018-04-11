@@ -37,6 +37,8 @@ public:
 	void GetRemoteIpAddress(char *szBuf, uint32 uBufSize);
 	//连接
 	bool Connect(const CNetAddr &addr);
+	//重新连接
+	bool ReConnect();
 	//设置相关回调
 	void SetCallbackFunc(FuncConnectorOnConnectFailed pOnConnectFailed,
 						 FuncConnectorOnConnectted pOnConnected,

@@ -44,6 +44,18 @@ bool CConnector::Connect(const CNetAddr &addr)
 	return true;
 }
 
+bool CConnector::ReConnect()
+{
+	sockaddr_in saiAddress;
+	CSocket::Address2SockAddrIn(saiAddress, m_oAddr);
+	int iRet = bufferevent_socket_connect(m_pStBufEv, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
+	if (iRet != 0) {
+		return false;
+	}
+	SetState(eCS_Connecting);
+	return true;
+}
+
 void CConnector::SetCallbackFunc(FuncConnectorOnConnectFailed pOnConnectFailed,
 								 FuncConnectorOnConnectted pOnConnected,
 								 FuncConnectorOnPingServer pOnPingServer)

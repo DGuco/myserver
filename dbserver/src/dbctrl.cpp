@@ -132,7 +132,7 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 		return -1;
 	}
 
-	CMsgExecuteSqlRequest *pReqMsg = (CMsgExecuteSqlRequest *) (pMsg->msgpara());
+	CMsgExecuteSqlRequest *pReqMsg = (CMsgExecuteSqlRequest * )(pMsg->msgpara());
 
 	if (pReqMsg == NULL) {
 		LOG_ERROR("default", "Error: [{}][{}][{}], msgpara null.\n", __MY_FILE__, __LINE__, __FUNCTION__);
@@ -497,10 +497,9 @@ void CDBCtrl::lcb_OnConnected(IBufferEvent *pBufferEvent)
 void CDBCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CConnector), return);
-	CConnector *pConnector = (CConnector *) pBufferEvent;
 	// 断开连接重新连接到proxy服务器
-	if (CDBCtrl::GetSingletonPtr()->ConnectToProxyServer() < 0) {
-		LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
+	if (((CConnector *) pBufferEvent)->ReConnect() < 0) {
+		LOG_ERROR("default", "Reconnect to proxyServer failed!");
 		return;
 	}
 	return;
@@ -549,7 +548,7 @@ void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 		//断开连接
 		pConnector->SetState(CConnector::eCS_Disconnected);
 		// 断开连接重新连接到proxy服务器
-		if (CDBCtrl::GetSingletonPtr()->ConnectToProxyServer() < 0) {
+		if (pConnector->ReConnect() < 0) {
 			LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
 			return;
 		}

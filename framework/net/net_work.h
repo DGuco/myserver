@@ -70,7 +70,6 @@ public:
 	//获取event
 	IEventReactor *GetEventReactor();
 private:
-	void OnTick();
 	//新的连接 accept回调
 	static void lcb_OnAccept(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
 	//创建acceptor
@@ -87,8 +86,6 @@ private:
 	Map_Connector m_mapConnector;
 	Map_Acceptor m_mapAcceptor;
 	Queue_TimerOrSignals m_qTimerOrSignals;
-	typedef std::queue<IBufferEvent *> Queue_IdleConnectorExs;
-	Queue_IdleConnectorExs m_quIdleConnectorExs;
 	CListener *m_pListener;
 	FuncAcceptorOnNew m_pOnNew;
 
