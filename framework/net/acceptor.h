@@ -42,7 +42,10 @@ public:
 	bool IsConnected();
 	//获取创建时间
 	time_t GetCreateTime();
-
+	//获取上次活跃时间
+	time_t GetLastKeepAlive();
+	//更新上次活跃时间
+	void SetLastKeepAlive(time_t tmpLastKeepAlive);
 private:
 	//bufferEvent 无效处理
 	void BuffEventUnavailableCall() override;
@@ -59,6 +62,7 @@ private:
 	CNetAddr *m_pNetAddr;
 	eAcceptorState m_eState;
 	time_t m_tCreateTime;
+	time_t m_tLastKeepAlive;
 };
 
 #endif

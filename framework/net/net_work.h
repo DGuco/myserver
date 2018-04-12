@@ -25,6 +25,7 @@ public:
 	CNetWork();
 	//析构函数
 	virtual ~CNetWork();
+
 	//开始监听
 	bool BeginListen(const char *szNetAddr,
 					 unsigned int uPort,
@@ -32,8 +33,9 @@ public:
 					 FuncBufferEventOnDataSend funcAcceptorOnDataSend,
 					 FuncBufferEventOnDataSend funcAcceptorOnDataRecv,
 					 FuncBufferEventOnDataSend funcAcceptorDisconnected,
-					 int listenQueue = -1,
-					 unsigned int uCheckPingTickTime = 0);
+					 FuncAcceptorOnTimeOut funcAcceptorTimeOut,
+					 int listenQueue,
+					 unsigned int uCheckPingTickTime);
 	//结束监听
 	void EndListen();
 	//连接
@@ -72,26 +74,33 @@ public:
 private:
 	//新的连接 accept回调
 	static void lcb_OnAccept(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
+	//检测连接超时
+	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
+private:
 	//创建acceptor
 	void NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
+	//检测超时连接
+	void CheckAcceptorTimeOut();
 private:
 	IEventReactor *m_pEventReactor;
 	unsigned int m_uGcTime;
-	unsigned int m_uCheckPingTickTime;
 
-	typedef unordered_map<unsigned int, CConnector *> Map_Connector;
-	typedef unordered_map<unsigned int, CAcceptor *> Map_Acceptor;
+	typedef unordered_map<unsigned int, CConnector *> MAP_CONNECTOR;
+	typedef unordered_map<unsigned int, CAcceptor *> MAP_ACCEPTOR;
 	typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
 
-	Map_Connector m_mapConnector;
-	Map_Acceptor m_mapAcceptor;
+	MAP_CONNECTOR m_mapConnector;
+	MAP_ACCEPTOR m_mapAcceptor;
 	Queue_TimerOrSignals m_qTimerOrSignals;
 	CListener *m_pListener;
-	FuncAcceptorOnNew m_pOnNew;
+	CTimerEvent *m_pCheckTimerOut;
+	int m_iPingCheckTime;  //单位毫秒
 
+	FuncAcceptorOnNew m_pOnNew;
 	FuncBufferEventOnDataSend m_pFuncAcceptorOnDataSend;
 	FuncBufferEventOnDataRecv m_pFuncAcceptorOnDataRecv;
 	FuncBufferEventOnDisconnected m_pFuncAcceptorDisconnected;
+	FuncAcceptorOnTimeOut m_pFuncAcceptorTimeOut;
 };
 
 #endif

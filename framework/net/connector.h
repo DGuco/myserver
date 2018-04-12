@@ -74,7 +74,7 @@ private:
 	eConnectorState m_eState;
 	event m_oConnectEvent;
 	int m_iTargetId;
-	int m_iPingTick;
+	int m_iPingTick; //单位秒
 	CTimerEvent *m_pKeepLiveEvent;
 	FuncConnectorOnConnectFailed m_pFuncOnConnectFailed;
 	FuncConnectorOnConnectted m_pFuncOnConnectted;

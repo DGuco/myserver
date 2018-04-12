@@ -189,7 +189,7 @@ void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
 void CServerHandle::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
 	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack([] ->
+		->PushTaskBack([pBufferEvent]
 					   {
 						   MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CConnector), return);
 						   // 断开连接重新连接到proxy服务器
@@ -222,7 +222,7 @@ void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
 void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 {
 	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack([] ->
+		->PushTaskBack([pConnector]
 					   {
 						   MY_ASSERT(pConnector != NULL, return);
 						   time_t tNow = GetMSTime();

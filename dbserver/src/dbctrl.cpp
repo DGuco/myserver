@@ -459,7 +459,13 @@ time_t CDBCtrl::GetLastRecvKeepAlive() const
 
 int CDBCtrl::PrepareToRun()
 {
-	INIT_ROATING_LOG("default", "../log/dbserver.log", level_enum::debug, 10 * 1024 * 1024, 20);
+#ifdef _DEBUG_
+	// 初始化日志
+	INIT_ROATING_LOG("default", "../log/dbserver.log", level_enum::trace);
+#else
+	// 初始化日志
+	INIT_ROATING_LOG("default", "../log/dbserver.log", level_enum::info);
+#endif
 
 	CServerConfig *pTmpConfig = new CServerConfig;
 	const string filepath = "../config/serverinfo.json";

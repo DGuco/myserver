@@ -56,7 +56,7 @@ public:
 */
 typedef std::function<void(int, short, void *)> FuncOnTimeOut;
 
-/** CallBack for TimerOut
+/** CallBack for Signal
 */
 typedef std::function<void(uint32, void *)> FuncOnSignal;
 
@@ -83,5 +83,8 @@ typedef std::function<void(int, short, CConnector *)> FuncConnectorOnPingServer;
 /** CallBack for CAcceptor
  */
 typedef std::function<void(uint32, CAcceptor *)> FuncAcceptorOnNew;
+
+typedef std::function<void(CAcceptor *)> FuncAcceptorOnTimeOut;
+
 
 #endif

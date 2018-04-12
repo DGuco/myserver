@@ -32,7 +32,6 @@ public:
 	static void DisConnect(IBufferEvent *pAcceptor, short iError);
 	//发送数据给gameserver
 	static void SendToGame(IBufferEvent *pAcceptor, unsigned short len);
-
 private:
 	//开始监听
 	bool BeginListen();
@@ -46,6 +45,8 @@ protected:
 	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
 	//发送胡据回调
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
+	//连接超时
+	static void lcb_OnAcceptorTimeOut(CAcceptor *pAcceptor);
 public:
 	CNetWork *m_pNetWork;
 	static CCodeQueue *m_pC2SPipe;

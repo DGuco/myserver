@@ -1,6 +1,7 @@
 #include "log.h"
 #include <my_assert.h>
 #include <event2/bufferevent.h>
+#include <my_macro.h>
 #include "acceptor.h"
 
 CAcceptor::CAcceptor(SOCKET socket,
@@ -16,7 +17,8 @@ CAcceptor::CAcceptor(SOCKET socket,
 				   funcDisconnected),
 	  m_pNetAddr(netAddr),
 	  m_eState(eAS_Disconnected),
-	  m_tCreateTime(GetMSTime())
+	  m_tCreateTime(GetMSTime()),
+	  m_tLastKeepAlive(0)
 {
 }
 
@@ -43,6 +45,16 @@ time_t CAcceptor::GetCreateTime()
 	return m_tCreateTime;
 }
 
+time_t CAcceptor::GetLastKeepAlive()
+{
+	return m_tLastKeepAlive;
+}
+
+void CAcceptor::SetLastKeepAlive(time_t tmpLastKeepAlive)
+{
+	m_tLastKeepAlive = tmpLastKeepAlive;
+}
+
 void CAcceptor::OnEvent(int16 nWhat)
 {
 	if (nWhat & EVBUFFER_EOF) {
@@ -62,6 +74,7 @@ void CAcceptor::ShutDown()
 	GetReactor()->UnRegister(this);
 	m_oSocket.Close();
 	SetState(eAS_Disconnected);
+	SAFE_DELETE(m_pNetAddr);
 }
 
 CAcceptor::eAcceptorState CAcceptor::GetState()

@@ -71,6 +71,8 @@ protected:
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
 	//客户端上行数据回调
 	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
+	//连接超时
+	static void lcb_OnAcceptorTimeOut(CAcceptor *pAcceptor);
 private:
 	CNetWork *m_pNetWork;
 	TStatLog m_stStatLog;

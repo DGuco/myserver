@@ -58,6 +58,7 @@ int CProxyCtrl::PrepareToRun()
 							&CProxyCtrl::lcb_OnCnsSomeDataSend,
 							&CProxyCtrl::lcb_OnCnsSomeDataRecv,
 							&CProxyCtrl::lcb_OnCnsDisconnected,
+							&CProxyCtrl::lcb_OnAcceptorTimeOut,
 							-1,
 							CServerConfig::GetSingletonPtr()->GetTcpKeepAlive());
 	return 0;
@@ -114,11 +115,6 @@ void CProxyCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 	CNetWork::GetSingletonPtr()->ShutDownAcceptor(tmpSocket);
 }
 
-void CProxyCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
-{
-
-}
-
 void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL, return);
@@ -139,6 +135,22 @@ void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 	else {    //未注册
 		CProxyCtrl::GetSingletonPtr()->DealRegisterMes(pBufferEvent, unDataLen);
 	}
+}
+
+void CProxyCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
+{
+
+}
+
+void CProxyCtrl::lcb_OnAcceptorTimeOut(CAcceptor *pAcceptor)
+{
+	SOCKET tmpSocket = pAcceptor->GetSocket().GetSocket();
+	auto it = m_mapSocket2Key.find(tmpSocket);
+	if (it != m_mapSocket2Key.end()) {
+		m_mapRegister.erase(it->second);
+		m_mapSocket2Key.erase(tmpSocket);
+	}
+	LOG_INFO("default", "Connection time out,socket id {} close", pAcceptor->GetSocket().GetSocket());
 }
 
 int CProxyCtrl::DealRegisterMes(IBufferEvent *pBufferEvent, unsigned short iTmpLen)
@@ -312,9 +324,10 @@ int CProxyCtrl::SendOneCodeTo(short nCodeLength, BYTE *pbyCode, int iKey, bool b
 	}
 
 	iTempRet = pWriteConn->Send(pbyCode, nCodeLength);
-	if (iTempRet == 0 && bKeepalive == true) {
+	if (iTempRet == 0 && bKeepalive) {
+		CAcceptor *tmpAcceptor = (CAcceptor *) pWriteConn;
 		// 设置keepalive时间
-//		pWriteConn->SetLastKeepalive(time(NULL));
+		tmpAcceptor->SetLastKeepAlive(GetMSTime());
 	}
 	return iTempRet;
 }

@@ -13,12 +13,14 @@ CNetWork::CNetWork()
 	:
 	m_pEventReactor(new CEventReactor()),
 	m_uGcTime(0),
-	m_uCheckPingTickTime(0),
 	m_pListener(NULL),
+	m_pCheckTimerOut(NULL),
+	m_iPingCheckTime(0),
 	m_pOnNew(NULL),
 	m_pFuncAcceptorOnDataSend(NULL),
 	m_pFuncAcceptorOnDataRecv(NULL),
-	m_pFuncAcceptorDisconnected(NULL)
+	m_pFuncAcceptorDisconnected(NULL),
+	m_pFuncAcceptorTimeOut(NULL)
 {
 }
 
@@ -41,6 +43,38 @@ CNetWork::~CNetWork(void)
 	SAFE_DELETE(m_pEventReactor);
 }
 
+bool CNetWork::BeginListen(const char *szNetAddr,
+						   unsigned int uPort,
+						   FuncAcceptorOnNew pOnNew,
+						   FuncBufferEventOnDataSend funcAcceptorOnDataSend,
+						   FuncBufferEventOnDataSend funcAcceptorOnDataRecv,
+						   FuncBufferEventOnDataSend funcAcceptorDisconnected,
+						   FuncAcceptorOnTimeOut funcAcceptorTimeOut,
+						   int listenQueue,
+						   unsigned int uCheckPingTickTime)
+{
+	m_pListener = new CListener(m_pEventReactor, listenQueue);
+	if (m_pListener == NULL) {
+		return false;
+	}
+	CNetAddr addr(szNetAddr, uPort);
+
+	bool bRes = m_pListener->Listen(addr, &CNetWork::lcb_OnAccept);
+	m_pOnNew = pOnNew;
+	m_pCheckTimerOut = new CTimerEvent(GetEventReactor(),
+									   &CNetWork::lcb_OnCheckAcceptorTimeOut,
+									   this,
+									   uCheckPingTickTime / 1000,  //毫秒转换为秒
+									   0,
+									   -1);
+	m_iPingCheckTime = uCheckPingTickTime;
+	m_pFuncAcceptorOnDataSend = funcAcceptorOnDataSend;
+	m_pFuncAcceptorOnDataRecv = funcAcceptorOnDataRecv;
+	m_pFuncAcceptorDisconnected = funcAcceptorDisconnected;
+	m_pFuncAcceptorTimeOut = funcAcceptorTimeOut;
+	return bRes;
+}
+
 void CNetWork::SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop)
 {
 	CSystemSignal *pSystemSignal = new CSystemSignal(m_pEventReactor);
@@ -52,6 +86,14 @@ void CNetWork::SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void 
 void CNetWork::lcb_OnAccept(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 {
 	CNetWork::GetSingletonPtr()->NewAcceptor(pReactor, socket, sa);
+}
+
+void CNetWork::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
+{
+	CNetWork *tmpNetWork = (CNetWork *) param;
+	if (tmpNetWork != NULL) {
+		tmpNetWork->CheckAcceptorTimeOut();
+	}
 }
 
 void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
@@ -73,28 +115,21 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 	m_pOnNew(socket, pAcceptor);
 }
 
-bool CNetWork::BeginListen(const char *szNetAddr,
-						   unsigned int uPort,
-						   FuncAcceptorOnNew pOnNew,
-						   FuncBufferEventOnDataSend funcAcceptorOnDataSend,
-						   FuncBufferEventOnDataSend funcAcceptorOnDataRecv,
-						   FuncBufferEventOnDataSend funcAcceptorDisconnected,
-						   int listenQueue,
-						   unsigned int uCheckPingTickTime)
+void CNetWork::CheckAcceptorTimeOut()
 {
-	m_pListener = new CListener(m_pEventReactor, listenQueue);
-	if (m_pListener == NULL) {
-		return false;
+	auto it = m_mapAcceptor.begin();
+	time_t tNow = GetMSTime();
+	for (; it != m_mapAcceptor.end();) {
+		CAcceptor *tmpAcceptor = it->second;
+		if (tNow - tmpAcceptor->GetLastKeepAlive() > m_iPingCheckTime) {
+			m_pFuncAcceptorTimeOut(it->second);
+			SAFE_DELETE(tmpAcceptor);
+			it = m_mapAcceptor.erase(it);
+		}
+		else {
+			it++;
+		}
 	}
-	CNetAddr addr(szNetAddr, uPort);
-
-	bool bRes = m_pListener->Listen(addr, &CNetWork::lcb_OnAccept);
-	m_uCheckPingTickTime = uCheckPingTickTime;
-	m_pOnNew = pOnNew;
-	m_pFuncAcceptorOnDataSend = funcAcceptorOnDataSend;
-	m_pFuncAcceptorOnDataRecv = funcAcceptorOnDataRecv;
-	m_pFuncAcceptorDisconnected = funcAcceptorDisconnected;
-	return bRes;
 }
 
 void CNetWork::EndListen()

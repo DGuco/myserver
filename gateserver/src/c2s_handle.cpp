@@ -49,14 +49,17 @@ bool CC2sHandle::IsToBeBlocked()
 
 bool CC2sHandle::BeginListen()
 {
-	ServerInfo *gateInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GATESERVER);
+	CServerConfig* tmpConfig = CServerConfig::GetSingletonPtr();
+	ServerInfo *gateInfo = tmpConfig->GetServerInfo(enServerType::FE_GATESERVER);
 	bool iRet = m_pNetWork->BeginListen(gateInfo->m_sHost.c_str(),
 										gateInfo->m_iPort,
-										&lcb_OnAcceptCns,
-										&lcb_OnCnsSomeDataSend,
-										&lcb_OnCnsSomeDataRecv,
-										&lcb_OnCnsDisconnected,
-										RECV_QUEUQ_MAX);
+										&CC2sHandle::lcb_OnAcceptCns,
+										&CC2sHandle::lcb_OnCnsSomeDataSend,
+										&CC2sHandle::lcb_OnCnsSomeDataRecv,
+										&CC2sHandle::lcb_OnCnsDisconnected,
+										&CC2sHandle::lcb_OnAcceptorTimeOut,
+										RECV_QUEUQ_MAX,
+										tmpConfig->GetTcpKeepAlive());
 	if (iRet) {
 		LOG_INFO("default", "Server listen success at {} : {}", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
 		return true;
@@ -111,6 +114,13 @@ void CC2sHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 void CC2sHandle::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
 {
 
+}
+
+void CC2sHandle::lcb_OnAcceptorTimeOut(CAcceptor *pAcceptor)
+{
+	//客户端主动断开连接
+	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
+		->PushTaskBack(CC2sHandle::ClearSocket, pAcceptor, Err_ClientTimeout);
 }
 
 void CC2sHandle::ClearSocket(IBufferEvent *pAcceptor, short iError)
