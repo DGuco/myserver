@@ -161,7 +161,7 @@ int CClientCommEngine::ConvertToGameStream(const void *pBuff,
 										   MesHead *pHead,
 										   Message *pMsg)
 {
-	if ((pBuff == NULL) || (pMsg == NULL) || pHead == NULL) {
+	if (pBuff == NULL || pHead == NULL) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertMsgToStream Input param failed.");
 	}
 

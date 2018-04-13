@@ -19,8 +19,7 @@ CNetWork::CNetWork()
 	m_pOnNew(NULL),
 	m_pFuncAcceptorOnDataSend(NULL),
 	m_pFuncAcceptorOnDataRecv(NULL),
-	m_pFuncAcceptorDisconnected(NULL),
-	m_pFuncAcceptorTimeOut(NULL)
+	m_pFuncAcceptorDisconnected(NULL)
 {
 }
 
@@ -49,7 +48,7 @@ bool CNetWork::BeginListen(const char *szNetAddr,
 						   FuncBufferEventOnDataSend funcAcceptorOnDataSend,
 						   FuncBufferEventOnDataSend funcAcceptorOnDataRecv,
 						   FuncBufferEventOnDataSend funcAcceptorDisconnected,
-						   FuncAcceptorOnTimeOut funcAcceptorTimeOut,
+						   FuncOnTimeOut funcAcceptorTimeOut,
 						   int listenQueue,
 						   unsigned int uCheckPingTickTime)
 {
@@ -62,7 +61,7 @@ bool CNetWork::BeginListen(const char *szNetAddr,
 	bool bRes = m_pListener->Listen(addr, &CNetWork::lcb_OnAccept);
 	m_pOnNew = pOnNew;
 	m_pCheckTimerOut = new CTimerEvent(GetEventReactor(),
-									   &CNetWork::lcb_OnCheckAcceptorTimeOut,
+									   funcAcceptorTimeOut,
 									   this,
 									   uCheckPingTickTime / 1000,  //毫秒转换为秒
 									   0,
@@ -71,7 +70,6 @@ bool CNetWork::BeginListen(const char *szNetAddr,
 	m_pFuncAcceptorOnDataSend = funcAcceptorOnDataSend;
 	m_pFuncAcceptorOnDataRecv = funcAcceptorOnDataRecv;
 	m_pFuncAcceptorDisconnected = funcAcceptorDisconnected;
-	m_pFuncAcceptorTimeOut = funcAcceptorTimeOut;
 	return bRes;
 }
 
@@ -86,14 +84,6 @@ void CNetWork::SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void 
 void CNetWork::lcb_OnAccept(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 {
 	CNetWork::GetSingletonPtr()->NewAcceptor(pReactor, socket, sa);
-}
-
-void CNetWork::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
-{
-	CNetWork *tmpNetWork = (CNetWork *) param;
-	if (tmpNetWork != NULL) {
-		tmpNetWork->CheckAcceptorTimeOut();
-	}
 }
 
 void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
@@ -113,23 +103,6 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 	bool bRet = GetEventReactor()->Register(pAcceptor);
 	MY_ASSERT_STR(bRet, return, "Acceptor register failed");
 	m_pOnNew(socket, pAcceptor);
-}
-
-void CNetWork::CheckAcceptorTimeOut()
-{
-	auto it = m_mapAcceptor.begin();
-	time_t tNow = GetMSTime();
-	for (; it != m_mapAcceptor.end();) {
-		CAcceptor *tmpAcceptor = it->second;
-		if (tNow - tmpAcceptor->GetLastKeepAlive() > m_iPingCheckTime) {
-			m_pFuncAcceptorTimeOut(it->second);
-			SAFE_DELETE(tmpAcceptor);
-			it = m_mapAcceptor.erase(it);
-		}
-		else {
-			it++;
-		}
-	}
 }
 
 void CNetWork::EndListen()
@@ -163,8 +136,7 @@ bool CNetWork::Connect(const char *szNetAddr,
 	if (!bRet) {
 		return false;
 	}
-	int fd = pConnector->GetSocket().GetSocket();
-	InsertNewConnector(fd, pConnector);
+	InsertNewConnector(iTargetId, pConnector);
 	return bRet;
 }
 
@@ -234,21 +206,26 @@ CAcceptor *CNetWork::FindAcceptor(unsigned int uId)
 	}
 }
 
-void CNetWork::InsertNewAcceptor(unsigned int socket, CAcceptor *pAcceptor)
+void CNetWork::InsertNewAcceptor(unsigned int uid, CAcceptor *pAcceptor)
 {
 	MY_ASSERT(pAcceptor != NULL, return;)
-	m_mapAcceptor.insert(std::make_pair(socket, pAcceptor));
+	m_mapAcceptor.insert(std::make_pair(uid, pAcceptor));
 }
 
-void CNetWork::InsertNewConnector(unsigned int socket, CConnector *pConnector)
+void CNetWork::InsertNewConnector(unsigned int uid, CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return;)
-	m_mapConnector.insert(std::make_pair(socket, pConnector));
+	m_mapConnector.insert(std::make_pair(uid, pConnector));
 }
 
 IEventReactor *CNetWork::GetEventReactor()
 {
 	return m_pEventReactor;
+}
+
+CNetWork::MAP_ACCEPTOR &CNetWork::GetAcceptorMap()
+{
+	return m_mapAcceptor;
 }
 
 int CNetWork::ConnectorSendData(unsigned int uId, const void *pData, unsigned int uSize)

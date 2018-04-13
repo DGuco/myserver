@@ -26,14 +26,6 @@
 class CGameServer: public CSingleton<CGameServer>
 {
 public:
-	enum
-	{
-		MAX_CHECK_CLIENT_MSG = 2000,        // 每次循环收取客户端消息最大数
-		MAX_CHECK_SERVER_MSG = 2000,        // 每次循环收取服务器消息最大数
-//		KEEPALIVE_TIME			= 30000,	// 每隔30秒发送一次keepalive消息(单位 : 毫秒)
-//		KEEPALIVE_TIMEOUT		= 30000,	// 30秒没收到回复即为超时(单位 : 毫秒)
-	};
-
 	enum EServerState
 	{
 		ESS_CONNECTPROXY = 0x0001,    // 链接proxy

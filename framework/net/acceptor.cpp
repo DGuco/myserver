@@ -18,7 +18,7 @@ CAcceptor::CAcceptor(SOCKET socket,
 	  m_pNetAddr(netAddr),
 	  m_eState(eAS_Disconnected),
 	  m_tCreateTime(GetMSTime()),
-	  m_tLastKeepAlive(0)
+	  m_tLastKeepAlive(GetMSTime())
 {
 }
 

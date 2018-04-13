@@ -49,7 +49,7 @@ bool CC2sHandle::IsToBeBlocked()
 
 bool CC2sHandle::BeginListen()
 {
-	CServerConfig* tmpConfig = CServerConfig::GetSingletonPtr();
+	CServerConfig *tmpConfig = CServerConfig::GetSingletonPtr();
 	ServerInfo *gateInfo = tmpConfig->GetServerInfo(enServerType::FE_GATESERVER);
 	bool iRet = m_pNetWork->BeginListen(gateInfo->m_sHost.c_str(),
 										gateInfo->m_iPort,
@@ -57,7 +57,7 @@ bool CC2sHandle::BeginListen()
 										&CC2sHandle::lcb_OnCnsSomeDataSend,
 										&CC2sHandle::lcb_OnCnsSomeDataRecv,
 										&CC2sHandle::lcb_OnCnsDisconnected,
-										&CC2sHandle::lcb_OnAcceptorTimeOut,
+										&CC2sHandle::lcb_OnCheckAcceptorTimeOut,
 										RECV_QUEUQ_MAX,
 										tmpConfig->GetTcpKeepAlive());
 	if (iRet) {
@@ -77,7 +77,7 @@ void CC2sHandle::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *pBufferEvent)
 					   {
 						   MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CAcceptor), return);
 						   LOG_DEBUG("default",
-									 "Acceptor disconnected,socket id {}",
+									 "New acceptor,socket id {}",
 									 pBufferEvent->GetSocket().GetSocket());
 						   CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, (CAcceptor *) pBufferEvent);
 					   }
@@ -116,11 +116,32 @@ void CC2sHandle::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
 
 }
 
-void CC2sHandle::lcb_OnAcceptorTimeOut(CAcceptor *pAcceptor)
+void CC2sHandle::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
 {
-	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
-		->PushTaskBack(CC2sHandle::ClearSocket, pAcceptor, Err_ClientTimeout);
+		->PushTaskBack([param]
+					   {
+						   CNetWork *tmpNetWork = (CNetWork *) param;
+						   if (tmpNetWork != NULL) {
+							   CServerConfig *tmpConfig = CServerConfig::GetSingletonPtr();
+							   int tmpPingTime = tmpConfig->GetTcpKeepAlive();
+							   CNetWork::MAP_ACCEPTOR &tmpMap = tmpNetWork->GetAcceptorMap();
+							   auto it = tmpMap.begin();
+							   time_t tNow = GetMSTime();
+							   for (; it != tmpMap.end();) {
+								   CAcceptor *tmpAcceptor = it->second;
+								   if (tNow - tmpAcceptor->GetLastKeepAlive() > tmpPingTime) {
+									   DisConnect(tmpAcceptor, Err_ClientTimeout);
+									   SAFE_DELETE(tmpAcceptor);
+									   it = tmpMap.erase(it);
+								   }
+								   else {
+									   it++;
+								   }
+							   }
+						   }
+					   });
+
 }
 
 void CC2sHandle::ClearSocket(IBufferEvent *pAcceptor, short iError)
@@ -135,7 +156,7 @@ void CC2sHandle::ClearSocket(IBufferEvent *pAcceptor, short iError)
 
 void CC2sHandle::DisConnect(IBufferEvent *pAcceptor, short iError)
 {
-	MY_ASSERT(pAcceptor != NULL && typeid(*pAcceptor) == typeid(CAcceptor), return)
+	MY_ASSERT(pAcceptor != NULL, return)
 
 	CAcceptor *tmpAcceptor = (CAcceptor *) pAcceptor;
 	MesHead tmpHead;
@@ -157,7 +178,7 @@ void CC2sHandle::DisConnect(IBufferEvent *pAcceptor, short iError)
 	}
 
 	iRet = m_pC2SPipe->AppendOneCode((BYTE *) m_acSendBuff, unTmpMsgLen);
-	if (iRet != 0) {
+	if (iRet < 0) {
 		LOG_ERROR("default", "[{}: {} : {}] Send data to GateServer failed,iRet = {} ",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return;
@@ -177,8 +198,10 @@ void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 		ClearSocket(pAcceptor, Err_PacketError);
 		return;
 	}
+	time_t tNow = GetMSTime();
+	tmpAcceptor->SetLastKeepAlive(tNow);
 	//组织转发消息
-	if (0 == iTmpRet /*&& tmpHead.cmd() != CMsgPingRequest::MsgID */&& tmpLastLen >= 0) {
+	if (0 == iTmpRet && tmpHead.cmd() != 103 && tmpLastLen >= 0) {
 		CSocketInfo *tmpSocketInfo = tmpHead.mutable_socketinfos()->Add();
 		tmpSocketInfo->Clear();
 		tmpSocketInfo->set_createtime(tmpAcceptor->GetCreateTime());
@@ -186,6 +209,7 @@ void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 		tmpSocketInfo->set_state(0);
 
 		unsigned short tmpSendLen = sizeof(m_acSendBuff);
+		memset(m_acRecvBuff, 0, tmpSendLen);
 		iTmpRet = CClientCommEngine::ConverToGameStream(m_acSendBuff,
 														tmpSendLen,
 														pTmp,

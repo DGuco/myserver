@@ -45,8 +45,8 @@ protected:
 	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
 	//发送胡据回调
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
-	//连接超时
-	static void lcb_OnAcceptorTimeOut(CAcceptor *pAcceptor);
+	//检测连接超时
+	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
 public:
 	CNetWork *m_pNetWork;
 	static CCodeQueue *m_pC2SPipe;

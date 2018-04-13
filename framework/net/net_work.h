@@ -21,6 +21,11 @@ using namespace std;
 class CNetWork: public CSingleton<CNetWork>
 {
 public:
+	typedef unordered_map<unsigned int, CConnector *> MAP_CONNECTOR;
+	typedef unordered_map<unsigned int, CAcceptor *> MAP_ACCEPTOR;
+	typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
+
+public:
 	//构造函数
 	CNetWork();
 	//析构函数
@@ -33,7 +38,7 @@ public:
 					 FuncBufferEventOnDataSend funcAcceptorOnDataSend,
 					 FuncBufferEventOnDataSend funcAcceptorOnDataRecv,
 					 FuncBufferEventOnDataSend funcAcceptorDisconnected,
-					 FuncAcceptorOnTimeOut funcAcceptorTimeOut,
+					 FuncOnTimeOut funcAcceptorTimeOut,
 					 int listenQueue,
 					 unsigned int uCheckPingTickTime);
 	//结束监听
@@ -66,28 +71,22 @@ public:
 	//查找acceptor
 	CAcceptor *FindAcceptor(unsigned int uId);
 	//添加新的acceptor
-	void InsertNewAcceptor(unsigned int socket, CAcceptor *pAcceptor);
+	void InsertNewAcceptor(unsigned int uid, CAcceptor *pAcceptor);
 	//添加新的connector
-	void InsertNewConnector(unsigned int socket, CConnector *pConnector);
+	void InsertNewConnector(unsigned int uid, CConnector *pConnector);
 	//获取event
 	IEventReactor *GetEventReactor();
+	//获取连接map
+	MAP_ACCEPTOR &GetAcceptorMap();
 private:
 	//新的连接 accept回调
 	static void lcb_OnAccept(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
-	//检测连接超时
-	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
 private:
 	//创建acceptor
 	void NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
-	//检测超时连接
-	void CheckAcceptorTimeOut();
 private:
 	IEventReactor *m_pEventReactor;
 	unsigned int m_uGcTime;
-
-	typedef unordered_map<unsigned int, CConnector *> MAP_CONNECTOR;
-	typedef unordered_map<unsigned int, CAcceptor *> MAP_ACCEPTOR;
-	typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
 
 	MAP_CONNECTOR m_mapConnector;
 	MAP_ACCEPTOR m_mapAcceptor;
@@ -100,7 +99,6 @@ private:
 	FuncBufferEventOnDataSend m_pFuncAcceptorOnDataSend;
 	FuncBufferEventOnDataRecv m_pFuncAcceptorOnDataRecv;
 	FuncBufferEventOnDisconnected m_pFuncAcceptorDisconnected;
-	FuncAcceptorOnTimeOut m_pFuncAcceptorTimeOut;
 };
 
 #endif

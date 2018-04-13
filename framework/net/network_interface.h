@@ -84,7 +84,4 @@ typedef std::function<void(int, short, CConnector *)> FuncConnectorOnPingServer;
  */
 typedef std::function<void(uint32, CAcceptor *)> FuncAcceptorOnNew;
 
-typedef std::function<void(CAcceptor *)> FuncAcceptorOnTimeOut;
-
-
 #endif

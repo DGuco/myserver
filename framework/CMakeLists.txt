@@ -83,7 +83,7 @@ set(FRAMEWORK
         timer/clock.h
         timer/timer.h
         timer/timer.cpp
-        )
+        net/byte_buff.cpp net/byte_buff.h)
 
 include_directories(
         /usr/include

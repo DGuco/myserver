@@ -69,6 +69,7 @@ unsigned short IBufferEvent::ReadRecvPackLen()
 		return 0;
 	}
 	RecvData((void *) (&m_uRecvPackLen), sizeof(unsigned short));
+	m_uRecvPackLen = ntohs(m_uRecvPackLen);
 	return m_uRecvPackLen;
 }
 
