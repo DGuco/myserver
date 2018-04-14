@@ -4,6 +4,7 @@
 
 #include <my_assert.h>
 #include "buffev_interface.h"
+#include "byte_buff.h"
 
 IBufferEvent::IBufferEvent(IEventReactor *pReactor,
 						   int socket,
@@ -68,9 +69,9 @@ unsigned short IBufferEvent::ReadRecvPackLen()
 	if (GetRecvDataSize() < sizeof(unsigned short)) {
 		return 0;
 	}
-	RecvData((void *) (&m_uRecvPackLen), sizeof(unsigned short));
-	m_uRecvPackLen = ntohs(m_uRecvPackLen);
-	return m_uRecvPackLen;
+	CByteBuff tmpBuff(sizeof(unsigned short));
+	RecvData((void *) (tmpBuff.GetData()), sizeof(unsigned short));
+	return tmpBuff.ReadUnShort();
 }
 
 unsigned int IBufferEvent::GetRecvDataSize()
@@ -197,8 +198,8 @@ bool IBufferEvent::RegisterToReactor()
 					  &IBufferEvent::lcb_OnEvent,
 					  (void *) this);
 	AfterBuffEventCreated();
-	bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);
-	bufferevent_setwatermark(m_pStBufEv, EV_WRITE, 0, m_uMaxOutBufferSize);
+//	bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);
+//	bufferevent_setwatermark(m_pStBufEv, EV_WRITE, 0, m_uMaxOutBufferSize);
 	return true;
 }
 

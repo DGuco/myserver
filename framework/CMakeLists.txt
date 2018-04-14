@@ -68,6 +68,8 @@ set(FRAMEWORK
         net/buffev_interface.h
         net/timer_event.h
         net/timer_event.cpp
+        net/byte_buff.cpp
+        net/byte_buff.h
         mem/share_mem.h
         mem/shm.h/
         mem/share_mem.cpp
@@ -82,8 +84,7 @@ set(FRAMEWORK
         timer/clock.cpp
         timer/clock.h
         timer/timer.h
-        timer/timer.cpp
-        net/byte_buff.cpp net/byte_buff.h)
+        timer/timer.cpp)
 
 include_directories(
         /usr/include

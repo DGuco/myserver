@@ -9,6 +9,7 @@
 #include <acceptor.h>
 #include <code_queue.h>
 #include <net_work.h>
+#include <byte_buff.h>
 #include "mythread.h"
 
 class CC2sHandle: public CMyThread
@@ -50,7 +51,7 @@ protected:
 public:
 	CNetWork *m_pNetWork;
 	static CCodeQueue *m_pC2SPipe;
-	static char m_acRecvBuff[MAX_PACKAGE_LEN];
-	static char m_acSendBuff[MAX_PACKAGE_LEN];
+	static CByteBuff *m_pRecvBuff;
+	static CByteBuff *m_pSendBuff;
 };
 #endif //SERVER_C2S_THREAD_H

@@ -12,9 +12,9 @@
 
 CCodeQueue *CC2sHandle::m_pC2SPipe = NULL;
 
-char CC2sHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
+CByteBuff *CC2sHandle::m_pRecvBuff = new CByteBuff;
 
-char CC2sHandle::m_acSendBuff[MAX_PACKAGE_LEN] = {0};
+CByteBuff *CC2sHandle::m_pSendBuff = new CByteBuff;
 
 CC2sHandle::CC2sHandle()
 	: CMyThread("CC2sHandle"),
@@ -103,7 +103,8 @@ void CC2sHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 						   }
 						   int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
 						   //读取数据
-						   pBufferEvent->RecvData(m_acRecvBuff, iTmpLen);
+						   pBufferEvent->RecvData(m_pRecvBuff->GetData(), iTmpLen);
+						   m_pRecvBuff->WriteLen(iTmpLen);
 						   //当前数据包已全部读取，清除当前数据包缓存长度
 						   pBufferEvent->CurrentPackRecved();
 						   //发送数据包到game server
@@ -169,15 +170,15 @@ void CC2sHandle::DisConnect(IBufferEvent *pAcceptor, short iError)
 	pSocketInfo->set_createtime(tmpAcceptor->GetCreateTime());
 	pSocketInfo->set_state(iError);
 
-	unsigned short unTmpMsgLen = sizeof(m_acSendBuff);
-	int iRet = CClientCommEngine::ConvertToGameStream(m_acSendBuff, unTmpMsgLen, &tmpHead);
+	int iRet =
+		CClientCommEngine::ConvertToGameStream(m_pSendBuff, &tmpHead);
 	if (iRet != 0) {
 		LOG_ERROR("default", "[{}: {} : {}] ConvertMsgToStream failed,iRet = {} ",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return;
 	}
 
-	iRet = m_pC2SPipe->AppendOneCode((BYTE *) m_acSendBuff, unTmpMsgLen);
+	iRet = m_pC2SPipe->AppendOneCode((BYTE *) m_pSendBuff->CanReadData(), m_pSendBuff->ReadableDataLen());
 	if (iRet < 0) {
 		LOG_ERROR("default", "[{}: {} : {}] Send data to GateServer failed,iRet = {} ",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
@@ -191,8 +192,7 @@ void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 	CAcceptor *tmpAcceptor = (CAcceptor *) pAcceptor;
 
 	MesHead tmpHead;
-	char *pTmp = m_acRecvBuff;
-	int iTmpRet = CClientCommEngine::ParseClientStream((const void **) &pTmp, tmpLastLen, &tmpHead);
+	int iTmpRet = CClientCommEngine::ParseClientStream(m_pRecvBuff, &tmpHead);
 	if (iTmpRet < 0) {
 		//断开连接
 		ClearSocket(pAcceptor, Err_PacketError);
@@ -208,11 +208,8 @@ void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 		tmpSocketInfo->set_socketid(pAcceptor->GetSocket().GetSocket());
 		tmpSocketInfo->set_state(0);
 
-		unsigned short tmpSendLen = sizeof(m_acSendBuff);
-		memset(m_acRecvBuff, 0, tmpSendLen);
-		iTmpRet = CClientCommEngine::ConverToGameStream(m_acSendBuff,
-														tmpSendLen,
-														pTmp,
+		iTmpRet = CClientCommEngine::ConverToGameStream(m_pSendBuff,
+														m_pRecvBuff->CanReadData(),
 														tmpLastLen,
 														&tmpHead);
 		if (iTmpRet != 0) {
@@ -222,13 +219,13 @@ void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 		}
 
 		//发送给game server
-		iTmpRet = m_pC2SPipe->AppendOneCode((const BYTE *) m_acSendBuff, tmpSendLen);
+		iTmpRet = m_pC2SPipe->AppendOneCode((const BYTE *) m_pSendBuff->CanReadData(), m_pSendBuff->ReadableDataLen());
 		if (iTmpRet < 0) {
 			//断开连接
 			ClearSocket(pAcceptor, Err_SendToMainSvrd);
 			return;
 		}
-		LOG_DEBUG("defalut", "tcp ==>gate [{} bytes]", tmpSendLen);
+		LOG_DEBUG("defalut", "tcp ==>gate [{} bytes]", m_pSendBuff->ReadableDataLen());
 	}
 	else {
 		//心跳信息不做处理
