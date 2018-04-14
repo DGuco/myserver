@@ -101,7 +101,6 @@ void CByteBuff::Reset()
 	m_uiReadIndex = 0;
 	m_uiWriteIndex = 0;
 	m_uiLen = 0;
-	m_uiCapacity = 0;
 	memset(m_acData, 0, m_uiCapacity);
 }
 
