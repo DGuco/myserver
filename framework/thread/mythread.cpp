@@ -5,28 +5,15 @@
 // Copyright © 2016年 DGuco. All rights reserved.
 //
 
-#include <string.h>
 #include "base.h"
 #include "mythread.h"
 #include "log.h"
 
-void *ThreadProc(void *pvArgs)
-{
-	if (!pvArgs) {
-		return NULL;
-	}
-
-	CMyThread *pThread = (CMyThread *) pvArgs;
-	pThread->RunFunc();
-
-	return NULL;
-}
-
 CMyThread::CMyThread(const std::string &threadName)
-	: m_sThreadName(threadName)
+	: m_iRunStatus(rt_init),
+	  m_pThread(NULL),
+	  m_sThreadName(threadName)
 {
-	m_iRunStatus = rt_init;
-	memset((void *) &m_stLogCfg, 0, sizeof(m_stLogCfg));
 }
 
 CMyThread::~CMyThread()
@@ -37,38 +24,47 @@ int CMyThread::Run()
 {
 	m_iRunStatus = rt_running;
 	//创建线程
-	m_th = std::thread(ThreadProc, (void *) this);
+	if (m_pThread != NULL) {
+		m_pThread = new std::thread(mem_fn(&CMyThread::RunFunc), this);
+	}
 	return 0;
 }
 
-int CMyThread::CondBlock()
+void CMyThread::ThreadFunc()
 {
-	// 该过程需要在线程锁内完成
-	std::unique_lock<std::mutex> lk(m_condMut);
-	// 如果线程需要停止则终止线程
-	if (m_iRunStatus == rt_stopped) {
-		//退出线程
-		LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
-		pthread_exit((void *) m_abyRetVal);
-	}
-	m_iRunStatus = rt_blocked;
-	LOG_DEBUG("default", "Thread [{}] would blocked.", m_sThreadName);
-	data_cond.wait(lk, [this]
-	{ return !IsToBeBlocked(); });
+	while (true) {
+		// 该过程需要在线程锁内完成
+		std::unique_lock<std::mutex> lk(m_condMut);
+		m_iRunStatus = rt_blocked;
+		LOG_DEBUG("default", "Thread [{}] would blocked.", m_sThreadName);
+		data_cond.wait(lk, [this]
+		{
+			return (m_iRunStatus == rt_stopped || !IsToBeBlocked());
+		});
 
-	if (m_iRunStatus != rt_running) {
-		LOG_DEBUG("default", "Thread [{}] waked up.", m_sThreadName);
+		// 如果线程需要停止则终止线程
+		if (m_iRunStatus == rt_stopped) {
+			//退出线程
+			LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
+			pthread_exit((void *) 0);
+		}
+
+		//意外唤醒线程,继续阻塞
+		if (IsToBeBlocked()) {
+			continue;
+		}
+
+		// 线程状态变为rt_running
+		m_iRunStatus = rt_running;
+		lk.unlock();
+		RunFunc();
 	}
-	// 线程状态变为rt_running
-	m_iRunStatus = rt_running;
-	return 0;
 }
 
 int CMyThread::WakeUp()
 {
 	// 该过程需要在线程锁内完成
 	std::lock_guard<std::mutex> guard(m_condMut);
-
 	if (!IsToBeBlocked() && m_iRunStatus == rt_blocked) {
 		// 向线程发出信号以唤醒
 		data_cond.notify_one();
@@ -92,17 +88,18 @@ void CMyThread::StopForce()
 {
 	//退出线程
 	LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
-	pthread_exit((void *) m_abyRetVal);
+	pthread_exit((void *) 0);
 }
 
 void CMyThread::Join()
 {
-	if (m_th.joinable()) {
-		m_th.join();
+	if (m_pThread->joinable()) {
+		m_pThread->join();
 	}
 }
 
 int CMyThread::GetStatus()
 {
+	std::lock_guard<std::mutex> guard(m_condMut);
 	return m_iRunStatus;
 }

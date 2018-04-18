@@ -21,16 +21,6 @@ enum eRunStatus
 	rt_stopped = 3
 };
 
-typedef struct
-{
-	char szThreadKey[32];
-	char szLogBaseName[200];
-	long lMaxLogSize;
-	int iMaxLogNum;
-} TLogCfg;
-
-void *ThreadProc(void *pvArgs);
-
 class CMyThread
 {
 public:
@@ -38,7 +28,7 @@ public:
 	virtual ~CMyThread();
 
 	virtual int PrepareToRun() = 0;
-	virtual int RunFunc() = 0;
+	virtual void RunFunc() = 0;
 	virtual bool IsToBeBlocked() = 0;
 
 	int Run();
@@ -48,16 +38,12 @@ public:
 	void Join();
 	int GetStatus();
 protected:
-	int CondBlock();
-public:
-	int m_iRunStatus;
-	char m_abyRetVal[64];
-	TLogCfg m_stLogCfg;
-
+	void ThreadFunc();
 private:
+	int m_iRunStatus;
 	std::mutex m_condMut;
 	std::condition_variable data_cond;
-	std::thread m_th;
+	std::thread *m_pThread;
 	std::string m_sThreadName;
 };
 

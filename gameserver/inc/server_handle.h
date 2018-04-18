@@ -29,7 +29,7 @@ public:
 public:
 	//运行准备
 	int PrepareToRun() override;
-	int RunFunc() override;
+	void RunFunc() override;
 	bool IsToBeBlocked() override;
 private:
 	void SendMessageToProxyAsync(char *data, unsigned short len);

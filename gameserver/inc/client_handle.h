@@ -48,7 +48,6 @@ public:
 	int SendResponseAsync(Message *pMessage, CPlayer *pPlayer);
 	int SendResponseAsync(Message *pMessage, MesHead *mesHead);
 	int PushAsync(int cmd, Message *pMessage, stPointList *pPlayerList);
-	void RecvAsync();
 	int DealClientMessage(CMessage *pMsg);
 	// 断开玩家连接
 	void DisconnectClient(CPlayer *cPlayer);
@@ -60,7 +59,7 @@ public:
 	int CheckData();
 public:
 	int PrepareToRun() override;
-	int RunFunc() override;
+	void RunFunc() override;
 	bool IsToBeBlocked() override;
 private:
 	int SendResToPlayer(Message *pMessage, CPlayer *pPlayer);

@@ -30,13 +30,10 @@ int CS2cHandle::PrepareToRun()
 	return 0;
 }
 
-int CS2cHandle::RunFunc()
+void CS2cHandle::RunFunc()
 {
-	while (true) {
-		CondBlock();
-		//如果有数据需要发送
-		CheckWaitSendData();
-	}
+	//如果有数据需要发送
+	CheckWaitSendData();
 }
 
 bool CS2cHandle::IsToBeBlocked()
@@ -145,7 +142,7 @@ int CS2cHandle::SendClientData()
 
 int CS2cHandle::CheckData()
 {
-	if (!IsToBeBlocked() && GetStatus() != eRunStatus::rt_running) {
+	if (!IsToBeBlocked()) {
 		//唤醒线程
 		WakeUp();
 		return 1;

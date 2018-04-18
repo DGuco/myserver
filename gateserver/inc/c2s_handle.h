@@ -24,7 +24,7 @@ public:
 public:
 	//准备run
 	int PrepareToRun() override;
-	int RunFunc() override;
+	void RunFunc() override;
 	bool IsToBeBlocked() override;
 public:
 	//清除socket

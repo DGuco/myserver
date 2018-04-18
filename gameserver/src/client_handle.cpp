@@ -55,15 +55,6 @@ int CClientHandle::PushAsync(int cmd, Message *pMessage, stPointList *pPlayerLis
 	return 0;
 }
 
-void CClientHandle::RecvAsync()
-{
-	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack([this]
-					   {
-						   Recv();
-					   });
-}
-
 int CClientHandle::SendResToPlayer(Message *pMessage, CPlayer *pPlayer)
 {
 	MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
@@ -609,13 +600,10 @@ int CClientHandle::PrepareToRun()
 	return 0;
 }
 
-int CClientHandle::RunFunc()
+void CClientHandle::RunFunc()
 {
-	while (true) {
-		// 一直休眠直到被唤醒
-		CondBlock();
-		RecvAsync();
-	}
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack(std::mem_fn(&CClientHandle::Recv), this);
 }
 
 bool CClientHandle::IsToBeBlocked()

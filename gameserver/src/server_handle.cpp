@@ -35,10 +35,9 @@ int CServerHandle::PrepareToRun()
 	return 0;
 }
 
-int CServerHandle::RunFunc()
+void CServerHandle::RunFunc()
 {
 	m_pNetWork->DispatchEvents();
-	return 0;
 }
 
 bool CServerHandle::IsToBeBlocked()

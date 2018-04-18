@@ -33,7 +33,7 @@ int CC2sHandle::PrepareToRun()
 	return 0;
 }
 
-int CC2sHandle::RunFunc()
+void CC2sHandle::RunFunc()
 {
 	LOG_INFO("default", "Libevent run with net module {}",
 			 event_base_get_method(reinterpret_cast<const event_base *>(CNetWork::GetSingletonPtr()
