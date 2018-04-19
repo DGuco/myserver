@@ -12,7 +12,7 @@
 CCodeQueue *CS2cHandle::m_pS2CPipe = NULL;
 
 CS2cHandle::CS2cHandle()
-	: CMyThread("CS2cHandle"),
+	: CMyThread("CS2cHandle", 1000),   //超时时间1ms
 	  m_iSendIndex(0),
 	  m_bHasRecv(false),
 	  m_iSCIndex(0),

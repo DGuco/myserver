@@ -24,7 +24,8 @@ enum eRunStatus
 class CMyThread
 {
 public:
-	CMyThread(const std::string &threadName);
+	CMyThread(const std::string &threadName,
+			  long timeOut = 0);
 	virtual ~CMyThread();
 
 	virtual int PrepareToRun() = 0;
@@ -40,11 +41,12 @@ public:
 protected:
 	void ThreadFunc();
 private:
-	int m_iRunStatus;
+	std::atomic_int m_iRunStatus;
 	std::mutex m_condMut;
 	std::condition_variable data_cond;
 	std::thread *m_pThread;
 	std::string m_sThreadName;
+	long m_lTimeOut; //阻塞超时时间(微妙)，默认没有超时（如果不wake up永远阻塞）
 };
 
 
