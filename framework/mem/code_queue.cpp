@@ -1,3 +1,4 @@
+#include <cstring>
 #include "code_queue.h"
 
 CSharedMem *CCodeQueue::pCurrentShm = NULL;

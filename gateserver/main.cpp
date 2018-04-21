@@ -9,7 +9,7 @@
 #include "my_macro.h"
 #include "inc/gate_ctrl.h"
 
-CGateCtrl *g_pGateServer = NULL;
+CGateCtrl *g_pGateServer;
 
 int main(int argc, char **argv)
 {
