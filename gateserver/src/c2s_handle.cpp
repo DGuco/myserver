@@ -202,10 +202,10 @@ void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 		tmpSocketInfo->set_socketid(pAcceptor->GetSocket().GetSocket());
 		tmpSocketInfo->set_state(0);
 
-		iTmpRet = CClientCommEngine::ConverToGameStream(m_pSendBuff,
-														m_pRecvBuff->CanReadData(),
-														tmpLastLen,
-														&tmpHead);
+		iTmpRet = CClientCommEngine::ConvertToGameStream(m_pSendBuff,
+														 m_pRecvBuff->CanReadData(),
+														 tmpLastLen,
+														 &tmpHead);
 		if (iTmpRet != 0) {
 			//断开连接
 			ClearSocket(pAcceptor, Err_PacketError);
@@ -220,6 +220,11 @@ void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 			return;
 		}
 		LOG_DEBUG("default", "gate ==>game [{} bytes]", m_pSendBuff->ReadableDataLen());
+		//检测是否有下行数据需要转发
+		CS2cHandle *tmpHandle = CGateCtrl::GetSingletonPtr()->GetCS2cHandle();
+		if (!tmpHandle->IsToBeBlocked() && tmpHandle->GetStatus() != rt_running) {
+			tmpHandle->WakeUp();
+		}
 	}
 	else {
 		//心跳信息不做处理

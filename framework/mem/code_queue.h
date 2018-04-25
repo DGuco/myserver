@@ -18,19 +18,19 @@ protected:
 	//构造函数
 	CCodeQueue();
 	//构造函数
-	CCodeQueue( int nTotalSize, int iLockIdx = -1 );
+	CCodeQueue(int nTotalSize, int iLockIdx = -1);
 
 public:
-    //析构函数
-    ~CCodeQueue();
+	//析构函数
+	~CCodeQueue();
 	//new操作符重载将类对象定义到共享内存区地址
-	void* operator new( size_t nSize );
+	void *operator new(size_t nSize);
 	//delete操作符重载
-	void  operator delete( void *pBase );
+	void operator delete(void *pBase);
 	//初始化
-	int Initialize( int nTotalSize );
+	int Initialize(int nTotalSize);
 	//恢复
-	int Resume( int nTotalSize );
+	int Resume(int nTotalSize);
 	//向进程间共享内存管道插入数据
 	int AppendOneCode(const BYTE *pInCode, int sInLength);
 	//从进程间共享内存管道获取数据
@@ -50,19 +50,19 @@ public:
 	//清除进程间共享内存管道数据
 	int CleanQueue();
 
-	static CCodeQueue* CreateInstance();
-	static CCodeQueue* CreateInstance(int nTotalSize, int iLockIdx = -1 );
+	static CCodeQueue *CreateInstance();
+	static CCodeQueue *CreateInstance(int nTotalSize, int iLockIdx = -1);
 	//codequeue大小
 	static size_t CountQueueSize(int iBufSize);
 	//获取共享内管道的其实地址
-	BYTE* GetPipeAddr();
+	BYTE *GetPipeAddr();
 	static CSharedMem *pCurrentShm;
 
-	void GetCriticalData(int& iBegin, int& iEnd, int& iLeft);
+	void GetCriticalData(int &iBegin, int &iEnd, int &iLeft);
 
 private:
 	int IsQueueFull();
-	int SetFullFlag( int iFullFlag );
+	int SetFullFlag(int iFullFlag);
 
 	//获取数据读写索引
 	void GetCriticalData(int *iReadIndex, int *iWriteIndex);
@@ -78,8 +78,8 @@ private:
 		int m_iLockIdx;             //数据锁id
 	} m_stQueueHead;
 
-    //共享内存管道起始地址
-	BYTE* m_pbyCodeBuffer;
+	//共享内存管道起始地址
+	BYTE *m_pbyCodeBuffer;
 };
 
 #endif

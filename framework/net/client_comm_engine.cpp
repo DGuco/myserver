@@ -49,10 +49,10 @@ int CClientCommEngine::ParseClientStream(CByteBuff *byteBuff,
 	return 0;
 }
 
-int CClientCommEngine::ConverToGameStream(CByteBuff *convertBuff,
-										  const void *pDataBuff,
-										  unsigned short &unDataLen,
-										  MesHead *pHead)
+int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
+										   const void *pDataBuff,
+										   unsigned short &unDataLen,
+										   MesHead *pHead)
 {
 	if ((convertBuff == NULL) || (pDataBuff == NULL) || pHead == NULL) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConverGateToGame Input param failed.");

@@ -31,10 +31,10 @@ public:
 	 * @param pHead
 	 * @return
 	 */
-	static int ConverToGameStream(CByteBuff *convertBuff,
-								  const void *pDataBuff,
-								  unsigned short &unDataLen,
-								  MesHead *pHead);
+	static int ConvertToGameStream(CByteBuff *convertBuff,
+								   const void *pDataBuff,
+								   unsigned short &unDataLen,
+								   MesHead *pHead);
 
 	/**
 	 * 序列化消息Message 发送到gameserver（gateserver==>gameserver）
