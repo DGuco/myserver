@@ -219,7 +219,7 @@ void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 			ClearSocket(pAcceptor, Err_SendToMainSvrd);
 			return;
 		}
-		LOG_DEBUG("default", "tcp ==>gate [{} bytes]", m_pSendBuff->ReadableDataLen());
+		LOG_DEBUG("default", "gate ==>game [{} bytes]", m_pSendBuff->ReadableDataLen());
 	}
 	else {
 		//心跳信息不做处理
