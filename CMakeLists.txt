@@ -9,7 +9,6 @@ add_subdirectory(gateserver)
 add_subdirectory(proxyserver)
 add_subdirectory(dbserver)
 add_subdirectory(gameserver)
-add_subdirectory(demo)
 
 
 

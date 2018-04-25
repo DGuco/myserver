@@ -12,7 +12,7 @@
 #include <byte_buff.h>
 #include "mythread.h"
 
-class CC2sHandle: public CMyThread
+class CC2sHandle
 {
 public:
 	//构造函数
@@ -23,9 +23,8 @@ public:
 	CNetWork *GetNetWork();
 public:
 	//准备run
-	int PrepareToRun() override;
-	void RunFunc() override;
-	bool IsToBeBlocked() override;
+	int PrepareToRun();
+	void Run();
 public:
 	//清除socket
 	static void ClearSocket(IBufferEvent *pAcceptor, short iError);

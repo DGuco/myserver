@@ -17,8 +17,7 @@ CByteBuff *CC2sHandle::m_pRecvBuff = new CByteBuff;
 CByteBuff *CC2sHandle::m_pSendBuff = new CByteBuff;
 
 CC2sHandle::CC2sHandle()
-	: CMyThread("CC2sHandle"),
-	  m_pNetWork(new CNetWork())
+	: m_pNetWork(new CNetWork())
 {
 }
 
@@ -33,18 +32,13 @@ int CC2sHandle::PrepareToRun()
 	return 0;
 }
 
-void CC2sHandle::RunFunc()
+void CC2sHandle::Run()
 {
 	LOG_INFO("default", "Libevent run with net module {}",
 			 event_base_get_method(reinterpret_cast<const event_base *>(CNetWork::GetSingletonPtr()
 				 ->GetEventReactor()->GetEventBase())));
 	//libevent事件循环
 	m_pNetWork->DispatchEvents();
-}
-
-bool CC2sHandle::IsToBeBlocked()
-{
-	return false;
 }
 
 bool CC2sHandle::BeginListen()
@@ -188,7 +182,7 @@ void CC2sHandle::DisConnect(IBufferEvent *pAcceptor, short iError)
 
 void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 {
-	MY_ASSERT(pAcceptor != NULL && typeid(*pAcceptor) == typeid(CAcceptor), return)
+	MY_ASSERT(pAcceptor != NULL, return)
 	CAcceptor *tmpAcceptor = (CAcceptor *) pAcceptor;
 
 	MesHead tmpHead;
@@ -225,7 +219,7 @@ void CC2sHandle::SendToGame(IBufferEvent *pAcceptor, unsigned short tmpLastLen)
 			ClearSocket(pAcceptor, Err_SendToMainSvrd);
 			return;
 		}
-		LOG_DEBUG("defalut", "tcp ==>gate [{} bytes]", m_pSendBuff->ReadableDataLen());
+		LOG_DEBUG("default", "tcp ==>gate [{} bytes]", m_pSendBuff->ReadableDataLen());
 	}
 	else {
 		//心跳信息不做处理

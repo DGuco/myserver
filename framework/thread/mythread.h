@@ -12,7 +12,6 @@
 #include <condition_variable>
 #include <mutex>
 #include <thread>
-#include <atomic>
 
 enum eRunStatus
 {
@@ -42,7 +41,7 @@ public:
 protected:
 	void ThreadFunc();
 private:
-	std::atomic_int m_iRunStatus;
+	int m_iRunStatus;
 	std::mutex m_condMut;
 	std::condition_variable data_cond;
 	std::thread *m_pThread;
