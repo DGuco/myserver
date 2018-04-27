@@ -2,7 +2,7 @@
 // Created by DGuco on 17-6-21.
 //
 #include "../inc/module_manager.h"
-#include "../inc/coremo_dule.h"
+#include "../inc/core_module.h"
 #include "../inc/db_module.h"
 
 template<> CModuleManager* CSingleton<CModuleManager>::spSingleton = NULL;

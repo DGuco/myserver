@@ -24,12 +24,12 @@ set(SOURCE_FILES
         datamodule/src/playerdata.cpp
         datamodule/src/playercity.cpp
         datamodule/src/sceneobjmanager.cpp
-        logicmodule/inc/coremo_dule.h
+        logicmodule/inc/core_module.h
         logicmodule/inc/logic_module.h
         logicmodule/inc/module_manager.h
         logicmodule/inc/db_module.h
         logicmodule/src/module_manager.cpp
-        logicmodule/src/coremo_dule.cpp
+        logicmodule/src/core_module.cpp
         logicmodule/src/logic_module.cpp
         logicmodule/src/db_module.cpp
         metadata/inc/parameter_config.h

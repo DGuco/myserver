@@ -7,7 +7,7 @@
 #define SERVER_SERVER_HANDLE_H
 #include <net_work.h>
 
-class CServerHandle: public CMyThread
+class CServerHandle
 {
 public:
 	//构造函数
@@ -28,9 +28,8 @@ public:
 	void SetLastRecvKeepAlive(time_t tLastRecvKeepAlive);
 public:
 	//运行准备
-	int PrepareToRun() override;
-	void RunFunc() override;
-	bool IsToBeBlocked() override;
+	int PrepareToRun();
+	void Run();
 private:
 	void SendMessageToProxyAsync(char *data, unsigned short len);
 	//向Proxy注册

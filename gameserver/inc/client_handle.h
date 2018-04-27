@@ -44,11 +44,12 @@ class CClientHandle: public CMyThread
 public:
 	CClientHandle();
 	virtual ~CClientHandle();
+
 public:
-	int SendResponseAsync(Message *pMessage, CPlayer *pPlayer);
-	int SendResponseAsync(Message *pMessage, MesHead *mesHead);
-	int PushAsync(int cmd, Message *pMessage, stPointList *pPlayerList);
-	int DealClientMessage(CMessage *pMsg);
+	int PrepareToRun() override;
+	void RunFunc() override;
+	bool IsToBeBlocked() override;
+public:
 	// 断开玩家连接
 	void DisconnectClient(CPlayer *cPlayer);
 	// 断开玩家连接
@@ -57,16 +58,11 @@ public:
 	void Dump(char *pBuffer, unsigned int &uiLen);
 	//检查是有数据可读
 	int CheckData();
-public:
-	int PrepareToRun() override;
-	void RunFunc() override;
-	bool IsToBeBlocked() override;
-private:
+	int DealClientMessage(CMessage *pMsg);
 	int SendResToPlayer(Message *pMessage, CPlayer *pPlayer);
 	int SendResponse(Message *pMessage, MesHead *mesHead);
 	int Push(int cmd, Message *pMessage, stPointList *pPlayerList);
-	int Recv();
-
+	int RecvClientData();
 protected:
 	// tcp --> game 共享内存管道起始地址
 	CCodeQueue *mC2SPipe;

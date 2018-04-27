@@ -1,6 +1,6 @@
 #include "player.pb.h"
 #include "my_assert.h"
-#include "../inc/coremo_dule.h"
+#include "../inc/core_module.h"
 #include "../inc/db_module.h"
 #include "../inc/module_manager.h"
 #include "../../datamodule/inc/sceneobjmanager.h"

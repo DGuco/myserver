@@ -5,7 +5,7 @@
 #include "player.pb.h"
 #include "server_tool.h"
 #include "my_assert.h"
-#include "../logicmodule/inc/coremo_dule.h"
+#include "../logicmodule/inc/core_module.h"
 #include "../datamodule/inc/player.h"
 #include "../datamodule/inc/sceneobjmanager.h"
 #include "../inc/message_dispatcher.h"

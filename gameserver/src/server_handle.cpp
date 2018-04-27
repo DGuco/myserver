@@ -14,8 +14,7 @@ int CServerHandle::m_iProxyId = 0;
 char CServerHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
 
 CServerHandle::CServerHandle()
-	: CMyThread("CServerHandle"),
-	  m_pNetWork(new CNetWork()),
+	: m_pNetWork(new CNetWork()),
 	  m_tLastSendKeepAlive(0),
 	  m_tLastRecvKeepAlive(0)
 {
@@ -35,15 +34,9 @@ int CServerHandle::PrepareToRun()
 	return 0;
 }
 
-void CServerHandle::RunFunc()
+void CServerHandle::Run()
 {
 	m_pNetWork->DispatchEvents();
-}
-
-bool CServerHandle::IsToBeBlocked()
-{
-	//永远不会阻塞
-	return false;
 }
 
 // 连接到Proxy

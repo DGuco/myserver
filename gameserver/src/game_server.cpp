@@ -18,7 +18,6 @@ CGameServer::~CGameServer()
 {
 	m_pClientHandle->StopThread();
 	SAFE_DELETE(m_pClientHandle);
-	m_pServerHandle->StopForce();
 	SAFE_DELETE(m_pServerHandle);
 	SAFE_DELETE(m_pModuleManager);
 	SAFE_DELETE(m_pMessageDispatcher);
@@ -135,16 +134,6 @@ void CGameServer::Run()
 	LOG_INFO("default", "CGameServer start to run now.");
 	m_pClientHandle->Run();
 	m_pServerHandle->Run();
-	int iRet;
-	while (true) {
-		iRet = 0;
-		iRet += m_pClientHandle->CheckData();
-		//检测服务起运行状态
-		iRet += CheckRunFlags();
-		if (iRet == 0) {
-			usleep(1000);
-		}
-	}
 }
 
 // 退出
@@ -249,7 +238,8 @@ void CGameServer::DisconnectClient(CPlayer *pPlayer)
 // 广播消息给玩家，广播时，发起人一定放第一个
 int CGameServer::Push(unsigned int iMsgID, Message *pMsg, stPointList *pTeamList)
 {
-	m_pClientHandle->PushAsync(iMsgID, pMsg, pTeamList);
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsg, pTeamList);
 	return 0;
 }
 
@@ -259,7 +249,8 @@ int CGameServer::Push(unsigned int iMsgID, Message *pMsg, CPlayer *pPlayer)
 	MY_ASSERT(pPlayer != NULL && pMsg != NULL, return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
-	m_pClientHandle->PushAsync(iMsgID, pMsg, &tmpList);
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsg, &tmpList);
 	return 0;
 }
 
@@ -268,7 +259,8 @@ int CGameServer::SendResponse(Message *pMsgPara, CPlayer *pPlayer)
 {
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
 			  return -1);
-	m_pClientHandle->SendResponseAsync(pMsgPara, pPlayer);
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack(std::mem_fn(&CClientHandle::SendResToPlayer), m_pClientHandle, pMsgPara, pPlayer);
 	return 0;
 }
 
@@ -277,8 +269,8 @@ int CGameServer::SendResponse(Message *pMsgPara, MesHead *mesHead)
 {
 	MY_ASSERT(mesHead != NULL && pMsgPara != NULL,
 			  return -1);
-	m_pClientHandle->SendResponseAsync(pMsgPara, mesHead);
-	return 0;
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack(std::mem_fn(&CClientHandle::SendResponse), m_pClientHandle, pMsgPara, mesHead);
 }
 
 // 检查服务器状态

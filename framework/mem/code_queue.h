@@ -23,7 +23,7 @@ protected:
 public:
 	//析构函数
 	~CCodeQueue();
-	//new操作符重载将类对象定义到共享内存区地址
+	//new操作符重载将类,在指定的内存地址(共享内存)上生成对象
 	void *operator new(size_t nSize);
 	//delete操作符重载
 	void operator delete(void *pBase);
