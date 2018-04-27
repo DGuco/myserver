@@ -406,6 +406,7 @@ int CClientHandle::RecvClientData()
 		return ClienthandleErrCode::CLIENTHANDLE_PARSE_FAILED;
 	}
 
+	DealClientMessage(&m_oMessage);
 	CGameServer::GetSingletonPtr()->GetLogicThread()
 		->PushTaskBack(std::mem_fn(&CClientHandle::DealClientMessage), this, &m_oMessage);
 	return CLIENTHANDLE_SUCCESS;

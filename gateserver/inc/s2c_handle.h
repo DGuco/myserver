@@ -28,8 +28,6 @@ public:
 	void CheckWaitSendData();
 	//向client下行数据包
 	int SendClientData();
-	//是否有数据可读
-	int CheckData();
 private:
 	//接收gameserver 数据
 	int RecvServerData();

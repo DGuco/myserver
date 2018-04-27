@@ -32,8 +32,8 @@ int CS2cHandle::PrepareToRun()
 
 void CS2cHandle::RunFunc()
 {
-	//如果有数据需要发送
-	CheckWaitSendData();
+	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
+		->PushTaskBack(std::mem_fn(&CS2cHandle::CheckWaitSendData), this);
 }
 
 bool CS2cHandle::IsToBeBlocked()
@@ -130,22 +130,8 @@ int CS2cHandle::SendClientData()
 			LOG_ERROR("default", "Invalid socket index {}", nTmpIndex);
 			continue;
 		}
-		CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()->PushTaskBack(
-			[&tmpSocketInfo, pbTmpSend, unTmpPackLen, this]
-			{
-				SendToClientAsync(tmpSocketInfo, (const char *) pbTmpSend, unTmpPackLen);
-			}
-		);
-	}
-	return 0;
-}
 
-int CS2cHandle::CheckData()
-{
-	if (!IsToBeBlocked()) {
-		//唤醒线程
-		WakeUp();
-		return 1;
+		SendToClientAsync(tmpSocketInfo, (const char *) pbTmpSend, unTmpPackLen);
 	}
 	return 0;
 }
