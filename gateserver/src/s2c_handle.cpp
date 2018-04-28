@@ -12,11 +12,7 @@
 CCodeQueue *CS2cHandle::m_pS2CPipe = NULL;
 
 CS2cHandle::CS2cHandle()
-	: CMyThread("CS2cHandle", 1000),   //超时时间1ms
-	  m_iSendIndex(0),
-	  m_bHasRecv(false),
-	  m_iSCIndex(0),
-	  m_nSCLength(0)
+	: CMyThread("CS2cHandle", 1000) //超时时间1ms
 {
 }
 
@@ -32,8 +28,7 @@ int CS2cHandle::PrepareToRun()
 
 void CS2cHandle::RunFunc()
 {
-	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
-		->PushTaskBack(std::mem_fn(&CS2cHandle::CheckWaitSendData), this);
+	CheckWaitSendData();
 }
 
 bool CS2cHandle::IsToBeBlocked()
@@ -46,106 +41,65 @@ void CS2cHandle::CheckWaitSendData()
 	int iTmpRet = 0;
 	int unTmpCodeLength = 0;
 
-	if (m_iSendIndex < m_oMesHead.socketinfos().size()) {
-		//有数据未发送，继续发送
-		SendClientData();
-		m_bHasRecv = false;
+	CByteBuff tmpBuff;
+	iTmpRet = RecvServerData(tmpBuff.CanWriteData());
+	if (iTmpRet == 0) {
+		return;
 	}
-	else {
-		//当前没有接收到数据，先接收数据
-		if (false == m_bHasRecv) {
-			//没有可发送的数据或者发送完成,则接收gate数据
-			iTmpRet = RecvServerData();
-			//没有数据可接收，则发送队列无数据发送，退出
-			if (iTmpRet == 0) {
-				return;
-			}
-			m_bHasRecv = true;
-		}//处理已经接收到的数据
-		if (m_bHasRecv == true) {
-			//组织服务器发送到客户端的数据信息头，设置相关索引和游标
-			m_iSendIndex = 0;
-			m_iSCIndex = 0;
-			m_nSCLength = 0;
-			CMessage tmpMes;
-			//反序列化消息的CTcpHead,取出发送游标和长度,把数据存入发送消息缓冲区m_szMsgBuf
-			iTmpRet = CClientCommEngine::ConvertStreamToMessage(m_acSCMsgBuf,
-																unTmpCodeLength,
-																&tmpMes,
-																NULL,
-																&m_iSendIndex);
-			CClientCommEngine::CopyMesHead(tmpMes.mutable_msghead(), &m_oMesHead);
-			//序列化失败继续发送
-			if (iTmpRet < 0) {
-				LOG_ERROR("default",
-						  "CTCPCtrl::CheckWaitSendData Error, ClientCommEngine::ConvertMsgToStream return {}.",
-						  iTmpRet);
-				m_oMesHead.Clear();
-				m_iSendIndex = 0;
-				return;
-			}
 
-			//接收成功,取出数据长度
-			char *pTmp = m_acSCMsgBuf;
-			pTmp += m_iSCIndex;
-			m_nSCLength = *(unsigned short *) pTmp;
-		}
+	CMessage tmpMes;
+	iTmpRet = CClientCommEngine::ConvertStreamToMessage(&tmpBuff,
+														unTmpCodeLength,
+														&tmpMes,
+														NULL);
+	//序列化失败继续发送
+	if (iTmpRet < 0) {
+		LOG_ERROR("default",
+				  "CTCPCtrl::CheckWaitSendData Error, ClientCommEngine::ConvertMsgToStream return {}.",
+				  iTmpRet);
+		return;
 	}
+
+	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()->PushTaskBack(
+		[this, &tmpMes, &tmpBuff]
+		{
+			SendClientData(tmpMes, tmpBuff);
+		}
+	);
+
 }
 
-int CS2cHandle::SendClientData()
+int CS2cHandle::SendClientData(CMessage &tmpMes, CByteBuff &tmpBuff)
 {
-	BYTE *pbTmpSend = NULL;
-	unsigned short unTmpShort;
-	int nTmpIndex;
-	unsigned short unTmpPackLen;
-
-	auto *pSendList = m_oMesHead.mutable_socketinfos();
-	//client socket索引非法，不存在要发送的client
-	if (m_iSendIndex >= pSendList->size())
-		return 0;
-
-	unTmpPackLen = m_nSCLength;
-	//发送数据
-	if (unTmpPackLen > 0) {
-		//根据发送给客户端的数据在m_szSCMsgBuf中的数组下标取出数据
-		pbTmpSend = (BYTE *) m_acSCMsgBuf[m_iSCIndex];
-		memcpy((void *) &unTmpShort, (const void *) pbTmpSend, sizeof(unsigned short));
-		if (unTmpShort != unTmpPackLen) {
-			LOG_ERROR("default",
-					  "Code length not matched,left length {} is less than body length {}",
-					  unTmpPackLen,
-					  unTmpShort);
-			return -1;
-		}
-	}
-
-	for (int i = 0; i < pSendList->size(); ++i) {
+	int nTmpSocket;
+	auto tmpSendList = tmpMes.msghead().socketinfos();
+	int tmpDataLen = tmpBuff.ReadableDataLen();
+	const char *data = tmpBuff.CanReadData();
+	for (int i = 0; i < tmpSendList.size(); ++i) {
 		//向后移动socket索引
-		m_iSendIndex++;
-		CSocketInfo tmpSocketInfo = pSendList->Get(m_iSendIndex);
-		nTmpIndex = tmpSocketInfo.socketid();
+		CSocketInfo tmpSocketInfo = tmpSendList.Get(i);
+		nTmpSocket = tmpSocketInfo.socketid();
 		//socket 非法
-		if (nTmpIndex <= 0 || MAX_SOCKET_NUM <= nTmpIndex) {
-			LOG_ERROR("default", "Invalid socket index {}", nTmpIndex);
+		if (nTmpSocket <= 0 || MAX_SOCKET_NUM <= nTmpSocket) {
+			LOG_ERROR("default", "Invalid socket index {}", nTmpSocket);
 			continue;
 		}
-
-		SendToClientAsync(tmpSocketInfo, (const char *) pbTmpSend, unTmpPackLen);
+		CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()->PushTaskBack(
+			std::mem_fn(&CS2cHandle::SendToClient), this, tmpSocketInfo, data, tmpDataLen);
 	}
 	return 0;
 }
 
-int CS2cHandle::RecvServerData()
+int CS2cHandle::RecvServerData(char *data)
 {
 	int unTmpCodeLength = MAX_PACKAGE_LEN;
-	if (m_pS2CPipe->GetHeadCode((BYTE *) m_acSCMsgBuf, &unTmpCodeLength) < 0) {
+	if (m_pS2CPipe->GetHeadCode((BYTE *) data, &unTmpCodeLength) < 0) {
 		unTmpCodeLength = 0;
 	}
 	return unTmpCodeLength;
 }
 
-void CS2cHandle::SendToClientAsync(const CSocketInfo &socketInfo, const char *data, unsigned int len)
+void CS2cHandle::SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len)
 {
 	CAcceptor *pAcceptor = CNetWork::GetSingletonPtr()->FindAcceptor(socketInfo.socketid());
 	if (pAcceptor == NULL) {
@@ -160,11 +114,10 @@ void CS2cHandle::SendToClientAsync(const CSocketInfo &socketInfo, const char *da
 	*/
 	if (pAcceptor->GetCreateTime() != socketInfo.createtime()) {
 		LOG_ERROR("default",
-				  "sokcet[{}] already closed(tcp createtime:{}:gate createtime:{}) : gate ==> client[{}] bytes failed",
+				  "sokcet[{}] already closed(tcp createtime:{}:gate createtime:{}) : gate ==> client failed",
 				  socketInfo.socketid(),
 				  pAcceptor->GetCreateTime(),
-				  socketInfo.createtime(),
-				  m_nSCLength);
+				  socketInfo.createtime());
 		return;
 	}
 	int iTmpCloseFlag = socketInfo.state();

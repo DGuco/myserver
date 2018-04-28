@@ -25,7 +25,6 @@ public:
 	/**
 	 * 序列化消息Message 发送到gameserver（gateserver==>gameserver）
 	 * @param convertBuff
-	 * @param unBuffLen
 	 * @param pDataBuff
 	 * @param unDataLen
 	 * @param pHead
@@ -62,17 +61,17 @@ public:
 								   Message *pMsg);
 
 	/**
-	 * @param pBuff         存放转换后地址指针
-	 * @param unBuffLen     消息长度
-	 * @param pHead         反序列化后的消息头
-	 * @param message       反序列化后的消息
-	 * @return              0 成功 其他:失败错误码
+	 *
+	 * @param pBuff
+	 * @param unBuffLen
+	 * @param pMessage
+	 * @param pMsgFactory
+	 * @return
 	 */
-	static int ConvertStreamToMessage(const void *pBuff,
+	static int ConvertStreamToMessage(CByteBuff *pBuff,
 									  unsigned short unBuffLen,
 									  CMessage *pMessage = NULL,
-									  CFactory *pMsgFactory = NULL,
-									  int *unOffset = 0x0);
+									  CFactory *pMsgFactory = NULL);
 };
 
 #endif /* CLIENT_COMM_ENGINE_H_ */

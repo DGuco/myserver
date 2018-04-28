@@ -279,21 +279,18 @@ int CClientCommEngine::ConvertToGateStream(const void *pBuff,
 	return 0;
 }
 
-int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
+int CClientCommEngine::ConvertStreamToMessage(CByteBuff *pBuff,
 											  unsigned short unBuffLen,
 											  CMessage *pMessage,
-											  CFactory *pMsgFactory,
-											  int *unOffset)
+											  CFactory *pMsgFactory)
 {
 	if ((pBuff == NULL)) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertStreamToClientMsg Input param failed.");
 	}
 
-	char *pbyTmpBuff = (char *) pBuff;
 	unsigned short unTmpUseLen = 0;
 	//取出数据总长度
-	unsigned short unTmpTotalLen = *(unsigned short *) pbyTmpBuff;
-	pbyTmpBuff += sizeof(unsigned short);        // 指针指向数据处
+	unsigned short unTmpTotalLen = pBuff->ReadUnShort();
 	unTmpUseLen += sizeof(unsigned short);
 
 	// 总长度不匹配
@@ -306,34 +303,27 @@ int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
 	}
 
 	// 字节对齐补充长度（采用8字节对齐）
-	unsigned short unTmpAddlLen = *(unsigned short *) pbyTmpBuff;
-	pbyTmpBuff += sizeof(unsigned short);
+	unsigned short unTmpAddlLen = pBuff->ReadUnShort();
 	unTmpUseLen += sizeof(unsigned short);
 
-	//扔掉字节对齐长度(字节补齐部分早尾部)
-	unTmpUseLen += unTmpAddlLen;
-
 	// MesHead长度
-	unsigned short tmpHeadLen = *(unsigned short *) pbyTmpBuff;
-	pbyTmpBuff += sizeof(unsigned short);
+	unsigned short tmpHeadLen = pBuff->ReadUnShort();
 	unTmpUseLen += sizeof(unsigned short);
 
 	MesHead *pHead = pMessage->mutable_msghead();
 	//反序列化失败
-	if (pHead->ParseFromArray(pbyTmpBuff, tmpHeadLen) == false) {
+	if (pHead->ParseFromArray(pBuff->CanReadData(), tmpHeadLen) == false) {
 		MY_ASSERT_STR(0, return -1, "MesHead ParseFromArray failed");
 	}
-	pbyTmpBuff += tmpHeadLen;
-	unTmpUseLen += tmpHeadLen;
+	pBuff->ReadLen(pHead->GetCachedSize());
+	unTmpUseLen += pHead->GetCachedSize();
 
 	//消息长度
-	unsigned short tmpDataLen = *(unsigned short *) pbyTmpBuff;
-	pbyTmpBuff += sizeof(unsigned short);
+	unsigned short tmpDataLen = pBuff->ReadUnShort();;
 	unTmpUseLen += sizeof(unsigned short);
 
-	if (unOffset) {
-		*(unOffset) = unTmpUseLen;
-	}
+	//扔掉字节对齐长度(字节补齐部分早尾部)
+	unTmpUseLen += unTmpAddlLen;
 
 	//序列化消息,消息
 	if ((unTmpTotalLen - unTmpUseLen) > 0 && pMsgFactory != NULL && pMessage != NULL) {
@@ -344,12 +334,13 @@ int CClientCommEngine::ConvertStreamToMessage(const void *pBuff,
 			MY_ASSERT_STR(0, return -1, "Message CreateMessage failed");
 		}
 
-		if (tpMsgPara->ParseFromArray(pbyTmpBuff, tmpDataLen) == false) {
+		if (tpMsgPara->ParseFromArray(pBuff->CanReadData(), tmpDataLen) == false) {
 			// 因为使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
 			// 并且是非线程安全的
 			pMessage->~Message();
 			MY_ASSERT_STR(0, return -1, "Message ParseFromArray failed");
 		}
+		pBuff->ReadLen(tpMsgPara->GetCachedSize());
 		pMessage->set_msgpara((unsigned long) tpMsgPara);
 	}
 	return 0;
