@@ -41,7 +41,7 @@ void CMyThread::ThreadFunc()
 		LOG_DEBUG("default", "Thread [{}] would blocked.", m_sThreadName);
 		//超时
 		if (m_lTimeOut > 0) {
-			data_cond.wait_for(lk, std::chrono::milliseconds(m_lTimeOut),
+			data_cond.wait_for(lk, std::chrono::microseconds(m_lTimeOut),
 							   [this]
 							   {
 								   return (m_iRunStatus == rt_stopped || !IsToBeBlocked());
