@@ -24,11 +24,11 @@ public:
 	void RunFunc() override;
 	//线程阻塞条件
 	bool IsToBeBlocked() override;
+private:
 	//检测发送队列
 	void CheckWaitSendData();
 	//向client下行数据包
-	int SendClientData(CMessage &tmpMes, CByteBuff &tmpBuff);
-private:
+	int SendClientData(CMessage &tmpMes, std::shared_ptr<CByteBuff> tmpBuff);
 	//接收gameserver 数据
 	int RecvServerData(char *data);
 	//给特定client发送数据

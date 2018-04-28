@@ -300,22 +300,20 @@ int CClientHandle::SendResToPlayer(Message *pMessage, CPlayer *pPlayer)
 
 int CClientHandle::SendResponse(Message *pMessage, MesHead *mesHead)
 {
-	MY_ASSERT((pMessage != NULL && mesHead != NULL), return -1);
-	char aTmpCodeBuf[MAX_PACKAGE_LEN] = {0};
-	unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
-
+	CByteBuff tmpByteBuff;
 	// 是否需要加密，在这里修改参数
-	int iRet = CClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
-													  unTmpCodeLength,
+	int iRet = CClientCommEngine::ConvertToGateStream(&tmpByteBuff,
 													  mesHead,
-													  pMessage);
+													  pMessage, mesHead->cmd(),
+													  mesHead->serial(),
+													  mesHead->seq());
 	if (iRet != 0) {
 		MY_ASSERT_STR(0,
 					  return -2,
 					  "CClientHandle::Send failed, CClientCommEngine::ConvertGameServerMessageToStream failed.");
 	}
 
-	iRet = mS2CPipe->AppendOneCode((BYTE *) aTmpCodeBuf, unTmpCodeLength);
+	iRet = mS2CPipe->AppendOneCode((BYTE *) tmpByteBuff.CanReadData(), tmpByteBuff.ReadableDataLen());
 	if (iRet < 0) {
 		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
 	}
@@ -332,9 +330,7 @@ int CClientHandle::Push(int cmd, Message *pMessage, stPointList *pTeamList)
 	MY_ASSERT((pMessage != NULL && pTeamList != NULL), return -1);
 
 	// 判断是否发送消息后断开连接(这个主动断开只针对与第一个玩家)
-	MesHead pTmpHead;;
-	pTmpHead.set_cmd(cmd);
-	pTmpHead.set_seq(0);
+	MesHead pTmpHead;
 	for (int i = 0; i < pTeamList->GetBroadcastNum(); i++) {
 		// 将列表中的实体信息加入nethead头中
 		CPlayer *pPlayer = (CPlayer *) pTeamList->GetPointByIdx(i);
@@ -358,20 +354,21 @@ int CClientHandle::Push(int cmd, Message *pMessage, stPointList *pTeamList)
 		}
 	}
 
-	unsigned char aTmpCodeBuf[MAX_PACKAGE_LEN] = {0};
-	unsigned short unTmpCodeLength = sizeof(aTmpCodeBuf);
+	CByteBuff tmpByteBuff;
 	// 是否需要加密，在这里修改参数
-	int iRet = CClientCommEngine::ConvertToGateStream(aTmpCodeBuf,
-													  unTmpCodeLength,
+	int iRet = CClientCommEngine::ConvertToGateStream(&tmpByteBuff,
 													  &pTmpHead,
-													  pMessage);
+													  pMessage,
+													  cmd,
+													  0,
+													  0);
 	if (iRet != 0) {
 		MY_ASSERT_STR(0,
 					  return -2,
 					  "CClientHandle::Send failed, CClientCommEngine::ConvertGameServerMessageToStream failed.");
 	}
 
-	iRet = mS2CPipe->AppendOneCode(aTmpCodeBuf, unTmpCodeLength);
+	iRet = mS2CPipe->AppendOneCode((const BYTE *) tmpByteBuff.CanReadData(), tmpByteBuff.ReadableDataLen());
 	if (iRet < 0) {
 		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
 	}
@@ -380,12 +377,10 @@ int CClientHandle::Push(int cmd, Message *pMessage, stPointList *pTeamList)
 
 int CClientHandle::RecvClientData()
 {
-	BYTE abyTmpCodeBuf[MAX_PACKAGE_LEN] =
-		{0};
-	unsigned short iTmpCodeLength = sizeof(abyTmpCodeBuf);
-
+	std::shared_ptr<CByteBuff> tmpBuff(new CByteBuff);
+	CMessage tmpMessage;
 	// 从共享内存管道提取消息
-	int iRet = mC2SPipe->GetHeadCode((BYTE *) abyTmpCodeBuf,
+	int iRet = mC2SPipe->GetHeadCode((BYTE *) tmpBuff->CanWriteData(),
 									 (int *) &iTmpCodeLength);
 
 	if (iRet < 0) {
@@ -398,17 +393,17 @@ int CClientHandle::RecvClientData()
 		return ClienthandleErrCode::CLIENTHANDLE_QUEUE_EMPTY;
 	}
 
-	m_oMessage.Clear();
+	tmpMessage.Clear();
 	if (CClientCommEngine::ConvertStreamToMessage(abyTmpCodeBuf,
 												  iTmpCodeLength,
-												  &m_oMessage,
+												  &tmpMessage,
 												  CMessageFactory::GetSingletonPtr()) != 0) {
 		return ClienthandleErrCode::CLIENTHANDLE_PARSE_FAILED;
 	}
 
-	DealClientMessage(&m_oMessage);
+	DealClientMessage(&tmpMessage);
 	CGameServer::GetSingletonPtr()->GetLogicThread()
-		->PushTaskBack(std::mem_fn(&CClientHandle::DealClientMessage), this, &m_oMessage);
+		->PushTaskBack(std::mem_fn(&CClientHandle::DealClientMessage), this, &tmpMessage);
 	return CLIENTHANDLE_SUCCESS;
 }
 

@@ -111,6 +111,7 @@ int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
 	unsigned short iTmpAddlen = (unLength % 8);
 	if (iTmpAddlen > 0) {
 		iTmpAddlen = 8 - iTmpAddlen;
+		memset(convertBuff->CanWriteData(), 0, iTmpAddlen);
 	}
 	unLength += iTmpAddlen;
 
@@ -187,44 +188,54 @@ int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
 	return 0;
 }
 
-int CClientCommEngine::ConvertToGateStream(const void *pBuff,
-										   unsigned short &unBuffLen,
+int CClientCommEngine::ConvertToGateStream(CByteBuff *pBuff,
 										   MesHead *pHead,
-										   Message *pMsg)
+										   Message *pMsg,
+										   unsigned short cmd,
+										   unsigned short serial,
+										   unsigned short seq)
 {
 	if ((pBuff == NULL) || (pMsg == NULL) || pHead == NULL) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertMsgToStream Input param failed.");
 	}
 
-	char *pTemp = (char *) pBuff;
-
 	unsigned short unLength = 0;
 	//预留总长度
-	pTemp += sizeof(unsigned short);
 	unLength += sizeof(unsigned short);
 	//预留8字节对齐长度
-	pTemp += sizeof(unsigned short);
 	unLength += sizeof(unsigned short);
 
 	// MesHead长度
-	*(unsigned short *) pTemp = (unsigned short) pHead->ByteSize();
-	pTemp += sizeof(unsigned short);
+	unsigned short tmpHeadLen = (unsigned short) pHead->ByteSize();
+	pBuff->WriteUnShort(tmpHeadLen, unLength);
 	unLength += sizeof(unsigned short);
 
 	// MesHead
-	if (pHead->SerializeToArray(pTemp, unBuffLen - unLength) == false) {
+	if (pHead->SerializeToArray(pBuff->CanWriteData(), pBuff->WriteableDataLen()) == false) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertToGateStream CTcpHead SerializeToArray failed.");
 	}
-	pTemp += pHead->GetCachedSize();
+	pBuff->WriteLen(pHead->GetCachedSize());
 	unLength += pHead->GetCachedSize();
 
-	char tEncryBuff[MAX_PACKAGE_LEN] = {0};
-	char *tpEncryBuff = &tEncryBuff[0];
-	unsigned short iMsgParaLen = MAX_PACKAGE_LEN;
-	if (pMsg->SerializeToArray(tpEncryBuff, iMsgParaLen) == false) {
+	//写入数据总长度(sizeof(总长度) + sizeof(cmd) + sizeof(serial) + sizeof(seq) + 消息长度)
+	int dataLen = sizeof(unsigned short) + sizeof(cmd) + sizeof(serial) + sizeof(seq) + pMsg->GetCachedSize();
+	pBuff->WriteUnShort(dataLen);
+	unLength += sizeof(unsigned short);
+
+	pBuff->WriteUnShort(serial);
+	unLength += sizeof(unsigned short);
+
+	pBuff->WriteUnShort(seq);
+	unLength += sizeof(unsigned short);
+
+	pBuff->WriteUnShort(cmd);
+	unLength += sizeof(unsigned short);
+
+	if (pMsg->SerializeToArray(pBuff->CanWriteData(), pBuff->WriteableDataLen()) == false) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertToGateStream MsgPara SerializeToArray failed.");
 	}
-
+	pBuff->WriteLen(pMsg->GetCachedSize());
+	unLength += pMsg->GetCachedSize();
 	// if (pHead->isencry())
 	// {
 	//     //这里每次都创建一个CAes 对象保证函数的无状态，线程安全
@@ -237,45 +248,22 @@ int CClientCommEngine::ConvertToGateStream(const void *pBuff,
 	//     iMsgParaLen = pMsg->ByteSize();
 	// }
 
-	// 消息长度
-	*(unsigned short *) pTemp = (unsigned short) iMsgParaLen;
-	pTemp += sizeof(unsigned short);
-	unLength += sizeof(unsigned short);
-	//应答码
-	*(unsigned short *) pTemp = (unsigned short) pHead->serial();
-	pTemp += sizeof(unsigned short);
-	unLength += sizeof(unsigned short);
-	//序列码
-	*(unsigned short *) pTemp = (unsigned short) pHead->seq();
-	pTemp += sizeof(unsigned short);
-	unLength += sizeof(unsigned short);
-	//命令号
-	*(unsigned short *) pTemp = (unsigned short) pHead->cmd();
-	pTemp += sizeof(unsigned short);
-	unLength += sizeof(unsigned short);
-
-	memcpy(pTemp, tpEncryBuff, iMsgParaLen);
-	pTemp += iMsgParaLen;
-	unLength += iMsgParaLen;
-
 	//8字节对齐
 	unsigned short iTmpAddlen = (unLength % 8);
 	if (iTmpAddlen > 0) {
 		iTmpAddlen = 8 - iTmpAddlen;
-		//将字节对齐部分置为0
-		memset(pTemp, 0, iTmpAddlen);
+		memset(pBuff->CanWriteData(), 0, iTmpAddlen);
 	}
 	unLength += iTmpAddlen;
 
 	//回到消息起始地值补充数据从长度和字节补齐长度
-	pTemp = (char *) pBuff;
+	pBuff->SetWriteIndex(0);
 	//序列话消息总长度
-	*(short *) pTemp = unLength;
-	pTemp += sizeof(short);
+	pBuff->WriteUnShort(unLength);
 	//序列话8字节对齐长度
-	*(short *) pTemp = iTmpAddlen;
+	pBuff->WriteUnShort(iTmpAddlen);
 
-	unBuffLen = unLength;
+	pBuff->SetWriteIndex(unLength);
 	return 0;
 }
 

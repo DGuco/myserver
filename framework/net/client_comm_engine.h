@@ -49,16 +49,18 @@ public:
 
 	/**
 	 * 序列化消息CMessage 发送到gateserver（gameserver==>gateserver）
-	 * @param pBuff         存放序列化后消息的地址
-	 * @param unBuffLen     长度
-	 * @param pHead         消息头
-	 * @param pMsg          反序列化客户端消息Message
-	 * @return              0 成功 其他 失败
+	 * @param pBuff
+	 * @param unBuffLen
+	 * @param pHead
+	 * @param pMsg
+	 * @return
 	 */
-	static int ConvertToGateStream(const void *pBuff,
-								   unsigned short &unBuffLen,
+	static int ConvertToGateStream(CByteBuff *pBuff,
 								   MesHead *pHead,
-								   Message *pMsg);
+								   Message *pMsg,
+								   unsigned short cmd,
+								   unsigned short serial,
+								   unsigned short seq);
 
 	/**
 	 *

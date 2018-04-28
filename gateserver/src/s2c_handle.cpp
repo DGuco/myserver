@@ -5,6 +5,7 @@
 #include <share_mem.h>
 #include <acceptor.h>
 #include <client_comm_engine.h>
+#include <my_macro.h>
 #include "net_work.h"
 #include "../inc/s2c_handle.h"
 #include "../inc/gate_ctrl.h"
@@ -41,14 +42,14 @@ void CS2cHandle::CheckWaitSendData()
 	int iTmpRet = 0;
 	int unTmpCodeLength = 0;
 
-	CByteBuff tmpBuff;
-	iTmpRet = RecvServerData(tmpBuff.CanWriteData());
+	std::shared_ptr<CByteBuff> tmpBuff(new CByteBuff);
+	iTmpRet = RecvServerData(tmpBuff->CanWriteData());
 	if (iTmpRet == 0) {
 		return;
 	}
 
 	CMessage tmpMes;
-	iTmpRet = CClientCommEngine::ConvertStreamToMessage(&tmpBuff,
+	iTmpRet = CClientCommEngine::ConvertStreamToMessage(tmpBuff.get(),
 														unTmpCodeLength,
 														&tmpMes,
 														NULL);
@@ -61,20 +62,16 @@ void CS2cHandle::CheckWaitSendData()
 	}
 
 	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()->PushTaskBack(
-		[this, &tmpMes, &tmpBuff]
-		{
-			SendClientData(tmpMes, tmpBuff);
-		}
-	);
+		std::mem_fn(&CS2cHandle::SendClientData), this, tmpMes, tmpBuff);
 
 }
 
-int CS2cHandle::SendClientData(CMessage &tmpMes, CByteBuff &tmpBuff)
+int CS2cHandle::SendClientData(CMessage &tmpMes, std::shared_ptr<CByteBuff> tmpBuff)
 {
 	int nTmpSocket;
 	auto tmpSendList = tmpMes.msghead().socketinfos();
-	int tmpDataLen = tmpBuff.ReadableDataLen();
-	const char *data = tmpBuff.CanReadData();
+	int tmpDataLen = tmpBuff->ReadableDataLen();
+	const char *data = tmpBuff->CanReadData();
 	for (int i = 0; i < tmpSendList.size(); ++i) {
 		//向后移动socket索引
 		CSocketInfo tmpSocketInfo = tmpSendList.Get(i);

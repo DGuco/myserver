@@ -394,7 +394,6 @@ int CCodeQueue::PeekHeadCode(BYTE *pOutCode, int *psOutLength)
   *功能描述        : 读取共享内存管道（改变读写索引）
   *                 注：写共享内存管道，仅改变wrietIndex，读共享内存仅改变readIndex，
   *                 保证读进程读和写进程写不会造成数据不一致
-  * Error code: -1 invalid para; -2 not enough; -3 data crashed
 **/
 int CCodeQueue::GetHeadCode(BYTE *pOutCode, int *psOutLength)
 {

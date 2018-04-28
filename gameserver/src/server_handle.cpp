@@ -50,7 +50,7 @@ bool CServerHandle::Connect2Proxy()
 							 &CServerHandle::lcb_OnCnsSomeDataRecv,
 							 &CServerHandle::lcb_OnCnsDisconnected,
 							 &CServerHandle::lcb_OnConnectFailed,
-							 &CServerHandle::lcb_OnConnectted,
+							 &CServerHandle::lcb_OnConnected,
 							 &CServerHandle::lcb_OnPingServer,
 							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive() / 1000)
 		) {
@@ -166,7 +166,7 @@ void CServerHandle::SendMessageToProxyAsync(char *data, unsigned short len)
 		});
 }
 
-void CServerHandle::lcb_OnConnectted(CConnector *pConnector)
+void CServerHandle::lcb_OnConnected(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 	CGameServer::GetSingletonPtr()->GetIoThread()

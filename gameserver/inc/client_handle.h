@@ -68,10 +68,6 @@ protected:
 	CCodeQueue *mC2SPipe;
 	// game --> tcp 共享内存管道起始地址
 	CCodeQueue *mS2CPipe;
-
-private:
-	char m_acMessageBuff[MAX_PACKAGE_LEN];      //下行消息缓冲区
-	CMessage m_oMessage;
 };
 
 #endif //SERVER_CLIENT_HANDLE_H
