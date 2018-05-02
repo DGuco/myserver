@@ -323,9 +323,11 @@ int CClientCommEngine::ConvertStreamToMessage(CByteBuff *pBuff,
 		}
 
 		if (tpMsgPara->ParseFromArray(pBuff->CanReadData(), tmpDataLen) == false) {
-			// 因为使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
-			// 并且是非线程安全的
-			pMessage->~Message();
+//			// 因为使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
+//			// 并且是非线程安全的
+//			pMessage->~Message();
+			delete tpMsgPara;
+			tpMsgPara = NULL;
 			MY_ASSERT_STR(0, return -1, "Message ParseFromArray failed");
 		}
 		pBuff->ReadLen(tpMsgPara->GetCachedSize());

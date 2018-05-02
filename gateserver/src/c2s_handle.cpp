@@ -97,7 +97,7 @@ void CC2sHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 						   }
 						   int iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
 						   //读取数据
-						   pBufferEvent->RecvData(m_pRecvBuff->GetData(), iTmpLen);
+						   iTmpLen = pBufferEvent->RecvData(m_pRecvBuff->GetData(), iTmpLen);
 						   m_pRecvBuff->WriteLen(iTmpLen);
 						   //当前数据包已全部读取，清除当前数据包缓存长度
 						   pBufferEvent->CurrentPackRecved();

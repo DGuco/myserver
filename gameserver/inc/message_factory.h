@@ -11,14 +11,21 @@
 
 #include "message_interface.h"
 
-class CMessageFactory : public CFactory, public CSingleton<CMessageFactory>
+#define CASE_NEW_MSG(msgname, msgid)  \
+    case msgid:                       \
+    {                                 \
+        pTmpMessage = new msgname;    \
+        break;                        \
+    }
+
+class CMessageFactory: public CFactory, public CSingleton<CMessageFactory>
 {
 public:
-	Message* CreateMessage(unsigned int uiMessageID);
+	Message *CreateMessage(unsigned int uiMessageID);
 
 private:
-	Message* CreateClientMessage(unsigned int uiMessageID);
-	Message* CreateServerMessage(unsigned int uiMessageID);
+	Message *CreateClientMessage(unsigned int uiMessageID);
+	Message *CreateServerMessage(unsigned int uiMessageID);
 
 	static unsigned char macMessageBuff[MAX_PACKAGE_LEN];
 };

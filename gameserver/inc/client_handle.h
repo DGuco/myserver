@@ -58,7 +58,7 @@ public:
 	void Dump(char *pBuffer, unsigned int &uiLen);
 	//检查是有数据可读
 	int CheckData();
-	int DealClientMessage(CMessage *pMsg);
+	int DealClientMessage(std::shared_ptr<CMessage> pMsg);
 	int SendResToPlayer(Message *pMessage, CPlayer *pPlayer);
 	int SendResponse(Message *pMessage, MesHead *mesHead);
 	int Push(int cmd, Message *pMessage, stPointList *pPlayerList);

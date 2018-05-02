@@ -15,7 +15,7 @@ public:
 	~CMessageDispatcher();
 
 	// 客户端上传的消息派发
-	static int ProcessClientMessage(CMessage *pMsg);
+	static int ProcessClientMessage(std::shared_ptr<CMessage> pMsg);
 	// 服务器消息派发
 	static int ProcessServerMessage(CProxyMessage *pMessage);
 };

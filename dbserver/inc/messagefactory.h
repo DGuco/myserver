@@ -10,6 +10,13 @@
 #include "messagefactory.h"
 #include "message_interface.h"
 
+#define CASE_NEW_MSG(msgname, msgid)                \
+    case msgid:                        \
+    {                                            \
+        pTmpMessage = new(macMessageBuff) msgname;    \
+        break;                                    \
+    }
+
 class CMessageFactory: public CFactory
 {
 public:

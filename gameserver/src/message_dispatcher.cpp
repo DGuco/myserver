@@ -6,7 +6,6 @@
 #include "server_tool.h"
 #include "my_assert.h"
 #include "../logicmodule/inc/core_module.h"
-#include "../datamodule/inc/player.h"
 #include "../datamodule/inc/sceneobjmanager.h"
 #include "../inc/message_dispatcher.h"
 #include "../inc/game_server.h"
@@ -24,7 +23,7 @@ CMessageDispatcher::~CMessageDispatcher()
 }
 
 // 消息客户端上传的消息派发
-int CMessageDispatcher::ProcessClientMessage(CMessage *pMsg)
+int CMessageDispatcher::ProcessClientMessage(std::shared_ptr<CMessage> pMsg)
 {
 	MY_ASSERT(pMsg != NULL && pMsg->has_msghead(), return -1);
 	Message *pMsgPara = (Message *) pMsg->msgpara();
@@ -38,10 +37,10 @@ int CMessageDispatcher::ProcessClientMessage(CMessage *pMsg)
 	}
 	const ::google::protobuf::Descriptor *pTmpDescriptor = pMsgPara->GetDescriptor();
 	if (tmpHead.cmd() == PlayerCommandId::USER_ACCOUNT_LOGIN) {
-		PERF_FUNC(pTmpDescriptor->name().c_str(), CCoreModule::GetSingletonPtr()->OnMsgUserLoginRequest(pMsg));
+		PERF_FUNC(pTmpDescriptor->name().c_str(), CCoreModule::GetSingletonPtr()->OnMsgUserLoginRequest(pMsg.get()));
 	}
 	else if (tmpHead.cmd() == PlayerCommandId::PLAYER_LOGIN) {
-		PERF_FUNC(pTmpDescriptor->name().c_str(), CCoreModule::GetSingletonPtr()->OnMsgPlayerLoginRequest(pMsg));
+		PERF_FUNC(pTmpDescriptor->name().c_str(), CCoreModule::GetSingletonPtr()->OnMsgPlayerLoginRequest(pMsg.get()));
 	}
 	else {
 		CSocketInfo tmpSocketInfo = tmpHead.socketinfos().Get(0);
@@ -64,18 +63,13 @@ int CMessageDispatcher::ProcessClientMessage(CMessage *pMsg)
 		OBJ_ID iTmpPlayerId = pPlayer->GetPlayerId();
 #endif
 
-		PERF_FUNC(pTmpDescriptor->name().c_str(), CGameServer::GetSingletonPtr()->ProcessClientMessage(pMsg, pPlayer));
+		PERF_FUNC(pTmpDescriptor->name().c_str(),
+				  CGameServer::GetSingletonPtr()->ProcessClientMessage(pMsg.get(), pPlayer));
 	}
-//    if ( pMsg->msghead().cmd() != CMsgPingRequest::MsgID )
-//    {
-//        LOG_DEBUG("default", "---- Recv Client({} : %ld) Msg[ {} ][id: 0x%08x / {}] ----",
-//                  iTmpPlayerId, tmpSocketInfo->socketid(),
-//                  pTmpDescriptor->name().c_str(), pMsg->msghead().messageid(), pMsg->msghead().messageid());
-//        LOG_DEBUG("default", "[{}]", ((Message*)pMsg->msgpara())->ShortDebugString().c_str());
-//    }
+
 	// 消息回收
 	if (pMsgPara) {
-		pMsgPara->~Message();
+		delete pMsgPara;
 		pMsg->set_msgpara((unsigned long) NULL);
 		pMsgPara = NULL;
 	}
@@ -149,10 +143,9 @@ int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 
 	// 消息回收
 	if (pTmpMsgPara) {
-		pTmpMsgPara->~Message();
+		delete pTmpMsgPara;
 		pMsg->set_msgpara((unsigned long) NULL);
 		pTmpMsgPara = NULL;
 	}
-
 	return 0;
 }

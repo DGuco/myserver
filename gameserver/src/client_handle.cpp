@@ -25,7 +25,7 @@ CClientHandle::~CClientHandle()
 	SAFE_DELETE(mS2CPipe);
 }
 
-int CClientHandle::DealClientMessage(CMessage *pMsg)
+int CClientHandle::DealClientMessage(std::shared_ptr<CMessage> pMsg)
 {
 	MesHead *pCSHead = pMsg->mutable_msghead();
 	if (pCSHead == NULL) {
@@ -273,7 +273,7 @@ int CClientHandle::DealClientMessage(CMessage *pMsg)
 //	pTmpTeam->GetSocketInfoPtr()->lMsgGuid = lTmpMsgGuid;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-	CMessageDispatcher::ProcessClientMessage(&m_oMessage);
+	CMessageDispatcher::ProcessClientMessage(pMsg);
 	return CLIENTHANDLE_SUCCESS;
 }
 
@@ -378,10 +378,10 @@ int CClientHandle::Push(int cmd, Message *pMessage, stPointList *pTeamList)
 int CClientHandle::RecvClientData()
 {
 	std::shared_ptr<CByteBuff> tmpBuff(new CByteBuff);
-	CMessage tmpMessage;
+	int iTmpCodeLength;
 	// 从共享内存管道提取消息
 	int iRet = mC2SPipe->GetHeadCode((BYTE *) tmpBuff->CanWriteData(),
-									 (int *) &iTmpCodeLength);
+									 &iTmpCodeLength);
 
 	if (iRet < 0) {
 		LOG_ERROR("default", "[{} : {} : {}] When GetHeadCode from C2SPipe, error ocurr {}",
@@ -393,17 +393,17 @@ int CClientHandle::RecvClientData()
 		return ClienthandleErrCode::CLIENTHANDLE_QUEUE_EMPTY;
 	}
 
-	tmpMessage.Clear();
-	if (CClientCommEngine::ConvertStreamToMessage(abyTmpCodeBuf,
+	std::shared_ptr<CMessage> tmpMes(new CMessage);
+	tmpMes->Clear();
+	if (CClientCommEngine::ConvertStreamToMessage(tmpBuff.get(),
 												  iTmpCodeLength,
-												  &tmpMessage,
+												  tmpMes.get(),
 												  CMessageFactory::GetSingletonPtr()) != 0) {
 		return ClienthandleErrCode::CLIENTHANDLE_PARSE_FAILED;
 	}
 
-	DealClientMessage(&tmpMessage);
 	CGameServer::GetSingletonPtr()->GetLogicThread()
-		->PushTaskBack(std::mem_fn(&CClientHandle::DealClientMessage), this, &tmpMessage);
+		->PushTaskBack(std::mem_fn(&CClientHandle::DealClientMessage), this, tmpMes);
 	return CLIENTHANDLE_SUCCESS;
 }
 
