@@ -8,9 +8,6 @@
 #include "player.pb.h"
 #include "../inc/message_factory.h"
 
-// 静态缓冲区初始化
-unsigned char CMessageFactory::macMessageBuff[MAX_PACKAGE_LEN] = {0};
-
 // 单件定义
 template<> CMessageFactory *CSingleton<CMessageFactory>::spSingleton = NULL;
 

@@ -26,7 +26,7 @@ CByteBuff::CByteBuff()
 	m_uiLen(0),
 	m_uiCapacity(MAX_PACKAGE_LEN)
 {
-	m_acData = new char[m_uiCapacity];
+	m_acData = new char[m_uiCapacity]();
 }
 
 CByteBuff::CByteBuff(unsigned int tmpCap)
@@ -54,7 +54,7 @@ CByteBuff::CByteBuff(const CByteBuff &byteBuff)
 	if (this == &(byteBuff)) {
 		return;
 	}
-	m_acData = new char[m_uiCapacity];
+	m_acData = new char[m_uiCapacity]();
 	Copy(&byteBuff);
 }
 

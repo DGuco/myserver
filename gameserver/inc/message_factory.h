@@ -26,8 +26,6 @@ public:
 private:
 	Message *CreateClientMessage(unsigned int uiMessageID);
 	Message *CreateServerMessage(unsigned int uiMessageID);
-
-	static unsigned char macMessageBuff[MAX_PACKAGE_LEN];
 };
 
 

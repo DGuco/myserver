@@ -68,7 +68,6 @@ void CMyThread::ThreadFunc()
 		// 线程状态变为rt_running
 		m_iRunStatus = rt_running;
 		lk.unlock();
-
 		RunFunc();
 	}
 }

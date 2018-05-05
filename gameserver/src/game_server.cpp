@@ -267,8 +267,7 @@ int CGameServer::SendResponse(Message *pMsgPara, CPlayer *pPlayer)
 // 回复客户端上行的请求
 int CGameServer::SendResponse(Message *pMsgPara, MesHead *mesHead)
 {
-	MY_ASSERT(mesHead != NULL && pMsgPara != NULL,
-			  return -1);
+	MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
 	CGameServer::GetSingletonPtr()->GetIoThread()
 		->PushTaskBack(std::mem_fn(&CClientHandle::SendResponse), m_pClientHandle, pMsgPara, mesHead);
 }
@@ -310,7 +309,7 @@ void CGameServer::FreshGame()
 
 	if( !CanProcessingClientMsg())
 	{
-		return;
+		returnl;
 	}
 	CCoreModule::GetSingletonPtr()->OnTimerRefreshModule();
 	mLastTickCount = tNowCount;

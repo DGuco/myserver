@@ -304,7 +304,8 @@ int CClientHandle::SendResponse(Message *pMessage, MesHead *mesHead)
 	// 是否需要加密，在这里修改参数
 	int iRet = CClientCommEngine::ConvertToGateStream(&tmpByteBuff,
 													  mesHead,
-													  pMessage, mesHead->cmd(),
+													  pMessage,
+													  mesHead->cmd(),
 													  mesHead->serial(),
 													  mesHead->seq());
 	if (iRet != 0) {
@@ -377,10 +378,10 @@ int CClientHandle::Push(int cmd, Message *pMessage, stPointList *pTeamList)
 
 int CClientHandle::RecvClientData()
 {
-	std::shared_ptr<CByteBuff> tmpBuff(new CByteBuff);
+	CByteBuff tmpBuff;
 	int iTmpCodeLength;
 	// 从共享内存管道提取消息
-	int iRet = mC2SPipe->GetHeadCode((BYTE *) tmpBuff->CanWriteData(),
+	int iRet = mC2SPipe->GetHeadCode((BYTE *) tmpBuff.CanWriteData(),
 									 &iTmpCodeLength);
 
 	if (iRet < 0) {
@@ -395,7 +396,7 @@ int CClientHandle::RecvClientData()
 
 	std::shared_ptr<CMessage> tmpMes(new CMessage);
 	tmpMes->Clear();
-	if (CClientCommEngine::ConvertStreamToMessage(tmpBuff.get(),
+	if (CClientCommEngine::ConvertStreamToMessage(&tmpBuff,
 												  iTmpCodeLength,
 												  tmpMes.get(),
 												  CMessageFactory::GetSingletonPtr()) != 0) {
