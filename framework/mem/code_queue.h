@@ -34,13 +34,13 @@ public:
 	//向进程间共享内存管道插入数据
 	int AppendOneCode(const BYTE *pInCode, int sInLength);
 	//从进程间共享内存管道获取数据
-	int GetHeadCode(BYTE *pOutCode, int *psOutLength);
+	int GetHeadCode(BYTE *pOutCode, int &psOutLength);
 	//从进程间共享内存管道获取数据
-	int PeekHeadCode(BYTE *pOutCode, int *psOutLength);
+	int PeekHeadCode(BYTE *pOutCode, int &psOutLength);
 	//从进程间共享内存管道删除数据
 	int DeleteHeadCode();
 	//从进程间共享内存管道获取数据
-	int GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int *psOutLength);
+	int GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int &psOutLength);
 	//共享内存管道是否空闲
 	bool IsQueueEmpty();
 	//向文件中备份数据
@@ -65,9 +65,13 @@ private:
 	int SetFullFlag(int iFullFlag);
 
 	//获取数据读写索引
-	void GetCriticalData(int *iReadIndex, int *iWriteIndex);
+	void GetCriticalData(int &iBeginIdx, int &iEndIdx);
 	//设置数据读写索引
 	int SetCriticalData(int iReadIndex, int iWriteIndex);
+	//获取可读数据长度
+	int GetCanReadLen();
+	//获取可写数据长度
+	int GetCanWriteLen();
 
 	struct _tagHead
 	{

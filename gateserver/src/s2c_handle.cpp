@@ -90,7 +90,7 @@ int CS2cHandle::SendClientData(CMessage &tmpMes, std::shared_ptr<CByteBuff> tmpB
 int CS2cHandle::RecvServerData(char *data)
 {
 	int unTmpCodeLength = MAX_PACKAGE_LEN;
-	if (m_pS2CPipe->GetHeadCode((BYTE *) data, &unTmpCodeLength) < 0) {
+	if (m_pS2CPipe->GetHeadCode((BYTE *) data, unTmpCodeLength) < 0) {
 		unTmpCodeLength = 0;
 	}
 	return unTmpCodeLength;
