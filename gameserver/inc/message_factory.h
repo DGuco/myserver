@@ -3,7 +3,6 @@
  *
  *  Created on  :  2017年8月8日
  *  Author      : DGuco
- *  c++ placement new 操作符在指定空间macMessageBuff生成消息
  */
 
 #ifndef SERVER_MESSAGE_FACTORY_H_

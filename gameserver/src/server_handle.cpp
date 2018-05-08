@@ -92,7 +92,7 @@ bool CServerHandle::Register2Proxy()
 		return false;
 	}
 
-	SendMessageToProxyAsync(acTmpMessageBuffer, unTmpTotalLen);
+	SendMessageToProxy(acTmpMessageBuffer, unTmpTotalLen);
 	return true;
 }
 
@@ -118,13 +118,53 @@ bool CServerHandle::SendKeepAlive2Proxy()
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return false;
 	}
-	SendMessageToProxyAsync(acTmpMessageBuffer, unTmpTotalLen);
+	SendMessageToProxy(acTmpMessageBuffer, unTmpTotalLen);
 	return true;
 }
 
-void CServerHandle::SendMessageToDB(char *data, unsigned short len)
+bool CServerHandle::SendMessageToDB(CProxyMessage *pMsg)   //获取收到心跳的时间
 {
-	SendMessageToProxyAsync(data, len);
+	CProxyHead *pHead = pMsg->mutable_msghead();
+	char acTmpMessageBuffer[MAX_PACKAGE_LEN];
+	unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
+	ServerInfo *gameInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_GAMESERVER);
+	ServerInfo *dbInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
+	int iTmpServerID = gameInfo->m_iServerId;
+	int iTmpDBServerID = dbInfo->m_iServerId;
+
+	pbmsg_setproxy(pHead,
+				   FE_GAMESERVER,
+				   iTmpServerID,
+				   FE_DBSERVER,
+				   iTmpDBServerID,
+				   GetMSTime(),
+				   enMessageCmd::MESS_NULL);
+
+	int iRet = CServerCommEngine::ConvertMsgToStream(pMsg, acTmpMessageBuffer, unTmpTotalLen);
+	if (iRet != 0) {
+		LOG_ERROR("default", "[{} : {} : {}] ConvertMsgToStream failed, iRet = {}.",
+				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+		return false;
+	}
+//	iRet = m_ProxyClient.SendOneCode(unTmpTotalLen, (BYTE *) acTmpMessageBuffer);
+	if (iRet != 0) {
+		LOG_ERROR("default", "[{} : {} : {}] proxy(index={}) SendOneCode failed, iRet = {}.",
+				  __MY_FILE__, __LINE__, __FUNCTION__, 0, iRet);
+		return false;
+	}
+
+	Message *pTmpUnknownMessagePara = (Message *) pMsg->msgpara();
+// 如果是打印出错依然返回成功
+	MY_ASSERT(pTmpUnknownMessagePara != NULL, return true);
+	const ::google::protobuf::Descriptor *pDescriptor = pTmpUnknownMessagePara->GetDescriptor();
+	LOG_DEBUG("default",
+			  "---- Send DB({}) Msg[ {} ][id: {} / {}] ----",
+			  pHead->dstid(),
+			  pDescriptor->name().c_str(),
+			  pMsg->msghead().messageid(),
+			  pMsg->msghead().messageid());
+	LOG_DEBUG("default", "[{}]", ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
+	return true;
 }
 
 time_t CServerHandle::GetLastSendKeepAlive() const
@@ -146,24 +186,20 @@ void CServerHandle::SetLastRecvKeepAlive(time_t tLastRecvKeepAlive)
 	m_tLastRecvKeepAlive = tLastRecvKeepAlive;
 }
 
-void CServerHandle::SendMessageToProxyAsync(char *data, unsigned short len)
+void CServerHandle::SendMessageToProxy(char *data, unsigned short len)
 {
-	CGameServer::GetSingletonPtr()->GetIoThread()->PushTaskBack(
-		[data, len, this]
-		{
-			IBufferEvent *pConn = m_pNetWork->FindConnector(CServerHandle::GetProxyId());
-			if (pConn == NULL) {
-				LOG_ERROR("default", "ProxyServer connection has gone");
-				return;
-			}
-			//直接通过socket发送，不同过buffer_event保证buffer_event线程安全
-			int iRet = pConn->SendBySocket(data, len);
-			if (iRet <= 0) {
-				LOG_ERROR("default", "[{} : {} : {}] proxy SendOneCode failed, iRet = {}.",
-						  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
-				return;
-			}
-		});
+	IBufferEvent *pConn = m_pNetWork->FindConnector(CServerHandle::GetProxyId());
+	if (pConn == NULL) {
+		LOG_ERROR("default", "ProxyServer connection has gone");
+		return;
+	}
+	//直接通过socket发送，不同过buffer_event保证buffer_event线程安全
+	int iRet = pConn->SendBySocket(data, len);
+	if (iRet <= 0) {
+		LOG_ERROR("default", "[{} : {} : {}] proxy SendOneCode failed, iRet = {}.",
+				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+		return;
+	}
 }
 
 void CServerHandle::lcb_OnConnected(CConnector *pConnector)

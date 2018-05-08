@@ -173,47 +173,7 @@ void CGameServer::ProcessRouterMessage(CProxyMessage *pMsg)
 
 bool CGameServer::SendMessageToDB(CProxyMessage *pMsg)
 {
-	CProxyHead *pHead = pMsg->mutable_msghead();
-	char acTmpMessageBuffer[MAX_PACKAGE_LEN];
-	unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
 
-	ServerInfo *gameInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_GAMESERVER);
-	ServerInfo *dbInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
-	int iTmpServerID = gameInfo->m_iServerId;
-	int iTmpDBServerID = dbInfo->m_iServerId;
-	pbmsg_setproxy(pHead,
-				   FE_GAMESERVER,
-				   iTmpServerID,
-				   FE_DBSERVER,
-				   iTmpDBServerID,
-				   GetMSTime(),
-				   enMessageCmd::MESS_NULL);
-
-	int iRet = CServerCommEngine::ConvertMsgToStream(pMsg, acTmpMessageBuffer, unTmpTotalLen);
-	if (iRet != 0) {
-		LOG_ERROR("default", "[{} : {} : {}] ConvertMsgToStream failed, iRet = {}.",
-				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
-		return false;
-	}
-//	iRet = m_ProxyClient.SendOneCode(unTmpTotalLen, (BYTE *) acTmpMessageBuffer);
-	if (iRet != 0) {
-		LOG_ERROR("default", "[{} : {} : {}] proxy(index={}) SendOneCode failed, iRet = {}.",
-				  __MY_FILE__, __LINE__, __FUNCTION__, 0, iRet);
-		return false;
-	}
-
-	Message *pTmpUnknownMessagePara = (Message *) pMsg->msgpara();
-	// 如果是打印出错依然返回成功
-	MY_ASSERT(pTmpUnknownMessagePara != NULL, return true);
-	const ::google::protobuf::Descriptor *pDescriptor = pTmpUnknownMessagePara->GetDescriptor();
-	LOG_DEBUG("default",
-			  "---- Send DB({}) Msg[ {} ][id: {} / {}] ----",
-			  pHead->dstid(),
-			  pDescriptor->name().c_str(),
-			  pMsg->msghead().messageid(),
-			  pMsg->msghead().messageid());
-	LOG_DEBUG("default", "[{}]", ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
-	return true;
 }
 
 // 通过消息ID获取模块类型
@@ -223,53 +183,54 @@ int CGameServer::GetModuleClass(int iMsgID)
 	return iMsgID / 100;
 }
 
+void CGameServer::DisconnectClient(CPlayer *pPlayer)
+{
+	if (!pPlayer) {
+		return;
+	}
+
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::DisconnectClient),
+								m_pClientHandle,
+								pPlayer->GetPlayerBase()->GetSocket(),
+								pPlayer->GetPlayerBase()->GetCreateTime());
+}
 // 设置服务器运行状态
 void CGameServer::SetRunFlag(ERunFlag eRunFlag)
 {
 	m_RunFlag.SetRunFlag(eRunFlag);
 }
 
-// 主动断开链接
-void CGameServer::DisconnectClient(CPlayer *pPlayer)
-{
-	return m_pClientHandle->DisconnectClient(pPlayer);
-}
-
 // 广播消息给玩家，广播时，发起人一定放第一个
-int CGameServer::Push(unsigned int iMsgID, Message *pMsg, stPointList *pTeamList)
+int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<Message> pMsgPara, stPointList *pTeamList)
 {
-	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsg, pTeamList);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, pTeamList);
 	return 0;
 }
 
 // 发送消息给单个玩家
-int CGameServer::Push(unsigned int iMsgID, Message *pMsg, CPlayer *pPlayer)
+int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<Message> pMsgPara, CPlayer *pPlayer)
 {
-	MY_ASSERT(pPlayer != NULL && pMsg != NULL, return -1);
+	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
-	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsg, &tmpList);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, &tmpList);
 	return 0;
 }
 
 // 回复客户端上行的请求
-int CGameServer::SendResponse(Message *pMsgPara, CPlayer *pPlayer)
+int CGameServer::SendResponse(std::shared_ptr<Message> pMsgPara, CPlayer *pPlayer)
 {
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
 			  return -1);
-	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack(std::mem_fn(&CClientHandle::SendResToPlayer), m_pClientHandle, pMsgPara, pPlayer);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::SendResToPlayer), m_pClientHandle, pMsgPara, pPlayer);
 	return 0;
 }
 
 // 回复客户端上行的请求
-int CGameServer::SendResponse(Message *pMsgPara, MesHead *mesHead)
+int CGameServer::SendResponse(std::shared_ptr<Message> pMsgPara, std::shared_ptr<MesHead> mesHead)
 {
 	MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
-	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack(std::mem_fn(&CClientHandle::SendResponse), m_pClientHandle, pMsgPara, mesHead);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::SendResponse), m_pClientHandle, pMsgPara, mesHead);
 }
 
 // 检查服务器状态

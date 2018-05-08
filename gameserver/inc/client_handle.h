@@ -10,6 +10,7 @@
 #include "base.h"
 #include "message_interface.h"
 #include "message.pb.h"
+#include "byte_buff.h"
 #include "../datamodule/inc/player.h"
 
 
@@ -51,23 +52,22 @@ public:
 	bool IsToBeBlocked() override;
 public:
 	// 断开玩家连接
-	void DisconnectClient(CPlayer *cPlayer);
-	// 断开玩家连接
 	void DisconnectClient(int iSocket, time_t tCreateTime);
 	// 打印管道状态
 	void Dump(char *pBuffer, unsigned int &uiLen);
 	//检查是有数据可读
 	int CheckData();
 	int DealClientMessage(std::shared_ptr<CMessage> pMsg);
-	int SendResToPlayer(Message *pMessage, CPlayer *pPlayer);
-	int SendResponse(Message *pMessage, MesHead *mesHead);
-	int Push(int cmd, Message *pMessage, stPointList *pPlayerList);
+	int SendResToPlayer(std::shared_ptr<Message> pMessage, CPlayer *pPlayer);
+	int SendResponse(std::shared_ptr<Message> pMessage, std::shared_ptr<MesHead> mesHead);
+	int Push(int cmd, std::shared_ptr<Message> pMessage, stPointList *pPlayerList);
 	int RecvClientData();
 protected:
 	// tcp --> game 共享内存管道起始地址
 	CCodeQueue *mC2SPipe;
 	// game --> tcp 共享内存管道起始地址
 	CCodeQueue *mS2CPipe;
+	CByteBuff *m_pRecvBuff;
 };
 
 #endif //SERVER_CLIENT_HANDLE_H

@@ -40,7 +40,7 @@ private:
 private:
 	IEventReactor *m_pReactor;
 	FuncOnTimeOut m_pFuncOnTimerOut;
-	void *m_pParam; //超时回调参数
+	void *m_pParam; //超时回调参数l
 	int m_iSec;  //秒
 	int m_iUsec; //微妙
 	int m_iLoopTimes; //循环次数

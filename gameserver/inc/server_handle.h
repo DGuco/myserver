@@ -16,9 +16,8 @@ public:
 	virtual ~CServerHandle();
 	// 连接到Proxy
 	bool Connect2Proxy();
-	// 向dbserver发送数据
-	void SendMessageToDB(char *data, unsigned short len);
-	//获取收到心跳的时间
+	// 给DB Server发消息
+	bool SendMessageToDB(CProxyMessage *pMsg);    //获取收到心跳的时间
 	time_t GetLastSendKeepAlive() const;
 	//获取上次发送心跳的时间
 	time_t GetLastRecvKeepAlive() const;
@@ -31,7 +30,7 @@ public:
 	int PrepareToRun();
 	void Run();
 private:
-	void SendMessageToProxyAsync(char *data, unsigned short len);
+	void SendMessageToProxy(char *data, unsigned short len);
 	//向Proxy注册
 	bool Register2Proxy();
 	//想proxy 发送心跳

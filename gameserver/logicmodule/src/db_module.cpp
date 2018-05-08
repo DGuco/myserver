@@ -249,9 +249,11 @@ void CDbModule::FindOrCreateUserResponse(CSession *pSession, CMsgExecuteSqlRespo
 		if (player_id == -1) {
 			player_id = (OBJ_ID) CSceneObjManager::GetSingletonPtr()->GetPlayerManager()->GetValidId();
 		}
-		UserAccountLoginResponse response;
-		response.set_playerid(player_id);
-		CGameServer::GetSingletonPtr()->SendResponse(&response, proxyHead->mutable_msghead());
+		UserAccountLoginResponse *pRes = new UserAccountLoginResponse;
+		pRes->set_playerid(player_id);
+		MesHead *pHead = new MesHead;
+		CClientCommEngine::CopyMesHead(proxyHead->mutable_msghead(), pHead);
+		CGameServer::GetSingletonPtr()->SendResponse(std::shared_ptr<Message>(pRes), std::shared_ptr<MesHead>(pHead));
 	}
 	else {
 		// 拉取数据失败,则退出
