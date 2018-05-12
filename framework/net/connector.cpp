@@ -101,17 +101,20 @@ void CConnector::OnEvent(int16 nWhat)
 	if (nWhat & BEV_EVENT_EOF ||
 		nWhat & BEV_EVENT_READING ||
 		nWhat & BEV_EVENT_ERROR ||
-		nWhat & BEV_EVENT_WRITING)
+		nWhat & BEV_EVENT_WRITING) {
 		if (IsConnected()) {
 			SetState(eCS_Disconnected);
 			m_pFuncDisconnected(this);
 			MY_ASSERT_STR(false, return, "Connection disconnected,error code 0x%x", nWhat);
 			return;
 		}
-	if (IsConnecting()) {
-		MY_ASSERT_STR(false, return;, "Connect to %s : %d failed,error code 0x%x",
-					  m_oAddr.GetAddress(), m_oAddr.GetPort(), nWhat);
+		if (IsConnecting()) {
+			MY_ASSERT_STR(false, return;, "Connect to %s : %d failed,error code 0x%x",
+						  m_oAddr.GetAddress(), m_oAddr.GetPort(), nWhat);
+			return;
+		}
 	}
+
 }
 
 bool CConnector::IsConnected()

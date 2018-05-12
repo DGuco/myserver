@@ -4,6 +4,7 @@
 //  Created by DGuco on 16/12/6.
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
+#include <my_macro.h>
 #include "config.h"
 #include "my_assert.h"
 #include "acceptor.h"
@@ -95,11 +96,11 @@ int CProxyCtrl::MakeConnKey(const short nType, const short nID)
 	return iKey;
 }
 
-void CProxyCtrl::lcb_OnAcceptCns(uint32 uId, IBufferEvent *pBufferEvent)
+void CProxyCtrl::lcb_OnAcceptCns(uint32 uId, CAcceptor *pAcceptor)
 {
-	MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CAcceptor), return);
-	CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, (CAcceptor *) pBufferEvent);
-	LOG_DEBUG("default", "New Connector,socket id {}", pBufferEvent->GetSocket().GetSocket());
+	MY_ASSERT(pAcceptor != NULL, return);
+	CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, pAcceptor);
+	LOG_DEBUG("default", "New Connector,socket id {}", pAcceptor->GetSocket().GetSocket());
 }
 
 void CProxyCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
@@ -142,15 +143,34 @@ void CProxyCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
 
 }
 
-void CProxyCtrl::lcb_OnAcceptorTimeOut(CAcceptor *pAcceptor)
+void CProxyCtrl::lcb_OnAcceptorTimeOut(int fd, short what, void *param)
 {
-	SOCKET tmpSocket = pAcceptor->GetSocket().GetSocket();
-	auto it = m_mapSocket2Key.find(tmpSocket);
-	if (it != m_mapSocket2Key.end()) {
-		m_mapRegister.erase(it->second);
-		m_mapSocket2Key.erase(tmpSocket);
+	CNetWork *tmpNetWork = (CNetWork *) param;
+	if (tmpNetWork != NULL) {
+		CServerConfig *tmpConfig = CServerConfig::GetSingletonPtr();
+		int tmpPingTime = tmpConfig->GetTcpKeepAlive();
+		CNetWork::MAP_ACCEPTOR &tmpMap = tmpNetWork->GetAcceptorMap();
+		auto it = tmpMap.begin();
+		time_t tNow = GetMSTime();
+		for (; it != tmpMap.end();) {
+			CAcceptor *tmpAcceptor = it->second;
+			if (tNow - tmpAcceptor->GetLastKeepAlive() > tmpPingTime) {
+				SOCKET tmpSocket = tmpAcceptor->GetSocket().GetSocket();
+				auto itx = m_mapSocket2Key.find(tmpSocket);
+				if (itx != m_mapSocket2Key.end()) {
+					m_mapRegister.erase(itx->second);
+					m_mapSocket2Key.erase(tmpSocket);
+				}
+				LOG_INFO("default", "Connection time out,socket id {} close", tmpAcceptor->GetSocket().GetSocket());
+				SAFE_DELETE(tmpAcceptor);
+				it = tmpMap.erase(it);
+			}
+			else {
+				it++;
+			}
+		}
 	}
-	LOG_INFO("default", "Connection time out,socket id {} close", pAcceptor->GetSocket().GetSocket());
+
 }
 
 int CProxyCtrl::DealRegisterMes(IBufferEvent *pBufferEvent, unsigned short iTmpLen)

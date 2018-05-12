@@ -75,8 +75,7 @@ bool CServerHandle::Register2Proxy()
 
 	ServerInfo *rTmpProxy =
 		CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
-	ServerInfo
-		*rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
+	ServerInfo *rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
 	pbmsg_setproxy(tmpMessage.mutable_msghead(),
 				   enServerType::FE_GAMESERVER,
 				   rTmpGame->m_iServerId,
@@ -219,7 +218,8 @@ void CServerHandle::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 	CGameServer::GetSingletonPtr()->GetIoThread()
 		->PushTaskBack([pBufferEvent]
 					   {
-						   MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CConnector), return);
+						   MY_ASSERT(pBufferEvent != NULL, return);
+						   LOG_WARN("default", "The connection to proxy is gone,try to reconnect to it");
 						   // 断开连接重新连接到proxy服务器
 						   if (((CConnector *) pBufferEvent)->ReConnect() < 0) {
 							   LOG_ERROR("default", "Reconnect to proxyServer failed!");

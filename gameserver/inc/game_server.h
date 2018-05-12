@@ -28,7 +28,7 @@ class CGameServer: public CSingleton<CGameServer>
 public:
 	enum EServerState
 	{
-		ESS_CONNECTPROXY = 0x0001,    // 链接proxy
+		ESS_CONNECTPROXY = 0x0001,    // 链接proxyl
 		ESS_LOADDATA = 0x0002,    // 加载数据
 		ESS_PROCESSINGDATA = 0x0004,    // 处理数据
 		ESS_SAVEDATA = 0x0008,    // 停服存储数据

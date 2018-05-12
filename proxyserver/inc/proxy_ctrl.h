@@ -64,7 +64,7 @@ public:
 	int SendOneCodeTo(short nCodeLength, BYTE *pbyCode, int iKey, bool bKeepalive);
 protected:
 	//客户端连接还回调
-	static void lcb_OnAcceptCns(uint32 uId, IBufferEvent *pBufferEvent);
+	static void lcb_OnAcceptCns(uint32 uId, CAcceptor *pAcceptor);
 	//客户端断开连接回调
 	static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
 	//客户端上行数据回调
@@ -72,7 +72,7 @@ protected:
 	//客户端上行数据回调
 	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
 	//连接超时
-	static void lcb_OnAcceptorTimeOut(CAcceptor *pAcceptor);
+	static void lcb_OnAcceptorTimeOut(int fd, short what, void *param);
 private:
 	CNetWork *m_pNetWork;
 	TStatLog m_stStatLog;
