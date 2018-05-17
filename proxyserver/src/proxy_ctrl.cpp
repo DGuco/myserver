@@ -20,7 +20,7 @@ std::map<int/*key*/, int/*socket id*/> CProxyCtrl::m_mapRegister;
 
 std::map<int/*key*/, int/*socket id*/> CProxyCtrl::m_mapSocket2Key;
 
-char CProxyCtrl::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
+CByteBuff *CProxyCtrl::m_pRecvBuff = new CByteBuff;
 
 CProxyCtrl::CProxyCtrl()
 {
@@ -123,18 +123,20 @@ void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
+	m_pRecvBuff->Reset();
 	unsigned short unTmpLen = pBufferEvent->GetRecvPackLen();
+	//转发消息填充数据总长度
+	m_pRecvBuff->WriteUnShort(unTmpLen);
 	unsigned short unDataLen = unTmpLen - sizeof(unsigned short);
-	pBufferEvent->RecvData(m_acRecvBuff + sizeof(unsigned short), unDataLen);
+	pBufferEvent->RecvData(m_pRecvBuff->CanWriteData() + sizeof(unsigned short), unDataLen);
+	m_pRecvBuff->WriteLen(unDataLen);
 	pBufferEvent->CurrentPackRecved();
 	auto it = m_mapSocket2Key.find(pBufferEvent->GetSocket().GetSocket());
 	if (it != m_mapSocket2Key.end()) {
-		//转发消息填充数据总长度
-		*(unsigned short *) m_acRecvBuff = unTmpLen;
-		CProxyCtrl::GetSingletonPtr()->TransferOneCode(pBufferEvent, unDataLen);
+		CProxyCtrl::GetSingletonPtr()->TransferOneCode(pBufferEvent, unTmpLen);
 	}
 	else {    //未注册
-		CProxyCtrl::GetSingletonPtr()->DealRegisterMes(pBufferEvent, unDataLen);
+		CProxyCtrl::GetSingletonPtr()->DealRegisterMes(pBufferEvent, unTmpLen);
 	}
 }
 
@@ -170,7 +172,6 @@ void CProxyCtrl::lcb_OnAcceptorTimeOut(int fd, short what, void *param)
 			}
 		}
 	}
-
 }
 
 int CProxyCtrl::DealRegisterMes(IBufferEvent *pBufferEvent, unsigned short iTmpLen)
@@ -178,7 +179,7 @@ int CProxyCtrl::DealRegisterMes(IBufferEvent *pBufferEvent, unsigned short iTmpL
 	MY_ASSERT(pBufferEvent != NULL, return -1);
 
 	CProxyHead stTmpProxyHead;
-	int iRet = CServerCommEngine::ConvertStreamToProxy(m_acRecvBuff + sizeof(unsigned short), iTmpLen, &stTmpProxyHead);
+	int iRet = CServerCommEngine::ConvertStreamToProxy(m_pRecvBuff, &stTmpProxyHead);
 	if (iRet < 0) {
 		LOG_ERROR("default", "In DealRegisterMes, ConvertStreamToProxy return {}.", iRet);
 		return -1;
@@ -235,7 +236,7 @@ int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCode
 	}
 
 	unsigned short unOffset = 0;
-	int iRet = CServerCommEngine::ConvertStreamToMsg(m_acRecvBuff + sizeof(unsigned short), nCodeLength, &stTmpMessage);
+	int iRet = CServerCommEngine::ConvertStreamToMsg(m_pRecvBuff, &stTmpMessage);
 	if (iRet < 0) {
 		LOG_ERROR("default", "In TransferOneCode, ConvertStreamToCSHead return {}.", iRet);
 		return -1;
@@ -312,7 +313,8 @@ int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCode
 	}
 
 	int iKey = MakeConnKey(stTmpHead.dstfe(), stTmpHead.dstid());
-	iTempRet = SendOneCodeTo(nCodeLength, (BYTE *) m_acRecvBuff, iKey, true);
+	m_pRecvBuff->SetReadIndex(0);
+	iTempRet = SendOneCodeTo(nCodeLength, (BYTE *) m_pRecvBuff->CanReadData(), iKey, true);
 	m_stStatLog.iSndCnt++;
 	m_stStatLog.iSndSize += nCodeLength;
 	if (iTempRet) {

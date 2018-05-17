@@ -1,5 +1,6 @@
 #include "server_comm_engine.h"
 #include "my_assert.h"
+#include "byte_buff.h"
 
 void pbmsg_setproxy(CProxyHead *pHead,
 					int iSrcFE,
@@ -22,22 +23,19 @@ void pbmsg_setmessagehead(CProxyHead *pMsg, int iMsgID)
 	pMsg->set_messageid(iMsgID);
 }
 
-int CServerCommEngine::ConvertStreamToMsg(const void *pBuff,
-										 unsigned short unBuffLen,
-										 CProxyMessage *pMsg,
-										 CFactory *pMsgFactory)
+int CServerCommEngine::ConvertStreamToMsg(CByteBuff *pBuff,
+										  CProxyMessage *pMsg,
+										  CFactory *pMsgFactory)
 {
 	if ((pBuff == NULL) || (pMsg == NULL)) {
 		MY_ASSERT_STR(0, return -1, "CServerCommEngine::ConvertStreamToMsg Input param failed.");
 	}
-	char *tpBuff = (char *) pBuff;
-
 	// 总长度
-	unsigned short tTotalLen = unBuffLen;
+	unsigned short tTotalLen = pBuff->ReadUnShort();
+	tTotalLen -= sizeof(unsigned short);
 
 	// 字节对齐补充长度（采用8字节对齐）
-	unsigned short tAddLen = *(unsigned short *) tpBuff;
-	tpBuff += sizeof(unsigned short);
+	unsigned short tAddLen = pBuff->ReadUnShort();
 	tTotalLen -= sizeof(unsigned short);
 
 	// 补齐的长度一定小于8字节
@@ -49,16 +47,15 @@ int CServerCommEngine::ConvertStreamToMsg(const void *pBuff,
 
 	// CProxyHead长度
 	unsigned short tTmpLen = 0;
-	tTmpLen = *(unsigned short *) tpBuff;
-	tpBuff += sizeof(unsigned short);
+	tTmpLen = pBuff->ReadUnShort();
 	tTotalLen -= sizeof(unsigned short);
 
 	CProxyHead *pProxyHead = pMsg->mutable_msghead();
 	// CProxyHead
-	if (pProxyHead->ParseFromArray(tpBuff, tTmpLen) != true) {
+	if (pProxyHead->ParseFromArray(pBuff->CanReadData(), tTmpLen) != true) {
 		MY_ASSERT_STR(0, return -4, "CServerCommEngine::ConvertStreamToMsg CProxyHead ParseFromArray failed.");
 	}
-	tpBuff += tTmpLen;
+	pBuff->ReadLen(tTmpLen);
 	tTotalLen -= tTmpLen;
 
 	if (tTotalLen < 0) {
@@ -70,8 +67,7 @@ int CServerCommEngine::ConvertStreamToMsg(const void *pBuff,
 	}
 
 	// MessagePara长度
-	tTmpLen = *(unsigned short *) tpBuff;
-	tpBuff += sizeof(unsigned short);
+	tTmpLen = pBuff->ReadUnShort();
 	tTotalLen -= sizeof(unsigned short);
 
 	if (tTotalLen != tTmpLen) {
@@ -97,13 +93,15 @@ int CServerCommEngine::ConvertStreamToMsg(const void *pBuff,
 						  pMsg->msghead().messageid());
 		}
 
-		if (tpMsgPara->ParseFromArray(tpBuff, tTmpLen) != true) {
+		if (tpMsgPara->ParseFromArray(pBuff->CanReadData(), tTmpLen) != true) {
 			// 因为使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
 			// 并且是非线程安全的
 			tpMsgPara->~Message();
-			MY_ASSERT_STR(0, return -9, "CServerCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
+			MY_ASSERT_STR(0,
+						  return -9,
+						  "CServerCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
 		}
-
+		pBuff->ReadLen(tTmpLen);
 		pMsg->set_msgpara((unsigned long) tpMsgPara);
 	}
 
@@ -111,8 +109,8 @@ int CServerCommEngine::ConvertStreamToMsg(const void *pBuff,
 }
 
 int CServerCommEngine::ConvertMsgToStream(CProxyMessage *pMsg,
-										 void *pBuff,
-										 unsigned short &unBuffLen)
+										  void *pBuff,
+										  unsigned short &unBuffLen)
 {
 	if ((pBuff == NULL) || (unBuffLen < 8)) {
 		MY_ASSERT_STR(0, return -1, "CServerCommEngine::ConvertMsgToStream Input impossibility.");
@@ -203,21 +201,18 @@ int CServerCommEngine::ConvertMsgToStream(CProxyMessage *pMsg,
 	return 0;
 }
 
-int CServerCommEngine::ConvertStreamToProxy(const void *pBuff,
-										   unsigned short unBuffLen,
-										   CProxyHead *pProxyHead)
+int CServerCommEngine::ConvertStreamToProxy(CByteBuff *pBuff,
+											CProxyHead *pProxyHead)
 {
-	if ((pBuff == NULL) || (unBuffLen < (sizeof(unsigned short) * 3)) || (pProxyHead == NULL)) {
+	if ((pBuff == NULL) || (pProxyHead == NULL)) {
 		MY_ASSERT_STR(0, return -1, "CServerCommEngine::ConvertStreamToMsg Input param failed.");
 	}
-	char *tpBuff = (char *) pBuff;
-
 	// 总长度
-	unsigned short tTotalLen = unBuffLen;
+	unsigned short tTotalLen = pBuff->ReadUnShort();
+	tTotalLen -= sizeof(unsigned short);
 
 	// 字节对齐补充长度（采用8字节对齐）
-	unsigned short tAddLen = *(unsigned short *) tpBuff;
-	tpBuff += sizeof(unsigned short);
+	unsigned short tAddLen = pBuff->ReadUnShort();
 	tTotalLen -= sizeof(unsigned short);
 
 	// 补齐的长度一定小于8字节
@@ -229,15 +224,14 @@ int CServerCommEngine::ConvertStreamToProxy(const void *pBuff,
 
 	// CProxyHead长度
 	unsigned short tHeadTmpLen = 0;
-	tHeadTmpLen = *(unsigned short *) tpBuff;
-	tpBuff += sizeof(unsigned short);
+	tHeadTmpLen = pBuff->ReadUnShort();
 	tTotalLen -= sizeof(unsigned short);
 
 	// CProxyHead
-	if (pProxyHead->ParseFromArray(tpBuff, tHeadTmpLen) != true) {
+	if (pProxyHead->ParseFromArray(pBuff->CanReadData(), tHeadTmpLen) != true) {
 		MY_ASSERT_STR(0, return -4, "CServerCommEngine::ConvertStreamToMsg CProxyHead ParseFromArray failed.");
 	}
-	tpBuff += tHeadTmpLen;
+	pBuff->ReadLen(tHeadTmpLen);
 	tTotalLen -= tHeadTmpLen;
 
 	if (tTotalLen < 0) {

@@ -9,6 +9,7 @@
 #define _PROXY_CTRL_HPP_
 
 #include <mutex>
+#include <byte_buff.h>
 #include "server_tool.h"
 #include "net_work.h"
 
@@ -78,7 +79,7 @@ private:
 	TStatLog m_stStatLog;
 	static std::map<int/*key*/, int/*socket id*/> m_mapRegister;
 	static std::map<int/*socket id*/, int/*key*/> m_mapSocket2Key;
-	static char m_acRecvBuff[MAX_PACKAGE_LEN];
+	static CByteBuff *m_pRecvBuff;
 };
 
 #endif // _PROXY_CTRL_HPP_
