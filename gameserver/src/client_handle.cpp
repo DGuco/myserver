@@ -16,7 +16,7 @@
 
 CClientHandle::CClientHandle()
 	: CMyThread("CClientHandle", 1000),//阻塞超时1ms
-	  m_pRecvBuff(new CByteBuff)
+	  m_oRecvBuff(new CByteBuff)
 {
 }
 
@@ -278,7 +278,7 @@ int CClientHandle::DealClientMessage(std::shared_ptr<CMessage> pMsg)
 	return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::SendResToPlayer(std::shared_ptr<Message> pMessage, CPlayer *pPlayer)
+int CClientHandle::SendResToPlayer(std::shared_ptr<CGoogleMessage> pMessage, CPlayer *pPlayer)
 {
 	MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
 	std::shared_ptr<MesHead> pTmpHead = std::make_shared<MesHead>();
@@ -299,7 +299,7 @@ int CClientHandle::SendResToPlayer(std::shared_ptr<Message> pMessage, CPlayer *p
 	return 0;
 }
 
-int CClientHandle::SendResponse(std::shared_ptr<Message> pMessage, std::shared_ptr<MesHead> mesHead)
+int CClientHandle::SendResponse(std::shared_ptr<CGoogleMessage> pMessage, std::shared_ptr<MesHead> mesHead)
 {
 	CByteBuff tmpByteBuff;
 	// 是否需要加密，在这里修改参数
@@ -327,7 +327,7 @@ int CClientHandle::SendResponse(std::shared_ptr<Message> pMessage, std::shared_p
 	return 0;
 }
 
-int CClientHandle::Push(int cmd, std::shared_ptr<Message> pMessage, stPointList *pTeamList)
+int CClientHandle::Push(int cmd, std::shared_ptr<CGoogleMessage> pMessage, stPointList *pTeamList)
 {
 	MY_ASSERT((pMessage != NULL && pTeamList != NULL), return -1);
 
@@ -379,10 +379,10 @@ int CClientHandle::Push(int cmd, std::shared_ptr<Message> pMessage, stPointList 
 
 int CClientHandle::RecvClientData()
 {
-	m_pRecvBuff->Reset();
+	m_oRecvBuff->Reset();
 	int iTmpCodeLength;
 	// 从共享内存管道提取消息
-	int iRet = mC2SPipe->GetHeadCode((BYTE *) m_pRecvBuff->CanWriteData(), iTmpCodeLength);
+	int iRet = mC2SPipe->GetHeadCode((BYTE *) m_oRecvBuff->CanWriteData(), iTmpCodeLength);
 
 	if (iRet < 0) {
 		LOG_ERROR("default", "[{} : {} : {}] When GetHeadCode from C2SPipe, error ocurr {}",
@@ -395,7 +395,7 @@ int CClientHandle::RecvClientData()
 	}
 
 	std::shared_ptr<CMessage> tmpMes = std::make_shared<CMessage>();
-	if (CClientCommEngine::ConvertStreamToMessage(m_pRecvBuff,
+	if (CClientCommEngine::ConvertStreamToMessage(m_oRecvBuff,
 												  iTmpCodeLength,
 												  tmpMes.get(),
 												  CMessageFactory::GetSingletonPtr()) != 0) {

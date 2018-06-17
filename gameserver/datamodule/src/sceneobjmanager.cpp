@@ -4,7 +4,7 @@
 
 #include "../inc/sceneobjmanager.h"
 
-template<> CSceneObjManager *CSingleton<CSceneObjManager>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<T>> CSingleton<CSceneObjManager>::spSingleton = NULL;
 
 CSceneObjManager::CSceneObjManager()
 {

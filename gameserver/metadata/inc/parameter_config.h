@@ -67,7 +67,7 @@ private:
     std::map<std::string, ParameterItem*> _datas;
 };
 
-template<class ParameterConfig> ParameterConfig* CSingleton<ParameterConfig>::spSingleton = NULL;
+template<class ParameterConfig> shared_ptr<CSingleton<T>> CSingleton<ParameterConfig>::spSingleton = NULL;
 
 #endif // __PARAMETER_CONFIG_H__
 

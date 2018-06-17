@@ -5,7 +5,7 @@
 #include "../inc/module_manager.h"
 #include "../../datamodule/inc/sceneobjmanager.h"
 
-template<> CCoreModule *CSingleton<CCoreModule>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<T>> CSingleton<CCoreModule>::spSingleton = NULL;
 
 CCoreModule::CCoreModule()
 {

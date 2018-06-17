@@ -14,7 +14,7 @@
 
 using namespace std;
 
-template<> CProxyCtrl *CSingleton<CProxyCtrl>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<CProxyCtrl>> CSingleton<CProxyCtrl>::spSingleton = NULL;
 
 std::map<int/*key*/, int/*socket id*/> CProxyCtrl::m_mapRegister;
 

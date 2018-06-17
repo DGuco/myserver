@@ -87,12 +87,12 @@ public:
 	// 给World Server 发消息
 
 	// 广播消息给玩家，广播时，发起人一定放第一个
-	int Push(unsigned int iMsgID, std::shared_ptr<Message> pMsgPara, stPointList *pTeamList);
+	int Push(unsigned int iMsgID, std::shared_ptr<CGoogleMessage> pMsgPara, stPointList *pTeamList);
 	// 推送消息给单个玩家
-	int Push(unsigned int iMsgID, std::shared_ptr<Message> pMsgPara, CPlayer *pPlayer);
+	int Push(unsigned int iMsgID, std::shared_ptr<CGoogleMessage> pMsgPara, CPlayer *pPlayer);
 	// 回复客户端上行的请求
-	int SendResponse(std::shared_ptr<Message> pMsgPara, CPlayer *pPlayer);
-	int SendResponse(std::shared_ptr<Message> pMsgPara, std::shared_ptr<MesHead> mesHead);
+	int SendResponse(std::shared_ptr<CGoogleMessage> pMsgPara, CPlayer *pPlayer);
+	int SendResponse(std::shared_ptr<CGoogleMessage> pMsgPara, std::shared_ptr<MesHead> mesHead);
 
 	// 通过消息ID获取模块类型
 	int GetModuleClass(int iMsgID);

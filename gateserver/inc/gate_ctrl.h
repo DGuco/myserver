@@ -16,34 +16,33 @@
 #include "base.h"
 #include "config.h"
 #include "net_work.h"
-#include "c2s_handle.h"
-#include "s2c_handle.h"
+#include "client_handle.h"
+#include "server_handle.h"
 #include "thread_pool.h"
 
 class CGateCtrl: public CSingleton<CGateCtrl>
 {
 public:
-	//构造函数
-	CGateCtrl();
-	//析构函数
-	~CGateCtrl();
-	//准备run
-	int PrepareToRun();
-	//run
-	int Run();
-	//获取线程池
-	CThreadPool *GetSingleThreadPool();
-	CC2sHandle *GetCC2sHandle();
-	CS2cHandle *GetCS2cHandle();
+    //构造函数
+    CGateCtrl();
+    //析构函数
+    ~CGateCtrl();
+    //准备run
+    int PrepareToRun();
+    //run
+    int Run();
+    //获取线程池
+    shared_ptr<CThreadPool> GetSingleThreadPool();
+    shared_ptr<CClientHandle> GetCC2sHandle();
+    shared_ptr<CServerHandle> GetCS2cHandle();
 private:
-	//创建共享内存管道
-	void CreatePipe();
-	//读取配置文件
-	void ReadConfig();
+    //读取配置文件
+    void ReadConfig();
 private:
-	CC2sHandle *m_pC2sHandle;
-	CS2cHandle *m_pS2cHandle;
-	CThreadPool *m_pSingleThead;
+    shared_ptr<CNetWork> m_pNetWork;
+    shared_ptr<CClientHandle> m_pC2sHandle;
+    shared_ptr<CServerHandle> m_pS2cHandle;
+    shared_ptr<CThreadPool> m_pSingleThead;
 };
 
 #endif

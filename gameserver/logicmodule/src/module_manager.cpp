@@ -5,7 +5,7 @@
 #include "../inc/core_module.h"
 #include "../inc/db_module.h"
 
-template<> CModuleManager* CSingleton<CModuleManager>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<T>> CSingleton<CModuleManager>::spSingleton = NULL;
 
 CModuleManager::CModuleManager()
 {

@@ -3,7 +3,7 @@
 //
 #include "config.h"
 
-template<> CServerConfig* CSingleton<CServerConfig>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<T>> CSingleton<CServerConfig>::spSingleton = NULL;
 CServerConfig::CServerConfig()
 {
     Clear();

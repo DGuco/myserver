@@ -10,7 +10,7 @@
 #include "../inc/message_dispatcher.h"
 #include "../inc/game_server.h"
 
-template<> CMessageDispatcher *CSingleton<CMessageDispatcher>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<T>> CSingleton<CMessageDispatcher>::spSingleton = NULL;
 
 CMessageDispatcher::CMessageDispatcher()
 {
@@ -26,7 +26,7 @@ CMessageDispatcher::~CMessageDispatcher()
 int CMessageDispatcher::ProcessClientMessage(std::shared_ptr<CMessage> pMsg)
 {
 	MY_ASSERT(pMsg != NULL && pMsg->has_msghead(), return -1);
-	Message *pMsgPara = (Message *) pMsg->msgpara();
+	CGoogleMessage *pMsgPara = (CGoogleMessage *) pMsg->msgpara();
 	if (!pMsgPara) {
 		return -2;
 	}
@@ -81,7 +81,7 @@ int CMessageDispatcher::ProcessClientMessage(std::shared_ptr<CMessage> pMsg)
 int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 {
 	MY_ASSERT(pMsg != NULL && pMsg->has_msghead(), return -1);
-	Message *pTmpMsgPara = (Message *) pMsg->msgpara();
+	CGoogleMessage *pTmpMsgPara = (CGoogleMessage *) pMsg->msgpara();
 	if (!pTmpMsgPara) {
 		return -2;
 	}
@@ -138,7 +138,7 @@ int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 	}
 	}
 
-	LOG_DEBUG("default", "[{}]", ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
+	LOG_DEBUG("default", "[{}]", ((CGoogleMessage *) pMsg->msgpara())->ShortDebugString().c_str());
 	PERF_FUNC(pTmpDescriptor->name().c_str(), CGameServer::GetSingletonPtr()->ProcessRouterMessage(pMsg));
 
 	// 消息回收

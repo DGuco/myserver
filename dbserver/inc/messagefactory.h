@@ -24,10 +24,10 @@ public:
 	~CMessageFactory();
 
 public:
-	Message *CreateMessage(unsigned int uiMessageID);
+	CGoogleMessage *CreateMessage(unsigned int uiMessageID);
 
 private:
-	Message *CreateServerMessage(unsigned int uiMessageID);
+	CGoogleMessage *CreateServerMessage(unsigned int uiMessageID);
 	unsigned char macMessageBuff[MAX_PACKAGE_LEN];
 };
 

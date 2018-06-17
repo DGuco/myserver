@@ -7,7 +7,7 @@
 #include "../inc/game_server.h"
 #include "../inc/message_factory.h"
 
-template<> CGameServer *CSingleton<CGameServer>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<T>> CSingleton<CGameServer>::spSingleton = NULL;
 
 CGameServer::CGameServer()
 {
@@ -201,14 +201,14 @@ void CGameServer::SetRunFlag(ERunFlag eRunFlag)
 }
 
 // 广播消息给玩家，广播时，发起人一定放第一个
-int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<Message> pMsgPara, stPointList *pTeamList)
+int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<CGoogleMessage> pMsgPara, stPointList *pTeamList)
 {
 	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, pTeamList);
 	return 0;
 }
 
 // 发送消息给单个玩家
-int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<Message> pMsgPara, CPlayer *pPlayer)
+int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<CGoogleMessage> pMsgPara, CPlayer *pPlayer)
 {
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
 	stPointList tmpList;
@@ -218,7 +218,7 @@ int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<Message> pMsgPara, CP
 }
 
 // 回复客户端上行的请求
-int CGameServer::SendResponse(std::shared_ptr<Message> pMsgPara, CPlayer *pPlayer)
+int CGameServer::SendResponse(std::shared_ptr<CGoogleMessage> pMsgPara, CPlayer *pPlayer)
 {
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
 			  return -1);
@@ -227,7 +227,7 @@ int CGameServer::SendResponse(std::shared_ptr<Message> pMsgPara, CPlayer *pPlaye
 }
 
 // 回复客户端上行的请求
-int CGameServer::SendResponse(std::shared_ptr<Message> pMsgPara, std::shared_ptr<MesHead> mesHead)
+int CGameServer::SendResponse(std::shared_ptr<CGoogleMessage> pMsgPara, std::shared_ptr<MesHead> mesHead)
 {
 	MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
 	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::SendResponse), m_pClientHandle, pMsgPara, mesHead);

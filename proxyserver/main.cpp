@@ -4,10 +4,13 @@
 //  Created by DGuco on 16/12/6.
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
+
+#include <clocale>
+#include <bits/signum.h>
 #include <signal.h>
-#include <config.h>
+#include <runflag.h>
 #include <my_macro.h>
-#include "runflag.h"
+#include <config.h>
 #include "inc/proxy_ctrl.h"
 
 CRunFlag g_byRunFlag;

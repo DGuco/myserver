@@ -152,7 +152,7 @@ bool CServerHandle::SendMessageToDB(CProxyMessage *pMsg)   //获取收到心跳�
 		return false;
 	}
 
-	Message *pTmpUnknownMessagePara = (Message *) pMsg->msgpara();
+	CGoogleMessage *pTmpUnknownMessagePara = (CGoogleMessage *) pMsg->msgpara();
 // 如果是打印出错依然返回成功
 	MY_ASSERT(pTmpUnknownMessagePara != NULL, return true);
 	const ::google::protobuf::Descriptor *pDescriptor = pTmpUnknownMessagePara->GetDescriptor();
@@ -162,7 +162,7 @@ bool CServerHandle::SendMessageToDB(CProxyMessage *pMsg)   //获取收到心跳�
 			  pDescriptor->name().c_str(),
 			  pMsg->msghead().messageid(),
 			  pMsg->msghead().messageid());
-	LOG_DEBUG("default", "[{}]", ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
+	LOG_DEBUG("default", "[{}]", ((CGoogleMessage *) pMsg->msgpara())->ShortDebugString().c_str());
 	return true;
 }
 

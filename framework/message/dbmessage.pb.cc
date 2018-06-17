@@ -7,7 +7,6 @@
 
 #include <google/protobuf/stubs/common.h>
 #include <google/protobuf/stubs/port.h>
-#include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
 #include <google/protobuf/descriptor.h>
@@ -19,6 +18,7 @@
 #include "third_party/protobuf/version.h"
 #endif
 // @@protoc_insertion_point(includes)
+
 class CMsgExecuteSqlRequestDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<CMsgExecuteSqlRequest>
@@ -30,14 +30,9 @@ class CMsgExecuteSqlResponseDefaultTypeInternal {
       _instance;
 } _CMsgExecuteSqlResponse_default_instance_;
 namespace protobuf_dbmessage_2eproto {
-void InitDefaultsCMsgExecuteSqlRequestImpl() {
+static void InitDefaultsCMsgExecuteSqlRequest() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
-  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
-#else
-  ::google::protobuf::internal::InitProtobufDefaults();
-#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
     void* ptr = &::_CMsgExecuteSqlRequest_default_instance_;
     new (ptr) ::CMsgExecuteSqlRequest();
@@ -46,19 +41,12 @@ void InitDefaultsCMsgExecuteSqlRequestImpl() {
   ::CMsgExecuteSqlRequest::InitAsDefaultInstance();
 }
 
-void InitDefaultsCMsgExecuteSqlRequest() {
-  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
-  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsCMsgExecuteSqlRequestImpl);
-}
+::google::protobuf::internal::SCCInfo<0> scc_info_CMsgExecuteSqlRequest =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsCMsgExecuteSqlRequest}, {}};
 
-void InitDefaultsCMsgExecuteSqlResponseImpl() {
+static void InitDefaultsCMsgExecuteSqlResponse() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
-  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
-#else
-  ::google::protobuf::internal::InitProtobufDefaults();
-#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
     void* ptr = &::_CMsgExecuteSqlResponse_default_instance_;
     new (ptr) ::CMsgExecuteSqlResponse();
@@ -67,9 +55,12 @@ void InitDefaultsCMsgExecuteSqlResponseImpl() {
   ::CMsgExecuteSqlResponse::InitAsDefaultInstance();
 }
 
-void InitDefaultsCMsgExecuteSqlResponse() {
-  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
-  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsCMsgExecuteSqlResponseImpl);
+::google::protobuf::internal::SCCInfo<0> scc_info_CMsgExecuteSqlResponse =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsCMsgExecuteSqlResponse}, {}};
+
+void InitDefaults() {
+  ::google::protobuf::internal::InitSCC(&scc_info_CMsgExecuteSqlRequest.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_CMsgExecuteSqlResponse.base);
 }
 
 ::google::protobuf::Metadata file_level_metadata[2];
@@ -141,15 +132,14 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 
 void protobuf_AssignDescriptors() {
   AddDescriptors();
-  ::google::protobuf::MessageFactory* factory = NULL;
   AssignDescriptors(
-      "dbmessage.proto", schemas, file_default_instances, TableStruct::offsets, factory,
+      "dbmessage.proto", schemas, file_default_instances, TableStruct::offsets,
       file_level_metadata, file_level_enum_descriptors, NULL);
 }
 
 void protobuf_AssignDescriptorsOnce() {
-  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
-  ::google::protobuf::GoogleOnceInit(&once, &protobuf_AssignDescriptors);
+  static ::google::protobuf::internal::once_flag once;
+  ::google::protobuf::internal::call_once(once, protobuf_AssignDescriptors);
 }
 
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
@@ -187,8 +177,8 @@ void AddDescriptorsImpl() {
 }
 
 void AddDescriptors() {
-  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
-  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
+  static ::google::protobuf::internal::once_flag once;
+  ::google::protobuf::internal::call_once(once, AddDescriptorsImpl);
 }
 // Force AddDescriptors() to be called at dynamic initialization time.
 struct StaticDescriptorInitializer {
@@ -302,17 +292,15 @@ const int CMsgExecuteSqlRequest::kHasBlobFieldNumber;
 
 CMsgExecuteSqlRequest::CMsgExecuteSqlRequest()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
-    ::protobuf_dbmessage_2eproto::InitDefaultsCMsgExecuteSqlRequest();
-  }
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_dbmessage_2eproto::scc_info_CMsgExecuteSqlRequest.base);
   SharedCtor();
   // @@protoc_insertion_point(constructor:CMsgExecuteSqlRequest)
 }
 CMsgExecuteSqlRequest::CMsgExecuteSqlRequest(const CMsgExecuteSqlRequest& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
-      _has_bits_(from._has_bits_),
-      _cached_size_(0) {
+      _has_bits_(from._has_bits_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   sql_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (from.has_sql()) {
@@ -333,7 +321,6 @@ CMsgExecuteSqlRequest::CMsgExecuteSqlRequest(const CMsgExecuteSqlRequest& from)
 }
 
 void CMsgExecuteSqlRequest::SharedCtor() {
-  _cached_size_ = 0;
   sql_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   buffer_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   sqlwhere_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -357,9 +344,7 @@ void CMsgExecuteSqlRequest::SharedDtor() {
 }
 
 void CMsgExecuteSqlRequest::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  _cached_size_.Set(size);
 }
 const ::google::protobuf::Descriptor* CMsgExecuteSqlRequest::descriptor() {
   ::protobuf_dbmessage_2eproto::protobuf_AssignDescriptorsOnce();
@@ -367,17 +352,10 @@ const ::google::protobuf::Descriptor* CMsgExecuteSqlRequest::descriptor() {
 }
 
 const CMsgExecuteSqlRequest& CMsgExecuteSqlRequest::default_instance() {
-  ::protobuf_dbmessage_2eproto::InitDefaultsCMsgExecuteSqlRequest();
+  ::google::protobuf::internal::InitSCC(&protobuf_dbmessage_2eproto::scc_info_CMsgExecuteSqlRequest.base);
   return *internal_default_instance();
 }
 
-CMsgExecuteSqlRequest* CMsgExecuteSqlRequest::New(::google::protobuf::Arena* arena) const {
-  CMsgExecuteSqlRequest* n = new CMsgExecuteSqlRequest;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
 
 void CMsgExecuteSqlRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:CMsgExecuteSqlRequest)
@@ -388,16 +366,13 @@ void CMsgExecuteSqlRequest::Clear() {
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 7u) {
     if (cached_has_bits & 0x00000001u) {
-      GOOGLE_DCHECK(!sql_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      (*sql_.UnsafeRawStringPointer())->clear();
+      sql_.ClearNonDefaultToEmptyNoArena();
     }
     if (cached_has_bits & 0x00000002u) {
-      GOOGLE_DCHECK(!buffer_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      (*buffer_.UnsafeRawStringPointer())->clear();
+      buffer_.ClearNonDefaultToEmptyNoArena();
     }
     if (cached_has_bits & 0x00000004u) {
-      GOOGLE_DCHECK(!sqlwhere_.IsDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited()));
-      (*sqlwhere_.UnsafeRawStringPointer())->clear();
+      sqlwhere_.ClearNonDefaultToEmptyNoArena();
     }
   }
   if (cached_has_bits & 248u) {
@@ -421,7 +396,7 @@ bool CMsgExecuteSqlRequest::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CMsgExecuteSqlRequest)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -909,9 +884,7 @@ size_t CMsgExecuteSqlRequest::ByteSizeLong() const {
 
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = cached_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  SetCachedSize(cached_size);
   return total_size;
 }
 
@@ -1009,9 +982,12 @@ void CMsgExecuteSqlRequest::Swap(CMsgExecuteSqlRequest* other) {
 }
 void CMsgExecuteSqlRequest::InternalSwap(CMsgExecuteSqlRequest* other) {
   using std::swap;
-  sql_.Swap(&other->sql_);
-  buffer_.Swap(&other->buffer_);
-  sqlwhere_.Swap(&other->sqlwhere_);
+  sql_.Swap(&other->sql_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  buffer_.Swap(&other->buffer_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  sqlwhere_.Swap(&other->sqlwhere_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
   swap(logictype_, other->logictype_);
   swap(sessionid_, other->sessionid_);
   swap(timestamp_, other->timestamp_);
@@ -1023,7 +999,6 @@ void CMsgExecuteSqlRequest::InternalSwap(CMsgExecuteSqlRequest* other) {
   swap(callback_, other->callback_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
-  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata CMsgExecuteSqlRequest::GetMetadata() const {
@@ -1050,9 +1025,8 @@ const int CMsgExecuteSqlResponse::kFieldValueLenFieldNumber;
 
 CMsgExecuteSqlResponse::CMsgExecuteSqlResponse()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
-    ::protobuf_dbmessage_2eproto::InitDefaultsCMsgExecuteSqlResponse();
-  }
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_dbmessage_2eproto::scc_info_CMsgExecuteSqlResponse.base);
   SharedCtor();
   // @@protoc_insertion_point(constructor:CMsgExecuteSqlResponse)
 }
@@ -1060,7 +1034,6 @@ CMsgExecuteSqlResponse::CMsgExecuteSqlResponse(const CMsgExecuteSqlResponse& fro
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
       _has_bits_(from._has_bits_),
-      _cached_size_(0),
       fieldvalue_(from.fieldvalue_),
       fieldvaluelen_(from.fieldvaluelen_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -1071,7 +1044,6 @@ CMsgExecuteSqlResponse::CMsgExecuteSqlResponse(const CMsgExecuteSqlResponse& fro
 }
 
 void CMsgExecuteSqlResponse::SharedCtor() {
-  _cached_size_ = 0;
   ::memset(&logictype_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&colcount_) -
       reinterpret_cast<char*>(&logictype_)) + sizeof(colcount_));
@@ -1086,9 +1058,7 @@ void CMsgExecuteSqlResponse::SharedDtor() {
 }
 
 void CMsgExecuteSqlResponse::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  _cached_size_.Set(size);
 }
 const ::google::protobuf::Descriptor* CMsgExecuteSqlResponse::descriptor() {
   ::protobuf_dbmessage_2eproto::protobuf_AssignDescriptorsOnce();
@@ -1096,17 +1066,10 @@ const ::google::protobuf::Descriptor* CMsgExecuteSqlResponse::descriptor() {
 }
 
 const CMsgExecuteSqlResponse& CMsgExecuteSqlResponse::default_instance() {
-  ::protobuf_dbmessage_2eproto::InitDefaultsCMsgExecuteSqlResponse();
+  ::google::protobuf::internal::InitSCC(&protobuf_dbmessage_2eproto::scc_info_CMsgExecuteSqlResponse.base);
   return *internal_default_instance();
 }
 
-CMsgExecuteSqlResponse* CMsgExecuteSqlResponse::New(::google::protobuf::Arena* arena) const {
-  CMsgExecuteSqlResponse* n = new CMsgExecuteSqlResponse;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
 
 void CMsgExecuteSqlResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:CMsgExecuteSqlResponse)
@@ -1132,7 +1095,7 @@ bool CMsgExecuteSqlResponse::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CMsgExecuteSqlResponse)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -1485,9 +1448,7 @@ size_t CMsgExecuteSqlResponse::ByteSizeLong() const {
 
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = cached_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  SetCachedSize(cached_size);
   return total_size;
 }
 
@@ -1566,7 +1527,7 @@ void CMsgExecuteSqlResponse::Swap(CMsgExecuteSqlResponse* other) {
 }
 void CMsgExecuteSqlResponse::InternalSwap(CMsgExecuteSqlResponse* other) {
   using std::swap;
-  fieldvalue_.InternalSwap(&other->fieldvalue_);
+  fieldvalue_.InternalSwap(CastToBase(&other->fieldvalue_));
   fieldvaluelen_.InternalSwap(&other->fieldvaluelen_);
   swap(logictype_, other->logictype_);
   swap(sessionid_, other->sessionid_);
@@ -1577,7 +1538,6 @@ void CMsgExecuteSqlResponse::InternalSwap(CMsgExecuteSqlResponse* other) {
   swap(colcount_, other->colcount_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
-  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata CMsgExecuteSqlResponse::GetMetadata() const {
@@ -1587,5 +1547,15 @@ void CMsgExecuteSqlResponse::InternalSwap(CMsgExecuteSqlResponse* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
+namespace google {
+namespace protobuf {
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::CMsgExecuteSqlRequest* Arena::CreateMaybeMessage< ::CMsgExecuteSqlRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::CMsgExecuteSqlRequest >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::CMsgExecuteSqlResponse* Arena::CreateMaybeMessage< ::CMsgExecuteSqlResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::CMsgExecuteSqlResponse >(arena);
+}
+}  // namespace protobuf
+}  // namespace google
 
 // @@protoc_insertion_point(global_scope)

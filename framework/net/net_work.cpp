@@ -7,7 +7,7 @@
 #include "acceptor.h"
 #include "my_assert.h"
 
-template<> CNetWork *CSingleton<CNetWork>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<T>> CSingleton<CNetWork>::spSingleton = NULL;
 
 CNetWork::CNetWork()
 	:

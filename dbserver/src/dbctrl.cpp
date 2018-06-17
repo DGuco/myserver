@@ -10,7 +10,7 @@
 #include "connector.h"
 #include "server_comm_engine.h"
 
-template<> CDBCtrl *CSingleton<CDBCtrl>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<T>> CSingleton<CDBCtrl>::spSingleton = NULL;
 
 int CDBCtrl::m_iProxyId = 0;
 
@@ -84,12 +84,12 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 		return -1;
 	}
 
-	Message *pUnknownMessagePara = (Message *) pMsg->msgpara();
+	CGoogleMessage *pUnknownMessagePara = (CGoogleMessage *) pMsg->msgpara();
 	MY_ASSERT(pUnknownMessagePara != NULL, return 0);
 	const ::google::protobuf::Descriptor *pDescriptor = pUnknownMessagePara->GetDescriptor();
 	LOG_DEBUG("default", "SendMessageTo: MsgName[{}] ProxyHead[{}] MsgHead[{}] MsgPara[{}]",
 			  pDescriptor->name().c_str(), stProxyHead->ShortDebugString().c_str(),
-			  pMsg->ShortDebugString().c_str(), ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
+			  pMsg->ShortDebugString().c_str(), ((CGoogleMessage *) pMsg->msgpara())->ShortDebugString().c_str());
 
 	return 0;
 }
@@ -102,13 +102,13 @@ int CDBCtrl::Event(CProxyMessage *pMsg)
 		return -1;
 	}
 
-	Message *pUnknownMessagePara = (Message *) pMsg->msgpara();
+	CGoogleMessage *pUnknownMessagePara = (CGoogleMessage *) pMsg->msgpara();
 	MY_ASSERT(pUnknownMessagePara != NULL, return 0);
 	const ::google::protobuf::Descriptor *pDescriptor = pUnknownMessagePara->GetDescriptor();
 	LOG_DEBUG("default", "ReceveMsg: MsgName[{}] MsgHead[{}] MsgPara[{}]",
 			  pDescriptor->name().c_str(),
 			  pMsg->ShortDebugString().c_str(),
-			  ((Message *) pMsg->msgpara())->ShortDebugString().c_str());
+			  ((CGoogleMessage *) pMsg->msgpara())->ShortDebugString().c_str());
 
 	switch (pMsg->msghead().messageid()) {
 	case CMsgExecuteSqlRequest::MsgID:  // 服务器执行SQL请求
@@ -403,10 +403,10 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 
 	CProxyMessage stTempMsg;
 	// 将解析出的消息头和消息体分别存放在 m_stCurrentProxyHead stTempMsg
-	int tRet = CServerCommEngine::ConvertStreamToMsg((const void *) (pbyCode),
-													 nCodeLength,
-													 &stTempMsg,
-													 mMsgFactory);
+//	int tRet = CServerCommEngine::ConvertStreamToMsg((const void *) (pbyCode),
+//													 &stTempMsg,
+//													 mMsgFactory);
+	int tRet = 0;
 	if (tRet != 0) {
 		LOG_ERROR("default", "In CDBCtrl::DispatchOneCodecode, ConvertStreamToMsg failed. tRet = {}", tRet);
 		return -1;
@@ -428,7 +428,7 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 		LOG_ERROR("default", "Handle event returns {}.\n", iTempRet);
 	}
 	// 消息回收
-	Message *pMessagePara = (Message *) (stTempMsg.msgpara());
+	CGoogleMessage *pMessagePara = (CGoogleMessage *) (stTempMsg.msgpara());
 	if (pMessagePara) {
 		pMessagePara->~Message();
 		stTempMsg.set_msgpara((unsigned long) NULL);

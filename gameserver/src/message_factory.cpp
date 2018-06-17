@@ -9,12 +9,12 @@
 #include "../inc/message_factory.h"
 
 // 单件定义
-template<> CMessageFactory *CSingleton<CMessageFactory>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<T>> CSingleton<CMessageFactory>::spSingleton = NULL;
 
 // 根据消息ID，创建消息
-Message *CMessageFactory::CreateMessage(unsigned int uiMessageID)
+CGoogleMessage *CMessageFactory::CreateMessage(unsigned int uiMessageID)
 {
-	Message *pTmpMessage = CreateClientMessage(uiMessageID);
+	CGoogleMessage *pTmpMessage = CreateClientMessage(uiMessageID);
 
 	if (pTmpMessage == NULL) {
 		pTmpMessage = CreateServerMessage(uiMessageID);
@@ -30,9 +30,9 @@ Message *CMessageFactory::CreateMessage(unsigned int uiMessageID)
 	return pTmpMessage;
 }
 
-Message *CMessageFactory::CreateClientMessage(unsigned int uiMessageID)
+CGoogleMessage *CMessageFactory::CreateClientMessage(unsigned int uiMessageID)
 {
-	Message *pTmpMessage = NULL;
+	CGoogleMessage *pTmpMessage = NULL;
 
 	switch (uiMessageID) {
 		// 只有客户端上行的消息需要在这里生成，下行的消息都是临时变量，不需要在MessageFactory中创建
@@ -46,9 +46,9 @@ Message *CMessageFactory::CreateClientMessage(unsigned int uiMessageID)
 	return pTmpMessage;
 }
 
-Message *CMessageFactory::CreateServerMessage(unsigned int uiMessageID)
+CGoogleMessage *CMessageFactory::CreateServerMessage(unsigned int uiMessageID)
 {
-	Message *pTmpMessage = NULL;
+	CGoogleMessage *pTmpMessage = NULL;
 
 	switch (uiMessageID) {
 		// 服务器内部的消息都需要在这里创建

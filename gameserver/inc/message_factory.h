@@ -20,11 +20,11 @@
 class CMessageFactory: public CFactory, public CSingleton<CMessageFactory>
 {
 public:
-	Message *CreateMessage(unsigned int uiMessageID);
+	CGoogleMessage *CreateMessage(unsigned int uiMessageID);
 
 private:
-	Message *CreateClientMessage(unsigned int uiMessageID);
-	Message *CreateServerMessage(unsigned int uiMessageID);
+	CGoogleMessage *CreateClientMessage(unsigned int uiMessageID);
+	CGoogleMessage *CreateServerMessage(unsigned int uiMessageID);
 };
 
 

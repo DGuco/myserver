@@ -37,7 +37,7 @@ int IBufferEvent::Send(const void *pData, unsigned int uSize)
 	}
 
 	MY_ASSERT(IsEventBuffAvailable(), return ePR_BufNull);
-	bufferevent_write(m_pStBufEv, pData, uSize);
+	return bufferevent_write(m_pStBufEv, pData, uSize);
 }
 
 int IBufferEvent::SendBySocket(const void *pData, unsigned int uSize)

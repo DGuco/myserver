@@ -58,16 +58,16 @@ public:
 	//检查是有数据可读
 	int CheckData();
 	int DealClientMessage(std::shared_ptr<CMessage> pMsg);
-	int SendResToPlayer(std::shared_ptr<Message> pMessage, CPlayer *pPlayer);
-	int SendResponse(std::shared_ptr<Message> pMessage, std::shared_ptr<MesHead> mesHead);
-	int Push(int cmd, std::shared_ptr<Message> pMessage, stPointList *pPlayerList);
+	int SendResToPlayer(std::shared_ptr<CGoogleMessage> pMessage, CPlayer *pPlayer);
+	int SendResponse(std::shared_ptr<CGoogleMessage> pMessage, std::shared_ptr<MesHead> mesHead);
+	int Push(int cmd, std::shared_ptr<CGoogleMessage> pMessage, stPointList *pPlayerList);
 	int RecvClientData();
 protected:
 	// tcp --> game 共享内存管道起始地址
 	CCodeQueue *mC2SPipe;
 	// game --> tcp 共享内存管道起始地址
 	CCodeQueue *mS2CPipe;
-	CByteBuff *m_pRecvBuff;
+	CByteBuff *m_oRecvBuff;
 };
 
 #endif //SERVER_CLIENT_HANDLE_H
