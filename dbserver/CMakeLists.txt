@@ -17,9 +17,10 @@ set(SOURCE_FILES
         src/databasemysql.cpp
         src/field.cpp
         src/messagefactory.cpp
-        src/queryresultmysql.cpp)
+        src/queryresultmysql.cpp ../test/main.cpp)
 
 include_directories(
+        /usr/include/
         /usr/local/include/
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const

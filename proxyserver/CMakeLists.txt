@@ -9,6 +9,7 @@ set(SOURCE_FILES
         )
 
 include_directories(
+        /usr/include/
         /usr/local/include/
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const

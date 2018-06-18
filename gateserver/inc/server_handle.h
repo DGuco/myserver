@@ -28,14 +28,10 @@ private:
     void CheckWaitSendData();
     //向client下行数据包
     int SendClientData(CMessage &tmpMes, std::shared_ptr<CByteBuff> tmpBuff);
-    //接收gameserver 数据
-    int RecvServerData(char *data);
-    //给特定client发送数据
-    void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
     //向gameserver注册
     void Register2Game();
     //向game发送消息
-    void SendToGame(CMessage& tmpMes);
+    int SendToGame(CMessage& tmpMes);
 private:
     //客户端上行数据回调（无用）
     static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);

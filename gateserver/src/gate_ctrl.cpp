@@ -14,62 +14,68 @@
 template<> std::shared_ptr<CGateCtrl> CSingleton<CGateCtrl>::spSingleton = NULL;
 
 CGateCtrl::CGateCtrl()
-	: m_pC2sHandle(new CClientHandle()),
-	  m_pS2cHandle(new CServerHandle),
-	  m_pSingleThead(new CThreadPool(1))
+    : m_pClientHandle(std::make_shared<CClientHandle>(m_pNetWork)),
+      m_pServerHandle(std::make_shared<CServerHandle>(m_pNetWork)),
+      m_pSingleThead(std::make_shared<CThreadPool>(1))
 {
 }
 
 CGateCtrl::~CGateCtrl()
 {
-	SAFE_DELETE(m_pC2sHandle);
-	SAFE_DELETE(m_pS2cHandle);
-	SAFE_DELETE(m_pSingleThead);
 }
 
 int CGateCtrl::PrepareToRun()
 {
 #ifdef _DEBUG_
-	//初始化日志
-	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::trace);
+    //初始化日志
+    INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::trace);
 #else
-	//初始化日志
-	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::info);
+    //初始化日志
+    INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::info);
 #endif
-	//读取配置文件
-	ReadConfig();
-	m_pC2sHandle->PrepareToRun();
-	m_pS2cHandle->PrepareToRun();
-	return 0;
+    //读取配置文件
+    ReadConfig();
+    m_pClientHandle->PrepareToRun();
+    m_pServerHandle->PrepareToRun();
+    return 0;
 }
 
 int CGateCtrl::Run()
 {
-	m_pS2cHandle->Run();
-	m_pC2sHandle->Run();
+    LOG_INFO("default", "Libevent run with net module {}",
+             event_base_get_method(reinterpret_cast<const event_base *>(m_pNetWork->GetEventReactor()
+                 ->GetEventBase())));
+    //libevent事件循环
+    m_pNetWork->DispatchEvents();
 }
 
 shared_ptr<CThreadPool> CGateCtrl::GetSingleThreadPool()
 {
-	return m_pSingleThead;
+    return m_pSingleThead;
 }
 
-shared_ptr<CClientHandle> CGateCtrl::GetCC2sHandle()
+shared_ptr<CClientHandle> CGateCtrl::GetClientHandle()
 {
-	return m_pC2sHandle;
+    return m_pClientHandle;
 }
 
-shared_ptr<CServerHandle> CGateCtrl::GetCS2cHandle()
+shared_ptr<CServerHandle> CGateCtrl::GetServerHandle()
 {
-	return m_pS2cHandle;
+    return m_pServerHandle;
+}
+
+shared_ptr<CNetWork> CGateCtrl::GetNetWork()
+{
+    return m_pNetWork;
 }
 
 void CGateCtrl::ReadConfig()
 {
-	new CServerConfig;
-	const string filepath = "../config/serverinfo.json";
-	if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filepath)) {
-		LOG_ERROR("default", "Get TcpserverConfig failed");
-		exit(0);
-	}
+    new CServerConfig;
+    const string filepath = "../config/serverinfo.json";
+    if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filepath)) {
+        LOG_ERROR("default", "Get TcpserverConfig failed");
+        exit(0);
+    }
 }
+

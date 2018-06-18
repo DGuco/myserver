@@ -124,7 +124,7 @@ void CServerHandle::Register2Game()
     return;
 }
 
-void CServerHandle::SendToGame(CMessage &tmpMes)
+int CServerHandle::SendToGame(CMessage &tmpMes)
 {
     int iRet = CClientCommEngine::ConvertToGameStream(&m_oSendBuff, &tmpMes);
     if (iRet != 0) {
@@ -139,46 +139,9 @@ void CServerHandle::SendToGame(CMessage &tmpMes)
             LOG_ERROR("default", "Send to game error, iRet = {}.", iRet);
         }
     }
+    return iRet;
 }
 
-void CServerHandle::SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len)
-{
-    CAcceptor *pAcceptor = CNetWork::GetSingletonPtr()->FindAcceptor(socketInfo.socketid());
-    if (pAcceptor == NULL) {
-        LOG_ERROR("default", "CAcceptor has gone, socket = {}", socketInfo.socketid());
-        return;
-    }
-
-    /*
-     * 时间不一样，说明这个socket是个新的连接，原来的连接已经关闭,注(原来的
-     * 的连接断开后，新的客户端用了原来的socket fd ，因此数据不是现在这个连
-     * 接的数据，原来连接的数据,中断发送
-    */
-    if (pAcceptor->GetCreateTime() != socketInfo.createtime()) {
-        LOG_ERROR("default",
-                  "sokcet[{}] already closed(tcp createtime:{}:gate createtime:{}) : gate ==> client failed",
-                  socketInfo.socketid(),
-                  pAcceptor->GetCreateTime(),
-                  socketInfo.createtime());
-        return;
-    }
-    int iTmpCloseFlag = socketInfo.state();
-    int iRet = pAcceptor->Send(data, len);
-    if (iRet != 0) {
-        //发送失败
-        CClientHandle::ClearSocket(pAcceptor, Err_ClientClose);
-        LOG_ERROR("default",
-                  "send to client {} Failed due to error {}",
-                  pAcceptor->GetSocket().GetSocket(),
-                  errno);
-        return;
-    }
-
-    //gameserver 主动关闭
-    if (iTmpCloseFlag < 0) {
-        CClientHandle::ClearSocket(pAcceptor, Client_Succeed);
-    }
-}
 
 void CServerHandle::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
 {
@@ -191,7 +154,17 @@ void CServerHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 
 void CServerHandle::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
-
+    CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
+        ->PushTaskBack([pBufferEvent]
+                       {
+                           MY_ASSERT(pBufferEvent != NULL, return);
+                           LOG_WARN("default", "The connection to proxy is gone,try to reconnect to it");
+                           // 断开连接重新连接到game
+                           if (((CConnector *) pBufferEvent)->ReConnect() < 0) {
+                               LOG_ERROR("default", "Reconnect to proxyServer failed!");
+                               return;
+                           }
+                       });
 }
 void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
 {
@@ -204,10 +177,35 @@ void CServerHandle::lcb_OnConnected(CConnector *pConnector)
         ->PushTaskBack([pConnector]
                        {
                            MY_ASSERT(pConnector != NULL, return);
-                           CGateCtrl::GetSingletonPtr()->GetCS2cHandle()->Register2Proxy();
+                           CGateCtrl::GetSingletonPtr()->GetServerHandle()->Register2Game();
                        });
 }
+
 void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 {
-
+    CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
+        ->PushTaskBack([pConnector]
+                       {
+                           MY_ASSERT(pConnector != NULL, return);
+                           time_t tNow = GetMSTime();
+                           std::shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
+                           std::shared_ptr<CServerHandle> *tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetSingleThreadPool();
+                           if (pConnector->GetState() == CConnector::eCS_Connected &&
+                               pConnector->GetSocket().GetSocket() > 0 &&
+                               tNow - tmpServerHandle->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
+                               if (tNow - tmpServerHandle->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
+                                   tmpServerHandle->SendKeepAlive2Proxy();
+                                   LOG_DEBUG("default", "SendkeepAliveToProxy succeed..");
+                               }
+                           }
+                           else {
+                               //断开连接
+                               pConnector->SetState(CConnector::eCS_Disconnected);
+                               // 断开连接重新连接到proxy服务器
+                               if (pConnector->ReConnect() < 0) {
+                                   LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
+                                   return;
+                               }
+                           }
+                       });
 }

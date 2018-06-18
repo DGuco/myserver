@@ -18,12 +18,12 @@
 #include "listener.h"
 
 using namespace std;
-class CNetWork
+class CNetWork: public CSingleton
 {
 public:
-    typedef unordered_map<unsigned int, CConnector> MAP_CONNECTOR;
-    typedef unordered_map<unsigned int, CAcceptor *> MAP_ACCEPTOR;
-    typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
+    typedef unordered_map<unsigned int, shared_ptr<CConnector>> MAP_CONNECTOR;
+    typedef unordered_map<unsigned int, shared_ptr<CAcceptor>> MAP_ACCEPTOR;
+    typedef std::queue<shared_ptr<CSystemSignal>> Queue_TimerOrSignals;
 
 public:
     //构造函数
@@ -58,24 +58,20 @@ public:
     bool ShutDownAcceptor(unsigned int uId);
     //设置信号回调
     void SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop = false);
-    //发送数据
-    int ConnectorSendData(unsigned int uId, const void *pData, unsigned int uSize);
     //关闭connector
     bool ShutDownConnectorEx(unsigned int uId);
     //启动
     void DispatchEvents();
-    //获取ping
-    unsigned int GetConnectorExPingValue(unsigned int uId);
     //查找connector
-    CConnector *FindConnector(unsigned int uId);
+    std::shared_ptr<CConnector> FindConnector(unsigned int uId);
     //查找acceptor
-    CAcceptor *FindAcceptor(unsigned int uId);
+    std::shared_ptr<CAcceptor> FindAcceptor(unsigned int uId);
     //添加新的acceptor
-    void InsertNewAcceptor(unsigned int uid, CAcceptor *pAcceptor);
+    void InsertNewAcceptor(unsigned int uid, std::shared_ptr<CAcceptor> pAcceptor);
     //添加新的connector
-    void InsertNewConnector(unsigned int uid, CConnector *pConnector);
+    void InsertNewConnector(unsigned int uid, std::shared_ptr<CConnector> pConnector);
     //获取event
-    IEventReactor *GetEventReactor();
+    std::shared_ptr<IEventReactor> GetEventReactor();
     //获取连接map
     MAP_ACCEPTOR &GetAcceptorMap();
 private:
@@ -85,14 +81,14 @@ private:
     //创建acceptor
     void NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
 private:
-    IEventReactor *m_pEventReactor;
+    shared_ptr<IEventReactor> m_pEventReactor;
     unsigned int m_uGcTime;
 
     MAP_CONNECTOR m_mapConnector;
     MAP_ACCEPTOR m_mapAcceptor;
     Queue_TimerOrSignals m_qTimerOrSignals;
-    CListener *m_pListener;
-    CTimerEvent *m_pCheckTimerOut;
+    shared_ptr<CListener> m_pListener;
+    shared_ptr<CTimerEvent> m_pCheckTimerOut;
     int m_iPingCheckTime;  //单位毫秒
 
     FuncAcceptorOnNew m_pOnNew;

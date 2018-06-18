@@ -16,6 +16,7 @@
       <file path="$PROJECT_DIR$/shareread" />
       <file path="$PROJECT_DIR$/sharewrite" />
       <file path="$PROJECT_DIR$/tcpserver" />
+      <file path="$PROJECT_DIR$/test" />
     </sourceRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/bin" />

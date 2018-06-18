@@ -126,8 +126,8 @@ bool CServerHandle::SendMessageToDB(CProxyMessage *pMsg)   //获取收到心跳�
 	CProxyHead *pHead = pMsg->mutable_msghead();
 	char acTmpMessageBuffer[MAX_PACKAGE_LEN];
 	unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
-	ServerInfo *gameInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_GAMESERVER);
-	ServerInfo *dbInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
+	ServerInfo *gameInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
+	ServerInfo *dbInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_DBSERVER);
 	int iTmpServerID = gameInfo->m_iServerId;
 	int iTmpDBServerID = dbInfo->m_iServerId;
 
@@ -254,7 +254,7 @@ void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 					   {
 						   MY_ASSERT(pConnector != NULL, return);
 						   time_t tNow = GetMSTime();
-						   CServerConfig *tmpConfig = CServerConfig::GetSingletonPtr();
+						   std::shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
 						   CServerHandle *tmpServerHandle = CGameServer::GetSingletonPtr()->GetServerHandle();
 						   if (pConnector->GetState() == CConnector::eCS_Connected &&
 							   pConnector->GetSocket().GetSocket() > 0 &&
