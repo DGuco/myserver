@@ -6,7 +6,7 @@
 #include "buffev_interface.h"
 #include "byte_buff.h"
 
-IBufferEvent::IBufferEvent(IEventReactor *pReactor,
+IBufferEvent::IBufferEvent(std::shared_ptr<IEventReactor> pReactor,
 						   int socket,
 						   FuncBufferEventOnDataSend funcOnDataSend,
 						   FuncBufferEventOnDataRecv funcOnDataRecv,
@@ -203,7 +203,7 @@ bool IBufferEvent::RegisterToReactor()
 	return true;
 }
 
-IEventReactor *IBufferEvent::GetReactor()
+std::shared_ptr<IEventReactor> IBufferEvent::GetReactor()
 {
 	return m_pReactor;
 }

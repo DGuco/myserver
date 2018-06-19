@@ -75,7 +75,6 @@ void CAcceptor::ShutDown()
     GetReactor()->UnRegister(this);
     m_oSocket.Close();
     SetState(eAS_Disconnected);
-    SAFE_DELETE(m_pNetAddr);
 }
 
 CAcceptor::eAcceptorState CAcceptor::GetState()

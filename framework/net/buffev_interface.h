@@ -15,7 +15,7 @@ class IBufferEvent: public IReactorHandler
 {
 public:
 	//构造函数
-	IBufferEvent(IEventReactor *pReactor,
+	IBufferEvent(std::shared_ptr<IEventReactor> pReactor,
 				 int socket,
 				 FuncBufferEventOnDataSend funcOnDataSend,
 				 FuncBufferEventOnDataRecv funcOnDataRecv,
@@ -60,7 +60,7 @@ protected:
 	//错误回调
 	static void lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg);
 public:    //获取event base
-	IEventReactor *GetReactor() override;
+	std::shared_ptr<IEventReactor>  GetReactor() override;
 	//注册event
 	bool RegisterToReactor() override;
 	//卸载event
@@ -73,7 +73,7 @@ private:
 	//event buffer 创建成功后处理
 	virtual void AfterBuffEventCreated() = 0;
 protected:
-	IEventReactor *m_pReactor;
+	std::shared_ptr<IEventReactor> m_pReactor;
 	bufferevent *m_pStBufEv;
 	CSocket m_oSocket;
 	unsigned int m_uMaxOutBufferSize;
