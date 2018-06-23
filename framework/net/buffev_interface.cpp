@@ -203,7 +203,7 @@ bool IBufferEvent::RegisterToReactor()
 	return true;
 }
 
-std::shared_ptr<IEventReactor> IBufferEvent::GetReactor()
+shared_ptr<IEventReactor> IBufferEvent::GetReactor()
 {
 	return m_pReactor;
 }
