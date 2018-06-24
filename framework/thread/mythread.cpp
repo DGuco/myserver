@@ -27,7 +27,7 @@ int CMyThread::Run()
 	m_iRunStatus = rt_running;
 	//创建线程
 	if (m_pThread != NULL) {
-		m_pThread = new std::thread(mem_fn(&CMyThread::ThreadFunc), this);
+		m_pThread = std::make_shared<thread>(mem_fn(&CMyThread::ThreadFunc), this);
 	}
 	return 0;
 }

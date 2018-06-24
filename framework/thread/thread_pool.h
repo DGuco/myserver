@@ -45,7 +45,7 @@ public:
 private:
 	void ThreadFunc();
 private:
-	std::unordered_map<std::thread::id, std::thread *> m_mWorkers;
+	std::unordered_map<std::thread::id, std::shared_ptr<thread>> m_mWorkers;
 	std::deque<std::function<void()> > m_qTasks;
 
 	std::mutex m_mutex;
@@ -69,9 +69,9 @@ inline CThreadPool::CThreadPool(size_t threads)
 	: m_stop(false)
 {
 	for (size_t i = 0; i < threads; ++i) {
-		thread *th = new thread(std::mem_fn(&CThreadPool::ThreadFunc), this);
+		std::shared_ptr th = std::make_shared<thread>(std::mem_fn(&CThreadPool::ThreadFunc), this);
 		if (th) {
-			m_mWorkers[th->get_id()] = th;
+			m_mWorkers[th->get_id()] = std::move(th);
 		}
 	}
 }
@@ -88,8 +88,7 @@ inline CThreadPool::~CThreadPool()
 	}
 	for (auto it = m_mWorkers.begin(); it != m_mWorkers.end();) {
 		it->second->join();
-		delete it->second;
-		it = m_mWorkers.erase(it);
+		m_mWorkers.erase(it);
 	}
 }
 

@@ -25,7 +25,7 @@ public:
 	};
 public:
 	//构造函数
-	CConnector(IEventReactor *pReactor,
+	CConnector(std::shared_ptr<IEventReactor> pReactor,
 			   FuncBufferEventOnDataSend funcOnDataSend,
 			   FuncBufferEventOnDataRecv funcOnDataRecv,
 			   FuncBufferEventOnDisconnected funcDisconnected,

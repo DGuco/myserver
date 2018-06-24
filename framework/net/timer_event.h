@@ -7,13 +7,14 @@
 #define SERVER_SYS_EVENT_H
 
 #include <event.h>
+#include <memory>
 #include "network_interface.h"
 
 class CTimerEvent: public IReactorHandler
 {
 public:
 	//构造函数
-	CTimerEvent(IEventReactor *pReactor,
+	CTimerEvent(std::shared_ptr<IEventReactor>  pReactor,
 				FuncOnTimeOut m_pFuncOnTimerOut,
 				void *param,
 				int sec,
@@ -33,12 +34,12 @@ private:
 	//卸载
 	bool UnRegisterFromReactor();
 	//获取event_base
-	IEventReactor *GetReactor();
+	std::shared_ptr<IEventReactor>  GetReactor();
 private:
 	//超时回调
 	static void lcb_TimeOut(int fd, short event, void *arg);
 private:
-	IEventReactor *m_pReactor;
+	std::shared_ptr<IEventReactor> m_pReactor;
 	FuncOnTimeOut m_pFuncOnTimerOut;
 	void *m_pParam; //超时回调参数l
 	int m_iSec;  //秒

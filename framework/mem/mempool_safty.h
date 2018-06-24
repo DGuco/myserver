@@ -42,7 +42,8 @@ public:
 	{
 #ifdef _POSIX_MT_
 		std::lock_guard<std::mutex> guard(m_cs);
-#endif        CMemoryPool<Type>::Free( pElement );
+#endif
+		CMemoryPool<Type>::Free(pElement);
 	}
 
 };

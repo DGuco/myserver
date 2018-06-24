@@ -49,7 +49,7 @@ public:
 	virtual ~IReactorHandler() = default;
 	virtual bool RegisterToReactor() = 0;
 	virtual bool UnRegisterFromReactor() = 0;
-	virtual IEventReactor *GetReactor() = 0;
+	virtual std::shared_ptr<IEventReactor> GetReactor() = 0;
 };
 
 /** CallBack for TimerOut
