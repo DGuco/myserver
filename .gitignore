@@ -1,0 +1,33 @@
+.gradle
+slg_gm/target
+*.xml
+*.class
+*.log
+*.proto
+*.xml
+*.log
+*.idea
+*.logs
+build
+/build/*
+cmake-build-debug
+/cmake-build-debug/*
+bin
+/bin/*
+lib
+/lib/*
+out
+log
+logs
+logs/*
+efun_reports/*
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*

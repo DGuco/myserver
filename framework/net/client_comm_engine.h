@@ -6,6 +6,7 @@
 #include "message.pb.h"
 #include "ccrypto.h"
 #include "byte_buff.h"
+using namespace std;
 
 class CClientCommEngine
 {
@@ -20,7 +21,7 @@ public:
 	 * @param pHead
 	 * @return
 	 */
-	static int ParseClientStream(CByteBuff *byteBuff,
+	static int ParseClientStream(shared_ptr<CByteBuff> &parseByteBuff,
 								 CMesHead *pHead);
 
 	/**
@@ -31,7 +32,7 @@ public:
 	 * @param pHead
 	 * @return
 	 */
-	static int ConvertToGameStream(CByteBuff *convertBuff,
+	static int ConvertToGameStream(shared_ptr<CByteBuff> &convertBuff,
 								   const void *pDataBuff,
 								   unsigned short &unDataLen,
 								   CMesHead *pHead);
@@ -44,8 +45,8 @@ public:
 	 * @param pMsg
 	 * @return
 	 */
-	static int ConvertToGameStream(CByteBuff *convertBuff,
-								   CMessage *pMessage);
+	static int ConvertToGameStream(shared_ptr<CByteBuff> &convertBuff,
+								   shared_ptr<CMessage> &pMessage);
 
 	/**
 	 * 序列化消息CMessage 发送到gateserver（gameserver==>gateserver）
@@ -56,7 +57,7 @@ public:
 	 * @return
 	 */
 	static int ConvertToGateStream(CByteBuff *pBuff,
-                                   CMessage *pMessage,
+								   CMessage *pMessage,
 								   unsigned short cmd,
 								   unsigned short serial,
 								   unsigned short seq);

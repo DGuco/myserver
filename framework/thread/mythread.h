@@ -44,7 +44,7 @@ private:
 	int m_iRunStatus;
 	std::mutex m_condMut;
 	std::condition_variable data_cond;
-	std::shared_ptr<thread> m_pThread;
+	std::shared_ptr<std::thread> m_pThread;
 	std::string m_sThreadName;
 	long m_lTimeOut; //阻塞超时时间(微妙)，默认没有超时（如果不wake up永远阻塞）
 };

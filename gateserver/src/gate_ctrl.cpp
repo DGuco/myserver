@@ -48,22 +48,22 @@ int CGateCtrl::Run()
 	m_pNetWork->DispatchEvents();
 }
 
-shared_ptr<CThreadPool> CGateCtrl::GetSingleThreadPool()
+shared_ptr<CThreadPool> &CGateCtrl::GetSingleThreadPool()
 {
 	return m_pSingleThead;
 }
 
-shared_ptr<CClientHandle> CGateCtrl::GetClientHandle()
+shared_ptr<CClientHandle> &CGateCtrl::GetClientHandle()
 {
 	return m_pClientHandle;
 }
 
-shared_ptr<CServerHandle> CGateCtrl::GetServerHandle()
+shared_ptr<CServerHandle> &CGateCtrl::GetServerHandle()
 {
 	return m_pServerHandle;
 }
 
-shared_ptr<CNetWork> CGateCtrl::GetNetWork()
+shared_ptr<CNetWork> &CGateCtrl::GetNetWork()
 {
 	return m_pNetWork;
 }
@@ -71,9 +71,9 @@ shared_ptr<CNetWork> CGateCtrl::GetNetWork()
 void CGateCtrl::ReadConfig()
 {
 	new CServerConfig;
-	const string filepath = "../config/serverinfo.json";
-	if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filepath)) {
-		LOG_ERROR("default", "Get TcpserverConfig failed");
+	const string filePath = "../config/serverinfo.json";
+	if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filePath)) {
+		LOG_ERROR("default", "Get ServerConfig failed");
 		exit(0);
 	}
 }

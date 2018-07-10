@@ -81,16 +81,16 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 	//  取得ip和端口号
 	char ip[16];
 	sprintf(ip, inet_ntoa(sin.sin_addr));
-	CAcceptor *pAcceptor = new CAcceptor(socket,
-										 pReactor,
-										 new CNetAddr(ip, sin.sin_port),
-										 m_pFuncAcceptorOnDataSend,
-										 m_pFuncAcceptorOnDataRecv,
-										 m_pFuncAcceptorDisconnected);
+	std::shared_ptr<CAcceptor> pAcceptor = std::make_shared<CAcceptor>(socket,
+																	   pReactor,
+																	   new CNetAddr(ip, sin.sin_port),
+																	   m_pFuncAcceptorOnDataSend,
+																	   m_pFuncAcceptorOnDataRecv,
+																	   m_pFuncAcceptorDisconnected);
 	MY_ASSERT_STR(pAcceptor != NULL, return, "Create CAcceptor failed");
 	bool bRet = GetEventReactor()->Register(pAcceptor);
 	MY_ASSERT_STR(bRet, return, "Acceptor register failed");
-	m_pOnNew(socket, pAcceptor);
+	m_pOnNew(socket, std::move(pAcceptor));
 }
 
 void CNetWork::EndListen()
@@ -157,22 +157,24 @@ bool CNetWork::ShutDownConnectorEx(unsigned int uId)
 	}
 }
 
-std::shared_ptr<CConnector> CNetWork::FindConnector(unsigned int uId)
+std::shared_ptr<CConnector> &CNetWork::FindConnector(unsigned int uId)
 {
 	auto iter = m_mapConnector.find(uId);
 	if (m_mapConnector.end() == iter) {
-		return NULL;
+		shared_ptr<CConnector> tmpConn = NULL;
+		return tmpConn;
 	}
 	else {
 		return iter->second;
 	}
 }
 
-std::shared_ptr<CAcceptor> CNetWork::FindAcceptor(unsigned int uId)
+std::shared_ptr<CAcceptor> &CNetWork::FindAcceptor(unsigned int uId)
 {
 	auto iter = m_mapAcceptor.find(uId);
 	if (m_mapAcceptor.end() == iter) {
-		return NULL;
+		shared_ptr<CAcceptor> tmpAcce = NULL;
+		return tmpAcce;
 	}
 	else {
 		return iter->second;

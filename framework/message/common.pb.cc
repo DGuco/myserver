@@ -7,6 +7,7 @@
 
 #include <google/protobuf/stubs/common.h>
 #include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
 #include <google/protobuf/descriptor.h>
@@ -18,10 +19,6 @@
 #include "third_party/protobuf/version.h"
 #endif
 // @@protoc_insertion_point(includes)
-
-namespace protobuf_common_2eproto {
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_common_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_SoldierDTO;
-}  // namespace protobuf_common_2eproto
 class EmptyMessageDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<EmptyMessage>
@@ -68,9 +65,14 @@ class VipDTODefaultTypeInternal {
       _instance;
 } _VipDTO_default_instance_;
 namespace protobuf_common_2eproto {
-static void InitDefaultsEmptyMessage() {
+void InitDefaultsEmptyMessageImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
     void* ptr = &::_EmptyMessage_default_instance_;
     new (ptr) ::EmptyMessage();
@@ -79,12 +81,19 @@ static void InitDefaultsEmptyMessage() {
   ::EmptyMessage::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_EmptyMessage =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsEmptyMessage}, {}};
+void InitDefaultsEmptyMessage() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsEmptyMessageImpl);
+}
 
-static void InitDefaultsErrorMessage() {
+void InitDefaultsErrorMessageImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
     void* ptr = &::_ErrorMessage_default_instance_;
     new (ptr) ::ErrorMessage();
@@ -93,12 +102,19 @@ static void InitDefaultsErrorMessage() {
   ::ErrorMessage::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_ErrorMessage =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsErrorMessage}, {}};
+void InitDefaultsErrorMessage() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsErrorMessageImpl);
+}
 
-static void InitDefaultsPositionDTO() {
+void InitDefaultsPositionDTOImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
     void* ptr = &::_PositionDTO_default_instance_;
     new (ptr) ::PositionDTO();
@@ -107,12 +123,19 @@ static void InitDefaultsPositionDTO() {
   ::PositionDTO::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_PositionDTO =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsPositionDTO}, {}};
+void InitDefaultsPositionDTO() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsPositionDTOImpl);
+}
 
-static void InitDefaultsPropertyDTO() {
+void InitDefaultsPropertyDTOImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
     void* ptr = &::_PropertyDTO_default_instance_;
     new (ptr) ::PropertyDTO();
@@ -121,12 +144,19 @@ static void InitDefaultsPropertyDTO() {
   ::PropertyDTO::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_PropertyDTO =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsPropertyDTO}, {}};
+void InitDefaultsPropertyDTO() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsPropertyDTOImpl);
+}
 
-static void InitDefaultsItemDTO() {
+void InitDefaultsItemDTOImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
     void* ptr = &::_ItemDTO_default_instance_;
     new (ptr) ::ItemDTO();
@@ -135,12 +165,19 @@ static void InitDefaultsItemDTO() {
   ::ItemDTO::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_ItemDTO =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsItemDTO}, {}};
+void InitDefaultsItemDTO() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsItemDTOImpl);
+}
 
-static void InitDefaultsSoldierDTO() {
+void InitDefaultsSoldierDTOImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
     void* ptr = &::_SoldierDTO_default_instance_;
     new (ptr) ::SoldierDTO();
@@ -149,12 +186,20 @@ static void InitDefaultsSoldierDTO() {
   ::SoldierDTO::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_SoldierDTO =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsSoldierDTO}, {}};
+void InitDefaultsSoldierDTO() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsSoldierDTOImpl);
+}
 
-static void InitDefaultsLevelSoldierDTO() {
+void InitDefaultsLevelSoldierDTOImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  protobuf_common_2eproto::InitDefaultsSoldierDTO();
   {
     void* ptr = &::_LevelSoldierDTO_default_instance_;
     new (ptr) ::LevelSoldierDTO();
@@ -163,13 +208,19 @@ static void InitDefaultsLevelSoldierDTO() {
   ::LevelSoldierDTO::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<1> scc_info_LevelSoldierDTO =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsLevelSoldierDTO}, {
-      &protobuf_common_2eproto::scc_info_SoldierDTO.base,}};
+void InitDefaultsLevelSoldierDTO() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsLevelSoldierDTOImpl);
+}
 
-static void InitDefaultsEquipmentDTO() {
+void InitDefaultsEquipmentDTOImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
     void* ptr = &::_EquipmentDTO_default_instance_;
     new (ptr) ::EquipmentDTO();
@@ -178,12 +229,19 @@ static void InitDefaultsEquipmentDTO() {
   ::EquipmentDTO::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_EquipmentDTO =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsEquipmentDTO}, {}};
+void InitDefaultsEquipmentDTO() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsEquipmentDTOImpl);
+}
 
-static void InitDefaultsVipDTO() {
+void InitDefaultsVipDTOImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
     void* ptr = &::_VipDTO_default_instance_;
     new (ptr) ::VipDTO();
@@ -192,19 +250,9 @@ static void InitDefaultsVipDTO() {
   ::VipDTO::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_VipDTO =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsVipDTO}, {}};
-
-void InitDefaults() {
-  ::google::protobuf::internal::InitSCC(&scc_info_EmptyMessage.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ErrorMessage.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_PositionDTO.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_PropertyDTO.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ItemDTO.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_SoldierDTO.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_LevelSoldierDTO.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_EquipmentDTO.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_VipDTO.base);
+void InitDefaultsVipDTO() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsVipDTOImpl);
 }
 
 ::google::protobuf::Metadata file_level_metadata[9];
@@ -321,14 +369,15 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 
 void protobuf_AssignDescriptors() {
   AddDescriptors();
+  ::google::protobuf::MessageFactory* factory = NULL;
   AssignDescriptors(
-      "common.proto", schemas, file_default_instances, TableStruct::offsets,
+      "common.proto", schemas, file_default_instances, TableStruct::offsets, factory,
       file_level_metadata, file_level_enum_descriptors, NULL);
 }
 
 void protobuf_AssignDescriptorsOnce() {
-  static ::google::protobuf::internal::once_flag once;
-  ::google::protobuf::internal::call_once(once, protobuf_AssignDescriptors);
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &protobuf_AssignDescriptors);
 }
 
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
@@ -362,8 +411,8 @@ void AddDescriptorsImpl() {
 }
 
 void AddDescriptors() {
-  static ::google::protobuf::internal::once_flag once;
-  ::google::protobuf::internal::call_once(once, AddDescriptorsImpl);
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 // Force AddDescriptors() to be called at dynamic initialization time.
 struct StaticDescriptorInitializer {
@@ -408,20 +457,23 @@ void EmptyMessage::InitAsDefaultInstance() {
 
 EmptyMessage::EmptyMessage()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_common_2eproto::scc_info_EmptyMessage.base);
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_common_2eproto::InitDefaultsEmptyMessage();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:EmptyMessage)
 }
 EmptyMessage::EmptyMessage(const EmptyMessage& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
-      _has_bits_(from._has_bits_) {
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:EmptyMessage)
 }
 
 void EmptyMessage::SharedCtor() {
+  _cached_size_ = 0;
 }
 
 EmptyMessage::~EmptyMessage() {
@@ -433,7 +485,9 @@ void EmptyMessage::SharedDtor() {
 }
 
 void EmptyMessage::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* EmptyMessage::descriptor() {
   ::protobuf_common_2eproto::protobuf_AssignDescriptorsOnce();
@@ -441,10 +495,17 @@ const ::google::protobuf::Descriptor* EmptyMessage::descriptor() {
 }
 
 const EmptyMessage& EmptyMessage::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_common_2eproto::scc_info_EmptyMessage.base);
+  ::protobuf_common_2eproto::InitDefaultsEmptyMessage();
   return *internal_default_instance();
 }
 
+EmptyMessage* EmptyMessage::New(::google::protobuf::Arena* arena) const {
+  EmptyMessage* n = new EmptyMessage;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void EmptyMessage::Clear() {
 // @@protoc_insertion_point(message_clear_start:EmptyMessage)
@@ -462,7 +523,7 @@ bool EmptyMessage::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:EmptyMessage)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
   handle_unusual:
@@ -519,7 +580,9 @@ size_t EmptyMessage::ByteSizeLong() const {
         _internal_metadata_.unknown_fields());
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
@@ -573,6 +636,7 @@ void EmptyMessage::InternalSwap(EmptyMessage* other) {
   using std::swap;
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata EmptyMessage::GetMetadata() const {
@@ -592,8 +656,9 @@ const int ErrorMessage::kArgsFieldNumber;
 
 ErrorMessage::ErrorMessage()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_common_2eproto::scc_info_ErrorMessage.base);
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_common_2eproto::InitDefaultsErrorMessage();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:ErrorMessage)
 }
@@ -601,6 +666,7 @@ ErrorMessage::ErrorMessage(const ErrorMessage& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
       _has_bits_(from._has_bits_),
+      _cached_size_(0),
       args_(from.args_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   errorcode_ = from.errorcode_;
@@ -608,6 +674,7 @@ ErrorMessage::ErrorMessage(const ErrorMessage& from)
 }
 
 void ErrorMessage::SharedCtor() {
+  _cached_size_ = 0;
   errorcode_ = 0;
 }
 
@@ -620,7 +687,9 @@ void ErrorMessage::SharedDtor() {
 }
 
 void ErrorMessage::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* ErrorMessage::descriptor() {
   ::protobuf_common_2eproto::protobuf_AssignDescriptorsOnce();
@@ -628,10 +697,17 @@ const ::google::protobuf::Descriptor* ErrorMessage::descriptor() {
 }
 
 const ErrorMessage& ErrorMessage::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_common_2eproto::scc_info_ErrorMessage.base);
+  ::protobuf_common_2eproto::InitDefaultsErrorMessage();
   return *internal_default_instance();
 }
 
+ErrorMessage* ErrorMessage::New(::google::protobuf::Arena* arena) const {
+  ErrorMessage* n = new ErrorMessage;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void ErrorMessage::Clear() {
 // @@protoc_insertion_point(message_clear_start:ErrorMessage)
@@ -651,7 +727,7 @@ bool ErrorMessage::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:ErrorMessage)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -790,7 +866,9 @@ size_t ErrorMessage::ByteSizeLong() const {
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
@@ -847,10 +925,11 @@ void ErrorMessage::Swap(ErrorMessage* other) {
 }
 void ErrorMessage::InternalSwap(ErrorMessage* other) {
   using std::swap;
-  args_.InternalSwap(CastToBase(&other->args_));
+  args_.InternalSwap(&other->args_);
   swap(errorcode_, other->errorcode_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata ErrorMessage::GetMetadata() const {
@@ -870,15 +949,17 @@ const int PositionDTO::kYFieldNumber;
 
 PositionDTO::PositionDTO()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_common_2eproto::scc_info_PositionDTO.base);
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_common_2eproto::InitDefaultsPositionDTO();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:PositionDTO)
 }
 PositionDTO::PositionDTO(const PositionDTO& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
-      _has_bits_(from._has_bits_) {
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&x_, &from.x_,
     static_cast<size_t>(reinterpret_cast<char*>(&y_) -
@@ -887,6 +968,7 @@ PositionDTO::PositionDTO(const PositionDTO& from)
 }
 
 void PositionDTO::SharedCtor() {
+  _cached_size_ = 0;
   ::memset(&x_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&y_) -
       reinterpret_cast<char*>(&x_)) + sizeof(y_));
@@ -901,7 +983,9 @@ void PositionDTO::SharedDtor() {
 }
 
 void PositionDTO::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* PositionDTO::descriptor() {
   ::protobuf_common_2eproto::protobuf_AssignDescriptorsOnce();
@@ -909,10 +993,17 @@ const ::google::protobuf::Descriptor* PositionDTO::descriptor() {
 }
 
 const PositionDTO& PositionDTO::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_common_2eproto::scc_info_PositionDTO.base);
+  ::protobuf_common_2eproto::InitDefaultsPositionDTO();
   return *internal_default_instance();
 }
 
+PositionDTO* PositionDTO::New(::google::protobuf::Arena* arena) const {
+  PositionDTO* n = new PositionDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PositionDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:PositionDTO)
@@ -936,7 +1027,7 @@ bool PositionDTO::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:PositionDTO)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -1082,7 +1173,9 @@ size_t PositionDTO::ByteSizeLong() const {
     total_size += RequiredFieldsByteSizeFallback();
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
@@ -1149,6 +1242,7 @@ void PositionDTO::InternalSwap(PositionDTO* other) {
   swap(y_, other->y_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata PositionDTO::GetMetadata() const {
@@ -1168,15 +1262,17 @@ const int PropertyDTO::kValueFieldNumber;
 
 PropertyDTO::PropertyDTO()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_common_2eproto::scc_info_PropertyDTO.base);
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_common_2eproto::InitDefaultsPropertyDTO();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:PropertyDTO)
 }
 PropertyDTO::PropertyDTO(const PropertyDTO& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
-      _has_bits_(from._has_bits_) {
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&type_, &from.type_,
     static_cast<size_t>(reinterpret_cast<char*>(&value_) -
@@ -1185,6 +1281,7 @@ PropertyDTO::PropertyDTO(const PropertyDTO& from)
 }
 
 void PropertyDTO::SharedCtor() {
+  _cached_size_ = 0;
   ::memset(&type_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&value_) -
       reinterpret_cast<char*>(&type_)) + sizeof(value_));
@@ -1199,7 +1296,9 @@ void PropertyDTO::SharedDtor() {
 }
 
 void PropertyDTO::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* PropertyDTO::descriptor() {
   ::protobuf_common_2eproto::protobuf_AssignDescriptorsOnce();
@@ -1207,10 +1306,17 @@ const ::google::protobuf::Descriptor* PropertyDTO::descriptor() {
 }
 
 const PropertyDTO& PropertyDTO::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_common_2eproto::scc_info_PropertyDTO.base);
+  ::protobuf_common_2eproto::InitDefaultsPropertyDTO();
   return *internal_default_instance();
 }
 
+PropertyDTO* PropertyDTO::New(::google::protobuf::Arena* arena) const {
+  PropertyDTO* n = new PropertyDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void PropertyDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:PropertyDTO)
@@ -1234,7 +1340,7 @@ bool PropertyDTO::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:PropertyDTO)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -1380,7 +1486,9 @@ size_t PropertyDTO::ByteSizeLong() const {
     total_size += RequiredFieldsByteSizeFallback();
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
@@ -1447,6 +1555,7 @@ void PropertyDTO::InternalSwap(PropertyDTO* other) {
   swap(value_, other->value_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata PropertyDTO::GetMetadata() const {
@@ -1466,15 +1575,17 @@ const int ItemDTO::kCountFieldNumber;
 
 ItemDTO::ItemDTO()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_common_2eproto::scc_info_ItemDTO.base);
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_common_2eproto::InitDefaultsItemDTO();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:ItemDTO)
 }
 ItemDTO::ItemDTO(const ItemDTO& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
-      _has_bits_(from._has_bits_) {
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&itemid_, &from.itemid_,
     static_cast<size_t>(reinterpret_cast<char*>(&count_) -
@@ -1483,6 +1594,7 @@ ItemDTO::ItemDTO(const ItemDTO& from)
 }
 
 void ItemDTO::SharedCtor() {
+  _cached_size_ = 0;
   ::memset(&itemid_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&count_) -
       reinterpret_cast<char*>(&itemid_)) + sizeof(count_));
@@ -1497,7 +1609,9 @@ void ItemDTO::SharedDtor() {
 }
 
 void ItemDTO::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* ItemDTO::descriptor() {
   ::protobuf_common_2eproto::protobuf_AssignDescriptorsOnce();
@@ -1505,10 +1619,17 @@ const ::google::protobuf::Descriptor* ItemDTO::descriptor() {
 }
 
 const ItemDTO& ItemDTO::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_common_2eproto::scc_info_ItemDTO.base);
+  ::protobuf_common_2eproto::InitDefaultsItemDTO();
   return *internal_default_instance();
 }
 
+ItemDTO* ItemDTO::New(::google::protobuf::Arena* arena) const {
+  ItemDTO* n = new ItemDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void ItemDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:ItemDTO)
@@ -1532,7 +1653,7 @@ bool ItemDTO::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:ItemDTO)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -1678,7 +1799,9 @@ size_t ItemDTO::ByteSizeLong() const {
     total_size += RequiredFieldsByteSizeFallback();
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
@@ -1745,6 +1868,7 @@ void ItemDTO::InternalSwap(ItemDTO* other) {
   swap(count_, other->count_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata ItemDTO::GetMetadata() const {
@@ -1764,15 +1888,17 @@ const int SoldierDTO::kArmyNumFieldNumber;
 
 SoldierDTO::SoldierDTO()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_common_2eproto::scc_info_SoldierDTO.base);
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_common_2eproto::InitDefaultsSoldierDTO();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:SoldierDTO)
 }
 SoldierDTO::SoldierDTO(const SoldierDTO& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
-      _has_bits_(from._has_bits_) {
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&armytype_, &from.armytype_,
     static_cast<size_t>(reinterpret_cast<char*>(&armynum_) -
@@ -1781,6 +1907,7 @@ SoldierDTO::SoldierDTO(const SoldierDTO& from)
 }
 
 void SoldierDTO::SharedCtor() {
+  _cached_size_ = 0;
   ::memset(&armytype_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&armynum_) -
       reinterpret_cast<char*>(&armytype_)) + sizeof(armynum_));
@@ -1795,7 +1922,9 @@ void SoldierDTO::SharedDtor() {
 }
 
 void SoldierDTO::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* SoldierDTO::descriptor() {
   ::protobuf_common_2eproto::protobuf_AssignDescriptorsOnce();
@@ -1803,10 +1932,17 @@ const ::google::protobuf::Descriptor* SoldierDTO::descriptor() {
 }
 
 const SoldierDTO& SoldierDTO::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_common_2eproto::scc_info_SoldierDTO.base);
+  ::protobuf_common_2eproto::InitDefaultsSoldierDTO();
   return *internal_default_instance();
 }
 
+SoldierDTO* SoldierDTO::New(::google::protobuf::Arena* arena) const {
+  SoldierDTO* n = new SoldierDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void SoldierDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:SoldierDTO)
@@ -1830,7 +1966,7 @@ bool SoldierDTO::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:SoldierDTO)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -1976,7 +2112,9 @@ size_t SoldierDTO::ByteSizeLong() const {
     total_size += RequiredFieldsByteSizeFallback();
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
@@ -2043,6 +2181,7 @@ void SoldierDTO::InternalSwap(SoldierDTO* other) {
   swap(armynum_, other->armynum_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata SoldierDTO::GetMetadata() const {
@@ -2064,15 +2203,17 @@ const int LevelSoldierDTO::kLevelFieldNumber;
 
 LevelSoldierDTO::LevelSoldierDTO()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_common_2eproto::scc_info_LevelSoldierDTO.base);
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_common_2eproto::InitDefaultsLevelSoldierDTO();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:LevelSoldierDTO)
 }
 LevelSoldierDTO::LevelSoldierDTO(const LevelSoldierDTO& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
-      _has_bits_(from._has_bits_) {
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   if (from.has_soldier()) {
     soldier_ = new ::SoldierDTO(*from.soldier_);
@@ -2084,6 +2225,7 @@ LevelSoldierDTO::LevelSoldierDTO(const LevelSoldierDTO& from)
 }
 
 void LevelSoldierDTO::SharedCtor() {
+  _cached_size_ = 0;
   ::memset(&soldier_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&level_) -
       reinterpret_cast<char*>(&soldier_)) + sizeof(level_));
@@ -2099,7 +2241,9 @@ void LevelSoldierDTO::SharedDtor() {
 }
 
 void LevelSoldierDTO::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* LevelSoldierDTO::descriptor() {
   ::protobuf_common_2eproto::protobuf_AssignDescriptorsOnce();
@@ -2107,10 +2251,17 @@ const ::google::protobuf::Descriptor* LevelSoldierDTO::descriptor() {
 }
 
 const LevelSoldierDTO& LevelSoldierDTO::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_common_2eproto::scc_info_LevelSoldierDTO.base);
+  ::protobuf_common_2eproto::InitDefaultsLevelSoldierDTO();
   return *internal_default_instance();
 }
 
+LevelSoldierDTO* LevelSoldierDTO::New(::google::protobuf::Arena* arena) const {
+  LevelSoldierDTO* n = new LevelSoldierDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void LevelSoldierDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:LevelSoldierDTO)
@@ -2134,7 +2285,7 @@ bool LevelSoldierDTO::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:LevelSoldierDTO)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -2194,7 +2345,7 @@ void LevelSoldierDTO::SerializeWithCachedSizes(
   // required .SoldierDTO soldier = 1;
   if (cached_has_bits & 0x00000001u) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->_internal_soldier(), output);
+      1, *this->soldier_, output);
   }
 
   // required int32 level = 2;
@@ -2221,7 +2372,7 @@ void LevelSoldierDTO::SerializeWithCachedSizes(
   if (cached_has_bits & 0x00000001u) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        1, this->_internal_soldier(), deterministic, target);
+        1, *this->soldier_, deterministic, target);
   }
 
   // required int32 level = 2;
@@ -2245,7 +2396,7 @@ size_t LevelSoldierDTO::RequiredFieldsByteSizeFallback() const {
     // required .SoldierDTO soldier = 1;
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *soldier_);
+        *this->soldier_);
   }
 
   if (has_level()) {
@@ -2270,7 +2421,7 @@ size_t LevelSoldierDTO::ByteSizeLong() const {
     // required .SoldierDTO soldier = 1;
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *soldier_);
+        *this->soldier_);
 
     // required int32 level = 2;
     total_size += 1 +
@@ -2281,7 +2432,9 @@ size_t LevelSoldierDTO::ByteSizeLong() const {
     total_size += RequiredFieldsByteSizeFallback();
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
@@ -2351,6 +2504,7 @@ void LevelSoldierDTO::InternalSwap(LevelSoldierDTO* other) {
   swap(level_, other->level_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata LevelSoldierDTO::GetMetadata() const {
@@ -2373,8 +2527,9 @@ const int EquipmentDTO::kTypeFieldNumber;
 
 EquipmentDTO::EquipmentDTO()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_common_2eproto::scc_info_EquipmentDTO.base);
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_common_2eproto::InitDefaultsEquipmentDTO();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:EquipmentDTO)
 }
@@ -2382,6 +2537,7 @@ EquipmentDTO::EquipmentDTO(const EquipmentDTO& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
       _has_bits_(from._has_bits_),
+      _cached_size_(0),
       gemstonelist_(from.gemstonelist_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&id_, &from.id_,
@@ -2391,6 +2547,7 @@ EquipmentDTO::EquipmentDTO(const EquipmentDTO& from)
 }
 
 void EquipmentDTO::SharedCtor() {
+  _cached_size_ = 0;
   ::memset(&id_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&type_) -
       reinterpret_cast<char*>(&id_)) + sizeof(type_));
@@ -2405,7 +2562,9 @@ void EquipmentDTO::SharedDtor() {
 }
 
 void EquipmentDTO::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* EquipmentDTO::descriptor() {
   ::protobuf_common_2eproto::protobuf_AssignDescriptorsOnce();
@@ -2413,10 +2572,17 @@ const ::google::protobuf::Descriptor* EquipmentDTO::descriptor() {
 }
 
 const EquipmentDTO& EquipmentDTO::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_common_2eproto::scc_info_EquipmentDTO.base);
+  ::protobuf_common_2eproto::InitDefaultsEquipmentDTO();
   return *internal_default_instance();
 }
 
+EquipmentDTO* EquipmentDTO::New(::google::protobuf::Arena* arena) const {
+  EquipmentDTO* n = new EquipmentDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void EquipmentDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:EquipmentDTO)
@@ -2441,7 +2607,7 @@ bool EquipmentDTO::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:EquipmentDTO)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -2697,7 +2863,9 @@ size_t EquipmentDTO::ByteSizeLong() const {
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
@@ -2774,6 +2942,7 @@ void EquipmentDTO::InternalSwap(EquipmentDTO* other) {
   swap(type_, other->type_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata EquipmentDTO::GetMetadata() const {
@@ -2793,15 +2962,17 @@ const int VipDTO::kActivatedFieldNumber;
 
 VipDTO::VipDTO()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_common_2eproto::scc_info_VipDTO.base);
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_common_2eproto::InitDefaultsVipDTO();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:VipDTO)
 }
 VipDTO::VipDTO(const VipDTO& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
-      _has_bits_(from._has_bits_) {
+      _has_bits_(from._has_bits_),
+      _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&viplevel_, &from.viplevel_,
     static_cast<size_t>(reinterpret_cast<char*>(&activated_) -
@@ -2810,6 +2981,7 @@ VipDTO::VipDTO(const VipDTO& from)
 }
 
 void VipDTO::SharedCtor() {
+  _cached_size_ = 0;
   ::memset(&viplevel_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&activated_) -
       reinterpret_cast<char*>(&viplevel_)) + sizeof(activated_));
@@ -2824,7 +2996,9 @@ void VipDTO::SharedDtor() {
 }
 
 void VipDTO::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ::google::protobuf::Descriptor* VipDTO::descriptor() {
   ::protobuf_common_2eproto::protobuf_AssignDescriptorsOnce();
@@ -2832,10 +3006,17 @@ const ::google::protobuf::Descriptor* VipDTO::descriptor() {
 }
 
 const VipDTO& VipDTO::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_common_2eproto::scc_info_VipDTO.base);
+  ::protobuf_common_2eproto::InitDefaultsVipDTO();
   return *internal_default_instance();
 }
 
+VipDTO* VipDTO::New(::google::protobuf::Arena* arena) const {
+  VipDTO* n = new VipDTO;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
 
 void VipDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:VipDTO)
@@ -2859,7 +3040,7 @@ bool VipDTO::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:VipDTO)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -3001,7 +3182,9 @@ size_t VipDTO::ByteSizeLong() const {
     total_size += RequiredFieldsByteSizeFallback();
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
@@ -3068,6 +3251,7 @@ void VipDTO::InternalSwap(VipDTO* other) {
   swap(activated_, other->activated_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
 }
 
 ::google::protobuf::Metadata VipDTO::GetMetadata() const {
@@ -3077,36 +3261,5 @@ void VipDTO::InternalSwap(VipDTO* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
-namespace google {
-namespace protobuf {
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::EmptyMessage* Arena::CreateMaybeMessage< ::EmptyMessage >(Arena* arena) {
-  return Arena::CreateInternal< ::EmptyMessage >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::ErrorMessage* Arena::CreateMaybeMessage< ::ErrorMessage >(Arena* arena) {
-  return Arena::CreateInternal< ::ErrorMessage >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PositionDTO* Arena::CreateMaybeMessage< ::PositionDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::PositionDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::PropertyDTO* Arena::CreateMaybeMessage< ::PropertyDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::PropertyDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::ItemDTO* Arena::CreateMaybeMessage< ::ItemDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::ItemDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::SoldierDTO* Arena::CreateMaybeMessage< ::SoldierDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::SoldierDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::LevelSoldierDTO* Arena::CreateMaybeMessage< ::LevelSoldierDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::LevelSoldierDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::EquipmentDTO* Arena::CreateMaybeMessage< ::EquipmentDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::EquipmentDTO >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::VipDTO* Arena::CreateMaybeMessage< ::VipDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::VipDTO >(arena);
-}
-}  // namespace protobuf
-}  // namespace google
 
 // @@protoc_insertion_point(global_scope)

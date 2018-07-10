@@ -30,14 +30,16 @@ enum PipeResult
 	ePR_BufNull = -3,
 };
 
+using namespace std;
+
 /** Interface for IEventReactor
  */
 class IEventReactor
 {
 public:
 	virtual ~IEventReactor() = default;
-	virtual bool Register(IReactorHandler *pHandler) = 0;
-	virtual bool UnRegister(IReactorHandler *pHandler) = 0;
+	virtual bool Register(IReactorHandler* pHandler) = 0;
+	virtual bool UnRegister(IReactorHandler* pHandler) = 0;
 	virtual event_base *GetEventBase()=0;
 	virtual void DispatchEvents() = 0;
 	virtual void Release() = 0;
@@ -62,26 +64,26 @@ typedef std::function<void(uint32, void *)> FuncOnSignal;
 
 /** CallBack for IBufferEvent
 */
-typedef std::function<void(IBufferEvent *)> FuncBufferEventOnDataSend;
+typedef std::function<void(shared_ptr<IBufferEvent>)> FuncBufferEventOnDataSend;
 
-typedef std::function<void(IBufferEvent *)> FuncBufferEventOnDataRecv;
+typedef std::function<void(shared_ptr<IBufferEvent>)> FuncBufferEventOnDataRecv;
 
-typedef std::function<void(IBufferEvent *)> FuncBufferEventOnDisconnected;
+typedef std::function<void(shared_ptr<IBufferEvent>)> FuncBufferEventOnDisconnected;
 
 /** CallBack for Accept
 */
-typedef std::function<void(IEventReactor *, SOCKET, sockaddr *sa)> FuncListenerOnAccept;
+typedef std::function<void(shared_ptr<IEventReactor> &, SOCKET, shared_ptr<sockaddr> &)> FuncListenerOnAccept;
 
 /** CallBack for Connector
  */
-typedef std::function<void(CConnector *)> FuncConnectorOnConnectFailed;
+typedef std::function<void(shared_ptr<CConnector> &)> FuncConnectorOnConnectFailed;
 
-typedef std::function<void(CConnector *)> FuncConnectorOnConnectted;
+typedef std::function<void(shared_ptr<CConnector> &)> FuncConnectorOnConnectted;
 
-typedef std::function<void(int, short, CConnector *)> FuncConnectorOnPingServer;
+typedef std::function<void(int, short, shared_ptr<CConnector> &)> FuncConnectorOnPingServer;
 
 /** CallBack for CAcceptor
  */
-typedef std::function<void(uint32, CAcceptor *)> FuncAcceptorOnNew;
+typedef std::function<void(uint32, shared_ptr<CAcceptor>)> FuncAcceptorOnNew;
 
 #endif

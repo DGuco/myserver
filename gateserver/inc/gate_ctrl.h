@@ -32,10 +32,10 @@ public:
     //run
     int Run();
     //获取线程池
-    shared_ptr<CThreadPool> GetSingleThreadPool();
-    shared_ptr<CClientHandle> GetClientHandle();
-    shared_ptr<CServerHandle> GetServerHandle();
-    shared_ptr<CNetWork> GetNetWork();
+    shared_ptr<CThreadPool>& GetSingleThreadPool();
+    shared_ptr<CClientHandle>& GetClientHandle();
+    shared_ptr<CServerHandle>& GetServerHandle();
+    shared_ptr<CNetWork>& GetNetWork();
 private:
     //读取配置文件
     void ReadConfig();

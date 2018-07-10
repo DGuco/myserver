@@ -6,10 +6,8 @@
 //
 
 #include <clocale>
-#include <bits/signum.h>
 #include <signal.h>
 #include <runflag.h>
-#include <my_macro.h>
 #include <config.h>
 #include "inc/proxy_ctrl.h"
 
@@ -33,7 +31,7 @@ void ignore_pipe()
 
 int main(int argc, char **argv)
 {
-	CProxyCtrl *pProxyCtrl = new CProxyCtrl();
+	std::shared_ptr<CProxyCtrl>& pProxyCtrl = CProxyCtrl::GetSingletonPtr();
 	if (pProxyCtrl->PrepareToRun()) {
 		LOG_ERROR("default", "ProxyServer prepare to fun failed.");
 		if (pProxyCtrl) {
@@ -46,7 +44,6 @@ int main(int argc, char **argv)
 	// 安装信号处理函数
 	signal(SIGUSR1, sigusr1_handle);
 	pProxyCtrl->Run();
-	SAFE_DELETE(CServerConfig::GetSingletonPtr());
 	if (pProxyCtrl != NULL) {
 		delete pProxyCtrl;
 		pProxyCtrl = NULL;

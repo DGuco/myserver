@@ -69,6 +69,8 @@ private:
 private:
 	static void lcb_OnPingServer(int fd, short event, void *param);
 
+public:
+	static std::shared_ptr<CConnector> NULL_CONN;
 private:
 	CNetAddr m_oAddr;
 	eConnectorState m_eState;

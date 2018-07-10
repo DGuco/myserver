@@ -96,7 +96,7 @@ CByteBuff::~CByteBuff()
 	delete[] m_acData;
 }
 
-void CByteBuff::Reset()
+void CByteBuff::Clear()
 {
 	m_uiReadIndex = 0;
 	m_uiWriteIndex = 0;

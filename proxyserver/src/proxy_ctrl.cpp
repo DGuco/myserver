@@ -123,7 +123,7 @@ void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
-	m_pRecvBuff->Reset();
+	m_pRecvBuff->Clear();
 	unsigned short unTmpLen = pBufferEvent->GetRecvPackLen();
 	//转发消息填充数据总长度
 	m_pRecvBuff->WriteUnShort(unTmpLen);

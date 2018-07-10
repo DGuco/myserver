@@ -3,69 +3,91 @@
 //
 
 #include <iostream>
-#include <map>
 #include <memory>
-#include <type_traits>
 using namespace std;
 
 class Parent
 {
 public:
-    ~Parent()
-    {
-        printf("~Parent\n");
-    }
+	~Parent()
+	{
+		printf("~Parent\n");
+	}
+	Parent()
+	{
+
+	}
+
+	Parent(const Parent &tmp)
+	{
+		printf("Copy construct\n");
+	}
 public:
-    virtual void Say()
-    {
-        printf("I am Parent\n");
-    }
+	virtual void Say()
+	{
+		printf("I am Parent\n");
+	}
+	int a;
 };
 
 class Child: public Parent
 {
 public:
-    ~Child()
-    {
-        printf("~Child\n");
-    }
+	~Child()
+	{
+		printf("~Child\n");
+	}
+
 public:
-    virtual void Say()
-    {
-        printf("I am Child\n");
-    }
+	virtual void Say()
+	{
+		printf("I am Child\n");
+	}
 };
 
 template<typename _Ptr>
-    class Test
-    {
-    public:
-        Test(_Ptr *ptr)
-            : ptr(ptr)
-        {}
+class Test
+{
+public:
+	Test(_Ptr *ptr)
+		: ptr(ptr)
+	{}
 
-        virtual ~Test()
-        {
-            delete ptr;
-        }
-    public:
-        _Ptr *ptr;
-    };
+	virtual ~Test()
+	{
+		delete ptr;
+	}
+public:
+	_Ptr *ptr;
+};
 
 void test(shared_ptr<Parent> &sharedPtr)
 {
-    printf("Use count = %d\n", sharedPtr.use_count());
+	if (sharedPtr) {
+		printf("test==>Use count = %d\n", sharedPtr.use_count());
+	}
 }
 
 int main()
 {
-    Child *child = new Child;
-    Parent *parent = child;
-    parent->Say();
-    delete parent;
-//    shared_ptr<Parent> sharedPtr = std::make_shared<Child>();
-//    sharedPtr->Say();
-//    test(sharedPtr);
-//    printf("Use count = %d\n", sharedPtr.use_count());
-    return 0;
+//	Child *child = new Child;
+//	Parent *parent = child;
+//	parent->Say();
+//	delete parent;
+
+	shared_ptr<Parent> sharedPtr = std::make_shared<Child>();
+	sharedPtr->Say();
+	printf("Use count = %d\n", sharedPtr.use_count());
+	shared_ptr<Parent> ptr = NULL;
+	test(ptr);
+	test(sharedPtr);
+//	[sharedPtr]
+//	{
+//		printf("Use count = %d\n", sharedPtr.use_count());
+//		return sharedPtr.use_count();
+//	}();
+//	printf("Use count = %d\n", sharedPtr.use_count());
+	shared_ptr<Parent> sharedPtr1 = std::move(sharedPtr);
+	printf("Use count = %d\n", sharedPtr1.use_count());
+	return 0;
 }

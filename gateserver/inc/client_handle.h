@@ -15,41 +15,42 @@
 class CClientHandle
 {
 public:
-    //构造函数
-    CClientHandle(shared_ptr<CNetWork> pNetWork);
-    //析构函数
-    virtual ~CClientHandle();
-    //获取CNetWork
-    CNetWork *GetNetWork();
+	//构造函数
+	CClientHandle(shared_ptr<CNetWork> pNetWork);
+	//析构函数
+	virtual ~CClientHandle();
+	//获取CNetWork
+	CNetWork *GetNetWork();
 public:
-    //准备run
-    int PrepareToRun();
+	//准备run
+	int PrepareToRun();
 public:
-    //清除socket
-    static void ClearSocket(IBufferEvent *pAcceptor, short iError);
-    //通知gameserver client 断开连接
-    static void DisConnect(IBufferEvent *pAcceptor, short iError);
-    //发送数据给gameserver
-    static void SendToGame(IBufferEvent *pAcceptor, unsigned short len);
-    //给特定client发送数据
-    void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
+	//清除socket
+	static void ClearSocket(std::shared_ptr<CAcceptor> &tmpAcceptor, short iError);
+	//通知gameserver client 断开连接
+	static void DisConnect(std::shared_ptr<CAcceptor> &tmpAcceptor, short iError);
+	//发送数据给gameserver
+	static void SendToGame(std::shared_ptr<CAcceptor> &tmpAcceptor, unsigned short len);
+	//给特定client发送数据
+	void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
 private:
-    //开始监听
-    bool BeginListen();
-    //客户端断开连接
+	//开始监听
+	bool BeginListen();
+	//客户端断开连接
 protected:
-    //客户端连接还回调
-    static void lcb_OnAcceptCns(uint32 uId, IBufferEvent *pBufferEvent);
-    //客户端断开连接回调
-    static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
-    //客户端上行数据回调
-    static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
-    //发送数据回调
-    static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
-    //检测连接超时
-    static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
+	//客户端连接还回调
+	static void lcb_OnAcceptCns(uint32 uId, shared_ptr<CAcceptor> tmpAcceptor);
+	//客户端断开连接回调
+	static void lcb_OnCnsDisconnected(shared_ptr<CAcceptor> &tmpAcceptor);
+	//客户端上行数据回调
+	static void lcb_OnCnsSomeDataRecv(shared_ptr<CAcceptor> &tmpAcceptor);
+	//发送数据回调
+	static void lcb_OnCnsSomeDataSend(shared_ptr<CAcceptor> &tmpAcceptor);
+	//检测连接超时
+	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
 public:
-    shared_ptr<CNetWork> m_pNetWork;
-    static CByteBuff m_oRecvBuff;
+	shared_ptr<CNetWork> m_pNetWork;
+	static shared_ptr<CByteBuff> m_pRecvBuff;
+	static shared_ptr<CMessage> m_pMessage;
 };
 #endif //SERVER_C2S_THREAD_H

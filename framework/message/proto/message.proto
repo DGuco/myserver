@@ -44,7 +44,7 @@ message CSocketInfo
 message CMesHead
 {
 	required	enMessageCmd	opFlag			= 1[default = MESS_NULL];	    // 指令类型
-	optional	CSocketInfo		socketInfos		= 2;	//发送目标信息(多个用来做多人推送)
+	repeated	CSocketInfo		socketInfos		= 2;	//发送目标信息(多个用来做多人推送)
 	optional	int32			cmd		 		= 3;	//消息id
 	optional	int32			serial		 	= 4;	//序列码
 	optional	int32			seq		 		= 5;	//应答码

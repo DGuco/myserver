@@ -29,7 +29,7 @@ public:
 	//移动赋值操作符
 	CByteBuff &operator=(CByteBuff &&byteBuff);
 	~CByteBuff();
-	void Reset();
+	void Clear();
 	//网络字节流转换主机字节流
 	char *Flip(char *netStr, size_t len);
 	short ReadShort();

@@ -379,7 +379,7 @@ int CClientHandle::Push(int cmd, std::shared_ptr<CGoogleMessage> pMessage, stPoi
 
 int CClientHandle::RecvClientData()
 {
-	m_oRecvBuff->Reset();
+	m_oRecvBuff->Clear();
 	int iTmpCodeLength;
 	// 从共享内存管道提取消息
 	int iRet = mC2SPipe->GetHeadCode((BYTE *) m_oRecvBuff->CanWriteData(), iTmpCodeLength);
