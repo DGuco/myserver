@@ -40,7 +40,7 @@ bool CConnector::Connect(const CNetAddr &addr)
 	if (iRet != 0) {
 		return false;
 	}
-	SetState(eCS_Connecting);
+	OnConnectted();
 	return true;
 }
 
@@ -52,6 +52,7 @@ bool CConnector::ReConnect()
 	if (iRet != 0) {
 		return false;
 	}
+	m_oSocket.SetSocket(bufferevent_getfd(m_pStBufEv));
 	SetState(eCS_Connecting);
 	return true;
 }
@@ -93,11 +94,6 @@ void CConnector::ShutDown()
 
 void CConnector::OnEvent(int16 nWhat)
 {
-	if (nWhat & BEV_EVENT_CONNECTED) {
-		OnConnectted();
-		SetState(eCS_Connected);
-		return;
-	}
 	if (nWhat & BEV_EVENT_EOF ||
 		nWhat & BEV_EVENT_READING ||
 		nWhat & BEV_EVENT_ERROR ||

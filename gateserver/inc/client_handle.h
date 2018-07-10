@@ -24,33 +24,35 @@ public:
 public:
 	//准备run
 	int PrepareToRun();
-public:
-	//清除socket
-	static void ClearSocket(std::shared_ptr<CAcceptor> &tmpAcceptor, short iError);
-	//通知gameserver client 断开连接
-	static void DisConnect(std::shared_ptr<CAcceptor> &tmpAcceptor, short iError);
 	//发送数据给gameserver
-	static void SendToGame(std::shared_ptr<CAcceptor> &tmpAcceptor, unsigned short len);
+	void DealClientData(CAcceptor* tmpAcceptor, unsigned short len);
 	//给特定client发送数据
 	void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
+public:
+	//清除socket
+	static void ClearSocket(CAcceptor* tmpAcceptor, short iError);
+	//通知gameserver client 断开连接
+	static void DisConnect(CAcceptor* tmpAcceptor, short iError);
+	static CByteBuff *GetRecvBuff();
+	static CByteBuff *GetSendBuff();
+protected:
+	//客户端连接还回调
+	static void lcb_OnAcceptCns(uint32 uId, CAcceptor* tmpAcceptor);
+	//客户端断开连接回调
+	static void lcb_OnCnsDisconnected(CAcceptor* tmpAcceptor);
+	//客户端上行数据回调
+	static void lcb_OnCnsSomeDataRecv(CAcceptor* tmpAcceptor);
+	//发送数据回调
+	static void lcb_OnCnsSomeDataSend(CAcceptor* tmpAcceptor);
+	//检测连接超时
+	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
 private:
 	//开始监听
 	bool BeginListen();
 	//客户端断开连接
-protected:
-	//客户端连接还回调
-	static void lcb_OnAcceptCns(uint32 uId, shared_ptr<CAcceptor> tmpAcceptor);
-	//客户端断开连接回调
-	static void lcb_OnCnsDisconnected(shared_ptr<CAcceptor> &tmpAcceptor);
-	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataRecv(shared_ptr<CAcceptor> &tmpAcceptor);
-	//发送数据回调
-	static void lcb_OnCnsSomeDataSend(shared_ptr<CAcceptor> &tmpAcceptor);
-	//检测连接超时
-	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
-public:
+private:
 	shared_ptr<CNetWork> m_pNetWork;
-	static shared_ptr<CByteBuff> m_pRecvBuff;
-	static shared_ptr<CMessage> m_pMessage;
+	static CByteBuff *m_pRecvBuff; //客户端上行数据buff
+	static CByteBuff *m_pSendBuff; //客户端下行数据buff
 };
 #endif //SERVER_C2S_THREAD_H

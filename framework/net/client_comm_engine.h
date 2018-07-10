@@ -21,7 +21,7 @@ public:
 	 * @param pHead
 	 * @return
 	 */
-	static int ParseClientStream(shared_ptr<CByteBuff> &parseByteBuff,
+	static int ParseClientStream(CByteBuff *parseByteBuff,
 								 CMesHead *pHead);
 
 	/**
@@ -32,7 +32,7 @@ public:
 	 * @param pHead
 	 * @return
 	 */
-	static int ConvertToGameStream(shared_ptr<CByteBuff> &convertBuff,
+	static int ConvertToGameStream(CByteBuff *convertBuff,
 								   const void *pDataBuff,
 								   unsigned short &unDataLen,
 								   CMesHead *pHead);
@@ -45,8 +45,8 @@ public:
 	 * @param pMsg
 	 * @return
 	 */
-	static int ConvertToGameStream(shared_ptr<CByteBuff> &convertBuff,
-								   shared_ptr<CMessage> &pMessage);
+	static int ConvertToGameStream(CByteBuff* convertBuff,
+								   CMessage *pMessage);
 
 	/**
 	 * 序列化消息CMessage 发送到gateserver（gameserver==>gateserver）

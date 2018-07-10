@@ -15,7 +15,9 @@
 #include "../inc/server_handle.h"
 #include "../inc/gate_ctrl.h"
 
-shared_ptr<CByteBuff> CServerHandle::m_pSendBuff = std::make_shared<CByteBuff>();
+CByteBuff *CServerHandle::m_pSendBuff = new CByteBuff();
+
+CByteBuff *CServerHandle::m_pRecvBuff = new CByteBuff();
 
 CServerHandle::CServerHandle(shared_ptr<CNetWork> pNetWork)
 	: m_pNetWork(pNetWork),
@@ -116,19 +118,35 @@ int CServerHandle::RecvServerData(char *data)
 
 void CServerHandle::Register2Game()
 {
-	CMesHead *tmpMesHead = CClientHandle::m_oMessage.mutable_msghead();
+	static CMessage tmpMessage;
+	CMesHead *tmpMesHead = tmpMessage.mutable_msghead();
 	tmpMesHead->set_opflag(enMessageCmd::MESS_REGIST);
-	SendToGame(tmpMessage);
+	SendToGame(&tmpMessage);
 	return;
 }
 
-int CServerHandle::SendToGame(shared_ptr<CMessage> &pMessage)
+// 发送心跳到Proxy
+void CServerHandle::SendKeepAlive2Game()
+{
+	static CMessage tmpMessage;
+	CMesHead *tmpMesHead = tmpMessage.mutable_msghead();
+	tmpMesHead->set_opflag(enMessageCmd::MESS_KEEPALIVE);
+	SendToGame(&tmpMessage);
+}
+
+int CServerHandle::SendToGame(CMessage *pMessage)
 {
 	int iRet = CClientCommEngine::ConvertToGameStream(m_pSendBuff, pMessage);
 	if (iRet != 0) {
 		LOG_ERROR("default", "ConvertMsgToStream failed, iRet = {}.", iRet);
-		return 0;
+		return iRet;
 	}
+	return SendToGame();
+}
+
+int CServerHandle::SendToGame()
+{
+	int iRet = 0;
 	ServerInfo *rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
 	shared_ptr<CConnector> &pTmpConn = m_pNetWork->FindConnector(rTmpGame->m_iServerId);
 	if (pTmpConn) {
@@ -136,8 +154,40 @@ int CServerHandle::SendToGame(shared_ptr<CMessage> &pMessage)
 		if (iRet < 0) {
 			LOG_ERROR("default", "Send to game error, iRet = {}.", iRet);
 		}
+		else {
+			//断开重新连接
+			if (pTmpConn->ReConnect()) {
+				iRet = pTmpConn->Send(m_pSendBuff->CanReadData(), m_pSendBuff->ReadableDataLen());
+				if (iRet < 0) {
+					LOG_ERROR("default", "ReSend to game error, iRet = {}.", iRet);
+				}
+			}
+			else {
+				LOG_ERROR("default", "Reconnect to game failed");
+			};
+		}
+	}
+	else {
+		LOG_ERROR("default", "Connection to game has gone");
 	}
 	return iRet;
+}
+
+CByteBuff *CServerHandle::GetSendBuff()
+{
+	return m_pSendBuff;
+}
+CByteBuff *CServerHandle::GetRecvBuff()
+{
+	return m_pRecvBuff;
+}
+time_t CServerHandle::GetLastSendKeepAlive() const
+{
+	return m_tLastSendKeepAlive;
+}
+time_t CServerHandle::GetLastRecvKeepAlive() const
+{
+	return m_tLastRecvKeepAlive;
 }
 
 void CServerHandle::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
@@ -192,7 +242,7 @@ void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 							   pConnector->GetSocket().GetSocket() > 0 &&
 							   tNow - tmpServerHandle->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
 							   if (tNow - tmpServerHandle->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
-								   tmpServerHandle->SendKeepAlive2Proxy();
+								   tmpServerHandle->SendKeepAlive2Game();
 								   LOG_DEBUG("default", "SendkeepAliveToProxy succeed..");
 							   }
 						   }

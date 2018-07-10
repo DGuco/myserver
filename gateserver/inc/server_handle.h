@@ -24,7 +24,12 @@ public:
 	//准备run
 	int PrepareToRun();
 	//向game发送消息
-	int SendToGame(shared_ptr<CMessage> &pMessage);
+	int SendToGame(CMessage *pMessage);
+	int SendToGame();
+	static CByteBuff *GetSendBuff();
+	static CByteBuff *GetRecvBuff();
+	time_t GetLastSendKeepAlive() const;
+	time_t GetLastRecvKeepAlive() const;
 private:
 	//检测发送队列
 	void CheckWaitSendData();
@@ -32,6 +37,8 @@ private:
 	int SendClientData(CMessage &tmpMes, std::shared_ptr<CByteBuff> tmpBuff);
 	//向gameserver注册
 	void Register2Game();
+	//向game发送心跳
+	void SendKeepAlive2Game();
 private:
 	//客户端上行数据回调（无用）
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
@@ -41,9 +48,9 @@ private:
 	static void lcb_OnConnectFailed(CConnector *pConnector);
 	static void lcb_OnConnected(CConnector *pConnector);
 	static void lcb_OnPingServer(int fd, short what, CConnector *pConnector);
-public:
-	static shared_ptr<CByteBuff> m_pSendBuff;
 private:
+	static CByteBuff *m_pSendBuff;   //上行gameserver buff
+	static CByteBuff *m_pRecvBuff;   //gameserver 返回数据buff
 	shared_ptr<CNetWork> m_pNetWork;
 	time_t m_tLastSendKeepAlive;        // 最后发送gameServer心跳消息时间
 	time_t m_tLastRecvKeepAlive;        // 最后接收gameServer心跳消息时间

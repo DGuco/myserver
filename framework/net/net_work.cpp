@@ -16,9 +16,9 @@ CNetWork::CNetWork()
 	m_pCheckTimerOut(NULL),
 	m_iPingCheckTime(0),
 	m_pOnNew(NULL),
-	m_pFuncAcceptorOnDataSend(NULL),
-	m_pFuncAcceptorOnDataRecv(NULL),
-	m_pFuncAcceptorDisconnected(NULL)
+	m_pFuncAcceptorOnDataSend(),
+	m_pFuncAcceptorOnDataRecv(),
+	m_pFuncAcceptorDisconnected()
 {
 }
 
@@ -81,16 +81,16 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 	//  取得ip和端口号
 	char ip[16];
 	sprintf(ip, inet_ntoa(sin.sin_addr));
-	std::shared_ptr<CAcceptor> pAcceptor = std::make_shared<CAcceptor>(socket,
-																	   pReactor,
-																	   new CNetAddr(ip, sin.sin_port),
-																	   m_pFuncAcceptorOnDataSend,
-																	   m_pFuncAcceptorOnDataRecv,
-																	   m_pFuncAcceptorDisconnected);
+	shared_ptr<CAcceptor> pAcceptor = std::make_shared<CAcceptor>(socket,
+																  pReactor,
+																  new CNetAddr(ip, sin.sin_port),
+																  m_pFuncAcceptorOnDataSend,
+																  m_pFuncAcceptorOnDataRecv,
+																  m_pFuncAcceptorDisconnected);
 	MY_ASSERT_STR(pAcceptor != NULL, return, "Create CAcceptor failed");
-	bool bRet = GetEventReactor()->Register(pAcceptor);
+	bool bRet = GetEventReactor()->Register(pAcceptor.get());
 	MY_ASSERT_STR(bRet, return, "Acceptor register failed");
-	m_pOnNew(socket, std::move(pAcceptor));
+	m_pOnNew(socket, pAcceptor.get());
 }
 
 void CNetWork::EndListen()
@@ -108,16 +108,15 @@ bool CNetWork::Connect(const char *szNetAddr,
 					   FuncConnectorOnPingServer funcOnPingServer,
 					   unsigned int uPingTick)
 {
-	std::shared_ptr<CConnector> pConnector =
-		std::make_shared<CConnector>(m_pEventReactor,
-									 funcOnSomeDataSend,
-									 funcOnSomeDataRecv,
-									 funcOnDisconnected,
-									 iTargetId,
-									 uPingTick);
-	pConnector->SetCallbackFunc(std::move(funcOnConnectFailed),
-								std::move(funcOnConnectted),
-								std::move(funcOnPingServer));
+	std::shared_ptr<CConnector> pConnector = std::make_shared<CConnector>(m_pEventReactor,
+																		  funcOnSomeDataSend,
+																		  funcOnSomeDataRecv,
+																		  funcOnDisconnected,
+																		  iTargetId,
+																		  uPingTick);
+	pConnector->SetCallbackFunc(funcOnConnectFailed,
+								funcOnConnectted,
+								funcOnPingServer);
 
 	CNetAddr addr(szNetAddr, uPort);
 	bool bRet = pConnector->Connect(addr);
@@ -198,7 +197,7 @@ std::shared_ptr<IEventReactor> CNetWork::GetEventReactor()
 	return m_pEventReactor;
 }
 
-CNetWork::MAP_ACCEPTOR &CNetWork::GetAcceptorMap()
+MAP_ACCEPTOR &CNetWork::GetAcceptorMap()
 {
 	return m_mapAcceptor;
 }

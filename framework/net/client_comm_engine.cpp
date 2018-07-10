@@ -29,7 +29,7 @@ void CClientCommEngine::CopyMesHead(CMesHead *from, CMesHead *to)
 
 }
 
-int CClientCommEngine::ParseClientStream(shared_ptr<CByteBuff> &parseByteBuff,
+int CClientCommEngine::ParseClientStream(CByteBuff *parseByteBuff,
 										 CMesHead *pHead)
 {
 	if ((parseByteBuff == NULL) || (pHead == NULL)) {
@@ -49,7 +49,7 @@ int CClientCommEngine::ParseClientStream(shared_ptr<CByteBuff> &parseByteBuff,
 	return 0;
 }
 
-int CClientCommEngine::ConvertToGameStream(shared_ptr<CByteBuff> &convertBuff,
+int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
 										   const void *pDataBuff,
 										   unsigned short &unDataLen,
 										   CMesHead *pHead)
@@ -126,8 +126,8 @@ int CClientCommEngine::ConvertToGameStream(shared_ptr<CByteBuff> &convertBuff,
 	return 0;
 }
 
-int CClientCommEngine::ConvertToGameStream(shared_ptr<CByteBuff> &convertBuff,
-										   shared_ptr<CMessage> &pMessage)
+int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
+										   CMessage *pMessage)
 {
 	if (convertBuff == NULL || pMessage == NULL || pMessage->mutable_msghead() == NULL) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertMsgToStream Input param failed.");

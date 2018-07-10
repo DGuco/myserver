@@ -15,7 +15,7 @@ public:
 	}
 	Parent()
 	{
-
+		a = 100;
 	}
 
 	Parent(const Parent &tmp)
@@ -68,26 +68,29 @@ void test(shared_ptr<Parent> &sharedPtr)
 	}
 }
 
+Parent &test1()
+{
+//	Parent *paren = new Parent;
+	Parent parent;
+	return parent;
+}
+
 int main()
 {
-//	Child *child = new Child;
-//	Parent *parent = child;
-//	parent->Say();
-//	delete parent;
-
-	shared_ptr<Parent> sharedPtr = std::make_shared<Child>();
-	sharedPtr->Say();
-	printf("Use count = %d\n", sharedPtr.use_count());
-	shared_ptr<Parent> ptr = NULL;
-	test(ptr);
-	test(sharedPtr);
+	Parent &parent = test1();
+//	shared_ptr<Parent> sharedPtr = std::make_shared<Child>();
+//	sharedPtr->Say();
+//	printf("Use count = %d\n", sharedPtr.use_count());
+//	shared_ptr<Parent> ptr = NULL;
+//	test(ptr);
+//	test(sharedPtr);
 //	[sharedPtr]
 //	{
 //		printf("Use count = %d\n", sharedPtr.use_count());
 //		return sharedPtr.use_count();
 //	}();
 //	printf("Use count = %d\n", sharedPtr.use_count());
-	shared_ptr<Parent> sharedPtr1 = std::move(sharedPtr);
-	printf("Use count = %d\n", sharedPtr1.use_count());
+//	shared_ptr<Parent> sharedPtr1 = std::move(sharedPtr);
+//	printf("Use count = %d\n", sharedPtr1.use_count());
 	return 0;
 }

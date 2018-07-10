@@ -38,8 +38,8 @@ class IEventReactor
 {
 public:
 	virtual ~IEventReactor() = default;
-	virtual bool Register(IReactorHandler* pHandler) = 0;
-	virtual bool UnRegister(IReactorHandler* pHandler) = 0;
+	virtual bool Register(IReactorHandler *pHandler) = 0;
+	virtual bool UnRegister(IReactorHandler *pHandler) = 0;
 	virtual event_base *GetEventBase()=0;
 	virtual void DispatchEvents() = 0;
 	virtual void Release() = 0;
@@ -51,7 +51,7 @@ public:
 	virtual ~IReactorHandler() = default;
 	virtual bool RegisterToReactor() = 0;
 	virtual bool UnRegisterFromReactor() = 0;
-	virtual std::shared_ptr<IEventReactor> GetReactor() = 0;
+	virtual IEventReactor *GetReactor() = 0;
 };
 
 /** CallBack for TimerOut
@@ -64,26 +64,26 @@ typedef std::function<void(uint32, void *)> FuncOnSignal;
 
 /** CallBack for IBufferEvent
 */
-typedef std::function<void(shared_ptr<IBufferEvent>)> FuncBufferEventOnDataSend;
+typedef std::function<void(IBufferEvent *)> FuncBufferEventOnDataSend;
 
-typedef std::function<void(shared_ptr<IBufferEvent>)> FuncBufferEventOnDataRecv;
+typedef std::function<void(IBufferEvent *)> FuncBufferEventOnDataRecv;
 
-typedef std::function<void(shared_ptr<IBufferEvent>)> FuncBufferEventOnDisconnected;
+typedef std::function<void(IBufferEvent *)> FuncBufferEventOnDisconnected;
 
 /** CallBack for Accept
 */
-typedef std::function<void(shared_ptr<IEventReactor> &, SOCKET, shared_ptr<sockaddr> &)> FuncListenerOnAccept;
+typedef std::function<void(IBufferEvent *, SOCKET, sockaddr *)> FuncListenerOnAccept;
 
 /** CallBack for Connector
  */
-typedef std::function<void(shared_ptr<CConnector> &)> FuncConnectorOnConnectFailed;
+typedef std::function<void(CConnector *)> FuncConnectorOnConnectFailed;
 
-typedef std::function<void(shared_ptr<CConnector> &)> FuncConnectorOnConnectted;
+typedef std::function<void(CConnector *)> FuncConnectorOnConnectted;
 
-typedef std::function<void(int, short, shared_ptr<CConnector> &)> FuncConnectorOnPingServer;
+typedef std::function<void(int, short, CConnector *)> FuncConnectorOnPingServer;
 
 /** CallBack for CAcceptor
  */
-typedef std::function<void(uint32, shared_ptr<CAcceptor>)> FuncAcceptorOnNew;
+typedef std::function<void(uint32, CAcceptor *)> FuncAcceptorOnNew;
 
 #endif
