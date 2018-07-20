@@ -219,7 +219,7 @@ void CServerHandle::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 		->PushTaskBack([pBufferEvent]
 					   {
 						   MY_ASSERT(pBufferEvent != NULL, return);
-						   LOG_WARN("default", "The connection to proxy is gone,try to reconnect to it");
+						   LOG_WARN("default", "The connection to game is gone,try to reconnect to it");
 						   // 断开连接重新连接到proxy服务器
 						   if (((CConnector *) pBufferEvent)->ReConnect() < 0) {
 							   LOG_ERROR("default", "Reconnect to proxyServer failed!");

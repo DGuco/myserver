@@ -139,7 +139,7 @@ int CServerHandle::SendToGame()
 {
 	int iRet = 0;
 	ServerInfo *rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
-	CConnector* pTmpConn = m_pNetWork->FindConnector(rTmpGame->m_iServerId);
+	CConnector *pTmpConn = m_pNetWork->FindConnector(rTmpGame->m_iServerId);
 	if (pTmpConn) {
 		iRet = pTmpConn->Send(m_pSendBuff->CanReadData(), m_pSendBuff->ReadableDataLen());
 		if (iRet < 0) {
@@ -234,7 +234,7 @@ void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 							   tNow - tmpServerHandle->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
 							   if (tNow - tmpServerHandle->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
 								   tmpServerHandle->SendKeepAlive2Game();
-								   LOG_DEBUG("default", "SendkeepAliveToProxy succeed..");
+								   LOG_DEBUG("default", "Send keepAlive to game succeed..");
 							   }
 						   }
 						   else {
@@ -242,7 +242,7 @@ void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 							   pConnector->SetState(CConnector::eCS_Disconnected);
 							   // 断开连接重新连接到proxy服务器
 							   if (pConnector->ReConnect() < 0) {
-								   LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
+								   LOG_ERROR("default", "Reconnect to game failed!\n");
 								   return;
 							   }
 						   }

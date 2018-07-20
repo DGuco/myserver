@@ -1,7 +1,7 @@
 #include <my_assert.h>
 #include "connector.h"
 
-CConnector::CConnector(IEventReactor* pReactor,
+CConnector::CConnector(IEventReactor *pReactor,
 					   FuncBufferEventOnDataSend funcOnDataSend,
 					   FuncBufferEventOnDataRecv funcOnDataRecv,
 					   FuncBufferEventOnDisconnected funcDisconnected,
@@ -101,16 +101,12 @@ void CConnector::OnEvent(int16 nWhat)
 		if (IsConnected()) {
 			SetState(eCS_Disconnected);
 			m_pFuncDisconnected(this);
-			MY_ASSERT_STR(false, return, "Connection disconnected,error code 0x%x", nWhat);
 			return;
 		}
-		if (IsConnecting()) {
-			MY_ASSERT_STR(false, return;, "Connect to %s : %d failed,error code 0x%x",
-						  m_oAddr.GetAddress(), m_oAddr.GetPort(), nWhat);
-			return;
+		else {
+
 		}
 	}
-
 }
 
 bool CConnector::IsConnected()
