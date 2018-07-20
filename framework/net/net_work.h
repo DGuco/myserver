@@ -19,13 +19,15 @@
 #include "buffev_interface.h"
 #include "acceptor.h"
 
-typedef unordered_map<unsigned int, shared_ptr<CConnector>> MAP_CONNECTOR;
-typedef unordered_map<unsigned int, shared_ptr<CAcceptor>> MAP_ACCEPTOR;
-typedef std::queue<shared_ptr<CSystemSignal>> Queue_TimerOrSignals;
+typedef unordered_map<unsigned int, CConnector *> MAP_CONNECTOR;
+
+typedef unordered_map<unsigned int, CAcceptor *> MAP_ACCEPTOR;
+
+typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
 
 using namespace std;
 
-class CNetWork: public CSingleton
+class CNetWork: public CSingleton<CNetWork>
 {
 public:
 	//构造函数
@@ -65,15 +67,15 @@ public:
 	//启动
 	void DispatchEvents();
 	//查找connector
-	std::shared_ptr<CConnector> &FindConnector(unsigned int uId);
+	CConnector *FindConnector(unsigned int uId);
 	//查找acceptor
-	std::shared_ptr<CAcceptor> &FindAcceptor(unsigned int uId);
+	CAcceptor *FindAcceptor(unsigned int uId);
 	//添加新的acceptor
-	void InsertNewAcceptor(unsigned int uid, std::shared_ptr<CAcceptor> pAcceptor);
+	void InsertNewAcceptor(unsigned int uid, CAcceptor* pAcceptor);
 	//添加新的connector
-	void InsertNewConnector(unsigned int uid, std::shared_ptr<CConnector> pConnector);
+	void InsertNewConnector(unsigned int uid, CConnector* pConnector);
 	//获取event
-	std::shared_ptr<IEventReactor> GetEventReactor();
+	IEventReactor *GetEventReactor();
 	//获取连接map
 	MAP_ACCEPTOR &GetAcceptorMap();
 private:
@@ -83,14 +85,14 @@ private:
 	//创建acceptor
 	void NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
 private:
-	shared_ptr<IEventReactor> m_pEventReactor;
+	IEventReactor *m_pEventReactor;
 	unsigned int m_uGcTime;
 
 	MAP_CONNECTOR m_mapConnector;
 	MAP_ACCEPTOR m_mapAcceptor;
 	Queue_TimerOrSignals m_qTimerOrSignals;
-	shared_ptr<CListener> m_pListener;
-	shared_ptr<CTimerEvent> m_pCheckTimerOut;
+	CListener *m_pListener;
+	CTimerEvent *m_pCheckTimerOut;
 	int m_iPingCheckTime;  //单位毫秒
 
 	FuncAcceptorOnNew m_pOnNew;

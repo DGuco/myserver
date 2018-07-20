@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <memory>
+#include "../framework/log/log.h"
 using namespace std;
 
 class Parent

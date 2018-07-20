@@ -13,7 +13,8 @@
 template<> std::shared_ptr<CGateCtrl> CSingleton<CGateCtrl>::spSingleton = NULL;
 
 CGateCtrl::CGateCtrl()
-	: m_pClientHandle(std::make_shared<CClientHandle>(m_pNetWork)),
+	: m_pNetWork(std::make_shared<CNetWork>()),
+	  m_pClientHandle(std::make_shared<CClientHandle>(m_pNetWork)),
 	  m_pServerHandle(std::make_shared<CServerHandle>(m_pNetWork)),
 	  m_pSingleThead(std::make_shared<CThreadPool>(1))
 {

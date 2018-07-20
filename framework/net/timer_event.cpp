@@ -4,7 +4,7 @@
 
 #include "timer_event.h"
 
-CTimerEvent::CTimerEvent(std::shared_ptr<IEventReactor> pReactor,
+CTimerEvent::CTimerEvent(IEventReactor *pReactor,
 						 FuncOnTimeOut pFuncOnTimerOut,
 						 void *param,
 						 int sec,
@@ -78,7 +78,7 @@ bool CTimerEvent::UnRegisterFromReactor()
 	GetReactor()->UnRegister(this);
 }
 
-std::shared_ptr<IEventReactor> CTimerEvent::GetReactor()
+IEventReactor *CTimerEvent::GetReactor()
 {
 	return m_pReactor;
 }

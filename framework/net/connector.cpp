@@ -1,7 +1,7 @@
 #include <my_assert.h>
 #include "connector.h"
 
-CConnector::CConnector(std::shared_ptr<IEventReactor> pReactor,
+CConnector::CConnector(IEventReactor* pReactor,
 					   FuncBufferEventOnDataSend funcOnDataSend,
 					   FuncBufferEventOnDataRecv funcOnDataRecv,
 					   FuncBufferEventOnDisconnected funcDisconnected,

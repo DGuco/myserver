@@ -37,13 +37,13 @@ public:
 	static CByteBuff *GetSendBuff();
 protected:
 	//客户端连接还回调
-	static void lcb_OnAcceptCns(uint32 uId, CAcceptor* tmpAcceptor);
+	static void lcb_OnAcceptCns(uint32 uId, IBufferEvent* tmpAcceptor);
 	//客户端断开连接回调
-	static void lcb_OnCnsDisconnected(CAcceptor* tmpAcceptor);
+	static void lcb_OnCnsDisconnected(IBufferEvent* tmpAcceptor);
 	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataRecv(CAcceptor* tmpAcceptor);
+	static void lcb_OnCnsSomeDataRecv(IBufferEvent* tmpAcceptor);
 	//发送数据回调
-	static void lcb_OnCnsSomeDataSend(CAcceptor* tmpAcceptor);
+	static void lcb_OnCnsSomeDataSend(IBufferEvent* tmpAcceptor);
 	//检测连接超时
 	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
 private:

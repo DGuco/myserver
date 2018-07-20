@@ -72,7 +72,7 @@ typedef std::function<void(IBufferEvent *)> FuncBufferEventOnDisconnected;
 
 /** CallBack for Accept
 */
-typedef std::function<void(IBufferEvent *, SOCKET, sockaddr *)> FuncListenerOnAccept;
+typedef std::function<void(IEventReactor *, SOCKET, sockaddr *)> FuncListenerOnAccept;
 
 /** CallBack for Connector
  */

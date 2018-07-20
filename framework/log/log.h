@@ -14,6 +14,8 @@ using namespace std;
 using namespace spdlog;
 using namespace spdlog::level;
 
+#define  CONSOLE_LOG_NAME "console"
+
 #	define INIT_BASE_LOG    InitBaseLog                        // 初始化基本的文件log
 #	define INIT_ROATING_LOG    InitRoatingLog                        // 初始化一种日志类型（基于回卷文件)
 #	define INIT_DAILY_LOG    InitDailyLog                        // 初始化一种日志类型（每天)
@@ -73,6 +75,12 @@ int LogTrace(const char *vLogName, const char *vFmt, const Args &... args)
 		return -1;
 	}
 
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::trace, vFmt, args...);
+	}
+#endif
 	log->log(level_enum::trace, vFmt, args...);
 	return 0;
 }
@@ -88,7 +96,12 @@ int LogDebug(const char *vLogName, const char *vFmt, const Args &... args)
 	if (NULL == log) {
 		return -1;
 	}
-
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::debug, vFmt, args...);
+	}
+#endif
 	log->log(level_enum::debug, vFmt, args...);
 	return 0;
 }
@@ -104,6 +117,12 @@ int LogInfo(const char *vLogName, const char *vFmt, const Args &... args)
 	if (NULL == log) {
 		return -1;
 	}
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::info, vFmt, args...);
+	}
+#endif
 
 	log->log(level_enum::info, vFmt, args...);
 	return 0;
@@ -120,6 +139,12 @@ int LogWarn(const char *vLogName, const char *vFmt, const Args &... args)
 	if (NULL == log) {
 		return -1;
 	}
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::warn, vFmt, args...);
+	}
+#endif
 
 	log->log(level_enum::warn, vFmt, args...);
 	return 0;
@@ -136,6 +161,12 @@ int LogError(const char *vLogName, const char *vFmt, const Args &... args)
 	if (NULL == log) {
 		return -1;
 	}
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::err, vFmt, args...);
+	}
+#endif
 	log->log(level_enum::err, vFmt, args...);
 	return 0;
 }
@@ -152,6 +183,12 @@ int LogCritical(const char *vLogName, const char *vFmt, const Args &... args)
 		return -1;
 	}
 
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::critical, vFmt, args...);
+	}
+#endif
 	log->log(level_enum::critical, vFmt, args...);
 	return 0;
 }
@@ -168,6 +205,12 @@ int log(const char *vLogName, level_enum vPriority, const char *vFmt, const Args
 		return -1;
 	}
 
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(vPriority, vFmt, args...);
+	}
+#endif
 	log->log(vPriority, vFmt, args...);
 	return 0;
 }

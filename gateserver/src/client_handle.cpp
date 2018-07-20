@@ -8,14 +8,13 @@
 #include "../inc/client_handle.h"
 #include "../inc/gate_def.h"
 #include "../inc/gate_ctrl.h"
-#include "../../gameserver/inc/client_handle.h"
 
 CByteBuff *CClientHandle::m_pRecvBuff = new CByteBuff();
 
 CByteBuff *CClientHandle::m_pSendBuff = new CByteBuff();
 
 CClientHandle::CClientHandle(shared_ptr<CNetWork> pNetWork)
-	: m_pNetWork(pNetWork)
+	: m_pNetWork(std::move(pNetWork))
 {
 }
 
@@ -68,18 +67,18 @@ void CClientHandle::DealClientData(CAcceptor *tmpAcceptor,
 		shared_ptr<CServerHandle> &tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetServerHandle();
 		tmpServerHandle->SendToGame(&tmpMessage);
 		//发送给game server
-		iTmpRet = m_pC2SPipe->AppendOneCode((const BYTE *) m_oSendBuff->CanReadData(), m_oSendBuff->ReadableDataLen());
-		if (iTmpRet < 0) {
-			//断开连接
-			ClearSocket(pAcceptor, Err_SendToMainSvrd);
-			return;
-		}
-		LOG_DEBUG("default", "gate ==>game [{} bytes]", m_oSendBuff->ReadableDataLen());
-		//检测是否有下行数据需要转发
-		CServerHandle *tmpHandle = CGateCtrl::GetSingletonPtr()->GetServerHandle();
-		if (!tmpHandle->IsToBeBlocked() && tmpHandle->GetStatus() != rt_running) {
-			tmpHandle->WakeUp();
-		}
+//		iTmpRet = m_pC2SPipe->AppendOneCode((const BYTE *) m_oSendBuff->CanReadData(), m_oSendBuff->ReadableDataLen());
+//		if (iTmpRet < 0) {
+//			//断开连接
+//			ClearSocket(pAcceptor, Err_SendToMainSvrd);
+//			return;
+//		}
+//		LOG_DEBUG("default", "gate ==>game [{} bytes]", m_oSendBuff->ReadableDataLen());
+//		//检测是否有下行数据需要转发
+//		CServerHandle *tmpHandle = CGateCtrl::GetSingletonPtr()->GetServerHandle();
+//		if (!tmpHandle->IsToBeBlocked() && tmpHandle->GetStatus() != rt_running) {
+//			tmpHandle->WakeUp();
+//		}
 	}
 	else {
 		//心跳信息不做处理
@@ -88,7 +87,7 @@ void CClientHandle::DealClientData(CAcceptor *tmpAcceptor,
 
 void CClientHandle::SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len)
 {
-	shared_ptr<CAcceptor> pAcceptor = m_pNetWork->FindAcceptor(socketInfo.socketid());
+	CAcceptor *pAcceptor = m_pNetWork->FindAcceptor(socketInfo.socketid());
 	if (pAcceptor == NULL) {
 		LOG_ERROR("default", "CAcceptor has gone, socket = {}", socketInfo.socketid());
 		return;
@@ -111,7 +110,7 @@ void CClientHandle::SendToClient(const CSocketInfo &socketInfo, const char *data
 	int iRet = pAcceptor->Send(data, len);
 	if (iRet != 0) {
 		//发送失败
-		CClientHandle::ClearSocket(pAcceptor.get(), Err_ClientClose);
+		CClientHandle::ClearSocket(pAcceptor, Err_ClientClose);
 		LOG_ERROR("default",
 				  "send to client {} Failed due to error {}",
 				  pAcceptor->GetSocket().GetSocket(),
@@ -121,7 +120,7 @@ void CClientHandle::SendToClient(const CSocketInfo &socketInfo, const char *data
 
 	//gameserver 主动关闭
 	if (iTmpCloseFlag < 0) {
-		CClientHandle::ClearSocket(pAcceptor.get(), Client_Succeed);
+		CClientHandle::ClearSocket(pAcceptor, Client_Succeed);
 	}
 }
 
@@ -147,7 +146,7 @@ bool CClientHandle::BeginListen()
 	}
 }
 
-void CClientHandle::lcb_OnAcceptCns(unsigned int uId, CAcceptor *tmpAcceptor)
+void CClientHandle::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
 {
 	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
@@ -156,20 +155,20 @@ void CClientHandle::lcb_OnAcceptCns(unsigned int uId, CAcceptor *tmpAcceptor)
 						   MY_ASSERT(tmpAcceptor != NULL, return);
 						   LOG_DEBUG("default", "New acceptor,socket id {}", tmpAcceptor->GetSocket().GetSocket());
 						   CGateCtrl::GetSingletonPtr()->GetNetWork()
-							   ->InsertNewAcceptor(uId, std::move(tmpAcceptor));
+							   ->InsertNewAcceptor(uId, (CAcceptor *) (tmpAcceptor));
 					   }
 		);
 }
 
-void CClientHandle::lcb_OnCnsDisconnected(CAcceptor *tmpAcceptor)
+void CClientHandle::lcb_OnCnsDisconnected(IBufferEvent *tmpAcceptor)
 {
 	MY_ASSERT(tmpAcceptor != NULL, return);
 	//客户端主动断开连接
 	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
-		->PushTaskBack(CClientHandle::ClearSocket, tmpAcceptor, Err_ClientClose);
+		->PushTaskBack(CClientHandle::ClearSocket, (CAcceptor *) (tmpAcceptor), Err_ClientClose);
 }
 
-void CClientHandle::lcb_OnCnsSomeDataRecv(CAcceptor *tmpAcceptor)
+void CClientHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *tmpAcceptor)
 {
 	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
 		->PushTaskBack([tmpAcceptor]
@@ -188,11 +187,11 @@ void CClientHandle::lcb_OnCnsSomeDataRecv(CAcceptor *tmpAcceptor)
 						   tmpAcceptor->CurrentPackRecved();
 						   //发送数据包到game server
 						   shared_ptr<CClientHandle> &tmpHandle = CGateCtrl::GetSingletonPtr()->GetClientHandle();
-						   tmpHandle->DealClientData(tmpAcceptor, iTmpLen);
+						   tmpHandle->DealClientData((CAcceptor *) (tmpAcceptor), iTmpLen);
 					   });
 }
 
-void CClientHandle::lcb_OnCnsSomeDataSend(CAcceptor *tmpAcceptor)
+void CClientHandle::lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor)
 {
 
 }
@@ -209,9 +208,9 @@ void CClientHandle::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
 						   auto it = tmpMap.begin();
 						   time_t tNow = GetMSTime();
 						   for (; it != tmpMap.end();) {
-							   std::shared_ptr<CAcceptor> &tmpAcceptor = it->second;
+							   CAcceptor *tmpAcceptor = it->second;
 							   if (tNow - tmpAcceptor->GetLastKeepAlive() > tmpPingTime) {
-								   DisConnect(tmpAcceptor.get(), Err_ClientTimeout);
+								   DisConnect(tmpAcceptor, Err_ClientTimeout);
 								   it = tmpMap.erase(it);
 							   }
 							   else {

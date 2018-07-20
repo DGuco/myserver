@@ -69,7 +69,7 @@ inline CThreadPool::CThreadPool(size_t threads)
 	: m_stop(false)
 {
 	for (size_t i = 0; i < threads; ++i) {
-		std::shared_ptr th = std::make_shared<thread>(std::mem_fn(&CThreadPool::ThreadFunc), this);
+		std::shared_ptr<thread> th = std::make_shared<thread>(std::mem_fn(&CThreadPool::ThreadFunc), this);
 		if (th) {
 			m_mWorkers[th->get_id()] = std::move(th);
 		}

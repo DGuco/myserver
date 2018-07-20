@@ -257,8 +257,13 @@ CTimerManager::CTimerManager()
 
 CTimerManager::~CTimerManager()
 {
-	SAFE_DELETE(m_pSessionManager);
-	SAFE_DELETE(m_pTimerManager);
+	if(m_pSessionManager){
+		delete m_pSessionManager;
+	}
+
+	if(m_pTimerManager) {
+		delete m_pTimerManager;
+	}
 	m_mTimerMap.clear();
 	m_mTimerFinder.clear();
 	m_mSessionMap.clear();

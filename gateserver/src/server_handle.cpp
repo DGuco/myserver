@@ -20,7 +20,7 @@ CByteBuff *CServerHandle::m_pSendBuff = new CByteBuff();
 CByteBuff *CServerHandle::m_pRecvBuff = new CByteBuff();
 
 CServerHandle::CServerHandle(shared_ptr<CNetWork> pNetWork)
-	: m_pNetWork(pNetWork),
+	: m_pNetWork(std::move(pNetWork)),
 	  m_tLastRecvKeepAlive(0),
 	  m_tLastSendKeepAlive(0)
 {
@@ -63,7 +63,7 @@ void CServerHandle::CheckWaitSendData()
 	int unTmpCodeLength = 0;
 
 	std::shared_ptr<CByteBuff> tmpBuff(new CByteBuff);
-	iTmpRet = RecvServerData(tmpBuff->CanWriteData());
+//	iTmpRet = RecvServerData(tmpBuff->CanWriteData());
 	if (iTmpRet == 0) {
 		return;
 	}
@@ -101,19 +101,10 @@ int CServerHandle::SendClientData(CMessage &tmpMes, std::shared_ptr<CByteBuff> t
 			LOG_ERROR("default", "Invalid socket index {}", nTmpSocket);
 			continue;
 		}
-		CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()->PushTaskBack(
-			std::mem_fn(&CServerHandle::SendToClient), this, tmpSocketInfo, data, tmpDataLen);
+//		CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()->PushTaskBack(
+//			std::mem_fn(&CServerHandle::SendToClient), this, tmpSocketInfo, data, tmpDataLen);
 	}
 	return 0;
-}
-
-int CServerHandle::RecvServerData(char *data)
-{
-	int unTmpCodeLength = MAX_PACKAGE_LEN;
-	if (m_pS2CPipe->GetHeadCode((BYTE *) data, unTmpCodeLength) < 0) {
-		unTmpCodeLength = 0;
-	}
-	return unTmpCodeLength;
 }
 
 void CServerHandle::Register2Game()
@@ -148,7 +139,7 @@ int CServerHandle::SendToGame()
 {
 	int iRet = 0;
 	ServerInfo *rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
-	shared_ptr<CConnector> &pTmpConn = m_pNetWork->FindConnector(rTmpGame->m_iServerId);
+	CConnector* pTmpConn = m_pNetWork->FindConnector(rTmpGame->m_iServerId);
 	if (pTmpConn) {
 		iRet = pTmpConn->Send(m_pSendBuff->CanReadData(), m_pSendBuff->ReadableDataLen());
 		if (iRet < 0) {

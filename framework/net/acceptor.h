@@ -59,7 +59,7 @@ private:
 	//事件回调
 	void OnEvent(int16 nWhat) override;
 private:
-	std::shared_ptr<CNetAddr> m_pNetAddr;
+	CNetAddr* m_pNetAddr;
 	eAcceptorState m_eState;
 	time_t m_tCreateTime;
 	time_t m_tLastKeepAlive;
