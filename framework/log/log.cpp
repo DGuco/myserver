@@ -11,27 +11,25 @@ int InitBaseLog(const char *vLogName,                        /*日志类型的�
 		return -1;
 	}
 #ifdef LOG_THREAD_SAFE
-#ifdef _DEBUG_
-	auto log = spdlog::stdout_logger_mt(vLogName);
-	auto console = spdlog::stdout_color_mt(CONSOLE_LOG_NAME);
-#else
 	auto log = spdlog::basic_logger_mt(vLogName, vLogDir, vAppend);
-#endif
-#else
 #ifdef _DEBUG_
-	auto log = spdlog::stdout_logger_st(vLogName);
-	auto console = spdlog::stdout_color_st(CONSOLE_LOG_NAME);
+	auto console = spdlog::stdout_color_mt(CONSOLE_LOG_NAME);
+#endif
 #else
 	auto log = spdlog::basic_logger_st(vLogName, vLogDir,vAppend);
+#ifdef _DEBUG_
+		auto console = spdlog::stdout_color_st(CONSOLE_LOG_NAME);
+#else
 #endif
 #endif
-	if (log == nullptr) {
-		return -1;
-	}
+
 #ifdef _DEBUG_
 	console->set_level(level);
 	console->flush_on(level);
 #endif
+	if (log == nullptr) {
+		return -1;
+	}
 	log->set_level(level);
 	log->flush_on(level);
 	return 0;
@@ -47,29 +45,26 @@ int InitRoatingLog(const char *vLogName,                        /*日志类型�
 		return -1;
 	}
 #ifdef LOG_THREAD_SAFE
-#ifdef _DEBUG_
 	auto log = spdlog::rotating_logger_mt(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
+#ifdef _DEBUG_
 	auto console = spdlog::stdout_color_mt(CONSOLE_LOG_NAME);
-#else
-	auto log = spdlog::rotating_logger_mt(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
 #endif
 #else
+	auto log = spdlog::rotating_logger_st(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
 #ifdef _DEBUG_
-	auto log = spdlog::rotating_logger_st(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
-	auto console = spdlog::stdout_color_st(CONSOLE_LOG_NAME);
-#else
-	auto log = spdlog::rotating_logger_st(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
+		auto console = spdlog::stdout_color_st(CONSOLE_LOG_NAME);
 #endif
+#endif
+
+#ifdef _DEBUG_
+	console->set_level(level);
+	console->flush_on(level);
 #endif
 	if (log == NULL) {
 		return -1;
 	}
 	log->set_level(level);
 	log->flush_on(level);
-#ifdef _DEBUG_
-	console->set_level(level);
-	console->flush_on(level);
-#endif
 	return 0;
 }
 
@@ -83,27 +78,22 @@ int InitDailyLog(const char *vLogName,                        /*日志类型的�
 		return -1;
 	}
 #ifdef LOG_THREAD_SAFE
+	auto log = spdlog::daily_logger_mt(vLogName, vLogDir, hour, minute);
 #ifdef _DEBUG_
-	auto log = spdlog::stdout_logger_mt(vLogName);
-	auto console = spdlog::stdout_color_mt(CONSOLE_LOG_NAME);
-#else
-	auto log = ::daily_logger_mt(vLogName, vLogDir, hour, minute);
-#endif
-#else
-#ifdef _DEBUG_
-	auto log = spdlog::stdout_logger_st(vLogName);
 	auto console = spdlog::stdout_logger_st(CONSOLE_LOG_NAME);
+#endif
 #else
 	auto log = spdlog::daily_logger_st(vLogName, vLogDir, hour, minute);
 #endif
-#endif
-	if (log == NULL) {
-		return -1;
-	}
+
 #ifdef _DEBUG_
 	console->set_level(level);
 	console->flush_on(level);
 #endif
+	if (log == NULL) {
+		return -1;
+	}
+
 	log->set_level(level);
 	log->flush_on(level);
 	return 0;

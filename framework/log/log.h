@@ -66,28 +66,34 @@ int log(const char *vLogName, level_enum vPriority, const char *vFmt, const Args
 template<typename... Args>
 int LogTrace(const char *vLogName, const char *vFmt, const Args &... args)
 {
-	if (NULL == vLogName) {
-		return -1;
-	}
-
-	auto log = spdlog::get(vLogName);
-	if (NULL == log) {
-		return -1;
-	}
-
 #ifdef _DEBUG_
 	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
 	if (consoleLog) {
 		consoleLog->log(level_enum::trace, vFmt, args...);
 	}
 #endif
+	auto log = spdlog::get(vLogName);
 	log->log(level_enum::trace, vFmt, args...);
+	if (NULL == vLogName) {
+		return -1;
+	}
+
+	if (NULL == log) {
+		return -1;
+	}
+
 	return 0;
 }
 
 template<typename... Args>
 int LogDebug(const char *vLogName, const char *vFmt, const Args &... args)
 {
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::debug, vFmt, args...);
+	}
+#endif
 	if (NULL == vLogName) {
 		return -1;
 	}
@@ -96,12 +102,7 @@ int LogDebug(const char *vLogName, const char *vFmt, const Args &... args)
 	if (NULL == log) {
 		return -1;
 	}
-#ifdef _DEBUG_
-	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
-	if (consoleLog) {
-		consoleLog->log(level_enum::debug, vFmt, args...);
-	}
-#endif
+
 	log->log(level_enum::debug, vFmt, args...);
 	return 0;
 }
@@ -109,6 +110,12 @@ int LogDebug(const char *vLogName, const char *vFmt, const Args &... args)
 template<typename... Args>
 int LogInfo(const char *vLogName, const char *vFmt, const Args &... args)
 {
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::info, vFmt, args...);
+	}
+#endif
 	if (NULL == vLogName) {
 		return -1;
 	}
@@ -117,12 +124,6 @@ int LogInfo(const char *vLogName, const char *vFmt, const Args &... args)
 	if (NULL == log) {
 		return -1;
 	}
-#ifdef _DEBUG_
-	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
-	if (consoleLog) {
-		consoleLog->log(level_enum::info, vFmt, args...);
-	}
-#endif
 
 	log->log(level_enum::info, vFmt, args...);
 	return 0;
@@ -131,6 +132,12 @@ int LogInfo(const char *vLogName, const char *vFmt, const Args &... args)
 template<typename... Args>
 int LogWarn(const char *vLogName, const char *vFmt, const Args &... args)
 {
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::warn, vFmt, args...);
+	}
+#endif
 	if (NULL == vLogName) {
 		return -1;
 	}
@@ -139,12 +146,6 @@ int LogWarn(const char *vLogName, const char *vFmt, const Args &... args)
 	if (NULL == log) {
 		return -1;
 	}
-#ifdef _DEBUG_
-	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
-	if (consoleLog) {
-		consoleLog->log(level_enum::warn, vFmt, args...);
-	}
-#endif
 
 	log->log(level_enum::warn, vFmt, args...);
 	return 0;
@@ -153,6 +154,12 @@ int LogWarn(const char *vLogName, const char *vFmt, const Args &... args)
 template<typename... Args>
 int LogError(const char *vLogName, const char *vFmt, const Args &... args)
 {
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::err, vFmt, args...);
+	}
+#endif
 	if (NULL == vLogName) {
 		return -1;
 	}
@@ -161,12 +168,7 @@ int LogError(const char *vLogName, const char *vFmt, const Args &... args)
 	if (NULL == log) {
 		return -1;
 	}
-#ifdef _DEBUG_
-	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
-	if (consoleLog) {
-		consoleLog->log(level_enum::err, vFmt, args...);
-	}
-#endif
+
 	log->log(level_enum::err, vFmt, args...);
 	return 0;
 }
@@ -174,6 +176,12 @@ int LogError(const char *vLogName, const char *vFmt, const Args &... args)
 template<typename... Args>
 int LogCritical(const char *vLogName, const char *vFmt, const Args &... args)
 {
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(level_enum::critical, vFmt, args...);
+	}
+#endif
 	if (NULL == vLogName) {
 		return -1;
 	}
@@ -183,12 +191,6 @@ int LogCritical(const char *vLogName, const char *vFmt, const Args &... args)
 		return -1;
 	}
 
-#ifdef _DEBUG_
-	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
-	if (consoleLog) {
-		consoleLog->log(level_enum::critical, vFmt, args...);
-	}
-#endif
 	log->log(level_enum::critical, vFmt, args...);
 	return 0;
 }
@@ -196,6 +198,12 @@ int LogCritical(const char *vLogName, const char *vFmt, const Args &... args)
 template<typename... Args>
 int log(const char *vLogName, level_enum vPriority, const char *vFmt, const Args &... args)
 {
+#ifdef _DEBUG_
+	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
+	if (consoleLog) {
+		consoleLog->log(vPriority, vFmt, args...);
+	}
+#endif
 	if (NULL == vLogName) {
 		return -1;
 	}
@@ -205,12 +213,6 @@ int log(const char *vLogName, level_enum vPriority, const char *vFmt, const Args
 		return -1;
 	}
 
-#ifdef _DEBUG_
-	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
-	if (consoleLog) {
-		consoleLog->log(vPriority, vFmt, args...);
-	}
-#endif
 	log->log(vPriority, vFmt, args...);
 	return 0;
 }
