@@ -76,9 +76,13 @@ Parent &test1()
 	return parent;
 }
 
+#define TO_NAME(a) #a
+
 int main()
 {
 	Parent &parent = test1();
+	int a = 1;
+	std::cout << "Result: " << TO_NAME(a) << std::endl;
 //	shared_ptr<Parent> sharedPtr = std::make_shared<Child>();
 //	sharedPtr->Say();
 //	printf("Use count = %d\n", sharedPtr.use_count());

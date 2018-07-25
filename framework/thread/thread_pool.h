@@ -166,7 +166,7 @@ auto CThreadPool::PushTaskBack(F &&f, Args &&... args)
 	else {
 		std::unique_lock<std::mutex> lock(m_mutex);
 		if (m_stop)
-			throw std::runtime_error("enqueue on stopped ThreadPool");
+			throw std::runtime_error("ThreadPool has stopped");
 		m_qTasks.emplace_back([task]()
 							  { (*task)(); });
 		m_condition.notify_one();

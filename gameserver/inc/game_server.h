@@ -155,7 +155,7 @@ public:
 									time_t tCreateTime,
 									bool bKickOff = false);
 private:
-	CClientHandle *m_pClientHandle;             // 与客户端通信的连接线程
+	CClientManager *m_pClientHandle;             // 与客户端通信的连接线程
 	CServerHandle *m_pServerHandle;             // 与服务器的连接管理(proxyserver)线程
 	CModuleManager *m_pModuleManager;           // 模块管理器
 	CMessageDispatcher *m_pMessageDispatcher;   // 消息派发器

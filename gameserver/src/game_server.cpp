@@ -31,7 +31,7 @@ int CGameServer::Initialize()
 {
 	miServerState = 0;
 	m_pModuleManager = new CModuleManager;
-	m_pClientHandle = new CClientHandle;
+	m_pClientHandle = new CClientManager;
 	m_pMessageDispatcher = new CMessageDispatcher;
 	m_pMessageFactory = new CMessageFactory;
 	m_pTimerManager = new CTimerManager;
@@ -189,7 +189,7 @@ void CGameServer::DisconnectClient(CPlayer *pPlayer)
 		return;
 	}
 
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::DisconnectClient),
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientManager::DisconnectClient),
 								m_pClientHandle,
 								pPlayer->GetPlayerBase()->GetSocket(),
 								pPlayer->GetPlayerBase()->GetCreateTime());
@@ -203,7 +203,7 @@ void CGameServer::SetRunFlag(ERunFlag eRunFlag)
 // 广播消息给玩家，广播时，发起人一定放第一个
 int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<CGoogleMessage> pMsgPara, stPointList *pTeamList)
 {
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, pTeamList);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientManager::Push), m_pClientHandle, iMsgID, pMsgPara, pTeamList);
 	return 0;
 }
 
@@ -213,7 +213,7 @@ int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<CGoogleMessage> pMsgP
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, &tmpList);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientManager::Push), m_pClientHandle, iMsgID, pMsgPara, &tmpList);
 	return 0;
 }
 
@@ -222,7 +222,7 @@ int CGameServer::SendResponse(std::shared_ptr<CGoogleMessage> pMsgPara, CPlayer 
 {
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
 			  return -1);
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::SendResToPlayer), m_pClientHandle, pMsgPara, pPlayer);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientManager::SendResToPlayer), m_pClientHandle, pMsgPara, pPlayer);
 	return 0;
 }
 
@@ -230,7 +230,7 @@ int CGameServer::SendResponse(std::shared_ptr<CGoogleMessage> pMsgPara, CPlayer 
 int CGameServer::SendResponse(std::shared_ptr<CGoogleMessage> pMsgPara, std::shared_ptr<MesHead> mesHead)
 {
 	MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::SendResponse), m_pClientHandle, pMsgPara, mesHead);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientManager::SendResponse), m_pClientHandle, pMsgPara, mesHead);
 }
 
 // 检查服务器状态

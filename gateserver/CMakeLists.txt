@@ -9,10 +9,10 @@ set(SOURCE_FILES
         inc/gate_def.h
         inc/gate_ctrl.h
         src/gate_ctrl.cpp
-        inc/client_handle.h
-        src/client_handle.cpp
-        inc/server_handle.h
-        src/server_handle.cpp)
+        inc/client_manager.h
+        src/client_manager.cpp
+        inc/server_manager.h
+        src/server_manager.cpp)
 
 include_directories(
         /usr/include

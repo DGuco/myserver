@@ -5,7 +5,7 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "../../../framework/json/json.h"
+#include "json_interface.h"
 #include "server_tool.h"
 
 class ParameterItem
@@ -48,7 +48,7 @@ public:
     std::map<int, float> _ifmap;
 };
 
-class ParameterConfig : public CSingleton<ParameterConfig>,public MyJson::Json
+class ParameterConfig : public CSingleton<ParameterConfig>,public MyJson::IJson
 {
 public:
     

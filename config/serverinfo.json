@@ -5,8 +5,8 @@
     "serverid": 20001
   },
   "gameinfo": {
-    "host": "127.0.0.1",
-    "port": 9102,
+    "host": "192.168.0.224",
+    "port": 9002,
     "serverid": 20002
   },
   "dbinfo": {

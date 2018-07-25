@@ -16,8 +16,8 @@
 #include "base.h"
 #include "config.h"
 #include "net_work.h"
-#include "client_handle.h"
-#include "server_handle.h"
+#include "client_manager.h"
+#include "server_manager.h"
 #include "thread_pool.h"
 
 class CGateCtrl: public CSingleton<CGateCtrl>
@@ -33,16 +33,16 @@ public:
     int Run();
     //获取线程池
     shared_ptr<CThreadPool>& GetSingleThreadPool();
-    shared_ptr<CClientHandle>& GetClientHandle();
-    shared_ptr<CServerHandle>& GetServerHandle();
+    shared_ptr<CClientManager>& GetClientManager();
+    shared_ptr<CServerManager>& GetServerManager();
     shared_ptr<CNetWork>& GetNetWork();
 private:
     //读取配置文件
     void ReadConfig();
 private:
     shared_ptr<CNetWork> m_pNetWork;
-    shared_ptr<CClientHandle> m_pClientHandle;
-    shared_ptr<CServerHandle> m_pServerHandle;
+    shared_ptr<CClientManager> m_pClientManager;
+    shared_ptr<CServerManager> m_pServerManager;
     shared_ptr<CThreadPool> m_pSingleThead;
 };
 

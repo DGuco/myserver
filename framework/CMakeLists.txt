@@ -23,8 +23,8 @@ set(FRAMEWORK
         const/common_def.h
         const/err_code.h
         const/dblogin_type.h
-        json/json.h
-        json/json.cpp
+        json/json_interface.h
+        json/json_interface.cpp
         json/config.h
         json/config.cpp
         message/message.pb.h

@@ -37,7 +37,15 @@ private:
 public:
 	static std::shared_ptr<T> &GetSingletonPtr()
 	{
-		if (!spSingleton) {
+		if (spSingleton == NULL) {
+			return CreateInstance();
+		}
+		return spSingleton;
+	}
+
+	static std::shared_ptr<T> &CreateInstance()
+	{
+		if (spSingleton == NULL) {
 			spSingleton = std::make_shared<T>();
 		}
 		return spSingleton;

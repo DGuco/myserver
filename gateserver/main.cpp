@@ -12,7 +12,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	std::shared_ptr<CGateCtrl>& pGateCtrl = CGateCtrl::GetSingletonPtr();
+	std::shared_ptr<CGateCtrl> &pGateCtrl = CGateCtrl::CreateInstance();
 	int iTmpRet = pGateCtrl->PrepareToRun();
 	if (iTmpRet != 0) {
 		LOG_ERROR("default", "CGateCtrl PrepareToRun failed,iRet = {}", iTmpRet);

@@ -14,8 +14,8 @@ template<> std::shared_ptr<CGateCtrl> CSingleton<CGateCtrl>::spSingleton = NULL;
 
 CGateCtrl::CGateCtrl()
 	: m_pNetWork(std::make_shared<CNetWork>()),
-	  m_pClientHandle(std::make_shared<CClientHandle>(m_pNetWork)),
-	  m_pServerHandle(std::make_shared<CServerHandle>(m_pNetWork)),
+	  m_pClientManager(std::make_shared<CClientManager>(m_pNetWork)),
+	  m_pServerManager(std::make_shared<CServerManager>(m_pNetWork)),
 	  m_pSingleThead(std::make_shared<CThreadPool>(1))
 {
 }
@@ -35,8 +35,8 @@ int CGateCtrl::PrepareToRun()
 #endif
 	//读取配置文件
 	ReadConfig();
-	m_pClientHandle->PrepareToRun();
-	m_pServerHandle->PrepareToRun();
+	m_pServerManager->PrepareToRun();
+	m_pClientManager->PrepareToRun();
 	return 0;
 }
 
@@ -54,14 +54,14 @@ shared_ptr<CThreadPool> &CGateCtrl::GetSingleThreadPool()
 	return m_pSingleThead;
 }
 
-shared_ptr<CClientHandle> &CGateCtrl::GetClientHandle()
+shared_ptr<CClientManager> &CGateCtrl::GetClientManager()
 {
-	return m_pClientHandle;
+	return m_pClientManager;
 }
 
-shared_ptr<CServerHandle> &CGateCtrl::GetServerHandle()
+shared_ptr<CServerManager> &CGateCtrl::GetServerManager()
 {
-	return m_pServerHandle;
+	return m_pServerManager;
 }
 
 shared_ptr<CNetWork> &CGateCtrl::GetNetWork()
@@ -71,9 +71,9 @@ shared_ptr<CNetWork> &CGateCtrl::GetNetWork()
 
 void CGateCtrl::ReadConfig()
 {
-	new CServerConfig;
-	const string filePath = "../config/serverinfo.json";
-	if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filePath)) {
+	std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::CreateInstance();
+	string filePath = "../config/serverinfo.json";
+	if (-1 == tmpConfig->LoadFromFile(filePath)) {
 		LOG_ERROR("default", "Get ServerConfig failed");
 		exit(0);
 	}
