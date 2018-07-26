@@ -24,14 +24,14 @@ public:
 	//准备run
 	int PrepareToRun();
 	//向game发送消息
-	int SendToGame(CMessage *pMessage);
-	int SendToGame();
+	int SendToGameBuff(CMessage *pMessage);
+	int FlushToGame();
 	//连接game
 	void ConnectToGame();
 	//重新连接
-	bool ReconnectToGame(CConnector* tmpConnector);
-	static CByteBuff *GetSendBuff();
-	static CByteBuff *GetRecvBuff();
+	bool ReconnectToGame(CConnector *tmpConnector);
+	shared_ptr<CByteBuff> &GetSendBuff() const;
+	shared_ptr<CByteBuff> &GetRecvBuff() const;
 	time_t GetLastSendKeepAlive() const;
 	time_t GetLastRecvKeepAlive() const;
 private:
@@ -54,8 +54,8 @@ private:
 	static void lcb_OnPingServer(int fd, short what, CConnector *pConnector);
 private:
 	shared_ptr<CNetWork> m_pNetWork;
-	static CByteBuff *m_pSendBuff;      //上行gameserver buff
-	static CByteBuff *m_pRecvBuff;      //gameserver 返回数据buff
+	std::shared_ptr<CByteBuff> m_pSendBuff;      //上行gameserver buff
+	std::shared_ptr<CByteBuff> m_pRecvBuff;      //gameserver 返回数据buff
 	time_t m_tLastSendKeepAlive;        //最后发送gameServer心跳消息时间
 	time_t m_tLastRecvKeepAlive;        //最后接收gameServer心跳消息时间
 };

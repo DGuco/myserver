@@ -11,12 +11,10 @@
 #include "../inc/server_manager.h"
 #include "../inc/gate_ctrl.h"
 
-CByteBuff *CServerManager::m_pSendBuff = new CByteBuff();
-
-CByteBuff *CServerManager::m_pRecvBuff = new CByteBuff();
-
 CServerManager::CServerManager(shared_ptr<CNetWork> pNetWork)
 	: m_pNetWork(pNetWork),
+	  m_pSendBuff(new CByteBuff),
+	  m_pRecvBuff(new CByteBuff),
 	  m_tLastRecvKeepAlive(0),
 	  m_tLastSendKeepAlive(0)
 {
@@ -24,7 +22,6 @@ CServerManager::CServerManager(shared_ptr<CNetWork> pNetWork)
 
 CServerManager::~CServerManager()
 {
-
 }
 
 int CServerManager::PrepareToRun()
@@ -90,7 +87,7 @@ void CServerManager::Register2Game()
 	static CMessage tmpMessage;
 	CMesHead *tmpMesHead = tmpMessage.mutable_msghead();
 	tmpMesHead->set_opflag(enMessageCmd::MESS_REGIST);
-	SendToGame(&tmpMessage);
+	SendToGameBuff(&tmpMessage);
 	return;
 }
 
@@ -100,20 +97,20 @@ void CServerManager::SendKeepAlive2Game()
 	static CMessage tmpMessage;
 	CMesHead *tmpMesHead = tmpMessage.mutable_msghead();
 	tmpMesHead->set_opflag(enMessageCmd::MESS_KEEPALIVE);
-	SendToGame(&tmpMessage);
+	SendToGameBuff(&tmpMessage);
 }
 
-int CServerManager::SendToGame(CMessage *pMessage)
+int CServerManager::SendToGameBuff(CMessage *pMessage)
 {
-	int iRet = CClientCommEngine::ConvertToGameStream(m_pSendBuff, pMessage);
+	int iRet = CClientCommEngine::ConvertToGameStream(m_pSendBuff.get(), pMessage);
 	if (iRet != 0) {
 		LOG_ERROR("default", "ConvertMsgToStream failed, iRet = {}.", iRet);
 		return iRet;
 	}
-	return SendToGame();
+	return FlushToGame();
 }
 
-int CServerManager::SendToGame()
+int CServerManager::FlushToGame()
 {
 	int iRet = 0;
 	ServerInfo *rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
@@ -172,12 +169,12 @@ bool CServerManager::ReconnectToGame(CConnector *tmpConnector)
 	return false;
 }
 
-CByteBuff *CServerManager::GetSendBuff()
+shared_ptr<CByteBuff> &CServerManager::GetSendBuff() const
 {
 	return m_pSendBuff;
 }
 
-CByteBuff *CServerManager::GetRecvBuff()
+shared_ptr<CByteBuff> &CServerManager::GetRecvBuff() const
 {
 	return m_pRecvBuff;
 }
@@ -239,9 +236,8 @@ void CServerManager::lcb_OnPingServer(int fd, short what, CConnector *pConnector
 			{
 				MY_ASSERT(pConnector != NULL, return);
 				time_t tNow = GetMSTime();
-				std::shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
-				std::shared_ptr<CServerManager>
-					&tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetServerManager();
+				std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr();
+				std::shared_ptr<CServerManager> &tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetServerManager();
 				if (pConnector->GetState() == CConnector::eCS_Connected &&
 					pConnector->GetSocket().GetSocket() > 0 &&
 					tNow - tmpServerHandle->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
@@ -255,8 +251,7 @@ void CServerManager::lcb_OnPingServer(int fd, short what, CConnector *pConnector
 					LOG_WARN("default", "Connection to game is timeout,try to reconnect to it");
 					pConnector->SetState(CConnector::eCS_Disconnected);
 					// 断开连接重新连接到game
-					shared_ptr<CServerManager>
-						&tmpServerManager = CGateCtrl::GetSingletonPtr()->GetServerManager();
+					shared_ptr<CServerManager> &tmpServerManager = CGateCtrl::GetSingletonPtr()->GetServerManager();
 					tmpServerManager->ReconnectToGame(pConnector);
 				}
 			});

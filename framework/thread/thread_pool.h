@@ -90,7 +90,8 @@ inline CThreadPool::CThreadPool(size_t threads)
 }
 
 inline CThreadPool::CThreadPool(size_t threads, FuncBeforeRun func)
-	: m_fBeforeRun(func)
+	: m_fBeforeRun(func),
+	  m_stop(false)
 {
 	for (size_t i = 0; i < threads; ++i) {
 		std::shared_ptr<thread> th = std::make_shared<thread>(std::mem_fn(&CThreadPool::ThreadFunc), this);

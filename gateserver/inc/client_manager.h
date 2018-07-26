@@ -26,13 +26,14 @@ public:
 	void DealClientData(CAcceptor *tmpAcceptor, unsigned short len);
 	//给特定client发送数据
 	void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
-public:
+	shared_ptr<CByteBuff> &GetRecvBuff() const;
+	shared_ptr<CByteBuff> &GetSendBuff() const;
 	//清除socket
-	static void ClearSocket(CAcceptor *tmpAcceptor, short iError);
+	void ClearSocket(CAcceptor *tmpAcceptor, short iError);
 	//通知gameserver client 断开连接
-	static void DisConnect(CAcceptor *tmpAcceptor, short iError);
-	static CByteBuff *GetRecvBuff();
-	static CByteBuff *GetSendBuff();
+	void DisConnect(CAcceptor *tmpAcceptor, short iError);
+	//接受客户端数据
+	void RecvClientData(CAcceptor *tmpAcceptor);
 protected:
 	//客户端连接还回调
 	static void lcb_OnAcceptCns(uint32 uId, IBufferEvent *tmpAcceptor);
@@ -50,7 +51,7 @@ private:
 	//客户端断开连接
 private:
 	shared_ptr<CNetWork> m_pNetWork;
-	static CByteBuff *m_pRecvBuff; //客户端上行数据buff
-	static CByteBuff *m_pSendBuff; //客户端下行数据buff
+	shared_ptr<CByteBuff> m_pRecvBuff; //客户端上行数据buff
+	shared_ptr<CByteBuff> m_pSendBuff; //客户端下行数据buff
 };
 #endif //SERVER_C2S_THREAD_H
