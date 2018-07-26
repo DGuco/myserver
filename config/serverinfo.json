@@ -1,12 +1,12 @@
 {
   "gateinfo": {
-    "host": "0.0.0.0",
+    "host": "127.0.0.1",
     "port": 9101,
     "serverid": 20001
   },
   "gameinfo": {
-    "host": "192.168.0.224",
-    "port": 9002,
+    "host": "127.0.0.1",
+    "port": 9102,
     "serverid": 20002
   },
   "dbinfo": {

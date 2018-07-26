@@ -50,7 +50,6 @@ bool CConnector::ReConnect()
 	if (iRet != 0) {
 		return false;
 	}
-	m_oSocket.SetSocket(bufferevent_getfd(m_pStBufEv));
 	SetState(eCS_Connected);
 	return true;
 }
@@ -101,9 +100,9 @@ void CConnector::OnEvent(int16 nWhat)
 		return;
 	}
 
-	if (nWhat & BEV_EVENT_CONNECTED) {
-		m_pFuncOnConnectted(this);
-	}
+//	if (nWhat & BEV_EVENT_CONNECTED) {
+//		m_pFuncOnConnectted(this);
+//	}
 }
 
 bool CConnector::IsConnected()

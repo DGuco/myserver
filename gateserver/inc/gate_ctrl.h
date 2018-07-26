@@ -23,27 +23,27 @@
 class CGateCtrl: public CSingleton<CGateCtrl>
 {
 public:
-    //构造函数
-    CGateCtrl();
-    //析构函数
-    ~CGateCtrl();
-    //准备run
-    int PrepareToRun();
-    //run
-    int Run();
-    //获取线程池
-    shared_ptr<CThreadPool>& GetSingleThreadPool();
-    shared_ptr<CClientManager>& GetClientManager();
-    shared_ptr<CServerManager>& GetServerManager();
-    shared_ptr<CNetWork>& GetNetWork();
+	//构造函数
+	CGateCtrl();
+	//析构函数
+	~CGateCtrl();
+	//准备run
+	int PrepareToRun();
+	//run
+	int Run();
+	//获取线程池
+	shared_ptr<CThreadPool> &GetSingleThreadPool();
+	shared_ptr<CClientManager> &GetClientManager();
+	shared_ptr<CServerManager> &GetServerManager();
+	shared_ptr<CNetWork> &GetNetWork();
 private:
-    //读取配置文件
-    void ReadConfig();
+	//读取配置文件
+	void ReadConfig();
 private:
-    shared_ptr<CNetWork> m_pNetWork;
-    shared_ptr<CClientManager> m_pClientManager;
-    shared_ptr<CServerManager> m_pServerManager;
-    shared_ptr<CThreadPool> m_pSingleThead;
+	shared_ptr<CNetWork> m_pNetWork;
+	shared_ptr<CClientManager> m_pClientManager;
+	shared_ptr<CServerManager> m_pServerManager;
+	shared_ptr<CThreadPool> m_pSingleThead;
 };
 
 #endif

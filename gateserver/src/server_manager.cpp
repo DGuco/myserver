@@ -59,8 +59,8 @@ void CServerManager::CheckWaitSendData()
 		return;
 	}
 
-	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()->PushTaskBack(
-		std::mem_fn(&CServerManager::SendClientData), this, tmpMes, tmpBuff);
+	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
+		->PushTaskBack(std::mem_fn(&CServerManager::SendClientData), this, tmpMes, tmpBuff);
 
 }
 
@@ -121,7 +121,7 @@ int CServerManager::SendToGame()
 	if (pTmpConn) {
 		iRet = pTmpConn->Send(m_pSendBuff->CanReadData(), m_pSendBuff->ReadableDataLen());
 		if (iRet < 0) {
-			LOG_ERROR("default", "Send to game error, iRet = {}.", iRet);
+			LOG_ERROR("default", "Send to game failed,failed reason {]", strerror(errno));
 			//断开重新连接
 			if (ReconnectToGame(pTmpConn)) {
 				iRet = pTmpConn->Send(m_pSendBuff->CanReadData(), m_pSendBuff->ReadableDataLen());
@@ -204,15 +204,16 @@ void CServerManager::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 void CServerManager::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
 	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
-		->PushTaskBack([pBufferEvent]
-					   {
-						   MY_ASSERT(pBufferEvent != NULL, return);
-						   LOG_WARN("default", "Disconnected from game,try to reconnect to it");
-						   // 断开连接重新连接到game
-						   shared_ptr<CServerManager>
-							   &tmpServerManager = CGateCtrl::GetSingletonPtr()->GetServerManager();
-						   tmpServerManager->ReconnectToGame((CConnector *) pBufferEvent);
-					   });
+		->PushTaskBack(
+			[pBufferEvent]
+			{
+				MY_ASSERT(pBufferEvent != NULL, return);
+				LOG_WARN("default", "Disconnected from game,try to reconnect to it");
+				// 断开连接重新连接到game
+				shared_ptr<CServerManager>
+					&tmpServerManager = CGateCtrl::GetSingletonPtr()->GetServerManager();
+				tmpServerManager->ReconnectToGame((CConnector *) pBufferEvent);
+			});
 }
 void CServerManager::lcb_OnConnectFailed(CConnector *pConnector)
 {
@@ -222,38 +223,41 @@ void CServerManager::lcb_OnConnected(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
-		->PushTaskBack([pConnector]
-					   {
-						   MY_ASSERT(pConnector != NULL, return);
-						   CGateCtrl::GetSingletonPtr()->GetServerManager()->Register2Game();
-					   });
+		->PushTaskBack(
+			[pConnector]
+			{
+				MY_ASSERT(pConnector != NULL, return);
+				CGateCtrl::GetSingletonPtr()->GetServerManager()->Register2Game();
+			});
 }
 
 void CServerManager::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 {
 	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
-		->PushTaskBack([pConnector]
-					   {
-						   MY_ASSERT(pConnector != NULL, return);
-						   time_t tNow = GetMSTime();
-						   std::shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
-						   std::shared_ptr<CServerManager>
-							   &tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetServerManager();
-						   if (pConnector->GetState() == CConnector::eCS_Connected &&
-							   pConnector->GetSocket().GetSocket() > 0 &&
-							   tNow - tmpServerHandle->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
-							   if (tNow - tmpServerHandle->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
-								   tmpServerHandle->SendKeepAlive2Game();
-								   LOG_DEBUG("default", "Send keepAlive to game succeed..");
-							   }
-						   }
-						   else {
-							   //断开连接
-							   pConnector->SetState(CConnector::eCS_Disconnected);
-							   // 断开连接重新连接到game
-							   shared_ptr<CServerManager>
-								   &tmpServerManager = CGateCtrl::GetSingletonPtr()->GetServerManager();
-							   tmpServerManager->ReconnectToGame(pConnector);
-						   }
-					   });
+		->PushTaskBack(
+			[pConnector]
+			{
+				MY_ASSERT(pConnector != NULL, return);
+				time_t tNow = GetMSTime();
+				std::shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
+				std::shared_ptr<CServerManager>
+					&tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetServerManager();
+				if (pConnector->GetState() == CConnector::eCS_Connected &&
+					pConnector->GetSocket().GetSocket() > 0 &&
+					tNow - tmpServerHandle->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
+					if (tNow - tmpServerHandle->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
+						tmpServerHandle->SendKeepAlive2Game();
+						LOG_DEBUG("default", "Send keepAlive to game succeed..");
+					}
+				}
+				else {
+					//断开连接
+					LOG_WARN("default", "Connection to game is timeout,try to reconnect to it");
+					pConnector->SetState(CConnector::eCS_Disconnected);
+					// 断开连接重新连接到game
+					shared_ptr<CServerManager>
+						&tmpServerManager = CGateCtrl::GetSingletonPtr()->GetServerManager();
+					tmpServerManager->ReconnectToGame(pConnector);
+				}
+			});
 }

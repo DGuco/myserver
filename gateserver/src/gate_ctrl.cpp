@@ -78,4 +78,3 @@ void CGateCtrl::ReadConfig()
 		exit(0);
 	}
 }
-
