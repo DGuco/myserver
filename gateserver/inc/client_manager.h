@@ -28,6 +28,7 @@ public:
 	void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
 	shared_ptr<CByteBuff> &GetRecvBuff() const;
 	shared_ptr<CByteBuff> &GetSendBuff() const;
+private:
 	//清除socket
 	void ClearSocket(CAcceptor *tmpAcceptor, short iError);
 	//通知gameserver client 断开连接

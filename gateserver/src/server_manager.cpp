@@ -32,20 +32,26 @@ int CServerManager::PrepareToRun()
 	return true;
 }
 
-void CServerManager::CheckWaitSendData()
+void CServerManager::RecvGameData(CConnector *tmpConnector)
 {
-	int iTmpRet = 0;
-	int unTmpCodeLength = 0;
-
-	std::shared_ptr<CByteBuff> tmpBuff(new CByteBuff);
-//	iTmpRet = RecvServerData(tmpBuff->CanWriteData());
-	if (iTmpRet == 0) {
+	MY_ASSERT(tmpConnector != NULL, return);
+	//消息不完整
+	if (!tmpConnector->IsPackageComplete()) {
 		return;
 	}
+	m_pRecvBuff->Clear();
+	unsigned short unTmpLen = tmpConnector->GetRecvPackLen();
+	//转发消息填充数据总长度
+	m_pRecvBuff->WriteUnShort(unTmpLen);
+	unsigned short unDataLen = unTmpLen - sizeof(unsigned short);
+	tmpConnector->RecvData(m_pRecvBuff->CanWriteData(), unDataLen);
+	m_pRecvBuff->WriteLen(unDataLen);
+	tmpConnector->CurrentPackRecved();
+	int iTmpRet = 0;
 
 	CMessage tmpMes;
-	iTmpRet = CClientCommEngine::ConvertStreamToMessage(tmpBuff.get(),
-														unTmpCodeLength,
+	iTmpRet = CClientCommEngine::ConvertStreamToMessage(m_pRecvBuff.get(),
+														unTmpLen,
 														&tmpMes,
 														NULL);
 	//序列化失败继续发送
@@ -56,28 +62,23 @@ void CServerManager::CheckWaitSendData()
 		return;
 	}
 
-	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
-		->PushTaskBack(std::mem_fn(&CServerManager::SendClientData), this, tmpMes, tmpBuff);
-
+	SendClientData(tmpMes, m_pRecvBuff->CanReadData(), m_pRecvBuff->ReadableDataLen());
 }
 
-int CServerManager::SendClientData(CMessage &tmpMes, std::shared_ptr<CByteBuff> tmpBuff)
+int CServerManager::SendClientData(CMessage &tmpMes, char *data, int len)
 {
 	int nTmpSocket;
 	auto tmpSendList = tmpMes.msghead().socketinfos();
-	int tmpDataLen = tmpBuff->ReadableDataLen();
-	const char *data = tmpBuff->CanReadData();
 	for (int i = 0; i < tmpSendList.size(); ++i) {
 		//向后移动socket索引
-		CSocketInfo tmpSocketInfo = tmpSendList.Get(i);
+		const CSocketInfo &tmpSocketInfo = tmpSendList.Get(i);
 		nTmpSocket = tmpSocketInfo.socketid();
 		//socket 非法
 		if (nTmpSocket <= 0 || MAX_SOCKET_NUM <= nTmpSocket) {
 			LOG_ERROR("default", "Invalid socket index {}", nTmpSocket);
 			continue;
 		}
-//		CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()->PushTaskBack(
-//			std::mem_fn(&CServerManager::SendToClient), this, tmpSocketInfo, data, tmpDataLen);
+		CGateCtrl::GetSingletonPtr()->GetClientManager()->SendToClient(tmpSocketInfo, data, len);
 	}
 	return 0;
 }
@@ -195,7 +196,6 @@ void CServerManager::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
 
 void CServerManager::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
-
 }
 
 void CServerManager::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)

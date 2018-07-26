@@ -36,9 +36,9 @@ public:
 	time_t GetLastRecvKeepAlive() const;
 private:
 	//检测发送队列
-	void CheckWaitSendData();
+	void RecvGameData(CConnector* tmpConnector);
 	//向client下行数据包
-	int SendClientData(CMessage &tmpMes, std::shared_ptr<CByteBuff> tmpBuff);
+	int SendClientData( CMessage &tmpMes, char *data, int len);
 	//向gameserver注册
 	void Register2Game();
 	//向game发送心跳

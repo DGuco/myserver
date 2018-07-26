@@ -84,7 +84,7 @@ void CClientManager::SendToClient(const CSocketInfo &socketInfo, const char *dat
 	/*
 	 * 时间不一样，说明这个socket是个新的连接，原来的连接已经关闭,注(原来的
 	 * 的连接断开后，新的客户端用了原来的socket fd ，因此数据不是现在这个连
-	 * 接的数据，原来连接的数据,中断发送
+	 * 接的数据，原来连接的数据,中断发送l
 	*/
 	if (pAcceptor->GetCreateTime() != socketInfo.createtime()) {
 		LOG_ERROR("default",

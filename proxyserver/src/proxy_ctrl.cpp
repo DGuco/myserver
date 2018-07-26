@@ -128,7 +128,7 @@ void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 	//转发消息填充数据总长度
 	m_pRecvBuff->WriteUnShort(unTmpLen);
 	unsigned short unDataLen = unTmpLen - sizeof(unsigned short);
-	pBufferEvent->RecvData(m_pRecvBuff->CanWriteData() + sizeof(unsigned short), unDataLen);
+	pBufferEvent->RecvData(m_pRecvBuff->CanWriteData(), unDataLen);
 	m_pRecvBuff->WriteLen(unDataLen);
 	pBufferEvent->CurrentPackRecved();
 	auto it = m_mapSocket2Key.find(pBufferEvent->GetSocket().GetSocket());
