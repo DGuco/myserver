@@ -46,14 +46,12 @@ bool CConnector::Connect(const CNetAddr &addr)
 
 bool CConnector::ReConnect()
 {
-	sockaddr_in saiAddress;
-	CSocket::Address2SockAddrIn(saiAddress, m_oAddr);
-	int iRet = bufferevent_socket_connect(m_pStBufEv, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr));
+	int iRet = bufferevent_socket_connect(m_pStBufEv, 0, 0);
 	if (iRet != 0) {
 		return false;
 	}
 	m_oSocket.SetSocket(bufferevent_getfd(m_pStBufEv));
-	SetState(eCS_Connecting);
+	SetState(eCS_Connected);
 	return true;
 }
 
@@ -98,14 +96,13 @@ void CConnector::OnEvent(int16 nWhat)
 		nWhat & BEV_EVENT_READING ||
 		nWhat & BEV_EVENT_ERROR ||
 		nWhat & BEV_EVENT_WRITING) {
-		if (IsConnected()) {
-			SetState(eCS_Disconnected);
-			m_pFuncDisconnected(this);
-			return;
-		}
-		else {
+		SetState(eCS_Disconnected);
+		m_pFuncDisconnected(this);
+		return;
+	}
 
-		}
+	if (nWhat & BEV_EVENT_CONNECTED) {
+		m_pFuncOnConnectted(this);
 	}
 }
 

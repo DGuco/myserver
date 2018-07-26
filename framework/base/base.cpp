@@ -3,7 +3,8 @@
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <sys/time.h>
-
+#include <signal.h>
+#include <bits/sigthread.h>
 #include "base.h"
 
 // 通过unix时间戳获取是当年的第几天
@@ -23,8 +24,8 @@ bool IsSameDay(time_t tFirstTime, time_t tSecondTime)
 	tmSecond = *localtime(&tSecondTime);
 
 	if (tmFirst.tm_year == tmSecond.tm_year
-			&& tmFirst.tm_mon == tmSecond.tm_mon
-			&& tmFirst.tm_mday == tmSecond.tm_mday)
+		&& tmFirst.tm_mon == tmSecond.tm_mon
+		&& tmFirst.tm_mday == tmSecond.tm_mday)
 		return true;
 
 	return false;
@@ -35,11 +36,10 @@ int GetSecondTime()
 {
 	struct timeval tmval = {0};
 	int nRetCode = gettimeofday(&tmval, NULL);
-	if (nRetCode != 0)
-	{
+	if (nRetCode != 0) {
 		return 0;
 	}
-	return (int)(tmval.tv_sec);
+	return (int) (tmval.tv_sec);
 }
 
 // 获取当前毫秒数
@@ -47,62 +47,54 @@ long GetMSTime()
 {
 	struct timeval tmval = {0};
 	int nRetCode = gettimeofday(&tmval, NULL);
-	if (nRetCode != 0)
-	{
+	if (nRetCode != 0) {
 		return 0;
 	}
-	return (long)((tmval.tv_sec * 1000) + (tmval.tv_usec / 1000));
+	return (long) ((tmval.tv_sec * 1000) + (tmval.tv_usec / 1000));
 }
-
 
 // 获取当前微秒
 time_t GetUSTime()
 {
 	struct timeval tmval = {0};
 	int nRetCode = gettimeofday(&tmval, NULL);
-	if (nRetCode != 0)
-	{
+	if (nRetCode != 0) {
 		return 0;
 	}
-	return (long)((tmval.tv_sec * 1000 * 1000) + tmval.tv_usec);
+	return (long) ((tmval.tv_sec * 1000 * 1000) + tmval.tv_usec);
 }
-
 
 // 分割字符串，获取单词
 // 拷贝字符串里面的单词（以空格回车换行等隔开）到pb里面
-void TrimStr( char *strInput )
+void TrimStr(char *strInput)
 {
 	char *pb;
 	char *pe;
 	int iTempLength;
-	if( strInput == NULL )
-	{
+	if (strInput == NULL) {
 		return;
 	}
 
 	iTempLength = strlen(strInput);
 
-	if( iTempLength == 0 )
-	{
+	if (iTempLength == 0) {
 		return;
 	}
 
 	pb = strInput;
 
-	while (((*pb == ' ') || (*pb == '\t') || (*pb == '\n') || (*pb == '\r')) && (*pb != 0))
-	{
-		pb ++;  // 当遇到控制字符的时候字符串指针++
+	while (((*pb == ' ') || (*pb == '\t') || (*pb == '\n') || (*pb == '\r')) && (*pb != 0)) {
+		pb++;  // 当遇到控制字符的时候字符串指针++
 	}
 
-	pe = &strInput[iTempLength-1];  // pe指针指向strInput的最后一个字符
+	pe = &strInput[iTempLength - 1];  // pe指针指向strInput的最后一个字符
 
-	while ((pe >= pb) && ((*pe == ' ') || (*pe == '\t') || (*pe == '\n') || (*pe == '\r')))
-	{
-		pe --;
+	while ((pe >= pb) && ((*pe == ' ') || (*pe == '\t') || (*pe == '\n') || (*pe == '\r'))) {
+		pe--;
 	}
-	*(pe+1) = '\0';
+	*(pe + 1) = '\0';
 
-	strcpy( strInput, pb );
+	strcpy(strInput, pb);
 
 	return;
 
@@ -113,15 +105,13 @@ int SockAddrToString(sockaddr_in *pstSockAddr, char *szResult)
 	char *pcTempIP = NULL;
 	unsigned short nTempPort = 0;
 
-	if( !pstSockAddr || !szResult )
-	{
+	if (!pstSockAddr || !szResult) {
 		return -1;
 	}
 
 	pcTempIP = inet_ntoa(pstSockAddr->sin_addr);
 
-	if( !pcTempIP )
-	{
+	if (!pcTempIP) {
 		return -1;
 	}
 
@@ -134,19 +124,17 @@ int SockAddrToString(sockaddr_in *pstSockAddr, char *szResult)
 	return 0;
 }
 
-int SockAddrToString(unsigned int ip, unsigned short port, char* szResult)
+int SockAddrToString(unsigned int ip, unsigned short port, char *szResult)
 {
-	if (!szResult)
-	{
+	if (!szResult) {
 		return -1;
 	}
 
 	struct in_addr addr;
-	addr.s_addr = (in_addr_t)ip;
-	char* pcTempIP = inet_ntoa(addr);
+	addr.s_addr = (in_addr_t) ip;
+	char *pcTempIP = inet_ntoa(addr);
 
-	if (!pcTempIP)
-	{
+	if (!pcTempIP) {
 		return -1;
 	}
 
@@ -155,19 +143,16 @@ int SockAddrToString(unsigned int ip, unsigned short port, char* szResult)
 	return 0;
 }
 
-
 // 获取两段时间的间隔
-int TimeValMinus(timeval& tvA, timeval& tvB, timeval& tvResult)
+int TimeValMinus(timeval &tvA, timeval &tvB, timeval &tvResult)
 {
 	timeval tvTmp;
 
-	if (tvA.tv_usec < tvB.tv_usec)
-	{
+	if (tvA.tv_usec < tvB.tv_usec) {
 		tvTmp.tv_usec = (1000000 + tvA.tv_usec) - tvB.tv_usec;
 		tvTmp.tv_sec = tvA.tv_sec - tvB.tv_sec - 1;
 	}
-	else
-	{
+	else {
 		tvTmp.tv_usec = tvA.tv_usec - tvB.tv_usec;
 		tvTmp.tv_sec = tvA.tv_sec - tvB.tv_sec;
 	}
@@ -178,20 +163,16 @@ int TimeValMinus(timeval& tvA, timeval& tvB, timeval& tvResult)
 	return 0;
 }
 
-
 Tokens StrSplit(const std::string &src, const std::string &sep)
 {
 	Tokens r;
 	std::string s;
-	for (std::string::const_iterator i = src.begin(); i != src.end(); i++)
-	{
-		if (sep.find(*i) != std::string::npos)
-		{
+	for (std::string::const_iterator i = src.begin(); i != src.end(); i++) {
+		if (sep.find(*i) != std::string::npos) {
 			if (s.length()) r.push_back(s);
 			s = "";
 		}
-		else
-		{
+		else {
 			s += *i;
 		}
 	}
@@ -199,3 +180,15 @@ Tokens StrSplit(const std::string &src, const std::string &sep)
 	return r;
 }
 
+void ignore_pipe()
+{
+	struct sigaction sig;
+
+	sig.sa_handler = SIG_IGN;
+	sig.sa_flags = 0;
+	sigemptyset(&sig.sa_mask);
+	sigaddset(&sig.sa_mask, SIGPIPE);
+	if (pthread_sigmask(SIG_BLOCK, &sig.sa_mask, NULL) == -1) {
+		perror("SIG_PIPE");
+	}
+}

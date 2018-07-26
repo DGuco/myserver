@@ -3,12 +3,14 @@
 //  Created by DGuco on 18/01/20.
 //  Copyright © 2018年 DGuco. All rights reserved.
 //
+#include <bits/signum.h>
 #include "net_addr.h"
 #include "network_interface.h"
 #include "net_work.h"
 #include "system_signal.h"
 #include "connector.h"
 #include "my_assert.h"
+#include <signal.h>
 
 template<> shared_ptr<CNetWork> CSingleton<CNetWork>::spSingleton = NULL;
 

@@ -16,7 +16,7 @@ CGateCtrl::CGateCtrl()
 	: m_pNetWork(std::make_shared<CNetWork>()),
 	  m_pClientManager(std::make_shared<CClientManager>(m_pNetWork)),
 	  m_pServerManager(std::make_shared<CServerManager>(m_pNetWork)),
-	  m_pSingleThead(std::make_shared<CThreadPool>(1))
+	  m_pSingleThead(std::make_shared<CThreadPool>(1, ignore_pipe))
 {
 }
 

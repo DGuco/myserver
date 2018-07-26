@@ -25,11 +25,22 @@ using namespace std;
 /**
  * 成员函数生命为ininle，避免multiple definition error
  */
+
+void runWithNothing();
+
+inline void runWithNothing()
+{
+
+}
+
+typedef std::function<void()> FuncBeforeRun;
+
 class CThreadPool
 {
 public:
 	CThreadPool();
 	CThreadPool(size_t);
+	CThreadPool(size_t, FuncBeforeRun func);
 	~CThreadPool();
 	CThreadPool(const CThreadPool &) = delete;
 	const CThreadPool &operator=(CThreadPool &) = delete;
@@ -50,6 +61,7 @@ private:
 
 	std::mutex m_mutex;
 	std::condition_variable m_condition;
+	FuncBeforeRun m_fBeforeRun;
 	bool m_stop;
 };
 
@@ -66,7 +78,19 @@ inline CThreadPool::CThreadPool()
  * inline成员函数定义和生命在同一个源文件中
  */
 inline CThreadPool::CThreadPool(size_t threads)
-	: m_stop(false)
+	: m_fBeforeRun(&runWithNothing),
+	  m_stop(false)
+{
+	for (size_t i = 0; i < threads; ++i) {
+		std::shared_ptr<thread> th = std::make_shared<thread>(std::mem_fn(&CThreadPool::ThreadFunc), this);
+		if (th) {
+			m_mWorkers[th->get_id()] = std::move(th);
+		}
+	}
+}
+
+inline CThreadPool::CThreadPool(size_t threads, FuncBeforeRun func)
+	: m_fBeforeRun(func)
 {
 	for (size_t i = 0; i < threads; ++i) {
 		std::shared_ptr<thread> th = std::make_shared<thread>(std::mem_fn(&CThreadPool::ThreadFunc), this);
@@ -120,6 +144,7 @@ inline bool CThreadPool::IsThisThreadIn(thread *thrd)
  */
 inline void CThreadPool::ThreadFunc()
 {
+	m_fBeforeRun();
 	while (true) {
 		std::function<void()> task;
 		std::unique_lock<std::mutex> lock(this->m_mutex);

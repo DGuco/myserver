@@ -10,7 +10,7 @@ CSystemSignal::CSystemSignal(IEventReactor *pReactor)
 
 CSystemSignal::~CSystemSignal()
 {
-
+	UnRegisterFromReactor();
 }
 
 IEventReactor *CSystemSignal::GetReactor()
@@ -30,7 +30,7 @@ void CSystemSignal::SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *
 bool CSystemSignal::RegisterToReactor()
 {
 	event_set(&m_event, m_iSignal, EV_SIGNAL, lcb_OnSignal, this);
-	event_base_set(static_cast<event_base *>(GetReactor()->GetEventBase()), &m_event);
+	event_base_set(GetReactor()->GetEventBase(), &m_event);
 	event_add(&m_event, NULL);
 	return true;
 }

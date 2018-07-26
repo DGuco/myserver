@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
+#include <bits/sigthread.h>
+#include <csignal>
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 
 #define UID_LENGTH        (64)    // 帐号长度
@@ -81,6 +83,8 @@ int GetDayOfYear(time_t tTime);
 int GetSecondTime();
 // 判断两个时间戳是否是同一天
 bool IsSameDay(time_t tFirstTime, time_t tSecondTime);
+
+void ignore_pipe();
 
 // 获取当前微秒
 time_t GetMSTime();

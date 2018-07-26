@@ -122,8 +122,6 @@ int CServerManager::SendToGame()
 		iRet = pTmpConn->Send(m_pSendBuff->CanReadData(), m_pSendBuff->ReadableDataLen());
 		if (iRet < 0) {
 			LOG_ERROR("default", "Send to game error, iRet = {}.", iRet);
-		}
-		else {
 			//断开重新连接
 			if (ReconnectToGame(pTmpConn)) {
 				iRet = pTmpConn->Send(m_pSendBuff->CanReadData(), m_pSendBuff->ReadableDataLen());
@@ -209,7 +207,7 @@ void CServerManager::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 		->PushTaskBack([pBufferEvent]
 					   {
 						   MY_ASSERT(pBufferEvent != NULL, return);
-						   LOG_WARN("default", "The connection to game is gone,try to reconnect to it");
+						   LOG_WARN("default", "Disconnected from game,try to reconnect to it");
 						   // 断开连接重新连接到game
 						   shared_ptr<CServerManager>
 							   &tmpServerManager = CGateCtrl::GetSingletonPtr()->GetServerManager();

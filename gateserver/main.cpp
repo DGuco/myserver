@@ -9,7 +9,6 @@
 #include "inc/gate_ctrl.h"
 
 using namespace std;
-
 int main(int argc, char **argv)
 {
 	std::shared_ptr<CGateCtrl> &pGateCtrl = CGateCtrl::CreateInstance();
@@ -18,6 +17,7 @@ int main(int argc, char **argv)
 		LOG_ERROR("default", "CGateCtrl PrepareToRun failed,iRet = {}", iTmpRet);
 		exit(0);
 	}
+	ignore_pipe();
 	pGateCtrl->Run();
 	// 关闭日志
 	LOG_SHUTDOWN_ALL;
