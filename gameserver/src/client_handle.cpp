@@ -3,6 +3,8 @@
 //
 
 #include <common_def.h>
+#include <server_tool.h>
+#include <config.h>
 #include "shm.h"
 #include "code_queue.h"
 #include "share_mem.h"
@@ -13,22 +15,129 @@
 #include "../inc/message_factory.h"
 #include "../inc/client_handle.h"
 #include "../inc/game_server.h"
+#include "../../gateserver/inc/gate_def.h"
+#include "../../gateserver/inc/client_manager.h"
 
-CClientHandle::CClientHandle()
-	: CMyThread("CClientHandle", 1000),//阻塞超时1ms
-	  m_oRecvBuff(new CByteBuff)
+CClientHandle::CClientHandle(shared_ptr<CNetWork> pNetWork)
+	: m_pNetWork(pNetWork),
+	  m_pSendBuff(std::make_shared<CByteBuff>()),
+	  m_pRecvBuff(std::make_shared<CByteBuff>())
 {
 }
 
 CClientHandle::~CClientHandle()
 {
-	SAFE_DELETE(mC2SPipe);
-	SAFE_DELETE(mS2CPipe);
+
+}
+
+int CClientHandle::PrepareToRun()
+{
+	BeginListen();
+	return 0;
+}
+
+shared_ptr<CByteBuff> &CClientHandle::GetRecvBuff()
+{
+	return m_pRecvBuff;
+}
+
+shared_ptr<CByteBuff> &CClientHandle::GetSendBuff()
+{
+	return m_pSendBuff;
+}
+
+bool CClientHandle::BeginListen()
+{
+	shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
+	ServerInfo *gateInfo = tmpConfig->GetServerInfo(enServerType::FE_GATESERVER);
+	bool iRet = m_pNetWork->BeginListen(gateInfo->m_sHost.c_str(),
+										gateInfo->m_iPort,
+										&CClientHandle::lcb_OnAcceptCns,
+										&CClientHandle::lcb_OnCnsSomeDataSend,
+										&CClientHandle::lcb_OnCnsSomeDataRecv,
+										&CClientHandle::lcb_OnCnsDisconnected,
+										&CClientHandle::lcb_OnCheckAcceptorTimeOut,
+										RECV_QUEUQ_MAX,
+										tmpConfig->GetTcpKeepAlive());
+	if (iRet) {
+		LOG_INFO("default", "Server listen success at {} : {}", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
+		return true;
+	}
+	else {
+		LOG_ERROR("default""Server listen at {} : {} failed,failed reason {]", gateInfo->m_sHost.c_str(),
+				  gateInfo->m_iPort, strerror(errno));
+		exit(0);
+	}
+}
+
+void CClientHandle::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
+{
+	//客户端主动断开连接
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([uId, &tmpAcceptor]
+					   {
+						   MY_ASSERT(tmpAcceptor != NULL, return);
+						   LOG_DEBUG("default", "New acceptor,socket id {}", tmpAcceptor->GetSocket().GetSocket());
+						   CGameServer::GetSingletonPtr()->GetNetWork()
+							   ->InsertNewAcceptor(uId, (CAcceptor *) (tmpAcceptor));
+					   }
+		);
+}
+
+void CClientHandle::lcb_OnCnsDisconnected(IBufferEvent *tmpAcceptor)
+{
+	MY_ASSERT(tmpAcceptor != NULL, return);
+	//客户端主动断开连接
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack(
+			[tmpAcceptor]
+			{
+			});
+}
+
+void CClientHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *tmpAcceptor)
+{
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack(
+			[tmpAcceptor]
+			{
+			});
+}
+
+void CClientHandle::lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor)
+{
+
+}
+
+void CClientHandle::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
+{
+	CGameServer::GetSingletonPtr()->GetIoThread()
+		->PushTaskBack([]
+					   {
+						   shared_ptr<CNetWork> tmpNet = CNetWork::GetSingletonPtr();
+						   std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr();
+						   int tmpPingTime = tmpConfig->GetTcpKeepAlive();
+						   MAP_ACCEPTOR &tmpMap = tmpNet->GetAcceptorMap();
+						   auto it = tmpMap.begin();
+						   time_t tNow = GetMSTime();
+						   for (; it != tmpMap.end();) {
+							   CAcceptor *tmpAcceptor = it->second;
+							   if (tNow - tmpAcceptor->GetLastKeepAlive() > tmpPingTime) {
+//								   DisConnect(tmpAcceptor, Err_ClientTimeout);
+								   it = tmpMap.erase(it);
+							   }
+							   else {
+								   it++;
+							   }
+						   }
+
+					   });
+
 }
 
 int CClientHandle::DealClientMessage(std::shared_ptr<CMessage> pMsg)
 {
-	MesHead *pCSHead = pMsg->mutable_msghead();
+	CMesHead *pCSHead = pMsg->mutable_msghead();
 	if (pCSHead == NULL) {
 		return CLIENTHANDLE_MSGINVALID;
 	}

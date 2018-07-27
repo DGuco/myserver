@@ -30,10 +30,10 @@ public:
 	void ConnectToGame();
 	//重新连接
 	bool ReconnectToGame(CConnector *tmpConnector);
-	shared_ptr<CByteBuff> &GetSendBuff() const;
-	shared_ptr<CByteBuff> &GetRecvBuff() const;
-	time_t GetLastSendKeepAlive() const;
-	time_t GetLastRecvKeepAlive() const;
+	shared_ptr<CByteBuff> &GetSendBuff() ;
+	shared_ptr<CByteBuff> &GetRecvBuff() ;
+	time_t GetLastSendKeepAlive() ;
+	time_t GetLastRecvKeepAlive() ;
 private:
 	//检测发送队列
 	void RecvGameData(CConnector* tmpConnector);

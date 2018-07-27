@@ -11,7 +11,7 @@ class CServerHandle
 {
 public:
 	//构造函数
-	CServerHandle();
+	CServerHandle(shared_ptr<CNetWork> pNetWork);
 	//系够函数
 	virtual ~CServerHandle();
 	// 连接到Proxy
@@ -28,7 +28,6 @@ public:
 public:
 	//运行准备
 	int PrepareToRun();
-	void Run();
 private:
 	void SendMessageToProxy(char *data, unsigned short len);
 	//向Proxy注册
@@ -48,7 +47,7 @@ private:
 	static void SetProxyId(int id);
 	static int GetProxyId();
 private:
-	CNetWork *m_pNetWork;                // 服务器间通信的连接
+	std::shared_ptr<CNetWork> m_pNetWork;                // 服务器间通信的连接
 	time_t m_tLastSendKeepAlive;        // 最后发送proxy心跳消息时间
 	time_t m_tLastRecvKeepAlive;        // 最后接收proxy心跳消息时间
 private:

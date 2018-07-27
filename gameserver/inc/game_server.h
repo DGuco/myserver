@@ -53,16 +53,16 @@ public:
 public:
 	// 设置服务器状态
 	void SetServerState(int iState)
-	{ miServerState = (miServerState | iState); }
+	{ m_iServerState = (m_iServerState | iState); }
 	// 清除服务器状态
 	void EraseServerState(int iState)
-	{ miServerState = (miServerState & (~iState)); }
+	{ m_iServerState = (m_iServerState & (~iState)); }
 	// 判断服务器状态
 	bool IsOk(int iState)
-	{ return ((miServerState & iState) == iState); }
+	{ return ((m_iServerState & iState) == iState); }
 	// 服务器是否正常
 	bool IsNormal()
-	{ return miServerState == ESS_NORMAL; }
+	{ return m_iServerState == ESS_NORMAL; }
 
 	// 服务器拉取数据完成
 	void LoadDataFinish();
@@ -71,7 +71,7 @@ public:
 
 	// 是否能正常处理客户端上行消息
 	bool CanProcessingClientMsg()
-	{ return (miServerState & ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG; }
+	{ return (m_iServerState & ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG; }
 	// 创建实体
 	int CreateEntity(CPlayer *pPlayer);
 	// 销毁实体
@@ -92,7 +92,7 @@ public:
 	int Push(unsigned int iMsgID, std::shared_ptr<CGoogleMessage> pMsgPara, CPlayer *pPlayer);
 	// 回复客户端上行的请求
 	int SendResponse(std::shared_ptr<CGoogleMessage> pMsgPara, CPlayer *pPlayer);
-	int SendResponse(std::shared_ptr<CGoogleMessage> pMsgPara, std::shared_ptr<MesHead> mesHead);
+	int SendResponse(std::shared_ptr<CGoogleMessage> pMsgPara, std::shared_ptr<CMesHead> mesHead);
 
 	// 通过消息ID获取模块类型
 	int GetModuleClass(int iMsgID);
@@ -137,16 +137,17 @@ public:
 	int InitStaticLog();
 	// 限制玩家登陆
 	int LimitTeamLogin(unsigned int iTeamID, time_t iTimes); // itimes 暂定为小时
-	// 获取消息工厂
-	CFactory *GetMessageFactory();
-	// 获取逻辑线程
-	CThreadPool *GetLogicThread();
-	// 获取io线程
-	CThreadPool *GetIoThread();
-	//获取timer管理器
-	CTimerManager *GetTimerManager();
-	//获取serverhandle
-	CServerHandle *GetServerHandle();
+	shared_ptr<CClientHandle> &GetClientHandle();
+	shared_ptr<CServerHandle> &GetServerHandle();
+	shared_ptr<CModuleManager> &GetModuleManager();
+	shared_ptr<CMessageDispatcher> &GetMessageDispatcher();
+	shared_ptr<CFactory> &GetMessageFactory();
+	shared_ptr<CTimerManager> &GetTimerManager();
+	shared_ptr<CThreadPool> &GetLogicThread();
+	shared_ptr<CThreadPool> &GetIoThread();
+	shared_ptr<CNetWork> &GetNetWork();
+	CRunFlag &GetRunFlag();
+	int GetMiServerState();
 public:
 	// 为找不到CTeam的连接发送消息
 	void SendMsgSystemErrorResponse(int iResult,
@@ -155,16 +156,16 @@ public:
 									time_t tCreateTime,
 									bool bKickOff = false);
 private:
-	CClientManager *m_pClientHandle;             // 与客户端通信的连接线程
-	CServerHandle *m_pServerHandle;             // 与服务器的连接管理(proxyserver)线程
-	CModuleManager *m_pModuleManager;           // 模块管理器
-	CMessageDispatcher *m_pMessageDispatcher;   // 消息派发器
-	CFactory *m_pMessageFactory;                // 消息工厂
-	CTimerManager *m_pTimerManager;             // 定时器管理器
+	std::shared_ptr<CNetWork> m_pNetWork;                        // 网络管理
+	std::shared_ptr<CClientHandle> m_pClientHandle;             // 与客户端通信的连接线程
+	std::shared_ptr<CServerHandle> m_pServerHandle;             // 与服务器的连接管理(proxyserver)线程
+	std::shared_ptr<CModuleManager> m_pModuleManager;           // 模块管理器
+	std::shared_ptr<CMessageDispatcher> m_pMessageDispatcher;   // 消息派发器
+	std::shared_ptr<CFactory> m_pMessageFactory;                // 消息工厂
+	std::shared_ptr<CTimerManager> m_pTimerManager;             // 定时器管理器
+	std::shared_ptr<CThreadPool> m_pLogicThread;                // 逻辑线程
+	std::shared_ptr<CThreadPool> m_pIoThread;                   // io线程(收发消息)
 	CRunFlag m_RunFlag;                         // 服务器运行状态
-	CThreadPool *m_pLogicThread;                // 逻辑线程
-	CThreadPool *m_pIoThread;                   // io线程(收发消息)
-	CRunFlag mRunFlag;                          // 服务器运行状态
-	int miServerState;    // 服务器状态
+	int m_iServerState;    // 服务器状态
 };
 #endif //SERVER_GAMESERVER_H

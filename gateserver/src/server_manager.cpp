@@ -13,8 +13,8 @@
 
 CServerManager::CServerManager(shared_ptr<CNetWork> pNetWork)
 	: m_pNetWork(pNetWork),
-	  m_pSendBuff(new CByteBuff),
-	  m_pRecvBuff(new CByteBuff),
+	  m_pSendBuff(std::make_shared<CByteBuff>()),
+	  m_pRecvBuff(std::make_shared<CByteBuff>()),
 	  m_tLastRecvKeepAlive(0),
 	  m_tLastSendKeepAlive(0)
 {
@@ -170,22 +170,22 @@ bool CServerManager::ReconnectToGame(CConnector *tmpConnector)
 	return false;
 }
 
-shared_ptr<CByteBuff> &CServerManager::GetSendBuff() const
+shared_ptr<CByteBuff> &CServerManager::GetSendBuff()
 {
 	return m_pSendBuff;
 }
 
-shared_ptr<CByteBuff> &CServerManager::GetRecvBuff() const
+shared_ptr<CByteBuff> &CServerManager::GetRecvBuff()
 {
 	return m_pRecvBuff;
 }
 
-time_t CServerManager::GetLastSendKeepAlive() const
+time_t CServerManager::GetLastSendKeepAlive()
 {
 	return m_tLastSendKeepAlive;
 }
 
-time_t CServerManager::GetLastRecvKeepAlive() const
+time_t CServerManager::GetLastRecvKeepAlive()
 {
 	return m_tLastRecvKeepAlive;
 }

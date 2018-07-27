@@ -26,8 +26,9 @@ public:
 	void DealClientData(CAcceptor *tmpAcceptor, unsigned short len);
 	//给特定client发送数据
 	void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
-	shared_ptr<CByteBuff> &GetRecvBuff() const;
-	shared_ptr<CByteBuff> &GetSendBuff() const;
+	shared_ptr<CByteBuff> &GetRecvBuff();
+	shared_ptr<CByteBuff> &GetSendBuff();
+	shared_ptr<CNetWork> &GetNetWork();
 private:
 	//清除socket
 	void ClearSocket(CAcceptor *tmpAcceptor, short iError);

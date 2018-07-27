@@ -5,39 +5,30 @@
 #include "config.h"
 #include "server_comm_engine.h"
 #include "../inc/game_server.h"
-#include "../inc/message_factory.h"
 
-template<> shared_ptr<CSingleton<T>> CSingleton<CGameServer>::spSingleton = NULL;
+template<> shared_ptr<CSingleton<CGameServer>> CSingleton<CGameServer>::spSingleton = NULL;
 
 CGameServer::CGameServer()
+	: m_pNetWork(std::make_shared<CNetWork>()),
+	  m_pClientHandle(std::make_shared<CClientHandle>(m_pNetWork)),
+	  m_pServerHandle(std::make_shared<CServerHandle>(m_pNetWork)),
+	  m_pModuleManager(std::make_shared<CModuleManager>()),
+	  m_pMessageDispatcher(std::make_shared<CMessageDispatcher>()),
+	  m_pMessageFactory(std::make_shared<CFactory>()),
+	  m_pTimerManager(std::make_shared<CTimerManager>()),
+	  m_pLogicThread(std::make_shared<CThreadPool>(1)),
+	  m_pIoThread(std::make_shared<CThreadPool>(1, ignore_pipe)),
+	  m_iServerState(0)
 {
 	Initialize();
 }
 
 CGameServer::~CGameServer()
 {
-	m_pClientHandle->StopThread();
-	SAFE_DELETE(m_pClientHandle);
-	SAFE_DELETE(m_pServerHandle);
-	SAFE_DELETE(m_pModuleManager);
-	SAFE_DELETE(m_pMessageDispatcher);
-	SAFE_DELETE(m_pMessageFactory);
-	SAFE_DELETE(m_pTimerManager);
-	SAFE_DELETE(m_pLogicThread);
-	SAFE_DELETE(m_pIoThread);
 }
 
 int CGameServer::Initialize()
 {
-	miServerState = 0;
-	m_pModuleManager = new CModuleManager;
-	m_pClientHandle = new CClientManager;
-	m_pMessageDispatcher = new CMessageDispatcher;
-	m_pMessageFactory = new CMessageFactory;
-	m_pTimerManager = new CTimerManager;
-	m_pServerHandle = new CServerHandle();
-	m_pLogicThread = new CThreadPool(1);
-	m_pIoThread = new CThreadPool(1);
 	return 0;
 }
 
@@ -45,12 +36,10 @@ int CGameServer::Initialize()
 int CGameServer::ReadCfg()
 {
 	// 读取配置
-	CServerConfig *pTmpConfig = new CServerConfig;
+	shared_ptr<CServerConfig> &pTmpConfig = CServerConfig::CreateInstance();
 	const string filepath = "../config/serverinfo.json";
-	if (-1 == CServerConfig::GetSingleton().LoadFromFile(filepath)) {
+	if (-1 == pTmpConfig->LoadFromFile(filepath)) {
 		LOG_ERROR("default", "Get TcpserverConfig failed");
-		delete pTmpConfig;
-		pTmpConfig = NULL;
 		exit(0);
 	}
 	return 0;
@@ -380,28 +369,47 @@ int CGameServer::InitStaticLog()
 {
 	return 0;
 }
-
-CThreadPool *CGameServer::GetLogicThread()
+shared_ptr<CClientHandle> &CGameServer::GetClientHandle()
 {
-	return m_pLogicThread;
+	return m_pClientHandle;
 }
 
-CThreadPool *CGameServer::GetIoThread()
-{
-	return m_pIoThread;
-}
-
-CTimerManager *CGameServer::GetTimerManager()
-{
-	return m_pTimerManager;
-}
-
-CServerHandle *CGameServer::GetServerHandle()
+shared_ptr<CServerHandle> &CGameServer::GetServerHandle()
 {
 	return m_pServerHandle;
 }
 
-CFactory *CGameServer::GetMessageFactory()
+shared_ptr<CModuleManager> &CGameServer::GetModuleManager()
+{
+	return m_pModuleManager;
+}
+
+shared_ptr<CMessageDispatcher> &CGameServer::GetMessageDispatcher()
+{
+	return m_pMessageDispatcher;
+}
+
+shared_ptr<CFactory> &CGameServer::GetMessageFactory()
 {
 	return m_pMessageFactory;
+}
+
+shared_ptr<CTimerManager> &CGameServer::GetTimerManager()
+{
+	return m_pTimerManager;
+}
+
+shared_ptr<CThreadPool> &CGameServer::GetLogicThread()
+{
+	return m_pLogicThread;
+}
+
+shared_ptr<CThreadPool> &CGameServer::GetIoThread()
+{
+	return m_pIoThread;
+}
+
+shared_ptr<CNetWork> &CGameServer::GetNetWork()
+{
+	return m_pNetWork;
 }

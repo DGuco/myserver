@@ -25,7 +25,7 @@ using namespace spdlog::level;
 #	define LOG_INFO                        LogInfo
 #	define LOG_WARN                        LogWarn
 #	define LOG_ERROR                        LogError
-#	define LOG_FATAL                        LogCritical
+#	define  LOG_FATAL                        LogCritical
 
 
 int InitBaseLog(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/

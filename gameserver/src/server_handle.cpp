@@ -13,8 +13,8 @@ int CServerHandle::m_iProxyId = 0;
 
 char CServerHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
 
-CServerHandle::CServerHandle()
-	: m_pNetWork(new CNetWork()),
+CServerHandle::CServerHandle(shared_ptr<CNetWork> pNetWork)
+	: m_pNetWork(pNetWork),
 	  m_tLastSendKeepAlive(0),
 	  m_tLastRecvKeepAlive(0)
 {
@@ -32,11 +32,6 @@ int CServerHandle::PrepareToRun()
 		return -1;
 	}
 	return 0;
-}
-
-void CServerHandle::Run()
-{
-	m_pNetWork->DispatchEvents();
 }
 
 // 连接到Proxy

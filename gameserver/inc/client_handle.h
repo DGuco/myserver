@@ -7,6 +7,7 @@
 #define SERVER_CLIENT_HANDLE_H
 
 #include <mythread.h>
+#include <net_work.h>
 #include "base.h"
 #include "message_interface.h"
 #include "message.pb.h"
@@ -36,38 +37,39 @@ enum ClienthandleErrCode
 	// CLIENTHANDLE_BUSY						        = 16,		    // 当前玩家有消息在处理中
 };
 
-class CCSHead;
-class CCodeQueue;
-class CSharedMem;
-
-class CClientHandle: public CMyThread
+class CClientHandle
 {
 public:
-	CClientHandle();
+	//构造函数
+	CClientHandle(shared_ptr<CNetWork> pNetWork);
+	//析构函数
 	virtual ~CClientHandle();
-
 public:
-	int PrepareToRun() override;
-	void RunFunc() override;
-	bool IsToBeBlocked() override;
-public:
-	// 断开玩家连接
-	void DisconnectClient(int iSocket, time_t tCreateTime);
-	// 打印管道状态
-	void Dump(char *pBuffer, unsigned int &uiLen);
-	//检查是有数据可读
-	int CheckData();
-	int DealClientMessage(std::shared_ptr<CMessage> pMsg);
-	int SendResToPlayer(std::shared_ptr<CGoogleMessage> pMessage, CPlayer *pPlayer);
-	int SendResponse(std::shared_ptr<CGoogleMessage> pMessage, std::shared_ptr<MesHead> mesHead);
-	int Push(int cmd, std::shared_ptr<CGoogleMessage> pMessage, stPointList *pPlayerList);
-	int RecvClientData();
+	//准备run
+	int PrepareToRun();
+	shared_ptr<CByteBuff> &GetRecvBuff();
+	shared_ptr<CByteBuff> &GetSendBuff();
+	int SendResToPlayer(shared_ptr<CGoogleMessage> pMessage, CPlayer *pPlayer);
+	int DealClientMessage(shared_ptr<CMessage> pMsg);
 protected:
-	// tcp --> game 共享内存管道起始地址
-	CCodeQueue *mC2SPipe;
-	// game --> tcp 共享内存管道起始地址
-	CCodeQueue *mS2CPipe;
-	CByteBuff *m_oRecvBuff;
+	//客户端连接还回调
+	static void lcb_OnAcceptCns(uint32 uId, IBufferEvent *tmpAcceptor);
+	//客户端断开连接回调
+	static void lcb_OnCnsDisconnected(IBufferEvent *tmpAcceptor);
+	//客户端上行数据回调
+	static void lcb_OnCnsSomeDataRecv(IBufferEvent *tmpAcceptor);
+	//发送数据回调
+	static void lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor);
+	//检测连接超时
+	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
+private:
+	//开始监听
+	bool BeginListen();
+	//客户端断开连接
+private:
+	shared_ptr<CNetWork> m_pNetWork;
+	shared_ptr<CByteBuff> m_pRecvBuff; //客户端上行数据buff
+	shared_ptr<CByteBuff> m_pSendBuff; //客户端下行数据buff
 };
 
 #endif //SERVER_CLIENT_HANDLE_H

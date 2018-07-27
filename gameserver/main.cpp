@@ -24,7 +24,7 @@ void sigusr2_handle(int iSigVal)
 int main(int argc, char *argv[])
 {
 	// 准备启动服务器
-	CGameServer *pTmpGameServer = new CGameServer;
+	shared_ptr<CGameServer> &pTmpGameServer = CGameServer::CreateInstance();
 	int iRet = pTmpGameServer->PrepareToRun();
 	if (iRet != 0) {
 		LOG_ERROR("default", "CGameServer prepare to run failed, iRet = {}.", iRet);
@@ -37,14 +37,9 @@ int main(int argc, char *argv[])
 
 	// 启动服务器
 	pTmpGameServer->Run();
-	LOG_INFO("default", "Game server is going to stop...");
-	if (pTmpGameServer) {
-		delete pTmpGameServer;
-		pTmpGameServer = NULL;
-	}
-	SAFE_DELETE(CServerConfig::GetSingletonPtr());
 	// 关闭日志
 	LOG_SHUTDOWN_ALL;
+	LOG_INFO("default", "Game server is going to stop...");
 	return 0;
 }
 

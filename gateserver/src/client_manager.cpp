@@ -9,12 +9,10 @@
 #include "../inc/gate_def.h"
 #include "../inc/gate_ctrl.h"
 
-CByteBuff *CClientManager::m_pRecvBuff = new CByteBuff();
-
-CByteBuff *CClientManager::m_pSendBuff = new CByteBuff();
-
 CClientManager::CClientManager(shared_ptr<CNetWork> pNetWork)
-	: m_pNetWork(pNetWork)
+	: m_pNetWork(pNetWork),
+	  m_pSendBuff(std::make_shared<CByteBuff>()),
+	  m_pRecvBuff(std::make_shared<CByteBuff>())
 {
 }
 
@@ -112,14 +110,19 @@ void CClientManager::SendToClient(const CSocketInfo &socketInfo, const char *dat
 	}
 }
 
-shared_ptr<CByteBuff> &CClientManager::GetRecvBuff() const
+shared_ptr<CByteBuff> &CClientManager::GetRecvBuff()
 {
 	return m_pRecvBuff;
 }
 
-shared_ptr<CByteBuff> &CClientManager::GetSendBuff() const
+shared_ptr<CByteBuff> &CClientManager::GetSendBuff()
 {
 	return m_pSendBuff;
+}
+
+shared_ptr<CNetWork> &CClientManager::GetNetWork()
+{
+	return m_pNetWork;
 }
 
 void CClientManager::ClearSocket(CAcceptor *tmpAcceptor, short iError)
@@ -250,26 +253,29 @@ void CClientManager::lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor)
 void CClientManager::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
 {
 	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()
-		->PushTaskBack([]
-					   {
-						   shared_ptr<CNetWork> tmpNet = CNetWork::GetSingletonPtr();
-						   std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr();
-						   int tmpPingTime = tmpConfig->GetTcpKeepAlive();
-						   MAP_ACCEPTOR &tmpMap = tmpNet->GetAcceptorMap();
-						   auto it = tmpMap.begin();
-						   time_t tNow = GetMSTime();
-						   for (; it != tmpMap.end();) {
-							   CAcceptor *tmpAcceptor = it->second;
-							   if (tNow - tmpAcceptor->GetLastKeepAlive() > tmpPingTime) {
-								   DisConnect(tmpAcceptor, Err_ClientTimeout);
-								   it = tmpMap.erase(it);
-							   }
-							   else {
-								   it++;
-							   }
-						   }
+		->PushTaskBack(
+			[]
+			{
+				shared_ptr<CClientManager> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetClientManager();
+				shared_ptr<CNetWork>& tmpNet = tmpClientManager->GetNetWork();
+				std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr();
+				int tmpPingTime = tmpConfig->GetTcpKeepAlive();
+				MAP_ACCEPTOR &tmpMap = tmpNet->GetAcceptorMap();
+				auto it = tmpMap.begin();
+				time_t tNow = GetMSTime();
+				for (; it != tmpMap.end();) {
+					CAcceptor *tmpAcceptor = it->second;
+					if (tNow - tmpAcceptor->GetLastKeepAlive() > tmpPingTime) {
+						tmpClientManager->DisConnect(tmpAcceptor, Err_ClientTimeout);
+						it = tmpMap.erase(it);
+					}
+					else {
+						it++;
+					}
+				}
 
-					   });
+			});
 
 }
+
 
