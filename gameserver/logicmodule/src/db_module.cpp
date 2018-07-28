@@ -153,7 +153,7 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
 	tmpMsgSqlRqt.set_hasblob(NONEBLOB);
 	tmpMsg.set_msgpara((unsigned long) &tmpMsgSqlRqt);
 
-	LOG_DEBUG("db", "[{}]", ((CGoogleMessage *) tmpMsg.msgpara())->ShortDebugString().c_str());
+	LOG_DEBUG("db", "[{}]", ((CGooMess *) tmpMsg.msgpara())->ShortDebugString().c_str());
 	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr()->SendMessageToDB(&tmpMsg), return -3);
 	return 0;
 }
@@ -200,7 +200,7 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
 	tmpMsgSqlRqt.set_hasblob(HASBLOB);
 
 	tmpMsg.set_msgpara((unsigned long) &tmpMsgSqlRqt);
-	LOG_DEBUG("db", "[{}]", ((CGoogleMessage *) tmpMsg.msgpara())->ShortDebugString().c_str());
+	LOG_DEBUG("db", "[{}]", ((CGooMess *) tmpMsg.msgpara())->ShortDebugString().c_str());
 	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr()->SendMessageToDB(&tmpMsg),
 				  return -2);
 	return 0;
@@ -253,7 +253,7 @@ void CDbModule::FindOrCreateUserResponse(CSession *pSession, CMsgExecuteSqlRespo
 		pRes->set_playerid(player_id);
 		MesHead *pHead = new MesHead;
 		CClientCommEngine::CopyMesHead(proxyHead->mutable_msghead(), pHead);
-		CGameServer::GetSingletonPtr()->SendResponse(std::shared_ptr<CGoogleMessage>(pRes), std::shared_ptr<MesHead>(pHead));
+		CGameServer::GetSingletonPtr()->SendResponse(std::shared_ptr<CGooMess>(pRes), std::shared_ptr<MesHead>(pHead));
 	}
 	else {
 		// 拉取数据失败,则退出

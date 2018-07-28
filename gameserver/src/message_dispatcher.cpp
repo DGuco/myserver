@@ -26,7 +26,7 @@ CMessageDispatcher::~CMessageDispatcher()
 int CMessageDispatcher::ProcessClientMessage(std::shared_ptr<CMessage> pMsg)
 {
 	MY_ASSERT(pMsg != NULL && pMsg->has_msghead(), return -1);
-	CGoogleMessage *pMsgPara = (CGoogleMessage *) pMsg->msgpara();
+	CGooMess *pMsgPara = (CGooMess *) pMsg->msgpara();
 	if (!pMsgPara) {
 		return -2;
 	}
@@ -81,7 +81,7 @@ int CMessageDispatcher::ProcessClientMessage(std::shared_ptr<CMessage> pMsg)
 int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 {
 	MY_ASSERT(pMsg != NULL && pMsg->has_msghead(), return -1);
-	CGoogleMessage *pTmpMsgPara = (CGoogleMessage *) pMsg->msgpara();
+	CGooMess *pTmpMsgPara = (CGooMess *) pMsg->msgpara();
 	if (!pTmpMsgPara) {
 		return -2;
 	}
@@ -138,7 +138,7 @@ int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 	}
 	}
 
-	LOG_DEBUG("default", "[{}]", ((CGoogleMessage *) pMsg->msgpara())->ShortDebugString().c_str());
+	LOG_DEBUG("default", "[{}]", ((CGooMess *) pMsg->msgpara())->ShortDebugString().c_str());
 	PERF_FUNC(pTmpDescriptor->name().c_str(), CGameServer::GetSingletonPtr()->ProcessRouterMessage(pMsg));
 
 	// 消息回收

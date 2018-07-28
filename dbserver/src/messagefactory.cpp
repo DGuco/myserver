@@ -12,9 +12,9 @@ CMessageFactory::CMessageFactory()
 CMessageFactory::~CMessageFactory()
 {
 }
-CGoogleMessage* CMessageFactory::CreateMessage(unsigned int uiMessageID)
+CGooMess* CMessageFactory::CreateMessage(unsigned int uiMessageID)
 {
-    CGoogleMessage* tpMessage = CreateServerMessage(uiMessageID);
+    CGooMess* tpMessage = CreateServerMessage(uiMessageID);
 
     if (tpMessage == NULL)
     {
@@ -27,9 +27,9 @@ CGoogleMessage* CMessageFactory::CreateMessage(unsigned int uiMessageID)
 
     return tpMessage;
 }
-CGoogleMessage* CMessageFactory::CreateServerMessage(unsigned int uiMessageID)
+CGooMess* CMessageFactory::CreateServerMessage(unsigned int uiMessageID)
 {
-    CGoogleMessage* pTmpMessage = NULL;
+    CGooMess* pTmpMessage = NULL;
 
     switch(uiMessageID)
     {

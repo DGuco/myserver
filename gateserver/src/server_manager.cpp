@@ -196,6 +196,12 @@ void CServerManager::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
 
 void CServerManager::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
+	CGateCtrl::GetSingletonPtr()->GetSingleThreadPool()->PushTaskBack(
+		[pBufferEvent]
+		{
+			CGateCtrl::GetSingletonPtr()->GetServerManager()->RecvGameData((CConnector *) pBufferEvent);
+		});
+
 }
 
 void CServerManager::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)

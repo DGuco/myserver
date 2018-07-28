@@ -171,9 +171,11 @@ void CClientManager::RecvClientData(CAcceptor *tmpAcceptor)
 	if (!tmpAcceptor->IsPackageComplete()) {
 		return;
 	}
-	int iTmpLen = tmpAcceptor->GetRecvPackLen() - sizeof(unsigned short);
+	int packLen = tmpAcceptor->GetRecvPackLen();
+	int iTmpLen = packLen - sizeof(unsigned short);
 	//读取数据
 	m_pRecvBuff->Clear();
+	m_pRecvBuff->WriteUnShort(packLen);
 	iTmpLen = tmpAcceptor->RecvData(m_pRecvBuff->GetData(), iTmpLen);
 	m_pRecvBuff->WriteLen(iTmpLen);
 	//当前数据包已全部读取，清除当前数据包缓存长度
@@ -257,7 +259,7 @@ void CClientManager::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
 			[]
 			{
 				shared_ptr<CClientManager> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetClientManager();
-				shared_ptr<CNetWork>& tmpNet = tmpClientManager->GetNetWork();
+				shared_ptr<CNetWork> &tmpNet = tmpClientManager->GetNetWork();
 				std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr();
 				int tmpPingTime = tmpConfig->GetTcpKeepAlive();
 				MAP_ACCEPTOR &tmpMap = tmpNet->GetAcceptorMap();

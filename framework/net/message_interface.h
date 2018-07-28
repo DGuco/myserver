@@ -5,7 +5,7 @@
 #include "server_tool.h"
 #include "base.h"
 
-typedef ::google::protobuf::Message CGoogleMessage;
+typedef ::google::protobuf::Message CGooMess;
 
 class CFactory
 {
@@ -13,7 +13,7 @@ public:
 	CFactory() {}
 	virtual ~CFactory() {}
 
-	virtual CGoogleMessage* CreateMessage(unsigned int uiMessageID) ;
+	virtual CGooMess* CreateMessage(unsigned int uiMessageID) ;
 };
 
 

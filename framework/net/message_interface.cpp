@@ -1,5 +1,5 @@
 #include "message_interface.h"
-CGoogleMessage* CFactory::CreateMessage(unsigned int uiMessageID)
+CGooMess* CFactory::CreateMessage(unsigned int uiMessageID)
 {
 	return NULL;
 }

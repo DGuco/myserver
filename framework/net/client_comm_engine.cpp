@@ -155,9 +155,9 @@ int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
 	unLength += tmpHead->GetCachedSize();
 
 	if (pMessage->msgpara()) {
-		CGoogleMessage *pMsg = (CGoogleMessage *) pMessage->msgpara();
+		CGooMess *pMsg = (CGooMess *) pMessage->msgpara();
 		if (pMsg == NULL) {
-			MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertToGateStream cast to CGoogleMessage failed.");
+			MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertToGateStream cast to CGooMess failed.");
 		}
 		else {
 			char tEncryBuff[MAX_PACKAGE_LEN] = {0};
@@ -323,18 +323,18 @@ int CClientCommEngine::ConvertStreamToMessage(CByteBuff *pBuff,
 	if ((unTmpTotalLen - unTmpUseLen) > 0 && pMsgFactory != NULL && pMessage != NULL) {
 		// MessagePara
 		// 使用消息工厂
-		CGoogleMessage *tpMsgPara = pMsgFactory->CreateMessage(pHead->cmd());
+		CGooMess *tpMsgPara = pMsgFactory->CreateMessage(pHead->cmd());
 		if (tpMsgPara == NULL) {
-			MY_ASSERT_STR(0, return -1, "CGoogleMessage CreateMessage failed");
+			MY_ASSERT_STR(0, return -1, "CGooMess CreateMessage failed");
 		}
 
 		if (tpMsgPara->ParseFromArray(pBuff->CanReadData(), tmpDataLen) == false) {
 //			// 因为使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
 //			// 并且是非线程安全的
-//			pMessage->~CGoogleMessage();
+//			pMessage->~CGooMess();
 			delete tpMsgPara;
 			tpMsgPara = NULL;
-			MY_ASSERT_STR(0, return -1, "CGoogleMessage ParseFromArray failed");
+			MY_ASSERT_STR(0, return -1, "CGooMess ParseFromArray failed");
 		}
 		pBuff->ReadLen(tpMsgPara->GetCachedSize());
 		pMessage->set_msgpara((unsigned long) tpMsgPara);

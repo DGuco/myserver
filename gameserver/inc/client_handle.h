@@ -47,10 +47,19 @@ public:
 public:
 	//准备run
 	int PrepareToRun();
+	//回复消息
+	int SendResToPlayer(shared_ptr<CGooMess> pMessage, CPlayer *pPlayer);
+	//处理客户端上行消息
+	int DealClientMessage(shared_ptr<CMessage> pMsg);
+	//断开连接
+	void DisconnectClient(int iSocket, time_t tCreateTime);
+	//推送消息
+	int Push(int cmd, shared_ptr<CGooMess> pMessage, stPointList *pTeamList);
+	//接收客户端数据包
+	void RecvClientData(CAcceptor *tmpAcceptor);
+public:
 	shared_ptr<CByteBuff> &GetRecvBuff();
 	shared_ptr<CByteBuff> &GetSendBuff();
-	int SendResToPlayer(shared_ptr<CGoogleMessage> pMessage, CPlayer *pPlayer);
-	int DealClientMessage(shared_ptr<CMessage> pMsg);
 protected:
 	//客户端连接还回调
 	static void lcb_OnAcceptCns(uint32 uId, IBufferEvent *tmpAcceptor);
@@ -70,6 +79,7 @@ private:
 	shared_ptr<CNetWork> m_pNetWork;
 	shared_ptr<CByteBuff> m_pRecvBuff; //客户端上行数据buff
 	shared_ptr<CByteBuff> m_pSendBuff; //客户端下行数据buff
+	int SendResponse(shared_ptr<CGooMess> pMessage, shared_ptr<CMesHead> mesHead);
 };
 
 #endif //SERVER_CLIENT_HANDLE_H

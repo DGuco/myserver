@@ -84,12 +84,12 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 		return -1;
 	}
 
-	CGoogleMessage *pUnknownMessagePara = (CGoogleMessage *) pMsg->msgpara();
+	CGooMess *pUnknownMessagePara = (CGooMess *) pMsg->msgpara();
 	MY_ASSERT(pUnknownMessagePara != NULL, return 0);
 	const ::google::protobuf::Descriptor *pDescriptor = pUnknownMessagePara->GetDescriptor();
 	LOG_DEBUG("default", "SendMessageTo: MsgName[{}] ProxyHead[{}] MsgHead[{}] MsgPara[{}]",
 			  pDescriptor->name().c_str(), stProxyHead->ShortDebugString().c_str(),
-			  pMsg->ShortDebugString().c_str(), ((CGoogleMessage *) pMsg->msgpara())->ShortDebugString().c_str());
+			  pMsg->ShortDebugString().c_str(), ((CGooMess *) pMsg->msgpara())->ShortDebugString().c_str());
 
 	return 0;
 }
@@ -102,13 +102,13 @@ int CDBCtrl::Event(CProxyMessage *pMsg)
 		return -1;
 	}
 
-	CGoogleMessage *pUnknownMessagePara = (CGoogleMessage *) pMsg->msgpara();
+	CGooMess *pUnknownMessagePara = (CGooMess *) pMsg->msgpara();
 	MY_ASSERT(pUnknownMessagePara != NULL, return 0);
 	const ::google::protobuf::Descriptor *pDescriptor = pUnknownMessagePara->GetDescriptor();
 	LOG_DEBUG("default", "ReceveMsg: MsgName[{}] MsgHead[{}] MsgPara[{}]",
 			  pDescriptor->name().c_str(),
 			  pMsg->ShortDebugString().c_str(),
-			  ((CGoogleMessage *) pMsg->msgpara())->ShortDebugString().c_str());
+			  ((CGooMess *) pMsg->msgpara())->ShortDebugString().c_str());
 
 	switch (pMsg->msghead().messageid()) {
 	case CMsgExecuteSqlRequest::MsgID:  // 服务器执行SQL请求
@@ -428,7 +428,7 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
 		LOG_ERROR("default", "Handle event returns {}.\n", iTempRet);
 	}
 	// 消息回收
-	CGoogleMessage *pMessagePara = (CGoogleMessage *) (stTempMsg.msgpara());
+	CGooMess *pMessagePara = (CGooMess *) (stTempMsg.msgpara());
 	if (pMessagePara) {
 		pMessagePara->~Message();
 		stTempMsg.set_msgpara((unsigned long) NULL);

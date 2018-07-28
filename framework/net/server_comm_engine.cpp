@@ -82,7 +82,7 @@ int CServerCommEngine::ConvertStreamToMsg(CByteBuff *pBuff,
 	if (pMsgFactory) {
 		// MessagePara
 		// 使用消息工厂
-		CGoogleMessage *tpMsgPara = NULL;
+		CGooMess *tpMsgPara = NULL;
 
 		tpMsgPara = pMsgFactory->CreateMessage(pMsg->msghead().messageid());
 
@@ -165,7 +165,7 @@ int CServerCommEngine::ConvertMsgToStream(CProxyMessage *pMsg,
 	}
 
 	// 获取msgpara
-	CGoogleMessage *tpMsgPara = (CGoogleMessage *) pMsg->msgpara();
+	CGooMess *tpMsgPara = (CGooMess *) pMsg->msgpara();
 	if (tpMsgPara == NULL) {
 		MY_ASSERT_STR(0, return -4, "CServerCommEngine::ConvertMsgToStream CMessagePara is NULL.");
 	}
