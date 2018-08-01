@@ -9,7 +9,6 @@
 #define SERVER_MESSAGE_FACTORY_H_
 
 #include "message_interface.h"
-#include <atomic>
 
 //实际可用空间MSG_POOL_SIZE - 1
 #define MSG_POOL_SIZE 1024 + 1
@@ -33,7 +32,6 @@ public:
 private:
 	CGooMess *CreateClientMessage(unsigned int uiMessageID);
 	CGooMess *CreateServerMessage(unsigned int uiMessageID);
-	int GetAvailableIndex();
 	int GetFreeSize();
 public:
 	static char macMessageBuff[MSG_POOL_SIZE][MAX_PACKAGE_LEN];

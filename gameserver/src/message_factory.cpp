@@ -5,8 +5,9 @@
  *  Author      : DGuco
  */
 
-#include "player.pb.h"
+#include <player.pb.h>
 #include "../inc/message_factory.h"
+
 
 // 静态缓冲区初始化
 unsigned char CMessageFactory::macMessageBuff[MSG_POOL_SIZE][MAX_PACKAGE_LEN] = {{0}};
@@ -57,7 +58,6 @@ void CMessageFactory::FreeMessage(CGooMess *gooMess)
 	gooMess->~Message();
 	m_iFront = (m_iFront + 1) % MSG_POOL_SIZE;
 }
-
 CGooMess *CMessageFactory::CreateClientMessage(unsigned int uiMessageID)
 {
 	CGooMess *pTmpMessage = NULL;
@@ -69,34 +69,19 @@ CGooMess *CMessageFactory::CreateClientMessage(unsigned int uiMessageID)
 		break;
 	}
 	}
-	if (pTmpMessage != NULL) {
-		m_iBack++;
-	}
 	return pTmpMessage;
 }
 
 CGooMess *CMessageFactory::CreateServerMessage(unsigned int uiMessageID)
 {
 	CGooMess *pTmpMessage = NULL;
-	int index = m_iBack % MSG_POOL_SIZE;
 	switch (uiMessageID) {
 		// 服务器内部的消息都需要在这里创建
 		{
 			break;
 		}
 	}
-	if (pTmpMessage != NULL) {
-		m_iBack++;
-	}
 	return pTmpMessage;
-}
-
-int CMessageFactory::GetAvailableIndex()
-{
-	//可用的在中间
-	if (GetFreeSize() <= 0) {
-		return -1;
-	}
 }
 
 int CMessageFactory::GetFreeSize()
