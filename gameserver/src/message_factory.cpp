@@ -8,12 +8,15 @@
 #include "player.pb.h"
 #include "../inc/message_factory.h"
 
+// 静态缓冲区初始化
+unsigned char CMessageFactory::macMessageBuff[MSG_POOL_SIZE][MAX_PACKAGE_LEN] = {{0}};
+
 // 单件定义
 template<> shared_ptr<CMessageFactory> CSingleton<CMessageFactory>::spSingleton = NULL;
 
 CMessageFactory::CMessageFactory()
 	:
-	m_iFront(-1),
+	m_iFront(0),
 	m_iBack(0)
 {
 	for (int i = 0; i < MSG_POOL_SIZE; i++) {
@@ -24,7 +27,9 @@ CMessageFactory::CMessageFactory()
 // 根据消息ID，创建消息
 CGooMess *CMessageFactory::CreateMessage(unsigned int uiMessageID)
 {
-	if (m_iBack == m_iFront) {
+	std::lock_guard<mutex> lock(m_oMutex);
+
+	if (GetFreeSize() <= 0) {
 		LOG_ERROR("default", "The msg pool has no free spacd,front:{},back:{}", m_iFront, m_iBack);
 		return NULL;
 	}
@@ -38,6 +43,7 @@ CGooMess *CMessageFactory::CreateMessage(unsigned int uiMessageID)
 		LOG_ERROR("default", "[{} : {} : {}] invalid message id {}.", __MY_FILE__, __LINE__, __FUNCTION__, uiMessageID);
 	}
 	else {
+		m_iBack = (m_iBack + 1) % MSG_POOL_SIZE;
 		LOG_DEBUG("default", "create message id {} succeed.", uiMessageID);
 	}
 
@@ -46,8 +52,10 @@ CGooMess *CMessageFactory::CreateMessage(unsigned int uiMessageID)
 
 void CMessageFactory::FreeMessage(CGooMess *gooMess)
 {
+	std::lock_guard<mutex> lock(m_oMutex);
+	//因为使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
 	gooMess->~Message();
-	int index = (m_iFront + 1) % MSG_POOL_SIZE;
+	m_iFront = (m_iFront + 1) % MSG_POOL_SIZE;
 }
 
 CGooMess *CMessageFactory::CreateClientMessage(unsigned int uiMessageID)
@@ -83,3 +91,32 @@ CGooMess *CMessageFactory::CreateServerMessage(unsigned int uiMessageID)
 	return pTmpMessage;
 }
 
+int CMessageFactory::GetAvailableIndex()
+{
+	//可用的在中间
+	if (GetFreeSize() <= 0) {
+		return -1;
+	}
+}
+
+int CMessageFactory::GetFreeSize()
+{
+	int nTempMaxLength = 0;
+	//获得剩余空间大小
+	if (m_iFront == m_iBack) {
+		nTempMaxLength = MSG_POOL_SIZE;  // nTempMaxLength 为剩余空间
+	}
+	else if (m_iFront > m_iBack) {
+		nTempMaxLength = m_iFront - m_iBack;
+	}
+	else {
+		nTempMaxLength = (MSG_POOL_SIZE - m_iBack) + m_iFront;
+	}
+
+	/**
+	 * 最大长度应该减去预留部分长度，保证首尾不会相接,
+	 * 以此区分数据头不在内存区头部写满数据，和没有数据的情况
+	 */
+	nTempMaxLength -= 1;
+	return nTempMaxLength;
+}
