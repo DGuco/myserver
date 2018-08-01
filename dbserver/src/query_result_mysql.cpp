@@ -2,7 +2,7 @@
 // Created by DGuco on 17-7-13.
 //
 
-#include "../inc/queryresultmysql.h"
+#include "../inc/query_result_mysql.h"
 #include "../../framework/base/my_assert.h"
 
 QueryResultMysql::QueryResultMysql(MYSQL_RES *result,

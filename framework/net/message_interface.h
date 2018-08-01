@@ -13,7 +13,8 @@ public:
 	CFactory() {}
 	virtual ~CFactory() {}
 
-	virtual CGooMess* CreateMessage(unsigned int uiMessageID) ;
+	virtual CGooMess* CreateMessage(unsigned int uiMessageID)  = 0;
+	virtual void FreeMessage(CGooMess* gooMess) = 0;
 };
 
 

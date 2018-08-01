@@ -4,8 +4,8 @@
 
 #include <string>
 #include <unistd.h>
-#include "../inc/databasemysql.h"
-#include "../inc/queryresultmysql.h"
+#include "../inc/database_mysql.h"
+#include "../inc/query_result_mysql.h"
 using namespace std;
 
 void DatabaseMysql::ThreadStart()

@@ -93,7 +93,7 @@ void CGameServer::OnTimeCheckStateInServer(CTimerBase *pTimer)
 //	time_t tTmpNow = GetMSTime();
 //	// 检测服务器与proxy的连接状态，如果状态异常则重新连接，状态正常则发送心跳消息
 //	CGameServer *pTmpGameServer =
-//		CGameServer::GetSingletonPtr();//		LOG_DEBUG("default", "in loop {}, size={}.", i, pTmpGameServer->mConfig.gameconfig().proxyinfo_size());
+//		CGameServer::GetSingletonPtr();//		LOG_DEBUG("default", "in loop {}, size={}.", atomic_int1, pTmpGameServer->mConfig.gameconfig().proxyinfo_size());
 //	if ((pTmpGameServer->m_ProxyClient.IsConnected() == false)
 //		|| pTmpGameServer->m_ProxyClient.IsTimeout(tTmpNow)) {
 //		// 清除proxy已连接状态

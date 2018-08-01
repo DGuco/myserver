@@ -8,16 +8,16 @@ set(SOURCE_FILES
         inc/dbctrl.h
         inc/basedb.h
         inc/database.h
-        inc/databasemysql.h
+        inc/database_mysql.h
         inc/field.h
-        inc/messagefactory.h
-        inc/queryresult.h
-        inc/queryresultmysql.h
+        inc/message_factory.h
+        inc/query_result.h
+        inc/query_result_mysql.h
         src/database.cpp
-        src/databasemysql.cpp
+        src/database_mysql.cpp
         src/field.cpp
-        src/messagefactory.cpp
-        src/queryresultmysql.cpp ../test/main.cpp)
+        src/message_factory.cpp
+        src/query_result_mysql.cpp ../test/main.cpp)
 
 include_directories(
         /usr/include/

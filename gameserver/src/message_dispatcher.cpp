@@ -31,7 +31,7 @@ int CMessageDispatcher::ProcessClientMessage(std::shared_ptr<CMessage> pMsg)
 		return -2;
 	}
 
-	MesHead tmpHead = pMsg->msghead();
+	CMesHead tmpHead = pMsg->msghead();
 	if (tmpHead.socketinfos().size() <= 0) {
 		return -1;
 	}

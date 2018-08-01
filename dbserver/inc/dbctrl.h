@@ -9,9 +9,9 @@
 
 #include "net_work.h"
 #include "thread_pool.h"
-#include "queryresult.h"
+#include "query_result.h"
 #include "database.h"
-#include "messagefactory.h"
+#include "message_factory.h"
 
 //#include "protoconfig.h"
 

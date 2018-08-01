@@ -5,7 +5,7 @@
 #include <ctime>
 #include <iostream>
 #include <fstream>
-#include "../inc/queryresult.h"
+#include "../inc/query_result.h"
 #include "../inc/database.h"
 #include "../inc/basedb.h"
 

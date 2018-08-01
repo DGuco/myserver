@@ -7,7 +7,7 @@
 #ifndef SERVER_MESSAGEFACTORY_H
 #define SERVER_MESSAGEFACTORY_H
 
-#include "messagefactory.h"
+#include "message_factory.h"
 #include "message_interface.h"
 
 #define CASE_NEW_MSG(msgname, msgid)                \
