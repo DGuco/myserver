@@ -6,6 +6,7 @@
 //
 
 #include <signal.h>
+#include <dlfcn.h>
 #include "config.h"
 #include "inc/game_server.h"
 
@@ -30,7 +31,6 @@ int main(int argc, char *argv[])
 		LOG_ERROR("default", "CGameServer prepare to run failed, iRet = {}.", iRet);
 		exit(0);
 	}
-
 	// 信号
 	signal(SIGUSR1, sigusr1_handle);
 	signal(SIGUSR2, sigusr2_handle);

@@ -121,8 +121,8 @@ void CGameServer::OnTimePerfLog(CTimerBase *pTimer)
 void CGameServer::Run()
 {
 	LOG_INFO("default", "CGameServer start to run now.");
-	m_pClientHandle->Run();
-	m_pServerHandle->Run();
+	//libevent事件循环
+	m_pNetWork->DispatchEvents();
 }
 
 // 退出
