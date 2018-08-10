@@ -57,6 +57,7 @@ public:
 	int Push(int cmd, shared_ptr<CGooMess> pMessage, stPointList *pTeamList);
 	//接收客户端数据包
 	void RecvClientData(CAcceptor *tmpAcceptor);
+	int SendResponse(shared_ptr<CGooMess> pMessage, shared_ptr<CMesHead> mesHead);
 public:
 	shared_ptr<CByteBuff> &GetRecvBuff();
 	shared_ptr<CByteBuff> &GetSendBuff();
@@ -79,7 +80,6 @@ private:
 	shared_ptr<CNetWork> m_pNetWork;
 	shared_ptr<CByteBuff> m_pRecvBuff; //客户端上行数据buff
 	shared_ptr<CByteBuff> m_pSendBuff; //客户端下行数据buff
-	int SendResponse(shared_ptr<CGooMess> pMessage, shared_ptr<CMesHead> mesHead);
 };
 
 #endif //SERVER_CLIENT_HANDLE_H

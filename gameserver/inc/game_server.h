@@ -166,7 +166,7 @@ private:
 	std::shared_ptr<CTimerManager> m_pTimerManager;             // 定时器管理器
 	std::shared_ptr<CThreadPool> m_pLogicThread;                // 逻辑线程
 	std::shared_ptr<CThreadPool> m_pIoThread;                   // io线程(收发消息)
-	CRunFlag m_RunFlag;                         // 服务器运行状态
+	CRunFlag m_oRunFlag;                         // 服务器运行状态
 	int m_iServerState;    // 服务器状态
 };
 #endif //SERVER_GAMESERVER_H

@@ -3,6 +3,7 @@
 //
 #include "my_assert.h"
 #include "config.h"
+#include "../inc/client_handle.h"
 #include "server_comm_engine.h"
 #include "../inc/game_server.h"
 
@@ -178,7 +179,7 @@ void CGameServer::DisconnectClient(CPlayer *pPlayer)
 		return;
 	}
 
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientManager::DisconnectClient),
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::DisconnectClient),
 								m_pClientHandle,
 								pPlayer->GetPlayerBase()->GetSocket(),
 								pPlayer->GetPlayerBase()->GetCreateTime());
@@ -186,13 +187,13 @@ void CGameServer::DisconnectClient(CPlayer *pPlayer)
 // 设置服务器运行状态
 void CGameServer::SetRunFlag(ERunFlag eRunFlag)
 {
-	m_RunFlag.SetRunFlag(eRunFlag);
+	m_oRunFlag.SetRunFlag(eRunFlag);
 }
 
 // 广播消息给玩家，广播时，发起人一定放第一个
 int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, stPointList *pTeamList)
 {
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientManager::Push), m_pClientHandle, iMsgID, pMsgPara, pTeamList);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, pTeamList);
 	return 0;
 }
 
@@ -202,7 +203,7 @@ int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, C
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientManager::Push), m_pClientHandle, iMsgID, pMsgPara, &tmpList);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, &tmpList);
 	return 0;
 }
 
@@ -211,21 +212,21 @@ int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlay
 {
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
 			  return -1);
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientManager::SendResToPlayer), m_pClientHandle, pMsgPara, pPlayer);
+	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::SendResToPlayer), m_pClientHandle, pMsgPara, pPlayer);
 	return 0;
 }
 
 // 回复客户端上行的请求
-int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, std::shared_ptr<MesHead> mesHead)
+int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, std::shared_ptr<CMesHead> mesHead)
 {
 	MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientManager::SendResponse), m_pClientHandle, pMsgPara, mesHead);
+//	GetIoThread()->PushTaskBack(m_pClientHandle->SendResponse(), pMsgPara, mesHead);
 }
 
 // 检查服务器状态
 int CGameServer::CheckRunFlags()
 {
-	if (true == mRunFlag.CheckRunFlag(ERF_RELOAD)) {
+	if (true == m_oRunFlag.CheckRunFlag(ERF_RELOAD)) {
 		// 重新加载模板数据
 //		if (CTemplateMgr::GetSingletonPtr()->ReloadAllTemplate() < 0) {
 //			printf("\n 重新加载模板数据失败, 请查看具体的错误!!!!\n");
@@ -236,7 +237,7 @@ int CGameServer::CheckRunFlags()
 		SetRunFlag(ERF_RUNTIME);
 		return 1;
 	}
-	else if (true == mRunFlag.CheckRunFlag(ERF_QUIT)) {
+	else if (true == m_oRunFlag.CheckRunFlag(ERF_QUIT)) {
 		// 保存数据,退出游戏
 		StartSaveAllData();
 		SetRunFlag(ERF_RUNTIME);
