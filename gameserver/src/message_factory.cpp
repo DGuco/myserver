@@ -20,9 +20,6 @@ CMessageFactory::CMessageFactory()
 	m_iFront(0),
 	m_iBack(0)
 {
-	for (int i = 0; i < MSG_POOL_SIZE; i++) {
-		memset(macMessageBuff[i], 0, MAX_PACKAGE_LEN);
-	}
 }
 
 // 根据消息ID，创建消息
@@ -61,13 +58,13 @@ void CMessageFactory::FreeMessage(CGooMess *gooMess)
 CGooMess *CMessageFactory::CreateClientMessage(unsigned int uiMessageID)
 {
 	CGooMess *pTmpMessage = NULL;
-	switch (uiMessageID) {
+	switch(uiMessageID){
 		// 只有客户端上行的消息需要在这里生成，下行的消息都是临时变量，不需要在MessageFactory中创建
-	CASE_NEW_MSG(UserAccountLoginRequest, 100, macMessageBuff[m_iBack]);
-	CASE_NEW_MSG(PlayerLoginRequest, 101, macMessageBuff[m_iBack]);
-	default: {
-		break;
-	}
+		CASE_NEW_MSG(UserAccountLoginRequest, 100, macMessageBuff[m_iBack]);
+		CASE_NEW_MSG(PlayerLoginRequest, 101, macMessageBuff[m_iBack]);
+		default:{
+			break;
+		}
 	}
 	return pTmpMessage;
 }
@@ -75,7 +72,7 @@ CGooMess *CMessageFactory::CreateClientMessage(unsigned int uiMessageID)
 CGooMess *CMessageFactory::CreateServerMessage(unsigned int uiMessageID)
 {
 	CGooMess *pTmpMessage = NULL;
-	switch (uiMessageID) {
+	switch(uiMessageID){
 		// 服务器内部的消息都需要在这里创建
 		{
 			break;
