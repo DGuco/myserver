@@ -14,27 +14,27 @@ set(SOURCE_FILES
         src/client_handle.cpp
         src/message_factory.cpp
         src/message_dispatcher.cpp
-        datamodule/inc/sceneobjmanager.h
-        datamodule/inc/player.h
-        datamodule/inc/playerdata.h
-        datamodule/inc/playerbase.h
-        datamodule/inc/playercity.h
-        datamodule/src/player.cpp
-        datamodule/src/playerbase.cpp
-        datamodule/src/playerdata.cpp
-        datamodule/src/playercity.cpp
-        datamodule/src/sceneobjmanager.cpp
-        logicmodule/inc/core_module.h
-        logicmodule/inc/logic_module.h
-        logicmodule/inc/module_manager.h
-        logicmodule/inc/db_module.h
-        logicmodule/src/module_manager.cpp
-        logicmodule/src/core_module.cpp
-        logicmodule/src/logic_module.cpp
-        logicmodule/src/db_module.cpp
-        metadata/inc/parameter_config.h
-        metadata/src/parameter_config.cpp
-        metadata/inc/parameter_key.h)
+        gamemodule/datamodule/inc/sceneobjmanager.h
+        gamemodule/datamodule/inc/player.h
+        gamemodule/datamodule/inc/playerdata.h
+        gamemodule/datamodule/inc/playerbase.h
+        gamemodule/datamodule/inc/playercity.h
+        gamemodule/datamodule/src/player.cpp
+        gamemodule/datamodule/src/playerbase.cpp
+        gamemodule/datamodule/src/playerdata.cpp
+        gamemodule/datamodule/src/playercity.cpp
+        gamemodule/datamodule/src/sceneobjmanager.cpp
+        gamemodule/logicmodule/inc/core_module.h
+        gamemodule/logicmodule/inc/logic_module.h
+        gamemodule/logicmodule/inc/module_manager.h
+        gamemodule/logicmodule/inc/db_module.h
+        gamemodule/logicmodule/src/module_manager.cpp
+        gamemodule/logicmodule/src/core_module.cpp
+        gamemodule/logicmodule/src/logic_module.cpp
+        gamemodule/logicmodule/src/db_module.cpp
+        metadatamodule/inc/parameter_config.h
+        metadatamodule/src/parameter_config.cpp
+        metadatamodule/inc/parameter_key.h)
 
 include_directories(
         /usr/include/
