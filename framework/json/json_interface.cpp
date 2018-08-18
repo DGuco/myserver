@@ -5,16 +5,16 @@
 #include "log.h"
 
 
-AJson::AJson()
+ABJson::ABJson()
 {
 }
 
-AJson::~AJson()
+ABJson::~ABJson()
 {
 	Clear();
 }
 
-int AJson::LoadFromFile(std::string filename)
+int ABJson::LoadFromFile(std::string filename)
 {
 	m_sFilename = filename;
 
@@ -42,18 +42,18 @@ int AJson::LoadFromFile(std::string filename)
 	}
 }
 
-int AJson::Parse()
+int ABJson::Parse()
 {
 	return 0;
 }
 
-void AJson::Clear()
+void ABJson::Clear()
 {
 	m_Obj.Clear();
 	m_sFilename.clear();
 }
 
-int AJson::Reload()
+int ABJson::Reload()
 {
 	Clear();
 	return LoadFromFile(m_sFilename);

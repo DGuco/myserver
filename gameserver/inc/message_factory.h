@@ -34,7 +34,7 @@ private:
 	CGooMess *CreateServerMessage(unsigned int uiMessageID);
 	int GetFreeSize();
 public:
-	static char macMessageBuff[MSG_POOL_SIZE][MAX_PACKAGE_LEN];
+	char macMessageBuff[MSG_POOL_SIZE][MAX_PACKAGE_LEN];
 private:
 	int m_iFront;
 	int m_iBack;

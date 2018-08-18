@@ -11,7 +11,6 @@
 #include "message.pb.h"
 #include "server_tool.h"
 #include "logic_module.h"
-#include "../../../datamodule/inc/player.h"
 
 class CLogicModule;
 

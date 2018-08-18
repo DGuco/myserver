@@ -4,10 +4,10 @@
 #include "my_assert.h"
 #include "config.h"
 #include "../inc/client_handle.h"
-#include "server_comm_engine.h"
 #include "../inc/game_server.h"
+#include "../inc/message_factory.h"
 
-template<> shared_ptr<CSingleton<CGameServer>> CSingleton<CGameServer>::spSingleton = NULL;
+template<> shared_ptr<CGameServer> CSingleton<CGameServer>::spSingleton = NULL;
 
 CGameServer::CGameServer()
 	: m_pNetWork(std::make_shared<CNetWork>()),
@@ -15,7 +15,7 @@ CGameServer::CGameServer()
 	  m_pServerHandle(std::make_shared<CServerHandle>(m_pNetWork)),
 	  m_pModuleManager(std::make_shared<CModuleManager>()),
 	  m_pMessageDispatcher(std::make_shared<CMessageDispatcher>()),
-	  m_pMessageFactory(std::make_shared<CFactory>()),
+	  m_pMessageFactory(std::make_shared<CMessageFactory>()),
 	  m_pTimerManager(std::make_shared<CTimerManager>()),
 	  m_pLogicThread(std::make_shared<CThreadPool>(1)),
 	  m_pIoThread(std::make_shared<CThreadPool>(1, ignore_pipe)),

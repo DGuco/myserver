@@ -12,7 +12,7 @@
 #include "message_interface.h"
 #include "message.pb.h"
 #include "byte_buff.h"
-#include "../datamodule/inc/player.h"
+#include "player.h"
 
 
 // 提取消息错误码

@@ -7,11 +7,11 @@
 #include "dbmessage.pb.h"
 #include "client_comm_engine.h"
 #include "my_assert.h"
+#include "sceneobjmanager.h"
 #include "../inc/db_module.h"
 #include "../../../inc/game_server.h"
-#include "../../../datamodule/inc/sceneobjmanager.h"
 
-template<> shared_ptr<CSingleton<CDbModule>> CSingleton<CDbModule>::spSingleton = NULL;
+template<> shared_ptr<CDbModule> CSingleton<CDbModule>::spSingleton = NULL;
 
 CDbModule::CDbModule()
 {
@@ -42,16 +42,16 @@ void CDbModule::OnRouterMessage(CProxyMessage *pMsg)
 {
 	MY_ASSERT_LOG("db", pMsg != NULL,
 				  return);
-	switch (pMsg->msghead().messageid()) {
-	case CMsgExecuteSqlResponse::MsgID: {
-		OnMsgExecuteSqlResponse(pMsg);
-		break;
-	}
-	default: {
-		LOG_ERROR("db", "[{} : {} : {}] invalid message id(%8x).",
-				  __MY_FILE__, __LINE__, __FUNCTION__, pMsg->msghead().messageid());
-		break;
-	}
+	switch(pMsg->msghead().messageid()){
+		case CMsgExecuteSqlResponse::MsgID:{
+			OnMsgExecuteSqlResponse(pMsg);
+			break;
+		}
+		default:{
+			LOG_ERROR("db", "[{} : {} : {}] invalid message id(%8x).",
+					  __MY_FILE__, __LINE__, __FUNCTION__, pMsg->msghead().messageid());
+			break;
+		}
 	}
 }
 
@@ -98,14 +98,14 @@ void CDbModule::OnMsgExecuteSqlResponse(CProxyMessage *pMsg)
 		}
 	}
 
-	switch (pTmpSqlRsp->logictype()) {
+	switch(pTmpSqlRsp->logictype()){
 		//*********************************************************************************
 		// 读取战队数据
 		//*********************************************************************************
-	case emDBLogicType::emDBTypeFindOrCreateUser : {
-		FindOrCreateUserResponse(pTmpSession, pTmpSqlRsp, pMsg->mutable_msghead());
-		break;
-	}
+		case emDBLogicType::emDBTypeFindOrCreateUser :{
+			FindOrCreateUserResponse(pTmpSession, pTmpSqlRsp, pMsg->mutable_msghead());
+			break;
+		}
 	}
 }
 

@@ -1,11 +1,11 @@
 #include "player.pb.h"
 #include "my_assert.h"
-#include "../inc/core_module.h"
-#include "../inc/db_module.h"
-#include "../inc/module_manager.h"
-#include "../../../datamodule/inc/sceneobjmanager.h"
+#include "core_module.h"
+#include "db_module.h"
+#include "module_manager.h"
+#include "sceneobjmanager.h"
 
-template<> shared_ptr<CSingleton<T>> CSingleton<CCoreModule>::spSingleton = NULL;
+template<> shared_ptr<CCoreModule> CSingleton<CCoreModule>::spSingleton = NULL;
 
 CCoreModule::CCoreModule()
 {

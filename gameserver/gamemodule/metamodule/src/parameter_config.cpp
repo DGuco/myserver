@@ -1,4 +1,4 @@
-#include "../inc/parameter_config.h"
+#include "parameter_config.h"
 
 ParameterItem::ParameterItem()
 {

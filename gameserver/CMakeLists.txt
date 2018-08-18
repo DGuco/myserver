@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(gameserver)
+add_subdirectory(gamemodule)
 add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT)
 
 set(SOURCE_FILES
@@ -13,28 +14,7 @@ set(SOURCE_FILES
         src/game_server.cpp
         src/client_handle.cpp
         src/message_factory.cpp
-        src/message_dispatcher.cpp
-        gamemodule/datamodule/inc/sceneobjmanager.h
-        gamemodule/datamodule/inc/player.h
-        gamemodule/datamodule/inc/playerdata.h
-        gamemodule/datamodule/inc/playerbase.h
-        gamemodule/datamodule/inc/playercity.h
-        gamemodule/datamodule/src/player.cpp
-        gamemodule/datamodule/src/playerbase.cpp
-        gamemodule/datamodule/src/playerdata.cpp
-        gamemodule/datamodule/src/playercity.cpp
-        gamemodule/datamodule/src/sceneobjmanager.cpp
-        gamemodule/logicmodule/inc/core_module.h
-        gamemodule/logicmodule/inc/logic_module.h
-        gamemodule/logicmodule/inc/module_manager.h
-        gamemodule/logicmodule/inc/db_module.h
-        gamemodule/logicmodule/src/module_manager.cpp
-        gamemodule/logicmodule/src/core_module.cpp
-        gamemodule/logicmodule/src/logic_module.cpp
-        gamemodule/logicmodule/src/db_module.cpp
-        metadatamodule/inc/parameter_config.h
-        metadatamodule/src/parameter_config.cpp
-        metadatamodule/inc/parameter_key.h)
+        src/message_dispatcher.cpp)
 
 include_directories(
         /usr/include/
@@ -49,6 +29,9 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/framework/timer
+        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/datamodule/inc
+        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/logicmodule/inc
+        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/metamodule/inc
 )
 
 link_directories(
@@ -57,5 +40,5 @@ link_directories(
 )
 
 add_executable(gameserver ${SOURCE_FILES})
-target_link_libraries(gameserver framework pthread protobuf)
+target_link_libraries(gameserver framework pthread protobuf gamemodule)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)

@@ -250,7 +250,7 @@ void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 						   MY_ASSERT(pConnector != NULL, return);
 						   time_t tNow = GetMSTime();
 						   std::shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
-						   CServerHandle *tmpServerHandle = CGameServer::GetSingletonPtr()->GetServerHandle();
+						   shared_ptr<CServerHandle> tmpServerHandle = CGameServer::GetSingletonPtr()->GetServerHandle();
 						   if (pConnector->GetState() == CConnector::eCS_Connected &&
 							   pConnector->GetSocket().GetSocket() > 0 &&
 							   tNow - tmpServerHandle->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
@@ -285,10 +285,11 @@ void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
 	pBufferEvent->CurrentPackRecved();
 	// 将收到的二进制数据转为protobuf格式
 	CProxyMessage tmpMessage;
-	int iRet = CServerCommEngine::ConvertStreamToMsg(m_acRecvBuff,
-													 iTmpLen,
-													 &tmpMessage,
-													 CGameServer::GetSingletonPtr()->GetMessageFactory());
+	int iRet = 0;
+//	int iRet = CServerCommEngine::ConvertStreamToMsg(m_acRecvBuff,
+//													 iTmpLen,
+//													 &tmpMessage,
+//													 CGameServer::GetSingletonPtr()->GetMessageFactory());
 	if (iRet < 0) {
 		LOG_ERROR("default", "[{} : {} : {}] convert stream to message failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);

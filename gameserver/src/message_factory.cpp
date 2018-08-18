@@ -9,9 +9,6 @@
 #include "../inc/message_factory.h"
 
 
-// 静态缓冲区初始化
-unsigned char CMessageFactory::macMessageBuff[MSG_POOL_SIZE][MAX_PACKAGE_LEN] = {{0}};
-
 // 单件定义
 template<> shared_ptr<CMessageFactory> CSingleton<CMessageFactory>::spSingleton = NULL;
 

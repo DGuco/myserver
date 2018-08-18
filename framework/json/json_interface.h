@@ -17,11 +17,11 @@
 using namespace std;
 using rapidjson::Value;
 
-class AJson
+class ABJson
 {
 public:
-	AJson();
-	virtual ~AJson();
+	ABJson();
+	virtual ~ABJson();
 	int LoadFromFile(std::string filename);
 	virtual int Parse();
 	virtual void Clear();

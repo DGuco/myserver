@@ -5,12 +5,12 @@
 #include "player.pb.h"
 #include "server_tool.h"
 #include "my_assert.h"
-#include "../logicmodule/inc/core_module.h"
-#include "../datamodule/inc/sceneobjmanager.h"
+#include "core_module.h"
+#include "sceneobjmanager.h"
 #include "../inc/message_dispatcher.h"
 #include "../inc/game_server.h"
 
-template<> shared_ptr<CSingleton<T>> CSingleton<CMessageDispatcher>::spSingleton = NULL;
+template<> shared_ptr<CMessageDispatcher> CSingleton<CMessageDispatcher>::spSingleton = NULL;
 
 CMessageDispatcher::CMessageDispatcher()
 {

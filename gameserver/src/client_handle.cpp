@@ -6,12 +6,11 @@
 #include <config.h>
 #include "client_comm_engine.h"
 #include "my_assert.h"
-#include "../datamodule/inc/sceneobjmanager.h"
+#include "sceneobjmanager.h"
 #include "../inc/message_dispatcher.h"
 #include "../inc/message_factory.h"
 #include "../inc/client_handle.h"
 #include "../inc/game_server.h"
-#include "../../gateserver/inc/gate_def.h"
 
 CClientHandle::CClientHandle(shared_ptr<CNetWork> pNetWork)
 	: m_pNetWork(pNetWork),
@@ -52,7 +51,7 @@ bool CClientHandle::BeginListen()
 										&CClientHandle::lcb_OnCnsSomeDataRecv,
 										&CClientHandle::lcb_OnCnsDisconnected,
 										&CClientHandle::lcb_OnCheckAcceptorTimeOut,
-										RECV_QUEUQ_MAX,
+										1024,
 										tmpConfig->GetTcpKeepAlive());
 	if (iRet) {
 		LOG_INFO("default", "Server listen success at {} : {}", gameInfo->m_sHost.c_str(), gameInfo->m_iPort);
@@ -74,7 +73,7 @@ void CClientHandle::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
 						   MY_ASSERT(tmpAcceptor != NULL, return);
 						   LOG_DEBUG("default", "New acceptor,socket id {}", tmpAcceptor->GetSocket().GetSocket());
 						   CGameServer::GetSingletonPtr()->GetNetWork()
-							   ->InsertNewAcceptor(uId, (*)(tmpAcceptor));
+							   ->InsertNewAcceptor(uId, (CAcceptor *) (tmpAcceptor));
 					   }
 		);
 }
@@ -468,12 +467,13 @@ int CClientHandle::Push(int cmd, std::shared_ptr<CGooMess> pMessage, stPointList
 
 			CByteBuff tmpByteBuff;
 			// 是否需要加密，在这里修改参数
-			int iRet = CClientCommEngine::ConvertToGateStream(&tmpByteBuff,
-															  &pTmpHead,
-															  pMessage.get(),
-															  cmd,
-															  0,
-															  0);
+//			int iRet = CClientCommEngine::ConvertToGateStream(&tmpByteBuff,
+//															  &pTmpHead,
+//															  pMessage.get(),
+//															  cmd,
+//															  0,
+//															  0);
+			int iRet = 0;
 			if (iRet != 0) {
 				MY_ASSERT_STR(0,
 							  return -2,
@@ -519,48 +519,48 @@ void CClientHandle::RecvClientData(CAcceptor *tmpAcceptor)
 void CClientHandle::DisconnectClient(int iSocket,
 									 time_t tCreateTime)
 {
-	BYTE abyTmpCodeBuff[MAX_PACKAGE_LEN];
-	unsigned char *pucTmpBuff = (unsigned char *) abyTmpCodeBuff;
-	unsigned short unTmpLen = 0;
-
-	// 这里必须用临时变量，因为有可能是在接收到消息的时候发起断连
-	CMesHead tmpNetHead;
-	tmpNetHead.IsInitialized(time(NULL), -1, uiIP, unPort);
-	tmpNetHead.AddEntity(iSocket, tCreateTime);
-
-	// 总长度
-	*(unsigned short *) pucTmpBuff =
-		((sizeof(unsigned short) * 2) + tmpNetHead.Size());
-	pucTmpBuff += sizeof(unsigned short);
-	unTmpLen += sizeof(unsigned short);
-
-	// CNetHead长度
-	*(unsigned short *) pucTmpBuff = tmpNetHead.Size();
-	pucTmpBuff += sizeof(unsigned short);
-	unTmpLen += sizeof(unsigned short);
-
-	// 序列化CNetHead
-	unsigned short unRet = tmpNetHead.SerializeToArray(pucTmpBuff,
-													   MAX_PACKAGE_LEN - unTmpLen);
-	if (unRet < 0) {
-		LOG_ERROR("default", "[{} : {} : {}] SerializeToArray failed, tRet = {}.",
-				  __MY_FILE__, __LINE__, __FUNCTION__, unRet);
-		return;
-	}
-	if (unRet != tmpNetHead.Size()) {
-		LOG_ERROR("default", "[{} : {} : {}] length is not same ({} : {}).",
-				  __MY_FILE__, __LINE__, __FUNCTION__, unRet, tmpNetHead.Size());
-		return;
-	}
-	pucTmpBuff += unRet;
-	unTmpLen += unRet;
-
-	unRet = m_pS2CPipe->AppendOneCode(abyTmpCodeBuff, unTmpLen);
-	if (unRet < 0) {
-		LOG_ERROR("default", "[{} : {} : {}] AppendOneCode failed, tRet = {}.",
-				  __MY_FILE__, __LINE__, __FUNCTION__, unRet);
-		return;
-	}
-
-	LOG_NOTICE("default", "Disconnect Client [Socket = {} : CreateTime = {}].", iSocket, tCreateTime);
+//	BYTE abyTmpCodeBuff[MAX_PACKAGE_LEN];
+//	unsigned char *pucTmpBuff = (unsigned char *) abyTmpCodeBuff;
+//	unsigned short unTmpLen = 0;
+//
+//	// 这里必须用临时变量，因为有可能是在接收到消息的时候发起断连
+//	CMesHead tmpNetHead;
+//	tmpNetHead.IsInitialized(time(NULL), -1, uiIP, unPort);
+//	tmpNetHead.AddEntity(iSocket, tCreateTime);
+//
+//	// 总长度
+//	*(unsigned short *) pucTmpBuff =
+//		((sizeof(unsigned short) * 2) + tmpNetHead.Size());
+//	pucTmpBuff += sizeof(unsigned short);
+//	unTmpLen += sizeof(unsigned short);
+//
+//	// CNetHead长度
+//	*(unsigned short *) pucTmpBuff = tmpNetHead.Size();
+//	pucTmpBuff += sizeof(unsigned short);
+//	unTmpLen += sizeof(unsigned short);
+//
+//	// 序列化CNetHead
+//	unsigned short unRet = tmpNetHead.SerializeToArray(pucTmpBuff,
+//													   MAX_PACKAGE_LEN - unTmpLen);
+//	if (unRet < 0) {
+//		LOG_ERROR("default", "[{} : {} : {}] SerializeToArray failed, tRet = {}.",
+//				  __MY_FILE__, __LINE__, __FUNCTION__, unRet);
+//		return;
+//	}
+//	if (unRet != tmpNetHead.Size()) {
+//		LOG_ERROR("default", "[{} : {} : {}] length is not same ({} : {}).",
+//				  __MY_FILE__, __LINE__, __FUNCTION__, unRet, tmpNetHead.Size());
+//		return;
+//	}
+//	pucTmpBuff += unRet;
+//	unTmpLen += unRet;
+//
+//	unRet = m_pS2CPipe->AppendOneCode(abyTmpCodeBuff, unTmpLen);
+//	if (unRet < 0) {
+//		LOG_ERROR("default", "[{} : {} : {}] AppendOneCode failed, tRet = {}.",
+//				  __MY_FILE__, __LINE__, __FUNCTION__, unRet);
+//		return;
+//	}
+//
+//	LOG_NOTICE("default", "Disconnect Client [Socket = {} : CreateTime = {}].", iSocket, tCreateTime);
 }

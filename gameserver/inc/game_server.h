@@ -20,8 +20,8 @@
 #include "client_handle.h"
 #include "net_work.h"
 #include "server_handle.h"
-#include "../datamodule/inc/player.h"
-#include "../logicmodule/inc/module_manager.h"
+#include "player.h"
+#include "module_manager.h"
 
 class CGameServer: public CSingleton<CGameServer>
 {
