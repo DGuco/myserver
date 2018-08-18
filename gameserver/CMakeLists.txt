@@ -40,5 +40,5 @@ link_directories(
 )
 
 add_executable(gameserver ${SOURCE_FILES})
-target_link_libraries(gameserver framework pthread protobuf gamemodule)
+target_link_libraries(gameserver pthread protobuf gamemodule dl)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)

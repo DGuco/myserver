@@ -17,5 +17,5 @@ link_directories(
 )
 
 add_executable(demo ${SOURCE_FILES})
-target_link_libraries(demo test1so test2so protobuf crypto)
+target_link_libraries(demo test1so test2so protobuf crypto dl)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)

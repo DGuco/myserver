@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.6)
 project(gamemodule)
 
-#libevent 多线程开启-DEVENT_THREAD_SAFE
 add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DLOG_THREAD_SAFE)
-#add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DEVENT_THREAD_SAFE -DLOG_THREAD_SAFE)
+add_compile_options(-fPIC)
 
 set(GAMEMODULE
         datamodule/inc/sceneobjmanager.h
@@ -50,5 +49,5 @@ link_directories(
 )
 
 add_library(gamemodule SHARED ${GAMEMODULE})
-target_link_libraries(gamemodule pthread event event_pthreads protobuf dl)
+target_link_libraries(gamemodule framework)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

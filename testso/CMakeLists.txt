@@ -16,5 +16,5 @@ link_directories(
 
 
 add_library(test1so SHARED ${TESTSO})
-target_link_libraries(test1so dl)
+target_link_libraries(test1so)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

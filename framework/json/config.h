@@ -21,7 +21,7 @@ struct ServerInfo
 	int m_iPort;
 };
 
-class CServerConfig: public CSingleton<CServerConfig>, public ABJson
+class CServerConfig: public CSingleton<CServerConfig>, public AJson
 {
 public:
 	CServerConfig();

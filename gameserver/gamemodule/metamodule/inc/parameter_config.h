@@ -57,7 +57,7 @@ public:
 	std::map<int, float> _ifmap;
 };
 
-class ParameterConfig: public CSingleton<ParameterConfig>, public ABJson
+class ParameterConfig: public CSingleton<ParameterConfig>, public AJson
 {
 public:
 
