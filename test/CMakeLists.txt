@@ -13,8 +13,9 @@ include_directories(
 
 link_directories(
         /usr/local/lib/
+        ${CMAKE_SOURCE_DIR}/lib
 )
 
 add_executable(demo ${SOURCE_FILES})
-target_link_libraries(demo pthread protobuf crypto)
+target_link_libraries(demo test1so test2so protobuf crypto)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)
