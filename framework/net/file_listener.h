@@ -46,7 +46,6 @@ public:
 				  int flags);
 	virtual ~CFileListener();
 	bool RegisterToReactor() override;
-	bool UnRegisterFromReactor() override;
 	IEventReactor *GetReactor() override;
 public:
 	static void lcb_OnRead(struct bufferevent *bev, void *arg);

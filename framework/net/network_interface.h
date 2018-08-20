@@ -41,7 +41,6 @@ class IEventReactor
 public:
 	virtual ~IEventReactor() = default;
 	virtual bool Register(IReactorHandler *pHandler) = 0;
-	virtual bool UnRegister(IReactorHandler *pHandler) = 0;
 	virtual event_base *GetEventBase()=0;
 	virtual void DispatchEvents() = 0;
 	virtual void Release() = 0;
@@ -52,7 +51,6 @@ class IReactorHandler
 public:
 	virtual ~IReactorHandler() = default;
 	virtual bool RegisterToReactor() = 0;
-	virtual bool UnRegisterFromReactor() = 0;
 	virtual IEventReactor *GetReactor() = 0;
 };
 

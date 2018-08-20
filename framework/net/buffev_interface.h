@@ -63,8 +63,6 @@ public:    //获取event base
 	IEventReactor * GetReactor() override;
 	//注册event
 	bool RegisterToReactor() override;
-	//卸载event
-	bool UnRegisterFromReactor() override;
 private:
 	//事件回调
 	virtual void OnEvent(int16 nWhat) = 0;

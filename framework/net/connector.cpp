@@ -78,14 +78,7 @@ void CConnector::OnConnectted()
 
 void CConnector::ShutDown()
 {
-	if (IsConnecting()) {
-		event_del(&m_oConnectEvent);
-		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connecting: %s : %d", m_oAddr.GetAddress(), m_oAddr.GetPort());
-	}
-	else if (IsConnected()) {
-		MY_ASSERT_STR(false, DO_NOTHING, "ShutDown In Connected: %s : %d", m_oAddr.GetAddress(), m_oAddr.GetPort());
-		GetReactor()->UnRegister(this);
-	}
+	event_del(&m_oConnectEvent);
 	SetState(eCS_Disconnected);
 }
 

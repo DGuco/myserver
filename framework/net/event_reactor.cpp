@@ -6,8 +6,7 @@
 
 
 CEventReactor::CEventReactor()
-	: m_uReactorHandlerCounter(0),
-	  m_pEventBase(NULL)
+	: m_pEventBase(NULL)
 {
 	Init();
 }
@@ -50,14 +49,6 @@ void CEventReactor::DispatchEvents()
 
 bool CEventReactor::Register(IReactorHandler *pHandler)
 {
-	m_uReactorHandlerCounter++;
 	pHandler->RegisterToReactor();
-	return true;
-}
-
-bool CEventReactor::UnRegister(IReactorHandler *pHandler)
-{
-	m_uReactorHandlerCounter--;
-	pHandler->UnRegisterFromReactor();
 	return true;
 }

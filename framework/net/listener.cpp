@@ -65,8 +65,6 @@ bool CListener::UnRegisterFromReactor()
 
 void CListener::ShutDown()
 {
-	if (IsListened())
-		GetReactor()->UnRegister(this);
 	if (m_pListener != NULL) {
 		evconnlistener_free(m_pListener);
 	}

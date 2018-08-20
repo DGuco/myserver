@@ -10,7 +10,7 @@ CSystemSignal::CSystemSignal(IEventReactor *pReactor)
 
 CSystemSignal::~CSystemSignal()
 {
-	UnRegisterFromReactor();
+	event_del(&m_event);
 }
 
 IEventReactor *CSystemSignal::GetReactor()
@@ -43,18 +43,7 @@ void CSystemSignal::lcb_OnSignal(int fd, short event, void *arg)
 
 void CSystemSignal::OnSignalReceive()
 {
-	if (!m_bLoop) {
-		UnRegisterFromReactor();
-	}
-
 	if (m_iSignal == EVENT_SIGNAL(&m_event)) {
 		m_pFuncOnSignal(m_iSignal, m_pContext);
 	}
 }
-
-bool CSystemSignal::UnRegisterFromReactor()
-{
-	event_del(&m_event);
-	return true;
-}
-

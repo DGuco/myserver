@@ -26,8 +26,6 @@ public:
 	void Init();
 	//注册处理
 	bool Register(IReactorHandler *pHandler);
-	//删除处理
-	bool UnRegister(IReactorHandler *pHandler);
 	//获取libevent event_base
 	event_base *GetEventBase();
 	//event监听分发事件
@@ -35,7 +33,6 @@ public:
 	//释放资源
 	void Release();
 private:
-	uint32 m_uReactorHandlerCounter;
 	event_base *m_pEventBase;
 	event_config *m_pConfig;
 };

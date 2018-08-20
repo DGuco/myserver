@@ -71,7 +71,6 @@ void CAcceptor::ShutDown()
 {
 	if (!IsConnected())
 		return;
-	GetReactor()->UnRegister(this);
 	m_oSocket.Close();
 	SetState(eAS_Disconnected);
 }

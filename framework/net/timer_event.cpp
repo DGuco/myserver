@@ -22,7 +22,7 @@ CTimerEvent::CTimerEvent(IEventReactor *pReactor,
 
 CTimerEvent::~CTimerEvent()
 {
-	UnRegisterFromReactor();
+	Cancel();
 }
 
 void CTimerEvent::LaterCall(int sec, int usec)
@@ -72,11 +72,6 @@ bool CTimerEvent::RegisterToReactor()
 	return true;
 }
 
-bool CTimerEvent::UnRegisterFromReactor()
-{
-	Cancel();
-	GetReactor()->UnRegister(this);
-}
 
 IEventReactor *CTimerEvent::GetReactor()
 {

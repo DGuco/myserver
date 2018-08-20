@@ -14,7 +14,7 @@ class CTimerEvent: public IReactorHandler
 {
 public:
 	//构造函数
-	CTimerEvent(IEventReactor*  pReactor,
+	CTimerEvent(IEventReactor *pReactor,
 				FuncOnTimeOut m_pFuncOnTimerOut,
 				void *param,
 				int sec,
@@ -31,15 +31,13 @@ public:
 private:
 	//注册
 	bool RegisterToReactor();
-	//卸载
-	bool UnRegisterFromReactor();
 	//获取event_base
-	IEventReactor * GetReactor();
+	IEventReactor *GetReactor();
 private:
 	//超时回调
 	static void lcb_TimeOut(int fd, short event, void *arg);
 private:
-	IEventReactor* m_pReactor;
+	IEventReactor *m_pReactor;
 	FuncOnTimeOut m_pFuncOnTimerOut;
 	void *m_pParam; //超时回调参数l
 	int m_iSec;  //秒

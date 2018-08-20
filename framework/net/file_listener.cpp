@@ -15,6 +15,7 @@ CFileListener::CFileListener(IEventReactor *pReactor,
 	  m_iEventFlags(flags)
 {
 	m_stCallArg = new CCallArg(this);
+	m_pReactor->Register(this);
 }
 
 CFileListener::~CFileListener()
@@ -44,14 +45,9 @@ bool CFileListener::RegisterToReactor()
 	return false;
 }
 
-bool CFileListener::UnRegisterFromReactor()
-{
-	return false;
-}
-
 IEventReactor *CFileListener::GetReactor()
 {
-	return nullptr;
+	return m_pReactor;
 }
 
 void CFileListener::lcb_OnRead(struct bufferevent *bev, void *arg)

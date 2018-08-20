@@ -3,14 +3,12 @@
 //  Created by DGuco on 18/01/20.
 //  Copyright © 2018年 DGuco. All rights reserved.
 //
-#include <bits/signum.h>
 #include "net_addr.h"
 #include "network_interface.h"
 #include "net_work.h"
 #include "system_signal.h"
 #include "connector.h"
 #include "my_assert.h"
-#include <signal.h>
 
 template<> shared_ptr<CNetWork> CSingleton<CNetWork>::spSingleton = NULL;
 
@@ -218,7 +216,7 @@ void CNetWork::InsertNewConnector(unsigned int uid, CConnector *pConnector)
 void CNetWork::InsertNewFileListener(unsigned int uid, CFileListener *pFileListener)
 {
 	MY_ASSERT(pFileListener != NULL, return;)
-	m_mapConnector.insert(std::make_pair(uid, pFileListener));
+	m_mapFileListener.insert(std::make_pair(uid, pFileListener));
 }
 
 IEventReactor *CNetWork::GetEventReactor()

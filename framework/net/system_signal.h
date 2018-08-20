@@ -23,8 +23,6 @@ public:
 private:
 	//注册
 	bool RegisterToReactor() override;
-	//卸载
-	bool UnRegisterFromReactor() override;
 	//获取event_base
 	IEventReactor *GetReactor() override;
 	//收到信号

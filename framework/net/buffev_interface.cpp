@@ -6,7 +6,7 @@
 #include "buffev_interface.h"
 #include "byte_buff.h"
 
-IBufferEvent::IBufferEvent(IEventReactor* pReactor,
+IBufferEvent::IBufferEvent(IEventReactor *pReactor,
 						   int socket,
 						   FuncBufferEventOnDataSend funcOnDataSend,
 						   FuncBufferEventOnDataRecv funcOnDataRecv,
@@ -203,13 +203,8 @@ bool IBufferEvent::RegisterToReactor()
 	return true;
 }
 
-IEventReactor * IBufferEvent::GetReactor()
+IEventReactor *IBufferEvent::GetReactor()
 {
 	return m_pReactor;
 }
 
-bool IBufferEvent::UnRegisterFromReactor()
-{
-	bufferevent_disable(m_pStBufEv, EV_READ | EV_WRITE);
-	return true;
-}
