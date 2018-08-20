@@ -215,6 +215,12 @@ void CNetWork::InsertNewConnector(unsigned int uid, CConnector *pConnector)
 	m_mapConnector.insert(std::make_pair(uid, pConnector));
 }
 
+void CNetWork::InsertNewFileListener(unsigned int uid, CFileListener *pFileListener)
+{
+	MY_ASSERT(pFileListener != NULL, return;)
+	m_mapConnector.insert(std::make_pair(uid, pFileListener));
+}
+
 IEventReactor *CNetWork::GetEventReactor()
 {
 	return m_pEventReactor;
@@ -223,4 +229,9 @@ IEventReactor *CNetWork::GetEventReactor()
 MAP_ACCEPTOR &CNetWork::GetAcceptorMap()
 {
 	return m_mapAcceptor;
+}
+
+MAP_FILELISTENER &CNetWork::GetFileListenerMap()
+{
+	return m_mapFileListener;
 }

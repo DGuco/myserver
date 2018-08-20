@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <event.h>
+#include <sys/inotify.h>
 #include "base.h"
 #include "net_inc.h"
 
@@ -21,6 +22,7 @@ class CAcceptor;
 class CSystemSignal;
 class CListener;
 class IBufferEvent;
+class CFileListener;
 
 enum PipeResult
 {
@@ -85,5 +87,9 @@ typedef std::function<void(int, short, CConnector *)> FuncConnectorOnPingServer;
 /** CallBack for CAcceptor
  */
 typedef std::function<void(uint32, CAcceptor *)> FuncAcceptorOnNew;
+
+/** CallBack for CFileListener
+ */
+typedef std::function<void(inotify_event *notifyEvent)> FuncFileListenerOnEvent;
 
 #endif

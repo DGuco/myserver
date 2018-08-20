@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.6)
 project(testso)
 
 add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DLOG_THREAD_SAFE)
+add_compile_options(-shared -fPIC)
+
 set(TESTSO
         test.c)
 

@@ -23,11 +23,13 @@ typedef unordered_map<unsigned int, CConnector *> MAP_CONNECTOR;
 
 typedef unordered_map<unsigned int, CAcceptor *> MAP_ACCEPTOR;
 
+typedef unordered_map<unsigned int, CFileListener *> MAP_FILELISTENER;
+
 typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
 
 using namespace std;
 
-class CNetWork: public CSingleton<CNetWork>
+class CNetWork final: public CSingleton<CNetWork>
 {
 public:
 	//构造函数
@@ -71,13 +73,17 @@ public:
 	//查找acceptor
 	CAcceptor *FindAcceptor(unsigned int uId);
 	//添加新的acceptor
-	void InsertNewAcceptor(unsigned int uid, CAcceptor* pAcceptor);
+	void InsertNewAcceptor(unsigned int uid, CAcceptor *pAcceptor);
 	//添加新的connector
-	void InsertNewConnector(unsigned int uid, CConnector* pConnector);
+	void InsertNewConnector(unsigned int uid, CConnector *pConnector);
+	//添加新的fileListener
+	void InsertNewFileListener(unsigned int uid, CFileListener *pFileListener);
 	//获取event
 	IEventReactor *GetEventReactor();
 	//获取连接map
 	MAP_ACCEPTOR &GetAcceptorMap();
+	//获取文件监听map
+	MAP_FILELISTENER &GetFileListenerMap();
 private:
 	//新的连接 accept回调
 	static void lcb_OnAccept(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
@@ -90,6 +96,7 @@ private:
 
 	MAP_CONNECTOR m_mapConnector;
 	MAP_ACCEPTOR m_mapAcceptor;
+	MAP_FILELISTENER m_mapFileListener;
 	Queue_TimerOrSignals m_qTimerOrSignals;
 	CListener *m_pListener;
 	CTimerEvent *m_pCheckTimerOut;

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 project(gamemodule)
 
 add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DLOG_THREAD_SAFE)
-add_compile_options(-fPIC)
+add_compile_options(-shared -fPIC)
 
 set(GAMEMODULE
         datamodule/inc/sceneobjmanager.h

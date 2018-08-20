@@ -4,6 +4,7 @@ project(myserver)
 #libevent 多线程开启-DEVENT_THREAD_SAFE
 add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DLOG_THREAD_SAFE)
 #add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DEVENT_THREAD_SAFE -DLOG_THREAD_SAFE)
+
 add_compile_options(-fPIC)
 
 set(FRAMEWORK
@@ -71,6 +72,8 @@ set(FRAMEWORK
         net/timer_event.cpp
         net/byte_buff.cpp
         net/byte_buff.h
+        net/file_listener.cpp
+        net/file_listener.h
         mem/share_mem.h
         mem/shm.h/
         mem/share_mem.cpp
