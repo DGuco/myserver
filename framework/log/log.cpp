@@ -1,4 +1,11 @@
 #include <spdlog/spdlog.h>
+#include <spdlog/async.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/daily_file_sink.h>
+#include <spdlog/sinks/null_sink.h>
+#include <spdlog/sinks/ostream_sink.h>
+#include <spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include "log.h"
 
 // 初始一种类型的日志
@@ -11,14 +18,14 @@ int InitBaseLog(const char *vLogName,                        /*日志类型的�
 		return -1;
 	}
 #ifdef LOG_THREAD_SAFE
-	auto log = spdlog::basic_logger_mt(vLogName, vLogDir, vAppend);
+	auto log = spdlog::create<spdlog::sinks::basic_file_sink_mt>(vLogName, vLogDir, vAppend);
 #ifdef _DEBUG_
-	auto console = spdlog::stdout_color_mt(CONSOLE_LOG_NAME);
+	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_mt>(CONSOLE_LOG_NAME);
 #endif
 #else
-	auto log = spdlog::basic_logger_st(vLogName, vLogDir,vAppend);
+	auto log = spdlog::create<spdlog::sinks::basic_file_sink_st>(vLogName, vLogDir, vAppend);
 #ifdef _DEBUG_
-		auto console = spdlog::stdout_color_st(CONSOLE_LOG_NAME);
+	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_st>(CONSOLE_LOG_NAME);
 #else
 #endif
 #endif
@@ -45,14 +52,14 @@ int InitRoatingLog(const char *vLogName,                        /*日志类型�
 		return -1;
 	}
 #ifdef LOG_THREAD_SAFE
-	auto log = spdlog::rotating_logger_mt(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
+	auto log = spdlog::create<spdlog::sinks::rotating_file_sink_mt>(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
 #ifdef _DEBUG_
-	auto console = spdlog::stdout_color_mt(CONSOLE_LOG_NAME);
+	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_mt>(CONSOLE_LOG_NAME);
 #endif
 #else
-	auto log = spdlog::rotating_logger_st(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
+	auto log = spdlog::create<spdlog::sinks::rotating_file_sink_st>(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
 #ifdef _DEBUG_
-		auto console = spdlog::stdout_color_st(CONSOLE_LOG_NAME);
+	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_st>(CONSOLE_LOG_NAME);
 #endif
 #endif
 
@@ -78,12 +85,15 @@ int InitDailyLog(const char *vLogName,                        /*日志类型的�
 		return -1;
 	}
 #ifdef LOG_THREAD_SAFE
-	auto log = spdlog::daily_logger_mt(vLogName, vLogDir, hour, minute);
+	auto log = spdlog::create<spdlog::sinks::daily_file_sink_mt>(vLogName, vLogDir, hour, minute);
 #ifdef _DEBUG_
-	auto console = spdlog::stdout_logger_st(CONSOLE_LOG_NAME);
+	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_mt>(CONSOLE_LOG_NAME);
 #endif
 #else
-	auto log = spdlog::daily_logger_st(vLogName, vLogDir, hour, minute);
+	auto log = spdlog::create<spdlog::sinks::daily_file_sink_st>(vLogName, vLogDir, hour, minute);
+#ifdef _DEBUG_
+	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_st>(CONSOLE_LOG_NAME);
+#endif
 #endif
 
 #ifdef _DEBUG_

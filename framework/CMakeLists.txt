@@ -3,7 +3,7 @@ project(myserver)
 
 #libevent 多线程开启-DEVENT_THREAD_SAFE
 add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DLOG_THREAD_SAFE)
-#add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DEVENT_THREAD_SAFE -DLOG_THREAD_SAFE)
+#add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT)
 
 add_compile_options(-fPIC)
 
