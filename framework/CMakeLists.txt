@@ -105,6 +105,7 @@ include_directories(
 )
 
 link_directories(
+        /usr/lib64
         /usr/local/lib
         ${CMAKE_SOURCE_DIR}/lib
 )
