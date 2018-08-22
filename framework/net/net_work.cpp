@@ -9,6 +9,7 @@
 #include "system_signal.h"
 #include "connector.h"
 #include "my_assert.h"
+#include "file_listener.h"
 
 template<> shared_ptr<CNetWork> CSingleton<CNetWork>::spSingleton = NULL;
 
@@ -142,6 +143,19 @@ bool CNetWork::Connect(const char *szNetAddr,
 	}
 	InsertNewConnector(iTargetId, pConnector);
 	return bRet;
+}
+
+bool CNetWork::ListenFile(string filePath,
+						  FuncFileListenerOnEvent funcFileListenerOnEvent,
+						  int flags)
+{
+	CFileListener *tmpFileListener = new CFileListener(GetEventReactor(), filePath, funcFileListenerOnEvent, flags);
+	bool bRet = GetEventReactor()->Register(tmpFileListener);
+	if (bRet) {
+		InsertNewFileListener(tmpFileListener->GetSocket().GetSocket(), tmpFileListener);
+		return true;
+	}
+	return false;
 }
 
 void CNetWork::DispatchEvents()

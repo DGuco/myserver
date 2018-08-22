@@ -307,8 +307,8 @@ void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
 		return;
 	}
 	// 处理服务器间消息
-	CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskBack(
-		&CMessageDispatcher::ProcessServerMessage, &tmpMessage);
+//	CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskBack(
+//		&CMessageDispatcher::ProcessServerMessage, &tmpMessage);
 }
 
 void CServerHandle::SetProxyId(int id)

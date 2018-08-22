@@ -60,6 +60,10 @@ public:
 				 FuncConnectorOnConnectted funcOnConnectted,
 				 FuncConnectorOnPingServer funcOnPingServer,
 				 unsigned int uPingTick);
+	//监听文件变化
+	bool ListenFile(string filePath,
+					FuncFileListenerOnEvent funcFileListenerOnEvent,
+					int flags);
 	//关闭acceptor
 	bool ShutDownAcceptor(unsigned int uId);
 	//设置信号回调

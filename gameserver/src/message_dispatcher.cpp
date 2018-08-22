@@ -88,54 +88,54 @@ int CMessageDispatcher::ProcessServerMessage(CProxyMessage *pMsg)
 
 	const ::google::protobuf::Descriptor *pTmpDescriptor = pTmpMsgPara->GetDescriptor();
 	CProxyHead *pHead = pMsg->mutable_msghead();
-	switch (pHead->srcfe()) {
-	case FE_GAMESERVER: {
-		LOG_DEBUG("default",
-				  "---- Recv Game({}) Msg[ {} ][id: 0x%08x / {}] ----",
-				  pHead->srcid(),
-				  pTmpDescriptor->name().c_str(),
-				  pMsg->msghead().messageid(),
-				  pMsg->msghead().messageid());
-		break;
-	}
-	case FE_LOGINSERVER: {
-		LOG_DEBUG("default",
-				  "---- Recv Login({}) Msg[ {} ][id: 0x%08x / {}] ----",
-				  pHead->srcid(),
-				  pTmpDescriptor->name().c_str(),
-				  pMsg->msghead().messageid(),
-				  pMsg->msghead().messageid());
-		break;
-	}
-	case FE_DBSERVER: {
-		LOG_DEBUG("default",
-				  "---- Recv DB({}) Msg[ {} ][id: 0x%08x / {}] ----",
-				  pHead->srcid(),
-				  pTmpDescriptor->name().c_str(),
-				  pMsg->msghead().messageid(),
-				  pMsg->msghead().messageid());
-		break;
-	}
-	case FE_WEBSERVER: {
-		LOG_DEBUG("default",
-				  "---- Recv Web({}) Msg[ {} ][id: 0x%08x / {}] ----",
-				  pHead->srcid(),
-				  pTmpDescriptor->name().c_str(),
-				  pMsg->msghead().messageid(),
-				  pMsg->msghead().messageid());
-		break;
-	}
-	default: {
-		LOG_ERROR("default", "[{} : {} : {}] invalid FE = {}.",
-				  __MY_FILE__, __LINE__, __FUNCTION__, pHead->srcfe());
-		// 消息回收
-		if (pTmpMsgPara) {
-			pTmpMsgPara->~Message();
-			pMsg->set_msgpara((unsigned long) NULL);
-			pTmpMsgPara = NULL;
+	switch(pHead->srcfe()){
+		case FE_GAMESERVER:{
+			LOG_DEBUG("default",
+					  "---- Recv Game({}) Msg[ {} ][id: 0x%08x / {}] ----",
+					  pHead->srcid(),
+					  pTmpDescriptor->name().c_str(),
+					  pMsg->msghead().messageid(),
+					  pMsg->msghead().messageid());
+			break;
 		}
-		return -3;
-	}
+		case FE_LOGINSERVER:{
+			LOG_DEBUG("default",
+					  "---- Recv Login({}) Msg[ {} ][id: 0x%08x / {}] ----",
+					  pHead->srcid(),
+					  pTmpDescriptor->name().c_str(),
+					  pMsg->msghead().messageid(),
+					  pMsg->msghead().messageid());
+			break;
+		}
+		case FE_DBSERVER:{
+			LOG_DEBUG("default",
+					  "---- Recv DB({}) Msg[ {} ][id: 0x%08x / {}] ----",
+					  pHead->srcid(),
+					  pTmpDescriptor->name().c_str(),
+					  pMsg->msghead().messageid(),
+					  pMsg->msghead().messageid());
+			break;
+		}
+		case FE_WEBSERVER:{
+			LOG_DEBUG("default",
+					  "---- Recv Web({}) Msg[ {} ][id: 0x%08x / {}] ----",
+					  pHead->srcid(),
+					  pTmpDescriptor->name().c_str(),
+					  pMsg->msghead().messageid(),
+					  pMsg->msghead().messageid());
+			break;
+		}
+		default:{
+			LOG_ERROR("default", "[{} : {} : {}] invalid FE = {}.",
+					  __MY_FILE__, __LINE__, __FUNCTION__, pHead->srcfe());
+			// 消息回收
+			if (pTmpMsgPara) {
+				pTmpMsgPara->~Message();
+				pMsg->set_msgpara((unsigned long) NULL);
+				pTmpMsgPara = NULL;
+			}
+			return -3;
+		}
 	}
 
 	LOG_DEBUG("default", "[{}]", ((CGooMess *) pMsg->msgpara())->ShortDebugString().c_str());

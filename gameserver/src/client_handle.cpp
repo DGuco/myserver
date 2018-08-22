@@ -379,7 +379,7 @@ int CClientHandle::DealClientMessage(std::shared_ptr<CMessage> pMsg)
 //	pTmpTeam->GetSocketInfoPtr()->lMsgGuid = lTmpMsgGuid;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-	CMessageDispatcher::ProcessClientMessage(pMsg);
+//	CMessageDispatcher::ProcessClientMessage(pMsg);
 	return CLIENTHANDLE_SUCCESS;
 }
 

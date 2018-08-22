@@ -15,7 +15,6 @@ CFileListener::CFileListener(IEventReactor *pReactor,
 	  m_iEventFlags(flags)
 {
 	m_stCallArg = new CCallArg(this);
-	m_pReactor->Register(this);
 }
 
 CFileListener::~CFileListener()
@@ -33,6 +32,7 @@ bool CFileListener::RegisterToReactor()
 {
 	int fd = inotify_init();
 	MY_ASSERT_STR(fd > 0, return false, "Inotify_init failed!,error msg: %s", strerror(errno));
+	m_oSocket.SetSocket(fd);
 	inotify_add_watch(fd, m_sFilePath.c_str(), m_iEventFlags);
 
 	m_pStBufEv = bufferevent_socket_new(GetReactor()->GetEventBase(), fd, 0);
@@ -78,4 +78,8 @@ void CFileListener::lcb_OnRead(struct bufferevent *bev, void *arg)
 	}
 	return;
 
+}
+const CSocket &CFileListener::GetSocket() const
+{
+	return m_oSocket;
 }

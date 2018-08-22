@@ -14,11 +14,11 @@ CGameServer::CGameServer()
 	  m_pClientHandle(std::make_shared<CClientHandle>(m_pNetWork)),
 	  m_pServerHandle(std::make_shared<CServerHandle>(m_pNetWork)),
 	  m_pModuleManager(std::make_shared<CModuleManager>()),
-	  m_pMessageDispatcher(std::make_shared<CMessageDispatcher>()),
 	  m_pMessageFactory(std::make_shared<CMessageFactory>()),
 	  m_pTimerManager(std::make_shared<CTimerManager>()),
 	  m_pLogicThread(std::make_shared<CThreadPool>(1)),
 	  m_pIoThread(std::make_shared<CThreadPool>(1, ignore_pipe)),
+	  m_pComputeThread(std::make_shared<CThreadPool>(2)),
 	  m_iServerState(0)
 {
 	Initialize();
@@ -46,6 +46,20 @@ int CGameServer::ReadCfg()
 	return 0;
 }
 
+int CGameServer::ListenFile()
+{
+	bool bRet = m_pNetWork->ListenFile("../config", &CGameServer::lcb_OnConfigChanged, IN_MODIFY);
+	if (!bRet) {
+		LOG_ERROR("default", "Listen config failed");
+		exit(0);
+	}
+	bRet = m_pNetWork->ListenFile("../lib/libgamemodule.so", &CGameServer::lcb_OnLibGameModuleSoChanged, IN_MODIFY);
+	if (!bRet) {
+		LOG_ERROR("default", "Listen libgamemodule failed");
+		exit(0);
+	}
+	return 0;
+}
 // 运行准备
 int CGameServer::PrepareToRun()
 {
@@ -60,6 +74,11 @@ int CGameServer::PrepareToRun()
 	if (ReadCfg() != 0) {
 		return -1;
 	}
+
+	if (ListenFile() != 0) {
+		return -1;
+	}
+
 	if (StartAllTimers() != 0) {
 		return -4;
 	}
@@ -136,8 +155,7 @@ void CGameServer::Exit()
 
 void CGameServer::ProcessClientMessage(CMessage *pMsg, CPlayer *pPlayer)
 {
-	MY_ASSERT(pMsg != NULL && pPlayer != NULL,
-			  return);
+	MY_ASSERT(pMsg != NULL && pPlayer != NULL, return);
 //    MY_ASSERT(pMsg->has_msghead() == true, return);
 	int iTmpType = GetModuleClass(pMsg->msghead().cmd());
 	try {
@@ -366,6 +384,16 @@ void CGameServer::SendMsgSystemErrorResponse(int iResult,
 {
 }
 
+void CGameServer::lcb_OnConfigChanged(inotify_event *notifyEvent)
+{
+	//todo 重新加载配置文件
+}
+
+void CGameServer::lcb_OnLibGameModuleSoChanged(inotify_event *notifyEvent)
+{
+	//todo 重新加载动态库
+}
+
 int CGameServer::InitStaticLog()
 {
 	return 0;
@@ -383,11 +411,6 @@ shared_ptr<CServerHandle> &CGameServer::GetServerHandle()
 shared_ptr<CModuleManager> &CGameServer::GetModuleManager()
 {
 	return m_pModuleManager;
-}
-
-shared_ptr<CMessageDispatcher> &CGameServer::GetMessageDispatcher()
-{
-	return m_pMessageDispatcher;
 }
 
 shared_ptr<CFactory> &CGameServer::GetMessageFactory()
@@ -413,4 +436,9 @@ shared_ptr<CThreadPool> &CGameServer::GetIoThread()
 shared_ptr<CNetWork> &CGameServer::GetNetWork()
 {
 	return m_pNetWork;
+}
+
+shared_ptr<CThreadPool> &CGameServer::GetComputeThread()
+{
+	return m_pComputeThread;
 }

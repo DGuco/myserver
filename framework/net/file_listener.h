@@ -6,15 +6,15 @@
 #ifndef SERVER_FILE_LISTENER_H
 #define SERVER_FILE_LISTENER_H
 
+#include <sys/inotify.h>
 #include "network_interface.h"
 #include "socket.h"
-#include <sys/inotify.h>
 
 #define EVENT_SIZE  ( sizeof (struct inotify_event) )
 
 class CFileListener;
 
-class CCallArg
+struct CCallArg
 {
 public:
 	CCallArg(CFileListener *fileListener)
@@ -47,6 +47,7 @@ public:
 	virtual ~CFileListener();
 	bool RegisterToReactor() override;
 	IEventReactor *GetReactor() override;
+	const CSocket &GetSocket() const;
 public:
 	static void lcb_OnRead(struct bufferevent *bev, void *arg);
 private:

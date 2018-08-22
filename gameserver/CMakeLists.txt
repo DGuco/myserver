@@ -8,13 +8,11 @@ set(SOURCE_FILES
         inc/game_server.h
         inc/client_handle.h
         inc/message_factory.h
-        inc/message_dispatcher.h
         inc/server_handle.h
         src/server_handle.cpp
         src/game_server.cpp
         src/client_handle.cpp
-        src/message_factory.cpp
-        src/message_dispatcher.cpp)
+        src/message_factory.cpp)
 
 include_directories(
         /usr/include/
