@@ -10,5 +10,4 @@ add_subdirectory(proxyserver)
 add_subdirectory(dbserver)
 add_subdirectory(gameserver)
 add_subdirectory(test)
-add_subdirectory(testso)
 

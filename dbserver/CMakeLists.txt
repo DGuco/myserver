@@ -17,7 +17,7 @@ set(SOURCE_FILES
         src/database_mysql.cpp
         src/field.cpp
         src/message_factory.cpp
-        src/query_result_mysql.cpp ../test/main.cpp ../testso/test.c)
+        src/query_result_mysql.cpp)
 
 include_directories(
         /usr/include/

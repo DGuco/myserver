@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
 project(gameserver)
-add_subdirectory(gamemodule)
 add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT)
 
 set(SOURCE_FILES
@@ -12,7 +11,27 @@ set(SOURCE_FILES
         src/server_handle.cpp
         src/game_server.cpp
         src/client_handle.cpp
-        src/message_factory.cpp)
+        src/message_factory.cpp
+        gamemodule/datamodule/inc/sceneobjmanager.h
+        gamemodule/datamodule/inc/player.h
+        gamemodule/datamodule/inc/playerdata.h
+        gamemodule/datamodule/inc/playerbase.h
+        gamemodule/datamodule/inc/playercity.h
+        gamemodule/datamodule/src/sceneobjmanager.cpp
+        gamemodule/datamodule/src/player.cpp
+        gamemodule/datamodule/src/playerbase.cpp
+        gamemodule/datamodule/src/playerdata.cpp
+        gamemodule/datamodule/src/playercity.cpp
+        gamemodule/logicmodule/inc/core_module.h
+        gamemodule/logicmodule/inc/logic_module.h
+        gamemodule/logicmodule/inc/module_manager.h
+        gamemodule/logicmodule/inc/db_module.h
+        gamemodule/logicmodule/src/module_manager.cpp
+        gamemodule/logicmodule/src/core_module.cpp
+        gamemodule/logicmodule/src/logic_module.cpp
+        gamemodule/logicmodule/src/db_module.cpp
+        gamemodule/metamodule/inc/parameter_config.h
+        gamemodule/metamodule/src/parameter_config.cpp)
 
 include_directories(
         /usr/include/
@@ -38,5 +57,5 @@ link_directories(
 )
 
 add_executable(gameserver ${SOURCE_FILES})
-target_link_libraries(gameserver pthread protobuf gamemodule dl)
+target_link_libraries(gameserver framework pthread protobuf crypto)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)

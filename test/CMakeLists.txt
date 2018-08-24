@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(test)
+add_subdirectory(testso)
 add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT)
 
 set(SOURCE_FILES
