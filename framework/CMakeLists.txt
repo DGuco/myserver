@@ -82,13 +82,15 @@ set(FRAMEWORK
         mem/code_queue.cpp
         mem/mem_pool.h
         mem/mempool_safty.h
+        mem/array_list.h
         thread/mythread.h
         thread/mythread.cpp
         thread/thread_pool.h
         timer/clock.cpp
         timer/clock.h
         timer/timer.h
-        timer/timer.cpp)
+        timer/timer.cpp
+        mem/hash_function.h)
 
 include_directories(
         /usr/include
