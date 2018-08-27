@@ -5,6 +5,8 @@
 #include <dlfcn.h>
 #include <sys/time.h>
 #include <unordered_map>
+#include <map>
+#include <byte_buff.h>
 //
 // Created by dguco on 18-6-18.
 //
@@ -185,27 +187,52 @@ int testSoHotLoad()
 	return 0;
 }
 
-struct Demo
-{
-	int a;
-	int b;
-};
-
 class Test
 {
 public:
-	Test()
+	Test(int a)
 	{
-		map = std::move(std::unordered_map<long, Demo>(10000));
+		this->a = a;
 	}
-public:
-	std::unordered_map<long, Demo> map;
+	int a;
 };
+
+class Demo
+{
+public:
+	Demo()
+	{
+		this->a = new Test(10);
+	}
+
+	Demo(const Demo &demo)
+	{
+		printf("Demo COPY\n");
+		if (&demo == this) {
+			return;
+		}
+		this->a = new Test(demo.a->a);
+	}
+//
+	Demo(Demo &&demo)
+	{
+		printf("Demo Move\n");
+		this->a = std::move(demo.a);
+		demo.a = NULL;
+	}
+
+	Test *a;
+};
+
 int main()
 {
 //	testDlopen();
 //	testSoHotLoad();
 //	listenFileChange();
-	Test *test = new Test;
-	printf("Test size = %d", sizeof(*test));
+	char buff[1024] = {0};
+	Demo demo;
+	Demo *demo1 = new(buff)Demo(demo);
+	printf("Demo* size = %d\n", sizeof(demo1));
+	printf("buff address %lxd\n", buff);
+//	Demo buff1 = std::move(demo);
 }

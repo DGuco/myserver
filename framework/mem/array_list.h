@@ -12,7 +12,7 @@
 #include "log.h"
 #include "my_assert.h"
 
-namespace mem
+namespace sharemem
 {
 // 由于需要从类型T转化array_list_node_base<T>所以T应该放在最前面
 // 为了方便快捷的删除，还是需要使用双向链表
@@ -737,14 +737,6 @@ namespace mem
 					MY_ASSERT((head_ >= 0 && head_ < (int) MAX_COUNT), return 0);
 					// it's not the last one element in the dequeue
 					head_ = head_ + node_[head_].get_next_idx( );
-
-					/*if (head_ < 0 || head_ >= (int)MAX_COUNT)*/
-					/*{*/
-					/*// TODO:这里故意让它崩溃，方便定位问题*/
-					/*node_type* tpNode = NULL;*/
-					/*tpNode->set_prev_idx(0);*/
-					/*}*/
-
 					node_[head_].set_prev_idx(0);
 				}
 				new(&p->value( )) value_type(v);
@@ -900,7 +892,6 @@ namespace mem
 			offset_type tmptail = static_cast<offset_type>(MAX_COUNT - 1);
 			for (offset_type i = 0; i <= tmptail; ++i) {
 				new(&node_[i]) value_type( );
-				//node_[i].set_node_start(i);
 			}
 		}
 	};
@@ -917,11 +908,11 @@ namespace mem
 	class fixed_size_memory_pool
 	{
 	public:
-		typedef mem::fixed_size_array_list<value_type, MAX_COUNT, L> Array_List;
-		typedef mem::array_list_node_base<value_type, L> node_type;
+		typedef sharemem::fixed_size_array_list<value_type, MAX_COUNT, L> Array_List;
+		typedef sharemem::array_list_node_base<value_type, L> node_type;
 
-		typedef mem::array_link_list_iterator<value_type, L> iterator;
-		typedef mem::array_link_list_const_iterator<value_type, L> const_iterator;
+		typedef sharemem::array_link_list_iterator<value_type, L> iterator;
+		typedef sharemem::array_link_list_const_iterator<value_type, L> const_iterator;
 		typedef value_type *pointer;
 		typedef const value_type *const_pointer;
 		typedef value_type &reference;
