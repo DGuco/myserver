@@ -1,25 +1,19 @@
 //
-// Created by dguco on 18-8-27.
+// Created by dguco on 18-8-28.
 // 使用共享内存的定长map,map的是长度一定的,map中的对象内存地址在事先申请好的共享内存中
 //
 
-#ifndef SERVER_MAP_H
-#define SERVER_MAP_H
+#ifndef SERVER_UNORDERED_MAP_H
+#define SERVER_UNORDERED_MAP_H
 
 #include <cstddef>
-#include <utility>
-#include <map>
-#include <type_traits>
-#include "array_list.h"
+#include <unordered_map>
 #include "share_container_interface.h"
-
-/**
- * sharemem,value_type 非指针非引用
- */
+#include "array_list.h"
 namespace sharemem
 {
 	template<class _Kty, class _Ty, std::size_t _Cap>
-	class map final: public container
+	class unordered_map final: public container
 	{
 	public:
 		typedef _Kty key_type_;
@@ -29,13 +23,13 @@ namespace sharemem
 		 * 注意迭代起类型是value_type* 类型
 		 */
 		typedef fixed_size_memory_pool::pointer pointer;
-		typedef typename std::map<key_type_, pointer>::iterator iterator;
-		typedef typename std::map<key_type_, pointer>::const_iterator const_iterator;
+		typedef typename std::unordered_map<key_type_, pointer>::iterator iterator;
+		typedef typename std::unordered_map<key_type_, pointer>::const_iterator const_iterator;
 	private:
 		sharemem::fixed_size_memory_pool<value_type_, _Cap> hash_table_;  //容器对象内存池
-		std::map<key_type_, pointer> map_;  //key value hash
+		std::unordered_map<key_type_, pointer> map_;  //key value hash
 	public:
-		map(const map &other)
+		unordered_map(const unordered_map &other)
 		{
 			if (this == &(other)) {
 				return;
@@ -44,10 +38,10 @@ namespace sharemem
 			this->map_ = other.map_;
 		}
 		//no move
-		map(map &&other) = delete;
-		map(const map &&other) = delete;
+		unordered_map(unordered_map &&other) = delete;
+		unordered_map(const unordered_map &&other) = delete;
 
-		map &operator=(map &other)
+		unordered_map &operator=(unordered_map &other)
 		{
 			if (this == &(other)) {
 				return *this;
@@ -57,7 +51,7 @@ namespace sharemem
 			return *this;
 		};
 
-		map &operator=(map &&other)
+		unordered_map &operator=(unordered_map &&other)
 		{
 			if (this == &(other)) {
 				return *this;
@@ -67,13 +61,14 @@ namespace sharemem
 			return *this;
 		};
 
-		map()
+		unordered_map()
 		{
 			if (std::is_pointer<_Ty>::value || std::is_reference<_Ty>::value) {
-				throw std::invalid_argument("the value type of share map is illegal");
+				throw std::invalid_argument("the value type of share unordered_map is illegal");
 			}
 		}
-		~map()
+
+		~unordered_map()
 		{
 			map_.clear( );
 		}
@@ -188,4 +183,4 @@ namespace sharemem
 
 	};
 }
-#endif //SERVER_MAP_H
+#endif //SERVER_UNORDERED_MAP_H

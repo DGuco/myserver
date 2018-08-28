@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <map>
 #include <byte_buff.h>
+#include <map.h>
 //
 // Created by dguco on 18-6-18.
 //
@@ -202,27 +203,17 @@ class Demo
 public:
 	Demo()
 	{
-		this->a = new Test(10);
+
 	}
 
-	Demo(const Demo &demo)
+	void init(int a)
 	{
-		printf("Demo COPY\n");
-		if (&demo == this) {
-			return;
-		}
-		this->a = new Test(demo.a->a);
+		this->a = a;
 	}
-//
-	Demo(Demo &&demo)
-	{
-		printf("Demo Move\n");
-		this->a = std::move(demo.a);
-		demo.a = NULL;
-	}
-
-	Test *a;
+	int a;
 };
+
+using namespace sharemem;
 
 int main()
 {
@@ -230,9 +221,18 @@ int main()
 //	testSoHotLoad();
 //	listenFileChange();
 	char buff[1024] = {0};
-	Demo demo;
-	Demo *demo1 = new(buff)Demo(demo);
-	printf("Demo* size = %d\n", sizeof(demo1));
-	printf("buff address %lxd\n", buff);
-//	Demo buff1 = std::move(demo);
+	sharemem::map<int, Demo, 100> map;
+	map.initialize( );
+	int i = 0;
+	while (i < 100) {
+		Demo demo;
+		demo.init(i);
+		map.insert(i, demo);
+		i++;
+	}
+	map.erase(79);
+	map.erase(99);
+	for (auto it = map.begin( ); it != map.end( ); it++) {
+		printf("a = %d\n", it->second->a);
+	}
 }
