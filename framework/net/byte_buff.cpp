@@ -26,7 +26,6 @@ CByteBuff::CByteBuff()
 	m_uiLen(0),
 	m_uiCapacity(MAX_PACKAGE_LEN)
 {
-	printf("CByteBuff contruct\n");
 	m_acData = new char[m_uiCapacity]( );
 }
 
@@ -52,7 +51,6 @@ CByteBuff::CByteBuff(char *data, unsigned tmpCap)
 
 CByteBuff::CByteBuff(const CByteBuff &byteBuff)
 {
-	printf("CByteBuff copy\n");
 	if (this == &(byteBuff)) {
 		return;
 	}
@@ -68,7 +66,6 @@ CByteBuff::CByteBuff(CByteBuff &&byteBuff)
 	m_uiCapacity(std::move(byteBuff.m_uiCapacity)),
 	m_acData(std::move(byteBuff.m_acData))
 {
-	printf("CByteBuff move\n");
 	byteBuff.m_acData = NULL;
 }
 
