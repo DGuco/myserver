@@ -5,9 +5,9 @@
 #include <dlfcn.h>
 #include <sys/time.h>
 #include <unordered_map>
-#include <map>
 #include <byte_buff.h>
-#include <map.h>
+#include <share_container_interface.h>
+#include <map>
 //
 // Created by dguco on 18-6-18.
 //
@@ -206,6 +206,7 @@ public:
 
 	}
 
+	Demo(Demo &&demo) = delete;
 	void init(int a)
 	{
 		this->a = a;
@@ -220,19 +221,8 @@ int main()
 //	testDlopen();
 //	testSoHotLoad();
 //	listenFileChange();
-	char buff[1024] = {0};
-	sharemem::map<int, Demo, 100> map;
-	map.initialize( );
-	int i = 0;
-	while (i < 100) {
-		Demo demo;
-		demo.init(i);
-		map.insert(i, demo);
-		i++;
-	}
-	map.erase(79);
-	map.erase(99);
-	for (auto it = map.begin( ); it != map.end( ); it++) {
-		printf("a = %d\n", it->second->a);
-	}
+	Demo demo;
+	std::multimap<int ,int> multimap1;
+	multimap1.insert(std::make_pair(1,10));
+	multimap1.insert(std::make_pair(1,10));
 }

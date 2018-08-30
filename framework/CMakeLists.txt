@@ -88,7 +88,7 @@ set(FRAMEWORK
         timer/clock.h
         timer/timer.h
         timer/timer.cpp
-        mem/map.h mem/share_container_interface.h mem/vector.h mem/unordered_map.h mem/set.h)
+        mem/map.h mem/share_container_interface.h mem/vector.h mem/unordered_map.h mem/set.h mem/list.h)
 
 include_directories(
         /usr/include
