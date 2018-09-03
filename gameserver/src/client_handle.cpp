@@ -4,6 +4,7 @@
 
 #include <server_tool.h>
 #include <config.h>
+#include <share_mem.h>
 #include "client_comm_engine.h"
 #include "my_assert.h"
 #include "sceneobjmanager.h"
@@ -13,9 +14,9 @@
 #include "../inc/game_server.h"
 
 CClientHandle::CClientHandle(shared_ptr<CNetWork> pNetWork)
-	: m_pNetWork(pNetWork),
-	  m_pSendBuff(std::make_shared<CByteBuff>()),
-	  m_pRecvBuff(std::make_shared<CByteBuff>())
+	: CMyThread("CClientHandle", 1000),
+	  m_pSendBuff(std::make_shared<CByteBuff>( )),
+	  m_pRecvBuff(std::make_shared<CByteBuff>( ))
 {
 }
 
@@ -26,133 +27,70 @@ CClientHandle::~CClientHandle()
 
 int CClientHandle::PrepareToRun()
 {
-	BeginListen();
 	return 0;
 }
 
-shared_ptr<CByteBuff> &CClientHandle::GetRecvBuff()
+void CClientHandle::CreatePipe()
 {
-	return m_pRecvBuff;
-}
+	int iTempSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(PIPE_SIZE);
 
-shared_ptr<CByteBuff> &CClientHandle::GetSendBuff()
-{
-	return m_pSendBuff;
-}
+	// create s2cpipe
+	system("touch ./scpipefile");
 
-bool CClientHandle::BeginListen()
-{
-	shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
-	ServerInfo *gameInfo = tmpConfig->GetServerInfo(enServerType::FE_GAMESERVER);
-	bool iRet = m_pNetWork->BeginListen(gameInfo->m_sHost.c_str(),
-										gameInfo->m_iPort,
-										&CClientHandle::lcb_OnAcceptCns,
-										&CClientHandle::lcb_OnCnsSomeDataSend,
-										&CClientHandle::lcb_OnCnsSomeDataRecv,
-										&CClientHandle::lcb_OnCnsDisconnected,
-										&CClientHandle::lcb_OnCheckAcceptorTimeOut,
-										1024,
-										tmpConfig->GetTcpKeepAlive());
-	if (iRet) {
-		LOG_INFO("default", "Server listen success at {} : {}", gameInfo->m_sHost.c_str(), gameInfo->m_iPort);
-		return true;
+	char *pcTmpSCPipeID = getenv("SC_PIPE_ID");
+	int iTmpSCPipeID = 0;
+	if (pcTmpSCPipeID) {
+		iTmpSCPipeID = atoi(pcTmpSCPipeID);
 	}
-	else {
-		LOG_ERROR("default""Server listen at {} : {} failed,failed reason {]", gameInfo->m_sHost.c_str(),
-				  gameInfo->m_iPort, strerror(errno));
-		exit(0);
+
+	key_t iTmpKeyS2C = MakeKey("./scpipefile", iTmpSCPipeID);
+	BYTE *pbyTmpS2CPipe = CreateShareMem(iTmpKeyS2C, iTempSize);
+	MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
+
+	CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
+	CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize);
+	m_S2CCodeQueue = shared_ptr<CCodeQueue>(CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_S2C));
+
+	// create c2spipe
+	system("touch ./cspipefile");
+
+	char *pcTmpCSPipeID = getenv("CS_PIPE_ID");
+	int iTmpCSPipeID = 0;
+	if (pcTmpCSPipeID) {
+		iTmpCSPipeID = atoi(pcTmpCSPipeID);
 	}
-}
 
-void CClientHandle::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
-{
-	//客户端主动断开连接
-	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack([uId, &tmpAcceptor]
-					   {
-						   MY_ASSERT(tmpAcceptor != NULL, return);
-						   LOG_DEBUG("default", "New acceptor,socket id {}", tmpAcceptor->GetSocket().GetSocket());
-						   CGameServer::GetSingletonPtr()->GetNetWork()
-							   ->InsertNewAcceptor(uId, (CAcceptor *) (tmpAcceptor));
-					   }
-		);
-}
+	key_t iTmpKeyC2S = MakeKey("./cspipefile", iTmpCSPipeID);
+	BYTE *pbyTmpC2SPipe = CreateShareMem(iTmpKeyC2S, iTempSize);
 
-void CClientHandle::lcb_OnCnsDisconnected(IBufferEvent *tmpAcceptor)
-{
-	MY_ASSERT(tmpAcceptor != NULL, return);
-	//客户端主动断开连接
-	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack(
-			[tmpAcceptor]
-			{
-			});
-}
-
-void CClientHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *tmpAcceptor)
-{
-	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack(
-			[tmpAcceptor]
-			{
-				CGameServer::GetSingletonPtr()->GetClientHandle()->RecvClientData((CAcceptor *) tmpAcceptor);
-			});
-}
-
-void CClientHandle::lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor)
-{
-
-}
-
-void CClientHandle::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
-{
-	CGameServer::GetSingletonPtr()->GetIoThread()
-		->PushTaskBack([]
-					   {
-						   shared_ptr<CNetWork> tmpNet = CGameServer::GetSingletonPtr()->GetNetWork();
-						   std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr();
-						   int tmpPingTime = tmpConfig->GetTcpKeepAlive();
-						   MAP_ACCEPTOR &tmpMap = tmpNet->GetAcceptorMap();
-						   auto it = tmpMap.begin();
-						   time_t tNow = GetMSTime();
-						   for (; it != tmpMap.end();) {
-							   CAcceptor *tmpAcceptor = it->second;
-							   if (tNow - tmpAcceptor->GetLastKeepAlive() > tmpPingTime) {
-								   //关闭连接
-								   delete tmpAcceptor;
-								   tmpAcceptor = NULL;
-								   it = tmpMap.erase(it);
-							   }
-							   else {
-								   it++;
-							   }
-						   }
-					   });
-
+	MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
+	CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
+	CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize);
+	m_S2CCodeQueue = shared_ptr<CCodeQueue>(CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_C2S));
 }
 
 int CClientHandle::DealClientMessage(std::shared_ptr<CMessage> pMsg)
 {
-	CMesHead *pCSHead = pMsg->mutable_msghead();
+	CMesHead *pCSHead = pMsg->mutable_msghead( );
 	if (pCSHead == NULL) {
 		return CLIENTHANDLE_MSGINVALID;
 	}
 	//gate上行数据必须带client的socket信息
-	if (pCSHead->socketinfos().size() != 1) {
+	if (pCSHead->socketinfos( ).size( ) != 1) {
 		return ClienthandleErrCode::CLIENTHANDLE_MSGINVALID;
 	}
 	CSocketInfo tmpSocketInfo = pCSHead->socketinfos(0);
-	int iTmpSocket = tmpSocketInfo.socketid();
-	int tTmpCreateTime = tmpSocketInfo.createtime();
-	if (tmpSocketInfo.state() < 0) {
+	int iTmpSocket = tmpSocketInfo.socketid( );
+	int tTmpCreateTime = tmpSocketInfo.createtime( );
+	if (tmpSocketInfo.state( ) < 0) {
 		// 客户端主动关闭连接，也有可能是连接错误被关闭
 		LOG_INFO("default",
 				 "client({} : {}) commhandle closed by err = {}. ",
 				 iTmpSocket,
 				 tTmpCreateTime,
-				 tmpSocketInfo.state());
+				 tmpSocketInfo.state( ));
 		// 从连接容器中取出玩家实体
-		CPlayer *pTmpTeam = CSceneObjManager::GetSingletonPtr()->GetPlayerBySocket(iTmpSocket);
+		CPlayer *pTmpTeam = CSceneObjManager::GetSingletonPtr( )->GetPlayerBySocket(iTmpSocket);
 		if (NULL == pTmpTeam) {
 			// 找不到玩家，连接已经关闭了
 			LOG_ERROR("default", "[{} : {} : {}] socket({} : {}) EntityID = {} has closed.",
@@ -160,7 +98,7 @@ int CClientHandle::DealClientMessage(std::shared_ptr<CMessage> pMsg)
 			return CLIENTHANDLE_HASCLOSED;
 		}
 		else {
-			STConnectInfo *connectInfo = pTmpTeam->GetPlayerBase()->GetSocketInfoPtr();
+			STConnectInfo *connectInfo = pTmpTeam->GetPlayerBase( )->GetSocketInfoPtr( );
 			if (!connectInfo
 				&& (connectInfo->m_iSocket != iTmpSocket || connectInfo->m_tCreateTime != tTmpCreateTime)) {
 				// 当前玩家与该连接信息不匹配,说明该玩家的连接已经失效
@@ -383,70 +321,68 @@ int CClientHandle::DealClientMessage(std::shared_ptr<CMessage> pMsg)
 	return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::SendResToPlayer(std::shared_ptr<CGooMess> pMessage, CPlayer *pPlayer)
+int CClientHandle::SendResToPlayer(CGooMess *pMessage, CPlayer *pPlayer)
 {
 	MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
-	std::shared_ptr<CMesHead> pTmpHead = std::make_shared<CMesHead>();
-	CSocketInfo *pTmpSocket = pTmpHead->mutable_socketinfos()->Add();
-	STConnectInfo *pTmpConnInfo = pPlayer->GetPlayerBase()->GetSocketInfoPtr();
+	std::shared_ptr<CMesHead> pTmpHead = std::make_shared<CMesHead>( );
+	CSocketInfo *pTmpSocket = pTmpHead->mutable_socketinfos( )->Add( );
+	STConnectInfo *pTmpConnInfo = pPlayer->GetPlayerBase( )->GetSocketInfoPtr( );
 	if (pTmpConnInfo == NULL) {
 		MY_ASSERT_STR(0, return -1, "CClientHandle::Send failed, Get player connection info failed.");
 	}
 	pTmpSocket->set_createtime(pTmpConnInfo->m_tCreateTime);
 	pTmpSocket->set_socketid(pTmpConnInfo->m_iSocket);
-	Package tmpPackage = pPlayer->GetPackage();
-	pTmpHead->set_cmd(tmpPackage.GetCmd());
-	pTmpHead->set_seq(tmpPackage.GetSeq());
-	pTmpHead->set_serial(tmpPackage.GetSerial());
+	Package tmpPackage = pPlayer->GetPackage( );
+	pTmpHead->set_cmd(tmpPackage.GetCmd( ));
+	pTmpHead->set_seq(tmpPackage.GetSeq( ));
+	pTmpHead->set_serial(tmpPackage.GetSerial( ));
 
 	tmpPackage.SetDeal(false);
 	SendResponse(pMessage, pTmpHead);
 	return 0;
 }
 
-int CClientHandle::SendResponse(std::shared_ptr<CGooMess> pMessage, std::shared_ptr<CMesHead> mesHead)
+int CClientHandle::SendResponse(CGooMess *pMessage, CMesHead *mesHead)
 {
-	CByteBuff tmpByteBuff;
 	// 是否需要加密，在这里修改参数
-//	int iRet = CClientCommEngine::ConvertToGateStream(&tmpByteBuff,
-//													  mesHead.get(),
-//													  pMessage.get(),
-//													  mesHead->cmd(),
-//													  mesHead->serial(),
-//													  mesHead->seq());
-//	if (iRet != 0) {
-//		MY_ASSERT_STR(0,
-//					  return -2,
-//					  "CClientHandle::Send failed, CClientCommEngine::ConvertGameServerMessageToStream failed.");
-//	}
-//
-//	iRet = mS2CPipe->AppendOneCode((BYTE *) tmpByteBuff.CanReadData(), tmpByteBuff.ReadableDataLen());
-//	if (iRet < 0) {
-//		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
-//	}
-//
-//	if (!IsToBeBlocked() && GetStatus() != rt_running) {
-//		WakeUp();
-//	}
-//	LOG_DEBUG("default", "---- Send To Client Succeed ----");
+	int iRet = CClientCommEngine::ConvertToGateStream(m_pSendBuff.get( ),
+													  mesHead.get( ),
+													  mesHead->cmd( ),
+													  mesHead->serial( ),
+													  mesHead->seq( ));
+	if (iRet != 0) {
+		MY_ASSERT_STR(0,
+					  return -2,
+					  "CClientHandle::Send failed, CClientCommEngine::ConvertGameServerMessageToStream failed.");
+	}
+
+	iRet = mS2CPipe->AppendOneCode((BYTE *) tmpByteBuff.CanReadData( ), tmpByteBuff.ReadableDataLen( ));
+	if (iRet < 0) {
+		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
+	}
+
+	if (!IsToBeBlocked( ) && GetStatus( ) != rt_running) {
+		WakeUp( );
+	}
+	LOG_DEBUG("default", "---- Send To Client Succeed ----");
 	return 0;
 }
 
 int CClientHandle::Push(int cmd, std::shared_ptr<CGooMess> pMessage, stPointList *pTeamList)
 {
-	CGameServer::GetSingletonPtr()->GetIoThread()->PushTaskBack(
+	CGameServer::GetSingletonPtr( )->GetIoThread( )->PushTaskBack(
 		[cmd, &pMessage, pTeamList]
 		{
 			MY_ASSERT((pMessage != NULL && pTeamList != NULL), return -1);
 			// 判断是否发送消息后断开连接(这个主动断开只针对与第一个玩家)
 			CMesHead pTmpHead;
-			for (int i = 0; i < pTeamList->GetBroadcastNum(); i++) {
+			for (int i = 0; i < pTeamList->GetBroadcastNum( ); i++) {
 				// 将列表中的实体信息加入nethead头中
 				CPlayer *pPlayer = (CPlayer *) pTeamList->GetPointByIdx(i);
 				if (pPlayer) {
-					if (pPlayer->GetPlayerBase()->GetSocketInfoPtr()->m_iSocket != 0) {
-						CSocketInfo *pTmpSocket = pTmpHead.add_socketinfos();
-						STConnectInfo *pTmpConnInfo = pPlayer->GetPlayerBase()->GetSocketInfoPtr();
+					if (pPlayer->GetPlayerBase( )->GetSocketInfoPtr( )->m_iSocket != 0) {
+						CSocketInfo *pTmpSocket = pTmpHead.add_socketinfos( );
+						STConnectInfo *pTmpConnInfo = pPlayer->GetPlayerBase( )->GetSocketInfoPtr( );
 						if (pTmpConnInfo == NULL) {
 							MY_ASSERT_STR(0,
 										  return -1,
@@ -458,9 +394,9 @@ int CClientHandle::Push(int cmd, std::shared_ptr<CGooMess> pMessage, stPointList
 					else {
 						LOG_DEBUG("default",
 								  "Client({} | %lu | {}) has disconnected.",
-								  pPlayer->GetPlayerId(),
-								  pPlayer->GetPlayerId(),
-								  pPlayer->GetPlayerBase()->GetAccount());
+								  pPlayer->GetPlayerId( ),
+								  pPlayer->GetPlayerId( ),
+								  pPlayer->GetPlayerBase( )->GetAccount( ));
 					}
 				}
 			}
@@ -488,31 +424,30 @@ int CClientHandle::Push(int cmd, std::shared_ptr<CGooMess> pMessage, stPointList
 		});
 }
 
-void CClientHandle::RecvClientData(CAcceptor *tmpAcceptor)
+/**
+ * run in io thread
+ */
+void CClientHandle::RecvClientData()
 {
-	MY_ASSERT(tmpAcceptor != NULL, return);
-	//数据不完整
-	if (!tmpAcceptor->IsPackageComplete()) {
-		return;
-	}
-	int iTmpCodeLength = tmpAcceptor->GetRecvPackLen();
-	int iTmpLen = iTmpCodeLength - sizeof(unsigned short);
 	//读取数据
-	m_pRecvBuff->Clear();
-	iTmpLen = tmpAcceptor->RecvData(m_pRecvBuff->CanWriteData(), iTmpLen);
-	m_pRecvBuff->WriteLen(iTmpLen);
-	//当前数据包已全部读取，清除当前数据包缓存长度
-	tmpAcceptor->CurrentPackRecved();
-	std::shared_ptr<CMessage> tmpMes = std::make_shared<CMessage>();
-	if (CClientCommEngine::ConvertStreamToMessage(m_pRecvBuff.get(),
-												  iTmpCodeLength,
-												  tmpMes.get(),
-												  CMessageFactory::GetSingletonPtr().get()) != 0) {
-		LOG_ERROR("default", "CClientHandle::RecvClientData convertStreamToMessage failed");
-	}
+	m_pRecvBuff->Clear( );
+	int iTmpLen = 0;
+	int iRet = m_C2SCodeQueue->GetHeadCode((BYTE *) (m_pRecvBuff->CanWriteData( )), iTmpLen);
+	if (iRet != 0) {
+		CMessage tmpMes;
+		if (CClientCommEngine::ConvertStreamToMessage(m_pRecvBuff.get( ),
+													  iTmpLen,
+													  &tmpMes,
+													  CMessageFactory::GetSingletonPtr( ).get( )) != 0) {
+			LOG_ERROR("default", "CClientHandle::RecvClientData convertStreamToMessage failed");
+		}
 
-	CGameServer::GetSingletonPtr()->GetLogicThread()
-		->PushTaskBack(std::mem_fn(&CClientHandle::DealClientMessage), this, tmpMes);
+		CGameServer::GetSingletonPtr( )->GetLogicThread( )
+			->PushTaskBack(std::mem_fn(&CClientHandle::DealClientMessage), this, tmpMes);
+	}
+	else {
+		LOG_ERROR("default", "CClientHandle::RecvClientData GetHeadCode failed,error code {}", iRet);
+	}
 }
 
 // 断开玩家连接
@@ -563,4 +498,21 @@ void CClientHandle::DisconnectClient(int iSocket,
 //	}
 //
 //	LOG_NOTICE("default", "Disconnect Client [Socket = {} : CreateTime = {}].", iSocket, tCreateTime);
+}
+
+void CClientHandle::RunFunc()
+{
+	while (!m_C2SCodeQueue->IsQueueEmpty( ) && !m_S2CCodeQueue->IsQueueEmpty( )) {
+		CGameServer::GetSingletonPtr( )->GetIoThread( )->PushTaskBack(
+			[this]
+			{
+				RecvClientData( );
+			}
+		);
+	}
+}
+
+bool CClientHandle::IsToBeBlocked()
+{
+	return (!m_C2SCodeQueue->IsQueueEmpty( ) && !m_S2CCodeQueue->IsQueueEmpty( ));
 }

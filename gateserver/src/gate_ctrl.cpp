@@ -14,8 +14,8 @@ template<> std::shared_ptr<CGateCtrl> CSingleton<CGateCtrl>::spSingleton = NULL;
 
 CGateCtrl::CGateCtrl()
 	: m_pNetWork(std::make_shared<CNetWork>( )),
-	  m_pClientManager(std::make_shared<CNetManager>(m_pNetWork)),
-	  m_pServerManager(std::make_shared<CMessHandle>("CMessHandle", 1000 /*超时时间1ms*/)),
+	  m_pNetManager(std::make_shared<CNetManager>(m_pNetWork)),
+	  m_pMessManager(std::make_shared<CMessHandle>("CMessHandle", 1000 /*超时时间1ms*/)),
 	  m_pSingleThead(std::make_shared<CThreadPool>(1))
 {
 }
@@ -35,8 +35,8 @@ int CGateCtrl::PrepareToRun()
 #endif
 	//读取配置文件
 	ReadConfig( );
-	m_pServerManager->PrepareToRun( );
-	m_pClientManager->PrepareToRun( );
+	m_pMessManager->PrepareToRun( );
+	m_pNetManager->PrepareToRun( );
 	return 0;
 }
 
@@ -56,12 +56,12 @@ shared_ptr<CThreadPool> &CGateCtrl::GetSingleThreadPool()
 
 shared_ptr<CNetManager> &CGateCtrl::GetClientManager()
 {
-	return m_pClientManager;
+	return m_pNetManager;
 }
 
 shared_ptr<CMessHandle> &CGateCtrl::GetServerManager()
 {
-	return m_pServerManager;
+	return m_pMessManager;
 }
 
 shared_ptr<CNetWork> &CGateCtrl::GetNetWork()

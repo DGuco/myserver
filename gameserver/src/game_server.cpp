@@ -10,18 +10,19 @@
 template<> shared_ptr<CGameServer> CSingleton<CGameServer>::spSingleton = NULL;
 
 CGameServer::CGameServer()
-	: m_pNetWork(std::make_shared<CNetWork>()),
+	: m_pNetWork(std::make_shared<CNetWork>( )),
 	  m_pClientHandle(std::make_shared<CClientHandle>(m_pNetWork)),
 	  m_pServerHandle(std::make_shared<CServerHandle>(m_pNetWork)),
-	  m_pModuleManager(std::make_shared<CModuleManager>()),
-	  m_pMessageFactory(std::make_shared<CMessageFactory>()),
-	  m_pTimerManager(std::make_shared<CTimerManager>()),
+	  m_pModuleManager(std::make_shared<CModuleManager>( )),
+	  m_pMessageFactory(std::make_shared<CMessageFactory>( )),
+	  m_pTimerManager(std::make_shared<CTimerManager>( )),
 	  m_pLogicThread(std::make_shared<CThreadPool>(1)),
 	  m_pIoThread(std::make_shared<CThreadPool>(1, ignore_pipe)),
 	  m_pComputeThread(std::make_shared<CThreadPool>(2)),
+	  m_pConfigHandle(std::make_shared<CConfigHandle>( )),
 	  m_iServerState(0)
 {
-	Initialize();
+	Initialize( );
 }
 
 CGameServer::~CGameServer()
@@ -33,19 +34,6 @@ int CGameServer::Initialize()
 	return 0;
 }
 
-// 读取配置
-int CGameServer::ReadCfg()
-{
-	// 读取配置
-	shared_ptr<CServerConfig> &pTmpConfig = CServerConfig::CreateInstance();
-	const string filepath = "../config/serverinfo.json";
-	if (-1 == pTmpConfig->LoadFromFile(filepath)) {
-		LOG_ERROR("default", "Get TcpserverConfig failed");
-		exit(0);
-	}
-	return 0;
-}
-
 int CGameServer::ListenFile()
 {
 	bool bRet = m_pNetWork->ListenFile("../config", &CGameServer::lcb_OnConfigChanged, IN_MODIFY);
@@ -53,12 +41,6 @@ int CGameServer::ListenFile()
 		LOG_ERROR("default", "Listen config failed");
 		exit(0);
 	}
-	bRet = m_pNetWork->ListenFile("../lib/libgamemodule.so", &CGameServer::lcb_OnLibGameModuleSoChanged, IN_MODIFY);
-	if (!bRet) {
-		LOG_ERROR("default", "Listen libgamemodule failed");
-		exit(0);
-	}
-	return 0;
 }
 // 运行准备
 int CGameServer::PrepareToRun()
@@ -71,28 +53,28 @@ int CGameServer::PrepareToRun()
 	INIT_ROATING_LOG("default", "../log/gameserver.log", level_enum::info);
 #endif
 	// 读取服务器配置信息
-	if (ReadCfg() != 0) {
+	if (m_pConfigHandle->PrepareToRun( ) != 0) {
 		return -1;
 	}
 
-	if (ListenFile() != 0) {
+	if (ListenFile( ) != 0) {
 		return -1;
 	}
 
-	if (StartAllTimers() != 0) {
+	if (StartAllTimers( ) != 0) {
 		return -4;
 	}
 
-	if (m_pClientHandle->PrepareToRun()) {
+	if (m_pClientHandle->PrepareToRun( )) {
 		return -1;
 	}
 
-	if (m_pServerHandle->PrepareToRun()) {
+	if (m_pServerHandle->PrepareToRun( )) {
 		return -1;
 	}
 
 	// 通知各模块启动
-	if (m_pModuleManager->OnLaunchServer() != 0) {
+	if (m_pModuleManager->OnLaunchServer( ) != 0) {
 		return -5;
 	}
 
@@ -142,7 +124,7 @@ void CGameServer::Run()
 {
 	LOG_INFO("default", "CGameServer start to run now.");
 	//libevent事件循环
-	m_pNetWork->DispatchEvents();
+	m_pNetWork->DispatchEvents( );
 }
 
 // 退出
@@ -157,12 +139,12 @@ void CGameServer::ProcessClientMessage(CMessage *pMsg, CPlayer *pPlayer)
 {
 	MY_ASSERT(pMsg != NULL && pPlayer != NULL, return);
 //    MY_ASSERT(pMsg->has_msghead() == true, return);
-	int iTmpType = GetModuleClass(pMsg->msghead().cmd());
+	int iTmpType = GetModuleClass(pMsg->msghead( ).cmd( ));
 	try {
 		m_pModuleManager->OnClientMessage(iTmpType, pPlayer, pMsg);
 	}
 	catch (std::logic_error error) {
-		LOG_ERROR("default", "Catch logic exception,msg {}", error.what());
+		LOG_ERROR("default", "Catch logic exception,msg {}", error.what( ));
 	}
 }
 
@@ -170,12 +152,12 @@ void CGameServer::ProcessRouterMessage(CProxyMessage *pMsg)
 {
 	MY_ASSERT(pMsg != NULL, return);
 //    MY_ASSERT(pMsg->has_msghead() == true, return);
-	int iTmpType = GetModuleClass(pMsg->msghead().messageid());
+	int iTmpType = GetModuleClass(pMsg->msghead( ).messageid( ));
 	try {
 		m_pModuleManager->OnRouterMessage(iTmpType, pMsg);
 	}
 	catch (std::logic_error error) {
-		LOG_ERROR("default", "Catch logic exception,msg {}", error.what());
+		LOG_ERROR("default", "Catch logic exception,msg {}", error.what( ));
 	}
 }
 
@@ -197,10 +179,10 @@ void CGameServer::DisconnectClient(CPlayer *pPlayer)
 		return;
 	}
 
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::DisconnectClient),
-								m_pClientHandle,
-								pPlayer->GetPlayerBase()->GetSocket(),
-								pPlayer->GetPlayerBase()->GetCreateTime());
+	GetIoThread( )->PushTaskBack(std::mem_fn(&CClientHandle::DisconnectClient),
+								 m_pClientHandle,
+								 pPlayer->GetPlayerBase( )->GetSocket( ),
+								 pPlayer->GetPlayerBase( )->GetCreateTime( ));
 }
 // 设置服务器运行状态
 void CGameServer::SetRunFlag(ERunFlag eRunFlag)
@@ -211,7 +193,7 @@ void CGameServer::SetRunFlag(ERunFlag eRunFlag)
 // 广播消息给玩家，广播时，发起人一定放第一个
 int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, stPointList *pTeamList)
 {
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, pTeamList);
+	GetIoThread( )->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, pTeamList);
 	return 0;
 }
 
@@ -221,7 +203,7 @@ int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, C
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, &tmpList);
+	GetIoThread( )->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, &tmpList);
 	return 0;
 }
 
@@ -230,7 +212,7 @@ int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlay
 {
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
 			  return -1);
-	GetIoThread()->PushTaskBack(std::mem_fn(&CClientHandle::SendResToPlayer), m_pClientHandle, pMsgPara, pPlayer);
+	GetIoThread( )->PushTaskBack(std::mem_fn(&CClientHandle::SendResToPlayer), m_pClientHandle, pMsgPara, pPlayer);
 	return 0;
 }
 
@@ -257,7 +239,7 @@ int CGameServer::CheckRunFlags()
 	}
 	else if (true == m_oRunFlag.CheckRunFlag(ERF_QUIT)) {
 		// 保存数据,退出游戏
-		StartSaveAllData();
+		StartSaveAllData( );
 		SetRunFlag(ERF_RUNTIME);
 		return 1;
 	}
@@ -292,7 +274,7 @@ void CGameServer::LoadDataFinish()
 	SetServerState(CGameServer::ESS_LOADDATA);
 	LOG_INFO("default", "[{} : {} : {}] Launch server load data finished.", __MY_FILE__, __LINE__, __FUNCTION__);
 	// 开始处理服务器初始数据
-	StartProcessingInitData();
+	StartProcessingInitData( );
 }
 
 // 服务器开始处理初始数据
@@ -387,11 +369,8 @@ void CGameServer::SendMsgSystemErrorResponse(int iResult,
 void CGameServer::lcb_OnConfigChanged(inotify_event *notifyEvent)
 {
 	//todo 重新加载配置文件
-}
-
-void CGameServer::lcb_OnLibGameModuleSoChanged(inotify_event *notifyEvent)
-{
-	//todo 重新加载动态库
+	char *fileName = notifyEvent->name;
+	CGameServer::GetSingletonPtr( )->GetConfigHandle( )->Reload(fileName);
 }
 
 int CGameServer::InitStaticLog()
@@ -436,6 +415,11 @@ shared_ptr<CThreadPool> &CGameServer::GetIoThread()
 shared_ptr<CNetWork> &CGameServer::GetNetWork()
 {
 	return m_pNetWork;
+}
+
+shared_ptr<CConfigHandle> &CGameServer::GetConfigHandle()
+{
+	return m_pConfigHandle;
 }
 
 shared_ptr<CThreadPool> &CGameServer::GetComputeThread()

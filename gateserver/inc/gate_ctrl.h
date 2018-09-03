@@ -41,8 +41,8 @@ private:
 	void ReadConfig();
 private:
 	shared_ptr<CNetWork> m_pNetWork;
-	shared_ptr<CNetManager> m_pClientManager;
-	shared_ptr<CMessHandle> m_pServerManager;
+	shared_ptr<CNetManager> m_pNetManager;
+	shared_ptr<CMessHandle> m_pMessManager;
 	shared_ptr<CThreadPool> m_pSingleThead;
 };
 

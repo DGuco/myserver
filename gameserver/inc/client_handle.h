@@ -8,6 +8,7 @@
 
 #include <mythread.h>
 #include <net_work.h>
+#include <code_queue.h>
 #include "base.h"
 #include "message_interface.h"
 #include "message.pb.h"
@@ -37,7 +38,7 @@ enum ClienthandleErrCode
 	// CLIENTHANDLE_BUSY						        = 16,		    // 当前玩家有消息在处理中
 };
 
-class CClientHandle
+class CClientHandle final: public CMyThread
 {
 public:
 	//构造函数
@@ -47,8 +48,10 @@ public:
 public:
 	//准备run
 	int PrepareToRun();
+	//创建通信共享内存管道
+	void CreatePipe();
 	//回复消息
-	int SendResToPlayer(shared_ptr<CGooMess> pMessage, CPlayer *pPlayer);
+	int SendResToPlayer(CGooMess *pMessage, CPlayer *pPlayer);
 	//处理客户端上行消息
 	int DealClientMessage(shared_ptr<CMessage> pMsg);
 	//断开连接
@@ -56,28 +59,16 @@ public:
 	//推送消息
 	int Push(int cmd, shared_ptr<CGooMess> pMessage, stPointList *pTeamList);
 	//接收客户端数据包
-	void RecvClientData(CAcceptor *tmpAcceptor);
-	int SendResponse(shared_ptr<CGooMess> pMessage, shared_ptr<CMesHead> mesHead);
+	void RecvClientData();
+	int SendResponse(CGooMess *pMessage, CMesHead *mesHead);
 public:
-	shared_ptr<CByteBuff> &GetRecvBuff();
-	shared_ptr<CByteBuff> &GetSendBuff();
-protected:
-	//客户端连接还回调
-	static void lcb_OnAcceptCns(uint32 uId, IBufferEvent *tmpAcceptor);
-	//客户端断开连接回调
-	static void lcb_OnCnsDisconnected(IBufferEvent *tmpAcceptor);
-	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataRecv(IBufferEvent *tmpAcceptor);
-	//发送数据回调
-	static void lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor);
-	//检测连接超时
-	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
+	void RunFunc() override;
+	bool IsToBeBlocked() override;
 private:
-	//开始监听
-	bool BeginListen();
-	//客户端断开连接
-private:
-	shared_ptr<CNetWork> m_pNetWork;
+	//gateserver ==> gameserver
+	std::shared_ptr<CCodeQueue> m_C2SCodeQueue;
+	//gameserver ==> gateserver
+	std::shared_ptr<CCodeQueue> m_S2CCodeQueue;
 	shared_ptr<CByteBuff> m_pRecvBuff; //客户端上行数据buff
 	shared_ptr<CByteBuff> m_pSendBuff; //客户端下行数据buff
 };
