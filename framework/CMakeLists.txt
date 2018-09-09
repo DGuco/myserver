@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(myserver)
+project(framework)
 
 #libevent 多线程开启-DEVENT_THREAD_SAFE
 add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DLOG_THREAD_SAFE)
@@ -88,7 +88,15 @@ set(FRAMEWORK
         timer/clock.h
         timer/timer.h
         timer/timer.cpp
-        mem/map.h mem/share_container_interface.h mem/vector.h mem/unordered_map.h mem/set.h mem/list.h)
+#        mem/hash_function.h
+        redis/redis_client.h
+        redis/redis_client.cpp)
+#        mem/map.h
+#        mem/share_container_interface.h
+#        mem/vector.h
+#        mem/unordered_map.h
+#        mem/set.h
+#        mem/list.h)
 
 include_directories(
         /usr/include
@@ -102,6 +110,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/framework/timer
+        ${CMAKE_SOURCE_DIR}/framework/hiredis
 )
 
 link_directories(
@@ -110,5 +119,5 @@ link_directories(
 )
 
 add_library(framework ${FRAMEWORK})
-target_link_libraries(framework pthread event event_pthreads protobuf crypto)
+target_link_libraries(framework pthread event event_pthreads protobuf crypto hiredis xredis)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
