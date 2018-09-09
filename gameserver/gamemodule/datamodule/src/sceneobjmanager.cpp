@@ -2,13 +2,14 @@
 // Created by DGuco on 17-7-27.
 //
 
-#include "../inc/sceneobjmanager.h"
+#include <object_manager.h>
+#include "sceneobjmanager.h"
 
 template<> shared_ptr<CSceneObjManager> CSingleton<CSceneObjManager>::spSingleton = NULL;
 
 CSceneObjManager::CSceneObjManager()
 {
-	Initialize();
+	Initialize( );
 }
 
 CSceneObjManager::~CSceneObjManager()
@@ -22,14 +23,15 @@ CSceneObjManager::~CSceneObjManager()
 int CSceneObjManager::Initialize()
 {
 	m_pPlayerManager = new CObjectManager(EnObjType::OBJ_PLAYER_ENTRY);
-	m_mPlayerMap.clear();
-	m_mSocketMap.clear();
+	m_mPlayerMap.clear( );
+	m_mSocketMap.clear( );
 	return 0;
 }
 
 CPlayer *CSceneObjManager::GetPlayer(OBJ_ID ulPlayerid)
 {
-	MAP_SAFE_FIND(m_mPlayerMap, ulPlayerid);
+//	return MAP_SAFE_FIND(m_mPlayerMap, ulPlayerid);
+	return nullptr;
 }
 
 CPlayer *CSceneObjManager::GetPlayerBySocket(int socket)
@@ -41,7 +43,7 @@ CPlayer *CSceneObjManager::GetPlayerBySocket(int socket)
 int CSceneObjManager::DestroyPlayer(OBJ_ID iObjID)
 {
 	auto it = m_mPlayerMap.find(iObjID);
-	if (it != m_mPlayerMap.end()) {
+	if (it != m_mPlayerMap.end( )) {
 		delete it->second;
 	}
 	m_mPlayerMap.erase(iObjID);
@@ -52,8 +54,8 @@ void CSceneObjManager::AddNewPlayer(CPlayer *pPlayer)
 	if (pPlayer == NULL) {
 		return;
 	}
-	m_mPlayerMap[pPlayer->GetPlayerId()] = pPlayer;
-	m_mSocketMap[pPlayer->GetPlayerBase()->GetSocket()] = pPlayer->GetPlayerId();
+	m_mPlayerMap[pPlayer->GetPlayerId( )] = pPlayer;
+	m_mSocketMap[pPlayer->GetPlayerBase( )->GetSocket( )] = pPlayer->GetPlayerId( );
 }
 
 CObjectManager *CSceneObjManager::GetPlayerManager()

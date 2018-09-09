@@ -20,8 +20,6 @@ set(FRAMEWORK
         base/my_assert.h
         base/my_macro.h
         base/my_macro.h
-        base/object_manager.cpp
-        base/object_manager.h
         const/common_def.h
         const/err_code.h
         const/dblogin_type.h
@@ -90,7 +88,7 @@ set(FRAMEWORK
         timer/clock.h
         timer/timer.h
         timer/timer.cpp
-        mem/hash_function.h)
+        mem/map.h mem/share_container_interface.h mem/vector.h mem/unordered_map.h mem/set.h mem/list.h)
 
 include_directories(
         /usr/include

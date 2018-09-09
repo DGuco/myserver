@@ -13,10 +13,10 @@
 template<> std::shared_ptr<CGateCtrl> CSingleton<CGateCtrl>::spSingleton = NULL;
 
 CGateCtrl::CGateCtrl()
-	: m_pNetWork(std::make_shared<CNetWork>()),
-	  m_pClientManager(std::make_shared<CClientManager>(m_pNetWork)),
-	  m_pServerManager(std::make_shared<CServerManager>(m_pNetWork)),
-	  m_pSingleThead(std::make_shared<CThreadPool>(1, ignore_pipe))
+	: m_pNetWork(std::make_shared<CNetWork>( )),
+	  m_pNetManager(std::make_shared<CNetManager>(m_pNetWork)),
+	  m_pMessManager(std::make_shared<CMessHandle>("CMessHandle", 1000 /*超时时间1ms*/)),
+	  m_pSingleThead(std::make_shared<CThreadPool>(1))
 {
 }
 
@@ -34,19 +34,19 @@ int CGateCtrl::PrepareToRun()
 	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::info);
 #endif
 	//读取配置文件
-	ReadConfig();
-	m_pServerManager->PrepareToRun();
-	m_pClientManager->PrepareToRun();
+	ReadConfig( );
+	m_pMessManager->PrepareToRun( );
+	m_pNetManager->PrepareToRun( );
 	return 0;
 }
 
 int CGateCtrl::Run()
 {
 	LOG_INFO("default", "Libevent run with net module {}",
-			 event_base_get_method(reinterpret_cast<const event_base *>(m_pNetWork->GetEventReactor()
-				 ->GetEventBase())));
+			 event_base_get_method(reinterpret_cast<const event_base *>(m_pNetWork->GetEventReactor( )
+				 ->GetEventBase( ))));
 	//libevent事件循环
-	m_pNetWork->DispatchEvents();
+	m_pNetWork->DispatchEvents( );
 }
 
 shared_ptr<CThreadPool> &CGateCtrl::GetSingleThreadPool()
@@ -54,14 +54,14 @@ shared_ptr<CThreadPool> &CGateCtrl::GetSingleThreadPool()
 	return m_pSingleThead;
 }
 
-shared_ptr<CClientManager> &CGateCtrl::GetClientManager()
+shared_ptr<CNetManager> &CGateCtrl::GetClientManager()
 {
-	return m_pClientManager;
+	return m_pNetManager;
 }
 
-shared_ptr<CServerManager> &CGateCtrl::GetServerManager()
+shared_ptr<CMessHandle> &CGateCtrl::GetServerManager()
 {
-	return m_pServerManager;
+	return m_pMessManager;
 }
 
 shared_ptr<CNetWork> &CGateCtrl::GetNetWork()
@@ -71,7 +71,7 @@ shared_ptr<CNetWork> &CGateCtrl::GetNetWork()
 
 void CGateCtrl::ReadConfig()
 {
-	std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::CreateInstance();
+	std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::CreateInstance( );
 	string filePath = "../config/serverinfo.json";
 	if (-1 == tmpConfig->LoadFromFile(filePath)) {
 		LOG_ERROR("default", "Get ServerConfig failed");

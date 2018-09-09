@@ -12,13 +12,13 @@
 #include <byte_buff.h>
 #include "mythread.h"
 
-class CClientManager
+class CNetManager
 {
 public:
 	//构造函数
-	CClientManager(shared_ptr<CNetWork> pNetWork);
+	CNetManager(shared_ptr<CNetWork> pNetWork);
 	//析构函数
-	virtual ~CClientManager();
+	virtual ~CNetManager();
 public:
 	//准备run
 	int PrepareToRun();

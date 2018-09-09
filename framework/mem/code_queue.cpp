@@ -72,7 +72,7 @@ CCodeQueue::CCodeQueue(int nTotalSize, int iLockIdx /* = -1  */)
 		return;
 	}
 
-	if (pCurrentShm->GetInitMode() == SHM_INIT) {
+	if (pCurrentShm->GetInitMode( ) == SHM_INIT) {
 		m_stQueueHead.m_iLockIdx = iLockIdx;
 		if (Initialize(nTotalSize)) {
 			exit(0);
@@ -85,6 +85,7 @@ CCodeQueue::CCodeQueue(int nTotalSize, int iLockIdx /* = -1  */)
 
 CCodeQueue::~CCodeQueue()
 {
+
 }
 
 /**
@@ -248,10 +249,10 @@ int CCodeQueue::AppendOneCode(const BYTE *pInCode, int sInLength)
 	}
 
 	//获取共享内存管道起始地址
-	pbyCodeBuf = GetPipeAddr();
+	pbyCodeBuf = GetPipeAddr( );
 
 	// 首先判断是否队列已满
-	if (IsQueueFull()) {
+	if (IsQueueFull( )) {
 		return -2;
 	}
 
@@ -263,7 +264,7 @@ int CCodeQueue::AppendOneCode(const BYTE *pInCode, int sInLength)
 		return -3;
 	}
 
-	nTempMaxLength -= GetCanWriteLen();
+	nTempMaxLength -= GetCanWriteLen( );
 
 	//剩余空间不足
 	if (sInLength > nTempMaxLength || sInLength > 0xFFFF) {
@@ -320,7 +321,7 @@ int CCodeQueue::PeekHeadCode(BYTE *pOutCode, int &psOutLength)
 	//获取读写索引
 	GetCriticalData(nTempRead, nTempWrite);
 
-	nTempMaxLength -= GetCanReadLen();
+	nTempMaxLength -= GetCanReadLen( );
 
 	// 如果数据为空
 	if (nTempMaxLength == 0) {
@@ -333,7 +334,7 @@ int CCodeQueue::PeekHeadCode(BYTE *pOutCode, int &psOutLength)
 	}
 
 	//获取共享内存管道的地址
-	pbyCodeBuf = GetPipeAddr();
+	pbyCodeBuf = GetPipeAddr( );
 	//数据目的地址
 	unsigned short tmpDataLen = 0;
 	//数据源地址
@@ -397,13 +398,13 @@ int CCodeQueue::GetHeadCode(BYTE *pOutCode, int &psOutLength)
 	}
 
 	//获取共享内存管道的地址
-	pbyCodeBuf = GetPipeAddr();
+	pbyCodeBuf = GetPipeAddr( );
 
 	//获取读写索引
 	GetCriticalData(nTempRead, nTempWrite);
 
 	//获取数据大小
-	nTempMaxLength = GetCanReadLen();
+	nTempMaxLength = GetCanReadLen( );
 
 	// 如果数据为空
 	if (nTempMaxLength == 0) {
@@ -478,15 +479,15 @@ int CCodeQueue::DeleteHeadCode()
 		return -1;
 	}
 	//获取共享内存管道的地址
-	pbyCodeBuf = GetPipeAddr();
+	pbyCodeBuf = GetPipeAddr( );
 	//获取读写索引
 	GetCriticalData(nTempRead, nTempWrite);
 
-	if (IsQueueEmpty()) {
-		CleanQueue();
+	if (IsQueueEmpty( )) {
+		CleanQueue( );
 		return 0;
 	}
-	nTempMaxLength = GetCanReadLen();
+	nTempMaxLength = GetCanReadLen( );
 
 	if (nTempMaxLength < (int) sizeof(short)) {
 		nTempRead = nTempWrite;
@@ -561,7 +562,7 @@ int CCodeQueue::GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int
 		return -1;
 	}
 
-	nTempMaxLength = GetCanReadLen();
+	nTempMaxLength = GetCanReadLen( );
 	if (nTempMaxLength < (int) sizeof(short)) {
 		psOutLength = 0;
 		nTempRead = nTempWrite;

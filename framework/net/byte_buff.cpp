@@ -17,7 +17,7 @@ bool IsSystemLittleEndian()
 	return (w1.b == 1);
 }
 
-bool CByteBuff::m_bIsLittleEndian = IsSystemLittleEndian();
+bool CByteBuff::m_bIsLittleEndian = IsSystemLittleEndian( );
 
 CByteBuff::CByteBuff()
 	:
@@ -26,7 +26,7 @@ CByteBuff::CByteBuff()
 	m_uiLen(0),
 	m_uiCapacity(MAX_PACKAGE_LEN)
 {
-	m_acData = new char[m_uiCapacity]();
+	m_acData = new char[m_uiCapacity]( );
 }
 
 CByteBuff::CByteBuff(unsigned int tmpCap)
@@ -36,7 +36,7 @@ CByteBuff::CByteBuff(unsigned int tmpCap)
 	m_uiLen(0),
 	m_uiCapacity(tmpCap)
 {
-	m_acData = new char[tmpCap]();
+	m_acData = new char[tmpCap]( );
 }
 
 CByteBuff::CByteBuff(char *data, unsigned tmpCap)
@@ -54,7 +54,7 @@ CByteBuff::CByteBuff(const CByteBuff &byteBuff)
 	if (this == &(byteBuff)) {
 		return;
 	}
-	m_acData = new char[m_uiCapacity]();
+	m_acData = new char[m_uiCapacity]( );
 	Copy(&byteBuff);
 }
 
@@ -106,7 +106,7 @@ void CByteBuff::Clear()
 
 char *CByteBuff::Flip(char *netStr, size_t len)
 {
-	if (IsLittleEndian()) {
+	if (IsLittleEndian( )) {
 		Reverse(netStr, len);
 	}
 	return netStr;
@@ -114,52 +114,52 @@ char *CByteBuff::Flip(char *netStr, size_t len)
 
 short CByteBuff::ReadShort()
 {
-	return ReadT<short>();
+	return ReadT<short>( );
 }
 
 int CByteBuff::ReadInt()
 {
-	return ReadT<int>();
+	return ReadT<int>( );
 }
 
 long CByteBuff::ReadLong()
 {
-	return ReadT<long>();
+	return ReadT<long>( );
 }
 
 long long CByteBuff::ReadLongLong()
 {
-	return ReadT<long long>();
+	return ReadT<long long>( );
 }
 
 unsigned short CByteBuff::ReadUnShort()
 {
-	return ReadT<unsigned short>();
+	return ReadT<unsigned short>( );
 }
 
 unsigned int CByteBuff::ReadUnInt()
 {
-	return ReadT<unsigned int>();
+	return ReadT<unsigned int>( );
 }
 
 unsigned long CByteBuff::ReadUnLong()
 {
-	return ReadT<unsigned long>();
+	return ReadT<unsigned long>( );
 }
 
 unsigned long long CByteBuff::ReadUnLongLong()
 {
-	return ReadT<unsigned long long>();
+	return ReadT<unsigned long long>( );
 }
 
 float CByteBuff::ReadFloat()
 {
-	return ReadT<float>();
+	return ReadT<float>( );
 }
 
 double CByteBuff::ReadDouble()
 {
-	return ReadT<double>();
+	return ReadT<double>( );
 }
 
 void CByteBuff::WriteShort(short value, int offset)
@@ -245,7 +245,7 @@ T CByteBuff::ReadT()
 	char tmpData[64];
 	size_t len = sizeof(T);
 	memcpy((void *) tmpData, m_acData + m_uiReadIndex, len);
-	if (IsLittleEndian()) {
+	if (IsLittleEndian( )) {
 		Reverse(tmpData, len);
 	}
 	T result = *(T *) tmpData;

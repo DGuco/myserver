@@ -12,6 +12,8 @@ set(SOURCE_FILES
         src/game_server.cpp
         src/client_handle.cpp
         src/message_factory.cpp
+        inc/config_handle.h
+        src/config_handle.cpp
         gamemodule/datamodule/inc/sceneobjmanager.h
         gamemodule/datamodule/inc/player.h
         gamemodule/datamodule/inc/playerdata.h
@@ -31,7 +33,8 @@ set(SOURCE_FILES
         gamemodule/logicmodule/src/logic_module.cpp
         gamemodule/logicmodule/src/db_module.cpp
         gamemodule/metamodule/inc/parameter_config.h
-        gamemodule/metamodule/src/parameter_config.cpp)
+        gamemodule/metamodule/src/parameter_config.cpp
+        )
 
 include_directories(
         /usr/include/
