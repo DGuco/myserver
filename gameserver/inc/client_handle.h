@@ -42,7 +42,7 @@ class CClientHandle final: public CMyThread
 {
 public:
 	//构造函数
-	CClientHandle(shared_ptr<CNetWork> pNetWork);
+	CClientHandle();
 	//析构函数
 	virtual ~CClientHandle();
 public:

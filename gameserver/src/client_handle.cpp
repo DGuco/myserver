@@ -13,7 +13,7 @@
 #include "../inc/client_handle.h"
 #include "../inc/game_server.h"
 
-CClientHandle::CClientHandle(shared_ptr<CNetWork> pNetWork)
+CClientHandle::CClientHandle()
 	: CMyThread("CClientHandle", 1000),
 	  m_pSendBuff(std::make_shared<CByteBuff>( )),
 	  m_pRecvBuff(std::make_shared<CByteBuff>( ))
