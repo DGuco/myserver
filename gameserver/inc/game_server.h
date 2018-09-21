@@ -22,6 +22,7 @@
 #include "server_handle.h"
 #include "player.h"
 #include "module_manager.h"
+#include "config_handle.h"
 
 class CGameServer: public CSingleton<CGameServer>
 {
@@ -148,6 +149,7 @@ public:
 	shared_ptr<CThreadPool> &GetIoThread();
 	shared_ptr<CThreadPool> &GetComputeThread();
 	shared_ptr<CNetWork> &GetNetWork();
+	shared_ptr<CConfigHandle> &GetConfigHandle();
 	CRunFlag &GetRunFlag();
 	int GetMiServerState();
 public:
@@ -172,6 +174,8 @@ private:
 	std::shared_ptr<CThreadPool> m_pLogicThread;                // 逻辑线程
 	std::shared_ptr<CThreadPool> m_pIoThread;                   // io线程(收发消息)
 	std::shared_ptr<CThreadPool> m_pComputeThread;				// 计算线程
+	std::shared_ptr<CConfigHandle> m_pConfigHandle;				// 计算线程
+
 	CRunFlag m_oRunFlag;                         // 服务器运行状态
 	int m_iServerState;    // 服务器状态
 };

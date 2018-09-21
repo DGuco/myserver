@@ -238,12 +238,12 @@ IEventReactor *CNetWork::GetEventReactor()
 	return m_pEventReactor;
 }
 
-MAP_ACCEPTOR &CNetWork::GetAcceptorMap()
+CNetWork::MAP_ACCEPTOR &CNetWork::GetAcceptorMap()
 {
 	return m_mapAcceptor;
 }
 
-MAP_FILELISTENER &CNetWork::GetFileListenerMap()
+CNetWork::MAP_FILELISTENER &CNetWork::GetFileListenerMap()
 {
 	return m_mapFileListener;
 }

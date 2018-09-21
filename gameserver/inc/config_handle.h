@@ -16,7 +16,6 @@
 const static string configPath = "../config/";
 
 using namespace std;
-const
 class CConfigHandle
 {
 public:

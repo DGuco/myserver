@@ -20,6 +20,8 @@ set(FRAMEWORK
         base/my_assert.h
         base/my_macro.h
         base/my_macro.h
+        base/object_manager.h
+        base/object_manager.cpp
         const/common_def.h
         const/err_code.h
         const/dblogin_type.h
@@ -73,7 +75,7 @@ set(FRAMEWORK
         net/file_listener.cpp
         net/file_listener.h
         mem/share_mem.h
-        mem/shm.h/
+        mem/shm.h
         mem/share_mem.cpp
         mem/shm.cpp
         mem/code_queue.h
@@ -87,16 +89,8 @@ set(FRAMEWORK
         timer/clock.cpp
         timer/clock.h
         timer/timer.h
-        timer/timer.cpp
-#        mem/hash_function.h
-        redis/redis_client.h
-        redis/redis_client.cpp)
-#        mem/map.h
-#        mem/share_container_interface.h
-#        mem/vector.h
-#        mem/unordered_map.h
-#        mem/set.h
-#        mem/list.h)
+        timer/timer.cpp)
+
 
 include_directories(
         /usr/include
@@ -119,5 +113,5 @@ link_directories(
 )
 
 add_library(framework ${FRAMEWORK})
-target_link_libraries(framework pthread event event_pthreads protobuf crypto hiredis xredis)
+target_link_libraries(framework pthread event event_pthreads protobuf crypto)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

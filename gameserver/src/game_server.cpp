@@ -11,7 +11,7 @@ template<> shared_ptr<CGameServer> CSingleton<CGameServer>::spSingleton = NULL;
 
 CGameServer::CGameServer()
 	: m_pNetWork(std::make_shared<CNetWork>( )),
-	  m_pClientHandle(std::make_shared<CClientHandle>(m_pNetWork)),
+	  m_pClientHandle(std::make_shared<CClientHandle>()),
 	  m_pServerHandle(std::make_shared<CServerHandle>(m_pNetWork)),
 	  m_pModuleManager(std::make_shared<CModuleManager>( )),
 	  m_pMessageFactory(std::make_shared<CMessageFactory>( )),
@@ -220,7 +220,11 @@ int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlay
 int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, std::shared_ptr<CMesHead> mesHead)
 {
 	MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
-//	GetIoThread()->PushTaskBack(m_pClientHandle->SendResponse(), pMsgPara, mesHead);
+	GetIoThread( )->PushTaskBack(
+		[this, pMsgPara, mesHead]
+		{
+			m_pClientHandle->SendResponse(pMsgPara, mesHead);
+		});
 }
 
 // 检查服务器状态

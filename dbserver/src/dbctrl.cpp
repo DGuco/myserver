@@ -10,7 +10,7 @@
 #include "connector.h"
 #include "server_comm_engine.h"
 
-template<> shared_ptr<CSingleton<T>> CSingleton<CDBCtrl>::spSingleton = NULL;
+template<> shared_ptr<CDBCtrl> CSingleton<CDBCtrl>::spSingleton = NULL;
 
 int CDBCtrl::m_iProxyId = 0;
 
@@ -284,7 +284,7 @@ int CDBCtrl::ConnectToProxyServer()
 	int i = 0;
 
 	//如果为null 让程序崩溃
-	ServerInfo *proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_PROXYSERVER);
+	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	if (!m_pNetWork->Connect(proxyInfo->m_sHost.c_str(),
 							 proxyInfo->m_iPort,
 							 proxyInfo->m_iServerId,
@@ -324,8 +324,8 @@ int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
 	unsigned short tTotalLen = sizeof(message_buffer);
 
 	//如果为null 让程序崩溃
-	ServerInfo *dbInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
-	ServerInfo *proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_PROXYSERVER);
+	ServerInfo *dbInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_DBSERVER);
+	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	pbmsg_setproxy(message.mutable_msghead(),
 				   enServerType::FE_DBSERVER,
 				   dbInfo->m_iServerId,
@@ -365,8 +365,8 @@ int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
 
-	ServerInfo *dbInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
-	ServerInfo *proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_DBSERVER);
+	ServerInfo *dbInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_DBSERVER);
+	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_DBSERVER);
 	pbmsg_setproxy(message.mutable_msghead(),
 				   enServerType::FE_DBSERVER,
 				   dbInfo->m_iServerId,
@@ -491,7 +491,7 @@ void CDBCtrl::lcb_OnConnected(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CConnector), return);
 	CConnector *pConnector = (CConnector *) pBufferEvent;
-	ServerInfo *proxyInfo = CServerConfig::GetSingleton().GetServerInfo(enServerType::FE_PROXYSERVER);
+	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	if (CDBCtrl::GetSingletonPtr()->RegisterToProxyServer(pConnector)) {
 		LOG_ERROR("default", "Error: Register to Proxy Server {} failed.\n", proxyInfo->m_iServerId);
 		return;
@@ -539,8 +539,8 @@ void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
 	time_t tNow = GetMSTime();
-	CServerConfig *tmpConfig = CServerConfig::GetSingletonPtr();
-	CDBCtrl *tmpDBCtrl = CDBCtrl::GetSingletonPtr();
+	shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr();
+	shared_ptr<CDBCtrl> &tmpDBCtrl = CDBCtrl::GetSingletonPtr();
 	CDBCtrl::GetSingletonPtr()->SendkeepAliveToProxy(pConnector);
 	if (pConnector->GetState() == CConnector::eCS_Connected &&
 		pConnector->GetSocket().GetSocket() > 0 &&

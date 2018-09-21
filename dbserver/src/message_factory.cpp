@@ -5,7 +5,7 @@
 #include "../inc/message_factory.h"
 #include "../../framework/message/dbmessage.pb.h"
 
-CMessageFactory::CMessageFactory() :
+CMessageFactory::CMessageFactory()
 {
 
 	memset(macMessageBuff, 0, sizeof(macMessageBuff));

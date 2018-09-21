@@ -19,18 +19,18 @@
 #include "buffev_interface.h"
 #include "acceptor.h"
 
-typedef unordered_map<unsigned int, CConnector *> MAP_CONNECTOR;
-
-typedef unordered_map<unsigned int, CAcceptor *> MAP_ACCEPTOR;
-
-typedef unordered_map<unsigned int, CFileListener *> MAP_FILELISTENER;
-
-typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
-
 using namespace std;
 
 class CNetWork final: public CSingleton<CNetWork>
 {
+public:
+	typedef unordered_map<unsigned int, CConnector *> MAP_CONNECTOR;
+
+	typedef unordered_map<unsigned int, CAcceptor *> MAP_ACCEPTOR;
+
+	typedef unordered_map<unsigned int, CFileListener *> MAP_FILELISTENER;
+
+	typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
 public:
 	//构造函数
 	CNetWork();

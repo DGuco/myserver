@@ -51,7 +51,7 @@ public:
 	//创建通信共享内存管道
 	void CreatePipe();
 	//回复消息
-	int SendResToPlayer(CGooMess *pMessage, CPlayer *pPlayer);
+	int SendResToPlayer(shared_ptr<CGooMess> pMessage, CPlayer *pPlayer);
 	//处理客户端上行消息
 	int DealClientMessage(shared_ptr<CMessage> pMsg);
 	//断开连接
@@ -60,7 +60,7 @@ public:
 	int Push(int cmd, shared_ptr<CGooMess> pMessage, stPointList *pTeamList);
 	//接收客户端数据包
 	void RecvClientData();
-	int SendResponse(CGooMess *pMessage, CMesHead *mesHead);
+	int SendResponse(shared_ptr<CGooMess> pMessag, shared_ptr<CMesHead> mesHead);
 public:
 	void RunFunc() override;
 	bool IsToBeBlocked() override;

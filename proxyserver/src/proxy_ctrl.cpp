@@ -14,7 +14,7 @@
 
 using namespace std;
 
-template<> shared_ptr<CSingleton<CProxyCtrl>> CSingleton<CProxyCtrl>::spSingleton = NULL;
+template<> std::shared_ptr<CProxyCtrl> CSingleton<CProxyCtrl>::spSingleton = NULL;
 
 std::map<int/*key*/, int/*socket id*/> CProxyCtrl::m_mapRegister;
 
@@ -24,7 +24,7 @@ CByteBuff *CProxyCtrl::m_pRecvBuff = new CByteBuff;
 
 CProxyCtrl::CProxyCtrl()
 {
-	m_pNetWork = new CNetWork();
+	m_pNetWork = new CNetWork( );
 }
 
 CProxyCtrl::~CProxyCtrl()
@@ -45,15 +45,15 @@ int CProxyCtrl::PrepareToRun()
 	// 读取配置
 	CServerConfig *pTmpConfig = new CServerConfig;
 	const string filepath = "../config/serverinfo.json";
-	if (-1 == CServerConfig::GetSingleton().LoadFromFile(filepath)) {
+	if (-1 == CServerConfig::GetSingletonPtr( )->LoadFromFile(filepath)) {
 		LOG_ERROR("default", "Get TcpserverConfig failed");
 		delete pTmpConfig;
 		pTmpConfig = NULL;
 		exit(0);
 	}
 
-	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
-	m_pNetWork->BeginListen(proxyInfo->m_sHost.c_str(),
+	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr( )->GetServerInfo(enServerType::FE_PROXYSERVER);
+	m_pNetWork->BeginListen(proxyInfo->m_sHost.c_str( ),
 							proxyInfo->m_iPort,
 							&CProxyCtrl::lcb_OnAcceptCns,
 							&CProxyCtrl::lcb_OnCnsSomeDataSend,
@@ -61,26 +61,26 @@ int CProxyCtrl::PrepareToRun()
 							&CProxyCtrl::lcb_OnCnsDisconnected,
 							&CProxyCtrl::lcb_OnAcceptorTimeOut,
 							-1,
-							CServerConfig::GetSingletonPtr()->GetTcpKeepAlive());
+							CServerConfig::GetSingletonPtr( )->GetTcpKeepAlive( ));
 	return 0;
 }
 
 int CProxyCtrl::Run()
 {
 	LOG_INFO("default", "Libevent run with net module {}",
-			 event_base_get_method(reinterpret_cast<const event_base *>(CNetWork::GetSingletonPtr()
-				 ->GetEventReactor()->GetEventBase())));
-	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
-	LOG_INFO("default", "ProxyServer is going to run at {} : {}", proxyInfo->m_sHost.c_str(), proxyInfo->m_iPort);
+			 event_base_get_method(reinterpret_cast<const event_base *>(CNetWork::GetSingletonPtr( )
+				 ->GetEventReactor( )->GetEventBase( ))));
+	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr( )->GetServerInfo(enServerType::FE_PROXYSERVER);
+	LOG_INFO("default", "ProxyServer is going to run at {} : {}", proxyInfo->m_sHost.c_str( ), proxyInfo->m_iPort);
 	LOG_INFO("default", "ProxyServer startup successes");
-	m_pNetWork->DispatchEvents();
+	m_pNetWork->DispatchEvents( );
 	return 0;
 }
 
 IBufferEvent *CProxyCtrl::GetConnByKey(int iKey)
 {
 	auto it = m_mapRegister.find(iKey);
-	if (it != m_mapRegister.end()) {
+	if (it != m_mapRegister.end( )) {
 		return m_pNetWork->FindAcceptor(it->second);
 	}
 	return NULL;
@@ -99,44 +99,44 @@ int CProxyCtrl::MakeConnKey(const short nType, const short nID)
 void CProxyCtrl::lcb_OnAcceptCns(uint32 uId, CAcceptor *pAcceptor)
 {
 	MY_ASSERT(pAcceptor != NULL, return);
-	CNetWork::GetSingletonPtr()->InsertNewAcceptor(uId, pAcceptor);
-	LOG_DEBUG("default", "New Connector,socket id {}", pAcceptor->GetSocket().GetSocket());
+	CNetWork::GetSingletonPtr( )->InsertNewAcceptor(uId, pAcceptor);
+	LOG_DEBUG("default", "New Connector,socket id {}", pAcceptor->GetSocket( ).GetSocket( ));
 }
 
 void CProxyCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL, return);
-	SOCKET tmpSocket = pBufferEvent->GetSocket().GetSocket();
+	SOCKET tmpSocket = pBufferEvent->GetSocket( ).GetSocket( );
 	auto it = m_mapSocket2Key.find(tmpSocket);
-	if (it != m_mapSocket2Key.end()) {
+	if (it != m_mapSocket2Key.end( )) {
 		m_mapRegister.erase(it->second);
 		m_mapSocket2Key.erase(tmpSocket);
 	}
-	LOG_WARN("default", "Connection disconnected,socket id {}", pBufferEvent->GetSocket().GetSocket());
-	CNetWork::GetSingletonPtr()->ShutDownAcceptor(tmpSocket);
+	LOG_WARN("default", "Connection disconnected,socket id {}", pBufferEvent->GetSocket( ).GetSocket( ));
+	CNetWork::GetSingletonPtr( )->ShutDownAcceptor(tmpSocket);
 }
 
 void CProxyCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL, return);
 	//消息不完整
-	if (!pBufferEvent->IsPackageComplete()) {
+	if (!pBufferEvent->IsPackageComplete( )) {
 		return;
 	}
-	m_pRecvBuff->Clear();
-	unsigned short unTmpLen = pBufferEvent->GetRecvPackLen();
+	m_pRecvBuff->Clear( );
+	unsigned short unTmpLen = pBufferEvent->GetRecvPackLen( );
 	//转发消息填充数据总长度
 	m_pRecvBuff->WriteUnShort(unTmpLen);
 	unsigned short unDataLen = unTmpLen - sizeof(unsigned short);
-	pBufferEvent->RecvData(m_pRecvBuff->CanWriteData(), unDataLen);
+	pBufferEvent->RecvData(m_pRecvBuff->CanWriteData( ), unDataLen);
 	m_pRecvBuff->WriteLen(unDataLen);
-	pBufferEvent->CurrentPackRecved();
-	auto it = m_mapSocket2Key.find(pBufferEvent->GetSocket().GetSocket());
-	if (it != m_mapSocket2Key.end()) {
-		CProxyCtrl::GetSingletonPtr()->TransferOneCode(pBufferEvent, unTmpLen);
+	pBufferEvent->CurrentPackRecved( );
+	auto it = m_mapSocket2Key.find(pBufferEvent->GetSocket( ).GetSocket( ));
+	if (it != m_mapSocket2Key.end( )) {
+		CProxyCtrl::GetSingletonPtr( )->TransferOneCode(pBufferEvent, unTmpLen);
 	}
 	else {    //未注册
-		CProxyCtrl::GetSingletonPtr()->DealRegisterMes(pBufferEvent, unTmpLen);
+		CProxyCtrl::GetSingletonPtr( )->DealRegisterMes(pBufferEvent, unTmpLen);
 	}
 }
 
@@ -149,22 +149,23 @@ void CProxyCtrl::lcb_OnAcceptorTimeOut(int fd, short what, void *param)
 {
 	CNetWork *tmpNetWork = (CNetWork *) param;
 	if (tmpNetWork != NULL) {
-		CServerConfig *tmpConfig = CServerConfig::GetSingletonPtr();
-		int tmpPingTime = tmpConfig->GetTcpKeepAlive();
-		CNetWork::MAP_ACCEPTOR &tmpMap = tmpNetWork->GetAcceptorMap();
-		auto it = tmpMap.begin();
-		time_t tNow = GetMSTime();
-		for (; it != tmpMap.end();) {
+		std::shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr( );
+		int tmpPingTime = tmpConfig->GetTcpKeepAlive( );
+		CNetWork::MAP_ACCEPTOR &tmpMap = tmpNetWork->GetAcceptorMap( );
+		auto it = tmpMap.begin( );
+		time_t tNow = GetMSTime( );
+		for (; it != tmpMap.end( );) {
 			CAcceptor *tmpAcceptor = it->second;
-			if (tNow - tmpAcceptor->GetLastKeepAlive() > tmpPingTime) {
-				SOCKET tmpSocket = tmpAcceptor->GetSocket().GetSocket();
+			if (tNow - tmpAcceptor->GetLastKeepAlive( ) > tmpPingTime) {
+				SOCKET tmpSocket = tmpAcceptor->GetSocket( ).GetSocket( );
 				auto itx = m_mapSocket2Key.find(tmpSocket);
-				if (itx != m_mapSocket2Key.end()) {
+				if (itx != m_mapSocket2Key.end( )) {
 					m_mapRegister.erase(itx->second);
 					m_mapSocket2Key.erase(tmpSocket);
 				}
-				LOG_INFO("default", "Connection time out,socket id {} close", tmpAcceptor->GetSocket().GetSocket());
-				SAFE_DELETE(tmpAcceptor);
+				LOG_INFO("default", "Connection time out,socket id {} close", tmpAcceptor->GetSocket( ).GetSocket( ));
+				delete tmpAcceptor;
+				tmpAcceptor = NULL;
 				it = tmpMap.erase(it);
 			}
 			else {
@@ -185,33 +186,33 @@ int CProxyCtrl::DealRegisterMes(IBufferEvent *pBufferEvent, unsigned short iTmpL
 		return -1;
 	}
 
-	SOCKET iSocket = pBufferEvent->GetSocket().GetSocket();
-	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+	SOCKET iSocket = pBufferEvent->GetSocket( ).GetSocket( );
+	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr( )->GetServerInfo(enServerType::FE_PROXYSERVER);
 	// 目标服务器是proxy，id不匹配或者不是注册消息，则直接关闭连接
-	if ((stTmpProxyHead.dstfe() != FE_PROXYSERVER)
-		|| (stTmpProxyHead.dstid() != proxyInfo->m_iServerId)
-		|| (stTmpProxyHead.opflag() != enMessageCmd::MESS_REGIST)) {
+	if ((stTmpProxyHead.dstfe( ) != FE_PROXYSERVER)
+		|| (stTmpProxyHead.dstid( ) != proxyInfo->m_iServerId)
+		|| (stTmpProxyHead.opflag( ) != enMessageCmd::MESS_REGIST)) {
 		LOG_ERROR("default",
 				  "Error CProxyHead is invalid, fd = {}, Src(FE = {} : ID = {}), Dst(FE = {} : ID = {}), OpFlag = {}, TimeStamp = %ld.",
-				  pBufferEvent->GetSocket().GetSocket(),
-				  stTmpProxyHead.srcfe(),
-				  stTmpProxyHead.srcid(),
-				  stTmpProxyHead.srcfe(),
-				  stTmpProxyHead.dstid(),
-				  stTmpProxyHead.opflag(),
-				  stTmpProxyHead.timestamp());
+				  pBufferEvent->GetSocket( ).GetSocket( ),
+				  stTmpProxyHead.srcfe( ),
+				  stTmpProxyHead.srcid( ),
+				  stTmpProxyHead.srcfe( ),
+				  stTmpProxyHead.dstid( ),
+				  stTmpProxyHead.opflag( ),
+				  stTmpProxyHead.timestamp( ));
 		CloseConnection(iSocket);
 		return -1;
 	}
 	LOG_DEBUG("default", "---- Recv Msg ----");
-	LOG_DEBUG("default", "[{}]", stTmpProxyHead.ShortDebugString().c_str());
+	LOG_DEBUG("default", "[{}]", stTmpProxyHead.ShortDebugString( ).c_str( ));
 	// 检查该链接是否已占用，通过类型和ID判断
-	int iKey = MakeConnKey(stTmpProxyHead.srcfe(), stTmpProxyHead.srcid());
+	int iKey = MakeConnKey(stTmpProxyHead.srcfe( ), stTmpProxyHead.srcid( ));
 	auto it = m_mapRegister.find(iKey);
-	if (it != m_mapRegister.end()) {
+	if (it != m_mapRegister.end( )) {
 		// 该连接已经存在
 		LOG_ERROR("default", "conn(fe={} : id={} : key={}) exist, can't regist again.",
-				  stTmpProxyHead.srcfe(), stTmpProxyHead.srcid());
+				  stTmpProxyHead.srcfe( ), stTmpProxyHead.srcid( ));
 		CloseConnection(iSocket);
 		return -1;
 	}
@@ -242,84 +243,84 @@ int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCode
 		return -1;
 	}
 
-	CProxyHead stTmpHead = stTmpMessage.msghead();
+	CProxyHead stTmpHead = stTmpMessage.msghead( );
 	LOG_INFO("default", "TransMsg({}).", nCodeLength);
 
 #ifdef _DEBUG_
 	LOG_INFO("default", "---- Recv Msg ----");
-	LOG_INFO("default", "[{}]", stTmpHead.ShortDebugString().c_str());
+	LOG_INFO("default", "[{}]", stTmpHead.ShortDebugString( ).c_str( ));
 #endif
 
 	LOG_INFO("default", "Transfer code begin, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = {}",
-			 stTmpHead.srcfe(), stTmpHead.srcid(),
-			 stTmpHead.dstfe(), stTmpHead.dstid(), stTmpHead.timestamp());
+			 stTmpHead.srcfe( ), stTmpHead.srcid( ),
+			 stTmpHead.dstfe( ), stTmpHead.dstid( ), stTmpHead.timestamp( ));
 
 	// 处理直接发送到 proxy 的消息
-	if (stTmpHead.dstfe() == FE_PROXYSERVER) {
-		switch (stTmpHead.opflag()) {
-		case enMessageCmd::MESS_KEEPALIVE: {
-			CProxyMessage stRetMessage;
-			CProxyHead *stRetHead = stRetMessage.mutable_msghead();
-			ServerInfo *serverInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+	if (stTmpHead.dstfe( ) == FE_PROXYSERVER) {
+		switch(stTmpHead.opflag( )){
+			case enMessageCmd::MESS_KEEPALIVE:{
+				CProxyMessage stRetMessage;
+				CProxyHead *stRetHead = stRetMessage.mutable_msghead( );
+				ServerInfo *serverInfo = CServerConfig::GetSingletonPtr( )->GetServerInfo(enServerType::FE_PROXYSERVER);
 
-			pbmsg_setproxy(stRetHead,
-						   FE_PROXYSERVER,
-						   serverInfo->m_iServerId,
-						   stTmpHead.srcfe(),
-						   stTmpHead.srcid(),
-						   GetMSTime(),
-						   enMessageCmd::MESS_KEEPALIVE);
+				pbmsg_setproxy(stRetHead,
+							   FE_PROXYSERVER,
+							   serverInfo->m_iServerId,
+							   stTmpHead.srcfe( ),
+							   stTmpHead.srcid( ),
+							   GetMSTime( ),
+							   enMessageCmd::MESS_KEEPALIVE);
 
-			// keepalive的包长度一般都很短
-			char message_buffer[1024];
-			unsigned short tTotalLen = sizeof(message_buffer);
+				// keepalive的包长度一般都很短
+				char message_buffer[1024];
+				unsigned short tTotalLen = sizeof(message_buffer);
 
-			int iRet = CServerCommEngine::ConvertMsgToStream(&stRetMessage, message_buffer, tTotalLen);
-			if (iRet != 0) {
-				LOG_ERROR("default", "CDBCtrsl::SendkeepAliveToProxy ConvertMsgToStream failed, iRet = {}.", iRet);
-				return 0;
-			}
-			else {
-				int iKey = MakeConnKey(stRetHead->dstfe(), stRetHead->dstid());
-				int iRet = SendOneCodeTo(tTotalLen, (BYTE *) message_buffer, iKey, true);
+				int iRet = CServerCommEngine::ConvertMsgToStream(&stRetMessage, message_buffer, tTotalLen);
 				if (iRet != 0) {
-					LOG_INFO("default", "send keepalive to (FE = {} : ID = {}), SendOneCodeTo failed, iRet = {}.",
-							 stRetHead->dstfe(), stRetHead->dstid(), iRet);
+					LOG_ERROR("default", "CDBCtrsl::SendkeepAliveToProxy ConvertMsgToStream failed, iRet = {}.", iRet);
+					return 0;
 				}
 				else {
-					LOG_INFO("default",
-							 "send keepalive to (FE = {} : ID = {}) succeed.",
-							 stRetHead->dstfe(),
-							 stRetHead->dstid());
+					int iKey = MakeConnKey(stRetHead->dstfe( ), stRetHead->dstid( ));
+					int iRet = SendOneCodeTo(tTotalLen, (BYTE *) message_buffer, iKey, true);
+					if (iRet != 0) {
+						LOG_INFO("default", "send keepalive to (FE = {} : ID = {}), SendOneCodeTo failed, iRet = {}.",
+								 stRetHead->dstfe( ), stRetHead->dstid( ), iRet);
+					}
+					else {
+						LOG_INFO("default",
+								 "send keepalive to (FE = {} : ID = {}) succeed.",
+								 stRetHead->dstfe( ),
+								 stRetHead->dstid( ));
+					}
 				}
-			}
 
-			break;
-		}
-		default: {
-			LOG_INFO("default",
-					 "unknown command id {}, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = {].",
-					 stTmpHead.opflag(),
-					 stTmpHead.srcfe(),
-					 stTmpHead.srcid(),
-					 stTmpHead.dstfe(),
-					 stTmpHead.dstid(),
-					 stTmpHead.timestamp());
-			break;
-		}
+				break;
+			}
+			default:{
+				LOG_INFO("default",
+						 "unknown command id {}, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = {].",
+						 stTmpHead.opflag( ),
+						 stTmpHead.srcfe( ),
+						 stTmpHead.srcid( ),
+						 stTmpHead.dstfe( ),
+						 stTmpHead.dstid( ),
+						 stTmpHead.timestamp( ));
+				break;
+			}
 		}
 
 		return 0;
 	}
 
-	int iKey = MakeConnKey(stTmpHead.dstfe(), stTmpHead.dstid());
+	int iKey = MakeConnKey(stTmpHead.dstfe( ), stTmpHead.dstid( ));
 	m_pRecvBuff->SetReadIndex(0);
-	iTempRet = SendOneCodeTo(nCodeLength, (BYTE *) m_pRecvBuff->CanReadData(), iKey, true);
+	iTempRet = SendOneCodeTo(nCodeLength, (BYTE *) m_pRecvBuff->CanReadData( ), iKey, true);
 	m_stStatLog.iSndCnt++;
 	m_stStatLog.iSndSize += nCodeLength;
 	if (iTempRet) {
 		LOG_INFO("default", "transfer one code from (FE = {} : ID = {}) to (FE = {} : ID = {}) failed of {}.",
-				 stTmpHead.srcfe(), stTmpHead.srcid(), stTmpHead.dstfe(), stTmpHead.dstid(), iTempRet);
+				 stTmpHead.srcfe( ), stTmpHead.srcid( ), stTmpHead.dstfe( ), stTmpHead.dstid( ), iTempRet);
 		m_stStatLog.iSndCnt--;
 		m_stStatLog.iSndSize -= nCodeLength;
 	}
@@ -349,7 +350,7 @@ int CProxyCtrl::SendOneCodeTo(short nCodeLength, BYTE *pbyCode, int iKey, bool b
 	if (iTempRet == 0 && bKeepalive) {
 		CAcceptor *tmpAcceptor = (CAcceptor *) pWriteConn;
 		// 设置keepalive时间
-		tmpAcceptor->SetLastKeepAlive(GetMSTime());
+		tmpAcceptor->SetLastKeepAlive(GetMSTime( ));
 	}
 	return iTempRet;
 }
@@ -357,7 +358,7 @@ int CProxyCtrl::SendOneCodeTo(short nCodeLength, BYTE *pbyCode, int iKey, bool b
 void CProxyCtrl::CloseConnection(int socket)
 {
 	auto it = m_mapSocket2Key.find(socket);
-	if (it != m_mapSocket2Key.end()) {
+	if (it != m_mapSocket2Key.end( )) {
 		m_mapRegister.erase(it->second);
 		m_mapSocket2Key.erase(it);
 	}

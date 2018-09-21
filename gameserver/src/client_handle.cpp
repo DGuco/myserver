@@ -8,7 +8,6 @@
 #include "client_comm_engine.h"
 #include "my_assert.h"
 #include "sceneobjmanager.h"
-#include "../inc/message_dispatcher.h"
 #include "../inc/message_factory.h"
 #include "../inc/client_handle.h"
 #include "../inc/game_server.h"
@@ -321,7 +320,7 @@ int CClientHandle::DealClientMessage(std::shared_ptr<CMessage> pMsg)
 	return CLIENTHANDLE_SUCCESS;
 }
 
-int CClientHandle::SendResToPlayer(CGooMess *pMessage, CPlayer *pPlayer)
+int CClientHandle::SendResToPlayer(shared_ptr<CGooMess> pMessage, CPlayer *pPlayer)
 {
 	MY_ASSERT((pMessage != NULL && pPlayer != NULL), return -1);
 	std::shared_ptr<CMesHead> pTmpHead = std::make_shared<CMesHead>( );
@@ -342,21 +341,26 @@ int CClientHandle::SendResToPlayer(CGooMess *pMessage, CPlayer *pPlayer)
 	return 0;
 }
 
-int CClientHandle::SendResponse(CGooMess *pMessage, CMesHead *mesHead)
+typedef int i;
+
+int CClientHandle::SendResponse(shared_ptr<CGooMess> pMessag, shared_ptr<CMesHead> mesHead)
 {
+	std::shared_ptr<CMessage> tmpMess = std::make_shared<CMessage>( );
+	CClientCommEngine::CopyMesHead(mesHead.get( ), tmpMess->mutable_msghead( ));
+	tmpMess->set_msgpara((int64) pMessag.get( ));
 	// 是否需要加密，在这里修改参数
-	int iRet = CClientCommEngine::ConvertToGateStream(m_pSendBuff.get( ),
-													  mesHead.get( ),
-													  mesHead->cmd( ),
-													  mesHead->serial( ),
-													  mesHead->seq( ));
+	i iRet = CClientCommEngine::ConvertToGateStream(m_pSendBuff.get( ),
+													tmpMess.get( ),
+													mesHead->cmd( ),
+													mesHead->serial( ),
+													mesHead->seq( ));
 	if (iRet != 0) {
 		MY_ASSERT_STR(0,
 					  return -2,
 					  "CClientHandle::Send failed, CClientCommEngine::ConvertGameServerMessageToStream failed.");
 	}
 
-	iRet = mS2CPipe->AppendOneCode((BYTE *) tmpByteBuff.CanReadData( ), tmpByteBuff.ReadableDataLen( ));
+	iRet = m_S2CCodeQueue->AppendOneCode((BYTE *) m_pSendBuff->CanReadData( ), m_pSendBuff->ReadableDataLen( ));
 	if (iRet < 0) {
 		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
 	}
@@ -434,10 +438,10 @@ void CClientHandle::RecvClientData()
 	int iTmpLen = 0;
 	int iRet = m_C2SCodeQueue->GetHeadCode((BYTE *) (m_pRecvBuff->CanWriteData( )), iTmpLen);
 	if (iRet != 0) {
-		CMessage tmpMes;
+		std::shared_ptr<CMessage> tmpMes = std::make_shared<CMessage>( );
 		if (CClientCommEngine::ConvertStreamToMessage(m_pRecvBuff.get( ),
 													  iTmpLen,
-													  &tmpMes,
+													  tmpMes.get(),
 													  CMessageFactory::GetSingletonPtr( ).get( )) != 0) {
 			LOG_ERROR("default", "CClientHandle::RecvClientData convertStreamToMessage failed");
 		}
