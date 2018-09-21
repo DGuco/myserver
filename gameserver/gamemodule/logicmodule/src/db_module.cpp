@@ -42,14 +42,14 @@ void CDbModule::OnRouterMessage(CProxyMessage *pMsg)
 {
 	MY_ASSERT_LOG("db", pMsg != NULL,
 				  return);
-	switch(pMsg->msghead().messageid()){
+	switch(pMsg->msghead( ).messageid( )){
 		case CMsgExecuteSqlResponse::MsgID:{
 			OnMsgExecuteSqlResponse(pMsg);
 			break;
 		}
 		default:{
 			LOG_ERROR("db", "[{} : {} : {}] invalid message id(%8x).",
-					  __MY_FILE__, __LINE__, __FUNCTION__, pMsg->msghead().messageid());
+					  __MY_FILE__, __LINE__, __FUNCTION__, pMsg->msghead( ).messageid( ));
 			break;
 		}
 	}
@@ -74,36 +74,36 @@ void CDbModule::OnMsgExecuteSqlResponse(CProxyMessage *pMsg)
 {
 	MY_ASSERT_LOG("db", pMsg != NULL,
 				  return);
-	CMsgExecuteSqlResponse *pTmpSqlRsp = (CMsgExecuteSqlResponse *) pMsg->msgpara();
+	CMsgExecuteSqlResponse *pTmpSqlRsp = (CMsgExecuteSqlResponse *) pMsg->msgpara( );
 	MY_ASSERT_LOG("db", pTmpSqlRsp != NULL,
 				  return);
 
 	CSession *pTmpSession = NULL;
-	if (pTmpSqlRsp->sessionid() != 0) {
+	if (pTmpSqlRsp->sessionid( ) != 0) {
 		// 如果有session
 		pTmpSession =
-			(CSession *) CGameServer::GetSingletonPtr()->GetTimerManager()->GetObject(pTmpSqlRsp->sessionid());
+			(CSession *) CGameServer::GetSingletonPtr( )->GetTimerManager( )->GetObject(pTmpSqlRsp->sessionid( ));
 
 		if (NULL == pTmpSession) {
 			LOG_ERROR("db", "[{} : {} : {}] Session doesn't exsit (logictype:{}:sessionid:%u ), has been deleted.",
 					  __MY_FILE__, __LINE__, __FUNCTION__,
-					  pTmpSqlRsp->logictype(), pTmpSqlRsp->sessionid());
+					  pTmpSqlRsp->logictype( ), pTmpSqlRsp->sessionid( ));
 			return;
 		}
-		if (pTmpSession->GetTimeout() != (time_t) pTmpSqlRsp->timestamp()) {
+		if (pTmpSession->GetTimeout( ) != (time_t) pTmpSqlRsp->timestamp( )) {
 			LOG_ERROR("db", "[{} : {} : {}] Session doesn't exsit (logictype:{}:sessionid:%u ), has been reused.",
 					  __MY_FILE__, __LINE__, __FUNCTION__,
-					  pTmpSqlRsp->logictype(), pTmpSqlRsp->sessionid());
+					  pTmpSqlRsp->logictype( ), pTmpSqlRsp->sessionid( ));
 			return;
 		}
 	}
 
-	switch(pTmpSqlRsp->logictype()){
+	switch(pTmpSqlRsp->logictype( )){
 		//*********************************************************************************
 		// 读取战队数据
 		//*********************************************************************************
 		case emDBLogicType::emDBTypeFindOrCreateUser :{
-			FindOrCreateUserResponse(pTmpSession, pTmpSqlRsp, pMsg->mutable_msghead());
+			FindOrCreateUserResponse(pTmpSession, pTmpSqlRsp, pMsg->mutable_msghead( ));
 			break;
 		}
 	}
@@ -133,13 +133,13 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
 	// 发往dbserver消息整理
 	static CProxyMessage tmpMsg;
 	static CMsgExecuteSqlRequest tmpMsgSqlRqt;
-	tmpMsg.Clear();
-	tmpMsgSqlRqt.Clear();
+	tmpMsg.Clear( );
+	tmpMsgSqlRqt.Clear( );
 
-	CProxyHead *pTmpHead = tmpMsg.mutable_msghead();
+	CProxyHead *pTmpHead = tmpMsg.mutable_msghead( );
 	pbmsg_setmessagehead(pTmpHead, CMsgExecuteSqlRequest::MsgID);
 	if (mesHead != NULL) {
-		CClientCommEngine::CopyMesHead(mesHead, pTmpHead->mutable_msghead());
+		CClientCommEngine::CopyMesHead(mesHead, pTmpHead->mutable_msghead( ));
 	}
 
 	tmpMsgSqlRqt.set_logictype(nLogicType);
@@ -153,8 +153,8 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
 	tmpMsgSqlRqt.set_hasblob(NONEBLOB);
 	tmpMsg.set_msgpara((unsigned long) &tmpMsgSqlRqt);
 
-	LOG_DEBUG("db", "[{}]", ((CGooMess *) tmpMsg.msgpara())->ShortDebugString().c_str());
-	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr()->SendMessageToDB(&tmpMsg), return -3);
+	LOG_DEBUG("db", "[{}]", ((CGooMess *) tmpMsg.msgpara( ))->ShortDebugString( ).c_str( ));
+	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr( )->SendMessageToDB(&tmpMsg), return -3);
 	return 0;
 }
 
@@ -176,13 +176,13 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
 	// 发往dbserver消息整理
 	static CProxyMessage tmpMsg;
 	static CMsgExecuteSqlRequest tmpMsgSqlRqt;
-	tmpMsg.Clear();
-	tmpMsgSqlRqt.Clear();
+	tmpMsg.Clear( );
+	tmpMsgSqlRqt.Clear( );
 
-	CProxyHead *pTmpHead = tmpMsg.mutable_msghead();
+	CProxyHead *pTmpHead = tmpMsg.mutable_msghead( );
 	pbmsg_setmessagehead(pTmpHead, CMsgExecuteSqlRequest::MsgID);
 	if (mesHead != NULL) {
-		CClientCommEngine::CopyMesHead(mesHead, pTmpHead->mutable_msghead());
+		CClientCommEngine::CopyMesHead(mesHead, pTmpHead->mutable_msghead( ));
 	}
 
 	tmpMsgSqlRqt.set_logictype(nLogicType);
@@ -200,8 +200,8 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
 	tmpMsgSqlRqt.set_hasblob(HASBLOB);
 
 	tmpMsg.set_msgpara((unsigned long) &tmpMsgSqlRqt);
-	LOG_DEBUG("db", "[{}]", ((CGooMess *) tmpMsg.msgpara())->ShortDebugString().c_str());
-	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr()->SendMessageToDB(&tmpMsg),
+	LOG_DEBUG("db", "[{}]", ((CGooMess *) tmpMsg.msgpara( ))->ShortDebugString( ).c_str( ));
+	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr( )->SendMessageToDB(&tmpMsg),
 				  return -2);
 	return 0;
 }
@@ -209,7 +209,7 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
 void CDbModule::FindOrCreateUserRequest(const std::string &platform, const std::string &puid, CMesHead *mesHead)
 {
 	char *pcTmpSql = (char *) "SELECT `player_id` FROM user WHERE `platform` = {} AND `puid` = {}";
-	int iRet = CDbModule::GetSingletonPtr()->ExecuteSql(
+	int iRet = CDbModule::GetSingletonPtr( )->ExecuteSql(
 		emDBLogicType::emDBTypeFindOrCreateUser,
 		0,
 		0,
@@ -219,8 +219,8 @@ void CDbModule::FindOrCreateUserRequest(const std::string &platform, const std::
 		MUSTCALLBACK,
 		mesHead,
 		pcTmpSql,
-		platform.c_str(),
-		puid.c_str()
+		platform.c_str( ),
+		puid.c_str( )
 	);
 	if (iRet != 0) {
 		LOG_ERROR("db", "[{} : {} : {}] ExecuteSql failed, iRet={}.",
@@ -233,32 +233,32 @@ void CDbModule::FindOrCreateUserResponse(CSession *pSession, CMsgExecuteSqlRespo
 {
 	MY_ASSERT_LOG("db", pMsgSql != NULL && pSession != NULL && proxyHead != NULL, return);
 
-	int iTmpRowCount = pMsgSql->rowcount();        // 行数
-	int iTmpColCount = pMsgSql->colcount();        // 列数
+	int iTmpRowCount = pMsgSql->rowcount( );        // 行数
+	int iTmpColCount = pMsgSql->colcount( );        // 列数
 
-	if (1 == pMsgSql->resultcode()) {
+	if (1 == pMsgSql->resultcode( )) {
 		OBJ_ID player_id = -1;    // 帐号
 		//没有找到玩家
 		if (0 == iTmpRowCount || 0 == iTmpColCount) {
-			player_id = (OBJ_ID) CSceneObjManager::GetSingletonPtr()->GetPlayerManager()->GetValidId();
+			player_id = (OBJ_ID) CSceneObjManager::GetSingletonPtr( )->GetPlayerManager( )->GetValidId( );
 		}
 		else {
 			// 表示有返回结果
-			player_id = atol((char *) pMsgSql->fieldvalue(0).c_str());
+			player_id = atol((char *) pMsgSql->fieldvalue(0).c_str( ));
 		}
 		if (player_id == -1) {
-			player_id = (OBJ_ID) CSceneObjManager::GetSingletonPtr()->GetPlayerManager()->GetValidId();
+			player_id = (OBJ_ID) CSceneObjManager::GetSingletonPtr( )->GetPlayerManager( )->GetValidId( );
 		}
-		UserAccountLoginResponse *pRes = new UserAccountLoginResponse;
+		std::shared_ptr<UserAccountLoginResponse> pRes = std::make_shared<UserAccountLoginResponse>( );
 		pRes->set_playerid(player_id);
-		CMesHead *pHead = new CMesHead;
-		CClientCommEngine::CopyMesHead(proxyHead->mutable_msghead(), pHead);
-		CGameServer::GetSingletonPtr()->SendResponse(std::shared_ptr<CGooMess>(pRes), std::shared_ptr<CMesHead>(pHead));
+		std::shared_ptr<CMesHead> pHead = std::make_shared<CMesHead>( );
+		CClientCommEngine::CopyMesHead(proxyHead->mutable_msghead( ), pHead.get( ));
+		CGameServer::GetSingletonPtr( )->SendResponse(pRes, pHead);
 	}
 	else {
 		// 拉取数据失败,则退出
 		LOG_ERROR("db", "[{} : {} : {}] LoadAllAccountResponse failed, resultcode={}, row={}, col={}.",
-				  __MY_FILE__, __LINE__, __FUNCTION__, pMsgSql->resultcode(), iTmpRowCount, iTmpColCount);
+				  __MY_FILE__, __LINE__, __FUNCTION__, pMsgSql->resultcode( ), iTmpRowCount, iTmpColCount);
 		return;
 	}
 }
