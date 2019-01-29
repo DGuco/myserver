@@ -275,7 +275,7 @@ void CNetManager::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
 				shared_ptr<CNetWork> &tmpNet = tmpClientManager->GetNetWork( );
 				std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr( );
 				int tmpPingTime = tmpConfig->GetTcpKeepAlive( );
-				MAP_ACCEPTOR &tmpMap = tmpNet->GetAcceptorMap( );
+				CNetWork::MAP_ACCEPTOR &tmpMap = tmpNet->GetAcceptorMap( );
 				auto it = tmpMap.begin( );
 				time_t tNow = GetMSTime( );
 				for (; it != tmpMap.end( );) {

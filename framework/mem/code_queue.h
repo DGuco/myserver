@@ -9,9 +9,13 @@
 #define _CODE_QUEUE_H_
 #include "shm.h"
 
+#define CACHELINE_SIZE 64
+//修改字对齐规则，避免false sharing
+#define CACHELINE_ALIGN  __attribute__((aligned(CACHELINE_SIZE)))
+
 #define QUEUERESERVELENGTH 8        //预留长度
 
-class CCodeQueue
+class CACHELINE_ALIGN CCodeQueue
 {
 	//禁止在栈上生成对象
 protected:
