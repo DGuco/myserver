@@ -17,10 +17,6 @@ bin
 lib
 /lib/*
 out
-log
-logs
-logs/*
-efun_reports/*
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
