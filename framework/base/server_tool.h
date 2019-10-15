@@ -12,6 +12,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
+#include <memory>
 #include "clock.h"
 #include "object.h"
 #include "log.h"
