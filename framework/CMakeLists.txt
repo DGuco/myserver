@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 project(framework)
 
 #libevent 多线程开启-DEVENT_THREAD_SAFE
+add_compile_options(-Wall -ggdb -pipe -std=c++14)
 add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DLOG_THREAD_SAFE)
 #add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT)
 

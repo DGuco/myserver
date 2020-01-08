@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(gateserver)
-add_compile_options(-Wall -g -pipe -O0 -std=c++14)
+add_compile_options(-Wall -ggdb -pipe -std=c++14)
 add_definitions(-D_DEBUG_ -DMEDIUM_SIZE -DUSE_MY_ASSERT -DLINUX)
 #add_definitions(-DMEDIUM_SIZE -D_TGW_ -DUSE_MY_ASSERT -DLINUX)
 

@@ -12,8 +12,6 @@ build
 /build/*
 cmake-build-debug
 /cmake-build-debug/*
-bin
-/bin/*
 lib
 /lib/*
 out

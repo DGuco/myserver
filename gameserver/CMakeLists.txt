@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(gameserver)
+add_compile_options(-Wall -ggdb -pipe -std=c++14)
 add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT)
 
 set(SOURCE_FILES

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 project(proxyserver)
 add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT)
+add_compile_options(-Wall -ggdb -pipe -std=c++14)
 
 set(SOURCE_FILES
         main.cpp
