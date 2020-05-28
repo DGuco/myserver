@@ -90,7 +90,8 @@ set(FRAMEWORK
         timer/clock.cpp
         timer/clock.h
         timer/timer.h
-        timer/timer.cpp)
+        timer/timer.cpp
+        base/reflection.h)
 
 
 include_directories(
