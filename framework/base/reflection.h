@@ -34,192 +34,40 @@
 #include <iostream>
 #include <stdexcept>
 
-#define __REPEAT_A0					
-#define __REPEAT_A1					, class T1
-#define __REPEAT_A2					, class T1, class T2
-#define __REPEAT_A3					, class T1, class T2, class T3
-#define __REPEAT_A4					, class T1, class T2, class T3, class T4
-#define __REPEAT_A5					, class T1, class T2, class T3, class T4, class T5
-#define __REPEAT_A6					, class T1, class T2, class T3, class T4, class T5, class T6
-#define __REPEAT_A7					, class T1, class T2, class T3, class T4, class T5, class T6, class T7
-#define __REPEAT_A8					, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8
-#define __REPEAT_A9					, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9
-#define __REPEAT_A10				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10
-#define __REPEAT_A11				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11
-#define __REPEAT_A12				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12
-#define __REPEAT_A13				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13
-#define __REPEAT_A14				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14
-#define __REPEAT_A15				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15
-#define __REPEAT_A16				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16
-#define __REPEAT_A17				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17
-#define __REPEAT_A18				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18
-#define __REPEAT_A19				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19
-#define __REPEAT_A20				, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20
-#define __REPEAT_A(N)       __REPEAT_A##N
 
-#define __REPEAT_B0					
-#define __REPEAT_B1					T1
-#define __REPEAT_B2					T1, T2
-#define __REPEAT_B3					T1, T2, T3
-#define __REPEAT_B4					T1, T2, T3, T4
-#define __REPEAT_B5					T1, T2, T3, T4, T5
-#define __REPEAT_B6					T1, T2, T3, T4, T5, T6
-#define __REPEAT_B7					T1, T2, T3, T4, T5, T6, T7
-#define __REPEAT_B8					T1, T2, T3, T4, T5, T6, T7, T8
-#define __REPEAT_B9					T1, T2, T3, T4, T5, T6, T7, T8, T9
-#define __REPEAT_B10				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10
-#define __REPEAT_B11				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11
-#define __REPEAT_B12				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12
-#define __REPEAT_B13				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13
-#define __REPEAT_B14				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14
-#define __REPEAT_B15				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15
-#define __REPEAT_B16				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16
-#define __REPEAT_B17				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17
-#define __REPEAT_B18				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18
-#define __REPEAT_B19				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19
-#define __REPEAT_B20				T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20
-#define __REPEAT_B(N)       __REPEAT_B##N
+//repeaters
+#define __REPEAT0(M, C, S)         
+#define __REPEAT1(M, C, S)         S M(1)
+#define __REPEAT2(M, C, S)         __REPEAT1(M, C, S)  C M(2)
+#define __REPEAT3(M, C, S)         __REPEAT2(M, C, S)  C M(3)
+#define __REPEAT4(M, C, S)         __REPEAT3(M, C, S)  C M(4)
+#define __REPEAT5(M, C, S)         __REPEAT4(M, C, S)  C M(5)
+#define __REPEAT6(M, C, S)         __REPEAT5(M, C, S)  C M(6)
+#define __REPEAT7(M, C, S)         __REPEAT6(M, C, S)  C M(7)
+#define __REPEAT8(M, C, S)         __REPEAT7(M, C, S)  C M(8)
+#define __REPEAT9(M, C, S)         __REPEAT8(M, C, S)  C M(9)
+#define __REPEAT10(M, C, S)        __REPEAT9(M, C, S)  C M(10)
+#define __REPEAT11(M, C, S)        __REPEAT10(M, C, S) C M(11)
+#define __REPEAT12(M, C, S)        __REPEAT11(M, C, S) C M(12)
+#define __REPEAT13(M, C, S)        __REPEAT12(M, C, S) C M(13)
+#define __REPEAT14(M, C, S)        __REPEAT13(M, C, S) C M(14)
+#define __REPEAT15(M, C, S)        __REPEAT14(M, C, S) C M(15)
+#define __REPEAT16(M, C, S)        __REPEAT15(M, C, S) C M(16)
+#define __REPEAT17(M, C, S)        __REPEAT16(M, C, S) C M(17)
+#define __REPEAT18(M, C, S)        __REPEAT17(M, C, S) C M(18)
+#define __REPEAT19(M, C, S)        __REPEAT18(M, C, S) C M(19)
+#define __REPEAT20(M, C, S)        __REPEAT19(M, C, S) C M(20)
+#define __REPEAT(N, M, C, S)       __REPEAT##N(M, C, S)
 
-#define __REPEAT_C0					
-#define __REPEAT_C1					, T1 t1
-#define __REPEAT_C2					, T1 t1, T2 t2
-#define __REPEAT_C3					, T1 t1, T2 t2, T3 t3
-#define __REPEAT_C4					, T1 t1, T2 t2, T3 t3, T4 t4
-#define __REPEAT_C5					, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5
-#define __REPEAT_C6					, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6
-#define __REPEAT_C7					, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7
-#define __REPEAT_C8					, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8
-#define __REPEAT_C9					, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9
-#define __REPEAT_C10				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10
-#define __REPEAT_C11				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11
-#define __REPEAT_C12				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12
-#define __REPEAT_C13				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13
-#define __REPEAT_C14				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14
-#define __REPEAT_C15				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15
-#define __REPEAT_C16				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16
-#define __REPEAT_C17				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16, T17 t17
-#define __REPEAT_C18				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16, T17 t17, T18 t18
-#define __REPEAT_C19				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16, T17 t17, T18 t18, T19 t19
-#define __REPEAT_C20				, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16, T17 t17, T18 t18, T19 t19, T20 t20
-#define __REPEAT_C(N)       __REPEAT_C##N
-
-#define __REPEAT_D0					
-#define __REPEAT_D1					t1
-#define __REPEAT_D2					t1, t2
-#define __REPEAT_D3					t1, t2, t3
-#define __REPEAT_D4					t1, t2, t3, t4
-#define __REPEAT_D5					t1, t2, t3, t4, t5
-#define __REPEAT_D6					t1, t2, t3, t4, t5, t6
-#define __REPEAT_D7					t1, t2, t3, t4, t5, t6, t7
-#define __REPEAT_D8					t1, t2, t3, t4, t5, t6, t7, t8
-#define __REPEAT_D9					t1, t2, t3, t4, t5, t6, t7, t8, t9
-#define __REPEAT_D10				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10
-#define __REPEAT_D11				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11
-#define __REPEAT_D12				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12
-#define __REPEAT_D13				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13
-#define __REPEAT_D14				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14
-#define __REPEAT_D15				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15
-#define __REPEAT_D16				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16
-#define __REPEAT_D17				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17
-#define __REPEAT_D18				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18
-#define __REPEAT_D19				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19
-#define __REPEAT_D20				t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20
-#define __REPEAT_D(N)       __REPEAT_D##N
-
-#define __REPEAT_E0					
-#define __REPEAT_E1					T1 t1
-#define __REPEAT_E2					T1 t1, T2 t2
-#define __REPEAT_E3					T1 t1, T2 t2, T3 t3
-#define __REPEAT_E4					T1 t1, T2 t2, T3 t3, T4 t4
-#define __REPEAT_E5					T1 t1, T2 t2, T3 t3, T4 t4, T5 t5
-#define __REPEAT_E6					T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6
-#define __REPEAT_E7					T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7
-#define __REPEAT_E8					T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8
-#define __REPEAT_E9					T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9
-#define __REPEAT_E10				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10
-#define __REPEAT_E11				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11
-#define __REPEAT_E12				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12
-#define __REPEAT_E13				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13
-#define __REPEAT_E14				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14
-#define __REPEAT_E15				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15
-#define __REPEAT_E16				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16
-#define __REPEAT_E17				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16, T17 t17
-#define __REPEAT_E18				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16, T17 t17, T18 t18
-#define __REPEAT_E19				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16, T17 t17, T18 t18, T19 t19
-#define __REPEAT_E20				T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16, T17 t17, T18 t18, T19 t19, T20 t20
-#define __REPEAT_E(N)       __REPEAT_E##N
-
-#define __REPEAT_F0					
-#define __REPEAT_F1					class T1
-#define __REPEAT_F2					class T1, class T2
-#define __REPEAT_F3					class T1, class T2, class T3
-#define __REPEAT_F4					class T1, class T2, class T3, class T4
-#define __REPEAT_F5					class T1, class T2, class T3, class T4, class T5
-#define __REPEAT_F6					class T1, class T2, class T3, class T4, class T5, class T6
-#define __REPEAT_F7					class T1, class T2, class T3, class T4, class T5, class T6, class T7
-#define __REPEAT_F8					class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8
-#define __REPEAT_F9					class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9
-#define __REPEAT_F10				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10
-#define __REPEAT_F11				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11
-#define __REPEAT_F12				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12
-#define __REPEAT_F13				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13
-#define __REPEAT_F14				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14
-#define __REPEAT_F15				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15
-#define __REPEAT_F16				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16
-#define __REPEAT_F17				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17
-#define __REPEAT_F18				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18
-#define __REPEAT_F19				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19
-#define __REPEAT_F20				class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20
-#define __REPEAT_F(N)       __REPEAT_F##N
-
-#define __REPEAT_G0					
-#define __REPEAT_G1					, T1
-#define __REPEAT_G2					, T1, T2
-#define __REPEAT_G3					, T1, T2, T3
-#define __REPEAT_G4					, T1, T2, T3, T4
-#define __REPEAT_G5					, T1, T2, T3, T4, T5
-#define __REPEAT_G6					, T1, T2, T3, T4, T5, T6
-#define __REPEAT_G7					, T1, T2, T3, T4, T5, T6, T7
-#define __REPEAT_G8					, T1, T2, T3, T4, T5, T6, T7, T8
-#define __REPEAT_G9					, T1, T2, T3, T4, T5, T6, T7, T8, T9
-#define __REPEAT_G10				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10
-#define __REPEAT_G11				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11
-#define __REPEAT_G12				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12
-#define __REPEAT_G13				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13
-#define __REPEAT_G14				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14
-#define __REPEAT_G15				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15
-#define __REPEAT_G16				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16
-#define __REPEAT_G17				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17
-#define __REPEAT_G18				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18
-#define __REPEAT_G19				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19
-#define __REPEAT_G20				, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20
-#define __REPEAT_G(N)       __REPEAT_G##N
-
-#define __REPEAT_H0					
-#define __REPEAT_H1					, t1
-#define __REPEAT_H2					, t1, t2
-#define __REPEAT_H3					, t1, t2, t3
-#define __REPEAT_H4					, t1, t2, t3, t4
-#define __REPEAT_H5					, t1, t2, t3, t4, t5
-#define __REPEAT_H6					, t1, t2, t3, t4, t5, t6
-#define __REPEAT_H7					, t1, t2, t3, t4, t5, t6, t7
-#define __REPEAT_H8					, t1, t2, t3, t4, t5, t6, t7, t8
-#define __REPEAT_H9					, t1, t2, t3, t4, t5, t6, t7, t8, t9
-#define __REPEAT_H10				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10
-#define __REPEAT_H11				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11
-#define __REPEAT_H12				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12
-#define __REPEAT_H13				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13
-#define __REPEAT_H14				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14
-#define __REPEAT_H15				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15
-#define __REPEAT_H16				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16
-#define __REPEAT_H17				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17
-#define __REPEAT_H18				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18
-#define __REPEAT_H19				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19
-#define __REPEAT_H20				, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20
-#define __REPEAT_H(N)       __REPEAT_H##N
 
 //various defs needed for parameters
 #define __MAX_PARAMS__       20
+#define __NOTHING__          
+#define __COMMA__            ,
+#define __TEMPLATE_ARG__(N)  class T##N
+#define __TYPE_ARG__(N)      T##N 
+#define __ARG__(N)           T##N t##N
+#define __PARAM__(N)         t##N
 #define __NOT_VIRTUAL__
 
 
@@ -238,65 +86,65 @@ struct __callable__ {
 
 //callable class macro with return type
 #define __CALLABLE__(N)\
-template <class R, class C __REPEAT_A(N)> struct __callable##N##__ : public __callable__ {\
-    typedef R (C::*MethodType)(__REPEAT_B(N));\
+template <class R, class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> struct __callable##N##__ : public __callable__ {\
+    typedef R (C::*MethodType)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__));\
     MethodType method;\
     __callable##N##__(MethodType m) : method(m) {\
     }\
-    R invoke(C *object __REPEAT_C(N)) const {\
-        return (object->*method)(__REPEAT_D(N));\
+    R invoke(C *object __REPEAT(N, __ARG__, __COMMA__, __COMMA__)) const {\
+        return (object->*method)(__REPEAT(N, __PARAM__, __COMMA__, __NOTHING__));\
     }\
 };
 
 
 //callable class macro with return type and const type
 #define __CALLABLE_CONST__(N)\
-template <class R, class C __REPEAT_A(N)> struct __callable_const##N##__ : public __callable__ {\
-    typedef R (C::*MethodType)(__REPEAT_B(N)) const;\
+template <class R, class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> struct __callable_const##N##__ : public __callable__ {\
+    typedef R (C::*MethodType)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__)) const;\
     MethodType method;\
     __callable_const##N##__(MethodType m) : method(m) {\
     }\
-    R invoke(C *object __REPEAT_C(N)) const {\
-        return (object->*method)(__REPEAT_D(N));\
+    R invoke(C *object __REPEAT(N, __ARG__, __COMMA__, __COMMA__)) const {\
+        return (object->*method)(__REPEAT(N, __PARAM__, __COMMA__, __NOTHING__));\
     }\
 };
 
 
 //callable class macro with void return type
 #define __CALLABLE_VOID__(N)\
-template <class C __REPEAT_A(N)> struct __callable_void##N##__ : public __callable__ {\
-    typedef void (C::*MethodType)(__REPEAT_B(N));\
+template <class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> struct __callable_void##N##__ : public __callable__ {\
+    typedef void (C::*MethodType)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__));\
     MethodType method;\
     __callable_void##N##__(MethodType m) : method(m) {\
     }\
-    void invoke(C *object __REPEAT_C(N)) const {\
-        (object->*method)(__REPEAT_D(N));\
+    void invoke(C *object __REPEAT(N, __ARG__, __COMMA__, __COMMA__)) const {\
+        (object->*method)(__REPEAT(N, __PARAM__, __COMMA__, __NOTHING__));\
     }\
 };
 
 
 //callable class macro with void return type and const type
 #define __CALLABLE_CONST_VOID__(N)\
-template <class C __REPEAT_A(N)> struct __callable_const_void##N##__ : public __callable__ {\
-    typedef void (C::*MethodType)(__REPEAT_B(N)) const;\
+template <class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> struct __callable_const_void##N##__ : public __callable__ {\
+    typedef void (C::*MethodType)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__)) const;\
     MethodType method;\
     __callable_const_void##N##__(MethodType m) : method(m) {\
     }\
-    void invoke(C *object __REPEAT_C(N)) const {\
-        (object->*method)(__REPEAT_D(N));\
+    void invoke(C *object __REPEAT(N, __ARG__, __COMMA__, __COMMA__)) const {\
+        (object->*method)(__REPEAT(N, __PARAM__, __COMMA__, __NOTHING__));\
     }\
 };
 
 
 //static callable class macro with return type
 #define __STATIC_CALLABLE__(N)\
-template <class R __REPEAT_A(N)> struct __static_callable##N##__ : public __callable__ {\
-    typedef R (*MethodType)(__REPEAT_B(N));\
+template <class R __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> struct __static_callable##N##__ : public __callable__ {\
+    typedef R (*MethodType)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__));\
     MethodType method;\
     __static_callable##N##__(MethodType m) : method(m) {\
     }\
-    R invoke(__REPEAT_E(N)) const {\
-        return (*method)(__REPEAT_D(N));\
+    R invoke(__REPEAT(N, __ARG__, __COMMA__, __NOTHING__)) const {\
+        return (*method)(__REPEAT(N, __PARAM__, __COMMA__, __NOTHING__));\
     }\
 };
 
@@ -315,13 +163,13 @@ struct __static_callable_void0__ : public __callable__ {
 
 //void version
 #define __STATIC_CALLABLE_VOID__(N)\
-template <__REPEAT_F(N)> struct __static_callable_void##N##__ : public __callable__ {\
-    typedef void (*MethodType)(__REPEAT_B(N));\
+template <__REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __NOTHING__)> struct __static_callable_void##N##__ : public __callable__ {\
+    typedef void (*MethodType)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__));\
     MethodType method;\
     __static_callable_void##N##__(MethodType m) : method(m) {\
     }\
-    void invoke(__REPEAT_E(N)) const {\
-        (*method)(__REPEAT_D(N));\
+    void invoke(__REPEAT(N, __ARG__, __COMMA__, __NOTHING__)) const {\
+        (*method)(__REPEAT(N, __PARAM__, __COMMA__, __NOTHING__));\
     }\
 };
 
@@ -468,36 +316,36 @@ __STATIC_CALLABLE_VOID__(20)
 
 //macro of a inline method that accepts a method pointer and creates a callable for it
 #define __CREATE_CALLABLE__(N)\
-    template <class C __REPEAT_A(N)> static inline __callable##N##__<R, C __REPEAT_G(N)> *create(R (C::*method)(__REPEAT_B(N))) {\
-        return new __callable##N##__<R, C __REPEAT_G(N)>(method);\
+    template <class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> static inline __callable##N##__<R, C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)> *create(R (C::*method)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__))) {\
+        return new __callable##N##__<R, C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)>(method);\
     }
 
 
 //macro of a inline method that accepts a method pointer and creates a const callable for it
 #define __CREATE_CALLABLE_CONST__(N)\
-    template <class C __REPEAT_A(N)> static inline __callable_const##N##__<R, C __REPEAT_G(N)> *create(R (C::*method)(__REPEAT_B(N)) const) {\
-        return new __callable_const##N##__<R, C __REPEAT_G(N)>(method);\
+    template <class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> static inline __callable_const##N##__<R, C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)> *create(R (C::*method)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__)) const) {\
+        return new __callable_const##N##__<R, C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)>(method);\
     }
 
 
 //void version
 #define __CREATE_CALLABLE_VOID__(N)\
-    template <class C __REPEAT_A(N)> static inline __callable_void##N##__<C __REPEAT_G(N)> *create(void (C::*method)(__REPEAT_B(N))) {\
-        return new __callable_void##N##__<C __REPEAT_G(N)>(method);\
+    template <class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> static inline __callable_void##N##__<C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)> *create(void (C::*method)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__))) {\
+        return new __callable_void##N##__<C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)>(method);\
     }
 
 
 //const void version
 #define __CREATE_CALLABLE_CONST_VOID__(N)\
-    template <class C __REPEAT_A(N)> static inline __callable_const_void##N##__<C __REPEAT_G(N)> *create(void (C::*method)(__REPEAT_B(N)) const) {\
-        return new __callable_const_void##N##__<C __REPEAT_G(N)>(method);\
+    template <class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> static inline __callable_const_void##N##__<C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)> *create(void (C::*method)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__)) const) {\
+        return new __callable_const_void##N##__<C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)>(method);\
     }
 
 
 //macro to create a static callable
 #define __CREATE_STATIC_CALLABLE__(N)\
-    template <class R1 __REPEAT_A(N)> static inline __static_callable##N##__<R1 __REPEAT_G(N)> *create(R1 (*method)(__REPEAT_B(N))) {\
-        return new __static_callable##N##__<R1 __REPEAT_G(N)>(method);\
+    template <class R __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> static inline __static_callable##N##__<R __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)> *create(R (*method)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__))) {\
+        return new __static_callable##N##__<R __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)>(method);\
     }
 
 
@@ -510,8 +358,8 @@ __STATIC_CALLABLE_VOID__(20)
 
 //void version
 #define __CREATE_STATIC_CALLABLE_VOID__(N)\
-    template <__REPEAT_F(N)> static inline __static_callable_void##N##__<__REPEAT_B(N)> *create(void (*method)(__REPEAT_B(N))) {\
-        return new __static_callable_void##N##__<__REPEAT_B(N)>(method);\
+    template <__REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __NOTHING__)> static inline __static_callable_void##N##__<__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__)> *create(void (*method)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__))) {\
+        return new __static_callable_void##N##__<__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__)>(method);\
     }
 
 
@@ -663,21 +511,21 @@ template <> struct __static_callable_factory__<void> {
 
 //callable generator
 #define __CALLABLE_GENERATOR__(N)\
-    template <class R, class C __REPEAT_A(N)> inline __callable__ *__create_callable__(R (C::*method)(__REPEAT_B(N))) {\
+    template <class R, class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> inline __callable__ *__create_callable__(R (C::*method)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__))) {\
         return __callable_factory__<R>::create(method);\
     }
 
 
 //const callable generator
 #define __CALLABLE_GENERATOR_CONST__(N)\
-    template <class R, class C __REPEAT_A(N)> inline __callable__ *__create_callable__(R (C::*method)(__REPEAT_B(N)) const) {\
+    template <class R, class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> inline __callable__ *__create_callable__(R (C::*method)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__)) const) {\
         return __callable_factory__<R>::create(method);\
     }
 
 
 //static callable generator
 #define __STATIC_CALLABLE_GENERATOR__(N)\
-    template <class R __REPEAT_A(N)> inline __callable__ *__create_static_callable__(R (*method)(__REPEAT_B(N))) {\
+    template <class R __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> inline __callable__ *__create_static_callable__(R (*method)(__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__))) {\
         return __static_callable_factory__<R>::create(method);\
     }
 
@@ -808,18 +656,18 @@ ACCESS_ATTR :\
 
 //macro that defines an 'invoke' method with a return type
 #define __INVOKE__(N)\
-    template <class R, class C __REPEAT_A(N)> void invoke(R &result, C *object __REPEAT_C(N)) const {\
+    template <class R, class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> void invoke(R &result, C *object __REPEAT(N, __ARG__, __COMMA__, __COMMA__)) const {\
         if (m_access != ACCESS_PUBLIC) throw IllegalAccessError(m_name);\
-        typedef const __callable##N##__<R, C __REPEAT_G(N)> CallableType1;\
-        typedef const __callable_const##N##__<R, C __REPEAT_G(N)> CallableType2;\
+        typedef const __callable##N##__<R, C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)> CallableType1;\
+        typedef const __callable_const##N##__<R, C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)> CallableType2;\
         CallableType1 *cb1 = dynamic_cast<CallableType1 *>(m_callable);\
         if (cb1) {\
-            result = cb1->invoke(object __REPEAT_H(N));\
+            result = cb1->invoke(object __REPEAT(N, __PARAM__, __COMMA__, __COMMA__));\
             return;\
         }\
         CallableType2 *cb2 = dynamic_cast<CallableType2 *>(m_callable);\
         if (cb2) {\
-            result = cb2->invoke(object __REPEAT_H(N));\
+            result = cb2->invoke(object __REPEAT(N, __PARAM__, __COMMA__, __COMMA__));\
             return;\
         }\
         throw TypeMismatchError(m_name);\
@@ -828,18 +676,18 @@ ACCESS_ATTR :\
 
 //macro that defines an 'invoke' method without a return type
 #define __INVOKE_VOID__(N)\
-    template <class C __REPEAT_A(N)> void invokeVoid(C *object __REPEAT_C(N)) const {\
+    template <class C __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> void invokeVoid(C *object __REPEAT(N, __ARG__, __COMMA__, __COMMA__)) const {\
         if (m_access != ACCESS_PUBLIC) throw IllegalAccessError(m_name);\
-        typedef const __callable_void##N##__<C __REPEAT_G(N)> CallableType1;\
-        typedef const __callable_const_void##N##__<C __REPEAT_G(N)> CallableType2;\
+        typedef const __callable_void##N##__<C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)> CallableType1;\
+        typedef const __callable_const_void##N##__<C __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)> CallableType2;\
         CallableType1 *cb1 = dynamic_cast<CallableType1 *>(m_callable);\
         if (cb1) {\
-            cb1->invoke(object __REPEAT_H(N));\
+            cb1->invoke(object __REPEAT(N, __PARAM__, __COMMA__, __COMMA__));\
             return;\
         }\
         CallableType2 *cb2 = dynamic_cast<CallableType2 *>(m_callable);\
         if (cb2) {\
-            cb2->invoke(object __REPEAT_H(N));\
+            cb2->invoke(object __REPEAT(N, __PARAM__, __COMMA__, __COMMA__));\
             return;\
         }\
         throw TypeMismatchError(m_name);\
@@ -862,12 +710,12 @@ ACCESS_ATTR :\
 
 //static invoke non-void method
 #define __STATIC_INVOKE__(N)\
-    template <class R __REPEAT_A(N)> void invoke(R &result __REPEAT_C(N)) const {\
+    template <class R __REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __COMMA__)> void invoke(R &result __REPEAT(N, __ARG__, __COMMA__, __COMMA__)) const {\
         if (m_access != ACCESS_PUBLIC) throw IllegalAccessError(m_name);\
-        typedef const __static_callable##N##__<R __REPEAT_G(N)> CallableType;\
+        typedef const __static_callable##N##__<R __REPEAT(N, __TYPE_ARG__, __COMMA__, __COMMA__)> CallableType;\
         CallableType *cb = dynamic_cast<CallableType *>(m_callable);\
         if (cb) {\
-            result = cb->invoke(__REPEAT_D(N));\
+            result = cb->invoke(__REPEAT(N, __PARAM__, __COMMA__, __NOTHING__));\
             return;\
         }\
         throw TypeMismatchError(m_name);\
@@ -890,12 +738,12 @@ ACCESS_ATTR :\
 
 //static invoke void method
 #define __STATIC_INVOKE_VOID__(N)\
-    template <__REPEAT_F(N)> void invokeVoid(__REPEAT_E(N)) const {\
+    template <__REPEAT(N, __TEMPLATE_ARG__, __COMMA__, __NOTHING__)> void invokeVoid(__REPEAT(N, __ARG__, __COMMA__, __NOTHING__)) const {\
         if (m_access != ACCESS_PUBLIC) throw IllegalAccessError(m_name);\
-        typedef const __static_callable_void##N##__<__REPEAT_B(N)> CallableType;\
+        typedef const __static_callable_void##N##__<__REPEAT(N, __TYPE_ARG__, __COMMA__, __NOTHING__)> CallableType;\
         CallableType *cb = dynamic_cast<CallableType *>(m_callable);\
         if (cb) {\
-            cb->invoke(__REPEAT_D(N));\
+            cb->invoke(__REPEAT(N, __PARAM__, __COMMA__, __NOTHING__));\
             return;\
         }\
         throw TypeMismatchError(m_name);\
@@ -907,13 +755,10 @@ ACCESS_ATTR :\
     @param CLASS_NAME name of this class.
     @param SUPER_CLASS_NAME name of the super class; if there is no base class,
            pass NullClass.
-    
-    ������getClassStaticPtr����Ϊprotected���Ա���������Է��ʸ���ĸú���
  */
 #define CLASS(CLASS_NAME, SUPER_CLASS_NAME)\
 private:\
     typedef CLASS_NAME ClassType;\
-protected:\
     static const agm::reflection::Class *getClassStaticPtr() {\
         static agm::reflection::Class _class(#CLASS_NAME, SUPER_CLASS_NAME::getClassStaticPtr());\
         return &_class;\
@@ -1264,10 +1109,13 @@ public:
         @param object object to set the field of
         @exception TypeMismatchError thrown if the object is of invalid class or 
                    the result is of the wrong type.
-        
-        �˴�ֻ����������ʵ�ַŵ�Class��֮��
      */
-    template <class Object, class Value> void get(Value &result, Object *object) const;
+    template <class Object, class Value> void get(Value &result, Object *object) const {
+        if (m_access != ACCESS_PUBLIC) throw IllegalAccessError(m_name);
+        if (!m_class->isRelative(object->getClass())) throw TypeMismatchError("object");
+        if (typeid(Value) != m_typeinfo) throw TypeMismatchError("result");
+        result = *(const Value *)(((const char *)object) + m_offset);
+    }
 
     /** sets the field of the given object.
         @param object object to set the field of
@@ -1275,15 +1123,16 @@ public:
         @exception TypeMismatchError thrown if the object is of invalid class or 
                    the value is of the wrong type.
         @exception IllegalAccessError thrown if the field's access is not public.
-      	
-      	�˴�ֻ����������ʵ�ַŵ�Class��֮��
      */
-    template <class Object, class Value> void set(Object *object, const Value &value) const;
+    template <class Object, class Value> void set(Object *object, const Value &value) const {
+        if (m_access != ACCESS_PUBLIC) throw IllegalAccessError(m_name);
+        if (!m_class->isRelative(object->getClass())) throw TypeMismatchError("object");
+        if (typeid(Value) != m_typeinfo) throw TypeMismatchError("value");
+        *(Value *)(((char *)object) + m_offset) = value;
+    }
 
 private:
-		/**type_info�������ռ���std
-		*/
-    const std::type_info &m_typeinfo;
+    const type_info &m_typeinfo;
     const Class *m_class;
     enum ACCESS_TYPE m_access;
     const char *m_type;
@@ -1291,7 +1140,7 @@ private:
     unsigned long m_offset;
 
     //default constructor
-    Field(unsigned long offset, const std::type_info &typeinfo, const Class *pclass, ACCESS_TYPE access, const char *type, const char *name) :
+    Field(unsigned long offset, const type_info &typeinfo, const Class *pclass, ACCESS_TYPE access, const char *type, const char *name) :
         m_offset(offset),
         m_typeinfo(typeinfo),
         m_class(pclass),
@@ -1361,7 +1210,7 @@ public:
     }
 
 private:
-    const std::type_info &m_typeinfo;
+    const type_info &m_typeinfo;
     const Class *m_class;
     enum ACCESS_TYPE m_access;
     const char *m_type;
@@ -1369,7 +1218,7 @@ private:
     void *m_address;
 
     //default constructor
-    StaticField(void *address, const std::type_info &typeinfo, const Class *pclass, ACCESS_TYPE access, const char *type, const char *name) :
+    StaticField(void *address, const type_info &typeinfo, const Class *pclass, ACCESS_TYPE access, const char *type, const char *name) :
         m_address(address),
         m_typeinfo(typeinfo),
         m_class(pclass),
@@ -1696,19 +1545,27 @@ public:
         @param result result to store the value to
         @param object object to get the property of
         @exception TypeMismatchError thrown if there is a type mismatch
-        
-        �˴�ֻ����������ʵ�ַŵ�Class��֮��
      */
-    template <class Object, class Value> void get(Value &result, const Object *object) const;
+    template <class Object, class Value> void get(Value &result, const Object *object) const {
+        if (!m_class->isRelative(object->getClass())) throw TypeMismatchError("object");
+        typedef const __property_handler__<Value> PropertyType;
+        PropertyType *prop = dynamic_cast<PropertyType *>(m_handler);
+        if (!prop) throw TypeMismatchError(m_name);
+        result = prop->get((const void *)object);
+    }
 
     /** sets the property's value
         @param object object to set the property of
         @param value value of the object
         @exception TypeMismatchError thrown if there is a type mismatch
-        
-        �˴�ֻ����������ʵ�ַŵ�Class��֮��
      */
-    template <class Object, class Value> void set(Object *object, const Value &value) const;
+    template <class Object, class Value> void set(Object *object, const Value &value) const {
+        if (!m_class->isRelative(object->getClass())) throw TypeMismatchError("object");
+        typedef const __property_handler__<Value> PropertyType;
+        PropertyType *prop = dynamic_cast<PropertyType *>(m_handler);
+        if (!prop) throw TypeMismatchError(m_name);
+        prop->set((void *)object, value);
+    }
 
 private:
     const char *m_type;
@@ -2000,42 +1857,10 @@ private:
     ~NullClass() {}
 };
 
-/**���õ�ʵ�ַ���
-*/
-template <class Object, class Value> void Field::get(Value &result, Object *object) const {
-    if (m_access != ACCESS_PUBLIC) throw IllegalAccessError(m_name);
-    if (!m_class->isRelative(object->getClass())) throw TypeMismatchError("object");
-    if (typeid(Value) != m_typeinfo) throw TypeMismatchError("result");
-    result = *(const Value *)(((const char *)object) + m_offset);
-}
-
-template <class Object, class Value> void Field::set(Object *object, const Value &value) const {
-    if (m_access != ACCESS_PUBLIC) throw IllegalAccessError(m_name);
-    if (!m_class->isRelative(object->getClass())) throw TypeMismatchError("object");
-    if (typeid(Value) != m_typeinfo) throw TypeMismatchError("value");
-    *(Value *)(((char *)object) + m_offset) = value;
-}
-
-template <class Object, class Value> void Property::get(Value &result, const Object *object) const {
-    if (!m_class->isRelative(object->getClass())) throw TypeMismatchError("object");
-    typedef const __property_handler__<Value> PropertyType;
-    PropertyType *prop = dynamic_cast<PropertyType *>(m_handler);
-    if (!prop) throw TypeMismatchError(m_name);
-    result = prop->get((const void *)object);
-}
-
-template <class Object, class Value> void Property::set(Object *object, const Value &value) const {
-    if (!m_class->isRelative(object->getClass())) throw TypeMismatchError("object");
-    typedef const __property_handler__<Value> PropertyType;
-    PropertyType *prop = dynamic_cast<PropertyType *>(m_handler);
-    if (!prop) throw TypeMismatchError(m_name);
-    prop->set((void *)object, value);
-}
-
 
 //internal class for registering a field
 struct __register_field__ {
-    __register_field__(unsigned long offset, const std::type_info &typeinfo, const Class *pclass, enum ACCESS_TYPE access, const char *type, const char *name) {
+    __register_field__(unsigned long offset, const type_info &typeinfo, const Class *pclass, enum ACCESS_TYPE access, const char *type, const char *name) {
         Field field(offset, typeinfo, pclass, access, type, name);
         ((Class *)pclass)->_addField(field);
     }
@@ -2044,7 +1869,7 @@ struct __register_field__ {
 
 //internal class for registering a static field
 struct __register_static_field__ {
-    __register_static_field__(void *address, const std::type_info &typeinfo, const Class *pclass, enum ACCESS_TYPE access, const char *type, const char *name) {
+    __register_static_field__(void *address, const type_info &typeinfo, const Class *pclass, enum ACCESS_TYPE access, const char *type, const char *name) {
         StaticField field(address, typeinfo, pclass, access, type, name);
         ((Class *)pclass)->_addStaticField(field);
     }
@@ -2081,12 +1906,8 @@ struct __register_property__ {
 }}
 
 
-/**��ֹ������ͻ
-*/
-#if 0
 ///alias to Null class for reflection
 typedef agm::reflection::NullClass NullClass;
-#endif
 
 
 /** operator that outputs the access type to the given stream
