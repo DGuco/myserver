@@ -2,7 +2,7 @@
 // Created by DGuco on 17-9-6.
 //
 
-#include "../inc/playerbase.h"
+#include "playerbase.h"
 
 CPlayerBase::CPlayerBase(CPlayer* pPlayer) : CPlayerData(pPlayer)
 {

@@ -1,7 +1,7 @@
 //
 // Created by dguco on 17-7-23.
 //
-#include "../inc/player.h"
+#include "player.h"
 
 CPlayer::CPlayer(OBJ_ID playerId)
 {

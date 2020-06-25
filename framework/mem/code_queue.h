@@ -13,6 +13,18 @@
 //修改字对齐规则，避免false sharing
 #define CACHELINE_ALIGN  __attribute__((aligned(CACHELINE_SIZE)))
 
+#define  CACHE_LINE_SIZE 64 //cache line 大小
+//内存屏障
+#define __MEM_BARRIER \
+    __asm__ __volatile__("mfence":::"memory")
+//内存读屏障
+#define __READ_BARRIER__ \
+    __asm__ __volatile__("lfence":::"memory")
+//内存写屏障
+#define __WRITE_BARRIER__ \
+    __asm__ __volatile__("sfence":::"memory")
+
+
 #define QUEUERESERVELENGTH 8        //预留长度
 
 class CACHELINE_ALIGN CCodeQueue
@@ -39,12 +51,6 @@ public:
 	int AppendOneCode(const BYTE *pInCode, int sInLength);
 	//从进程间共享内存管道获取数据
 	int GetHeadCode(BYTE *pOutCode, int &psOutLength);
-	//从进程间共享内存管道获取数据
-	int PeekHeadCode(BYTE *pOutCode, int &psOutLength);
-	//从进程间共享内存管道删除数据
-	int DeleteHeadCode();
-	//从进程间共享内存管道获取数据
-	int GetOneCode(int iCodeOffset, int nCodeLength, BYTE *pOutCode, int &psOutLength);
 	//共享内存管道是否空闲
 	bool IsQueueEmpty();
 	//向文件中备份数据
@@ -80,10 +86,14 @@ private:
 	struct _tagHead
 	{
 		int m_iSize;                //共享内存管道大小
-		int m_iCodeBufOffSet;       //共享内存管道地址在CCodeQueue对象中的偏移地址
-		int m_iReadIndex;           //读数据索引
-		int m_iWriteIndex;          //写数据索引
-		int m_iLockIdx;             //数据锁id
+        char __cache_padding1__[CACHE_LINE_SIZE];
+        int m_iCodeBufOffSet;       //共享内存管道地址在CCodeQueue对象中的偏移地址
+        char __cache_padding2__[CACHE_LINE_SIZE];
+        int m_iReadIndex;           //读数据索引
+        char __cache_padding3__[CACHE_LINE_SIZE];
+        int m_iWriteIndex;          //写数据索引
+        char __cache_padding4__[CACHE_LINE_SIZE];
+        int m_iLockIdx;             //数据锁id
 	} m_stQueueHead;
 
 	//共享内存管道起始地址

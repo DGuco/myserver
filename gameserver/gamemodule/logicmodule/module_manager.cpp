@@ -1,9 +1,9 @@
 //
 // Created by DGuco on 17-6-21.
 //
-#include "../inc/module_manager.h"
-#include "../inc/core_module.h"
-#include "../inc/db_module.h"
+#include "module_manager.h"
+#include "core_module.h"
+#include "db_module.h"
 
 template<> shared_ptr<CModuleManager> CSingleton<CModuleManager>::spSingleton = NULL;
 

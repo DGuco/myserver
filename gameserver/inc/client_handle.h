@@ -13,7 +13,7 @@
 #include "message_interface.h"
 #include "message.pb.h"
 #include "byte_buff.h"
-#include "player.h"
+#include "../gamemodule/datamodule/player.h"
 
 
 // 提取消息错误码
@@ -61,8 +61,7 @@ public:
 	//接收客户端数据包
 	void RecvClientData();
 	int SendResponse(shared_ptr<CGooMess> pMessag, shared_ptr<CMesHead> mesHead);
-public:
-	void DealMsg() ;
+	void DealClientCameMsg() ;
 private:
 	//gateserver ==> gameserver
 	std::shared_ptr<CCodeQueue> m_C2SCodeQueue;

@@ -7,14 +7,13 @@
 #include <share_mem.h>
 #include "client_comm_engine.h"
 #include "my_assert.h"
-#include "sceneobjmanager.h"
+#include "../gamemodule/datamodule/sceneobjmanager.h"
 #include "../inc/message_factory.h"
 #include "../inc/client_handle.h"
 #include "../inc/game_server.h"
 
 CClientHandle::CClientHandle()
-	: CMyThread("CClientHandle", 1000),
-	  m_pSendBuff(std::make_shared<CByteBuff>( )),
+	:  m_pSendBuff(std::make_shared<CByteBuff>( )),
 	  m_pRecvBuff(std::make_shared<CByteBuff>( ))
 {
 }
@@ -26,6 +25,7 @@ CClientHandle::~CClientHandle()
 
 int CClientHandle::PrepareToRun()
 {
+    CreatePipe();
 	return 0;
 }
 
@@ -65,7 +65,7 @@ void CClientHandle::CreatePipe()
 	MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
 	CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
 	CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize);
-	m_S2CCodeQueue = shared_ptr<CCodeQueue>(CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_C2S));
+	m_C2SCodeQueue = shared_ptr<CCodeQueue>(CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_C2S));
 }
 
 int CClientHandle::DealClientMessage(std::shared_ptr<CMessage> pMsg)
@@ -316,7 +316,7 @@ int CClientHandle::DealClientMessage(std::shared_ptr<CMessage> pMsg)
 //	pTmpTeam->GetSocketInfoPtr()->lMsgGuid = lTmpMsgGuid;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-//	CMessageDispatcher::ProcessClientMessage(pMsg);
+	CMessageDispatcher::ProcessClientMessage(pMsg);
 	return CLIENTHANDLE_SUCCESS;
 }
 
@@ -349,7 +349,7 @@ int CClientHandle::SendResponse(shared_ptr<CGooMess> pMessag, shared_ptr<CMesHea
 	CClientCommEngine::CopyMesHead(mesHead.get( ), tmpMess->mutable_msghead( ));
 	tmpMess->set_msgpara((int64) pMessag.get( ));
 	// 是否需要加密，在这里修改参数
-	i iRet = CClientCommEngine::ConvertToGateStream(m_pSendBuff.get( ),
+    int iRet = CClientCommEngine::ConvertToGateStream(m_pSendBuff.get( ),
 													tmpMess.get( ),
 													mesHead->cmd( ),
 													mesHead->serial( ),
@@ -364,68 +364,60 @@ int CClientHandle::SendResponse(shared_ptr<CGooMess> pMessag, shared_ptr<CMesHea
 	if (iRet < 0) {
 		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
 	}
-
-	if (!IsToBeBlocked( ) && GetStatus( ) != rt_running) {
-		WakeUp( );
-	}
 	LOG_DEBUG("default", "---- Send To Client Succeed ----");
 	return 0;
 }
 
-int CClientHandle::Push(int cmd, std::shared_ptr<CGooMess> pMessage, stPointList *pTeamList)
+int CClientHandle::BroadCastMsg(int cmd, shared_ptr<CGooMess> pMessage, stPointList *pTeamList)
 {
-	CGameServer::GetSingletonPtr( )->GetIoThread( )->PushTaskBack(
-		[cmd, &pMessage, pTeamList]
-		{
-			MY_ASSERT((pMessage != NULL && pTeamList != NULL), return -1);
-			// 判断是否发送消息后断开连接(这个主动断开只针对与第一个玩家)
-			CMesHead pTmpHead;
-			for (int i = 0; i < pTeamList->GetBroadcastNum( ); i++) {
-				// 将列表中的实体信息加入nethead头中
-				CPlayer *pPlayer = (CPlayer *) pTeamList->GetPointByIdx(i);
-				if (pPlayer) {
-					if (pPlayer->GetPlayerBase( )->GetSocketInfoPtr( )->m_iSocket != 0) {
-						CSocketInfo *pTmpSocket = pTmpHead.add_socketinfos( );
-						STConnectInfo *pTmpConnInfo = pPlayer->GetPlayerBase( )->GetSocketInfoPtr( );
-						if (pTmpConnInfo == NULL) {
-							MY_ASSERT_STR(0,
-										  return -1,
-										  "CClientHandle::Send failed, Get player connection info failed.");
-						}
-						pTmpSocket->set_createtime(pTmpConnInfo->m_tCreateTime);
-						pTmpSocket->set_socketid(pTmpConnInfo->m_iSocket);
-					}
-					else {
-						LOG_DEBUG("default",
-								  "Client({} | %lu | {}) has disconnected.",
-								  pPlayer->GetPlayerId( ),
-								  pPlayer->GetPlayerId( ),
-								  pPlayer->GetPlayerBase( )->GetAccount( ));
-					}
-				}
-			}
+    MY_ASSERT((pMessage != NULL && pTeamList != NULL), return -1);
+    // 判断是否发送消息后断开连接(这个主动断开只针对与第一个玩家)
+    CMesHead pTmpHead;
+    for (int i = 0; i < pTeamList->GetBroadcastNum( ); i++)
+    {
+        // 将列表中的实体信息加入nethead头中
+        CPlayer *pPlayer = (CPlayer *) pTeamList->GetPointByIdx(i);
+        if (pPlayer)
+        {
+            if (pPlayer->GetPlayerBase( )->GetSocketInfoPtr( )->m_iSocket != 0)
+            {
+                CSocketInfo *pTmpSocket = pTmpHead.add_socketinfos( );
+                STConnectInfo *pTmpConnInfo = pPlayer->GetPlayerBase( )->GetSocketInfoPtr( );
+                if (pTmpConnInfo == NULL)
+                {
+                 MY_ASSERT_STR(0,return -1,"CClientHandle::Send failed, Get player connection info failed.");
+                }
+                pTmpSocket->set_createtime(pTmpConnInfo->m_tCreateTime);
+                pTmpSocket->set_socketid(pTmpConnInfo->m_iSocket);
+            }
+            else {
+                LOG_DEBUG("default","Client({} | %lu | {}) has disconnected.",pPlayer->GetPlayerId( ),
+                        pPlayer->GetPlayerId( ),pPlayer->GetPlayerBase( )->GetAccount( ));
+            }
+        }
+    }
 
-			CByteBuff tmpByteBuff;
-			// 是否需要加密，在这里修改参数
-//			int iRet = CClientCommEngine::ConvertToGateStream(&tmpByteBuff,
-//															  &pTmpHead,
-//															  pMessage.get(),
-//															  cmd,
-//															  0,
-//															  0);
-			int iRet = 0;
-			if (iRet != 0) {
-				MY_ASSERT_STR(0,
-							  return -2,
-							  "CClientHandle::Send failed, CClientCommEngine::ConvertGameServerMessageToStream failed.");
-			}
+    std::shared_ptr<CMessage> tmpMess = std::make_shared<CMessage>( );
+    CClientCommEngine::CopyMesHead(&pTmpHead, tmpMess->mutable_msghead( ));
+    tmpMess->set_msgpara((int64) pMessage.get( ));
 
-//	iRet = mS2CPipe->AppendOneCode((const BYTE *) tmpByteBuff.CanReadData(), tmpByteBuff.ReadableDataLen());
-//	if (iRet < 0) {
-//		MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
-//	}
-			return 0;
-		});
+    CByteBuff tmpByteBuff;
+    // 是否需要加密，在这里修改参数
+    int iRet = CClientCommEngine::ConvertToGateStream(m_pSendBuff.get(),
+                                                      tmpMess.get(),
+                                                      cmd,
+                                                      0,
+                                                      0);
+    if (iRet != 0)
+    {
+        MY_ASSERT_STR(0,return -2,"CClientHandle::Send failed, CClientCommEngine::ConvertGameServerMessageToStream failed.");
+    }
+
+    iRet = m_S2CCodeQueue->AppendOneCode((const BYTE *) tmpByteBuff.CanReadData(), tmpByteBuff.ReadableDataLen());
+    if (iRet < 0) {
+        MY_ASSERT_STR(0, return -3, "CClientHandle::Send failed, AppendOneCode return {}.", iRet);
+    }
+    return 0;
 }
 
 /**
@@ -455,68 +447,14 @@ void CClientHandle::RecvClientData()
 }
 
 // 断开玩家连接
-void CClientHandle::DisconnectClient(int iSocket,
-									 time_t tCreateTime)
+void CClientHandle::DisconnectClient(int iSocket,time_t tCreateTime)
 {
-//	BYTE abyTmpCodeBuff[MAX_PACKAGE_LEN];
-//	unsigned char *pucTmpBuff = (unsigned char *) abyTmpCodeBuff;
-//	unsigned short unTmpLen = 0;
-//
-//	// 这里必须用临时变量，因为有可能是在接收到消息的时候发起断连
-//	CMesHead tmpNetHead;
-//	tmpNetHead.IsInitialized(time(NULL), -1, uiIP, unPort);
-//	tmpNetHead.AddEntity(iSocket, tCreateTime);
-//
-//	// 总长度
-//	*(unsigned short *) pucTmpBuff =
-//		((sizeof(unsigned short) * 2) + tmpNetHead.Size());
-//	pucTmpBuff += sizeof(unsigned short);
-//	unTmpLen += sizeof(unsigned short);
-//
-//	// CNetHead长度
-//	*(unsigned short *) pucTmpBuff = tmpNetHead.Size();
-//	pucTmpBuff += sizeof(unsigned short);
-//	unTmpLen += sizeof(unsigned short);
-//
-//	// 序列化CNetHead
-//	unsigned short unRet = tmpNetHead.SerializeToArray(pucTmpBuff,
-//													   MAX_PACKAGE_LEN - unTmpLen);
-//	if (unRet < 0) {
-//		LOG_ERROR("default", "[{} : {} : {}] SerializeToArray failed, tRet = {}.",
-//				  __MY_FILE__, __LINE__, __FUNCTION__, unRet);
-//		return;
-//	}
-//	if (unRet != tmpNetHead.Size()) {
-//		LOG_ERROR("default", "[{} : {} : {}] length is not same ({} : {}).",
-//				  __MY_FILE__, __LINE__, __FUNCTION__, unRet, tmpNetHead.Size());
-//		return;
-//	}
-//	pucTmpBuff += unRet;
-//	unTmpLen += unRet;
-//
-//	unRet = m_pS2CPipe->AppendOneCode(abyTmpCodeBuff, unTmpLen);
-//	if (unRet < 0) {
-//		LOG_ERROR("default", "[{} : {} : {}] AppendOneCode failed, tRet = {}.",
-//				  __MY_FILE__, __LINE__, __FUNCTION__, unRet);
-//		return;
-//	}
-//
-//	LOG_NOTICE("default", "Disconnect Client [Socket = {} : CreateTime = {}].", iSocket, tCreateTime);
+    //todo 通知gateserver 断开连接
 }
 
-void CClientHandle::RunFunc()
+void CClientHandle::DealClientCameMsg()
 {
-	while (!m_C2SCodeQueue->IsQueueEmpty( ) && !m_S2CCodeQueue->IsQueueEmpty( )) {
-		CGameServer::GetSingletonPtr( )->GetIoThread( )->PushTaskBack(
-			[this]
-			{
-				RecvClientData( );
-			}
-		);
+	while (!m_C2SCodeQueue->IsQueueEmpty( )) {
+        RecvClientData( );
 	}
-}
-
-bool CClientHandle::IsToBeBlocked()
-{
-	return (!m_C2SCodeQueue->IsQueueEmpty( ) && !m_S2CCodeQueue->IsQueueEmpty( ));
 }

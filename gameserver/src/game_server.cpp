@@ -1,6 +1,7 @@
 //
 // Created by DGuco on 17-3-1.
 //
+#include <server_comm_engine.h>
 #include "my_assert.h"
 #include "config.h"
 #include "../inc/client_handle.h"
@@ -10,14 +11,12 @@
 template<> shared_ptr<CGameServer> CSingleton<CGameServer>::spSingleton = NULL;
 
 CGameServer::CGameServer()
-	: m_pNetWork(std::make_shared<CNetWork>( )),
-	  m_pClientHandle(std::make_shared<CClientHandle>()),
-	  m_pServerHandle(std::make_shared<CServerHandle>(m_pNetWork)),
+	: m_pClientHandle(std::make_shared<CClientHandle>()),
+	  m_pServerHandle(std::make_shared<CServerHandle>()),
 	  m_pModuleManager(std::make_shared<CModuleManager>( )),
 	  m_pMessageFactory(std::make_shared<CMessageFactory>( )),
 	  m_pTimerManager(std::make_shared<CTimerManager>( )),
 	  m_pLogicThread(std::make_shared<CThreadPool>(1)),
-	  m_pIoThread(std::make_shared<CThreadPool>(1, ignore_pipe)),
 	  m_pComputeThread(std::make_shared<CThreadPool>(2)),
 	  m_pConfigHandle(std::make_shared<CConfigHandle>( )),
 	  m_iServerState(0)
@@ -27,6 +26,7 @@ CGameServer::CGameServer()
 
 CGameServer::~CGameServer()
 {
+    Exit();
 }
 
 int CGameServer::Initialize()
@@ -34,14 +34,6 @@ int CGameServer::Initialize()
 	return 0;
 }
 
-int CGameServer::ListenFile()
-{
-	bool bRet = m_pNetWork->ListenFile("../config", &CGameServer::lcb_OnConfigChanged, IN_MODIFY);
-	if (!bRet) {
-		LOG_ERROR("default", "Listen config failed");
-		exit(0);
-	}
-}
 // 运行准备
 int CGameServer::PrepareToRun()
 {
@@ -57,10 +49,6 @@ int CGameServer::PrepareToRun()
 		return -1;
 	}
 
-	if (ListenFile( ) != 0) {
-		return -1;
-	}
-
 	if (StartAllTimers( ) != 0) {
 		return -4;
 	}
@@ -72,6 +60,10 @@ int CGameServer::PrepareToRun()
 	if (m_pServerHandle->PrepareToRun( )) {
 		return -1;
 	}
+
+	if (m_pConfigHandle->PrepareToRun( )) {
+        return -1;
+    }
 
 	// 通知各模块启动
 	if (m_pModuleManager->OnLaunchServer( ) != 0) {
@@ -124,7 +116,7 @@ void CGameServer::Run()
 {
 	LOG_INFO("default", "CGameServer start to run now.");
 	//libevent事件循环
-	m_pNetWork->DispatchEvents( );
+	m_pServerHandle->DispatchEvents();
 }
 
 // 退出
@@ -163,7 +155,8 @@ void CGameServer::ProcessRouterMessage(CProxyMessage *pMsg)
 
 bool CGameServer::SendMessageToDB(CProxyMessage *pMsg)
 {
-
+    m_pServerHandle->SendMessageToDB(pMsg);
+    return true;
 }
 
 // 通过消息ID获取模块类型
@@ -178,11 +171,8 @@ void CGameServer::DisconnectClient(CPlayer *pPlayer)
 	if (!pPlayer) {
 		return;
 	}
-
-	GetIoThread( )->PushTaskBack(std::mem_fn(&CClientHandle::DisconnectClient),
-								 m_pClientHandle,
-								 pPlayer->GetPlayerBase( )->GetSocket( ),
-								 pPlayer->GetPlayerBase( )->GetCreateTime( ));
+	m_pClientHandle->DisconnectClient(pPlayer->GetPlayerBase( )->GetSocket( ),
+                                      pPlayer->GetPlayerBase( )->GetCreateTime( ));
 }
 // 设置服务器运行状态
 void CGameServer::SetRunFlag(ERunFlag eRunFlag)
@@ -191,19 +181,19 @@ void CGameServer::SetRunFlag(ERunFlag eRunFlag)
 }
 
 // 广播消息给玩家，广播时，发起人一定放第一个
-int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, stPointList *pTeamList)
+int CGameServer::BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, stPointList *pTeamList)
 {
-	GetIoThread( )->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, pTeamList);
+	m_pClientHandle->BroadCastMsg( iMsgID, pMsgPara, pTeamList);
 	return 0;
 }
 
 // 发送消息给单个玩家
-int CGameServer::Push(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer)
+int CGameServer::BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer)
 {
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
-	GetIoThread( )->PushTaskBack(std::mem_fn(&CClientHandle::Push), m_pClientHandle, iMsgID, pMsgPara, &tmpList);
+    m_pClientHandle->SendResToPlayer( pMsgPara, pPlayer);
 	return 0;
 }
 
@@ -212,7 +202,7 @@ int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlay
 {
 	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
 			  return -1);
-	GetIoThread( )->PushTaskBack(std::mem_fn(&CClientHandle::SendResToPlayer), m_pClientHandle, pMsgPara, pPlayer);
+	m_pClientHandle->SendResToPlayer( pMsgPara, pPlayer);
 	return 0;
 }
 
@@ -220,11 +210,7 @@ int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlay
 int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, std::shared_ptr<CMesHead> mesHead)
 {
 	MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
-	GetIoThread( )->PushTaskBack(
-		[this, pMsgPara, mesHead]
-		{
-			m_pClientHandle->SendResponse(pMsgPara, mesHead);
-		});
+    m_pClientHandle->SendResponse(pMsgPara, mesHead);
 }
 
 // 检查服务器状态
@@ -370,13 +356,6 @@ void CGameServer::SendMsgSystemErrorResponse(int iResult,
 {
 }
 
-void CGameServer::lcb_OnConfigChanged(inotify_event *notifyEvent)
-{
-	//todo 重新加载配置文件
-	char *fileName = notifyEvent->name;
-	CGameServer::GetSingletonPtr( )->GetConfigHandle( )->Reload(fileName);
-}
-
 int CGameServer::InitStaticLog()
 {
 	return 0;
@@ -409,16 +388,6 @@ shared_ptr<CTimerManager> &CGameServer::GetTimerManager()
 shared_ptr<CThreadPool> &CGameServer::GetLogicThread()
 {
 	return m_pLogicThread;
-}
-
-shared_ptr<CThreadPool> &CGameServer::GetIoThread()
-{
-	return m_pIoThread;
-}
-
-shared_ptr<CNetWork> &CGameServer::GetNetWork()
-{
-	return m_pNetWork;
 }
 
 shared_ptr<CConfigHandle> &CGameServer::GetConfigHandle()

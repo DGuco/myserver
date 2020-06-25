@@ -50,7 +50,7 @@ protected:
 	//检测连接超时
 	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
     //检测是否又数据要发送
-    static void lcb_OnCheckSendTimeOut(int fd, short what, void *param);
+    static void lcb_OnCheckSendMsg(int fd, short what, void *param);
 private:
 	//开始监听
 	bool BeginListen();

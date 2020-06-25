@@ -7,9 +7,9 @@
 #include "dbmessage.pb.h"
 #include "client_comm_engine.h"
 #include "my_assert.h"
+#include "db_module.h"
 #include "sceneobjmanager.h"
-#include "../inc/db_module.h"
-#include "../../../inc/game_server.h"
+#include "game_server.h"
 
 template<> shared_ptr<CDbModule> CSingleton<CDbModule>::spSingleton = NULL;
 
@@ -201,8 +201,7 @@ int CDbModule::ExecuteSqlForBlob(emDBLogicType nLogicType,
 
 	tmpMsg.set_msgpara((unsigned long) &tmpMsgSqlRqt);
 	LOG_DEBUG("db", "[{}]", ((CGooMess *) tmpMsg.msgpara( ))->ShortDebugString( ).c_str( ));
-	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr( )->SendMessageToDB(&tmpMsg),
-				  return -2);
+	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr( )->SendMessageToDB(&tmpMsg),return -2);
 	return 0;
 }
 

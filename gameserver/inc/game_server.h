@@ -20,8 +20,8 @@
 #include "client_handle.h"
 #include "net_work.h"
 #include "server_handle.h"
-#include "player.h"
-#include "module_manager.h"
+#include "../gamemodule/datamodule/player.h"
+#include "../gamemodule/logicmodule/module_manager.h"
 #include "config_handle.h"
 
 class CGameServer: public CSingleton<CGameServer>
@@ -73,10 +73,6 @@ public:
 	// 是否能正常处理客户端上行消息
 	bool CanProcessingClientMsg()
 	{ return (m_iServerState & ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG; }
-	// 创建实体
-	int CreateEntity(CPlayer *pPlayer);
-	// 销毁实体
-	void DestroyEntity(CPlayer *pPlayer);
 
 	// 处理客户端上行消息
 	void ProcessClientMessage(CMessage *pMsg, CPlayer *pPlayer);
@@ -105,16 +101,6 @@ public:
 	void SetRunFlag(ERunFlag eRunFlag);
 	// 检查服务器状态
 	int CheckRunFlags();
-	// 刷新服务器状态
-	void FreshGame();
-
-	// 读取配置
-	int ReadCfg();
-	//监听相关文件变化
-	int ListenFile();
-	// 根据配置初始化信息
-	int InitializeByConfig();
-
 	// 开启所有定时器
 	int StartAllTimers();
 	// 服务器间心跳检测
@@ -147,7 +133,6 @@ public:
 	shared_ptr<CTimerManager> &GetTimerManager();
 	shared_ptr<CThreadPool> &GetLogicThread();
 	shared_ptr<CThreadPool> &GetComputeThread();
-	shared_ptr<CNetWork> &GetNetWork();
 	shared_ptr<CConfigHandle> &GetConfigHandle();
 	CRunFlag &GetRunFlag();
 	int GetMiServerState();

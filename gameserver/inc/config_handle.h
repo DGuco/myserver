@@ -11,6 +11,7 @@
 #include <memory.h>
 #include <memory>
 #include "json_interface.h"
+#include "config.h"
 #include "net_work.h"
 
 
@@ -21,6 +22,7 @@ class CConfigHandle
 {
 public:
     CConfigHandle();
+
     int PrepareToRun();
 	void Resume();
 	void Reload(const string &fileName);
@@ -30,6 +32,7 @@ private:
 	void LoadFile(const string &fileName);
 private:
     std::shared_ptr<CNetWork> m_pNetWork;
+    std::shared_ptr<CServerConfig> m_pServerConfig;
 	std::unordered_map<string, std::shared_ptr<AJson>> m_mConfigMap;
 };
 #endif //SERVER_CONFIG_HANDLE_H

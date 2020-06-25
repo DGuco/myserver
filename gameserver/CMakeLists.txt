@@ -15,26 +15,28 @@ set(SOURCE_FILES
         src/message_factory.cpp
         inc/config_handle.h
         src/config_handle.cpp
-        gamemodule/datamodule/inc/sceneobjmanager.h
-        gamemodule/datamodule/inc/player.h
-        gamemodule/datamodule/inc/playerdata.h
-        gamemodule/datamodule/inc/playerbase.h
-        gamemodule/datamodule/inc/playercity.h
-        gamemodule/datamodule/src/sceneobjmanager.cpp
-        gamemodule/datamodule/src/player.cpp
-        gamemodule/datamodule/src/playerbase.cpp
-        gamemodule/datamodule/src/playerdata.cpp
-        gamemodule/datamodule/src/playercity.cpp
-        gamemodule/logicmodule/inc/core_module.h
-        gamemodule/logicmodule/inc/logic_module.h
-        gamemodule/logicmodule/inc/module_manager.h
-        gamemodule/logicmodule/inc/db_module.h
-        gamemodule/logicmodule/src/module_manager.cpp
-        gamemodule/logicmodule/src/core_module.cpp
-        gamemodule/logicmodule/src/logic_module.cpp
-        gamemodule/logicmodule/src/db_module.cpp
-        gamemodule/metamodule/inc/parameter_config.h
-        gamemodule/metamodule/src/parameter_config.cpp
+        inc/message_dispatcher.h
+        src/message_dispatcher.cpp
+        gamemodule/datamodule/sceneobjmanager.h
+        gamemodule/datamodule/player.h
+        gamemodule/datamodule/playerdata.h
+        gamemodule/datamodule/playerbase.h
+        gamemodule/datamodule/playercity.h
+        gamemodule/datamodule/sceneobjmanager.cpp
+        gamemodule/datamodule/player.cpp
+        gamemodule/datamodule/playerbase.cpp
+        gamemodule/datamodule/playerdata.cpp
+        gamemodule/datamodule/playercity.cpp
+        gamemodule/logicmodule/core_module.h
+        gamemodule/logicmodule/logic_module.h
+        gamemodule/logicmodule/module_manager.h
+        gamemodule/logicmodule/db_module.h
+        gamemodule/logicmodule/module_manager.cpp
+        gamemodule/logicmodule/core_module.cpp
+        gamemodule/logicmodule/logic_module.cpp
+        gamemodule/logicmodule/db_module.cpp
+        gamemodule/metamodule/parameter_config.h
+        gamemodule/metamodule/parameter_config.cpp
         )
 
 include_directories(
@@ -50,9 +52,10 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/framework/timer
-        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/datamodule/inc
-        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/logicmodule/inc
-        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/metamodule/inc
+        ${CMAKE_SOURCE_DIR}/gameserver/inc
+        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/datamodule/
+        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/logicmodule/
+        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/metamodule/
 )
 
 link_directories(

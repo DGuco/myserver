@@ -2,7 +2,7 @@
 // Created by DGuco on 17-6-21.
 //
 
-#include "../inc/logic_module.h"
+#include "logic_module.h"
 #include "server_tool.h"
 
 template<> shared_ptr<CLogicModule> CSingleton<CLogicModule>::spSingleton = NULL;

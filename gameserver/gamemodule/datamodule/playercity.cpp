@@ -2,7 +2,7 @@
 // Created by dguco on 17-9-8.
 //
 
-#include "../inc/playercity.h"
+#include "playercity.h"
 
 CPlayerCity::CPlayerCity(CPlayer* pPlayer) : CPlayerData(pPlayer)
 {

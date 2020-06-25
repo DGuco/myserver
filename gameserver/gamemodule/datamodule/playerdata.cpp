@@ -2,7 +2,7 @@
 // Created by dguco on 17-9-6.
 //
 
-#include "../inc/player.h"
+#include "player.h"
 
 CPlayerData::CPlayerData(CPlayer* pPlayer) : m_pPlayer(pPlayer)
 {

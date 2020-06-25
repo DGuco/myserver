@@ -40,6 +40,7 @@ private:
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
 	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
 	static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
+    static void lcb_OnCheckClientMsgCome(int fd, short what, void *param);
 	//连接失败（无用）
 	static void lcb_OnConnectFailed(CConnector *pConnector);
 	static void lcb_OnConnected(CConnector *pConnector);
@@ -51,6 +52,7 @@ private:
 	std::shared_ptr<CNetWork> m_pNetWork;                // 服务器间通信的连接
 	time_t m_tLastSendKeepAlive;        // 最后发送proxy心跳消息时间
 	time_t m_tLastRecvKeepAlive;        // 最后接收proxy心跳消息时间
+    shared_ptr<CTimerEvent> m_pClientMsgTimer;
 private:
 	static int m_iProxyId;
 	static char m_acRecvBuff[MAX_PACKAGE_LEN];

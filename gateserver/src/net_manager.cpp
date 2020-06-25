@@ -27,10 +27,10 @@ int CNetManager::PrepareToRun()
 	BeginListen( );
     m_pSendMsgTimer = std::make_shared<CTimerEvent>(
 	        m_pNetWork->GetEventReactor(),
-	        &CNetManager::lcb_OnCheckSendTimeOut,
+            &CNetManager::lcb_OnCheckSendMsg,
             (void*)NULL,
             0,
-            200,
+            100,
             -1);  //100毫秒检测一次是否又数据要发送
 	return 0;
 }
@@ -293,7 +293,7 @@ void CNetManager::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
 }
 
 //检测是否又数据要发送
-void CNetManager::lcb_OnCheckSendTimeOut(int fd, short what, void *param)
+void CNetManager::lcb_OnCheckSendMsg(int fd, short what, void *param)
 {
     CGateCtrl::GetSingletonPtr()->GetMesManager()->DealMsg();
 }
