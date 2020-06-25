@@ -38,7 +38,7 @@ enum ClienthandleErrCode
 	// CLIENTHANDLE_BUSY						        = 16,		    // 当前玩家有消息在处理中
 };
 
-class CClientHandle final: public CMyThread
+class CClientHandle final
 {
 public:
 	//构造函数
@@ -57,13 +57,12 @@ public:
 	//断开连接
 	void DisconnectClient(int iSocket, time_t tCreateTime);
 	//推送消息
-	int Push(int cmd, shared_ptr<CGooMess> pMessage, stPointList *pTeamList);
+	int BroadCastMsg(int cmd, shared_ptr<CGooMess> pMessage, stPointList *pTeamList);
 	//接收客户端数据包
 	void RecvClientData();
 	int SendResponse(shared_ptr<CGooMess> pMessag, shared_ptr<CMesHead> mesHead);
 public:
-	void RunFunc() override;
-	bool IsToBeBlocked() override;
+	void DealMsg() ;
 private:
 	//gateserver ==> gameserver
 	std::shared_ptr<CCodeQueue> m_C2SCodeQueue;

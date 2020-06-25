@@ -21,7 +21,8 @@ CDBCtrl::CDBCtrl()
 	m_iRunFlag = 0;
 	m_tLastSendKeepAlive = 0;
 	m_tLastRecvKeepAlive = 0;
-	m_pNetWork = new CNetWork();
+	m_pNetWork = CNetWork::GetSingletonPtr();
+    m_pServerConfig = CServerConfig::GetSingletonPtr();
 }
 
 CDBCtrl::~CDBCtrl()
@@ -31,13 +32,13 @@ CDBCtrl::~CDBCtrl()
 void CDBCtrl::SetRunFlag(int iFlag)
 {
 	m_iRunFlag = iFlag;
-	LOG_INFO("default", "Set RunFunc Flag {}, All Flag Is {}", iFlag, m_iRunFlag);
+	LOG_INFO("default", "Set DealMsg Flag {}, All Flag Is {}", iFlag, m_iRunFlag);
 }
 
 void CDBCtrl::ClearRunFlag(int iFlag)
 {
 	m_iRunFlag = 0;
-	LOG_INFO("default", "Clear RunFunc Flag {}", iFlag);
+	LOG_INFO("default", "Clear DealMsg Flag {}", iFlag);
 }
 
 bool CDBCtrl::IsRunFlagSet(int iFlag)
@@ -55,8 +56,8 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 	CProxyHead *stProxyHead = pMsg->mutable_msghead();
 	BYTE abyCodeBuf[MAX_PACKAGE_LEN] = {0};
 	unsigned short nCodeLength = sizeof(abyCodeBuf);
-	ServerInfo *dbInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_DBSERVER);
-	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+	ServerInfo *dbInfo = m_pServerConfig->GetServerInfo(enServerType::FE_DBSERVER);
+	ServerInfo *proxyInfo = m_pServerConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 
 	pbmsg_setproxy(stProxyHead,
 				   enServerType::FE_PROXYSERVER,
@@ -284,7 +285,7 @@ int CDBCtrl::ConnectToProxyServer()
 	int i = 0;
 
 	//如果为null 让程序崩溃
-	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+	ServerInfo *proxyInfo = m_pServerConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 	if (!m_pNetWork->Connect(proxyInfo->m_sHost.c_str(),
 							 proxyInfo->m_iPort,
 							 proxyInfo->m_iServerId,
@@ -294,7 +295,7 @@ int CDBCtrl::ConnectToProxyServer()
 							 &CDBCtrl::lcb_OnConnectFailed,
 							 &CDBCtrl::lcb_OnConnected,
 							 &CDBCtrl::lcb_OnPingServer,
-							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive() / 1000)
+                             m_pServerConfig->GetTcpKeepAlive() / 1000)
 		) {
 		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,
@@ -324,8 +325,8 @@ int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
 	unsigned short tTotalLen = sizeof(message_buffer);
 
 	//如果为null 让程序崩溃
-	ServerInfo *dbInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_DBSERVER);
-	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+	ServerInfo *dbInfo = m_pServerConfig->GetServerInfo(enServerType::FE_DBSERVER);
+	ServerInfo *proxyInfo = m_pServerConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 	pbmsg_setproxy(message.mutable_msghead(),
 				   enServerType::FE_DBSERVER,
 				   dbInfo->m_iServerId,
@@ -365,8 +366,8 @@ int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
 	char message_buffer[1024] = {0};
 	unsigned short tTotalLen = sizeof(message_buffer);
 
-	ServerInfo *dbInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_DBSERVER);
-	ServerInfo *proxyInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_DBSERVER);
+	ServerInfo *dbInfo = m_pServerConfig->GetServerInfo(enServerType::FE_DBSERVER);
+	ServerInfo *proxyInfo = m_pServerConfig->GetServerInfo(enServerType::FE_DBSERVER);
 	pbmsg_setproxy(message.mutable_msghead(),
 				   enServerType::FE_DBSERVER,
 				   dbInfo->m_iServerId,
@@ -466,10 +467,8 @@ int CDBCtrl::PrepareToRun()
 	// 初始化日志
 	INIT_ROATING_LOG("default", "../log/dbserver.log", level_enum::info);
 #endif
-
-	CServerConfig *pTmpConfig = new CServerConfig;
 	const string filepath = "../config/serverinfo.json";
-	if (-1 == pTmpConfig->LoadFromFile(filepath)) {
+	if (-1 == m_pServerConfig->LoadFromFile(filepath)) {
 		LOG_ERROR("default", "Get TcpserverConfig failed");
 		return -1;
 	}
@@ -554,7 +553,7 @@ void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 		//断开连接
 		pConnector->SetState(CConnector::eCS_Disconnected);
 		// 断开连接重新连接到proxy服务器
-		if (pConnector->ReConnect() < 0) {
+		if (pConnector->ReConnect() == 0) {
 			LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
 			return;
 		}

@@ -32,18 +32,15 @@ public:
 	//run
 	int Run();
 	//获取线程池
-	shared_ptr<CThreadPool> &GetSingleThreadPool();
-	shared_ptr<CNetManager> &GetClientManager();
-	shared_ptr<CMessHandle> &GetServerManager();
-	shared_ptr<CNetWork> &GetNetWork();
+	shared_ptr<CNetManager> &GetNetManager();
+	shared_ptr<CMessHandle> &GetMesManager();
 private:
 	//读取配置文件
 	void ReadConfig();
 private:
-	shared_ptr<CNetWork> m_pNetWork;
 	shared_ptr<CNetManager> m_pNetManager;
 	shared_ptr<CMessHandle> m_pMessManager;
-	shared_ptr<CThreadPool> m_pSingleThead;
+    shared_ptr<CServerConfig> m_pConfig;
 };
 
 #endif

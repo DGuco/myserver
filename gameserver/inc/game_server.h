@@ -88,9 +88,9 @@ public:
 	// 给World Server 发消息
 
 	// 广播消息给玩家，广播时，发起人一定放第一个
-	int Push(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, stPointList *pTeamList);
+	int BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, stPointList *pTeamList);
 	// 推送消息给单个玩家
-	int Push(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer);
+	int BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer);
 	// 回复客户端上行的请求
 	int SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer);
 	int SendResponse(std::shared_ptr<CGooMess> pMsgPara, std::shared_ptr<CMesHead> mesHead);
@@ -146,7 +146,6 @@ public:
 	shared_ptr<CFactory> &GetMessageFactory();
 	shared_ptr<CTimerManager> &GetTimerManager();
 	shared_ptr<CThreadPool> &GetLogicThread();
-	shared_ptr<CThreadPool> &GetIoThread();
 	shared_ptr<CThreadPool> &GetComputeThread();
 	shared_ptr<CNetWork> &GetNetWork();
 	shared_ptr<CConfigHandle> &GetConfigHandle();
@@ -160,19 +159,12 @@ public:
 									time_t tCreateTime,
 									bool bKickOff = false);
 private:
-	//配置文件改变回调
-	static void lcb_OnConfigChanged(inotify_event *notifyEvent);
-	//逻辑动态库变化回调
-	static void lcb_OnLibGameModuleSoChanged(inotify_event *notifyEvent);
-private:
-	std::shared_ptr<CNetWork> m_pNetWork;                        // 网络管理
 	std::shared_ptr<CClientHandle> m_pClientHandle;             // 与客户端通信的连接线程
 	std::shared_ptr<CServerHandle> m_pServerHandle;             // 与服务器的连接管理(proxyserver)
 	std::shared_ptr<CModuleManager> m_pModuleManager;           // 模块管理器
 	std::shared_ptr<CFactory> m_pMessageFactory;                // 消息工厂
 	std::shared_ptr<CTimerManager> m_pTimerManager;             // 定时器管理器
 	std::shared_ptr<CThreadPool> m_pLogicThread;                // 逻辑线程
-	std::shared_ptr<CThreadPool> m_pIoThread;                   // io线程(收发消息)
 	std::shared_ptr<CThreadPool> m_pComputeThread;				// 计算线程
 	std::shared_ptr<CConfigHandle> m_pConfigHandle;				// 计算线程
 

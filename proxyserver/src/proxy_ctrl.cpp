@@ -24,7 +24,7 @@ CByteBuff *CProxyCtrl::m_pRecvBuff = new CByteBuff;
 
 CProxyCtrl::CProxyCtrl()
 {
-	m_pNetWork = new CNetWork( );
+	m_pNetWork = CNetWork::GetSingletonPtr();
 }
 
 CProxyCtrl::~CProxyCtrl()

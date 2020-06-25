@@ -1,2 +1,3 @@
-Options: 
-CMake: 3.8.2@/home/dguco/App/clion-2017.2.4/bin/cmake/bin/cmake
+ToolSet: 1.0 (local)Options: 
+
+Options:

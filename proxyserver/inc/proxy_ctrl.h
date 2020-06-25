@@ -10,8 +10,11 @@
 
 #include <mutex>
 #include <byte_buff.h>
+#include <memory>
 #include "server_tool.h"
 #include "net_work.h"
+
+using namespace std;
 
 struct TStatLog
 {
@@ -75,7 +78,7 @@ protected:
 	//连接超时
 	static void lcb_OnAcceptorTimeOut(int fd, short what, void *param);
 private:
-	CNetWork *m_pNetWork;
+	std::shared_ptr<CNetWork> m_pNetWork;
 	TStatLog m_stStatLog;
 	static std::map<int/*key*/, int/*socket id*/> m_mapRegister;
 	static std::map<int/*socket id*/, int/*key*/> m_mapSocket2Key;

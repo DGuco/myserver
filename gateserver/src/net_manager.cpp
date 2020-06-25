@@ -9,10 +9,11 @@
 #include "../inc/gate_def.h"
 #include "../inc/gate_ctrl.h"
 
-CNetManager::CNetManager(shared_ptr<CNetWork> pNetWork)
-	: m_pNetWork(pNetWork),
+CNetManager::CNetManager()
+	: m_pNetWork(CNetWork::GetSingletonPtr()),
 	  m_pSendBuff(std::make_shared<CByteBuff>( )),
-	  m_pRecvBuff(std::make_shared<CByteBuff>( ))
+	  m_pRecvBuff(std::make_shared<CByteBuff>( )),
+      m_pSendMsgTimer(NULL)
 {
 }
 
@@ -24,7 +25,23 @@ CNetManager::~CNetManager()
 int CNetManager::PrepareToRun()
 {
 	BeginListen( );
+    m_pSendMsgTimer = std::make_shared<CTimerEvent>(
+	        m_pNetWork->GetEventReactor(),
+	        &CNetManager::lcb_OnCheckSendTimeOut,
+            (void*)NULL,
+            0,
+            200,
+            -1);  //100毫秒检测一次是否又数据要发送
 	return 0;
+}
+
+//准备run
+int CNetManager::DispatchEvents()
+{
+    LOG_INFO("default", "Libevent run with net module {}",
+             event_base_get_method(reinterpret_cast<const event_base *>(m_pNetWork->GetEventReactor( )
+                     ->GetEventBase( ))));
+    m_pNetWork->DispatchEvents();
 }
 
 void CNetManager::DealClientData(CAcceptor *tmpAcceptor,
@@ -60,7 +77,7 @@ void CNetManager::DealClientData(CAcceptor *tmpAcceptor,
 			return;
 		}
 
-		shared_ptr<CMessHandle> &tmpServerHandle = CGateCtrl::GetSingletonPtr( )->GetServerManager( );
+		shared_ptr<CMessHandle> &tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetMesManager();
 		iTmpRet = tmpServerHandle->SendToGame(m_pSendBuff->CanReadData( ), m_pSendBuff->ReadableDataLen( ));
 		if (iTmpRet != 0) {
 			LOG_ERROR("defalut", "CNetManager::DealClientData to game error, error code {}", iTmpRet);
@@ -136,8 +153,7 @@ void CNetManager::ClearSocket(CAcceptor *tmpAcceptor, short iError)
 	if (Client_Succeed != iError) {
 		DisConnect(tmpAcceptor, iError);
 	}
-	shared_ptr<CNetWork> &netWork = CGateCtrl::GetSingletonPtr( )->GetNetWork( );
-	netWork->ShutDownAcceptor(tmpAcceptor->GetSocket( ).GetSocket( ));
+	m_pNetWork->ShutDownAcceptor(tmpAcceptor->GetSocket( ).GetSocket( ));
 }
 
 void CNetManager::DisConnect(CAcceptor *tmpAcceptor, short iError)
@@ -162,7 +178,7 @@ void CNetManager::DisConnect(CAcceptor *tmpAcceptor, short iError)
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return;
 	}
-	shared_ptr<CMessHandle> &tmpServerHandle = CGateCtrl::GetSingletonPtr( )->GetServerManager( );
+	shared_ptr<CMessHandle> &tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetMesManager();
 	iRet = tmpServerHandle->SendToGame(m_pSendBuff->CanReadData( ), m_pSendBuff->ReadableDataLen( ));
 	if (iRet == 0) {
 		LOG_DEBUG("default",
@@ -194,8 +210,7 @@ void CNetManager::RecvClientData(CAcceptor *tmpAcceptor)
 	//当前数据包已全部读取，清除当前数据包缓存长度
 	tmpAcceptor->CurrentPackRecved( );
 	//发送数据包到game server
-	shared_ptr<CNetManager> &tmpHandle = CGateCtrl::GetSingletonPtr( )->GetClientManager( );
-	tmpHandle->DealClientData(tmpAcceptor, iTmpLen);
+	DealClientData(tmpAcceptor, iTmpLen);
 }
 
 bool CNetManager::BeginListen()
@@ -225,39 +240,28 @@ bool CNetManager::BeginListen()
 void CNetManager::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
 {
 	//客户端主动断开连接
-	CGateCtrl::GetSingletonPtr( )->GetSingleThreadPool( )
-		->PushTaskBack([uId, &tmpAcceptor]
-					   {
-						   MY_ASSERT(tmpAcceptor != NULL, return);
-						   LOG_DEBUG("default", "New acceptor,socket id {}", tmpAcceptor->GetSocket( ).GetSocket( ));
-						   CGateCtrl::GetSingletonPtr( )->GetNetWork( )
-							   ->InsertNewAcceptor(uId, (CAcceptor *) (tmpAcceptor));
-					   }
-		);
+    MY_ASSERT(tmpAcceptor != NULL, return);
+    LOG_DEBUG("default", "New acceptor,socket id {}", tmpAcceptor->GetSocket( ).GetSocket( ));
+    CGateCtrl::GetSingletonPtr( )->GetNetManager( )->GetNetWork()->InsertNewAcceptor(uId, (CAcceptor *) (tmpAcceptor));
+    //检测是否又数据要发送
+    CGateCtrl::GetSingletonPtr()->GetMesManager()->DealMsg();
 }
 
 void CNetManager::lcb_OnCnsDisconnected(IBufferEvent *tmpAcceptor)
 {
 	MY_ASSERT(tmpAcceptor != NULL, return);
-	//客户端主动断开连接
-	CGateCtrl::GetSingletonPtr( )->GetSingleThreadPool( )
-		->PushTaskBack(
-			[tmpAcceptor]
-			{
-				std::shared_ptr<CNetManager> tmpClientManager = CGateCtrl::GetSingletonPtr( )->GetClientManager( );
-				tmpClientManager->ClearSocket((CAcceptor *) tmpAcceptor, Err_ClientClose);
-			});
+    std::shared_ptr<CNetManager> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetNetManager();
+    tmpClientManager->ClearSocket((CAcceptor *) tmpAcceptor, Err_ClientClose);
+    //检测是否又数据要发送
+    CGateCtrl::GetSingletonPtr()->GetMesManager()->DealMsg();
 }
 
 void CNetManager::lcb_OnCnsSomeDataRecv(IBufferEvent *tmpAcceptor)
 {
-	CGateCtrl::GetSingletonPtr( )->GetSingleThreadPool( )
-		->PushTaskBack(
-			[tmpAcceptor]
-			{
-				std::shared_ptr<CNetManager> tmpClientManager = CGateCtrl::GetSingletonPtr( )->GetClientManager( );
-				tmpClientManager->RecvClientData((CAcceptor *) tmpAcceptor);
-			});
+    std::shared_ptr<CNetManager> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetNetManager();
+    tmpClientManager->RecvClientData((CAcceptor *) tmpAcceptor);
+    //检测是否又数据要发送
+    CGateCtrl::GetSingletonPtr()->GetMesManager()->DealMsg();
 }
 
 void CNetManager::lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor)
@@ -267,30 +271,29 @@ void CNetManager::lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor)
 
 void CNetManager::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
 {
-	CGateCtrl::GetSingletonPtr( )->GetSingleThreadPool( )
-		->PushTaskBack(
-			[]
-			{
-				shared_ptr<CNetManager> tmpClientManager = CGateCtrl::GetSingletonPtr( )->GetClientManager( );
-				shared_ptr<CNetWork> &tmpNet = tmpClientManager->GetNetWork( );
-				std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr( );
-				int tmpPingTime = tmpConfig->GetTcpKeepAlive( );
-				CNetWork::MAP_ACCEPTOR &tmpMap = tmpNet->GetAcceptorMap( );
-				auto it = tmpMap.begin( );
-				time_t tNow = GetMSTime( );
-				for (; it != tmpMap.end( );) {
-					CAcceptor *tmpAcceptor = it->second;
-					if (tNow - tmpAcceptor->GetLastKeepAlive( ) > tmpPingTime) {
-						tmpClientManager->DisConnect(tmpAcceptor, Err_ClientTimeout);
-						it = tmpMap.erase(it);
-					}
-					else {
-						it++;
-					}
-				}
-
-			});
-
+    shared_ptr<CNetManager> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetNetManager();
+    shared_ptr<CNetWork> &tmpNet = tmpClientManager->GetNetWork( );
+    std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr( );
+    int tmpPingTime = tmpConfig->GetTcpKeepAlive( );
+    CNetWork::MAP_ACCEPTOR &tmpMap = tmpNet->GetAcceptorMap( );
+    auto it = tmpMap.begin( );
+    time_t tNow = GetMSTime( );
+    for (; it != tmpMap.end( );) {
+        CAcceptor *tmpAcceptor = it->second;
+        if (tNow - tmpAcceptor->GetLastKeepAlive( ) > tmpPingTime) {
+            tmpClientManager->DisConnect(tmpAcceptor, Err_ClientTimeout);
+            it = tmpMap.erase(it);
+        }
+        else {
+            it++;
+        }
+    }
+    //检测是否又数据要发送
+    CGateCtrl::GetSingletonPtr()->GetMesManager()->DealMsg();
 }
 
-
+//检测是否又数据要发送
+void CNetManager::lcb_OnCheckSendTimeOut(int fd, short what, void *param)
+{
+    CGateCtrl::GetSingletonPtr()->GetMesManager()->DealMsg();
+}

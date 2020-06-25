@@ -16,12 +16,14 @@ class CNetManager
 {
 public:
 	//构造函数
-	CNetManager(shared_ptr<CNetWork> pNetWork);
+	CNetManager();
 	//析构函数
 	virtual ~CNetManager();
 public:
 	//准备run
 	int PrepareToRun();
+    //准备run
+    int DispatchEvents();
 	//发送数据给gameserver
 	void DealClientData(CAcceptor *tmpAcceptor, unsigned short len);
 	//给特定client发送数据
@@ -47,6 +49,8 @@ protected:
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor);
 	//检测连接超时
 	static void lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param);
+    //检测是否又数据要发送
+    static void lcb_OnCheckSendTimeOut(int fd, short what, void *param);
 private:
 	//开始监听
 	bool BeginListen();
@@ -55,5 +59,6 @@ private:
 	shared_ptr<CNetWork> m_pNetWork;
 	shared_ptr<CByteBuff> m_pRecvBuff; //客户端上行数据buff
 	shared_ptr<CByteBuff> m_pSendBuff; //客户端下行数据buff
+    shared_ptr<CTimerEvent> m_pSendMsgTimer;
 };
 #endif //SERVER_C2S_THREAD_H

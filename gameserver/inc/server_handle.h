@@ -11,7 +11,7 @@ class CServerHandle
 {
 public:
 	//构造函数
-	CServerHandle(shared_ptr<CNetWork> pNetWork);
+	CServerHandle();
 	//系够函数
 	virtual ~CServerHandle();
 	// 连接到Proxy
@@ -28,6 +28,7 @@ public:
 public:
 	//运行准备
 	int PrepareToRun();
+    void DispatchEvents();
 private:
 	void SendMessageToProxy(char *data, unsigned short len);
 	//向Proxy注册

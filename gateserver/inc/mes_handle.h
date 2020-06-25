@@ -13,7 +13,7 @@
 #include "mythread.h"
 #include "message.pb.h"
 
-class CMessHandle final: CMyThread
+class CMessHandle final
 {
 public:
 	//构造函数
@@ -31,9 +31,8 @@ public:
 	void RecvGameData();
 	//向game 发送消息
 	int SendToGame(char *data, int iTmpLen);
-private:
-	void RunFunc() override;
-	bool IsToBeBlocked() override;
+	//发送消息给client
+	void DealMsg();
 private:
 	//gateserver ==> gameserver
 	std::shared_ptr<CCodeQueue> m_C2SCodeQueue;

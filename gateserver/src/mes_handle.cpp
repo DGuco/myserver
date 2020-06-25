@@ -11,8 +11,7 @@
 #include "../inc/gate_ctrl.h"
 
 CMessHandle::CMessHandle(const string &threadName, long timeOut)
-	: CMyThread(threadName, timeOut),
-	  m_pRecvBuff(std::make_shared<CByteBuff>( ))
+	: m_pRecvBuff(std::make_shared<CByteBuff>( ))
 {
 }
 
@@ -78,19 +77,15 @@ int CMessHandle::SendClientData(CMessage &tmpMes, char *data, int len)
 			LOG_ERROR("default", "Invalid socket index {}", nTmpSocket);
 			continue;
 		}
-		CGateCtrl::GetSingletonPtr( )->GetClientManager( )->SendToClient(tmpSocketInfo, data, len);
+        CGateCtrl::GetSingletonPtr()->GetNetManager()->SendToClient(tmpSocketInfo, data, len);
 	}
 	return 0;
 }
 
-void CMessHandle::RunFunc()
+void CMessHandle::DealMsg()
 {
 	while (!m_S2CCodeQueue->IsQueueEmpty( )) {
-		CGateCtrl::GetSingletonPtr( )->GetSingleThreadPool( )->PushTaskBack(
-			[this]
-			{
-				RecvGameData( );
-			});
+        RecvGameData( );
 	}
 }
 
@@ -125,10 +120,6 @@ void CMessHandle::RecvGameData()
 	SendClientData(tmpMes, m_pRecvBuff->CanReadData( ), m_pRecvBuff->ReadableDataLen( ));
 }
 
-bool CMessHandle::IsToBeBlocked()
-{
-	return !m_S2CCodeQueue->IsQueueEmpty( );
-}
 
 int CMessHandle::SendToGame(char *data, int iTmpLen)
 {

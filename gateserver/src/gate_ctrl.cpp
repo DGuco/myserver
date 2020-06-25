@@ -13,10 +13,8 @@
 template<> std::shared_ptr<CGateCtrl> CSingleton<CGateCtrl>::spSingleton = NULL;
 
 CGateCtrl::CGateCtrl()
-	: m_pNetWork(std::make_shared<CNetWork>( )),
-	  m_pNetManager(std::make_shared<CNetManager>(m_pNetWork)),
-	  m_pMessManager(std::make_shared<CMessHandle>("CMessHandle", 1000 /*超时时间1ms*/)),
-	  m_pSingleThead(std::make_shared<CThreadPool>(1))
+	: m_pNetManager(std::make_shared<CNetManager>()),
+	  m_pMessManager(std::make_shared<CMessHandle>("CMessHandle", 1000 /*超时时间1ms*/))
 {
 }
 
@@ -42,38 +40,25 @@ int CGateCtrl::PrepareToRun()
 
 int CGateCtrl::Run()
 {
-	LOG_INFO("default", "Libevent run with net module {}",
-			 event_base_get_method(reinterpret_cast<const event_base *>(m_pNetWork->GetEventReactor( )
-				 ->GetEventBase( ))));
 	//libevent事件循环
-	m_pNetWork->DispatchEvents( );
+	m_pNetManager->DispatchEvents( );
 }
 
-shared_ptr<CThreadPool> &CGateCtrl::GetSingleThreadPool()
-{
-	return m_pSingleThead;
-}
-
-shared_ptr<CNetManager> &CGateCtrl::GetClientManager()
+shared_ptr<CNetManager> &CGateCtrl::GetNetManager()
 {
 	return m_pNetManager;
 }
 
-shared_ptr<CMessHandle> &CGateCtrl::GetServerManager()
+shared_ptr<CMessHandle> &CGateCtrl::GetMesManager()
 {
 	return m_pMessManager;
 }
 
-shared_ptr<CNetWork> &CGateCtrl::GetNetWork()
-{
-	return m_pNetWork;
-}
-
 void CGateCtrl::ReadConfig()
 {
-	std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::CreateInstance( );
+    m_pConfig = CServerConfig::CreateInstance( );
 	string filePath = "../config/serverinfo.json";
-	if (-1 == tmpConfig->LoadFromFile(filePath)) {
+	if (-1 == m_pConfig->LoadFromFile(filePath)) {
 		LOG_ERROR("default", "Get ServerConfig failed");
 		exit(0);
 	}
