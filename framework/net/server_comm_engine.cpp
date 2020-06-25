@@ -109,38 +109,35 @@ int CServerCommEngine::ConvertStreamToMsg(CByteBuff *pBuff,
 }
 
 int CServerCommEngine::ConvertMsgToStream(CProxyMessage *pMsg,
-										  void *pBuff,
+                                          CByteBuff *pBuff,
 										  unsigned short &unBuffLen)
 {
 	if ((pBuff == NULL) || (unBuffLen < 8)) {
 		MY_ASSERT_STR(0, return -1, "CServerCommEngine::ConvertMsgToStream Input impossibility.");
 	}
 
-	char *tpBuff = (char *) pBuff;
 	unsigned short tLen = 0;
 	int tAddLen = 0;
 
 	// 序列化总长度
 	// 暂时跳过，后面补充
-	tpBuff += sizeof(unsigned short);
 	tLen += sizeof(unsigned short);
+    pBuff->SetWriteIndex(tLen);
 
 	// 序列化8字节对齐补充长度
 	// 暂时跳过后面补充
-	tpBuff += sizeof(unsigned short);
 	tLen += sizeof(unsigned short);
+    pBuff->SetWriteIndex(tLen);
 
 	CProxyHead *pProxyHead = pMsg->mutable_msghead();
-	// 序列化CProxyHead长度
-	*(unsigned short *) tpBuff = pProxyHead->ByteSize();
-	tpBuff += sizeof(unsigned short);
+    // 序列化CProxyHead长度
 	tLen += sizeof(unsigned short);
+    pBuff->WriteUnShort(pProxyHead->ByteSize());
 
 	// 序列化CProxyHead
-	if (pProxyHead->SerializeToArray(tpBuff, unBuffLen - tLen) == false) {
+	if (pProxyHead->SerializeToArray(pBuff->CanWriteData(), unBuffLen - tLen) == false) {
 		MY_ASSERT_STR(0, return -2, "CServerCommEngine::ConvertMsgToStream CProxyHead SerializeToArray failed.");
 	}
-	tpBuff += pProxyHead->GetCachedSize();
 	tLen += pProxyHead->GetCachedSize();
 
 	// 如果没有消息
@@ -151,19 +148,14 @@ int CServerCommEngine::ConvertMsgToStream(CProxyMessage *pMsg,
 		if (tAddLen > 0) {
 			tAddLen = (8 - tAddLen);
 		}
-
-		tpBuff = (char *) pBuff;
-		// 序列化总长度
-		*(unsigned short *) tpBuff = (tLen + tAddLen);
-		tpBuff += sizeof(unsigned short);
-
-		// 序列化8字节对齐补充长度
-		*(unsigned short *) tpBuff = tAddLen;
-
+        pBuff->SetWriteIndex(0);
+        pBuff->WriteUnShort(tLen + tAddLen);
+        pBuff->WriteUnShort(tAddLen);
+        // 序列化8字节对齐补充长度
 		unBuffLen = (tLen + tAddLen);
 		return 0;
 	}
-
+    pBuff->SetWriteIndex(tLen);
 	// 获取msgpara
 	CGooMess *tpMsgPara = (CGooMess *) pMsg->msgpara();
 	if (tpMsgPara == NULL) {
@@ -171,33 +163,26 @@ int CServerCommEngine::ConvertMsgToStream(CProxyMessage *pMsg,
 	}
 
 	// msgpara长度
-	*(unsigned short *) tpBuff = tpMsgPara->ByteSize();
-	tpBuff += sizeof(unsigned short);
 	tLen += sizeof(unsigned short);
+    pBuff->WriteUnShort(tpMsgPara->ByteSize());
 
 	// 序列化msgpara
-	if (tpMsgPara->SerializeToArray(tpBuff, unBuffLen - tLen) == false) {
+	if (tpMsgPara->SerializeToArray(pBuff->CanWriteData(), unBuffLen - tLen) == false) {
 		MY_ASSERT_STR(0, return -5, "CServerCommEngine::ConvertMsgToStream msgpara SerializeToArray failed.");
 	}
-	tpBuff += tpMsgPara->GetCachedSize();
 	tLen += tpMsgPara->GetCachedSize();
+    pBuff->SetWriteIndex(tLen);
 
 	// 计算补充长度
 	tAddLen = (tLen % 8);
 	if (tAddLen > 0) {
 		tAddLen = (8 - tAddLen);
 	}
-
-	tpBuff = (char *) pBuff;
-	// 序列化总长度
-	*(unsigned short *) tpBuff = (tLen + tAddLen);
-	tpBuff += sizeof(unsigned short);
-
-	// 序列化8字节对齐补充长度
-	*(unsigned short *) tpBuff = tAddLen;
-
+    pBuff->SetWriteIndex(0);
+    pBuff->WriteUnShort(tLen + tAddLen);
+    pBuff->WriteUnShort(tAddLen);
 	unBuffLen = (tLen + tAddLen);
-
+    pBuff->SetWriteIndex(unBuffLen);
 	return 0;
 }
 

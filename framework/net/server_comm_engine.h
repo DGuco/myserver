@@ -27,7 +27,7 @@ public:
 	// Description:	序列化CProxyHead + CMessageHead + CMessage.msgpara
 	// --------------------------------------------------------------------------------
 	static int ConvertMsgToStream(CProxyMessage *pMsg,
-								  void *pBuff,
+                                  CByteBuff *pBuff,
 								  unsigned short &unBuffLen);
 	// --------------------------------------------------------------------------------
 	// Function:	ConvertStreamToProxy

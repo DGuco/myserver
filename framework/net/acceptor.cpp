@@ -92,6 +92,6 @@ void CAcceptor::BuffEventUnavailableCall()
 
 void CAcceptor::AfterBuffEventCreated()
 {
-	bufferevent_enable(m_pStBufEv, EV_READ | EV_WRITE);
+	bufferevent_enable(m_pStBufEv, EV_READ);
 	SetState(eAS_Connected);
 }

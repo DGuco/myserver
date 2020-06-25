@@ -11,7 +11,7 @@
 
 int CServerHandle::m_iProxyId = 0;
 
-char CServerHandle::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
+CByteBuff CServerHandle::m_RecvBuff = CByteBuff();
 
 CServerHandle::CServerHandle()
 	: m_pNetWork(CNetWork::GetSingletonPtr()),
@@ -28,9 +28,6 @@ CServerHandle::~CServerHandle()
 
 int CServerHandle::PrepareToRun()
 {
-	if (!Connect2Proxy()) {
-		return -1;
-	}
     m_pClientMsgTimer = std::make_shared<CTimerEvent>(
             m_pNetWork->GetEventReactor(),
             &CServerHandle::lcb_OnCheckClientMsgCome,
@@ -38,6 +35,11 @@ int CServerHandle::PrepareToRun()
             0,
             100,
             -1);  //100毫秒检测一次是否又数据要发送
+    m_pNetWork->RegisterSignalHandler(SIGPIPE, &CServerHandle::lcb_OnSigPipe, 0);
+    if (!Connect2Proxy()) {
+        return -1;
+    }
+    ignore_pipe();
 	return 0;
 }
 
@@ -59,8 +61,9 @@ bool CServerHandle::Connect2Proxy()
 							 &CServerHandle::lcb_OnConnectFailed,
 							 &CServerHandle::lcb_OnConnected,
 							 &CServerHandle::lcb_OnPingServer,
-							 CServerConfig::GetSingletonPtr()->GetTcpKeepAlive() / 1000)
-		) {
+							 CServerConfig::GetSingletonPtr()->GetSocketTimeOut())
+		)
+	{
 		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,
 				  rTmpProxy->m_sHost.c_str(), rTmpProxy->m_iPort, rTmpProxy->m_iServerId);
@@ -77,10 +80,9 @@ bool CServerHandle::Connect2Proxy()
 bool CServerHandle::Register2Proxy()
 {
 	CProxyMessage tmpMessage;
-	char acTmpMessageBuffer[MAX_PACKAGE_LEN];
-	unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
-	ServerInfo *rTmpProxy =
-		CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+    CByteBuff tmBuff;
+    unsigned short tTotalLen = tmBuff.GetCapaticy();
+	ServerInfo *rTmpProxy =CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	ServerInfo *rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
 	pbmsg_setproxy(tmpMessage.mutable_msghead(),
 				   enServerType::FE_GAMESERVER,
@@ -91,13 +93,13 @@ bool CServerHandle::Register2Proxy()
 				   enMessageCmd::MESS_REGIST);
 
 	int iRet =
-		CServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
+		CServerCommEngine::ConvertMsgToStream(&tmpMessage, &tmBuff, tTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "ConvertMsgToStream failed, iRet = {}.", iRet);
 		return false;
 	}
 
-	SendMessageToProxy(acTmpMessageBuffer, unTmpTotalLen);
+	SendMessageToProxy(tmBuff.GetData(), tTotalLen);
 	return true;
 }
 
@@ -105,8 +107,8 @@ bool CServerHandle::Register2Proxy()
 bool CServerHandle::SendKeepAlive2Proxy()
 {
 	CProxyMessage tmpMessage;
-	char acTmpMessageBuffer[MAX_PACKAGE_LEN];
-	unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
+	CByteBuff tmBuff;
+	unsigned short unTmpTotalLen = tmBuff.GetCapaticy();
 	ServerInfo *rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
 	ServerInfo *rTmpGame = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
 	pbmsg_setproxy(tmpMessage.mutable_msghead(),
@@ -117,21 +119,21 @@ bool CServerHandle::SendKeepAlive2Proxy()
 				   GetMSTime(),
 				   enMessageCmd::MESS_KEEPALIVE);
 
-	int iRet = CServerCommEngine::ConvertMsgToStream(&tmpMessage, acTmpMessageBuffer, unTmpTotalLen);
+	int iRet = CServerCommEngine::ConvertMsgToStream(&tmpMessage, &tmBuff, unTmpTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "[{} : {} : {}] ConvertMsgToStream failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return false;
 	}
-	SendMessageToProxy(acTmpMessageBuffer, unTmpTotalLen);
+	SendMessageToProxy(tmBuff.GetData(), unTmpTotalLen);
 	return true;
 }
 
 bool CServerHandle::SendMessageToDB(CProxyMessage *pMsg)
 {
 	CProxyHead *pHead = pMsg->mutable_msghead();
-    char acTmpMessageBuffer[MAX_PACKAGE_LEN];
-    unsigned short unTmpTotalLen = sizeof(acTmpMessageBuffer);
+    CByteBuff tmBuff;
+    unsigned short unTmpTotalLen = tmBuff.GetCapaticy();
 	ServerInfo *gameInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_GAMESERVER);
 	ServerInfo *dbInfo = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_DBSERVER);
 	int iTmpServerID = gameInfo->m_iServerId;
@@ -144,13 +146,13 @@ bool CServerHandle::SendMessageToDB(CProxyMessage *pMsg)
 				   GetMSTime(),
 				   enMessageCmd::MESS_NULL);
 
-	int iRet = CServerCommEngine::ConvertMsgToStream(pMsg, acTmpMessageBuffer, unTmpTotalLen);
+	int iRet = CServerCommEngine::ConvertMsgToStream(pMsg, &tmBuff, unTmpTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "[{} : {} : {}] ConvertMsgToStream failed, iRet = {}.",
 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
 		return false;
 	}
-	SendMessageToProxy((char*)&acTmpMessageBuffer,unTmpTotalLen);
+	SendMessageToProxy((char*)tmBuff.GetData(),unTmpTotalLen);
 	CGooMess *pTmpUnknownMessagePara = (CGooMess *) pMsg->msgpara();
     // 如果是打印出错依然返回成功
 	MY_ASSERT(pTmpUnknownMessagePara != NULL, return true);
@@ -191,12 +193,53 @@ void CServerHandle::SendMessageToProxy(char *data, unsigned short len)
 		LOG_ERROR("default", "ProxyServer connection has gone");
 		return;
 	}
-	int iRet = pConn->SendBySocket(data, len);
-	if (iRet <= 0) {
-		LOG_ERROR("default", "[{} : {} : {}] proxy SendOneCode failed, iRet = {}.",
-				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+	int iRet = pConn->Send(data, len);
+	if (iRet != 0) {
+		LOG_ERROR("default", "[{} : {} : {}] proxy SendOneCode failed, iRet = {},err = {}",
+				  __MY_FILE__, __LINE__, __FUNCTION__, iRet,strerror(errno));
 		return;
 	}
+}
+
+void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
+{
+    MY_ASSERT(pBufferEvent != NULL, return);
+    //数据不完整
+    if (!pBufferEvent->IsPackageComplete()) {
+        return;
+    }
+    //读取数据
+    m_RecvBuff.Clear();
+    unsigned short iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
+    pBufferEvent->RecvData(m_RecvBuff.GetData(), iTmpLen);
+    pBufferEvent->CurrentPackRecved();
+    // 将收到的二进制数据转为protobuf格式
+    CProxyMessage tmpMessage;
+    int iRet = CServerCommEngine::ConvertStreamToMsg(&m_RecvBuff,
+                                                     &tmpMessage,
+                                                     CGameServer::GetSingletonPtr()->GetMessageFactory().get());
+    if (iRet < 0) {
+        LOG_ERROR("default", "[{} : {} : {}] convert stream to message failed, iRet = {}.",
+                  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
+        return;
+    }
+
+    ServerInfo *rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
+    CProxyHead stTmpHead = tmpMessage.msghead();
+    if (stTmpHead.has_srcfe() && stTmpHead.srcfe() == FE_PROXYSERVER)
+    {
+        if (stTmpHead.has_srcid() && stTmpHead.srcid() == (unsigned short) rTmpProxy->m_iServerId
+            && stTmpHead.has_opflag() && stTmpHead.opflag() == enMessageCmd::MESS_KEEPALIVE) {
+            // 设置proxy为已连接状态
+            CGameServer::GetSingletonPtr()->GetServerHandle()->SetLastRecvKeepAlive(GetMSTime());
+            LOG_INFO("default", "Recv keepalive msg, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = {}",
+                     stTmpHead.srcfe( ), stTmpHead.srcid( ),
+                     stTmpHead.dstfe( ), stTmpHead.dstid( ), stTmpHead.timestamp( ));
+        }
+        return;
+    }
+    CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskBack(
+            &CMessageDispatcher::ProcessServerMessage, &tmpMessage);
 }
 
 void CServerHandle::lcb_OnConnected(CConnector *pConnector)
@@ -220,13 +263,15 @@ void CServerHandle::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 void CServerHandle::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
     DealServerData(pBufferEvent);
+    CGameServer::GetSingletonPtr()->GetClientHandle()->DealClientCameMsg();
 }
 
 void CServerHandle::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL, return);
-
+    CGameServer::GetSingletonPtr()->GetClientHandle()->DealClientCameMsg();
 }
+
 void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
 {
 	MY_ASSERT(pConnector != NULL, return);
@@ -234,14 +279,13 @@ void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
 
 void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 {
+    printf("=============lcb_OnPingServer\n");
     MY_ASSERT(pConnector != NULL, return);
     time_t tNow = GetMSTime();
     std::shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
     shared_ptr<CServerHandle> tmpServerHandle = CGameServer::GetSingletonPtr()->GetServerHandle();
-    if (pConnector->GetState() == CConnector::eCS_Connected &&
-        pConnector->GetSocket().GetSocket() > 0 &&
-        tNow - tmpServerHandle->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
-        if (tNow - tmpServerHandle->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
+    if (pConnector->GetState() == CConnector::eCS_Connected && pConnector->GetSocket().GetSocket() > 0) {
+        if (tNow - tmpServerHandle->GetLastSendKeepAlive() >= tmpConfig->GetSocketTimeOut()) {
             tmpServerHandle->SendKeepAlive2Proxy();
             LOG_DEBUG("default", "SendkeepAliveToProxy succeed..");
         }
@@ -255,52 +299,18 @@ void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
             return;
         }
     }
+    CGameServer::GetSingletonPtr()->GetClientHandle()->DealClientCameMsg();
 }
 
+void CServerHandle::lcb_OnSigPipe(uint,void*)
+{
+    LOG_ERROR("default", "Game recv sig pipe,call lcb_OnSigPipe\n");
+}
 
 //检测是否又数据要发送
 void CServerHandle::lcb_OnCheckClientMsgCome(int fd, short what, void *param)
 {
     CGameServer::GetSingletonPtr()->GetClientHandle()->DealClientCameMsg();
-}
-
-void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
-{
-	MY_ASSERT(pBufferEvent != NULL, return);
-	//数据不完整
-	if (!pBufferEvent->IsPackageComplete()) {
-		return;
-	}
-	unsigned short iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
-	//读取数据
-	pBufferEvent->RecvData(m_acRecvBuff, iTmpLen);
-	pBufferEvent->CurrentPackRecved();
-	// 将收到的二进制数据转为protobuf格式
-	CProxyMessage tmpMessage;
-	int iRet = 0;
-//	int iRet = CServerCommEngine::ConvertStreamToMsg(m_acRecvBuff,
-//													 iTmpLen,
-//													 &tmpMessage,
-//													 CGameServer::GetSingletonPtr()->GetMessageFactory());
-	if (iRet < 0) {
-		LOG_ERROR("default", "[{} : {} : {}] convert stream to message failed, iRet = {}.",
-				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
-		return;
-	}
-
-	ServerInfo *rTmpProxy = CServerConfig::GetSingletonPtr()->GetServerInfo(enServerType::FE_PROXYSERVER);
-	CProxyHead tmpProxyHead = tmpMessage.msghead();
-	if (tmpProxyHead.has_srcfe() && tmpProxyHead.srcfe() == FE_PROXYSERVER) {
-		if (tmpProxyHead.has_srcid() && tmpProxyHead.srcid() == (unsigned short) rTmpProxy->m_iServerId
-			&& tmpProxyHead.has_opflag() && tmpProxyHead.opflag() == enMessageCmd::MESS_KEEPALIVE) {
-			// 设置proxy为已连接状态
-			CGameServer::GetSingletonPtr()->GetServerHandle()->SetLastRecvKeepAlive(GetMSTime());
-		}
-		return;
-	}
-	// 处理服务器间消息
-//	CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskBack(
-//		&CMessageDispatcher::ProcessServerMessage, &tmpMessage);
 }
 
 void CServerHandle::SetProxyId(int id)

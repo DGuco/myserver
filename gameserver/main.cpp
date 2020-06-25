@@ -12,14 +12,19 @@
 
 void sigusr1_handle(int iSigVal)
 {
-	CGameServer::GetSingletonPtr()->SetRunFlag(ERF_RELOAD);
-	signal(SIGUSR1, sigusr1_handle);
+    CGameServer::GetSingletonPtr()->SetRunFlag(ERF_RELOAD);
+    signal(SIGUSR1, sigusr1_handle);
 }
 
 void sigusr2_handle(int iSigVal)
 {
-	CGameServer::GetSingletonPtr()->SetRunFlag(ERF_QUIT);
-	signal(SIGUSR2, sigusr2_handle);
+    CGameServer::GetSingletonPtr()->SetRunFlag(ERF_QUIT);
+    signal(SIGUSR2, sigusr2_handle);
+}
+
+void sigpipe_handle(int sig)
+{
+    LOG_ERROR("default", "receive sigpipe,do sigpipe_handle");
 }
 
 int main(int argc, char *argv[])
@@ -34,6 +39,12 @@ int main(int argc, char *argv[])
 	// 信号
 	signal(SIGUSR1, sigusr1_handle);
 	signal(SIGUSR2, sigusr2_handle);
+
+    struct sigaction sa;
+    sa.sa_handler = sigpipe_handle;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGPIPE,&sa,NULL);
 
 	// 启动服务器
 	pTmpGameServer->Run();

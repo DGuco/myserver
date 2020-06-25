@@ -54,8 +54,8 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 	}
 
 	CProxyHead *stProxyHead = pMsg->mutable_msghead();
-	BYTE abyCodeBuf[MAX_PACKAGE_LEN] = {0};
-	unsigned short nCodeLength = sizeof(abyCodeBuf);
+	CByteBuff tmBuff;
+	unsigned short nCodeLength = 0;
 	ServerInfo *dbInfo = m_pServerConfig->GetServerInfo(enServerType::FE_DBSERVER);
 	ServerInfo *proxyInfo = m_pServerConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 
@@ -67,7 +67,7 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 				   GetMSTime(),
 				   enMessageCmd::MESS_REGIST);
 
-	int iRet = CServerCommEngine::ConvertMsgToStream(pMsg, abyCodeBuf, nCodeLength);
+	int iRet = CServerCommEngine::ConvertMsgToStream(pMsg, &tmBuff, nCodeLength);
 	if (iRet != 0) {
 		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = {}.", iRet);
 		return 0;
@@ -79,7 +79,7 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 		LOG_ERROR("default", "Connection to proxyserver has gone");
 		return -1;
 	}
-	int nSendReturn = tmpConnector->Send(abyCodeBuf, nCodeLength);
+	int nSendReturn = tmpConnector->Send(tmBuff.GetData(), nCodeLength);
 	if (nSendReturn < 0) {
 		LOG_ERROR("default", "Send Code(len:{}) To Proxy faild(error={})", nCodeLength, nSendReturn);
 		return -1;
@@ -321,9 +321,8 @@ Others:
 int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
 {
 	CProxyMessage message;
-	char message_buffer[1024] = {0};
-	unsigned short tTotalLen = sizeof(message_buffer);
-
+	CByteBuff tmBuff;
+	unsigned short tTotalLen = tmBuff.GetCapaticy();
 	//如果为null 让程序崩溃
 	ServerInfo *dbInfo = m_pServerConfig->GetServerInfo(enServerType::FE_DBSERVER);
 	ServerInfo *proxyInfo = m_pServerConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
@@ -335,13 +334,13 @@ int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
 				   GetMSTime(),
 				   enMessageCmd::MESS_REGIST);
 
-	int iRet = CServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
+	int iRet = CServerCommEngine::ConvertMsgToStream(&message, &tmBuff, tTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer ConvertMsgToStream failed, iRet = {}.", iRet);
 		return 0;
 	}
 
-	iRet = pConnector->Send((BYTE *) message_buffer, tTotalLen);
+	iRet = pConnector->Send(tmBuff.GetData(), tTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "CDBCtrl::RegisterToProxyServer SendOneCode failed, iRet = {}.", iRet);
 		return -1;
@@ -363,8 +362,8 @@ Others:
 int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
 {
 	CProxyMessage message;
-	char message_buffer[1024] = {0};
-	unsigned short tTotalLen = sizeof(message_buffer);
+	CByteBuff tmBuff;
+	unsigned short tTotalLen = tmBuff.GetCapaticy();
 
 	ServerInfo *dbInfo = m_pServerConfig->GetServerInfo(enServerType::FE_DBSERVER);
 	ServerInfo *proxyInfo = m_pServerConfig->GetServerInfo(enServerType::FE_DBSERVER);
@@ -376,13 +375,13 @@ int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
 				   GetMSTime(),
 				   enMessageCmd::MESS_KEEPALIVE);
 
-	int iRet = CServerCommEngine::ConvertMsgToStream(&message, message_buffer, tTotalLen);
+	int iRet = CServerCommEngine::ConvertMsgToStream(&message, &tmBuff, tTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "CDBCtrsl::SendkeepAliveToProxy ConvertMsgToStream failed, iRet = {}.", iRet);
 		return 0;
 	}
 
-	iRet = pConnector->Send((BYTE *) message_buffer, tTotalLen);
+	iRet = pConnector->Send((BYTE *) tmBuff.GetData(), tTotalLen);
 	if (iRet != 0) {
 		LOG_ERROR("default", "CDBCtrl::SendkeepAliveToProxy  proxy SendOneCode failed, iRet = {}.", iRet);
 		return -1;

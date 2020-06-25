@@ -156,7 +156,7 @@ void CProxyCtrl::lcb_OnAcceptorTimeOut(int fd, short what, void *param)
 		time_t tNow = GetMSTime( );
 		for (; it != tmpMap.end( );) {
 			CAcceptor *tmpAcceptor = it->second;
-			if (tNow - tmpAcceptor->GetLastKeepAlive( ) > tmpPingTime) {
+			if (tNow - tmpAcceptor->GetLastKeepAlive( ) > tmpPingTime / 1000) {
 				SOCKET tmpSocket = tmpAcceptor->GetSocket( ).GetSocket( );
 				auto itx = m_mapSocket2Key.find(tmpSocket);
 				if (itx != m_mapSocket2Key.end( )) {
@@ -251,14 +251,17 @@ int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCode
 	LOG_INFO("default", "[{}]", stTmpHead.ShortDebugString( ).c_str( ));
 #endif
 
-	LOG_INFO("default", "Transfer code begin, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = {}",
-			 stTmpHead.srcfe( ), stTmpHead.srcid( ),
-			 stTmpHead.dstfe( ), stTmpHead.dstid( ), stTmpHead.timestamp( ));
-
 	// 处理直接发送到 proxy 的消息
-	if (stTmpHead.dstfe( ) == FE_PROXYSERVER) {
-		switch(stTmpHead.opflag( )){
-			case enMessageCmd::MESS_KEEPALIVE:{
+	if (stTmpHead.dstfe( ) == FE_PROXYSERVER)
+	{
+		switch(stTmpHead.opflag( ))
+		{
+			case enMessageCmd::MESS_KEEPALIVE:
+			{
+                LOG_INFO("default", "Recv keepalive msg, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = {}",
+                         stTmpHead.srcfe( ), stTmpHead.srcid( ),
+                         stTmpHead.dstfe( ), stTmpHead.dstid( ), stTmpHead.timestamp( ));
+
 				CProxyMessage stRetMessage;
 				CProxyHead *stRetHead = stRetMessage.mutable_msghead( );
 				ServerInfo *serverInfo = CServerConfig::GetSingletonPtr( )->GetServerInfo(enServerType::FE_PROXYSERVER);
@@ -272,17 +275,16 @@ int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCode
 							   enMessageCmd::MESS_KEEPALIVE);
 
 				// keepalive的包长度一般都很短
-				char message_buffer[1024];
-				unsigned short tTotalLen = sizeof(message_buffer);
-
-				int iRet = CServerCommEngine::ConvertMsgToStream(&stRetMessage, message_buffer, tTotalLen);
+				CByteBuff tmBuff;
+				unsigned short tTotalLen = tmBuff.GetCapaticy();
+				int iRet = CServerCommEngine::ConvertMsgToStream(&stRetMessage, &tmBuff, tTotalLen);
 				if (iRet != 0) {
 					LOG_ERROR("default", "CDBCtrsl::SendkeepAliveToProxy ConvertMsgToStream failed, iRet = {}.", iRet);
 					return 0;
 				}
 				else {
 					int iKey = MakeConnKey(stRetHead->dstfe( ), stRetHead->dstid( ));
-					int iRet = SendOneCodeTo(tTotalLen, (BYTE *) message_buffer, iKey, true);
+					int iRet = SendOneCodeTo(tTotalLen, (BYTE *) tmBuff.GetData(), iKey, true);
 					if (iRet != 0) {
 						LOG_INFO("default", "send keepalive to (FE = {} : ID = {}), SendOneCodeTo failed, iRet = {}.",
 								 stRetHead->dstfe( ), stRetHead->dstid( ), iRet);
@@ -313,6 +315,9 @@ int CProxyCtrl::TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCode
 		return 0;
 	}
 
+    LOG_INFO("default", "Transfer code begin, from(FE = {} : ID = {}) to(FE = {} : ID = {}), timestamp = {}",
+             stTmpHead.srcfe( ), stTmpHead.srcid( ),
+             stTmpHead.dstfe( ), stTmpHead.dstid( ), stTmpHead.timestamp( ));
 	int iKey = MakeConnKey(stTmpHead.dstfe( ), stTmpHead.dstid( ));
 	m_pRecvBuff->SetReadIndex(0);
 	iTempRet = SendOneCodeTo(nCodeLength, (BYTE *) m_pRecvBuff->CanReadData( ), iKey, true);

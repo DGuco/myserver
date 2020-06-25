@@ -103,8 +103,6 @@ public:
 	int CheckRunFlags();
 	// 开启所有定时器
 	int StartAllTimers();
-	// 服务器间心跳检测
-	static void OnTimeCheckStateInServer(CTimerBase *pTimer);
 	// perf日志打印
 	static void OnTimePerfLog(CTimerBase *pTimer);
 

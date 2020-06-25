@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 project(dbserver)
 add_compile_options(-Wall -ggdb -pipe -std=c++14)
-add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX)
+add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX -DEVENT_THREAD_SAFE)
 
 set(SOURCE_FILES
         main.cpp

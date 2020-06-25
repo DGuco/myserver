@@ -40,7 +40,6 @@ bool CConnector::Connect(const CNetAddr &addr)
 	if (iRet != 0) {
 		return false;
 	}
-	OnConnectted();
 	return true;
 }
 
@@ -93,9 +92,9 @@ void CConnector::OnEvent(int16 nWhat)
 		return;
 	}
 
-//	if (nWhat & BEV_EVENT_CONNECTED) {
-//		m_pFuncOnConnectted(this);
-//	}
+	if (nWhat & BEV_EVENT_CONNECTED) {
+        OnConnectted();
+	}
 }
 
 bool CConnector::IsConnected()
@@ -130,7 +129,7 @@ void CConnector::BuffEventUnavailableCall()
 
 void CConnector::AfterBuffEventCreated()
 {
-	bufferevent_enable(m_pStBufEv, EV_READ | EV_WRITE);
+	bufferevent_enable(m_pStBufEv, EV_READ);
 }
 
 int CConnector::GetTargetId() const

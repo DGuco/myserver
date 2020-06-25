@@ -4,6 +4,7 @@
 #include <server_comm_engine.h>
 #include "my_assert.h"
 #include "config.h"
+#include "base.h"
 #include "../inc/client_handle.h"
 #include "../inc/game_server.h"
 #include "../inc/message_factory.h"
@@ -16,7 +17,7 @@ CGameServer::CGameServer()
 	  m_pModuleManager(std::make_shared<CModuleManager>( )),
 	  m_pMessageFactory(std::make_shared<CMessageFactory>( )),
 	  m_pTimerManager(std::make_shared<CTimerManager>( )),
-	  m_pLogicThread(std::make_shared<CThreadPool>(1)),
+	  m_pLogicThread(std::make_shared<CThreadPool>(1,ignore_pipe)),
 	  m_pComputeThread(std::make_shared<CThreadPool>(2)),
 	  m_pConfigHandle(std::make_shared<CConfigHandle>( )),
 	  m_iServerState(0)
@@ -57,10 +58,6 @@ int CGameServer::PrepareToRun()
 		return -1;
 	}
 
-	if (m_pServerHandle->PrepareToRun( )) {
-		return -1;
-	}
-
 	if (m_pConfigHandle->PrepareToRun( )) {
         return -1;
     }
@@ -70,6 +67,9 @@ int CGameServer::PrepareToRun()
 		return -5;
 	}
 
+    if (m_pServerHandle->PrepareToRun( )) {
+        return -1;
+    }
 	return 0;
 }
 
@@ -77,32 +77,6 @@ int CGameServer::PrepareToRun()
 int CGameServer::StartAllTimers()
 {
 	return 0;
-}
-
-// 服务器间心跳检测
-void CGameServer::OnTimeCheckStateInServer(CTimerBase *pTimer)
-{
-//	MY_ASSERT_LOG("default", pTimer != NULL, return);
-//
-//	time_t tTmpNow = GetMSTime();
-//	// 检测服务器与proxy的连接状态，如果状态异常则重新连接，状态正常则发送心跳消息
-//	CGameServer *pTmpGameServer =
-//		CGameServer::GetSingletonPtr();//		LOG_DEBUG("default", "in loop {}, size={}.", atomic_int1, pTmpGameServer->mConfig.gameconfig().proxyinfo_size());
-//	if ((pTmpGameServer->m_ProxyClient.IsConnected() == false)
-//		|| pTmpGameServer->m_ProxyClient.IsTimeout(tTmpNow)) {
-//		// 清除proxy已连接状态
-//		CGameServer::GetSingletonPtr()->EraseServerState(CGameServer::ESS_CONNECTPROXY);
-//		LOG_WARN("default", "[{} : {} : {}] mProxyClient maybe closed, current status({}) .",
-//				 __MY_FILE__, __LINE__, __FUNCTION__, pTmpGameServer->m_ProxyClient.GetStatus());
-//		if (pTmpGameServer->Connect2Proxy() == true) {
-//			if (pTmpGameServer->Register2Proxy() == true) {
-//				pTmpGameServer->m_ProxyClient.ResetTimeout(tTmpNow);
-//			}
-//		}
-//		else {
-//			pTmpGameServer->SendKeepAlive2Proxy();
-//		}
-//	}
 }
 
 // perf日志打印
@@ -155,6 +129,7 @@ void CGameServer::ProcessRouterMessage(CProxyMessage *pMsg)
 
 bool CGameServer::SendMessageToDB(CProxyMessage *pMsg)
 {
+    MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return 0,"Do SendMsg must be in logic thread:m_pLogicThread");
     m_pServerHandle->SendMessageToDB(pMsg);
     return true;
 }
@@ -183,14 +158,16 @@ void CGameServer::SetRunFlag(ERunFlag eRunFlag)
 // 广播消息给玩家，广播时，发起人一定放第一个
 int CGameServer::BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, stPointList *pTeamList)
 {
-	m_pClientHandle->BroadCastMsg( iMsgID, pMsgPara, pTeamList);
+    MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
+    m_pClientHandle->BroadCastMsg( iMsgID, pMsgPara, pTeamList);
 	return 0;
 }
 
 // 发送消息给单个玩家
 int CGameServer::BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer)
 {
-	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
+    MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
+    MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
     m_pClientHandle->SendResToPlayer( pMsgPara, pPlayer);
@@ -200,7 +177,8 @@ int CGameServer::BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMs
 // 回复客户端上行的请求
 int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer)
 {
-	MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
+    MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
+    MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
 			  return -1);
 	m_pClientHandle->SendResToPlayer( pMsgPara, pPlayer);
 	return 0;
@@ -209,7 +187,8 @@ int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlay
 // 回复客户端上行的请求
 int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, std::shared_ptr<CMesHead> mesHead)
 {
-	MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
+    MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
+    MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
     m_pClientHandle->SendResponse(pMsgPara, mesHead);
 }
 

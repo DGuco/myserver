@@ -45,7 +45,9 @@ private:
 	static void lcb_OnConnectFailed(CConnector *pConnector);
 	static void lcb_OnConnected(CConnector *pConnector);
 	static void lcb_OnPingServer(int fd, short what, CConnector *pConnector);
-	static void DealServerData(IBufferEvent *pConnector);
+    static void lcb_OnSigPipe(uint,void*);
+
+    static void DealServerData(IBufferEvent *pConnector);
 	static void SetProxyId(int id);
 	static int GetProxyId();
 private:
@@ -55,7 +57,7 @@ private:
     shared_ptr<CTimerEvent> m_pClientMsgTimer;
 private:
 	static int m_iProxyId;
-	static char m_acRecvBuff[MAX_PACKAGE_LEN];
+	static CByteBuff m_RecvBuff;
 };
 
 

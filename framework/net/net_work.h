@@ -67,7 +67,7 @@ public:
 	//关闭acceptor
 	bool ShutDownAcceptor(unsigned int uId);
 	//设置信号回调
-	void SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop = false);
+	void RegisterSignalHandler(unsigned int uSignal, FuncOnSignal pFunc, void *pContext);
 	//关闭connector
 	bool ShutDownConnectorEx(unsigned int uId);
 	//启动

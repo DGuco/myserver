@@ -37,7 +37,14 @@ int IBufferEvent::Send(const void *pData, unsigned int uSize)
 	}
 
 	MY_ASSERT(IsEventBuffAvailable(), return ePR_BufNull);
-	return bufferevent_write(m_pStBufEv, pData, uSize);
+    bufferevent_disable(m_pStBufEv, EV_WRITE);
+    int iRet = bufferevent_write(m_pStBufEv, pData, uSize);
+    if (iRet == 0)
+    {
+        bufferevent_enable(m_pStBufEv, EV_WRITE);
+        return  0;
+    }
+    return  -1;
 }
 
 int IBufferEvent::SendBySocket(const void *pData, unsigned int uSize)
@@ -71,7 +78,8 @@ unsigned short IBufferEvent::ReadRecvPackLen()
 	}
 	CByteBuff tmpBuff(sizeof(unsigned short));
 	RecvData((void *) (tmpBuff.GetData()), sizeof(unsigned short));
-	return tmpBuff.ReadUnShort();
+	m_uRecvPackLen = tmpBuff.ReadUnShort();
+    return  m_uRecvPackLen;
 }
 
 unsigned int IBufferEvent::GetRecvDataSize()
@@ -194,7 +202,7 @@ bool IBufferEvent::RegisterToReactor()
 	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent new failed!,error msg: %s", strerror(errno));
 	bufferevent_setcb(m_pStBufEv,
 					  &IBufferEvent::lcb_OnRead,
-					  NULL,
+                      &IBufferEvent::lcb_OnWrite,
 					  &IBufferEvent::lcb_OnEvent,
 					  (void *) this);
 	AfterBuffEventCreated();

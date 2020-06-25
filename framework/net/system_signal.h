@@ -15,11 +15,11 @@ class CSystemSignal: public IReactorHandler
 {
 public:
 	//构造函数
-	explicit CSystemSignal(IEventReactor *pReactor);
+	explicit CSystemSignal(IEventReactor *pReactor,uint32 uSignal, FuncOnSignal pFunc, void *pContext);
 	//析构函数
 	~CSystemSignal() override;
 	//设置信号回调
-	void SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop = false);
+	void RegisterSignal();
 private:
 	//注册
 	bool RegisterToReactor() override;
@@ -33,7 +33,6 @@ private:
 	FuncOnSignal m_pFuncOnSignal;
 	void *m_pContext;
 	IEventReactor *m_pReactor;
-	bool m_bLoop;
 	event m_event;
 	int m_iSignal;
 };

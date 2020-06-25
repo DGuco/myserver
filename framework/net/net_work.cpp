@@ -70,7 +70,7 @@ bool CNetWork::BeginListen(const char *szNetAddr,
 	m_pCheckTimerOut = new CTimerEvent(GetEventReactor(),
 									   funcAcceptorTimeOut,
 									   this,
-									   uCheckPingTickTime / 1000,  //毫秒转换为秒
+									   uCheckPingTickTime,  //毫秒转换为秒
 									   0,
 									   -1);
 	m_iPingCheckTime = uCheckPingTickTime;
@@ -80,10 +80,10 @@ bool CNetWork::BeginListen(const char *szNetAddr,
 	return bRes;
 }
 
-void CNetWork::SetCallBackSignal(unsigned int uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop)
+void CNetWork::RegisterSignalHandler(unsigned int uSignal, FuncOnSignal pFunc, void *pContext)
 {
-	CSystemSignal *pSystemSignal = new CSystemSignal(m_pEventReactor);
-	pSystemSignal->SetCallBackSignal(uSignal, pFunc, pContext, bLoop);
+	CSystemSignal *pSystemSignal = new CSystemSignal(m_pEventReactor,uSignal,pFunc,pContext);
+    pSystemSignal->RegisterSignal();
 	m_qTimerOrSignals.push(pSystemSignal);
 }
 

@@ -44,54 +44,6 @@ int CNetManager::DispatchEvents()
     m_pNetWork->DispatchEvents();
 }
 
-void CNetManager::DealClientData(CAcceptor *tmpAcceptor,
-								 unsigned short tmpLastLen)
-{
-	MY_ASSERT(tmpAcceptor != NULL, return)
-	static CMessage tmpMessage;
-	tmpMessage.Clear( );
-	CMesHead *tmpHead = tmpMessage.mutable_msghead( );
-	int iTmpRet = CClientCommEngine::ParseClientStream(m_pRecvBuff.get( ), tmpMessage.mutable_msghead( ));
-	if (iTmpRet < 0) {
-		//断开连接
-		ClearSocket(tmpAcceptor, Err_PacketError);
-		return;
-	}
-	time_t tNow = GetMSTime( );
-	tmpAcceptor->SetLastKeepAlive(tNow);
-	//组织转发消息
-	if (0 == iTmpRet && tmpHead->cmd( ) != 103 && tmpLastLen >= 0) {
-		CSocketInfo *tmpSocketInfo = tmpHead->mutable_socketinfos( )->Add( );
-		tmpSocketInfo->Clear( );
-		tmpSocketInfo->set_createtime(tmpAcceptor->GetCreateTime( ));
-		tmpSocketInfo->set_socketid(tmpAcceptor->GetSocket( ).GetSocket( ));
-		tmpSocketInfo->set_state(0);
-
-		iTmpRet = CClientCommEngine::ConvertToGameStream(m_pSendBuff.get( ),
-														 m_pRecvBuff->CanReadData( ),
-														 tmpLastLen,
-														 tmpHead);
-		if (iTmpRet != 0) {
-			//断开连接
-			ClearSocket(tmpAcceptor, Err_PacketError);
-			return;
-		}
-
-		shared_ptr<CMessHandle> &tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetMesManager();
-		iTmpRet = tmpServerHandle->SendToGame(m_pSendBuff->CanReadData( ), m_pSendBuff->ReadableDataLen( ));
-		if (iTmpRet != 0) {
-			LOG_ERROR("defalut", "CNetManager::DealClientData to game error, error code {}", iTmpRet);
-			ClearSocket(tmpAcceptor, Err_SendToMainSvrd);
-		}
-		else {
-			LOG_DEBUG("default", "gate ==>game succeed");
-		}
-	}
-	else {
-		//心跳信息不做处理
-	}
-}
-
 void CNetManager::SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len)
 {
 	CAcceptor *pAcceptor = m_pNetWork->FindAcceptor(socketInfo.socketid( ));
@@ -114,7 +66,7 @@ void CNetManager::SendToClient(const CSocketInfo &socketInfo, const char *data, 
 		return;
 	}
 	int iTmpCloseFlag = socketInfo.state( );
-	int iRet = pAcceptor->SendBySocket(data, len);
+	int iRet = pAcceptor->Send(data, len);
 	if (iRet != 0) {
 		//发送失败
 		CNetManager::ClearSocket(pAcceptor, Err_ClientClose);
@@ -205,12 +157,60 @@ void CNetManager::RecvClientData(CAcceptor *tmpAcceptor)
 	//读取数据
 	m_pRecvBuff->Clear( );
 	m_pRecvBuff->WriteUnShort(packLen);
-	iTmpLen = tmpAcceptor->RecvData(m_pRecvBuff->GetData( ), iTmpLen);
+	iTmpLen = tmpAcceptor->RecvData(m_pRecvBuff->CanWriteData( ), iTmpLen);
 	m_pRecvBuff->WriteLen(iTmpLen);
 	//当前数据包已全部读取，清除当前数据包缓存长度
 	tmpAcceptor->CurrentPackRecved( );
 	//发送数据包到game server
 	DealClientData(tmpAcceptor, iTmpLen);
+}
+
+void CNetManager::DealClientData(CAcceptor *tmpAcceptor,
+                                 unsigned short tmpLastLen)
+{
+    MY_ASSERT(tmpAcceptor != NULL, return)
+    static CMessage tmpMessage;
+    tmpMessage.Clear( );
+    CMesHead *tmpHead = tmpMessage.mutable_msghead( );
+    int iTmpRet = CClientCommEngine::ParseClientStream(m_pRecvBuff.get( ), tmpMessage.mutable_msghead( ));
+    if (iTmpRet < 0) {
+        //断开连接
+        ClearSocket(tmpAcceptor, Err_PacketError);
+        return;
+    }
+    time_t tNow = GetMSTime( );
+    tmpAcceptor->SetLastKeepAlive(tNow);
+    //组织转发消息
+    if (0 == iTmpRet && tmpHead->cmd( ) != 103 && tmpLastLen >= 0) {
+        CSocketInfo *tmpSocketInfo = tmpHead->mutable_socketinfos( )->Add( );
+        tmpSocketInfo->Clear( );
+        tmpSocketInfo->set_createtime(tmpAcceptor->GetCreateTime( ));
+        tmpSocketInfo->set_socketid(tmpAcceptor->GetSocket( ).GetSocket( ));
+        tmpSocketInfo->set_state(0);
+        m_pSendBuff->Clear();
+        iTmpRet = CClientCommEngine::ConvertToGameStream(m_pSendBuff.get( ),
+                                                         m_pRecvBuff->CanReadData( ),
+                                                         tmpLastLen,
+                                                         tmpHead);
+        if (iTmpRet != 0) {
+            //断开连接
+            ClearSocket(tmpAcceptor, Err_PacketError);
+            return;
+        }
+
+        shared_ptr<CMessHandle> &tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetMesManager();
+        iTmpRet = tmpServerHandle->SendToGame(m_pSendBuff->CanReadData( ), m_pSendBuff->ReadableDataLen( ));
+        if (iTmpRet != 0) {
+            LOG_ERROR("defalut", "CNetManager::DealClientData to game error, error code {}", iTmpRet);
+            ClearSocket(tmpAcceptor, Err_SendToMainSvrd);
+        }
+        else {
+            LOG_DEBUG("default", "gate ==>game succeed");
+        }
+    }
+    else {
+        //心跳信息不做处理
+    }
 }
 
 bool CNetManager::BeginListen()
@@ -280,7 +280,7 @@ void CNetManager::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
     time_t tNow = GetMSTime( );
     for (; it != tmpMap.end( );) {
         CAcceptor *tmpAcceptor = it->second;
-        if (tNow - tmpAcceptor->GetLastKeepAlive( ) > tmpPingTime) {
+        if (tNow - tmpAcceptor->GetLastKeepAlive( ) > tmpPingTime * 1000) {
             tmpClientManager->DisConnect(tmpAcceptor, Err_ClientTimeout);
             it = tmpMap.erase(it);
         }

@@ -19,7 +19,7 @@
     "port": 9104,
     "serverid": 20004
   },
-  "keepalive": 60000,
+  "keepalive": 60,
   "servertick": 100,
   "checktimeOutGap": 5,
   "socketTimeout": 30,

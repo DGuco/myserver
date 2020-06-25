@@ -1,10 +1,10 @@
 #include "system_signal.h"
 
-CSystemSignal::CSystemSignal(IEventReactor *pReactor)
-	: m_pFuncOnSignal(NULL),
-	  m_pContext(NULL),
-	  m_pReactor(pReactor),
-	  m_bLoop(false)
+CSystemSignal::CSystemSignal(IEventReactor *pReactor,uint32 uSignal, FuncOnSignal pFunc, void *pContext)
+	: m_pReactor(pReactor),
+      m_pFuncOnSignal(pFunc),
+      m_iSignal(uSignal),
+      m_pContext(pContext)
 {
 }
 
@@ -18,12 +18,8 @@ IEventReactor *CSystemSignal::GetReactor()
 	return m_pReactor;
 }
 
-void CSystemSignal::SetCallBackSignal(uint32 uSignal, FuncOnSignal pFunc, void *pContext, bool bLoop /* = false */)
+void CSystemSignal::RegisterSignal()
 {
-	m_pFuncOnSignal = pFunc;
-	m_iSignal = uSignal;
-	m_pContext = pContext;
-	m_bLoop = bLoop;
 	GetReactor()->Register(this);
 }
 
