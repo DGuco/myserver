@@ -30,11 +30,11 @@ public:
                                   CByteBuff *pBuff,
 								  unsigned short &unBuffLen);
 	// --------------------------------------------------------------------------------
-	// Function:	ConvertStreamToProxy
+	// Function:	ConvertStreamToProxyHead
 	// Description:	把服务器的二进制流转换成CProxyHead 
 	// --------------------------------------------------------------------------------
-	static int ConvertStreamToProxy(CByteBuff *pBuff,
-									CProxyHead *pProxyHead);
+	static int ConvertStreamToProxyHead(CByteBuff *pBuff,
+                                        CProxyHead *pProxyHead);
 
 };
 

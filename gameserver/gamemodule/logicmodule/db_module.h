@@ -40,7 +40,7 @@ public:
 	// 销毁实体
 	void OnDestroyEntity(CPlayer *pTeam);
 
-private:
+public:
 	int ExecuteSql(emDBLogicType nLogicType,
 				   unsigned long ulTeamID,
 				   int iSessionID,

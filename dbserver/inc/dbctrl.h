@@ -8,6 +8,7 @@
 #define _DBCTRL_HPP_
 
 #include <memory>
+#include "byte_buff.h"
 #include "net_work.h"
 #include "thread_pool.h"
 #include "query_result.h"
@@ -87,7 +88,7 @@ private:
 	//向proxy发送心跳消息
 	int SendkeepAliveToProxy(CConnector *pConnector);
 	//分发消息
-	int DispatchOneCode(int nCodeLength, BYTE *pbyCode);
+	int DispatchOneCode(int nCodeLength, CByteBuff *pbyCode);
 	//获取收到心跳的时间
 	time_t GetLastSendKeepAlive() const;
 	//获取上次发送心跳的时间
@@ -110,14 +111,14 @@ private:
 	//发送心跳倒计时回调
 	static void lcb_OnPingServer(int fd, short event, CConnector *pConnector);
 public:
-	static char m_acRecvBuff[MAX_PACKAGE_LEN];
+	static CByteBuff m_acRecvBuff;
 	static int m_iProxyId;
 private:
 	int m_iRunFlag;    // 运行标志
 	time_t m_tLastSendKeepAlive;        // 最后发送proxy心跳消息时间
 	time_t m_tLastRecvKeepAlive;        // 最后接收proxy心跳消息时间
 	shared_ptr<Database> m_pDatabase;
-    shared_ptr<CMessageFactory> mMsgFactory;
+    shared_ptr<CMessageFactory> m_pMsgFactory;
 //	CProxyHead m_stCurrentProxyHead;    //当前处理请求的Proxy头部
     shared_ptr<CNetWork>  m_pNetWork;
     shared_ptr<CServerConfig> m_pServerConfig;

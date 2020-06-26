@@ -61,7 +61,7 @@ int CProxyCtrl::PrepareToRun()
 							&CProxyCtrl::lcb_OnCnsDisconnected,
 							&CProxyCtrl::lcb_OnAcceptorTimeOut,
 							-1,
-							CServerConfig::GetSingletonPtr( )->GetTcpKeepAlive( ));
+							CServerConfig::GetSingletonPtr( )->GetSocketTimeOut( ));
 	return 0;
 }
 
@@ -156,7 +156,7 @@ void CProxyCtrl::lcb_OnAcceptorTimeOut(int fd, short what, void *param)
 		time_t tNow = GetMSTime( );
 		for (; it != tmpMap.end( );) {
 			CAcceptor *tmpAcceptor = it->second;
-			if (tNow - tmpAcceptor->GetLastKeepAlive( ) > tmpPingTime / 1000) {
+			if (tNow - tmpAcceptor->GetLastKeepAlive( ) > tmpPingTime * 1000) {
 				SOCKET tmpSocket = tmpAcceptor->GetSocket( ).GetSocket( );
 				auto itx = m_mapSocket2Key.find(tmpSocket);
 				if (itx != m_mapSocket2Key.end( )) {
@@ -180,9 +180,9 @@ int CProxyCtrl::DealRegisterMes(IBufferEvent *pBufferEvent, unsigned short iTmpL
 	MY_ASSERT(pBufferEvent != NULL, return -1);
 
 	CProxyHead stTmpProxyHead;
-	int iRet = CServerCommEngine::ConvertStreamToProxy(m_pRecvBuff, &stTmpProxyHead);
+	int iRet = CServerCommEngine::ConvertStreamToProxyHead(m_pRecvBuff, &stTmpProxyHead);
 	if (iRet < 0) {
-		LOG_ERROR("default", "In DealRegisterMes, ConvertStreamToProxy return {}.", iRet);
+		LOG_ERROR("default", "In DealRegisterMes, ConvertStreamToProxyHead return {}.", iRet);
 		return -1;
 	}
 

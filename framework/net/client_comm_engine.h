@@ -45,7 +45,7 @@ public:
 	 * @param pMsg
 	 * @return
 	 */
-	static int ConvertToGameStream(CByteBuff* convertBuff,
+	static int ConvertToGameStream(CByteBuff* pBuff,
 								   CMessage *pMessage);
 
 	/**

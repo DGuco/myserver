@@ -129,7 +129,7 @@ void CGameServer::ProcessRouterMessage(CProxyMessage *pMsg)
 
 bool CGameServer::SendMessageToDB(CProxyMessage *pMsg)
 {
-    MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return 0,"Do SendMsg must be in logic thread:m_pLogicThread");
+    //MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return 0,"Do SendMsg must be in logic thread:m_pLogicThread");
     m_pServerHandle->SendMessageToDB(pMsg);
     return true;
 }
@@ -158,7 +158,7 @@ void CGameServer::SetRunFlag(ERunFlag eRunFlag)
 // 广播消息给玩家，广播时，发起人一定放第一个
 int CGameServer::BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, stPointList *pTeamList)
 {
-    MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
+    //MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
     m_pClientHandle->BroadCastMsg( iMsgID, pMsgPara, pTeamList);
 	return 0;
 }
@@ -166,7 +166,7 @@ int CGameServer::BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMs
 // 发送消息给单个玩家
 int CGameServer::BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer)
 {
-    MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
+    //MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
     MY_ASSERT(pPlayer != NULL && pMsgPara != NULL, return -1);
 	stPointList tmpList;
 	tmpList.push_back(pPlayer);
@@ -177,7 +177,7 @@ int CGameServer::BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMs
 // 回复客户端上行的请求
 int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer)
 {
-    MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
+    //MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
     MY_ASSERT(pPlayer != NULL && pMsgPara != NULL,
 			  return -1);
 	m_pClientHandle->SendResToPlayer( pMsgPara, pPlayer);
@@ -187,7 +187,7 @@ int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlay
 // 回复客户端上行的请求
 int CGameServer::SendResponse(std::shared_ptr<CGooMess> pMsgPara, std::shared_ptr<CMesHead> mesHead)
 {
-    MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
+    //MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return -1,"Do SendMsg must be in logic thread:m_pLogicThread");
     MY_ASSERT(mesHead != NULL && pMsgPara != NULL, return -1);
     m_pClientHandle->SendResponse(pMsgPara, mesHead);
 }

@@ -225,7 +225,7 @@ bool CNetManager::BeginListen()
 										&CNetManager::lcb_OnCnsDisconnected,
 										&CNetManager::lcb_OnCheckAcceptorTimeOut,
 										RECV_QUEUQ_MAX,
-										tmpConfig->GetTcpKeepAlive( ));
+										tmpConfig->GetSocketTimeOut( ));
 	if (iRet) {
 		LOG_INFO("default", "Server listen success at {} : {}", gateInfo->m_sHost.c_str( ), gateInfo->m_iPort);
 		return true;

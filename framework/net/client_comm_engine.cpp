@@ -38,10 +38,7 @@ int CClientCommEngine::ParseClientStream(CByteBuff *parseByteBuff,
 
 	//小于最小长度(包头长度 - 包总长度所占字节长度)
 	if (parseByteBuff->ReadableDataLen( ) < MSG_HEAD_LEN - sizeof(unsigned short)) {
-		MY_ASSERT_STR(0,
-					  return -1,
-					  "The package len is less than base len ,receive len %d",
-					  parseByteBuff->ReadableDataLen( ));
+		MY_ASSERT_STR(0,return -1,"The package len is less than base len ,receive len %d",parseByteBuff->ReadableDataLen( ));
 	}
 	pHead->set_serial(parseByteBuff->ReadUnShort( ));
 	pHead->set_seq(parseByteBuff->ReadUnShort( ));
@@ -71,7 +68,7 @@ int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
 	unLength += sizeof(unsigned short);
 
 	// MesHead
-	if (pHead->SerializeToArray(convertBuff->CanWriteData( ), convertBuff->WriteableDataLen( )) == false) {
+	if (!pHead->SerializeToArray(convertBuff->CanWriteData(), convertBuff->WriteableDataLen())) {
 		MY_ASSERT_STR(0, return -2, "CClientCommEngine::ConvertMsgToStream CTcpHead SerializeToArray failed.");
 	}
 	convertBuff->WriteLen(pHead->GetCachedSize( ));
@@ -126,14 +123,14 @@ int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
 	return 0;
 }
 
-int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
+int CClientCommEngine::ConvertToGameStream(CByteBuff *pBuff,
 										   CMessage *pMessage)
 {
-	if (convertBuff == NULL || pMessage == NULL || pMessage->mutable_msghead( ) == NULL) {
+	if (pBuff == NULL || pMessage == NULL || pMessage->mutable_msghead( ) == NULL) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertMsgToStream Input param failed.");
 	}
 
-	convertBuff->Clear( );
+    pBuff->Clear( );
 
 	unsigned short unLength = 0;
 	//预留总长度
@@ -144,14 +141,14 @@ int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
 	CMesHead *tmpHead = pMessage->mutable_msghead( );
 	// MesHead长度
 	unsigned short headLen = (unsigned short) tmpHead->ByteSize( );
-	unLength += sizeof(unsigned short);
-	convertBuff->WriteUnShort(headLen, unLength);
+    pBuff->WriteUnShort(headLen, unLength);
+    unLength += sizeof(unsigned short);
 
 	// MesHead
-	if (tmpHead->SerializeToArray(convertBuff->CanWriteData( ), convertBuff->WriteableDataLen( ) - unLength) == false) {
+	if (!tmpHead->SerializeToArray(pBuff->CanWriteData(), pBuff->WriteableDataLen() - unLength)) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertToGateStream CTcpHead SerializeToArray failed.");
 	}
-	convertBuff->WriteLen(tmpHead->GetCachedSize( ));
+    pBuff->WriteLen(tmpHead->GetCachedSize( ));
 	unLength += tmpHead->GetCachedSize( );
 
 	if (pMessage->msgpara( )) {
@@ -163,15 +160,15 @@ int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
 			char tEncryBuff[MAX_PACKAGE_LEN] = {0};
 			char *tpEncryBuff = &tEncryBuff[0];
 			unsigned short iMsgParaLen = MAX_PACKAGE_LEN;
-			if (pMsg->SerializeToArray(tpEncryBuff, iMsgParaLen) == false) {
+			if (!pMsg->SerializeToArray(tpEncryBuff, iMsgParaLen)) {
 				MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertToGateStream MsgPara SerializeToArray failed.");
 			}
 			// 消息长度
-			convertBuff->WriteUnShort(pMsg->GetCachedSize( ));
+            pBuff->WriteUnShort(pMsg->GetCachedSize( ));
 			unLength += sizeof(unsigned short);
 
 			//拷贝消息到缓冲区
-			convertBuff->WriteBytes(tpEncryBuff, pMsg->GetCachedSize( ));
+            pBuff->WriteBytes(tpEncryBuff, pMsg->GetCachedSize( ));
 			unLength += pMsg->GetCachedSize( );
 		}
 	}
@@ -180,17 +177,18 @@ int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
 	unsigned short iTmpAddlen = (unLength % 8);
 	if (iTmpAddlen > 0) {
 		iTmpAddlen = 8 - iTmpAddlen;
-	}
+        memset(pBuff->CanWriteData( ), 0, iTmpAddlen);
+    }
 	unLength += iTmpAddlen;
 
 	//回到消息起始地值补充数据从长度和字节补齐长度
-	convertBuff->SetWriteIndex(0);
+    pBuff->SetWriteIndex(0);
 	//序列话消息总长度
-	convertBuff->WriteUnShort(unLength);
+    pBuff->WriteUnShort(unLength);
 	//序列话8字节对齐长度
-	convertBuff->WriteUnShort(iTmpAddlen);
+    pBuff->WriteUnShort(iTmpAddlen);
 	//数据总长度
-	convertBuff->SetWriteIndex(unLength);
+    pBuff->SetWriteIndex(unLength);
 	return 0;
 }
 
@@ -217,7 +215,7 @@ int CClientCommEngine::ConvertToGateStream(CByteBuff *pBuff,
 	unLength += sizeof(unsigned short);
 
 	// MesHead
-	if (tmpHead->SerializeToArray(pBuff->CanWriteData( ), pBuff->WriteableDataLen( )) == false) {
+	if (!tmpHead->SerializeToArray(pBuff->CanWriteData(), pBuff->WriteableDataLen())) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertToGateStream CTcpHead SerializeToArray failed.");
 	}
 	pBuff->WriteLen(tmpHead->GetCachedSize( ));
@@ -239,7 +237,7 @@ int CClientCommEngine::ConvertToGateStream(CByteBuff *pBuff,
 
 	if (pMessage->has_msgpara( )) {
 		CGooMess *gooMess = (CGooMess *) pMessage->msgpara( );
-		if (gooMess->SerializeToArray(pBuff->CanWriteData( ), pBuff->WriteableDataLen( )) == false) {
+		if (!gooMess->SerializeToArray(pBuff->CanWriteData(), pBuff->WriteableDataLen())) {
 			MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertToGateStream MsgPara SerializeToArray failed.");
 		}
 		pBuff->WriteLen(tmpHead->GetCachedSize( ));
@@ -282,7 +280,7 @@ int CClientCommEngine::ConvertStreamToMessage(CByteBuff *pBuff,
 											  CMessage *pMessage,
 											  CFactory *pMsgFactory)
 {
-	if ((pBuff == NULL)) {
+	if (pBuff == NULL) {
 		MY_ASSERT_STR(0, return -1, "CClientCommEngine::ConvertStreamToClientMsg Input param failed.");
 	}
 
@@ -293,11 +291,7 @@ int CClientCommEngine::ConvertStreamToMessage(CByteBuff *pBuff,
 
 	// 总长度不匹配
 	if (unTmpTotalLen != unBuffLen) {
-		MY_ASSERT_STR(0,
-					  return -1,
-					  "The package len is not equal to data len %d ,package len %d",
-					  unBuffLen,
-					  unTmpTotalLen);
+		MY_ASSERT_STR(0,return -1,"The package len is not equal to data len %d ,package len %d",unBuffLen,unTmpTotalLen);
 	}
 
 	// 字节对齐补充长度（采用8字节对齐）
@@ -310,7 +304,7 @@ int CClientCommEngine::ConvertStreamToMessage(CByteBuff *pBuff,
 
 	CMesHead *pHead = pMessage->mutable_msghead( );
 	//反序列化失败
-	if (pHead->ParseFromArray(pBuff->CanReadData( ), tmpHeadLen) == false) {
+	if (!pHead->ParseFromArray(pBuff->CanReadData(), tmpHeadLen)) {
 		MY_ASSERT_STR(0, return -1, "MesHead ParseFromArray failed");
 	}
 	pBuff->ReadLen(pHead->GetCachedSize( ));
@@ -324,7 +318,8 @@ int CClientCommEngine::ConvertStreamToMessage(CByteBuff *pBuff,
 	unTmpUseLen += unTmpAddlLen;
 
 	//序列化消息,消息
-	if ((unTmpTotalLen - unTmpUseLen) > 0 && pMsgFactory != NULL && pMessage != NULL) {
+    unsigned short tmMsgLen = unTmpTotalLen - unTmpUseLen;
+    if (tmMsgLen > 0 && tmMsgLen == tmpDataLen && pMsgFactory != NULL && pMessage != NULL) {
 		// MessagePara
 		// 使用消息工厂
 		CGooMess *tpMsgPara = pMsgFactory->CreateMessage(pHead->cmd( ));
@@ -332,7 +327,7 @@ int CClientCommEngine::ConvertStreamToMessage(CByteBuff *pBuff,
 			MY_ASSERT_STR(0, return -1, "CGooMess CreateMessage failed");
 		}
 
-		if (tpMsgPara->ParseFromArray(pBuff->CanReadData( ), tmpDataLen) == false) {
+		if (!tpMsgPara->ParseFromArray(pBuff->CanReadData(), tmpDataLen)) {
 			pMsgFactory->FreeMessage(tpMsgPara);
 			MY_ASSERT_STR(0, return -1, "CGooMess ParseFromArray failed");
 		}

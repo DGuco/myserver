@@ -6,6 +6,7 @@
 #include <server_comm_engine.h>
 #include "connector.h"
 #include "my_assert.h"
+#include "db_module.h"
 #include "../inc/server_handle.h"
 #include "../inc/game_server.h"
 
@@ -153,16 +154,6 @@ bool CServerHandle::SendMessageToDB(CProxyMessage *pMsg)
 		return false;
 	}
 	SendMessageToProxy((char*)tmBuff.GetData(),unTmpTotalLen);
-	CGooMess *pTmpUnknownMessagePara = (CGooMess *) pMsg->msgpara();
-    // 如果是打印出错依然返回成功
-	MY_ASSERT(pTmpUnknownMessagePara != NULL, return true);
-	const ::google::protobuf::Descriptor *pDescriptor = pTmpUnknownMessagePara->GetDescriptor();
-	LOG_DEBUG("default",
-			  "---- Send DB({}) Msg[ {} ][id: {} / {}] ----",
-			  pHead->dstid(),
-			  pDescriptor->name().c_str(),
-			  pMsg->msghead().messageid(),
-			  pMsg->msghead().messageid());
 	LOG_DEBUG("default", "[{}]", ((CGooMess *) pMsg->msgpara())->ShortDebugString().c_str());
 	return true;
 }
@@ -210,8 +201,9 @@ void CServerHandle::DealServerData(IBufferEvent *pBufferEvent)
     }
     //读取数据
     m_RecvBuff.Clear();
+    m_RecvBuff.WriteUnShort(pBufferEvent->GetRecvPackLen());
     unsigned short iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
-    pBufferEvent->RecvData(m_RecvBuff.GetData(), iTmpLen);
+    pBufferEvent->RecvData(m_RecvBuff.CanWriteData(), iTmpLen);
     pBufferEvent->CurrentPackRecved();
     // 将收到的二进制数据转为protobuf格式
     CProxyMessage tmpMessage;
@@ -279,7 +271,6 @@ void CServerHandle::lcb_OnConnectFailed(CConnector *pConnector)
 
 void CServerHandle::lcb_OnPingServer(int fd, short what, CConnector *pConnector)
 {
-    printf("=============lcb_OnPingServer\n");
     MY_ASSERT(pConnector != NULL, return);
     time_t tNow = GetMSTime();
     std::shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();

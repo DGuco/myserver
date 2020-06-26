@@ -27,7 +27,8 @@ public:
 	CGooMess *CreateMessage(unsigned int uiMessageID);
 
 private:
-	CGooMess *CreateServerMessage(unsigned int uiMessageID);
+    virtual CGooMess *CreateServerMessage(unsigned int uiMessageID);
+    virtual void FreeMessage(CGooMess* gooMess);
 	unsigned char macMessageBuff[MAX_PACKAGE_LEN];
 };
 

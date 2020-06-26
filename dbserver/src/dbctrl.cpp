@@ -9,12 +9,13 @@
 #include "config.h"
 #include "connector.h"
 #include "server_comm_engine.h"
+#include "message_factory.h"
 
 template<> shared_ptr<CDBCtrl> CSingleton<CDBCtrl>::spSingleton = NULL;
 
 int CDBCtrl::m_iProxyId = 0;
 
-char CDBCtrl::m_acRecvBuff[MAX_PACKAGE_LEN] = {0};
+CByteBuff CDBCtrl::m_acRecvBuff = CByteBuff();
 
 CDBCtrl::CDBCtrl()
 {
@@ -23,6 +24,8 @@ CDBCtrl::CDBCtrl()
 	m_tLastRecvKeepAlive = 0;
 	m_pNetWork = CNetWork::GetSingletonPtr();
     m_pServerConfig = CServerConfig::GetSingletonPtr();
+    m_pMsgFactory = std::make_shared<CMessageFactory>();
+    m_pDatabase  = std::make_shared<Database>();
 }
 
 CDBCtrl::~CDBCtrl()
@@ -295,7 +298,7 @@ int CDBCtrl::ConnectToProxyServer()
 							 &CDBCtrl::lcb_OnConnectFailed,
 							 &CDBCtrl::lcb_OnConnected,
 							 &CDBCtrl::lcb_OnPingServer,
-                             m_pServerConfig->GetTcpKeepAlive() / 1000)
+                             m_pServerConfig->GetSocketTimeOut())
 		) {
 		LOG_ERROR("default", "[{} : {} : {}] Connect to Proxy({}:{})(id={}) failed.",
 				  __MY_FILE__, __LINE__, __FUNCTION__,
@@ -397,16 +400,15 @@ int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
 //  Description:分派一个消息
 //
 // ***************************************************************
-int CDBCtrl::DispatchOneCode(int nCodeLength, BYTE *pbyCode)
+int CDBCtrl::DispatchOneCode(int nCodeLength, CByteBuff *pbyCode)
 {
 	int iTempRet = 0;
 
 	CProxyMessage stTempMsg;
-	// 将解析出的消息头和消息体分别存放在 m_stCurrentProxyHead stTempMsg
-//	int tRet = CServerCommEngine::ConvertStreamToMsg((const void *) (pbyCode),
-//													 &stTempMsg,
-//													 mMsgFactory);
-	int tRet = 0;
+	//将解析出的消息头和消息体分别存放在 m_stCurrentProxyHead stTempMsg
+	int tRet = CServerCommEngine::ConvertStreamToMsg(pbyCode,
+													 &stTempMsg,
+													 m_pMsgFactory.get());
 	if (tRet != 0) {
 		LOG_ERROR("default", "In CDBCtrl::DispatchOneCodecode, ConvertStreamToMsg failed. tRet = {}", tRet);
 		return -1;
@@ -516,11 +518,13 @@ void CDBCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
+    m_acRecvBuff.Clear();
+    m_acRecvBuff.WriteUnShort(pBufferEvent->GetRecvPackLen());
 	unsigned short iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
 	//读取数据
-	pBufferEvent->RecvData(m_acRecvBuff, iTmpLen);
+	pBufferEvent->RecvData(m_acRecvBuff.CanWriteData(), iTmpLen);
 	pBufferEvent->CurrentPackRecved();
-	CDBCtrl::GetSingletonPtr()->DispatchOneCode(iTmpLen, (BYTE *) (m_acRecvBuff));
+	CDBCtrl::GetSingletonPtr()->DispatchOneCode(iTmpLen,&m_acRecvBuff);
 }
 
 void CDBCtrl::lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent)
@@ -541,9 +545,8 @@ void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 	shared_ptr<CDBCtrl> &tmpDBCtrl = CDBCtrl::GetSingletonPtr();
 	CDBCtrl::GetSingletonPtr()->SendkeepAliveToProxy(pConnector);
 	if (pConnector->GetState() == CConnector::eCS_Connected &&
-		pConnector->GetSocket().GetSocket() > 0 &&
-		tNow - tmpDBCtrl->GetLastRecvKeepAlive() < tmpConfig->GetTcpKeepAlive() * 3) {
-		if (tNow - tmpDBCtrl->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive()) {
+		pConnector->GetSocket().GetSocket() > 0) {
+		if (tNow - tmpDBCtrl->GetLastSendKeepAlive() >= tmpConfig->GetTcpKeepAlive() * 1000) {
 			tmpDBCtrl->SendkeepAliveToProxy(pConnector);
 			LOG_DEBUG("default", "SendkeepAliveToProxy succeed..");
 		}

@@ -77,7 +77,7 @@ unsigned short IBufferEvent::ReadRecvPackLen()
 		return 0;
 	}
 	CByteBuff tmpBuff(sizeof(unsigned short));
-	RecvData((void *) (tmpBuff.GetData()), sizeof(unsigned short));
+	RecvData((void *) (tmpBuff.CanWriteData()), sizeof(unsigned short));
 	m_uRecvPackLen = tmpBuff.ReadUnShort();
     return  m_uRecvPackLen;
 }

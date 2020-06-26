@@ -126,8 +126,7 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
 	char acTmpSqlCommond[MAX_PACKAGE_LEN] = {0};
 	va_start(tmpArgs, pSql);
 	int iTmpLen = ::vsnprintf(acTmpSqlCommond, sizeof(acTmpSqlCommond), pSql, tmpArgs);
-	MY_ASSERT_LOG("db", iTmpLen > -1,
-				  return -2);
+	MY_ASSERT_LOG("db", iTmpLen > -1,return -2);
 	va_end(tmpArgs);
 
 	// 发往dbserver消息整理
@@ -153,7 +152,7 @@ int CDbModule::ExecuteSql(emDBLogicType nLogicType,
 	tmpMsgSqlRqt.set_hasblob(NONEBLOB);
 	tmpMsg.set_msgpara((unsigned long) &tmpMsgSqlRqt);
 
-	LOG_DEBUG("db", "[{}]", ((CGooMess *) tmpMsg.msgpara( ))->ShortDebugString( ).c_str( ));
+	LOG_DEBUG("db", "ExecuteSql:[{}]", ((CGooMess *) tmpMsg.msgpara( ))->ShortDebugString( ).c_str( ));
 	MY_ASSERT_LOG("db", CGameServer::GetSingletonPtr( )->SendMessageToDB(&tmpMsg), return -3);
 	return 0;
 }

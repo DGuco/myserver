@@ -41,3 +41,8 @@ CGooMess *CMessageFactory::CreateServerMessage(unsigned int uiMessageID)
 
 	return pTmpMessage;
 }
+
+void CMessageFactory::FreeMessage(CGooMess *gooMess)
+{
+    gooMess->~Message();
+}
