@@ -38,9 +38,10 @@ include_directories(
 )
 
 link_directories(
-        /usr/local/lib/
+        /usr/lib
+        /usr/local/lib
         ${CMAKE_SOURCE_DIR}/lib
 )
 add_executable(dbserver ${SOURCE_FILES})
-target_link_libraries(dbserver framework protobuf crypto mysqlclient)
+target_link_libraries(dbserver framework pthread protobuf crypto mysqlclient)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)

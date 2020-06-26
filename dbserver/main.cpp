@@ -15,6 +15,7 @@ void sigpipe_handle(int sig)
     LOG_ERROR("default", "receive sigpipe,do sigpipe_handle");
 }
 
+
 int main(int argc, char **argv)
 {
 	CDBCtrl *tpDBCtrl = new CDBCtrl;

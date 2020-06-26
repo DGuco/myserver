@@ -110,6 +110,8 @@ private:
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
 	//发送心跳倒计时回调
 	static void lcb_OnPingServer(int fd, short event, CConnector *pConnector);
+    static void lcb_OnSigPipe(uint,void*);
+
 public:
 	static CByteBuff m_acRecvBuff;
 	static int m_iProxyId;

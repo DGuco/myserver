@@ -10,6 +10,7 @@
 #include "connector.h"
 #include "server_comm_engine.h"
 #include "message_factory.h"
+#include "database_mysql.h"
 
 template<> shared_ptr<CDBCtrl> CSingleton<CDBCtrl>::spSingleton = NULL;
 
@@ -25,7 +26,7 @@ CDBCtrl::CDBCtrl()
 	m_pNetWork = CNetWork::GetSingletonPtr();
     m_pServerConfig = CServerConfig::GetSingletonPtr();
     m_pMsgFactory = std::make_shared<CMessageFactory>();
-    m_pDatabase  = std::make_shared<Database>();
+    m_pDatabase  = std::make_shared<DatabaseMysql>();
 }
 
 CDBCtrl::~CDBCtrl()
@@ -479,7 +480,9 @@ int CDBCtrl::PrepareToRun()
 		LOG_ERROR("default", "Error: in CDBCtrl::PrepareToRun connect proxy  server  failed!\n");
 		return -1;
 	}
-	return 0;
+	m_pDatabase->Initialize(m_pServerConfig->GetDbInfo().c_str(),0,0,0);
+    m_pNetWork->RegisterSignalHandler(SIGPIPE, &CDBCtrl::lcb_OnSigPipe, 0);
+    return 0;
 }
 
 int CDBCtrl::Run()
@@ -560,4 +563,8 @@ void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 			return;
 		}
 	}
+}
+void CDBCtrl::lcb_OnSigPipe(uint,void*)
+{
+    LOG_ERROR("default", "Game recv sig pipe,call lcb_OnSigPipe\n");
 }
