@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.6)
 project(dbserver)
-add_compile_options(-Wall -ggdb -pipe -std=c++14)
+
+if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+    add_compile_options(-Wall -ggdb -pipe -std=c++14)
+elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+
+endif()
 add_definitions(-D_DEBUG_ -DUSE_LOG4CPP -DUSE_MY_ASSERT -DLINUX -DEVENT_THREAD_SAFE)
 
 set(SOURCE_FILES

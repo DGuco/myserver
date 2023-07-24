@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.6)
-set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_COMPILER g++)
+
+if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+	message("current platform: Linux ")
+	set(CMAKE_C_COMPILER gcc)
+	set(CMAKE_CXX_COMPILER g++)
+elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+	message("current platform: Windows ")
+endif()
+
+
 
 project(server)
 add_subdirectory(framework)

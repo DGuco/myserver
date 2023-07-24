@@ -5,7 +5,7 @@
 #include <dbmessage.pb.h>
 #include <client_comm_engine.h>
 #include <my_assert.h>
-#include "../inc/dbctrl.h"
+#include "dbctrl.h"
 #include "config.h"
 #include "connector.h"
 #include "server_comm_engine.h"

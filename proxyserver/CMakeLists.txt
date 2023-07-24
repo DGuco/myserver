@@ -1,14 +1,23 @@
 cmake_minimum_required(VERSION 3.6)
 project(proxyserver)
-add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DEVENT_THREAD_SAFE)
-add_compile_options(-Wall -ggdb -pipe -std=c++14)
 
-set(SOURCE_FILES
-        main.cpp
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -DEVENT_THREAD_SAFE)
+
+if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+    add_compile_options(-Wall -ggdb -pipe -std=c++14)
+elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+
+endif()
+
+set(HEAD_FILES
         inc/proxy_ctrl.h
-        src/proxy_ctrl.cpp
         )
 
+set(SOURCE_FILES
+        src/proxy_ctrl.cpp
+        main.cpp
+        )
 include_directories(
         /usr/include/
         /usr/local/include/
@@ -28,6 +37,6 @@ link_directories(
         ${CMAKE_SOURCE_DIR}/lib
 )
 
-add_executable(proxyserver ${SOURCE_FILES})
+add_executable(proxyserver ${HEAD_FILES} ${SOURCE_FILES})
 target_link_libraries(proxyserver framework pthread protobuf crypto)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)
