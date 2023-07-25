@@ -12,8 +12,6 @@ build
 /build/*
 cmake-build-debug
 /cmake-build-debug/*
-lib
-/lib/*
 /.vs/*
 out
 # Mobile Tools for Java (J2ME)
