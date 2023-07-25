@@ -113,9 +113,12 @@ include_directories(
 )
 
 link_directories(
-        /usr/lib
-        /usr/local/lib
         ${CMAKE_SOURCE_DIR}/lib
+if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+        ${CMAKE_SOURCE_DIR}/lib/linux
+elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+        ${CMAKE_SOURCE_DIR}/lib/win64
+endif()
 )
 
 add_library(framework ${FRAMEWORK})
