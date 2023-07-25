@@ -5,7 +5,6 @@
 
 #include <algorithm>
 
-#include <google/protobuf/stubs/common.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/extension_set.h>
 #include <google/protobuf/wire_format_lite.h>
@@ -15,185 +14,147 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-extern PROTOBUF_INTERNAL_EXPORT_common_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_SoldierDTO_common_2eproto;
-class EmptyMessageDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<EmptyMessage> _instance;
-} _EmptyMessage_default_instance_;
-class ErrorMessageDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ErrorMessage> _instance;
-} _ErrorMessage_default_instance_;
-class PositionDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<PositionDTO> _instance;
-} _PositionDTO_default_instance_;
-class PropertyDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<PropertyDTO> _instance;
-} _PropertyDTO_default_instance_;
-class ItemDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ItemDTO> _instance;
-} _ItemDTO_default_instance_;
-class SoldierDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<SoldierDTO> _instance;
-} _SoldierDTO_default_instance_;
-class LevelSoldierDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<LevelSoldierDTO> _instance;
-} _LevelSoldierDTO_default_instance_;
-class EquipmentDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<EquipmentDTO> _instance;
-} _EquipmentDTO_default_instance_;
-class VipDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<VipDTO> _instance;
-} _VipDTO_default_instance_;
-static void InitDefaultsscc_info_EmptyMessage_common_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  {
-    void* ptr = &::_EmptyMessage_default_instance_;
-    new (ptr) ::EmptyMessage();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::EmptyMessage::InitAsDefaultInstance();
-}
+PROTOBUF_PRAGMA_INIT_SEG
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_EmptyMessage_common_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_EmptyMessage_common_2eproto}, {}};
+namespace _pb = ::PROTOBUF_NAMESPACE_ID;
+namespace _pbi = _pb::internal;
 
-static void InitDefaultsscc_info_EquipmentDTO_common_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
+PROTOBUF_CONSTEXPR EmptyMessage::EmptyMessage(
+    ::_pbi::ConstantInitialized){}
+struct EmptyMessageDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR EmptyMessageDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~EmptyMessageDefaultTypeInternal() {}
+  union {
+    EmptyMessage _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 EmptyMessageDefaultTypeInternal _EmptyMessage_default_instance_;
+PROTOBUF_CONSTEXPR ErrorMessage::ErrorMessage(
+    ::_pbi::ConstantInitialized)
+  : args_()
+  , errorcode_(0){}
+struct ErrorMessageDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR ErrorMessageDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~ErrorMessageDefaultTypeInternal() {}
+  union {
+    ErrorMessage _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ErrorMessageDefaultTypeInternal _ErrorMessage_default_instance_;
+PROTOBUF_CONSTEXPR PositionDTO::PositionDTO(
+    ::_pbi::ConstantInitialized)
+  : x_(0)
+  , y_(0){}
+struct PositionDTODefaultTypeInternal {
+  PROTOBUF_CONSTEXPR PositionDTODefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~PositionDTODefaultTypeInternal() {}
+  union {
+    PositionDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PositionDTODefaultTypeInternal _PositionDTO_default_instance_;
+PROTOBUF_CONSTEXPR PropertyDTO::PropertyDTO(
+    ::_pbi::ConstantInitialized)
+  : type_(0)
+  , value_(0){}
+struct PropertyDTODefaultTypeInternal {
+  PROTOBUF_CONSTEXPR PropertyDTODefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~PropertyDTODefaultTypeInternal() {}
+  union {
+    PropertyDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PropertyDTODefaultTypeInternal _PropertyDTO_default_instance_;
+PROTOBUF_CONSTEXPR ItemDTO::ItemDTO(
+    ::_pbi::ConstantInitialized)
+  : itemid_(0)
+  , count_(0){}
+struct ItemDTODefaultTypeInternal {
+  PROTOBUF_CONSTEXPR ItemDTODefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~ItemDTODefaultTypeInternal() {}
+  union {
+    ItemDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ItemDTODefaultTypeInternal _ItemDTO_default_instance_;
+PROTOBUF_CONSTEXPR SoldierDTO::SoldierDTO(
+    ::_pbi::ConstantInitialized)
+  : armytype_(0)
+  , armynum_(0){}
+struct SoldierDTODefaultTypeInternal {
+  PROTOBUF_CONSTEXPR SoldierDTODefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~SoldierDTODefaultTypeInternal() {}
+  union {
+    SoldierDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 SoldierDTODefaultTypeInternal _SoldierDTO_default_instance_;
+PROTOBUF_CONSTEXPR LevelSoldierDTO::LevelSoldierDTO(
+    ::_pbi::ConstantInitialized)
+  : soldier_(nullptr)
+  , level_(0){}
+struct LevelSoldierDTODefaultTypeInternal {
+  PROTOBUF_CONSTEXPR LevelSoldierDTODefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~LevelSoldierDTODefaultTypeInternal() {}
+  union {
+    LevelSoldierDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 LevelSoldierDTODefaultTypeInternal _LevelSoldierDTO_default_instance_;
+PROTOBUF_CONSTEXPR EquipmentDTO::EquipmentDTO(
+    ::_pbi::ConstantInitialized)
+  : gemstonelist_()
+  , id_(0)
+  , level_(0)
+  , exp_(0)
+  , type_(0){}
+struct EquipmentDTODefaultTypeInternal {
+  PROTOBUF_CONSTEXPR EquipmentDTODefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~EquipmentDTODefaultTypeInternal() {}
+  union {
+    EquipmentDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 EquipmentDTODefaultTypeInternal _EquipmentDTO_default_instance_;
+PROTOBUF_CONSTEXPR VipDTO::VipDTO(
+    ::_pbi::ConstantInitialized)
+  : viplevel_(0)
+  , activated_(false){}
+struct VipDTODefaultTypeInternal {
+  PROTOBUF_CONSTEXPR VipDTODefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~VipDTODefaultTypeInternal() {}
+  union {
+    VipDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 VipDTODefaultTypeInternal _VipDTO_default_instance_;
+static ::_pb::Metadata file_level_metadata_common_2eproto[9];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_common_2eproto[2];
+static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_common_2eproto = nullptr;
 
-  {
-    void* ptr = &::_EquipmentDTO_default_instance_;
-    new (ptr) ::EquipmentDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::EquipmentDTO::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_EquipmentDTO_common_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_EquipmentDTO_common_2eproto}, {}};
-
-static void InitDefaultsscc_info_ErrorMessage_common_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_ErrorMessage_default_instance_;
-    new (ptr) ::ErrorMessage();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::ErrorMessage::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ErrorMessage_common_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ErrorMessage_common_2eproto}, {}};
-
-static void InitDefaultsscc_info_ItemDTO_common_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_ItemDTO_default_instance_;
-    new (ptr) ::ItemDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::ItemDTO::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ItemDTO_common_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ItemDTO_common_2eproto}, {}};
-
-static void InitDefaultsscc_info_LevelSoldierDTO_common_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_LevelSoldierDTO_default_instance_;
-    new (ptr) ::LevelSoldierDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::LevelSoldierDTO::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_LevelSoldierDTO_common_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsscc_info_LevelSoldierDTO_common_2eproto}, {
-      &scc_info_SoldierDTO_common_2eproto.base,}};
-
-static void InitDefaultsscc_info_PositionDTO_common_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_PositionDTO_default_instance_;
-    new (ptr) ::PositionDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::PositionDTO::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_PositionDTO_common_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_PositionDTO_common_2eproto}, {}};
-
-static void InitDefaultsscc_info_PropertyDTO_common_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_PropertyDTO_default_instance_;
-    new (ptr) ::PropertyDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::PropertyDTO::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_PropertyDTO_common_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_PropertyDTO_common_2eproto}, {}};
-
-static void InitDefaultsscc_info_SoldierDTO_common_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_SoldierDTO_default_instance_;
-    new (ptr) ::SoldierDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::SoldierDTO::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_SoldierDTO_common_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_SoldierDTO_common_2eproto}, {}};
-
-static void InitDefaultsscc_info_VipDTO_common_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_VipDTO_default_instance_;
-    new (ptr) ::VipDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::VipDTO::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_VipDTO_common_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_VipDTO_common_2eproto}, {}};
-
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_common_2eproto[9];
-static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_common_2eproto[2];
-static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_common_2eproto = nullptr;
-
-const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_common_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  PROTOBUF_FIELD_OFFSET(::EmptyMessage, _has_bits_),
+const uint32_t TableStruct_common_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::EmptyMessage, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::ErrorMessage, _has_bits_),
   PROTOBUF_FIELD_OFFSET(::ErrorMessage, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::ErrorMessage, errorcode_),
   PROTOBUF_FIELD_OFFSET(::ErrorMessage, args_),
   0,
@@ -203,6 +164,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_common_2eproto::offsets[] PROT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::PositionDTO, x_),
   PROTOBUF_FIELD_OFFSET(::PositionDTO, y_),
   0,
@@ -212,6 +174,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_common_2eproto::offsets[] PROT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::PropertyDTO, type_),
   PROTOBUF_FIELD_OFFSET(::PropertyDTO, value_),
   0,
@@ -221,6 +184,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_common_2eproto::offsets[] PROT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::ItemDTO, itemid_),
   PROTOBUF_FIELD_OFFSET(::ItemDTO, count_),
   0,
@@ -230,6 +194,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_common_2eproto::offsets[] PROT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::SoldierDTO, armytype_),
   PROTOBUF_FIELD_OFFSET(::SoldierDTO, armynum_),
   0,
@@ -239,6 +204,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_common_2eproto::offsets[] PROT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::LevelSoldierDTO, soldier_),
   PROTOBUF_FIELD_OFFSET(::LevelSoldierDTO, level_),
   0,
@@ -248,6 +214,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_common_2eproto::offsets[] PROT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::EquipmentDTO, id_),
   PROTOBUF_FIELD_OFFSET(::EquipmentDTO, level_),
   PROTOBUF_FIELD_OFFSET(::EquipmentDTO, exp_),
@@ -263,33 +230,34 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_common_2eproto::offsets[] PROT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::VipDTO, viplevel_),
   PROTOBUF_FIELD_OFFSET(::VipDTO, activated_),
   0,
   1,
 };
-static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, 5, sizeof(::EmptyMessage)},
-  { 5, 12, sizeof(::ErrorMessage)},
-  { 14, 21, sizeof(::PositionDTO)},
-  { 23, 30, sizeof(::PropertyDTO)},
-  { 32, 39, sizeof(::ItemDTO)},
-  { 41, 48, sizeof(::SoldierDTO)},
-  { 50, 57, sizeof(::LevelSoldierDTO)},
-  { 59, 69, sizeof(::EquipmentDTO)},
-  { 74, 81, sizeof(::VipDTO)},
+static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+  { 0, -1, -1, sizeof(::EmptyMessage)},
+  { 6, 14, -1, sizeof(::ErrorMessage)},
+  { 16, 24, -1, sizeof(::PositionDTO)},
+  { 26, 34, -1, sizeof(::PropertyDTO)},
+  { 36, 44, -1, sizeof(::ItemDTO)},
+  { 46, 54, -1, sizeof(::SoldierDTO)},
+  { 56, 64, -1, sizeof(::LevelSoldierDTO)},
+  { 66, 77, -1, sizeof(::EquipmentDTO)},
+  { 82, 90, -1, sizeof(::VipDTO)},
 };
 
-static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_EmptyMessage_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_ErrorMessage_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_PositionDTO_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_PropertyDTO_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_ItemDTO_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_SoldierDTO_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_LevelSoldierDTO_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_EquipmentDTO_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_VipDTO_default_instance_),
+static const ::_pb::Message* const file_default_instances[] = {
+  &::_EmptyMessage_default_instance_._instance,
+  &::_ErrorMessage_default_instance_._instance,
+  &::_PositionDTO_default_instance_._instance,
+  &::_PropertyDTO_default_instance_._instance,
+  &::_ItemDTO_default_instance_._instance,
+  &::_SoldierDTO_default_instance_._instance,
+  &::_LevelSoldierDTO_default_instance_._instance,
+  &::_EquipmentDTO_default_instance_._instance,
+  &::_VipDTO_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_common_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -308,30 +276,21 @@ const char descriptor_table_protodef_common_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "R_COMMAND_ID\020c*\027\n\010Platform\022\013\n\007IN_GAME\020\001B"
   "\002H\001"
   ;
-static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_common_2eproto_deps[1] = {
+static ::_pbi::once_flag descriptor_table_common_2eproto_once;
+const ::_pbi::DescriptorTable descriptor_table_common_2eproto = {
+    false, false, 523, descriptor_table_protodef_common_2eproto,
+    "common.proto",
+    &descriptor_table_common_2eproto_once, nullptr, 0, 9,
+    schemas, file_default_instances, TableStruct_common_2eproto::offsets,
+    file_level_metadata_common_2eproto, file_level_enum_descriptors_common_2eproto,
+    file_level_service_descriptors_common_2eproto,
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_common_2eproto_sccs[9] = {
-  &scc_info_EmptyMessage_common_2eproto.base,
-  &scc_info_EquipmentDTO_common_2eproto.base,
-  &scc_info_ErrorMessage_common_2eproto.base,
-  &scc_info_ItemDTO_common_2eproto.base,
-  &scc_info_LevelSoldierDTO_common_2eproto.base,
-  &scc_info_PositionDTO_common_2eproto.base,
-  &scc_info_PropertyDTO_common_2eproto.base,
-  &scc_info_SoldierDTO_common_2eproto.base,
-  &scc_info_VipDTO_common_2eproto.base,
-};
-static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_common_2eproto_once;
-static bool descriptor_table_common_2eproto_initialized = false;
-const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_common_2eproto = {
-  &descriptor_table_common_2eproto_initialized, descriptor_table_protodef_common_2eproto, "common.proto", 523,
-  &descriptor_table_common_2eproto_once, descriptor_table_common_2eproto_sccs, descriptor_table_common_2eproto_deps, 9, 0,
-  schemas, file_default_instances, TableStruct_common_2eproto::offsets,
-  file_level_metadata_common_2eproto, 9, file_level_enum_descriptors_common_2eproto, file_level_service_descriptors_common_2eproto,
-};
+PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_common_2eproto_getter() {
+  return &descriptor_table_common_2eproto;
+}
 
 // Force running AddDescriptors() at dynamic initialization time.
-static bool dynamic_init_dummy_common_2eproto = (  ::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_common_2eproto), true);
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_common_2eproto(&descriptor_table_common_2eproto);
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ErrorCommandId_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_common_2eproto);
   return file_level_enum_descriptors_common_2eproto[0];
@@ -361,444 +320,188 @@ bool Platform_IsValid(int value) {
 
 // ===================================================================
 
-void EmptyMessage::InitAsDefaultInstance() {
-}
 class EmptyMessage::_Internal {
  public:
-  using HasBits = decltype(std::declval<EmptyMessage>()._has_bits_);
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-EmptyMessage::EmptyMessage()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:EmptyMessage)
+EmptyMessage::EmptyMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
+  // @@protoc_insertion_point(arena_constructor:EmptyMessage)
 }
 EmptyMessage::EmptyMessage(const EmptyMessage& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
-      _has_bits_(from._has_bits_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:EmptyMessage)
 }
 
-void EmptyMessage::SharedCtor() {
-}
-
-EmptyMessage::~EmptyMessage() {
-  // @@protoc_insertion_point(destructor:EmptyMessage)
-  SharedDtor();
-}
-
-void EmptyMessage::SharedDtor() {
-}
-
-void EmptyMessage::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const EmptyMessage& EmptyMessage::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_EmptyMessage_common_2eproto.base);
-  return *internal_default_instance();
-}
 
 
-void EmptyMessage::Clear() {
-// @@protoc_insertion_point(message_clear_start:EmptyMessage)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
 
-  _has_bits_.Clear();
-  _internal_metadata_.Clear();
-}
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* EmptyMessage::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
-    switch (tag >> 3) {
-      default: {
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
-    }  // switch
-  }  // while
-success:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto success;
-#undef CHK_
-}
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool EmptyMessage::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:EmptyMessage)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-  handle_unusual:
-    if (tag == 0) {
-      goto success;
-    }
-    DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-          input, tag, _internal_metadata_.mutable_unknown_fields()));
-  }
-success:
-  // @@protoc_insertion_point(parse_success:EmptyMessage)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:EmptyMessage)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData EmptyMessage::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*EmptyMessage::GetClassData() const { return &_class_data_; }
 
-void EmptyMessage::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:EmptyMessage)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:EmptyMessage)
-}
 
-::PROTOBUF_NAMESPACE_ID::uint8* EmptyMessage::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:EmptyMessage)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:EmptyMessage)
-  return target;
-}
 
-size_t EmptyMessage::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:EmptyMessage)
-  size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void EmptyMessage::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:EmptyMessage)
-  GOOGLE_DCHECK_NE(&from, this);
-  const EmptyMessage* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<EmptyMessage>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:EmptyMessage)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:EmptyMessage)
-    MergeFrom(*source);
-  }
-}
-
-void EmptyMessage::MergeFrom(const EmptyMessage& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:EmptyMessage)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-}
-
-void EmptyMessage::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:EmptyMessage)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void EmptyMessage::CopyFrom(const EmptyMessage& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:EmptyMessage)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool EmptyMessage::IsInitialized() const {
-  return true;
-}
-
-void EmptyMessage::Swap(EmptyMessage* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void EmptyMessage::InternalSwap(EmptyMessage* other) {
-  using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  swap(_has_bits_[0], other->_has_bits_[0]);
-}
 
 ::PROTOBUF_NAMESPACE_ID::Metadata EmptyMessage::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_common_2eproto_getter, &descriptor_table_common_2eproto_once,
+      file_level_metadata_common_2eproto[0]);
 }
-
 
 // ===================================================================
 
-void ErrorMessage::InitAsDefaultInstance() {
-}
 class ErrorMessage::_Internal {
  public:
   using HasBits = decltype(std::declval<ErrorMessage>()._has_bits_);
   static void set_has_errorcode(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000001) ^ 0x00000001) != 0;
+  }
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ErrorMessage::kErrorCodeFieldNumber;
-const int ErrorMessage::kArgsFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-ErrorMessage::ErrorMessage()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+ErrorMessage::ErrorMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  args_(arena) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ErrorMessage)
+  // @@protoc_insertion_point(arena_constructor:ErrorMessage)
 }
 ErrorMessage::ErrorMessage(const ErrorMessage& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
       _has_bits_(from._has_bits_),
       args_(from.args_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   errorcode_ = from.errorcode_;
   // @@protoc_insertion_point(copy_constructor:ErrorMessage)
 }
 
-void ErrorMessage::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ErrorMessage_common_2eproto.base);
-  errorcode_ = 0;
+inline void ErrorMessage::SharedCtor() {
+errorcode_ = 0;
 }
 
 ErrorMessage::~ErrorMessage() {
   // @@protoc_insertion_point(destructor:ErrorMessage)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
   SharedDtor();
 }
 
-void ErrorMessage::SharedDtor() {
+inline void ErrorMessage::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void ErrorMessage::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ErrorMessage& ErrorMessage::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ErrorMessage_common_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void ErrorMessage::Clear() {
 // @@protoc_insertion_point(message_clear_start:ErrorMessage)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   args_.Clear();
   errorcode_ = 0;
   _has_bits_.Clear();
-  _internal_metadata_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* ErrorMessage::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* ErrorMessage::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // required int32 errorCode = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_errorcode(&has_bits);
-          errorcode_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          errorcode_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // repeated string args = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8Verify(add_args(), ptr, ctx, "ErrorMessage.args");
+            auto str = _internal_add_args();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
             CHK_(ptr);
+            #ifndef NDEBUG
+            ::_pbi::VerifyUTF8(str, "ErrorMessage.args");
+            #endif  // !NDEBUG
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 18);
-        } else goto handle_unusual;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   _has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool ErrorMessage::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ErrorMessage)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required int32 errorCode = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
-          _Internal::set_has_errorcode(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &errorcode_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // repeated string args = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (18 & 0xFF)) {
-          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadString(
-                input, this->add_args()));
-          ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-            this->args(this->args_size() - 1).data(),
-            static_cast<int>(this->args(this->args_size() - 1).length()),
-            ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::PARSE,
-            "ErrorMessage.args");
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:ErrorMessage)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:ErrorMessage)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void ErrorMessage::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ErrorMessage)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // required int32 errorCode = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(1, this->errorcode(), output);
-  }
-
-  // repeated string args = 2;
-  for (int i = 0, n = this->args_size(); i < n; i++) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->args(i).data(), static_cast<int>(this->args(i).length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "ErrorMessage.args");
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteString(
-      2, this->args(i), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:ErrorMessage)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* ErrorMessage::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+uint8_t* ErrorMessage::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:ErrorMessage)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   // required int32 errorCode = 1;
   if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->errorcode(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_errorcode(), target);
   }
 
   // repeated string args = 2;
-  for (int i = 0, n = this->args_size(); i < n; i++) {
+  for (int i = 0, n = this->_internal_args_size(); i < n; i++) {
+    const auto& s = this->_internal_args(i);
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->args(i).data(), static_cast<int>(this->args(i).length()),
+      s.data(), static_cast<int>(s.length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
       "ErrorMessage.args");
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      WriteStringToArray(2, this->args(i), target);
+    target = stream->WriteString(2, s, target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:ErrorMessage)
   return target;
@@ -808,67 +511,49 @@ size_t ErrorMessage::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:ErrorMessage)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
   // required int32 errorCode = 1;
-  if (has_errorcode()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->errorcode());
+  if (_internal_has_errorcode()) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_errorcode());
   }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   // repeated string args = 2;
   total_size += 1 *
-      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->args_size());
-  for (int i = 0, n = this->args_size(); i < n; i++) {
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(args_.size());
+  for (int i = 0, n = args_.size(); i < n; i++) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-      this->args(i));
+      args_.Get(i));
   }
 
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void ErrorMessage::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ErrorMessage)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ErrorMessage* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ErrorMessage>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ErrorMessage)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ErrorMessage)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ErrorMessage::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ErrorMessage::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ErrorMessage::GetClassData() const { return &_class_data_; }
+
+void ErrorMessage::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<ErrorMessage *>(to)->MergeFrom(
+      static_cast<const ErrorMessage &>(from));
 }
+
 
 void ErrorMessage::MergeFrom(const ErrorMessage& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:ErrorMessage)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   args_.MergeFrom(from.args_);
-  if (from.has_errorcode()) {
-    set_errorcode(from.errorcode());
+  if (from._internal_has_errorcode()) {
+    _internal_set_errorcode(from._internal_errorcode());
   }
-}
-
-void ErrorMessage::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ErrorMessage)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void ErrorMessage::CopyFrom(const ErrorMessage& from) {
@@ -879,31 +564,26 @@ void ErrorMessage::CopyFrom(const ErrorMessage& from) {
 }
 
 bool ErrorMessage::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
   return true;
 }
 
-void ErrorMessage::Swap(ErrorMessage* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void ErrorMessage::InternalSwap(ErrorMessage* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
-  args_.InternalSwap(CastToBase(&other->args_));
+  args_.InternalSwap(&other->args_);
   swap(errorcode_, other->errorcode_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ErrorMessage::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_common_2eproto_getter, &descriptor_table_common_2eproto_once,
+      file_level_metadata_common_2eproto[1]);
 }
-
 
 // ===================================================================
 
-void PositionDTO::InitAsDefaultInstance() {
-}
 class PositionDTO::_Internal {
  public:
   using HasBits = decltype(std::declval<PositionDTO>()._has_bits_);
@@ -913,55 +593,54 @@ class PositionDTO::_Internal {
   static void set_has_y(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
   }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000003) ^ 0x00000003) != 0;
+  }
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int PositionDTO::kXFieldNumber;
-const int PositionDTO::kYFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-PositionDTO::PositionDTO()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+PositionDTO::PositionDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:PositionDTO)
+  // @@protoc_insertion_point(arena_constructor:PositionDTO)
 }
 PositionDTO::PositionDTO(const PositionDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
       _has_bits_(from._has_bits_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&x_, &from.x_,
     static_cast<size_t>(reinterpret_cast<char*>(&y_) -
     reinterpret_cast<char*>(&x_)) + sizeof(y_));
   // @@protoc_insertion_point(copy_constructor:PositionDTO)
 }
 
-void PositionDTO::SharedCtor() {
-  ::memset(&x_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&y_) -
-      reinterpret_cast<char*>(&x_)) + sizeof(y_));
+inline void PositionDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&x_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&y_) -
+    reinterpret_cast<char*>(&x_)) + sizeof(y_));
 }
 
 PositionDTO::~PositionDTO() {
   // @@protoc_insertion_point(destructor:PositionDTO)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
   SharedDtor();
 }
 
-void PositionDTO::SharedDtor() {
+inline void PositionDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void PositionDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const PositionDTO& PositionDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_PositionDTO_common_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void PositionDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:PositionDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -972,156 +651,80 @@ void PositionDTO::Clear() {
         reinterpret_cast<char*>(&x_)) + sizeof(y_));
   }
   _has_bits_.Clear();
-  _internal_metadata_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* PositionDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* PositionDTO::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // required int32 x = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_x(&has_bits);
-          x_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          x_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // required int32 y = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_y(&has_bits);
-          y_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          y_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   _has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool PositionDTO::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:PositionDTO)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required int32 x = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
-          _Internal::set_has_x(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &x_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // required int32 y = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
-          _Internal::set_has_y(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &y_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:PositionDTO)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:PositionDTO)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void PositionDTO::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:PositionDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // required int32 x = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(1, this->x(), output);
-  }
-
-  // required int32 y = 2;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(2, this->y(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:PositionDTO)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* PositionDTO::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+uint8_t* PositionDTO::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:PositionDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   // required int32 x = 1;
   if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->x(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_x(), target);
   }
 
   // required int32 y = 2;
   if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->y(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_y(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:PositionDTO)
   return target;
@@ -1131,18 +734,14 @@ size_t PositionDTO::RequiredFieldsByteSizeFallback() const {
 // @@protoc_insertion_point(required_fields_byte_size_fallback_start:PositionDTO)
   size_t total_size = 0;
 
-  if (has_x()) {
+  if (_internal_has_x()) {
     // required int32 x = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->x());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_x());
   }
 
-  if (has_y()) {
+  if (_internal_has_y()) {
     // required int32 y = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->y());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_y());
   }
 
   return total_size;
@@ -1151,54 +750,40 @@ size_t PositionDTO::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:PositionDTO)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
   if (((_has_bits_[0] & 0x00000003) ^ 0x00000003) == 0) {  // All required fields are present.
     // required int32 x = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->x());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_x());
 
     // required int32 y = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->y());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_y());
 
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void PositionDTO::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:PositionDTO)
-  GOOGLE_DCHECK_NE(&from, this);
-  const PositionDTO* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<PositionDTO>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:PositionDTO)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:PositionDTO)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData PositionDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    PositionDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*PositionDTO::GetClassData() const { return &_class_data_; }
+
+void PositionDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<PositionDTO *>(to)->MergeFrom(
+      static_cast<const PositionDTO &>(from));
 }
+
 
 void PositionDTO::MergeFrom(const PositionDTO& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:PositionDTO)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = from._has_bits_[0];
@@ -1211,13 +796,7 @@ void PositionDTO::MergeFrom(const PositionDTO& from) {
     }
     _has_bits_[0] |= cached_has_bits;
   }
-}
-
-void PositionDTO::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:PositionDTO)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void PositionDTO::CopyFrom(const PositionDTO& from) {
@@ -1228,31 +807,30 @@ void PositionDTO::CopyFrom(const PositionDTO& from) {
 }
 
 bool PositionDTO::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
   return true;
 }
 
-void PositionDTO::Swap(PositionDTO* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void PositionDTO::InternalSwap(PositionDTO* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
-  swap(x_, other->x_);
-  swap(y_, other->y_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(PositionDTO, y_)
+      + sizeof(PositionDTO::y_)
+      - PROTOBUF_FIELD_OFFSET(PositionDTO, x_)>(
+          reinterpret_cast<char*>(&x_),
+          reinterpret_cast<char*>(&other->x_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata PositionDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_common_2eproto_getter, &descriptor_table_common_2eproto_once,
+      file_level_metadata_common_2eproto[2]);
 }
-
 
 // ===================================================================
 
-void PropertyDTO::InitAsDefaultInstance() {
-}
 class PropertyDTO::_Internal {
  public:
   using HasBits = decltype(std::declval<PropertyDTO>()._has_bits_);
@@ -1262,55 +840,54 @@ class PropertyDTO::_Internal {
   static void set_has_value(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
   }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000003) ^ 0x00000003) != 0;
+  }
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int PropertyDTO::kTypeFieldNumber;
-const int PropertyDTO::kValueFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-PropertyDTO::PropertyDTO()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+PropertyDTO::PropertyDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:PropertyDTO)
+  // @@protoc_insertion_point(arena_constructor:PropertyDTO)
 }
 PropertyDTO::PropertyDTO(const PropertyDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
       _has_bits_(from._has_bits_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&type_, &from.type_,
     static_cast<size_t>(reinterpret_cast<char*>(&value_) -
     reinterpret_cast<char*>(&type_)) + sizeof(value_));
   // @@protoc_insertion_point(copy_constructor:PropertyDTO)
 }
 
-void PropertyDTO::SharedCtor() {
-  ::memset(&type_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&value_) -
-      reinterpret_cast<char*>(&type_)) + sizeof(value_));
+inline void PropertyDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&type_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&value_) -
+    reinterpret_cast<char*>(&type_)) + sizeof(value_));
 }
 
 PropertyDTO::~PropertyDTO() {
   // @@protoc_insertion_point(destructor:PropertyDTO)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
   SharedDtor();
 }
 
-void PropertyDTO::SharedDtor() {
+inline void PropertyDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void PropertyDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const PropertyDTO& PropertyDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_PropertyDTO_common_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void PropertyDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:PropertyDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -1321,156 +898,80 @@ void PropertyDTO::Clear() {
         reinterpret_cast<char*>(&type_)) + sizeof(value_));
   }
   _has_bits_.Clear();
-  _internal_metadata_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* PropertyDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* PropertyDTO::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // required int32 type = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_type(&has_bits);
-          type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // required int32 value = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_value(&has_bits);
-          value_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          value_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   _has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool PropertyDTO::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:PropertyDTO)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required int32 type = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
-          _Internal::set_has_type(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &type_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // required int32 value = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
-          _Internal::set_has_value(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &value_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:PropertyDTO)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:PropertyDTO)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void PropertyDTO::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:PropertyDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // required int32 type = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(1, this->type(), output);
-  }
-
-  // required int32 value = 2;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(2, this->value(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:PropertyDTO)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* PropertyDTO::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+uint8_t* PropertyDTO::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:PropertyDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   // required int32 type = 1;
   if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->type(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_type(), target);
   }
 
   // required int32 value = 2;
   if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->value(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_value(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:PropertyDTO)
   return target;
@@ -1480,18 +981,14 @@ size_t PropertyDTO::RequiredFieldsByteSizeFallback() const {
 // @@protoc_insertion_point(required_fields_byte_size_fallback_start:PropertyDTO)
   size_t total_size = 0;
 
-  if (has_type()) {
+  if (_internal_has_type()) {
     // required int32 type = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->type());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_type());
   }
 
-  if (has_value()) {
+  if (_internal_has_value()) {
     // required int32 value = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->value());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_value());
   }
 
   return total_size;
@@ -1500,54 +997,40 @@ size_t PropertyDTO::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:PropertyDTO)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
   if (((_has_bits_[0] & 0x00000003) ^ 0x00000003) == 0) {  // All required fields are present.
     // required int32 type = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->type());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_type());
 
     // required int32 value = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->value());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_value());
 
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void PropertyDTO::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:PropertyDTO)
-  GOOGLE_DCHECK_NE(&from, this);
-  const PropertyDTO* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<PropertyDTO>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:PropertyDTO)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:PropertyDTO)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData PropertyDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    PropertyDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*PropertyDTO::GetClassData() const { return &_class_data_; }
+
+void PropertyDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<PropertyDTO *>(to)->MergeFrom(
+      static_cast<const PropertyDTO &>(from));
 }
+
 
 void PropertyDTO::MergeFrom(const PropertyDTO& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:PropertyDTO)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = from._has_bits_[0];
@@ -1560,13 +1043,7 @@ void PropertyDTO::MergeFrom(const PropertyDTO& from) {
     }
     _has_bits_[0] |= cached_has_bits;
   }
-}
-
-void PropertyDTO::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:PropertyDTO)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void PropertyDTO::CopyFrom(const PropertyDTO& from) {
@@ -1577,31 +1054,30 @@ void PropertyDTO::CopyFrom(const PropertyDTO& from) {
 }
 
 bool PropertyDTO::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
   return true;
 }
 
-void PropertyDTO::Swap(PropertyDTO* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void PropertyDTO::InternalSwap(PropertyDTO* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
-  swap(type_, other->type_);
-  swap(value_, other->value_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(PropertyDTO, value_)
+      + sizeof(PropertyDTO::value_)
+      - PROTOBUF_FIELD_OFFSET(PropertyDTO, type_)>(
+          reinterpret_cast<char*>(&type_),
+          reinterpret_cast<char*>(&other->type_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata PropertyDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_common_2eproto_getter, &descriptor_table_common_2eproto_once,
+      file_level_metadata_common_2eproto[3]);
 }
-
 
 // ===================================================================
 
-void ItemDTO::InitAsDefaultInstance() {
-}
 class ItemDTO::_Internal {
  public:
   using HasBits = decltype(std::declval<ItemDTO>()._has_bits_);
@@ -1611,55 +1087,54 @@ class ItemDTO::_Internal {
   static void set_has_count(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
   }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000003) ^ 0x00000003) != 0;
+  }
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ItemDTO::kItemIdFieldNumber;
-const int ItemDTO::kCountFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-ItemDTO::ItemDTO()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+ItemDTO::ItemDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ItemDTO)
+  // @@protoc_insertion_point(arena_constructor:ItemDTO)
 }
 ItemDTO::ItemDTO(const ItemDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
       _has_bits_(from._has_bits_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&itemid_, &from.itemid_,
     static_cast<size_t>(reinterpret_cast<char*>(&count_) -
     reinterpret_cast<char*>(&itemid_)) + sizeof(count_));
   // @@protoc_insertion_point(copy_constructor:ItemDTO)
 }
 
-void ItemDTO::SharedCtor() {
-  ::memset(&itemid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&count_) -
-      reinterpret_cast<char*>(&itemid_)) + sizeof(count_));
+inline void ItemDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&itemid_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&count_) -
+    reinterpret_cast<char*>(&itemid_)) + sizeof(count_));
 }
 
 ItemDTO::~ItemDTO() {
   // @@protoc_insertion_point(destructor:ItemDTO)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
   SharedDtor();
 }
 
-void ItemDTO::SharedDtor() {
+inline void ItemDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void ItemDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ItemDTO& ItemDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ItemDTO_common_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void ItemDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:ItemDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -1670,156 +1145,80 @@ void ItemDTO::Clear() {
         reinterpret_cast<char*>(&itemid_)) + sizeof(count_));
   }
   _has_bits_.Clear();
-  _internal_metadata_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* ItemDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* ItemDTO::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // required int32 itemId = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_itemid(&has_bits);
-          itemid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          itemid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // required int32 count = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_count(&has_bits);
-          count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   _has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool ItemDTO::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ItemDTO)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required int32 itemId = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
-          _Internal::set_has_itemid(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &itemid_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // required int32 count = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
-          _Internal::set_has_count(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &count_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:ItemDTO)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:ItemDTO)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void ItemDTO::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ItemDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // required int32 itemId = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(1, this->itemid(), output);
-  }
-
-  // required int32 count = 2;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(2, this->count(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:ItemDTO)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* ItemDTO::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+uint8_t* ItemDTO::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:ItemDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   // required int32 itemId = 1;
   if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->itemid(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_itemid(), target);
   }
 
   // required int32 count = 2;
   if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->count(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_count(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:ItemDTO)
   return target;
@@ -1829,18 +1228,14 @@ size_t ItemDTO::RequiredFieldsByteSizeFallback() const {
 // @@protoc_insertion_point(required_fields_byte_size_fallback_start:ItemDTO)
   size_t total_size = 0;
 
-  if (has_itemid()) {
+  if (_internal_has_itemid()) {
     // required int32 itemId = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->itemid());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_itemid());
   }
 
-  if (has_count()) {
+  if (_internal_has_count()) {
     // required int32 count = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->count());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_count());
   }
 
   return total_size;
@@ -1849,54 +1244,40 @@ size_t ItemDTO::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:ItemDTO)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
   if (((_has_bits_[0] & 0x00000003) ^ 0x00000003) == 0) {  // All required fields are present.
     // required int32 itemId = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->itemid());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_itemid());
 
     // required int32 count = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->count());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_count());
 
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void ItemDTO::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ItemDTO)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ItemDTO* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ItemDTO>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ItemDTO)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ItemDTO)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ItemDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ItemDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ItemDTO::GetClassData() const { return &_class_data_; }
+
+void ItemDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<ItemDTO *>(to)->MergeFrom(
+      static_cast<const ItemDTO &>(from));
 }
+
 
 void ItemDTO::MergeFrom(const ItemDTO& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:ItemDTO)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = from._has_bits_[0];
@@ -1909,13 +1290,7 @@ void ItemDTO::MergeFrom(const ItemDTO& from) {
     }
     _has_bits_[0] |= cached_has_bits;
   }
-}
-
-void ItemDTO::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ItemDTO)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void ItemDTO::CopyFrom(const ItemDTO& from) {
@@ -1926,31 +1301,30 @@ void ItemDTO::CopyFrom(const ItemDTO& from) {
 }
 
 bool ItemDTO::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
   return true;
 }
 
-void ItemDTO::Swap(ItemDTO* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void ItemDTO::InternalSwap(ItemDTO* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
-  swap(itemid_, other->itemid_);
-  swap(count_, other->count_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(ItemDTO, count_)
+      + sizeof(ItemDTO::count_)
+      - PROTOBUF_FIELD_OFFSET(ItemDTO, itemid_)>(
+          reinterpret_cast<char*>(&itemid_),
+          reinterpret_cast<char*>(&other->itemid_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ItemDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_common_2eproto_getter, &descriptor_table_common_2eproto_once,
+      file_level_metadata_common_2eproto[4]);
 }
-
 
 // ===================================================================
 
-void SoldierDTO::InitAsDefaultInstance() {
-}
 class SoldierDTO::_Internal {
  public:
   using HasBits = decltype(std::declval<SoldierDTO>()._has_bits_);
@@ -1960,55 +1334,54 @@ class SoldierDTO::_Internal {
   static void set_has_armynum(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
   }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000003) ^ 0x00000003) != 0;
+  }
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int SoldierDTO::kArmyTypeFieldNumber;
-const int SoldierDTO::kArmyNumFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-SoldierDTO::SoldierDTO()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+SoldierDTO::SoldierDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:SoldierDTO)
+  // @@protoc_insertion_point(arena_constructor:SoldierDTO)
 }
 SoldierDTO::SoldierDTO(const SoldierDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
       _has_bits_(from._has_bits_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&armytype_, &from.armytype_,
     static_cast<size_t>(reinterpret_cast<char*>(&armynum_) -
     reinterpret_cast<char*>(&armytype_)) + sizeof(armynum_));
   // @@protoc_insertion_point(copy_constructor:SoldierDTO)
 }
 
-void SoldierDTO::SharedCtor() {
-  ::memset(&armytype_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&armynum_) -
-      reinterpret_cast<char*>(&armytype_)) + sizeof(armynum_));
+inline void SoldierDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&armytype_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&armynum_) -
+    reinterpret_cast<char*>(&armytype_)) + sizeof(armynum_));
 }
 
 SoldierDTO::~SoldierDTO() {
   // @@protoc_insertion_point(destructor:SoldierDTO)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
   SharedDtor();
 }
 
-void SoldierDTO::SharedDtor() {
+inline void SoldierDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void SoldierDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const SoldierDTO& SoldierDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_SoldierDTO_common_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void SoldierDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:SoldierDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -2019,156 +1392,80 @@ void SoldierDTO::Clear() {
         reinterpret_cast<char*>(&armytype_)) + sizeof(armynum_));
   }
   _has_bits_.Clear();
-  _internal_metadata_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* SoldierDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* SoldierDTO::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // required int32 armyType = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_armytype(&has_bits);
-          armytype_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          armytype_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // required int32 armyNum = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_armynum(&has_bits);
-          armynum_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          armynum_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   _has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool SoldierDTO::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:SoldierDTO)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required int32 armyType = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
-          _Internal::set_has_armytype(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &armytype_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // required int32 armyNum = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
-          _Internal::set_has_armynum(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &armynum_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:SoldierDTO)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:SoldierDTO)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void SoldierDTO::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:SoldierDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // required int32 armyType = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(1, this->armytype(), output);
-  }
-
-  // required int32 armyNum = 2;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(2, this->armynum(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:SoldierDTO)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* SoldierDTO::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+uint8_t* SoldierDTO::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:SoldierDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   // required int32 armyType = 1;
   if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->armytype(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_armytype(), target);
   }
 
   // required int32 armyNum = 2;
   if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->armynum(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_armynum(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:SoldierDTO)
   return target;
@@ -2178,18 +1475,14 @@ size_t SoldierDTO::RequiredFieldsByteSizeFallback() const {
 // @@protoc_insertion_point(required_fields_byte_size_fallback_start:SoldierDTO)
   size_t total_size = 0;
 
-  if (has_armytype()) {
+  if (_internal_has_armytype()) {
     // required int32 armyType = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->armytype());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_armytype());
   }
 
-  if (has_armynum()) {
+  if (_internal_has_armynum()) {
     // required int32 armyNum = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->armynum());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_armynum());
   }
 
   return total_size;
@@ -2198,54 +1491,40 @@ size_t SoldierDTO::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:SoldierDTO)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
   if (((_has_bits_[0] & 0x00000003) ^ 0x00000003) == 0) {  // All required fields are present.
     // required int32 armyType = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->armytype());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_armytype());
 
     // required int32 armyNum = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->armynum());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_armynum());
 
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void SoldierDTO::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:SoldierDTO)
-  GOOGLE_DCHECK_NE(&from, this);
-  const SoldierDTO* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<SoldierDTO>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:SoldierDTO)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:SoldierDTO)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SoldierDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SoldierDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SoldierDTO::GetClassData() const { return &_class_data_; }
+
+void SoldierDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SoldierDTO *>(to)->MergeFrom(
+      static_cast<const SoldierDTO &>(from));
 }
+
 
 void SoldierDTO::MergeFrom(const SoldierDTO& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:SoldierDTO)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = from._has_bits_[0];
@@ -2258,13 +1537,7 @@ void SoldierDTO::MergeFrom(const SoldierDTO& from) {
     }
     _has_bits_[0] |= cached_has_bits;
   }
-}
-
-void SoldierDTO::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:SoldierDTO)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void SoldierDTO::CopyFrom(const SoldierDTO& from) {
@@ -2275,33 +1548,30 @@ void SoldierDTO::CopyFrom(const SoldierDTO& from) {
 }
 
 bool SoldierDTO::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
   return true;
 }
 
-void SoldierDTO::Swap(SoldierDTO* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void SoldierDTO::InternalSwap(SoldierDTO* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
-  swap(armytype_, other->armytype_);
-  swap(armynum_, other->armynum_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(SoldierDTO, armynum_)
+      + sizeof(SoldierDTO::armynum_)
+      - PROTOBUF_FIELD_OFFSET(SoldierDTO, armytype_)>(
+          reinterpret_cast<char*>(&armytype_),
+          reinterpret_cast<char*>(&other->armytype_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata SoldierDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_common_2eproto_getter, &descriptor_table_common_2eproto_once,
+      file_level_metadata_common_2eproto[5]);
 }
-
 
 // ===================================================================
 
-void LevelSoldierDTO::InitAsDefaultInstance() {
-  ::_LevelSoldierDTO_default_instance_._instance.get_mutable()->soldier_ = const_cast< ::SoldierDTO*>(
-      ::SoldierDTO::internal_default_instance());
-}
 class LevelSoldierDTO::_Internal {
  public:
   using HasBits = decltype(std::declval<LevelSoldierDTO>()._has_bits_);
@@ -2312,28 +1582,26 @@ class LevelSoldierDTO::_Internal {
   static void set_has_level(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
   }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000003) ^ 0x00000003) != 0;
+  }
 };
 
 const ::SoldierDTO&
 LevelSoldierDTO::_Internal::soldier(const LevelSoldierDTO* msg) {
   return *msg->soldier_;
 }
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int LevelSoldierDTO::kSoldierFieldNumber;
-const int LevelSoldierDTO::kLevelFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-LevelSoldierDTO::LevelSoldierDTO()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+LevelSoldierDTO::LevelSoldierDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:LevelSoldierDTO)
+  // @@protoc_insertion_point(arena_constructor:LevelSoldierDTO)
 }
 LevelSoldierDTO::LevelSoldierDTO(const LevelSoldierDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
       _has_bits_(from._has_bits_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  if (from.has_soldier()) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_soldier()) {
     soldier_ = new ::SoldierDTO(*from.soldier_);
   } else {
     soldier_ = nullptr;
@@ -2342,34 +1610,34 @@ LevelSoldierDTO::LevelSoldierDTO(const LevelSoldierDTO& from)
   // @@protoc_insertion_point(copy_constructor:LevelSoldierDTO)
 }
 
-void LevelSoldierDTO::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_LevelSoldierDTO_common_2eproto.base);
-  ::memset(&soldier_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&level_) -
-      reinterpret_cast<char*>(&soldier_)) + sizeof(level_));
+inline void LevelSoldierDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&soldier_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&level_) -
+    reinterpret_cast<char*>(&soldier_)) + sizeof(level_));
 }
 
 LevelSoldierDTO::~LevelSoldierDTO() {
   // @@protoc_insertion_point(destructor:LevelSoldierDTO)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
   SharedDtor();
 }
 
-void LevelSoldierDTO::SharedDtor() {
+inline void LevelSoldierDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (this != internal_default_instance()) delete soldier_;
 }
 
 void LevelSoldierDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const LevelSoldierDTO& LevelSoldierDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_LevelSoldierDTO_common_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void LevelSoldierDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:LevelSoldierDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -2380,156 +1648,80 @@ void LevelSoldierDTO::Clear() {
   }
   level_ = 0;
   _has_bits_.Clear();
-  _internal_metadata_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* LevelSoldierDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* LevelSoldierDTO::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // required .SoldierDTO soldier = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          ptr = ctx->ParseMessage(mutable_soldier(), ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_soldier(), ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // required int32 level = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_level(&has_bits);
-          level_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          level_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   _has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool LevelSoldierDTO::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:LevelSoldierDTO)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required .SoldierDTO soldier = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (10 & 0xFF)) {
-          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
-               input, mutable_soldier()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // required int32 level = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
-          _Internal::set_has_level(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &level_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:LevelSoldierDTO)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:LevelSoldierDTO)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void LevelSoldierDTO::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:LevelSoldierDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // required .SoldierDTO soldier = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, _Internal::soldier(this), output);
-  }
-
-  // required int32 level = 2;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(2, this->level(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:LevelSoldierDTO)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* LevelSoldierDTO::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+uint8_t* LevelSoldierDTO::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:LevelSoldierDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   // required .SoldierDTO soldier = 1;
   if (cached_has_bits & 0x00000001u) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessageToArray(
-        1, _Internal::soldier(this), target);
+      InternalWriteMessage(1, _Internal::soldier(this),
+        _Internal::soldier(this).GetCachedSize(), target, stream);
   }
 
   // required int32 level = 2;
   if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->level(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_level(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:LevelSoldierDTO)
   return target;
@@ -2539,18 +1731,16 @@ size_t LevelSoldierDTO::RequiredFieldsByteSizeFallback() const {
 // @@protoc_insertion_point(required_fields_byte_size_fallback_start:LevelSoldierDTO)
   size_t total_size = 0;
 
-  if (has_soldier()) {
+  if (_internal_has_soldier()) {
     // required .SoldierDTO soldier = 1;
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *soldier_);
   }
 
-  if (has_level()) {
+  if (_internal_has_level()) {
     // required int32 level = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->level());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_level());
   }
 
   return total_size;
@@ -2559,11 +1749,6 @@ size_t LevelSoldierDTO::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:LevelSoldierDTO)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
   if (((_has_bits_[0] & 0x00000003) ^ 0x00000003) == 0) {  // All required fields are present.
     // required .SoldierDTO soldier = 1;
     total_size += 1 +
@@ -2571,61 +1756,48 @@ size_t LevelSoldierDTO::ByteSizeLong() const {
         *soldier_);
 
     // required int32 level = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->level());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_level());
 
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void LevelSoldierDTO::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:LevelSoldierDTO)
-  GOOGLE_DCHECK_NE(&from, this);
-  const LevelSoldierDTO* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<LevelSoldierDTO>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:LevelSoldierDTO)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:LevelSoldierDTO)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData LevelSoldierDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    LevelSoldierDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*LevelSoldierDTO::GetClassData() const { return &_class_data_; }
+
+void LevelSoldierDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<LevelSoldierDTO *>(to)->MergeFrom(
+      static_cast<const LevelSoldierDTO &>(from));
 }
+
 
 void LevelSoldierDTO::MergeFrom(const LevelSoldierDTO& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:LevelSoldierDTO)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = from._has_bits_[0];
   if (cached_has_bits & 0x00000003u) {
     if (cached_has_bits & 0x00000001u) {
-      mutable_soldier()->::SoldierDTO::MergeFrom(from.soldier());
+      _internal_mutable_soldier()->::SoldierDTO::MergeFrom(from._internal_soldier());
     }
     if (cached_has_bits & 0x00000002u) {
       level_ = from.level_;
     }
     _has_bits_[0] |= cached_has_bits;
   }
-}
-
-void LevelSoldierDTO::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:LevelSoldierDTO)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void LevelSoldierDTO::CopyFrom(const LevelSoldierDTO& from) {
@@ -2636,34 +1808,33 @@ void LevelSoldierDTO::CopyFrom(const LevelSoldierDTO& from) {
 }
 
 bool LevelSoldierDTO::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
-  if (has_soldier()) {
-    if (!this->soldier_->IsInitialized()) return false;
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
+  if (_internal_has_soldier()) {
+    if (!soldier_->IsInitialized()) return false;
   }
   return true;
 }
 
-void LevelSoldierDTO::Swap(LevelSoldierDTO* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void LevelSoldierDTO::InternalSwap(LevelSoldierDTO* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
-  swap(soldier_, other->soldier_);
-  swap(level_, other->level_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(LevelSoldierDTO, level_)
+      + sizeof(LevelSoldierDTO::level_)
+      - PROTOBUF_FIELD_OFFSET(LevelSoldierDTO, soldier_)>(
+          reinterpret_cast<char*>(&soldier_),
+          reinterpret_cast<char*>(&other->soldier_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata LevelSoldierDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_common_2eproto_getter, &descriptor_table_common_2eproto_once,
+      file_level_metadata_common_2eproto[6]);
 }
-
 
 // ===================================================================
 
-void EquipmentDTO::InitAsDefaultInstance() {
-}
 class EquipmentDTO::_Internal {
  public:
   using HasBits = decltype(std::declval<EquipmentDTO>()._has_bits_);
@@ -2679,59 +1850,56 @@ class EquipmentDTO::_Internal {
   static void set_has_type(HasBits* has_bits) {
     (*has_bits)[0] |= 8u;
   }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x0000000f) ^ 0x0000000f) != 0;
+  }
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int EquipmentDTO::kIdFieldNumber;
-const int EquipmentDTO::kLevelFieldNumber;
-const int EquipmentDTO::kExpFieldNumber;
-const int EquipmentDTO::kGemstonelistFieldNumber;
-const int EquipmentDTO::kTypeFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-EquipmentDTO::EquipmentDTO()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+EquipmentDTO::EquipmentDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  gemstonelist_(arena) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:EquipmentDTO)
+  // @@protoc_insertion_point(arena_constructor:EquipmentDTO)
 }
 EquipmentDTO::EquipmentDTO(const EquipmentDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
       _has_bits_(from._has_bits_),
       gemstonelist_(from.gemstonelist_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&id_, &from.id_,
     static_cast<size_t>(reinterpret_cast<char*>(&type_) -
     reinterpret_cast<char*>(&id_)) + sizeof(type_));
   // @@protoc_insertion_point(copy_constructor:EquipmentDTO)
 }
 
-void EquipmentDTO::SharedCtor() {
-  ::memset(&id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&type_) -
-      reinterpret_cast<char*>(&id_)) + sizeof(type_));
+inline void EquipmentDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&id_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&type_) -
+    reinterpret_cast<char*>(&id_)) + sizeof(type_));
 }
 
 EquipmentDTO::~EquipmentDTO() {
   // @@protoc_insertion_point(destructor:EquipmentDTO)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
   SharedDtor();
 }
 
-void EquipmentDTO::SharedDtor() {
+inline void EquipmentDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void EquipmentDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const EquipmentDTO& EquipmentDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_EquipmentDTO_common_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void EquipmentDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:EquipmentDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -2743,259 +1911,132 @@ void EquipmentDTO::Clear() {
         reinterpret_cast<char*>(&id_)) + sizeof(type_));
   }
   _has_bits_.Clear();
-  _internal_metadata_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* EquipmentDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* EquipmentDTO::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // required int32 id = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_id(&has_bits);
-          id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // required int32 level = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_level(&has_bits);
-          level_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          level_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // required int32 exp = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_exp(&has_bits);
-          exp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          exp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // repeated int32 gemstonelist = 4;
       case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
           ptr -= 1;
           do {
             ptr += 1;
-            add_gemstonelist(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr));
+            _internal_add_gemstonelist(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 32);
-        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(mutable_gemstonelist(), ptr, ctx);
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<32>(ptr));
+        } else if (static_cast<uint8_t>(tag) == 34) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(_internal_mutable_gemstonelist(), ptr, ctx);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // required int32 type = 5;
       case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
           _Internal::set_has_type(&has_bits);
-          type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   _has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool EquipmentDTO::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:EquipmentDTO)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required int32 id = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
-          _Internal::set_has_id(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &id_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // required int32 level = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
-          _Internal::set_has_level(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &level_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // required int32 exp = 3;
-      case 3: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (24 & 0xFF)) {
-          _Internal::set_has_exp(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &exp_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // repeated int32 gemstonelist = 4;
-      case 4: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (32 & 0xFF)) {
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadRepeatedPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 1, 32u, input, this->mutable_gemstonelist())));
-        } else if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (34 & 0xFF)) {
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, this->mutable_gemstonelist())));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // required int32 type = 5;
-      case 5: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (40 & 0xFF)) {
-          _Internal::set_has_type(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &type_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:EquipmentDTO)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:EquipmentDTO)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void EquipmentDTO::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:EquipmentDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // required int32 id = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(1, this->id(), output);
-  }
-
-  // required int32 level = 2;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(2, this->level(), output);
-  }
-
-  // required int32 exp = 3;
-  if (cached_has_bits & 0x00000004u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(3, this->exp(), output);
-  }
-
-  // repeated int32 gemstonelist = 4;
-  for (int i = 0, n = this->gemstonelist_size(); i < n; i++) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(
-      4, this->gemstonelist(i), output);
-  }
-
-  // required int32 type = 5;
-  if (cached_has_bits & 0x00000008u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(5, this->type(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:EquipmentDTO)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* EquipmentDTO::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+uint8_t* EquipmentDTO::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:EquipmentDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   // required int32 id = 1;
   if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->id(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_id(), target);
   }
 
   // required int32 level = 2;
   if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->level(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_level(), target);
   }
 
   // required int32 exp = 3;
   if (cached_has_bits & 0x00000004u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->exp(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_exp(), target);
   }
 
   // repeated int32 gemstonelist = 4;
-  target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-    WriteInt32ToArray(4, this->gemstonelist_, target);
+  for (int i = 0, n = this->_internal_gemstonelist_size(); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_gemstonelist(i), target);
+  }
 
   // required int32 type = 5;
   if (cached_has_bits & 0x00000008u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(5, this->type(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(5, this->_internal_type(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:EquipmentDTO)
   return target;
@@ -3005,32 +2046,24 @@ size_t EquipmentDTO::RequiredFieldsByteSizeFallback() const {
 // @@protoc_insertion_point(required_fields_byte_size_fallback_start:EquipmentDTO)
   size_t total_size = 0;
 
-  if (has_id()) {
+  if (_internal_has_id()) {
     // required int32 id = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->id());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_id());
   }
 
-  if (has_level()) {
+  if (_internal_has_level()) {
     // required int32 level = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->level());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_level());
   }
 
-  if (has_exp()) {
+  if (_internal_has_exp()) {
     // required int32 exp = 3;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->exp());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_exp());
   }
 
-  if (has_type()) {
+  if (_internal_has_type()) {
     // required int32 type = 5;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->type());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_type());
   }
 
   return total_size;
@@ -3039,73 +2072,55 @@ size_t EquipmentDTO::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:EquipmentDTO)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
   if (((_has_bits_[0] & 0x0000000f) ^ 0x0000000f) == 0) {  // All required fields are present.
     // required int32 id = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->id());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_id());
 
     // required int32 level = 2;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->level());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_level());
 
     // required int32 exp = 3;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->exp());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_exp());
 
     // required int32 type = 5;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->type());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_type());
 
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   // repeated int32 gemstonelist = 4;
   {
-    size_t data_size = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+    size_t data_size = ::_pbi::WireFormatLite::
       Int32Size(this->gemstonelist_);
     total_size += 1 *
-                  ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->gemstonelist_size());
+                  ::_pbi::FromIntSize(this->_internal_gemstonelist_size());
     total_size += data_size;
   }
 
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void EquipmentDTO::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:EquipmentDTO)
-  GOOGLE_DCHECK_NE(&from, this);
-  const EquipmentDTO* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<EquipmentDTO>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:EquipmentDTO)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:EquipmentDTO)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData EquipmentDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    EquipmentDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*EquipmentDTO::GetClassData() const { return &_class_data_; }
+
+void EquipmentDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<EquipmentDTO *>(to)->MergeFrom(
+      static_cast<const EquipmentDTO &>(from));
 }
+
 
 void EquipmentDTO::MergeFrom(const EquipmentDTO& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:EquipmentDTO)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   gemstonelist_.MergeFrom(from.gemstonelist_);
@@ -3125,13 +2140,7 @@ void EquipmentDTO::MergeFrom(const EquipmentDTO& from) {
     }
     _has_bits_[0] |= cached_has_bits;
   }
-}
-
-void EquipmentDTO::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:EquipmentDTO)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void EquipmentDTO::CopyFrom(const EquipmentDTO& from) {
@@ -3142,34 +2151,31 @@ void EquipmentDTO::CopyFrom(const EquipmentDTO& from) {
 }
 
 bool EquipmentDTO::IsInitialized() const {
-  if ((_has_bits_[0] & 0x0000000f) != 0x0000000f) return false;
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
   return true;
 }
 
-void EquipmentDTO::Swap(EquipmentDTO* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void EquipmentDTO::InternalSwap(EquipmentDTO* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   gemstonelist_.InternalSwap(&other->gemstonelist_);
-  swap(id_, other->id_);
-  swap(level_, other->level_);
-  swap(exp_, other->exp_);
-  swap(type_, other->type_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(EquipmentDTO, type_)
+      + sizeof(EquipmentDTO::type_)
+      - PROTOBUF_FIELD_OFFSET(EquipmentDTO, id_)>(
+          reinterpret_cast<char*>(&id_),
+          reinterpret_cast<char*>(&other->id_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata EquipmentDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_common_2eproto_getter, &descriptor_table_common_2eproto_once,
+      file_level_metadata_common_2eproto[7]);
 }
-
 
 // ===================================================================
 
-void VipDTO::InitAsDefaultInstance() {
-}
 class VipDTO::_Internal {
  public:
   using HasBits = decltype(std::declval<VipDTO>()._has_bits_);
@@ -3179,55 +2185,54 @@ class VipDTO::_Internal {
   static void set_has_activated(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
   }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000003) ^ 0x00000003) != 0;
+  }
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int VipDTO::kVipLevelFieldNumber;
-const int VipDTO::kActivatedFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-VipDTO::VipDTO()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+VipDTO::VipDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:VipDTO)
+  // @@protoc_insertion_point(arena_constructor:VipDTO)
 }
 VipDTO::VipDTO(const VipDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
       _has_bits_(from._has_bits_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&viplevel_, &from.viplevel_,
     static_cast<size_t>(reinterpret_cast<char*>(&activated_) -
     reinterpret_cast<char*>(&viplevel_)) + sizeof(activated_));
   // @@protoc_insertion_point(copy_constructor:VipDTO)
 }
 
-void VipDTO::SharedCtor() {
-  ::memset(&viplevel_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&activated_) -
-      reinterpret_cast<char*>(&viplevel_)) + sizeof(activated_));
+inline void VipDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&viplevel_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&activated_) -
+    reinterpret_cast<char*>(&viplevel_)) + sizeof(activated_));
 }
 
 VipDTO::~VipDTO() {
   // @@protoc_insertion_point(destructor:VipDTO)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
   SharedDtor();
 }
 
-void VipDTO::SharedDtor() {
+inline void VipDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void VipDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const VipDTO& VipDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_VipDTO_common_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void VipDTO::Clear() {
 // @@protoc_insertion_point(message_clear_start:VipDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -3238,156 +2243,80 @@ void VipDTO::Clear() {
         reinterpret_cast<char*>(&viplevel_)) + sizeof(activated_));
   }
   _has_bits_.Clear();
-  _internal_metadata_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* VipDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* VipDTO::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // required int32 vipLevel = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_viplevel(&has_bits);
-          viplevel_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          viplevel_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // required bool activated = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_activated(&has_bits);
-          activated_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          activated_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   _has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool VipDTO::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:VipDTO)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required int32 vipLevel = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
-          _Internal::set_has_viplevel(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &viplevel_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // required bool activated = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
-          _Internal::set_has_activated(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &activated_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:VipDTO)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:VipDTO)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void VipDTO::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:VipDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // required int32 vipLevel = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(1, this->viplevel(), output);
-  }
-
-  // required bool activated = 2;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBool(2, this->activated(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:VipDTO)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* VipDTO::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+uint8_t* VipDTO::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:VipDTO)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   // required int32 vipLevel = 1;
   if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->viplevel(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_viplevel(), target);
   }
 
   // required bool activated = 2;
   if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(2, this->activated(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(2, this->_internal_activated(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:VipDTO)
   return target;
@@ -3397,14 +2326,12 @@ size_t VipDTO::RequiredFieldsByteSizeFallback() const {
 // @@protoc_insertion_point(required_fields_byte_size_fallback_start:VipDTO)
   size_t total_size = 0;
 
-  if (has_viplevel()) {
+  if (_internal_has_viplevel()) {
     // required int32 vipLevel = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->viplevel());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_viplevel());
   }
 
-  if (has_activated()) {
+  if (_internal_has_activated()) {
     // required bool activated = 2;
     total_size += 1 + 1;
   }
@@ -3415,16 +2342,9 @@ size_t VipDTO::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:VipDTO)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
   if (((_has_bits_[0] & 0x00000003) ^ 0x00000003) == 0) {  // All required fields are present.
     // required int32 vipLevel = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->viplevel());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_viplevel());
 
     // required bool activated = 2;
     total_size += 1 + 1;
@@ -3432,35 +2352,30 @@ size_t VipDTO::ByteSizeLong() const {
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void VipDTO::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:VipDTO)
-  GOOGLE_DCHECK_NE(&from, this);
-  const VipDTO* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<VipDTO>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:VipDTO)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:VipDTO)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData VipDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    VipDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*VipDTO::GetClassData() const { return &_class_data_; }
+
+void VipDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<VipDTO *>(to)->MergeFrom(
+      static_cast<const VipDTO &>(from));
 }
+
 
 void VipDTO::MergeFrom(const VipDTO& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:VipDTO)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = from._has_bits_[0];
@@ -3473,13 +2388,7 @@ void VipDTO::MergeFrom(const VipDTO& from) {
     }
     _has_bits_[0] |= cached_has_bits;
   }
-}
-
-void VipDTO::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:VipDTO)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void VipDTO::CopyFrom(const VipDTO& from) {
@@ -3490,55 +2399,65 @@ void VipDTO::CopyFrom(const VipDTO& from) {
 }
 
 bool VipDTO::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
   return true;
 }
 
-void VipDTO::Swap(VipDTO* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void VipDTO::InternalSwap(VipDTO* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
-  swap(viplevel_, other->viplevel_);
-  swap(activated_, other->activated_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(VipDTO, activated_)
+      + sizeof(VipDTO::activated_)
+      - PROTOBUF_FIELD_OFFSET(VipDTO, viplevel_)>(
+          reinterpret_cast<char*>(&viplevel_),
+          reinterpret_cast<char*>(&other->viplevel_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata VipDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_common_2eproto_getter, &descriptor_table_common_2eproto_once,
+      file_level_metadata_common_2eproto[8]);
 }
-
 
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
-template<> PROTOBUF_NOINLINE ::EmptyMessage* Arena::CreateMaybeMessage< ::EmptyMessage >(Arena* arena) {
-  return Arena::CreateInternal< ::EmptyMessage >(arena);
+template<> PROTOBUF_NOINLINE ::EmptyMessage*
+Arena::CreateMaybeMessage< ::EmptyMessage >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::EmptyMessage >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ErrorMessage* Arena::CreateMaybeMessage< ::ErrorMessage >(Arena* arena) {
-  return Arena::CreateInternal< ::ErrorMessage >(arena);
+template<> PROTOBUF_NOINLINE ::ErrorMessage*
+Arena::CreateMaybeMessage< ::ErrorMessage >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::ErrorMessage >(arena);
 }
-template<> PROTOBUF_NOINLINE ::PositionDTO* Arena::CreateMaybeMessage< ::PositionDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::PositionDTO >(arena);
+template<> PROTOBUF_NOINLINE ::PositionDTO*
+Arena::CreateMaybeMessage< ::PositionDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::PositionDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::PropertyDTO* Arena::CreateMaybeMessage< ::PropertyDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::PropertyDTO >(arena);
+template<> PROTOBUF_NOINLINE ::PropertyDTO*
+Arena::CreateMaybeMessage< ::PropertyDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::PropertyDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ItemDTO* Arena::CreateMaybeMessage< ::ItemDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::ItemDTO >(arena);
+template<> PROTOBUF_NOINLINE ::ItemDTO*
+Arena::CreateMaybeMessage< ::ItemDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::ItemDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::SoldierDTO* Arena::CreateMaybeMessage< ::SoldierDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::SoldierDTO >(arena);
+template<> PROTOBUF_NOINLINE ::SoldierDTO*
+Arena::CreateMaybeMessage< ::SoldierDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::SoldierDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::LevelSoldierDTO* Arena::CreateMaybeMessage< ::LevelSoldierDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::LevelSoldierDTO >(arena);
+template<> PROTOBUF_NOINLINE ::LevelSoldierDTO*
+Arena::CreateMaybeMessage< ::LevelSoldierDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::LevelSoldierDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::EquipmentDTO* Arena::CreateMaybeMessage< ::EquipmentDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::EquipmentDTO >(arena);
+template<> PROTOBUF_NOINLINE ::EquipmentDTO*
+Arena::CreateMaybeMessage< ::EquipmentDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::EquipmentDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::VipDTO* Arena::CreateMaybeMessage< ::VipDTO >(Arena* arena) {
-  return Arena::CreateInternal< ::VipDTO >(arena);
+template<> PROTOBUF_NOINLINE ::VipDTO*
+Arena::CreateMaybeMessage< ::VipDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::VipDTO >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

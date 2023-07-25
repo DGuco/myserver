@@ -26,9 +26,7 @@ set(SOURCE_FILES
         src/query_result_mysql.cpp)
 
 include_directories(
-        /usr/include/
-        /usr/local/include/
-        ${CMAKE_SOURCE_DIR}/dbserver/inc
+        ${CMAKE_SOURCE_DIR}/thirdparty
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const
         ${CMAKE_SOURCE_DIR}/framework/event
@@ -40,6 +38,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/framework/timer
+        ${CMAKE_SOURCE_DIR}/dbserver/inc
 )
 
 link_directories(

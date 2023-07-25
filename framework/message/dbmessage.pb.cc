@@ -5,7 +5,6 @@
 
 #include <algorithm>
 
-#include <google/protobuf/stubs/common.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/extension_set.h>
 #include <google/protobuf/wire_format_lite.h>
@@ -15,52 +14,69 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-class CMsgExecuteSqlRequestDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<CMsgExecuteSqlRequest> _instance;
-} _CMsgExecuteSqlRequest_default_instance_;
-class CMsgExecuteSqlResponseDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<CMsgExecuteSqlResponse> _instance;
-} _CMsgExecuteSqlResponse_default_instance_;
-static void InitDefaultsscc_info_CMsgExecuteSqlRequest_dbmessage_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  {
-    void* ptr = &::_CMsgExecuteSqlRequest_default_instance_;
-    new (ptr) ::CMsgExecuteSqlRequest();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::CMsgExecuteSqlRequest::InitAsDefaultInstance();
-}
+PROTOBUF_PRAGMA_INIT_SEG
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_CMsgExecuteSqlRequest_dbmessage_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_CMsgExecuteSqlRequest_dbmessage_2eproto}, {}};
+namespace _pb = ::PROTOBUF_NAMESPACE_ID;
+namespace _pbi = _pb::internal;
 
-static void InitDefaultsscc_info_CMsgExecuteSqlResponse_dbmessage_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
+PROTOBUF_CONSTEXPR CMsgExecuteSqlRequest::CMsgExecuteSqlRequest(
+    ::_pbi::ConstantInitialized)
+  : sql_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
+  , buffer_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
+  , sqlwhere_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
+  , logictype_(0u)
+  , sessionid_(0u)
+  , timestamp_(uint64_t{0u})
+  , teamid_(uint64_t{0u})
+  , bufsize_(0u)
+  , outnumber_(0u)
+  , hasblob_(1)
 
-  {
-    void* ptr = &::_CMsgExecuteSqlResponse_default_instance_;
-    new (ptr) ::CMsgExecuteSqlResponse();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::CMsgExecuteSqlResponse::InitAsDefaultInstance();
-}
+  , sqltype_(1)
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_CMsgExecuteSqlResponse_dbmessage_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_CMsgExecuteSqlResponse_dbmessage_2eproto}, {}};
+  , callback_(1)
+{}
+struct CMsgExecuteSqlRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CMsgExecuteSqlRequestDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CMsgExecuteSqlRequestDefaultTypeInternal() {}
+  union {
+    CMsgExecuteSqlRequest _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgExecuteSqlRequestDefaultTypeInternal _CMsgExecuteSqlRequest_default_instance_;
+PROTOBUF_CONSTEXPR CMsgExecuteSqlResponse::CMsgExecuteSqlResponse(
+    ::_pbi::ConstantInitialized)
+  : fieldvalue_()
+  , fieldvaluelen_()
+  , logictype_(0u)
+  , sessionid_(0u)
+  , timestamp_(uint64_t{0u})
+  , teamid_(uint64_t{0u})
+  , resultcode_(0u)
+  , rowcount_(0u)
+  , colcount_(0u){}
+struct CMsgExecuteSqlResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CMsgExecuteSqlResponseDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CMsgExecuteSqlResponseDefaultTypeInternal() {}
+  union {
+    CMsgExecuteSqlResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgExecuteSqlResponseDefaultTypeInternal _CMsgExecuteSqlResponse_default_instance_;
+static ::_pb::Metadata file_level_metadata_dbmessage_2eproto[2];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_dbmessage_2eproto[5];
+static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_dbmessage_2eproto = nullptr;
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_dbmessage_2eproto[2];
-static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_dbmessage_2eproto[5];
-static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_dbmessage_2eproto = nullptr;
-
-const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_dbmessage_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+const uint32_t TableStruct_dbmessage_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   PROTOBUF_FIELD_OFFSET(::CMsgExecuteSqlRequest, _has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgExecuteSqlRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CMsgExecuteSqlRequest, logictype_),
   PROTOBUF_FIELD_OFFSET(::CMsgExecuteSqlRequest, sessionid_),
   PROTOBUF_FIELD_OFFSET(::CMsgExecuteSqlRequest, timestamp_),
@@ -90,6 +106,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_dbmessage_2eproto::offsets[] P
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CMsgExecuteSqlResponse, logictype_),
   PROTOBUF_FIELD_OFFSET(::CMsgExecuteSqlResponse, sessionid_),
   PROTOBUF_FIELD_OFFSET(::CMsgExecuteSqlResponse, timestamp_),
@@ -109,14 +126,14 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_dbmessage_2eproto::offsets[] P
   ~0u,
   ~0u,
 };
-static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, 17, sizeof(::CMsgExecuteSqlRequest)},
-  { 29, 43, sizeof(::CMsgExecuteSqlResponse)},
+static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+  { 0, 18, -1, sizeof(::CMsgExecuteSqlRequest)},
+  { 30, 45, -1, sizeof(::CMsgExecuteSqlResponse)},
 };
 
-static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_CMsgExecuteSqlRequest_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_CMsgExecuteSqlResponse_default_instance_),
+static const ::_pb::Message* const file_default_instances[] = {
+  &::_CMsgExecuteSqlRequest_default_instance_._instance,
+  &::_CMsgExecuteSqlResponse_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_dbmessage_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -139,23 +156,21 @@ const char descriptor_table_protodef_dbmessage_2eproto[] PROTOBUF_SECTION_VARIAB
   "\022\020\n\014MUSTCALLBACK\020\001\022\017\n\013NOTCALLBACK\020\002*!\n\004B"
   "LOB\022\013\n\007HASBLOB\020\001\022\014\n\010NONEBLOB\020\002B\002H\001"
   ;
-static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_dbmessage_2eproto_deps[1] = {
+static ::_pbi::once_flag descriptor_table_dbmessage_2eproto_once;
+const ::_pbi::DescriptorTable descriptor_table_dbmessage_2eproto = {
+    false, false, 714, descriptor_table_protodef_dbmessage_2eproto,
+    "dbmessage.proto",
+    &descriptor_table_dbmessage_2eproto_once, nullptr, 0, 2,
+    schemas, file_default_instances, TableStruct_dbmessage_2eproto::offsets,
+    file_level_metadata_dbmessage_2eproto, file_level_enum_descriptors_dbmessage_2eproto,
+    file_level_service_descriptors_dbmessage_2eproto,
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_dbmessage_2eproto_sccs[2] = {
-  &scc_info_CMsgExecuteSqlRequest_dbmessage_2eproto.base,
-  &scc_info_CMsgExecuteSqlResponse_dbmessage_2eproto.base,
-};
-static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_dbmessage_2eproto_once;
-static bool descriptor_table_dbmessage_2eproto_initialized = false;
-const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_dbmessage_2eproto = {
-  &descriptor_table_dbmessage_2eproto_initialized, descriptor_table_protodef_dbmessage_2eproto, "dbmessage.proto", 714,
-  &descriptor_table_dbmessage_2eproto_once, descriptor_table_dbmessage_2eproto_sccs, descriptor_table_dbmessage_2eproto_deps, 2, 0,
-  schemas, file_default_instances, TableStruct_dbmessage_2eproto::offsets,
-  file_level_metadata_dbmessage_2eproto, 2, file_level_enum_descriptors_dbmessage_2eproto, file_level_service_descriptors_dbmessage_2eproto,
-};
+PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_dbmessage_2eproto_getter() {
+  return &descriptor_table_dbmessage_2eproto;
+}
 
 // Force running AddDescriptors() at dynamic initialization time.
-static bool dynamic_init_dummy_dbmessage_2eproto = (  ::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_dbmessage_2eproto), true);
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_dbmessage_2eproto(&descriptor_table_dbmessage_2eproto);
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CMsgExecuteSqlRequest_Msg_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_dbmessage_2eproto);
   return file_level_enum_descriptors_dbmessage_2eproto[0];
@@ -169,12 +184,12 @@ bool CMsgExecuteSqlRequest_Msg_IsValid(int value) {
   }
 }
 
-#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
 constexpr CMsgExecuteSqlRequest_Msg CMsgExecuteSqlRequest::MsgID;
 constexpr CMsgExecuteSqlRequest_Msg CMsgExecuteSqlRequest::Msg_MIN;
 constexpr CMsgExecuteSqlRequest_Msg CMsgExecuteSqlRequest::Msg_MAX;
 constexpr int CMsgExecuteSqlRequest::Msg_ARRAYSIZE;
-#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CMsgExecuteSqlResponse_Msg_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_dbmessage_2eproto);
   return file_level_enum_descriptors_dbmessage_2eproto[1];
@@ -188,12 +203,12 @@ bool CMsgExecuteSqlResponse_Msg_IsValid(int value) {
   }
 }
 
-#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
 constexpr CMsgExecuteSqlResponse_Msg CMsgExecuteSqlResponse::MsgID;
 constexpr CMsgExecuteSqlResponse_Msg CMsgExecuteSqlResponse::Msg_MIN;
 constexpr CMsgExecuteSqlResponse_Msg CMsgExecuteSqlResponse::Msg_MAX;
 constexpr int CMsgExecuteSqlResponse::Msg_ARRAYSIZE;
-#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* SQLTYPE_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_dbmessage_2eproto);
   return file_level_enum_descriptors_dbmessage_2eproto[2];
@@ -242,8 +257,6 @@ bool BLOB_IsValid(int value) {
 
 // ===================================================================
 
-void CMsgExecuteSqlRequest::InitAsDefaultInstance() {
-}
 class CMsgExecuteSqlRequest::_Internal {
  public:
   using HasBits = decltype(std::declval<CMsgExecuteSqlRequest>()._has_bits_);
@@ -285,42 +298,39 @@ class CMsgExecuteSqlRequest::_Internal {
   }
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CMsgExecuteSqlRequest::kLogicTypeFieldNumber;
-const int CMsgExecuteSqlRequest::kSessionIDFieldNumber;
-const int CMsgExecuteSqlRequest::kTimeStampFieldNumber;
-const int CMsgExecuteSqlRequest::kTeamIDFieldNumber;
-const int CMsgExecuteSqlRequest::kSqlTypeFieldNumber;
-const int CMsgExecuteSqlRequest::kCallbackFieldNumber;
-const int CMsgExecuteSqlRequest::kSqlFieldNumber;
-const int CMsgExecuteSqlRequest::kBufSizeFieldNumber;
-const int CMsgExecuteSqlRequest::kBufferFieldNumber;
-const int CMsgExecuteSqlRequest::kSQLWhereFieldNumber;
-const int CMsgExecuteSqlRequest::kOutNumberFieldNumber;
-const int CMsgExecuteSqlRequest::kHasBlobFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-CMsgExecuteSqlRequest::CMsgExecuteSqlRequest()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+CMsgExecuteSqlRequest::CMsgExecuteSqlRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:CMsgExecuteSqlRequest)
+  // @@protoc_insertion_point(arena_constructor:CMsgExecuteSqlRequest)
 }
 CMsgExecuteSqlRequest::CMsgExecuteSqlRequest(const CMsgExecuteSqlRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
       _has_bits_(from._has_bits_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  sql_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (from.has_sql()) {
-    sql_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.sql_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  sql_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    sql_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_sql()) {
+    sql_.Set(from._internal_sql(), 
+      GetArenaForAllocation());
   }
-  buffer_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (from.has_buffer()) {
-    buffer_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.buffer_);
+  buffer_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    buffer_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_buffer()) {
+    buffer_.Set(from._internal_buffer(), 
+      GetArenaForAllocation());
   }
-  sqlwhere_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (from.has_sqlwhere()) {
-    sqlwhere_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.sqlwhere_);
+  sqlwhere_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    sqlwhere_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_sqlwhere()) {
+    sqlwhere_.Set(from._internal_sqlwhere(), 
+      GetArenaForAllocation());
   }
   ::memcpy(&logictype_, &from.logictype_,
     static_cast<size_t>(reinterpret_cast<char*>(&callback_) -
@@ -328,55 +338,64 @@ CMsgExecuteSqlRequest::CMsgExecuteSqlRequest(const CMsgExecuteSqlRequest& from)
   // @@protoc_insertion_point(copy_constructor:CMsgExecuteSqlRequest)
 }
 
-void CMsgExecuteSqlRequest::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_CMsgExecuteSqlRequest_dbmessage_2eproto.base);
-  sql_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  buffer_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  sqlwhere_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  ::memset(&logictype_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&outnumber_) -
-      reinterpret_cast<char*>(&logictype_)) + sizeof(outnumber_));
-  hasblob_ = 1;
-  sqltype_ = 1;
-  callback_ = 1;
+inline void CMsgExecuteSqlRequest::SharedCtor() {
+sql_.InitDefault();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  sql_.Set("", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+buffer_.InitDefault();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  buffer_.Set("", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+sqlwhere_.InitDefault();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  sqlwhere_.Set("", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&logictype_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&outnumber_) -
+    reinterpret_cast<char*>(&logictype_)) + sizeof(outnumber_));
+hasblob_ = 1;
+sqltype_ = 1;
+callback_ = 1;
 }
 
 CMsgExecuteSqlRequest::~CMsgExecuteSqlRequest() {
   // @@protoc_insertion_point(destructor:CMsgExecuteSqlRequest)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
   SharedDtor();
 }
 
-void CMsgExecuteSqlRequest::SharedDtor() {
-  sql_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  buffer_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  sqlwhere_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+inline void CMsgExecuteSqlRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  sql_.Destroy();
+  buffer_.Destroy();
+  sqlwhere_.Destroy();
 }
 
 void CMsgExecuteSqlRequest::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const CMsgExecuteSqlRequest& CMsgExecuteSqlRequest::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_CMsgExecuteSqlRequest_dbmessage_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void CMsgExecuteSqlRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:CMsgExecuteSqlRequest)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x00000007u) {
     if (cached_has_bits & 0x00000001u) {
-      sql_.ClearNonDefaultToEmptyNoArena();
+      sql_.ClearNonDefaultToEmpty();
     }
     if (cached_has_bits & 0x00000002u) {
-      buffer_.ClearNonDefaultToEmptyNoArena();
+      buffer_.ClearNonDefaultToEmpty();
     }
     if (cached_has_bits & 0x00000004u) {
-      sqlwhere_.ClearNonDefaultToEmptyNoArena();
+      sqlwhere_.ClearNonDefaultToEmpty();
     }
   }
   if (cached_has_bits & 0x000000f8u) {
@@ -391,526 +410,259 @@ void CMsgExecuteSqlRequest::Clear() {
     callback_ = 1;
   }
   _has_bits_.Clear();
-  _internal_metadata_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* CMsgExecuteSqlRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* CMsgExecuteSqlRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // optional uint32 LogicType = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_logictype(&has_bits);
-          logictype_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          logictype_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional uint32 SessionID = 2 [default = 0];
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_sessionid(&has_bits);
-          sessionid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          sessionid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional uint64 TimeStamp = 3 [default = 0];
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_timestamp(&has_bits);
-          timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional uint64 TeamID = 4 [default = 0];
       case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
           _Internal::set_has_teamid(&has_bits);
-          teamid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          teamid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional .SQLTYPE SqlType = 5 [default = SELECT];
       case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
-          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           if (PROTOBUF_PREDICT_TRUE(::SQLTYPE_IsValid(val))) {
-            set_sqltype(static_cast<::SQLTYPE>(val));
+            _internal_set_sqltype(static_cast<::SQLTYPE>(val));
           } else {
             ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(5, val, mutable_unknown_fields());
           }
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional .CALLBACK Callback = 6 [default = MUSTCALLBACK];
       case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
-          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           if (PROTOBUF_PREDICT_TRUE(::CALLBACK_IsValid(val))) {
-            set_callback(static_cast<::CALLBACK>(val));
+            _internal_set_callback(static_cast<::CALLBACK>(val));
           } else {
             ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(6, val, mutable_unknown_fields());
           }
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional string Sql = 7;
       case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 58)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8Verify(mutable_sql(), ptr, ctx, "CMsgExecuteSqlRequest.Sql");
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 58)) {
+          auto str = _internal_mutable_sql();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-        } else goto handle_unusual;
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CMsgExecuteSqlRequest.Sql");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
         continue;
       // optional uint32 BufSize = 8 [default = 0];
       case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 64)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
           _Internal::set_has_bufsize(&has_bits);
-          bufsize_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          bufsize_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional bytes Buffer = 9;
       case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 74)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(mutable_buffer(), ptr, ctx);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
+          auto str = _internal_mutable_buffer();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional string SQLWhere = 10;
       case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 82)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8Verify(mutable_sqlwhere(), ptr, ctx, "CMsgExecuteSqlRequest.SQLWhere");
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
+          auto str = _internal_mutable_sqlwhere();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-        } else goto handle_unusual;
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CMsgExecuteSqlRequest.SQLWhere");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
         continue;
       // optional uint32 OutNumber = 11 [default = 0];
       case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 88)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
           _Internal::set_has_outnumber(&has_bits);
-          outnumber_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          outnumber_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional .BLOB HasBlob = 12;
       case 12:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 96)) {
-          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           if (PROTOBUF_PREDICT_TRUE(::BLOB_IsValid(val))) {
-            set_hasblob(static_cast<::BLOB>(val));
+            _internal_set_hasblob(static_cast<::BLOB>(val));
           } else {
             ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(12, val, mutable_unknown_fields());
           }
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   _has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool CMsgExecuteSqlRequest::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:CMsgExecuteSqlRequest)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint32 LogicType = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
-          _Internal::set_has_logictype(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &logictype_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // optional uint32 SessionID = 2 [default = 0];
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
-          _Internal::set_has_sessionid(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &sessionid_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional uint64 TimeStamp = 3 [default = 0];
-      case 3: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (24 & 0xFF)) {
-          _Internal::set_has_timestamp(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint64, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT64>(
-                 input, &timestamp_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional uint64 TeamID = 4 [default = 0];
-      case 4: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (32 & 0xFF)) {
-          _Internal::set_has_teamid(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint64, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT64>(
-                 input, &teamid_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional .SQLTYPE SqlType = 5 [default = SELECT];
-      case 5: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (40 & 0xFF)) {
-          int value = 0;
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   int, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          if (::SQLTYPE_IsValid(value)) {
-            set_sqltype(static_cast< ::SQLTYPE >(value));
-          } else {
-            mutable_unknown_fields()->AddVarint(
-                5, static_cast<::PROTOBUF_NAMESPACE_ID::uint64>(value));
-          }
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional .CALLBACK Callback = 6 [default = MUSTCALLBACK];
-      case 6: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (48 & 0xFF)) {
-          int value = 0;
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   int, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          if (::CALLBACK_IsValid(value)) {
-            set_callback(static_cast< ::CALLBACK >(value));
-          } else {
-            mutable_unknown_fields()->AddVarint(
-                6, static_cast<::PROTOBUF_NAMESPACE_ID::uint64>(value));
-          }
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional string Sql = 7;
-      case 7: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (58 & 0xFF)) {
-          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadString(
-                input, this->mutable_sql()));
-          ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-            this->sql().data(), static_cast<int>(this->sql().length()),
-            ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::PARSE,
-            "CMsgExecuteSqlRequest.Sql");
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional uint32 BufSize = 8 [default = 0];
-      case 8: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (64 & 0xFF)) {
-          _Internal::set_has_bufsize(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &bufsize_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional bytes Buffer = 9;
-      case 9: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (74 & 0xFF)) {
-          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadBytes(
-                input, this->mutable_buffer()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional string SQLWhere = 10;
-      case 10: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (82 & 0xFF)) {
-          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadString(
-                input, this->mutable_sqlwhere()));
-          ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-            this->sqlwhere().data(), static_cast<int>(this->sqlwhere().length()),
-            ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::PARSE,
-            "CMsgExecuteSqlRequest.SQLWhere");
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional uint32 OutNumber = 11 [default = 0];
-      case 11: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (88 & 0xFF)) {
-          _Internal::set_has_outnumber(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &outnumber_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional .BLOB HasBlob = 12;
-      case 12: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (96 & 0xFF)) {
-          int value = 0;
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   int, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          if (::BLOB_IsValid(value)) {
-            set_hasblob(static_cast< ::BLOB >(value));
-          } else {
-            mutable_unknown_fields()->AddVarint(
-                12, static_cast<::PROTOBUF_NAMESPACE_ID::uint64>(value));
-          }
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:CMsgExecuteSqlRequest)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:CMsgExecuteSqlRequest)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void CMsgExecuteSqlRequest::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:CMsgExecuteSqlRequest)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // optional uint32 LogicType = 1;
-  if (cached_has_bits & 0x00000008u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(1, this->logictype(), output);
-  }
-
-  // optional uint32 SessionID = 2 [default = 0];
-  if (cached_has_bits & 0x00000010u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(2, this->sessionid(), output);
-  }
-
-  // optional uint64 TimeStamp = 3 [default = 0];
-  if (cached_has_bits & 0x00000020u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64(3, this->timestamp(), output);
-  }
-
-  // optional uint64 TeamID = 4 [default = 0];
-  if (cached_has_bits & 0x00000040u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64(4, this->teamid(), output);
-  }
-
-  // optional .SQLTYPE SqlType = 5 [default = SELECT];
-  if (cached_has_bits & 0x00000400u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnum(
-      5, this->sqltype(), output);
-  }
-
-  // optional .CALLBACK Callback = 6 [default = MUSTCALLBACK];
-  if (cached_has_bits & 0x00000800u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnum(
-      6, this->callback(), output);
-  }
-
-  // optional string Sql = 7;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->sql().data(), static_cast<int>(this->sql().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CMsgExecuteSqlRequest.Sql");
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteStringMaybeAliased(
-      7, this->sql(), output);
-  }
-
-  // optional uint32 BufSize = 8 [default = 0];
-  if (cached_has_bits & 0x00000080u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(8, this->bufsize(), output);
-  }
-
-  // optional bytes Buffer = 9;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBytesMaybeAliased(
-      9, this->buffer(), output);
-  }
-
-  // optional string SQLWhere = 10;
-  if (cached_has_bits & 0x00000004u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->sqlwhere().data(), static_cast<int>(this->sqlwhere().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CMsgExecuteSqlRequest.SQLWhere");
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteStringMaybeAliased(
-      10, this->sqlwhere(), output);
-  }
-
-  // optional uint32 OutNumber = 11 [default = 0];
-  if (cached_has_bits & 0x00000100u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(11, this->outnumber(), output);
-  }
-
-  // optional .BLOB HasBlob = 12;
-  if (cached_has_bits & 0x00000200u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnum(
-      12, this->hasblob(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:CMsgExecuteSqlRequest)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* CMsgExecuteSqlRequest::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+uint8_t* CMsgExecuteSqlRequest::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:CMsgExecuteSqlRequest)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   // optional uint32 LogicType = 1;
   if (cached_has_bits & 0x00000008u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->logictype(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_logictype(), target);
   }
 
   // optional uint32 SessionID = 2 [default = 0];
   if (cached_has_bits & 0x00000010u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->sessionid(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_sessionid(), target);
   }
 
   // optional uint64 TimeStamp = 3 [default = 0];
   if (cached_has_bits & 0x00000020u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(3, this->timestamp(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_timestamp(), target);
   }
 
   // optional uint64 TeamID = 4 [default = 0];
   if (cached_has_bits & 0x00000040u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(4, this->teamid(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_teamid(), target);
   }
 
   // optional .SQLTYPE SqlType = 5 [default = SELECT];
   if (cached_has_bits & 0x00000400u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
-      5, this->sqltype(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      5, this->_internal_sqltype(), target);
   }
 
   // optional .CALLBACK Callback = 6 [default = MUSTCALLBACK];
   if (cached_has_bits & 0x00000800u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
-      6, this->callback(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      6, this->_internal_callback(), target);
   }
 
   // optional string Sql = 7;
   if (cached_has_bits & 0x00000001u) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->sql().data(), static_cast<int>(this->sql().length()),
+      this->_internal_sql().data(), static_cast<int>(this->_internal_sql().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
       "CMsgExecuteSqlRequest.Sql");
-    target =
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteStringToArray(
-        7, this->sql(), target);
+    target = stream->WriteStringMaybeAliased(
+        7, this->_internal_sql(), target);
   }
 
   // optional uint32 BufSize = 8 [default = 0];
   if (cached_has_bits & 0x00000080u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(8, this->bufsize(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(8, this->_internal_bufsize(), target);
   }
 
   // optional bytes Buffer = 9;
   if (cached_has_bits & 0x00000002u) {
-    target =
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBytesToArray(
-        9, this->buffer(), target);
+    target = stream->WriteBytesMaybeAliased(
+        9, this->_internal_buffer(), target);
   }
 
   // optional string SQLWhere = 10;
   if (cached_has_bits & 0x00000004u) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->sqlwhere().data(), static_cast<int>(this->sqlwhere().length()),
+      this->_internal_sqlwhere().data(), static_cast<int>(this->_internal_sqlwhere().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
       "CMsgExecuteSqlRequest.SQLWhere");
-    target =
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteStringToArray(
-        10, this->sqlwhere(), target);
+    target = stream->WriteStringMaybeAliased(
+        10, this->_internal_sqlwhere(), target);
   }
 
   // optional uint32 OutNumber = 11 [default = 0];
   if (cached_has_bits & 0x00000100u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(11, this->outnumber(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(11, this->_internal_outnumber(), target);
   }
 
   // optional .BLOB HasBlob = 12;
   if (cached_has_bits & 0x00000200u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
-      12, this->hasblob(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      12, this->_internal_hasblob(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:CMsgExecuteSqlRequest)
   return target;
@@ -920,12 +672,7 @@ size_t CMsgExecuteSqlRequest::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CMsgExecuteSqlRequest)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -935,126 +682,106 @@ size_t CMsgExecuteSqlRequest::ByteSizeLong() const {
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-          this->sql());
+          this->_internal_sql());
     }
 
     // optional bytes Buffer = 9;
     if (cached_has_bits & 0x00000002u) {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
-          this->buffer());
+          this->_internal_buffer());
     }
 
     // optional string SQLWhere = 10;
     if (cached_has_bits & 0x00000004u) {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-          this->sqlwhere());
+          this->_internal_sqlwhere());
     }
 
     // optional uint32 LogicType = 1;
     if (cached_has_bits & 0x00000008u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-          this->logictype());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_logictype());
     }
 
     // optional uint32 SessionID = 2 [default = 0];
     if (cached_has_bits & 0x00000010u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-          this->sessionid());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_sessionid());
     }
 
     // optional uint64 TimeStamp = 3 [default = 0];
     if (cached_has_bits & 0x00000020u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
-          this->timestamp());
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_timestamp());
     }
 
     // optional uint64 TeamID = 4 [default = 0];
     if (cached_has_bits & 0x00000040u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
-          this->teamid());
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_teamid());
     }
 
     // optional uint32 BufSize = 8 [default = 0];
     if (cached_has_bits & 0x00000080u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-          this->bufsize());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_bufsize());
     }
 
   }
   if (cached_has_bits & 0x00000f00u) {
     // optional uint32 OutNumber = 11 [default = 0];
     if (cached_has_bits & 0x00000100u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-          this->outnumber());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_outnumber());
     }
 
     // optional .BLOB HasBlob = 12;
     if (cached_has_bits & 0x00000200u) {
       total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->hasblob());
+        ::_pbi::WireFormatLite::EnumSize(this->_internal_hasblob());
     }
 
     // optional .SQLTYPE SqlType = 5 [default = SELECT];
     if (cached_has_bits & 0x00000400u) {
       total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->sqltype());
+        ::_pbi::WireFormatLite::EnumSize(this->_internal_sqltype());
     }
 
     // optional .CALLBACK Callback = 6 [default = MUSTCALLBACK];
     if (cached_has_bits & 0x00000800u) {
       total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->callback());
+        ::_pbi::WireFormatLite::EnumSize(this->_internal_callback());
     }
 
   }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void CMsgExecuteSqlRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:CMsgExecuteSqlRequest)
-  GOOGLE_DCHECK_NE(&from, this);
-  const CMsgExecuteSqlRequest* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<CMsgExecuteSqlRequest>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:CMsgExecuteSqlRequest)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:CMsgExecuteSqlRequest)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgExecuteSqlRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    CMsgExecuteSqlRequest::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgExecuteSqlRequest::GetClassData() const { return &_class_data_; }
+
+void CMsgExecuteSqlRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<CMsgExecuteSqlRequest *>(to)->MergeFrom(
+      static_cast<const CMsgExecuteSqlRequest &>(from));
 }
+
 
 void CMsgExecuteSqlRequest::MergeFrom(const CMsgExecuteSqlRequest& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CMsgExecuteSqlRequest)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = from._has_bits_[0];
   if (cached_has_bits & 0x000000ffu) {
     if (cached_has_bits & 0x00000001u) {
-      _has_bits_[0] |= 0x00000001u;
-      sql_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.sql_);
+      _internal_set_sql(from._internal_sql());
     }
     if (cached_has_bits & 0x00000002u) {
-      _has_bits_[0] |= 0x00000002u;
-      buffer_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.buffer_);
+      _internal_set_buffer(from._internal_buffer());
     }
     if (cached_has_bits & 0x00000004u) {
-      _has_bits_[0] |= 0x00000004u;
-      sqlwhere_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.sqlwhere_);
+      _internal_set_sqlwhere(from._internal_sqlwhere());
     }
     if (cached_has_bits & 0x00000008u) {
       logictype_ = from.logictype_;
@@ -1088,13 +815,7 @@ void CMsgExecuteSqlRequest::MergeFrom(const CMsgExecuteSqlRequest& from) {
     }
     _has_bits_[0] |= cached_has_bits;
   }
-}
-
-void CMsgExecuteSqlRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:CMsgExecuteSqlRequest)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void CMsgExecuteSqlRequest::CopyFrom(const CMsgExecuteSqlRequest& from) {
@@ -1108,40 +829,43 @@ bool CMsgExecuteSqlRequest::IsInitialized() const {
   return true;
 }
 
-void CMsgExecuteSqlRequest::Swap(CMsgExecuteSqlRequest* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void CMsgExecuteSqlRequest::InternalSwap(CMsgExecuteSqlRequest* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
-  sql_.Swap(&other->sql_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  buffer_.Swap(&other->buffer_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  sqlwhere_.Swap(&other->sqlwhere_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  swap(logictype_, other->logictype_);
-  swap(sessionid_, other->sessionid_);
-  swap(timestamp_, other->timestamp_);
-  swap(teamid_, other->teamid_);
-  swap(bufsize_, other->bufsize_);
-  swap(outnumber_, other->outnumber_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &sql_, lhs_arena,
+      &other->sql_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &buffer_, lhs_arena,
+      &other->buffer_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &sqlwhere_, lhs_arena,
+      &other->sqlwhere_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(CMsgExecuteSqlRequest, outnumber_)
+      + sizeof(CMsgExecuteSqlRequest::outnumber_)
+      - PROTOBUF_FIELD_OFFSET(CMsgExecuteSqlRequest, logictype_)>(
+          reinterpret_cast<char*>(&logictype_),
+          reinterpret_cast<char*>(&other->logictype_));
   swap(hasblob_, other->hasblob_);
   swap(sqltype_, other->sqltype_);
   swap(callback_, other->callback_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgExecuteSqlRequest::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_dbmessage_2eproto_getter, &descriptor_table_dbmessage_2eproto_once,
+      file_level_metadata_dbmessage_2eproto[0]);
 }
-
 
 // ===================================================================
 
-void CMsgExecuteSqlResponse::InitAsDefaultInstance() {
-}
 class CMsgExecuteSqlResponse::_Internal {
  public:
   using HasBits = decltype(std::declval<CMsgExecuteSqlResponse>()._has_bits_);
@@ -1168,63 +892,53 @@ class CMsgExecuteSqlResponse::_Internal {
   }
 };
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CMsgExecuteSqlResponse::kLogicTypeFieldNumber;
-const int CMsgExecuteSqlResponse::kSessionIDFieldNumber;
-const int CMsgExecuteSqlResponse::kTimeStampFieldNumber;
-const int CMsgExecuteSqlResponse::kTeamIDFieldNumber;
-const int CMsgExecuteSqlResponse::kResultCodeFieldNumber;
-const int CMsgExecuteSqlResponse::kRowCountFieldNumber;
-const int CMsgExecuteSqlResponse::kColCountFieldNumber;
-const int CMsgExecuteSqlResponse::kFieldValueFieldNumber;
-const int CMsgExecuteSqlResponse::kFieldValueLenFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-CMsgExecuteSqlResponse::CMsgExecuteSqlResponse()
-  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+CMsgExecuteSqlResponse::CMsgExecuteSqlResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  fieldvalue_(arena),
+  fieldvaluelen_(arena) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:CMsgExecuteSqlResponse)
+  // @@protoc_insertion_point(arena_constructor:CMsgExecuteSqlResponse)
 }
 CMsgExecuteSqlResponse::CMsgExecuteSqlResponse(const CMsgExecuteSqlResponse& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr),
       _has_bits_(from._has_bits_),
       fieldvalue_(from.fieldvalue_),
       fieldvaluelen_(from.fieldvaluelen_) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&logictype_, &from.logictype_,
     static_cast<size_t>(reinterpret_cast<char*>(&colcount_) -
     reinterpret_cast<char*>(&logictype_)) + sizeof(colcount_));
   // @@protoc_insertion_point(copy_constructor:CMsgExecuteSqlResponse)
 }
 
-void CMsgExecuteSqlResponse::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_CMsgExecuteSqlResponse_dbmessage_2eproto.base);
-  ::memset(&logictype_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&colcount_) -
-      reinterpret_cast<char*>(&logictype_)) + sizeof(colcount_));
+inline void CMsgExecuteSqlResponse::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&logictype_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&colcount_) -
+    reinterpret_cast<char*>(&logictype_)) + sizeof(colcount_));
 }
 
 CMsgExecuteSqlResponse::~CMsgExecuteSqlResponse() {
   // @@protoc_insertion_point(destructor:CMsgExecuteSqlResponse)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
   SharedDtor();
 }
 
-void CMsgExecuteSqlResponse::SharedDtor() {
+inline void CMsgExecuteSqlResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void CMsgExecuteSqlResponse::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const CMsgExecuteSqlResponse& CMsgExecuteSqlResponse::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_CMsgExecuteSqlResponse_dbmessage_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void CMsgExecuteSqlResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:CMsgExecuteSqlResponse)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -1237,387 +951,197 @@ void CMsgExecuteSqlResponse::Clear() {
         reinterpret_cast<char*>(&logictype_)) + sizeof(colcount_));
   }
   _has_bits_.Clear();
-  _internal_metadata_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* CMsgExecuteSqlResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* CMsgExecuteSqlResponse::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // optional uint32 LogicType = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_logictype(&has_bits);
-          logictype_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          logictype_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional uint32 SessionID = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_sessionid(&has_bits);
-          sessionid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          sessionid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional uint64 TimeStamp = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_timestamp(&has_bits);
-          timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional uint64 TeamID = 4;
       case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
           _Internal::set_has_teamid(&has_bits);
-          teamid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          teamid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional uint32 ResultCode = 5;
       case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
           _Internal::set_has_resultcode(&has_bits);
-          resultcode_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          resultcode_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional uint32 RowCount = 6 [default = 0];
       case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
           _Internal::set_has_rowcount(&has_bits);
-          rowcount_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          rowcount_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // optional uint32 ColCount = 7 [default = 0];
       case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
           _Internal::set_has_colcount(&has_bits);
-          colcount_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          colcount_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // repeated bytes FieldValue = 8;
       case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 66)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(add_fieldvalue(), ptr, ctx);
+            auto str = _internal_add_fieldvalue();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 66);
-        } else goto handle_unusual;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<66>(ptr));
+        } else
+          goto handle_unusual;
         continue;
       // repeated uint32 FieldValueLen = 9;
       case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 72)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
           ptr -= 1;
           do {
             ptr += 1;
-            add_fieldvaluelen(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr));
+            _internal_add_fieldvaluelen(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 72);
-        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 74) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(mutable_fieldvaluelen(), ptr, ctx);
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<72>(ptr));
+        } else if (static_cast<uint8_t>(tag) == 74) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_fieldvaluelen(), ptr, ctx);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   _has_bits_.Or(has_bits);
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool CMsgExecuteSqlResponse::MergePartialFromCodedStream(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-  // @@protoc_insertion_point(parse_start:CMsgExecuteSqlResponse)
-  for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint32 LogicType = 1;
-      case 1: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
-          _Internal::set_has_logictype(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &logictype_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
 
-      // optional uint32 SessionID = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
-          _Internal::set_has_sessionid(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &sessionid_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional uint64 TimeStamp = 3;
-      case 3: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (24 & 0xFF)) {
-          _Internal::set_has_timestamp(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint64, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT64>(
-                 input, &timestamp_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional uint64 TeamID = 4;
-      case 4: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (32 & 0xFF)) {
-          _Internal::set_has_teamid(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint64, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT64>(
-                 input, &teamid_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional uint32 ResultCode = 5;
-      case 5: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (40 & 0xFF)) {
-          _Internal::set_has_resultcode(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &resultcode_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional uint32 RowCount = 6 [default = 0];
-      case 6: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (48 & 0xFF)) {
-          _Internal::set_has_rowcount(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &rowcount_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // optional uint32 ColCount = 7 [default = 0];
-      case 7: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (56 & 0xFF)) {
-          _Internal::set_has_colcount(&_has_bits_);
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &colcount_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // repeated bytes FieldValue = 8;
-      case 8: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (66 & 0xFF)) {
-          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadBytes(
-                input, this->add_fieldvalue()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // repeated uint32 FieldValueLen = 9;
-      case 9: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (72 & 0xFF)) {
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadRepeatedPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 1, 72u, input, this->mutable_fieldvaluelen())));
-        } else if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (74 & 0xFF)) {
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
-                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
-                 input, this->mutable_fieldvaluelen())));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:CMsgExecuteSqlResponse)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:CMsgExecuteSqlResponse)
-  return false;
-#undef DO_
-}
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-
-void CMsgExecuteSqlResponse::SerializeWithCachedSizes(
-    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:CMsgExecuteSqlResponse)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // optional uint32 LogicType = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(1, this->logictype(), output);
-  }
-
-  // optional uint32 SessionID = 2;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(2, this->sessionid(), output);
-  }
-
-  // optional uint64 TimeStamp = 3;
-  if (cached_has_bits & 0x00000004u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64(3, this->timestamp(), output);
-  }
-
-  // optional uint64 TeamID = 4;
-  if (cached_has_bits & 0x00000008u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64(4, this->teamid(), output);
-  }
-
-  // optional uint32 ResultCode = 5;
-  if (cached_has_bits & 0x00000010u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(5, this->resultcode(), output);
-  }
-
-  // optional uint32 RowCount = 6 [default = 0];
-  if (cached_has_bits & 0x00000020u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(6, this->rowcount(), output);
-  }
-
-  // optional uint32 ColCount = 7 [default = 0];
-  if (cached_has_bits & 0x00000040u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(7, this->colcount(), output);
-  }
-
-  // repeated bytes FieldValue = 8;
-  for (int i = 0, n = this->fieldvalue_size(); i < n; i++) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBytes(
-      8, this->fieldvalue(i), output);
-  }
-
-  // repeated uint32 FieldValueLen = 9;
-  for (int i = 0, n = this->fieldvaluelen_size(); i < n; i++) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(
-      9, this->fieldvaluelen(i), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:CMsgExecuteSqlResponse)
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* CMsgExecuteSqlResponse::InternalSerializeWithCachedSizesToArray(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+uint8_t* CMsgExecuteSqlResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:CMsgExecuteSqlResponse)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
   // optional uint32 LogicType = 1;
   if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->logictype(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_logictype(), target);
   }
 
   // optional uint32 SessionID = 2;
   if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->sessionid(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_sessionid(), target);
   }
 
   // optional uint64 TimeStamp = 3;
   if (cached_has_bits & 0x00000004u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(3, this->timestamp(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_timestamp(), target);
   }
 
   // optional uint64 TeamID = 4;
   if (cached_has_bits & 0x00000008u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(4, this->teamid(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_teamid(), target);
   }
 
   // optional uint32 ResultCode = 5;
   if (cached_has_bits & 0x00000010u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(5, this->resultcode(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(5, this->_internal_resultcode(), target);
   }
 
   // optional uint32 RowCount = 6 [default = 0];
   if (cached_has_bits & 0x00000020u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(6, this->rowcount(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(6, this->_internal_rowcount(), target);
   }
 
   // optional uint32 ColCount = 7 [default = 0];
   if (cached_has_bits & 0x00000040u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(7, this->colcount(), target);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(7, this->_internal_colcount(), target);
   }
 
   // repeated bytes FieldValue = 8;
-  for (int i = 0, n = this->fieldvalue_size(); i < n; i++) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      WriteBytesToArray(8, this->fieldvalue(i), target);
+  for (int i = 0, n = this->_internal_fieldvalue_size(); i < n; i++) {
+    const auto& s = this->_internal_fieldvalue(i);
+    target = stream->WriteBytes(8, s, target);
   }
 
   // repeated uint32 FieldValueLen = 9;
-  target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-    WriteUInt32ToArray(9, this->fieldvaluelen_, target);
+  for (int i = 0, n = this->_internal_fieldvaluelen_size(); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(9, this->_internal_fieldvaluelen(i), target);
+  }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
   // @@protoc_insertion_point(serialize_to_array_end:CMsgExecuteSqlResponse)
   return target;
@@ -1627,29 +1151,24 @@ size_t CMsgExecuteSqlResponse::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CMsgExecuteSqlResponse)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
-  }
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   // repeated bytes FieldValue = 8;
   total_size += 1 *
-      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->fieldvalue_size());
-  for (int i = 0, n = this->fieldvalue_size(); i < n; i++) {
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(fieldvalue_.size());
+  for (int i = 0, n = fieldvalue_.size(); i < n; i++) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
-      this->fieldvalue(i));
+      fieldvalue_.Get(i));
   }
 
   // repeated uint32 FieldValueLen = 9;
   {
-    size_t data_size = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+    size_t data_size = ::_pbi::WireFormatLite::
       UInt32Size(this->fieldvaluelen_);
     total_size += 1 *
-                  ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->fieldvaluelen_size());
+                  ::_pbi::FromIntSize(this->_internal_fieldvaluelen_size());
     total_size += data_size;
   }
 
@@ -1657,79 +1176,60 @@ size_t CMsgExecuteSqlResponse::ByteSizeLong() const {
   if (cached_has_bits & 0x0000007fu) {
     // optional uint32 LogicType = 1;
     if (cached_has_bits & 0x00000001u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-          this->logictype());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_logictype());
     }
 
     // optional uint32 SessionID = 2;
     if (cached_has_bits & 0x00000002u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-          this->sessionid());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_sessionid());
     }
 
     // optional uint64 TimeStamp = 3;
     if (cached_has_bits & 0x00000004u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
-          this->timestamp());
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_timestamp());
     }
 
     // optional uint64 TeamID = 4;
     if (cached_has_bits & 0x00000008u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
-          this->teamid());
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_teamid());
     }
 
     // optional uint32 ResultCode = 5;
     if (cached_has_bits & 0x00000010u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-          this->resultcode());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_resultcode());
     }
 
     // optional uint32 RowCount = 6 [default = 0];
     if (cached_has_bits & 0x00000020u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-          this->rowcount());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_rowcount());
     }
 
     // optional uint32 ColCount = 7 [default = 0];
     if (cached_has_bits & 0x00000040u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-          this->colcount());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_colcount());
     }
 
   }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void CMsgExecuteSqlResponse::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:CMsgExecuteSqlResponse)
-  GOOGLE_DCHECK_NE(&from, this);
-  const CMsgExecuteSqlResponse* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<CMsgExecuteSqlResponse>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:CMsgExecuteSqlResponse)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:CMsgExecuteSqlResponse)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgExecuteSqlResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    CMsgExecuteSqlResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgExecuteSqlResponse::GetClassData() const { return &_class_data_; }
+
+void CMsgExecuteSqlResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<CMsgExecuteSqlResponse *>(to)->MergeFrom(
+      static_cast<const CMsgExecuteSqlResponse &>(from));
 }
+
 
 void CMsgExecuteSqlResponse::MergeFrom(const CMsgExecuteSqlResponse& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CMsgExecuteSqlResponse)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   fieldvalue_.MergeFrom(from.fieldvalue_);
@@ -1759,13 +1259,7 @@ void CMsgExecuteSqlResponse::MergeFrom(const CMsgExecuteSqlResponse& from) {
     }
     _has_bits_[0] |= cached_has_bits;
   }
-}
-
-void CMsgExecuteSqlResponse::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:CMsgExecuteSqlResponse)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void CMsgExecuteSqlResponse::CopyFrom(const CMsgExecuteSqlResponse& from) {
@@ -1779,37 +1273,35 @@ bool CMsgExecuteSqlResponse::IsInitialized() const {
   return true;
 }
 
-void CMsgExecuteSqlResponse::Swap(CMsgExecuteSqlResponse* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
 void CMsgExecuteSqlResponse::InternalSwap(CMsgExecuteSqlResponse* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
-  fieldvalue_.InternalSwap(CastToBase(&other->fieldvalue_));
+  fieldvalue_.InternalSwap(&other->fieldvalue_);
   fieldvaluelen_.InternalSwap(&other->fieldvaluelen_);
-  swap(logictype_, other->logictype_);
-  swap(sessionid_, other->sessionid_);
-  swap(timestamp_, other->timestamp_);
-  swap(teamid_, other->teamid_);
-  swap(resultcode_, other->resultcode_);
-  swap(rowcount_, other->rowcount_);
-  swap(colcount_, other->colcount_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(CMsgExecuteSqlResponse, colcount_)
+      + sizeof(CMsgExecuteSqlResponse::colcount_)
+      - PROTOBUF_FIELD_OFFSET(CMsgExecuteSqlResponse, logictype_)>(
+          reinterpret_cast<char*>(&logictype_),
+          reinterpret_cast<char*>(&other->logictype_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgExecuteSqlResponse::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_dbmessage_2eproto_getter, &descriptor_table_dbmessage_2eproto_once,
+      file_level_metadata_dbmessage_2eproto[1]);
 }
-
 
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
-template<> PROTOBUF_NOINLINE ::CMsgExecuteSqlRequest* Arena::CreateMaybeMessage< ::CMsgExecuteSqlRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::CMsgExecuteSqlRequest >(arena);
+template<> PROTOBUF_NOINLINE ::CMsgExecuteSqlRequest*
+Arena::CreateMaybeMessage< ::CMsgExecuteSqlRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CMsgExecuteSqlRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::CMsgExecuteSqlResponse* Arena::CreateMaybeMessage< ::CMsgExecuteSqlResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::CMsgExecuteSqlResponse >(arena);
+template<> PROTOBUF_NOINLINE ::CMsgExecuteSqlResponse*
+Arena::CreateMaybeMessage< ::CMsgExecuteSqlResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CMsgExecuteSqlResponse >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 
