@@ -27,7 +27,7 @@ public:
 	void Resume();
 	void Reload(const string &fileName);
     //配置文件改变回调
-    static void lcb_OnConfigChanged(inotify_event *notifyEvent);
+/*    static void lcb_OnConfigChanged(inotify_event *notifyEvent);*/
 private:
 	void LoadFile(const string &fileName);
 private:

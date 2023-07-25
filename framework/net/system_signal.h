@@ -7,8 +7,8 @@
 #ifndef _PPE_SIGNAL_H_
 #define _PPE_SIGNAL_H_
 
-#include <event.h>
 #include <signal.h>
+#include <event2/event.h>
 #include "network_interface.h"
 
 class CSystemSignal: public IReactorHandler

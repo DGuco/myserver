@@ -50,14 +50,14 @@ void CConfigHandle::LoadFile(const string &fileName)
 	m_mConfigMap.insert(std::make_pair(fileName, static_pointer_cast<AJson>(pTmpConfig)));
 }
 
-void CConfigHandle::lcb_OnConfigChanged(inotify_event *notifyEvent)
-{
-
-    //todo 重新加载配置文件
-    char *fileName = notifyEvent->name;
-    CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskFront(
-            [fileName]()
-            {
-                CGameServer::GetSingletonPtr( )->GetConfigHandle( )->Reload(fileName);
-            });
-}
+//void CConfigHandle::lcb_OnConfigChanged(inotify_event *notifyEvent)
+//{
+//
+//    //todo 重新加载配置文件
+//    char *fileName = notifyEvent->name;
+//    CGameServer::GetSingletonPtr()->GetLogicThread()->PushTaskFront(
+//            [fileName]()
+//            {
+//                CGameServer::GetSingletonPtr( )->GetConfigHandle( )->Reload(fileName);
+//            });
+//}

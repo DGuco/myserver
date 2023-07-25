@@ -1,11 +1,9 @@
-#include <sys/socket.h>
 #include <string.h>
-#include <arpa/inet.h>
 #include <stdio.h>
-#include <sys/time.h>
-#include <signal.h>
-#include <bits/sigthread.h>
+#include <chrono>
 #include "base.h"
+
+using namespace std;
 
 // 通过unix时间戳获取是当年的第几天
 int GetDayOfYear(time_t tTime)
@@ -34,34 +32,22 @@ bool IsSameDay(time_t tFirstTime, time_t tSecondTime)
 // 获取当前秒数
 int GetSecondTime()
 {
-	struct timeval tmval = {0};
-	int nRetCode = gettimeofday(&tmval, NULL);
-	if (nRetCode != 0) {
-		return 0;
-	}
-	return (int) (tmval.tv_sec);
+	std::chrono::time_point<std::chrono::system_clock> tmTime = std::chrono::system_clock::now();
+	return tmTime.time_since_epoch().count() / 1000 / 1000;
 }
 
 // 获取当前毫秒数
-long GetMSTime()
+time_t GetMSTime()
 {
-	struct timeval tmval = {0};
-	int nRetCode = gettimeofday(&tmval, NULL);
-	if (nRetCode != 0) {
-		return 0;
-	}
-	return (long) ((tmval.tv_sec * 1000) + (tmval.tv_usec / 1000));
+	std::chrono::time_point<std::chrono::system_clock> tmTime = std::chrono::system_clock::now();
+	return tmTime.time_since_epoch().count() / 1000;
 }
 
 // 获取当前微秒
 time_t GetUSTime()
 {
-	struct timeval tmval = {0};
-	int nRetCode = gettimeofday(&tmval, NULL);
-	if (nRetCode != 0) {
-		return 0;
-	}
-	return (long) ((tmval.tv_sec * 1000 * 1000) + tmval.tv_usec);
+	std::chrono::time_point<std::chrono::system_clock> tmTime = std::chrono::system_clock::now();
+	return tmTime.time_since_epoch().count();
 }
 
 // 分割字符串，获取单词
@@ -100,68 +86,68 @@ void TrimStr(char *strInput)
 
 }
 
-int SockAddrToString(sockaddr_in *pstSockAddr, char *szResult)
-{
-	char *pcTempIP = NULL;
-	unsigned short nTempPort = 0;
-
-	if (!pstSockAddr || !szResult) {
-		return -1;
-	}
-
-	pcTempIP = inet_ntoa(pstSockAddr->sin_addr);
-
-	if (!pcTempIP) {
-		return -1;
-	}
-
-	nTempPort = ntohs(pstSockAddr->sin_port);
-	//unsigned short nTempPort_hton = htons(pstSockAddr->sin_port);
-
-	sprintf(szResult, "%s:%d", pcTempIP, nTempPort);
-	//sprintf(szResult, "%s", pstSockAddr->sa_data);
-
-	return 0;
-}
-
-int SockAddrToString(unsigned int ip, unsigned short port, char *szResult)
-{
-	if (!szResult) {
-		return -1;
-	}
-
-	struct in_addr addr;
-	addr.s_addr = (in_addr_t) ip;
-	char *pcTempIP = inet_ntoa(addr);
-
-	if (!pcTempIP) {
-		return -1;
-	}
-
-	sprintf(szResult, "%s:%d", pcTempIP, port);
-
-	return 0;
-}
-
-// 获取两段时间的间隔
-int TimeValMinus(timeval &tvA, timeval &tvB, timeval &tvResult)
-{
-	timeval tvTmp;
-
-	if (tvA.tv_usec < tvB.tv_usec) {
-		tvTmp.tv_usec = (1000000 + tvA.tv_usec) - tvB.tv_usec;
-		tvTmp.tv_sec = tvA.tv_sec - tvB.tv_sec - 1;
-	}
-	else {
-		tvTmp.tv_usec = tvA.tv_usec - tvB.tv_usec;
-		tvTmp.tv_sec = tvA.tv_sec - tvB.tv_sec;
-	}
-
-	tvResult.tv_sec = tvTmp.tv_sec;
-	tvResult.tv_usec = tvTmp.tv_usec;
-
-	return 0;
-}
+// int SockAddrToString(sockaddr_in *pstSockAddr, char *szResult)
+// {
+// 	char *pcTempIP = NULL;
+// 	unsigned short nTempPort = 0;
+// 
+// 	if (!pstSockAddr || !szResult) {
+// 		return -1;
+// 	}
+// 
+// 	pcTempIP = inet_ntoa(pstSockAddr->sin_addr);
+// 
+// 	if (!pcTempIP) {
+// 		return -1;
+// 	}
+// 
+// 	nTempPort = ntohs(pstSockAddr->sin_port);
+// 	//unsigned short nTempPort_hton = htons(pstSockAddr->sin_port);
+// 
+// 	sprintf(szResult, "%s:%d", pcTempIP, nTempPort);
+// 	//sprintf(szResult, "%s", pstSockAddr->sa_data);
+// 
+// 	return 0;
+// }
+// 
+// int SockAddrToString(unsigned int ip, unsigned short port, char *szResult)
+// {
+// 	if (!szResult) {
+// 		return -1;
+// 	}
+// 
+// 	struct in_addr addr;
+// 	addr.s_addr = (in_addr_t) ip;
+// 	char *pcTempIP = inet_ntoa(addr);
+// 
+// 	if (!pcTempIP) {
+// 		return -1;
+// 	}
+// 
+// 	sprintf(szResult, "%s:%d", pcTempIP, port);
+// 
+// 	return 0;
+// }
+// 
+// // 获取两段时间的间隔
+// int TimeValMinus(timeval &tvA, timeval &tvB, timeval &tvResult)
+// {
+// 	timeval tvTmp;
+// 
+// 	if (tvA.tv_usec < tvB.tv_usec) {
+// 		tvTmp.tv_usec = (1000000 + tvA.tv_usec) - tvB.tv_usec;
+// 		tvTmp.tv_sec = tvA.tv_sec - tvB.tv_sec - 1;
+// 	}
+// 	else {
+// 		tvTmp.tv_usec = tvA.tv_usec - tvB.tv_usec;
+// 		tvTmp.tv_sec = tvA.tv_sec - tvB.tv_sec;
+// 	}
+// 
+// 	tvResult.tv_sec = tvTmp.tv_sec;
+// 	tvResult.tv_usec = tvTmp.tv_usec;
+// 
+// 	return 0;
+// }
 
 Tokens StrSplit(const std::string &src, const std::string &sep)
 {
@@ -182,13 +168,13 @@ Tokens StrSplit(const std::string &src, const std::string &sep)
 
 void ignore_pipe()
 {
-	struct sigaction sig;
-
-	sig.sa_handler = SIG_IGN;
-	sig.sa_flags = 0;
-	sigemptyset(&sig.sa_mask);
-	sigaddset(&sig.sa_mask, SIGPIPE);
-	if (pthread_sigmask(SIG_BLOCK, &sig.sa_mask, NULL) == -1) {
-		perror("SIG_PIPE");
-	}
+// 	struct sigaction sig;
+// 
+// 	sig.sa_handler = SIG_IGN;
+// 	sig.sa_flags = 0;
+// 	sigemptyset(&sig.sa_mask);
+// 	sigaddset(&sig.sa_mask, SIGPIPE);
+// 	if (pthread_sigmask(SIG_BLOCK, &sig.sa_mask, NULL) == -1) {
+// 		perror("SIG_PIPE");
+// 	}
 }

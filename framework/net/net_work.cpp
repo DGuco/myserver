@@ -145,18 +145,18 @@ bool CNetWork::Connect(const char *szNetAddr,
 	return bRet;
 }
 
-bool CNetWork::ListenFile(string filePath,
-						  FuncFileListenerOnEvent funcFileListenerOnEvent,
-						  int flags)
-{
-	CFileListener *tmpFileListener = new CFileListener(GetEventReactor(), filePath, funcFileListenerOnEvent, flags);
-	bool bRet = GetEventReactor()->Register(tmpFileListener);
-	if (bRet) {
-		InsertNewFileListener(tmpFileListener->GetSocket().GetSocket(), tmpFileListener);
-		return true;
-	}
-	return false;
-}
+// bool CNetWork::ListenFile(string filePath,
+// 						  FuncFileListenerOnEvent funcFileListenerOnEvent,
+// 						  int flags)
+// {
+// 	CFileListener *tmpFileListener = new CFileListener(GetEventReactor(), filePath, funcFileListenerOnEvent, flags);
+// 	bool bRet = GetEventReactor()->Register(tmpFileListener);
+// 	if (bRet) {
+// 		InsertNewFileListener(tmpFileListener->GetSocket().GetSocket(), tmpFileListener);
+// 		return true;
+// 	}
+// 	return false;
+// }
 
 void CNetWork::DispatchEvents()
 {

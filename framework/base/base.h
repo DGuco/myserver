@@ -8,11 +8,17 @@
 #ifndef __BASE_H__
 #define __BASE_H__
 
+#ifdef __LINUX__
 #include <netinet/in.h>
+#include <sigthread.h>
+#else
+#include <Windows.h>
+#endif // DEBUG
+
+
 #include <stdio.h>
 #include <vector>
 #include <string>
-#include <bits/sigthread.h>
 #include <csignal>
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 
@@ -42,21 +48,21 @@ typedef char TName[32];
 
 typedef char TFName[64];
 
-typedef __int64_t int64;
+typedef long long int64;
 
-typedef __int32_t int32;
+typedef int int32;
 
-typedef __int16_t int16;
+typedef short int16;
 
-typedef __int8_t int8;
+typedef char int8;
 
-typedef __uint64_t uint64;
+typedef unsigned long long uint64;
 
-typedef __uint32_t uint32;
+typedef unsigned int uint32;
 
-typedef __uint16_t uint16;
+typedef unsigned  short uint16;
 
-typedef __uint8_t uint8;
+typedef unsigned char uint8;
 
 #ifndef TRUE
 #define TRUE 1
@@ -95,13 +101,13 @@ time_t GetUSTime();
 // 分割字符串，获取单词
 void TrimStr(char *strInput);
 
-// 将sockaddr_in中的ip和port转换成string
-int SockAddrToString(sockaddr_in *pstSockAddr, char *szResult);
-// 将ip和port转化成string
-int SockAddrToString(unsigned int ip, unsigned short port, char *szResult);
+//// 将sockaddr_in中的ip和port转换成string
+//int SockAddrToString(sockaddr_in *pstSockAddr, char *szResult);
+//// 将ip和port转化成string
+//int SockAddrToString(unsigned int ip, unsigned short port, char *szResult);
 
-// 获取两段时间的间隔
-int TimeValMinus(timeval &tvA, timeval &tvB, timeval &tvResult);
+//// 获取两段时间的间隔
+//int TimeValMinus(timeval &tvA, timeval &tvB, timeval &tvResult);
 
 // 广播列表，为了速度考虑，用数组实现
 struct stPointList

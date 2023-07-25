@@ -7,10 +7,8 @@
 #ifndef _NETWORK_INTERFACE_H_
 #define _NETWORK_INTERFACE_H_
 
-
 #include <functional>
-#include <event.h>
-#include <sys/inotify.h>
+#include "event2/event.h"
 #include "base.h"
 #include "net_inc.h"
 
@@ -88,6 +86,6 @@ typedef std::function<void(uint32, CAcceptor *)> FuncAcceptorOnNew;
 
 /** CallBack for CFileListener
  */
-typedef std::function<void(inotify_event *notifyEvent)> FuncFileListenerOnEvent;
+/*typedef std::function<void(inotify_event *notifyEvent)> FuncFileListenerOnEvent;*/
 
 #endif

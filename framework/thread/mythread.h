@@ -8,7 +8,6 @@
 #ifndef _MY_THREAD_HPP_
 #define _MY_THREAD_HPP_
 
-#include <pthread.h>
 #include <condition_variable>
 #include <mutex>
 #include <thread>

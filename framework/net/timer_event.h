@@ -6,7 +6,8 @@
 #ifndef SERVER_SYS_EVENT_H
 #define SERVER_SYS_EVENT_H
 
-#include <event.h>
+#include <event2/event.h>
+#include <event2/event_struct.h>
 #include <memory>
 #include "network_interface.h"
 
