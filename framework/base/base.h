@@ -12,14 +12,13 @@
 #include <netinet/in.h>
 #include <sigthread.h>
 #else
-#include <Windows.h>
 #endif // DEBUG
 
 
-#include <stdio.h>
 #include <vector>
 #include <string>
 #include <csignal>
+#include <stdio.h>
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 
 #define UID_LENGTH        (64)    // 帐号长度

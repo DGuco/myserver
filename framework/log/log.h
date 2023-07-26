@@ -6,6 +6,12 @@
 
 #ifndef _LOG_H_
 #define _LOG_H_
+
+#ifdef _WINDOWS_
+#include <fileapi.h>
+#else
+#endif // _WINDOWS_
+
 #include <string>
 #include <stdarg.h>
 #include <spdlog/spdlog.h>
