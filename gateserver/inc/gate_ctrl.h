@@ -8,7 +8,6 @@
 #ifndef __GATE_CTRL_H__
 #define __GATE_CTRL_H__
 
-#include <sys/epoll.h>
 #include "gate_def.h"
 #include "log.h"
 #include "server_tool.h"

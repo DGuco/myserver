@@ -10,7 +10,7 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     add_definitions(-D_LINUX_ -D_DEBUG_ -DUSE_MY_ASSERT)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     #libevent 多线程开启-DEVENT_THREAD_SAFE
-    add_definitions(-D_WINDOWS_ -D_WIN32_ -D_WIN32 -D_X86_ -D_DEBUG_ -DUSE_MY_ASSERT)
+    add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT)
 endif()
 
 set(SOURCE_FILES
