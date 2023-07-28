@@ -7,10 +7,10 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     add_compile_options(-Wall -ggdb -pipe -std=c++14)
 
     #libevent 多线程开启-DEVENT_THREAD_SAFE
-    add_definitions(-D_LINUX_ -D_DEBUG_ -DUSE_MY_ASSERT)
+    add_definitions(-D__LINUX__ -D_DEBUG_ -DUSE_MY_ASSERT)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     #libevent 多线程开启-DEVENT_THREAD_SAFE
-    add_definitions(-D_DEBUG_ -DUSE_MY_ASSERT -D_USING_V110_SDK71_)
+    add_definitions(-D__WINDOWS__ -D_DEBUG_ -DUSE_MY_ASSERT -D_USING_V110_SDK71_)
 endif()
 
 set(SOURCE_FILES
