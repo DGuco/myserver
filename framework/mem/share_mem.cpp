@@ -1,10 +1,7 @@
 #include <string.h>
 #include <stdio.h>
-#include <sys/shm.h>
-#include <sys/ipc.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <unistd.h>
 #include "share_mem.h"
 #include "log.h"
 

@@ -11,16 +11,6 @@
 
 #define CACHE_LINE_SIZE (64)
 
-//内存屏障
-#define __MEM_BARRIER \
-    __asm__ __volatile__("mfence":::"memory")
-//内存读屏障
-#define __READ_BARRIER__ \
-    __asm__ __volatile__("lfence":::"memory")
-//内存写屏障
-#define __WRITE_BARRIER__ \
-    __asm__ __volatile__("sfence":::"memory")
-
 
 #define QUEUERESERVELENGTH 8        //预留长度
 
