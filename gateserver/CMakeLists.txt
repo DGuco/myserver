@@ -14,14 +14,14 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 endif()
 
 set(SOURCE_FILES
-        main.cpp
-        inc/gate_def.h
-        inc/gate_ctrl.h
-        src/gate_ctrl.cpp
-        inc/net_manager.h
-        src/net_manager.cpp
-        inc/mes_handle.h
-        src/mes_handle.cpp)
+    "main.cpp" 
+    "inc/gate_ctrl.h" 
+    "inc/gate_def.h"
+    "inc/mes_handle.h"
+    "inc/net_manager.h" 
+    "src/gate_ctrl.cpp" 
+    "src/mes_handle.cpp"
+    "src/net_manager.cpp")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
@@ -30,7 +30,6 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/json
         ${CMAKE_SOURCE_DIR}/framework/log
         ${CMAKE_SOURCE_DIR}/framework/mem
-        ${CMAKE_SOURCE_DIR}/framework/message
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/framework/timer
