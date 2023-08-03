@@ -20,49 +20,36 @@
 #include <csignal>
 #include <stdio.h>
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
+#define STR(x)			#x
 
-#define UID_LENGTH        (64)    // 帐号长度
+#define UID_LENGTH				(64)    // 帐号长度
 #define NAME_LENGTH            (32)    // 名字长度
 #define PATH_LENGTH        (256)    // 文件路径字符长度
 #define ADDR_LENGTH            (32)    // IP和PORT的长度
 #define GUIDE_MAX            (100)
-
-#define MAX_PACKAGE_LEN    (1024*60)        // 单个包的最大长度
+#define MAX_PACKAGE_LEN		 (1024*60)        // 单个包的最大长度
 #define MAX_BROADCAST_NUM    (1000)            // 单词最大广播数量
 #define PIPE_SIZE            (0x1000000)    // 共享内存管道大小 16M
 
 #define RECVBUFLENGTH        (1024*1024*6)        // 接收缓冲区大小
 #define POSTBUFLENGTH        (1024*1024*6)        // 发送缓冲区大小
 #define RECV_BUF_LEN          (8 * 1024)   // 接收客户端信息的缓冲区
-
 #define SECOND_ABOVE_CONVERSION_UNIT    60                // 秒以上换算单位
 #define SECOND_UNDER_CONVERSION_UNIT    1000            // 秒以下换算单位
-
 #define MSG_HEAD_LEN 8  // 接收或发送给客户端消息的消息头字节数
 #define MSG_MAX_LEN                10*1024            // 接收或发送给客户端消息的最大字节数
+#define NULL						(0)
+
 
 typedef unsigned char BYTE;
-
-typedef char TName[32];
-
-typedef char TFName[64];
-
 typedef long long int64;
-
 typedef int int32;
-
 typedef short int16;
-
 typedef char int8;
-
 typedef unsigned long long uint64;
-
 typedef unsigned int uint32;
-
 typedef unsigned  short uint16;
-
 typedef unsigned char uint8;
-
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -71,11 +58,11 @@ typedef unsigned char uint8;
 #endif
 
 #ifndef False
-#define    False  0
+#define False  0
 #endif
 
 #ifndef True
-#define    True   1
+#define True   1
 #endif
 
 typedef std::vector<std::string> Tokens;

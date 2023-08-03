@@ -4,12 +4,10 @@ project(framework)
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     set(CMAKE_C_COMPILER gcc)
     set(CMAKE_CXX_COMPILER g++)
-    add_compile_options(-Wall -fPIC -ggdb -pipe -std=c++14)
+    add_compile_options(-Wall -fPIC -ggdb -pipe -std=c++11)
 
-    #libevent 多线程开启-DEVENT_THREAD_SAFE
     add_definitions(-D__LINUX__ )
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    #libevent 多线程开启-DEVENT_THREAD_SAFE
     add_definitions(-D__WINDOWS__)
 endif()
 
@@ -97,7 +95,7 @@ set(FRAMEWORK
         "timer/clock.h"
         "timer/timer.cpp"
         "timer/timer.h"
-        "base/platform_def.h")
+        "base/platform_def.h" "base/t_array.h")
 
 
 include_directories(

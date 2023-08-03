@@ -8,23 +8,19 @@
 #define __PLATFORM_DEF_H__
 
 #ifdef __LINUX__
-    //дз╢Ффауо
+    //
     #define __MEM_BARRIER \
         __asm__ __volatile__("mfence":::"memory")
-    //дз╢Ф╤афауо
     #define __READ_BARRIER__ \
         __asm__ __volatile__("lfence":::"memory")
-    //дз╢Фп╢фауо
     #define __WRITE_BARRIER__ \
         __asm__ __volatile__("sfence":::"memory")
 #else
 #include <windows.h>
-    //дз╢Ффауо
     #define __MEM_BARRIER MemoryFence 
-    //дз╢Ф╤афауо
     #define __READ_BARRIER__ LoadFence
-    //дз╢Фп╢фауо
     #define __WRITE_BARRIER__ StoreFence
+
 #endif
 
 #endif //__PLATFORM_DEF_H__
