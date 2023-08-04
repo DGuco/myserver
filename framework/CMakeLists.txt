@@ -24,6 +24,13 @@ set(FRAMEWORK
         "base/reflection.h"
         "base/server_tool.cpp"
         "base/server_tool.h"
+        "base/platform_def.h" 
+        "base/t_array.h"
+        "base/safe_pointer.h" 
+        "base/rb_tree.h"
+        "base/hash_function.h"
+        "base/hash_helper.h"
+        "base/rbthash_map.h"
         "const/common_def.h"
         "const/dblogin_type.h"
         "const/err_code.h"
@@ -33,7 +40,6 @@ set(FRAMEWORK
         "json/json_interface.h"
         "log/log.cpp" 
         "log/log.h"
-        "mem/array_list.h" 
         "mem/code_queue.cpp" 
         "mem/code_queue.h"
         "mem/map.h"
@@ -44,8 +50,6 @@ set(FRAMEWORK
         "mem/share_mem.h" 
         "mem/shm.cpp"
         "mem/shm.h"
-        "mem/unordered_map.h" 
-        "mem/vector.h"
         "../common/message/common.pb.h" 
         "../common/message/dbmessage.pb.h"
         "../common/message/message.pb.h"
@@ -94,8 +98,7 @@ set(FRAMEWORK
         "timer/clock.cpp" 
         "timer/clock.h"
         "timer/timer.cpp"
-        "timer/timer.h"
-        "base/platform_def.h" "base/t_array.h")
+        "timer/timer.h")
 
 
 include_directories(
