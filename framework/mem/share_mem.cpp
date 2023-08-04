@@ -1,15 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string>
 #ifdef __LINUX__
 #include <unistd.h>
 #include <sys/shm.h>
 #include <sys/ipc.h>
+#else
 #endif
+#include "base.h"
 #include "platform_def.h"
 #include "share_mem.h"
 #include "log.h"
+#include "t_array.h"
 
+using namespace my_std;
 
 SMKey ShareMemAPI::MakeKey(const char *pFile, int vId)
 {
@@ -17,8 +22,8 @@ SMKey ShareMemAPI::MakeKey(const char *pFile, int vId)
 	return ftok(pFile, vId);
 #else
 #ifdef UNICODE
-	wchar_t wString[4096] = { 0 };
-	MultiByteToWideChar(CP_ACP, 0, pFile, -1, wString, 4096);
+	TArray<wchar_t, 4096> wString;
+	MultiByteToWideChar(CP_ACP, 0, pFile, -1, wString.GetData(), 4096);
 	HANDLE hFile = CreateFile(wString,
 		GENERIC_READ | GENERIC_WRITE,
 		FILE_SHARE_READ,
@@ -36,96 +41,88 @@ SMKey ShareMemAPI::MakeKey(const char *pFile, int vId)
 		NULL);
 	return hFile;
 #endif // !UNICODE
+#endif //__LINUX__
+}
+
+SMKey ShareMemAPI::CreateShareMem(SMKey iKey, int vSize)
+{
+	if (iKey < 0)
+	{
+		LOG_ERROR("default", "CreateShareMem failed. iKey illegal.");
+		return (SMKey)-1;
+	}
+#ifdef __LINUX__
+	return shmget(iKey, (size_t)vSize, IPC_CREAT | IPC_EXCL | 0666);
+#else
+	CString<64> sKey(std::to_string((long long)iKey));
+	return CreateFileMapping(
+		(HANDLE)0xFFFFFFFFFFFFFFFF,
+		NULL,
+		PAGE_READWRITE,
+		0,
+		vSize,
+		sKey.c_str());
 #endif
 }
 
-BYTE * ShareMemAPI::CreateShareMem(SMKey iKey, int vSize)
+SMKey ShareMemAPI::OpenShareMem(SMKey iKey, int vSize)
 {
-#ifdef __LINUX__
-	if (iKey < 0) 
+	if (iKey < 0)
 	{
-		LOG_ERROR("default", "CreateShareMem failed. iKey illegal.");
+		LOG_ERROR("default", "OpenShareMem failed. iKey illegal.");
+		return (SMKey)-1;
+	}
+#ifdef __LINUX__
+	iShmID = shmget(iKey, 0, 0666);
+	return iShmID;
+#else
+	CString<64> sKey(std::to_string((long long)iKey));
+	return OpenFileMapping(
+		FILE_MAP_ALL_ACCESS,
+		TRUE,
+		sKey.c_str());
+#endif
+}
+
+BYTE* ShareMemAPI::AttachShareMem(SMKey iKey)
+{
+	if (iKey < 0)
+	{
+		LOG_ERROR("default", "AttachShareMem failed. iKey illegal.");
 		return NULL;
 	}
-
-	iShmID = shmget(iKey, (size_t)vSize, IPC_CREAT | IPC_EXCL | 0666);
-	return iShmID;
-	if (iShmID < 0)
-	{
-		if (errno != EEXIST) {
-			LOG_ERROR("default", "Alloc share memory failed, iKey:{}, size:{}, error:{}",
-				iKey, iTempShmSize, strerror(errno));
-			exit(-1);
-		}
-		LOG_INFO("default", "Same shm seg (key={}) exist, now try to attach it...", iKey);
-		iShmID = shmget(iKey, iTempShmSize, IPC_CREAT | 0666);
-		if (iShmID < 0) {
-			LOG_INFO("default", "Attach to share memory {} failed, {}. Now try to touch it", iShmID, strerror(errno));
-			iShmID = shmget(iKey, 0, 0666);
-			if (iShmID < 0) {
-				LOG_ERROR("default", "Fatel error, touch to shm failed, {}.", strerror(errno));
-				exit(-1);
-			}
-			else {
-				LOG_INFO("default", "First remove the exist share memory {}", iShmID);
-				if (shmctl(iShmID, IPC_RMID, NULL)) {
-					LOG_ERROR("default", "Remove share memory failed, {}", strerror(errno));
-					exit(-1);
-				}
-				iShmID = shmget(iKey, iTempShmSize, IPC_CREAT | IPC_EXCL | 0666);
-				if (iShmID < 0) {
-					LOG_ERROR("default", "Fatal error, alloc share memory failed, {}", strerror(errno));
-					exit(-1);
-				}
-			}
-		}
-		else {
-			LOG_INFO("default", "Attach to share memory succeed.");
-		}
-	}
-
-	LOG_INFO("default", "Successfully alloced share memory block, (key={}), id = {}, size = {}", iKey, iShmID, iTempShmSize);
-	BYTE* tpShm = (BYTE*)shmat(iShmID, NULL, 0);
-	if ((void*)-1 == tpShm) {
-		LOG_ERROR("default", "create share memory failed, shmat failed, iShmID = {}, error = {}.",
-			iShmID, strerror(errno));
-		exit(0);
-	}
-
-	return tpShm;
+#ifdef __LINUX__
+	return (BYTE*)shmat(iShmID, NULL, 0);
 #else
-	ctx->map = CreateFileMapping(
-		ctx->handle,
-		NULL,
-		PAGE_READONLY,
-		0,
-		0,
-		NULL
-	);
-#endif // __LINUX__
+	CString<64> sKey(std::to_string((long long)iKey));
+	return (BYTE*)MapViewOfFile(iKey,FILE_MAP_ALL_ACCESS,0,0,0);
+#endif
+}
+
+int ShareMemAPI::DetachShareMem(BYTE* pAddr)
+{
+	if (pAddr == NULL)
+	{
+		LOG_ERROR("default", "DetachShareMem failed. pAddr illegal.");
+		return 0;
+	}
+#ifdef __LINUX__
+	return shmdt(pAddr);
+#else
+	return UnmapViewOfFile(pAddr);
+#endif
 }
 
 int ShareMemAPI::DestroyShareMem(SMKey iKey)
 {
-	int iShmID;
-
-	if (iKey < 0) {
-		LOG_ERROR("default", "Error in ftok, {}.", strerror(errno));
-		return -1;
+	if (iKey < 0)
+	{
+		LOG_ERROR("default", "DestroyShareMem failed. iKey illegal.");
+		return NULL;
 	}
-	LOG_INFO("default", "Touch to share memory key = {}...", iKey);
-	iShmID = shmget(iKey, 0, 0666);
-	if (iShmID < 0) {
-		LOG_ERROR("default", "Error, touch to shm failed, {}", strerror(errno));
-		return -1;
-	}
-	else {
-		LOG_INFO("default", "Now remove the exist share memory {}", iShmID);
-		if (shmctl(iShmID, IPC_RMID, NULL)) {
-			LOG_ERROR("default", "Remove share memory failed, {}", strerror(errno));
-			return -1;
-		}
-		LOG_INFO("default", "Remove shared memory(id = {}, key = {}) succeed.", iShmID, iKey);
-	}
-	return 0;
+#ifdef __LINUX__
+	return shmctl(iShmiKeyID, IPC_RMID, NULL);
+#else
+	return CloseHandle(iKey);
+#endif
 }

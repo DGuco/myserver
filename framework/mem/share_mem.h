@@ -27,12 +27,53 @@ namespace ShareMemAPI
 	// Parameter: int vId
 	//************************************
 	SMKey MakeKey(const char* pFile, int vId);
-	//创建共享内存块
-	BYTE* CreateShareMem(SMKey iKey, int vSize);
-
-	//销毁共享内存块
+	//************************************
+	// Method:    CreateShareMem
+	// FullName:  ShareMemAPI::CreateShareMem
+	// Access:    public 
+	// Returns:   SMKey
+	// Qualifier: 创建共享内存块
+	// Parameter: SMKey iKey
+	// Parameter: int vSize
+	//************************************
+	SMKey CreateShareMem(SMKey iKey, int vSize);
+	//************************************
+	// Method:    OpenShareMem
+	// FullName:  ShareMemAPI::OpenShareMem
+	// Access:    public 
+	// Returns:   SMKey
+	// Qualifier: /打开共享内存
+	// Parameter: SMKey iKey
+	// Parameter: int vSize
+	//************************************
+	SMKey OpenShareMem(SMKey iKey, int vSize);
+	//************************************
+	// Method:    AttachShareMem
+	// FullName:  ShareMemAPI::AttachShareMem
+	// Access:    public 
+	// Returns:   BYTE*
+	// Qualifier: attach 到共享内存块中
+	// Parameter: SMKey iKey
+	//************************************
+	BYTE* AttachShareMem(SMKey iKey);
+	//************************************
+	// Method:    DetachShareMem
+	// FullName:  ShareMemAPI::DetachShareMem
+	// Access:    public 
+	// Returns:   int
+	// Qualifier: Detach 共享内存块
+	// Parameter: BYTE * pAddr
+	//************************************
+	int DetachShareMem(BYTE* pAddr);
+	//************************************
+	// Method:    DestroyShareMem
+	// FullName:  ShareMemAPI::DestroyShareMem
+	// Access:    public 
+	// Returns:   int
+	// Qualifier: 销毁共享内存块
+	// Parameter: SMKey iKey
+	//************************************
 	int DestroyShareMem(SMKey iKey);
-
 };
 
 
