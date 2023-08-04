@@ -4,10 +4,12 @@ project(framework)
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     set(CMAKE_C_COMPILER gcc)
     set(CMAKE_CXX_COMPILER g++)
+    set(CMAKE_CXX_STANDARD 11)
     add_compile_options(-Wall -fPIC -ggdb -pipe -std=c++11)
 
     add_definitions(-D__LINUX__ )
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+    set(CMAKE_CXX_STANDARD 11)
     add_definitions(-D__WINDOWS__)
 endif()
 
@@ -42,12 +44,12 @@ set(FRAMEWORK
         "log/log.h"
         "mem/code_queue.cpp" 
         "mem/code_queue.h"
-        "mem/map.h"
+        
         "mem/mempool_safty.h" 
         "mem/mem_pool.h"
         "mem/share_container_interface.h"
-        "mem/share_mem.cpp"
-        "mem/share_mem.h" 
+        "mem/shm_api.cpp"
+        "mem/shm_api.h" 
         "mem/shm.cpp"
         "mem/shm.h"
         "../common/message/common.pb.h" 

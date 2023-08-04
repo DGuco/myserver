@@ -9,7 +9,7 @@
 
 #include "my_assert.h"
 #include <string>
-#include <type_trais>
+#include <type_traits>
 
 using namespace std;
 
@@ -18,7 +18,7 @@ namespace my_std
 	template<typename Type_, int Len_>
 	class TArray
 	{
-		static_assert(std::is_standard_layout<Class_>, "TArray not support not stand layout class");
+		static_assert(std::is_standard_layout<Type_>::value, "TArray not support not stand layout class");
 		TArray()
 		{
 			memset(m_data, 0, sizeof(Type_) * Len_);
@@ -30,7 +30,7 @@ namespace my_std
 			return m_data[index];
 		}
 
-		const Type_& operator[] (int index)
+		const Type_& operator[] (int index) const
 		{
 			MY_ASSERT(index >= 0 && index < Len_, "index is out of range");
 			return m_data[index];

@@ -36,7 +36,7 @@ namespace ShareMemAPI
 	// Parameter: SMKey iKey
 	// Parameter: int vSize
 	//************************************
-	SMKey CreateShareMem(SMKey iKey, int vSize);
+	SMKey CreateShareMem(SMKey iKey, size_t vSize);
 	//************************************
 	// Method:    OpenShareMem
 	// FullName:  ShareMemAPI::OpenShareMem
@@ -46,7 +46,7 @@ namespace ShareMemAPI
 	// Parameter: SMKey iKey
 	// Parameter: int vSize
 	//************************************
-	SMKey OpenShareMem(SMKey iKey, int vSize);
+	SMKey OpenShareMem(SMKey iKey, size_t vSize);
 	//************************************
 	// Method:    AttachShareMem
 	// FullName:  ShareMemAPI::AttachShareMem
