@@ -2,17 +2,17 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string>
+#include "base.h"
+#include "platform_def.h"
+#include "log.h"
+#include "t_array.h"
+#include "shm_api.h"
 #ifdef __LINUX__
 #include <unistd.h>
 #include <sys/shm.h>
 #include <sys/ipc.h>
 #else
 #endif
-#include "base.h"
-#include "platform_def.h"
-#include "log.h"
-#include "t_array.h"
-#include "shm_api.h"
 
 using namespace my_std;
 

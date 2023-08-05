@@ -44,10 +44,8 @@ set(FRAMEWORK
         "log/log.h"
         "mem/code_queue.cpp" 
         "mem/code_queue.h"
-        
         "mem/mempool_safty.h" 
         "mem/mem_pool.h"
-        "mem/share_container_interface.h"
         "mem/shm_api.cpp"
         "mem/shm_api.h" 
         "mem/shm.cpp"

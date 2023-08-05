@@ -36,9 +36,9 @@ public:
 	int Initialize(unsigned int nKey, size_t nSize);
     //设置共享内存创建时间戳
 	void SetStamp();
-    //new操作符重载将类对象定义到共享内存区地址
+    //new 操作符重载将类对象定义到共享内存区地址
 	void* operator new( size_t nSize);
-    //delete操作符重载
+    //delete 操作符重载
 	void  operator delete(void* pMem);
     //获取对象创建类型
 	EIMode GetInitMode();
@@ -63,7 +63,7 @@ private:
     //共享内存创建时间戳
 	time_t			m_tCreateTime;
 	time_t			m_tLastStamp;
-    //crc校验码
+    //crc 校验码
 	unsigned int	m_nCRC;
     //当前可用空闲内存去的起始地址
 	BYTE*			m_pbCurrentSegMent; 
