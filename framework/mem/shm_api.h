@@ -9,12 +9,6 @@
 
 #include "platform_def.h"
 
-#ifdef __LINUX__
-typedef INT SMKey;
-#else
-typedef void* SMKey;
-#endif
-
 namespace ShareMemAPI
 {
 	//************************************
@@ -26,7 +20,7 @@ namespace ShareMemAPI
 	// Parameter: const char * pFile
 	// Parameter: int vId
 	//************************************
-	SMKey MakeKey(const char* pFile, int vId);
+	//sm_key MakeKey(const char* pFile, int vId);
 	//************************************
 	// Method:    CreateShareMem
 	// FullName:  ShareMemAPI::CreateShareMem
@@ -36,7 +30,7 @@ namespace ShareMemAPI
 	// Parameter: SMKey iKey
 	// Parameter: int vSize
 	//************************************
-	SMKey CreateShareMem(SMKey iKey, size_t vSize);
+	sm_handler CreateShareMem(sm_key iKey, size_t vSize);
 	//************************************
 	// Method:    OpenShareMem
 	// FullName:  ShareMemAPI::OpenShareMem
@@ -46,7 +40,7 @@ namespace ShareMemAPI
 	// Parameter: SMKey iKey
 	// Parameter: int vSize
 	//************************************
-	SMKey OpenShareMem(SMKey iKey, size_t vSize);
+	sm_handler OpenShareMem(sm_key iKey, size_t vSize);
 	//************************************
 	// Method:    AttachShareMem
 	// FullName:  ShareMemAPI::AttachShareMem
@@ -55,16 +49,16 @@ namespace ShareMemAPI
 	// Qualifier: attach 到共享内存块中
 	// Parameter: SMKey iKey
 	//************************************
-	BYTE* AttachShareMem(SMKey iKey);
+	BYTE* AttachShareMem(sm_handler iKey);
 	//************************************
 	// Method:    DetachShareMem
 	// FullName:  ShareMemAPI::DetachShareMem
 	// Access:    public 
-	// Returns:   int
+	// Returns:   bool
 	// Qualifier: Detach 共享内存块
 	// Parameter: BYTE * pAddr
 	//************************************
-	int DetachShareMem(BYTE* pAddr);
+	bool DetachShareMem(BYTE* pAddr);
 	//************************************
 	// Method:    DestroyShareMem
 	// FullName:  ShareMemAPI::DestroyShareMem
@@ -73,7 +67,7 @@ namespace ShareMemAPI
 	// Qualifier: 销毁共享内存块
 	// Parameter: SMKey iKey
 	//************************************
-	int DestroyShareMem(SMKey iKey);
+	bool DestroyShareMem(sm_handler iKey);
 };
 
 

@@ -8,6 +8,7 @@
 #ifndef __BASE_H__
 #define __BASE_H__
 
+#include "safe_pointer.h"
 #ifdef __LINUX__
 #include <netinet/in.h>
 #include <sigthread.h>
@@ -24,10 +25,10 @@
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 #define STR(x)			#x
 
-#define UID_LENGTH				(64)    // 帐号长度
-#define NAME_LENGTH            (32)    // 名字长度
-#define PATH_LENGTH        (256)    // 文件路径字符长度
-#define ADDR_LENGTH            (32)    // IP和PORT的长度
+#define UID_LENGTH			 (64)    // 帐号长度
+#define NAME_LENGTH          (32)    // 名字长度
+#define PATH_LENGTH			 (256)    // 文件路径字符长度
+#define ADDR_LENGTH          (32)    // IP和PORT的长度
 #define GUIDE_MAX            (100)
 #define MAX_PACKAGE_LEN		 (1024*60)        // 单个包的最大长度
 #define MAX_BROADCAST_NUM    (1000)            // 单词最大广播数量
@@ -35,7 +36,7 @@
 
 #define RECVBUFLENGTH        (1024*1024*6)        // 接收缓冲区大小
 #define POSTBUFLENGTH        (1024*1024*6)        // 发送缓冲区大小
-#define RECV_BUF_LEN          (8 * 1024)   // 接收客户端信息的缓冲区
+#define RECV_BUF_LEN         (8 * 1024)   // 接收客户端信息的缓冲区
 #define SECOND_ABOVE_CONVERSION_UNIT    60                // 秒以上换算单位
 #define SECOND_UNDER_CONVERSION_UNIT    1000            // 秒以下换算单位
 #define MSG_HEAD_LEN 8  // 接收或发送给客户端消息的消息头字节数

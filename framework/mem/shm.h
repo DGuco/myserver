@@ -7,68 +7,65 @@
 
 #ifndef _SHM_H_
 #define _SHM_H_
-
+#include "platform_def.h"
 #include "base.h"
 
 #define YEARSEC 31536000
 
 typedef enum
 {
+	SHM_INVALID = -1,
+	SHM_RECOVER = 0,
 	SHM_INIT = 1,
-	SHM_RECOVER = 0
 } EIMode;
+
+struct SSmHead
+{
+	//共享内存key
+	unsigned int	m_nShmKey;
+	//共享内存大小
+	size_t			m_nShmSize;
+	//起始地址
+	BYTE*			m_pSegment;
+};
 
 class CSharedMem
 {
-	//禁止在栈上生成对象
-protected:
+public:
     //构造函数
-	CSharedMem();
-    //构造函数
-	CSharedMem(unsigned int nKey, size_t nSize);
-    //构造函数
-	CSharedMem(unsigned int nKey, size_t nSize, int nInitFlag);
-
+	CSharedMem(EIMode module = SHM_INVALID);
 public:
     //析构函数
     ~CSharedMem();
-    //初始化
-	int Initialize(unsigned int nKey, size_t nSize);
     //设置共享内存创建时间戳
 	void SetStamp();
-    //new 操作符重载将类对象定义到共享内存区地址
-	void* operator new( size_t nSize);
-    //delete 操作符重载
-	void  operator delete(void* pMem);
-    //获取对象创建类型
+//     //new 操作符重载将类对象定义到共享内存区地址
+// 	void* operator new( size_t nSize);
+//     //delete 操作符重载
+// 	void  operator delete(void* pMem);
+	//初始化
+	bool Init(sm_key nSmKey, size_t nSize);
+	//获取对象创建类型
 	EIMode GetInitMode();
     //设置对象创建类型
-	void SetInitMode( EIMode emMode );
-    //在创建好的共享内存块上划分内存段
-	void*  CreateSegment( size_t nSize);
-    static CSharedMem* CreateInstance();
-    static CSharedMem* CreateInstance(unsigned int nKey, size_t nSize);
-    static CSharedMem* CreateInstance(unsigned int nKey, size_t nSize, int nInitFlag);
-
-    //当前共享内存块地址大小通常为sizeof(CSharedMem) + sizeof(CCodeQueue) + PIPE_SIZE（可变）
-	static BYTE* pbCurrentShm;
-
-protected:
-
+	bool CreateSegment(sm_key nSmKey,size_t nSize);
+	//attach
+	bool AttachSegment(sm_key nSmKey, size_t nSize);
+	//Detach
+	bool DetachSegment();
+	//Close
+	bool CloseSegment();
 private:
-    //共享内存key
-	unsigned int	m_nShmKey;
-    //共享内存大小
-	size_t			m_nShmSize;
-    //共享内存创建时间戳
-	time_t			m_tCreateTime;
-	time_t			m_tLastStamp;
-    //crc 校验码
-	unsigned int	m_nCRC;
-    //当前可用空闲内存去的起始地址
-	BYTE*			m_pbCurrentSegMent; 
+	//共享内存块信息
+	SafePointer<SSmHead>	m_pHead;
+	//当前可用空闲内存去的起始地址
+	SafePointer<BYTE>		m_pCurrentSegMent;
+	//可用内存的大小
+	size_t					m_nSize;
     //对象初始化类型
-	EIMode			m_InitMode;
+	EIMode					m_InitMode;
+	//共享内存句柄
+	sm_handler				m_Handler;
 };
 
 

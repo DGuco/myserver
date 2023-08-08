@@ -7,6 +7,15 @@
 #ifndef __PLATFORM_DEF_H__
 #define __PLATFORM_DEF_H__
 
+
+#ifdef __LINUX__
+typedef int sm_handler;
+typedef int sm_key;
+#else
+typedef int sm_key;
+typedef void* sm_handler;
+#endif
+
 #ifdef __LINUX__
     //
     #define __MEM_BARRIER \

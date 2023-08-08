@@ -18,40 +18,39 @@ using namespace my_std;
 
 namespace ShareMemAPI
 {
-	SMKey MakeKey(const char* pFile, int vId)
-	{
-#ifdef __LINUX__
-		return ftok(pFile, vId);
-#else
-#ifdef UNICODE
-		TArray<wchar_t, 4096> wString;
-		MultiByteToWideChar(CP_ACP, 0, pFile, -1, wString.GetData(), 4096);
-		HANDLE hFile = CreateFile(wString,
-			GENERIC_READ | GENERIC_WRITE,
-			FILE_SHARE_READ,
-			NULL,
-			OPEN_EXISTING,
-			FILE_ATTRIBUTE_NORMAL,
-			NULL);
-#else
-		HANDLE hFile = CreateFile(pFile,
-			GENERIC_READ | GENERIC_WRITE,
-			FILE_SHARE_READ,
-			NULL,
-			OPEN_EXISTING,
-			FILE_ATTRIBUTE_NORMAL,
-			NULL);
-		return hFile;
-#endif // !UNICODE
-#endif //__LINUX__
-	}
+// 	sm_key MakeKey(const char* pFile, int vId)
+// 	{
+// #ifdef __LINUX__
+// 		return ftok(pFile, vId);
+// #else
+// #ifdef UNICODE
+// 		TArray<wchar_t, 4096> wString;
+// 		MultiByteToWideChar(CP_ACP, 0, pFile, -1, wString.GetData(), 4096);
+// 		HANDLE hFile = CreateFile(wString,
+// 			GENERIC_READ | GENERIC_WRITE,
+// 			FILE_SHARE_READ,
+// 			NULL,
+// 			OPEN_EXISTING,
+// 			FILE_ATTRIBUTE_NORMAL,
+// 			NULL);
+// #else
+// 		HANDLE hFile = CreateFile(pFile,
+// 			GENERIC_READ | GENERIC_WRITE,
+// 			FILE_SHARE_READ,
+// 			NULL,
+// 			OPEN_EXISTING,
+// 			FILE_ATTRIBUTE_NORMAL,
+// 			NULL);
+// 		return hFile;
+// #endif // !UNICODE
+// #endif //__LINUX__
+// 	}
 
-	SMKey CreateShareMem(SMKey iKey, size_t vSize)
+	sm_handler CreateShareMem(sm_key iKey, size_t vSize)
 	{
 		if (iKey < 0)
 		{
-			LOG_ERROR("default", "CreateShareMem failed. iKey illegal.");
-			return (SMKey)-1;
+			return (sm_handler)-1;
 		}
 #ifdef __LINUX__
 		return shmget(iKey, (size_t)vSize, IPC_CREAT | IPC_EXCL | 0666);
@@ -67,12 +66,11 @@ namespace ShareMemAPI
 #endif
 	}
 
-	SMKey OpenShareMem(SMKey iKey, size_t vSize)
+	sm_handler OpenShareMem(sm_key iKey, size_t vSize)
 	{
 		if (iKey < 0)
 		{
-			LOG_ERROR("default", "OpenShareMem failed. iKey illegal.");
-			return (SMKey)-1;
+			return (sm_handler)-1;
 		}
 #ifdef __LINUX__
 		iShmID = shmget(iKey, 0, 0666);
@@ -86,27 +84,25 @@ namespace ShareMemAPI
 #endif
 	}
 
-	BYTE* AttachShareMem(SMKey iKey)
+	BYTE* AttachShareMem(sm_handler iKey)
 	{
 		if (iKey < 0)
 		{
-			LOG_ERROR("default", "AttachShareMem failed. iKey illegal.");
 			return NULL;
 		}
 #ifdef __LINUX__
-		return (BYTE*)shmat(iShmID, NULL, 0);
+		return (BYTE*)shmat(iKey, NULL, 0);
 #else
 		CString<64> sKey(std::to_string((long long)iKey));
 		return (BYTE*)MapViewOfFile(iKey, FILE_MAP_ALL_ACCESS, 0, 0, 0);
 #endif
 	}
 
-	int DetachShareMem(BYTE* pAddr)
+	bool DetachShareMem(BYTE* pAddr)
 	{
 		if (pAddr == NULL)
 		{
-			LOG_ERROR("default", "DetachShareMem failed. pAddr illegal.");
-			return 0;
+			return false;
 		}
 #ifdef __LINUX__
 		return shmdt(pAddr);
@@ -115,15 +111,14 @@ namespace ShareMemAPI
 #endif
 	}
 
-	int DestroyShareMem(SMKey iKey)
+	bool DestroyShareMem(sm_handler iKey)
 	{
 		if (iKey < 0)
 		{
-			LOG_ERROR("default", "DestroyShareMem failed. iKey illegal.");
-			return NULL;
+			return false;
 		}
 #ifdef __LINUX__
-		return shmctl(iShmiKeyID, IPC_RMID, NULL);
+		return shmctl(iKey, IPC_RMID, NULL);
 #else
 		return CloseHandle(iKey);
 #endif

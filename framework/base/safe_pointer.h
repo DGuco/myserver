@@ -36,7 +36,6 @@ public:
 		nDataH = SPO_FLAG_H;
 		nDataL = SPO_FLAG_L;
 		SPO_DATA_TYPE pvalue = (SPO_DATA_TYPE)pointer;
-		int a = sizeof(void*);
 		for (size_t index = 0; index < sizeof(void*) * 8;)
 		{
 			nDataL = nDataL | (pvalue & (SPO_MAGIC_NUM >> index)/*取出要保存的位,其他位置为*/);//保有当前位的值到相应位愿
@@ -51,11 +50,80 @@ public:
 		printf("SafePointer<Tp> FLAGH = 0X%lx,FLAGL = 0X%lx\n", static_cast<unsigned long>(GetFlagH()), static_cast<unsigned long>(GetFlagL()));
 		return  (GetFlagH() != SPO_FLAG_H || GetFlagL() != SPO_FLAG_L);
 	}
+
+	void Reset()
+	{
+		nDataH = SPO_FLAG_H;
+		nDataL = SPO_FLAG_L;
+	}
+
+	void Reset(Tp* pointer)
+	{
+		nDataH = SPO_FLAG_H;
+		nDataL = SPO_FLAG_L;
+		SPO_DATA_TYPE pvalue = (SPO_DATA_TYPE)pointer;
+		for (size_t index = 0; index < sizeof(void*) * 8;)
+		{
+			nDataL = nDataL | (pvalue & (SPO_MAGIC_NUM >> index)/*取出要保存的位,其他位置为*/);//保有当前位的值到相应位愿
+			index++;
+			nDataH = nDataH | (pvalue & (SPO_MAGIC_NUM >> index)/*取出要保存的位,其他位置为*/);//保有当前位的值到相应位愿
+			index++;
+		}
+	}
+
 	//获取高位fag
 	SPO_DATA_TYPE GetFlagH() const { return nDataH & SPO_MAGIC_NUM_L; }
 	SPO_DATA_TYPE GetFlagL() const { return nDataL & SPO_MAGIC_NUM_H; }
 	inline Tp& operator*() const { return *GetThrow(); }
 	inline Tp* operator->() const { return GetThrow(); }
+	
+	bool operator==(const Tp* pOhter)
+	{
+		return Get() == pOhter;
+	}
+
+	bool operator!=(const Tp* pOhter)
+	{
+		return Get() != pOhter;
+	}
+
+	bool operator==(const SafePointer<Tp> pOhter)
+	{
+		return this->nDataH == pOhter->nDataH && this->nDataL == pOhter->nDataL;
+	}
+
+	bool operator != (const SafePointer<Tp> pOhter)
+	{
+		return this->nDataH != pOhter->nDataH && this->nDataL != pOhter->nDataL;
+	}
+
+	template<typename NewTp>
+	void DynamicCastTo()
+	{
+		Tp* pPointer = GetThrow();
+		if (pPointer != NULL)
+		{
+			return SafePointer<NewTp>(dynamic_cast<NewTp>(pPointer))
+		}
+		else
+		{
+			return SafePointer<NewTp>();
+		}
+	}
+
+	template<typename NewTp>
+	void StaticCastTo()
+	{
+		Tp* pPointer = GetThrow();
+		if (pPointer != NULL)
+		{
+			return SafePointer<NewTp>(static_cast<NewTp>(pPointer))
+		}
+		else
+		{
+			return SafePointer<NewTp>();
+		}
+	}
 private:
 	Tp* GetThrow() const
 	{
@@ -73,6 +141,12 @@ private:
 			sprintf(eMsg, SPO_ERROR_MSG, GetFlagH(), GetFlagL(), pPoint);
 			throw  std::runtime_error(eMsg);
 		}
+		return pPoint;
+	}
+
+	Tp* Get() const
+	{
+		Tp* pPoint = (Tp*)((nDataL & SPO_MAGIC_NUM_L) | (nDataH & SPO_MAGIC_NUM_H));
 		return pPoint;
 	}
 
