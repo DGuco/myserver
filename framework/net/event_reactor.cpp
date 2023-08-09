@@ -26,7 +26,7 @@ void CEventReactor::Init()
 	event_config_set_flag(m_pConfig, EVENT_BASE_FLAG_NOLOCK);
 #endif
 	m_pEventBase = event_base_new_with_config(m_pConfig);
-	MY_ASSERT_STR(NULL != m_pEventBase, exit(0), "Create Event Base error Init error");
+	ASSERT_STR(NULL != m_pEventBase, exit(0), "Create Event Base error Init error");
 }
 
 event_base *CEventReactor::GetEventBase()
@@ -44,7 +44,7 @@ void CEventReactor::Release()
 void CEventReactor::DispatchEvents()
 {
 	event_base_dispatch(m_pEventBase);
-	MY_ASSERT_STR(false, return, "Event loop exited..");
+	ASSERT_STR(false, return, "Event loop exited..");
 }
 
 bool CEventReactor::Register(IReactorHandler *pHandler)

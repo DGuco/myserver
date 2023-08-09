@@ -36,7 +36,7 @@ int IBufferEvent::Send(const void *pData, unsigned int uSize)
 		return ePR_OutPipeBuf;
 	}
 
-	MY_ASSERT(IsEventBuffAvailable(), return ePR_BufNull);
+	ASSERT(IsEventBuffAvailable(), return ePR_BufNull);
     bufferevent_disable(m_pStBufEv, EV_WRITE);
     int iRet = bufferevent_write(m_pStBufEv, pData, uSize);
     if (iRet == 0)
@@ -66,7 +66,7 @@ int IBufferEvent::SendBySocket(const void *pData, unsigned int uSize)
 
 unsigned int IBufferEvent::RecvData(void *data, unsigned int size)
 {
-	MY_ASSERT(IsEventBuffAvailable(), return 0);
+	ASSERT(IsEventBuffAvailable(), return 0);
 	return bufferevent_read(m_pStBufEv, data, size);
 }
 
@@ -84,23 +84,23 @@ unsigned short IBufferEvent::ReadRecvPackLen()
 
 unsigned int IBufferEvent::GetRecvDataSize()
 {
-	MY_ASSERT(IsEventBuffAvailable(), return 0);
+	ASSERT(IsEventBuffAvailable(), return 0);
 	struct evbuffer *in = bufferevent_get_input(m_pStBufEv);
-	MY_ASSERT(in != NULL, return 0);
+	ASSERT(in != NULL, return 0);
 	return evbuffer_get_length(in);
 }
 
 unsigned int IBufferEvent::GetSendDataSize()
 {
-	MY_ASSERT(IsEventBuffAvailable(), return 0);
+	ASSERT(IsEventBuffAvailable(), return 0);
 	struct evbuffer *out = bufferevent_get_output(m_pStBufEv);
-	MY_ASSERT(out != NULL, return 0);
+	ASSERT(out != NULL, return 0);
 	return evbuffer_get_length(out);
 }
 
 void IBufferEvent::SetMaxSendBufSize(unsigned int uSize)
 {
-	MY_ASSERT(IsEventBuffAvailable() && uSize > 0, return;);
+	ASSERT(IsEventBuffAvailable() && uSize > 0, return;);
 	m_uMaxOutBufferSize = uSize;
 	bufferevent_setwatermark(m_pStBufEv, EV_WRITE, 0, m_uMaxOutBufferSize);
 }
@@ -112,7 +112,7 @@ unsigned int IBufferEvent::GetMaxSendBufSize()
 
 void IBufferEvent::SetMaxRecvBufSize(unsigned int uSize)
 {
-	MY_ASSERT(IsEventBuffAvailable() && uSize > 0, return;);
+	ASSERT(IsEventBuffAvailable() && uSize > 0, return;);
 	m_uMaxInBufferSize = uSize;
 	bufferevent_setwatermark(m_pStBufEv, EV_READ, 0, m_uMaxInBufferSize);
 }
@@ -199,7 +199,7 @@ bool IBufferEvent::RegisterToReactor()
 										m_oSocket.GetSocket(),
 										BEV_OPT_CLOSE_ON_FREE /*| BEV_OPT_THREADSAFE */);
 #endif
-	MY_ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent new failed!,error msg: %s", strerror(errno));
+	ASSERT_STR(NULL != m_pStBufEv, return false, "BufferEvent new failed!,error msg: %s", strerror(errno));
 	bufferevent_setcb(m_pStBufEv,
 					  &IBufferEvent::lcb_OnRead,
                       &IBufferEvent::lcb_OnWrite,

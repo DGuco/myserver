@@ -28,7 +28,7 @@ CAcceptor::~CAcceptor()
 
 void CAcceptor::GetRemoteIpAddress(char *szBuf, unsigned int uBufSize)
 {
-	MY_ASSERT_STR(uBufSize >= 16, return, "uBufSize is too small");
+	ASSERT_STR(uBufSize >= 16, return, "uBufSize is too small");
 	CNetAddr addr;
 	m_oSocket.GetRemoteAddress(addr);
 	strncpy(szBuf, addr.GetAddress(), 16);

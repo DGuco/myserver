@@ -26,13 +26,13 @@ namespace my_std
 
 		Type_& operator[] (int index)
 		{
-			MY_ASSERT(index >= 0 && index < Len_, "index is out of range");
+			ASSERT(index >= 0 && index < Len_, "index is out of range");
 			return m_data[index];
 		}
 
 		const Type_& operator[] (int index) const
 		{
-			MY_ASSERT(index >= 0 && index < Len_, "index is out of range");
+			ASSERT(index >= 0 && index < Len_, "index is out of range");
 			return m_data[index];
 		}
 

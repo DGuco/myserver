@@ -265,7 +265,7 @@ int CCodeQueue::AppendOneCode(const BYTE *pInCode, int sInLength)
 		return -3;
 	}
 
-	nTempMaxLength -= GetCanWriteLen( );
+	nTempMaxLength = GetCanWriteLen( );
 
 	//剩余空间不足
 	if (sInLength > nTempMaxLength || sInLength > 0xFFFF) {

@@ -32,11 +32,11 @@ using namespace ShareMemAPI;
 // 	m_pbCurrentSegMent = pbCurrentShm + sizeof(CSharedMem);
 // }
 
-CSharedMem::CSharedMem(EIMode module)
+CSharedMem::CSharedMem()
 {
 	m_pHead = NULL;
 	m_pCurrentSegMent = NULL;
-	m_InitMode = module;
+	m_InitMode = SHM_INVALID;
 	m_nSize = 0;
 	m_Handler = NULL;
 }
@@ -48,8 +48,9 @@ CSharedMem::~CSharedMem()
 	m_nSize = 0;
 }
 
-bool CSharedMem::Init(sm_key nSmKey, size_t nSize)
+bool CSharedMem::Init(EIMode module,sm_key nSmKey, size_t nSize)
 {
+	m_InitMode = module;
 	if (m_InitMode == SHM_INIT)
 	{
 		return CreateSegment(nSmKey, nSize);
@@ -81,11 +82,11 @@ bool CSharedMem::CreateSegment(sm_key nSmKey, size_t nSize)
 		LOG_ERROR("default", "AttachShareMem AttachShareMem failed nSmKey = {} error = {}", nSmKey, errno);
 		return false;
 	}
-	m_pHead.Reset((SSmHead*)pAddr);
+	m_pHead = ((SSmHead*)pAddr);
 	m_pHead->m_nShmKey = nSmKey;
 	m_pHead->m_nShmSize = nSize + sizeof(SSmHead);
 	m_pHead->m_pSegment = pAddr;
-	m_pCurrentSegMent.Reset((BYTE*)(pAddr + sizeof(SSmHead)));
+	m_pCurrentSegMent = ((BYTE*)(pAddr + sizeof(SSmHead)));
 	m_nSize = nSize;
 	LogDebug("default", "CSharedMem::CreateSegment OK nSmKey = {} size = {}", nSmKey, nSize);
 	return true;
@@ -106,11 +107,11 @@ bool CSharedMem::AttachSegment(sm_key nSmKey, size_t nSize)
 		LOG_ERROR("default", "AttachSegment AttachShareMem failed nSmKey = {} error = {}", nSmKey, errno);
 		return false;
 	}
-	m_pHead.Reset((SSmHead*)pAddr);
+	m_pHead = ((SSmHead*)pAddr);
 	m_pHead->m_nShmKey = nSmKey;
 	m_pHead->m_nShmSize = nSize + sizeof(SSmHead);
 	m_pHead->m_pSegment = pAddr;
-	m_pCurrentSegMent.Reset((BYTE*)(pAddr + sizeof(SSmHead)));
+	m_pCurrentSegMent = ((BYTE*)(pAddr + sizeof(SSmHead)));
 	m_nSize = nSize;
 	LogDebug("default", "CSharedMem::AttachSegment OK nSmKey = {} size = {}", nSmKey, nSize);
 	return true;
@@ -155,4 +156,9 @@ bool CSharedMem::CloseSegment()
 	m_pHead = NULL;
 	m_Handler = NULL;
 	return ret;
+}
+
+BYTE* CSharedMem::GetSegment()
+{
+	return m_pCurrentSegMent；
 }

@@ -26,7 +26,7 @@ bool CSocket::Open()
 {
 	m_Socket = CreateSocket(m_nType, m_nProtocolFamily, m_nProtocol);
 	if (INVALID_SOCKET == m_Socket) {
-		MY_ASSERT_STR(false, return false, "CreateSocket failed with error code %d \n", PpeGetLastError());
+		ASSERT_STR(false, return false, "CreateSocket failed with error code %d \n", PpeGetLastError());
 	}
 	return true;
 }
@@ -36,12 +36,12 @@ SOCKET CSocket::CreateSocket(int32 Type, int32 ProtocolFamily, int32 Protocol)
 {
 	SOCKET Socket = socket(ProtocolFamily, Type, Protocol);//¥¥Ω®socket
 	if (Socket == INVALID_SOCKET) {
-		MY_ASSERT_STR(false, return INVALID_SOCKET, "socket failed with error code %d .", PpeGetLastError());
+		ASSERT_STR(false, return INVALID_SOCKET, "socket failed with error code %d .", PpeGetLastError());
 	}
 	int iVal = 1;
 	if (SOCKET_ERROR ==
 		setsockopt(Socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char *>(&iVal), sizeof(iVal))) {
-		MY_ASSERT_STR(false, return INVALID_SOCKET, "setsockopt failed with error code %d .", PpeGetLastError());
+		ASSERT_STR(false, return INVALID_SOCKET, "setsockopt failed with error code %d .", PpeGetLastError());
 	}
 	return Socket;
 }
@@ -155,7 +155,7 @@ int CSocket::GetSocketError() const
 	case ETIMEDOUT:eReason = ePCFR_TIMEDOUT;
 	case ENETUNREACH:eReason = ePCFR_UNREACH;
 	case ECONNRESET:eReason = ePCFR_RESET;
-	default:MY_ASSERT_STR(false, DO_NOTHING, "unknown failed!!");
+	default:ASSERT_STR(false, DO_NOTHING, "unknown failed!!");
 	}
 	return eReason;
 
@@ -206,6 +206,6 @@ void CSocket::MakeSocketNonblocking(SOCKET Socket)
 {
 	if (-1 == evutil_make_socket_nonblocking(static_cast<int>(Socket))) {
 		CloseSocket(Socket);
-		MY_ASSERT_STR(false, return, "ioctlsocket failed with error code %d.", PpeGetLastError());
+		ASSERT_STR(false, return, "ioctlsocket failed with error code %d.", PpeGetLastError());
 	}
 }

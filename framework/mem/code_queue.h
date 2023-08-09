@@ -9,7 +9,6 @@
 #define _CODE_QUEUE_H_
 #include "shm.h"
 
-#define CACHE_LINE_SIZE (64)
 
 #define QUEUERESERVELENGTH 8        //预留长度
 

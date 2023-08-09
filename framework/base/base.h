@@ -25,6 +25,7 @@
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 #define STR(x)			#x
 
+#define CACHE_LINE_SIZE		(64)
 #define UID_LENGTH			 (64)    // 帐号长度
 #define NAME_LENGTH          (32)    // 名字长度
 #define PATH_LENGTH			 (256)    // 文件路径字符长度
@@ -43,7 +44,7 @@
 #define MSG_MAX_LEN                10*1024            // 接收或发送给客户端消息的最大字节数
 #define NULL						(0)
 
-
+typedef unsigned int msize_t;
 typedef unsigned char BYTE;
 typedef long long int64;
 typedef int int32;
@@ -51,7 +52,7 @@ typedef short int16;
 typedef char int8;
 typedef unsigned long long uint64;
 typedef unsigned int uint32;
-typedef unsigned  short uint16;
+typedef unsigned short uint16;
 typedef unsigned char uint8;
 typedef unsigned char BYTE;
 #ifndef TRUE

@@ -26,7 +26,7 @@ CByteBuff::CByteBuff()
 	m_uiLen(0),
 	m_uiCapacity(MAX_PACKAGE_LEN)
 {
-	m_acData = new char[m_uiCapacity]( );
+	m_acData = new BYTE[m_uiCapacity]( );
 }
 
 CByteBuff::CByteBuff(unsigned int tmpCap)
@@ -36,16 +36,16 @@ CByteBuff::CByteBuff(unsigned int tmpCap)
 	m_uiLen(0),
 	m_uiCapacity(tmpCap)
 {
-	m_acData = new char[tmpCap]( );
+	m_acData = new BYTE[tmpCap]( );
 }
 
-CByteBuff::CByteBuff(char *data, unsigned tmpCap)
+CByteBuff::CByteBuff(BYTE*data, unsigned tmpCap)
 {
 	m_uiReadIndex = 0;
 	m_uiWriteIndex = 0;
 	m_uiLen = 0;
 	m_uiCapacity = tmpCap;
-	m_acData = new char[tmpCap];
+	m_acData = new BYTE[tmpCap];
 	memcpy(m_acData, data, tmpCap);
 }
 
@@ -54,7 +54,7 @@ CByteBuff::CByteBuff(const CByteBuff &byteBuff)
 	if (this == &(byteBuff)) {
 		return;
 	}
-	m_acData = new char[m_uiCapacity]( );
+	m_acData = new BYTE[m_uiCapacity]( );
 	Copy(&byteBuff);
 }
 
@@ -104,7 +104,7 @@ void CByteBuff::Clear()
 	memset(m_acData, 0, m_uiCapacity);
 }
 
-char *CByteBuff::Flip(char *netStr, size_t len)
+BYTE*CByteBuff::Flip(BYTE*netStr, size_t len)
 {
 	if (IsLittleEndian( )) {
 		Reverse(netStr, len);
@@ -212,28 +212,28 @@ void CByteBuff::WriteDouble(double value, int offset)
 	WriteT<double>(value, offset);
 }
 
-char *CByteBuff::GetData() const
+BYTE*CByteBuff::GetData() const
 {
 	return m_acData;
 }
 
-char *CByteBuff::CanReadData() const
+BYTE*CByteBuff::CanReadData() const
 {
 	return m_acData + m_uiReadIndex;
 }
 
-char *CByteBuff::CanWriteData() const
+BYTE*CByteBuff::CanWriteData() const
 {
 	return m_acData + m_uiWriteIndex;
 }
 
-void CByteBuff::ReadBytes(char *data, unsigned int len)
+void CByteBuff::ReadBytes(BYTE*data, unsigned int len)
 {
 	memcpy(data, m_acData + m_uiReadIndex, len);
 	m_uiReadIndex += len;
 }
 
-void CByteBuff::WriteBytes(char *data, unsigned int len)
+void CByteBuff::WriteBytes(BYTE*data, unsigned int len)
 {
 	memcpy(m_acData, data, len);
 	m_uiWriteIndex += len;
@@ -242,10 +242,18 @@ void CByteBuff::WriteBytes(char *data, unsigned int len)
 template<class T>
 T CByteBuff::ReadT()
 {
-	char tmpData[64];
+	BYTE tmpData[64];
 	size_t len = sizeof(T);
 	memcpy((void *) tmpData, m_acData + m_uiReadIndex, len);
-	if (IsLittleEndian( )) {
+	//因为不知道发送方是大端还是小端，所以默认发送方必须转换成大端发送(网络字节流默认以大端形式发送)，
+	//如果本机是小端，接收到数据后把大端字节流转换成小端然后再使用
+	/* plus
+	  字符，字符串 都是以字符为单位的，所以读写数据时不会有大小端问题；
+	  数值(short / int / float / double / ......)，有多个字符组成，在读写时会有大小端；
+	  字符串可以理解为单字节的字符数组，字符之间没有直接关联，不存在字节序问题；
+	*/
+	if (IsLittleEndian( )) 
+	{
 		Reverse(tmpData, len);
 	}
 	T result = *(T *) tmpData;
@@ -256,11 +264,23 @@ T CByteBuff::ReadT()
 template<class T>
 void CByteBuff::WriteT(T t, int offset)
 {
-	char tmpData[64];
+	BYTE tmpData[64];
 	*(T *) tmpData = t;
+	//因为不知道接收方是大端还是小端，所以默认发送方必须转换成大端发送(网络字节流默认以大端形式发送)，
+	//如果本机是小端，发送前把小端内存序转换为大端字网络流序再发送
+	/* plus
+	  字符，字符串 都是以字符为单位的，所以读写数据时不会有大小端问题；
+	  数值(short / int / float / double / ......)，有多个字符组成，在读写时会有大小端；
+	  字符串可以理解为单字节的字符数组，字符之间没有直接关联，不存在字节序问题；
+	*/
+	BYTE* pSendStr = tmpData;
+	if (IsLittleEndian()) 
+	{
+		pSendStr = Reverse(tmpData, len);
+	}
 	size_t len = sizeof(T);
 	m_uiWriteIndex += offset;
-	memcpy(m_acData + m_uiWriteIndex, Flip(tmpData, len), len);
+	memcpy(m_acData + m_uiWriteIndex, pSendStr, len);
 	m_uiWriteIndex += len;
 }
 
@@ -333,10 +353,10 @@ bool CByteBuff::IsLittleEndian()
 	return m_bIsLittleEndian;
 }
 
-void CByteBuff::Reverse(char *str, size_t len)
+void CByteBuff::Reverse(BYTE*str, size_t len)
 {
-	char *p = str + len - 1;
-	char temp;
+	BYTE *p = str + len - 1;
+	BYTE temp;
 	while (str < p) {
 		temp = *p;
 		*p-- = *str;

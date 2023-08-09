@@ -21,7 +21,9 @@ set(SOURCE_FILES
     "inc/net_manager.h" 
     "src/gate_ctrl.cpp" 
     "src/mes_handle.cpp"
-    "src/net_manager.cpp")
+    "src/net_manager.cpp"
+    "../common/message/common.pb.h" 
+    "../common/message/message.pb.h")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty

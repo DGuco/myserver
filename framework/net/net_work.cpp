@@ -105,9 +105,9 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 										 m_pFuncAcceptorOnDataSend,
 										 m_pFuncAcceptorOnDataRecv,
 										 m_pFuncAcceptorDisconnected);
-	MY_ASSERT_STR(pAcceptor != NULL, return, "Create CAcceptor failed");
+	ASSERT_STR(pAcceptor != NULL, return, "Create CAcceptor failed");
 	bool bRet = GetEventReactor()->Register(pAcceptor);
-	MY_ASSERT_STR(bRet, return, "Acceptor register failed");
+	ASSERT_STR(bRet, return, "Acceptor register failed");
 	m_pOnNew(socket, pAcceptor);
 }
 
@@ -217,19 +217,19 @@ CAcceptor *CNetWork::FindAcceptor(unsigned int uId)
 
 void CNetWork::InsertNewAcceptor(unsigned int uid, CAcceptor *pAcceptor)
 {
-	MY_ASSERT(pAcceptor != NULL, return;)
+	ASSERT(pAcceptor != NULL, return;)
 	m_mapAcceptor.insert(std::make_pair(uid, pAcceptor));
 }
 
 void CNetWork::InsertNewConnector(unsigned int uid, CConnector *pConnector)
 {
-	MY_ASSERT(pConnector != NULL, return;)
+	ASSERT(pConnector != NULL, return;)
 	m_mapConnector.insert(std::make_pair(uid, pConnector));
 }
 
 void CNetWork::InsertNewFileListener(unsigned int uid, CFileListener *pFileListener)
 {
-	MY_ASSERT(pFileListener != NULL, return;)
+	ASSERT(pFileListener != NULL, return;)
 	m_mapFileListener.insert(std::make_pair(uid, pFileListener));
 }
 

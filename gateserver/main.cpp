@@ -11,6 +11,8 @@
 using namespace std;
 int main(int argc, char **argv)
 {
+
+	
 	std::shared_ptr<CGateCtrl> &pGateCtrl = CGateCtrl::CreateInstance();
 	int iTmpRet = pGateCtrl->PrepareToRun();
 	if (iTmpRet != 0) {

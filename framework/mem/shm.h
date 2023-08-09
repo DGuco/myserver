@@ -33,7 +33,7 @@ class CSharedMem
 {
 public:
     //构造函数
-	CSharedMem(EIMode module = SHM_INVALID);
+	CSharedMem();
 public:
     //析构函数
     ~CSharedMem();
@@ -44,7 +44,7 @@ public:
 //     //delete 操作符重载
 // 	void  operator delete(void* pMem);
 	//初始化
-	bool Init(sm_key nSmKey, size_t nSize);
+	bool Init(EIMode module,sm_key nSmKey, size_t nSize);
 	//获取对象创建类型
 	EIMode GetInitMode();
     //设置对象创建类型
@@ -55,11 +55,13 @@ public:
 	bool DetachSegment();
 	//Close
 	bool CloseSegment();
+	//
+	BYTE* GetSegment();
 private:
 	//共享内存块信息
-	SafePointer<SSmHead>	m_pHead;
+	SSmHead*				m_pHead;
 	//当前可用空闲内存去的起始地址
-	SafePointer<BYTE>		m_pCurrentSegMent;
+	BYTE*					m_pCurrentSegMent;
 	//可用内存的大小
 	size_t					m_nSize;
     //对象初始化类型
