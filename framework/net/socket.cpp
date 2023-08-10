@@ -1,20 +1,9 @@
-#include <my_assert.h>
+#include "my_assert.h"
 #include "socket.h"
-#include "net_addr.h"
+#include "log.h"
 
-CSocket::CSocket(SOCKET socket)
-	: m_Socket(socket)
-{
-
-}
-
-CSocket::CSocket(int32 nType/*=SOCK_STREAM*/, int32 nProtocolFamily/*=AF_INET*/, int32 nProtocol/*=0*/)
-	: m_Socket(INVALID_SOCKET),
-	  m_nType(nType),
-	  m_nProtocolFamily(nProtocolFamily),
-	  m_nProtocol(nProtocol)
-{
-}
+CSocket::CSocket()	: m_Socket(INVALID_SOCKET)
+{}
 
 CSocket::~CSocket()
 {
@@ -22,35 +11,28 @@ CSocket::~CSocket()
 }
 
 //----------------------------------------------------------------
-bool CSocket::Open()
+bool CSocket::Open(int nProtocolFamily, int nType, int nProtocol)
 {
-	m_Socket = CreateSocket(m_nType, m_nProtocolFamily, m_nProtocol);
-	if (INVALID_SOCKET == m_Socket) {
-		ASSERT_EX(false, return false, "CreateSocket failed with error code %d \n", PpeGetLastError());
+	m_Socket = socket(nProtocolFamily, nType, nProtocol);
+	if (m_Socket == INVALID_SOCKET)
+	{
+		LOG_ERROR("default", "CreateSocket failed with error : {},errormsg : {} \n", errno, strerror(errno));
+		return false;
 	}
+	// 	int iVal = 1;
+	// 	if (SOCKET_ERROR == setsockopt(Socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char *>(&iVal), sizeof(iVal))) 
+	// 	{
+	// 		LOG_ERROR("default", "setsockopt failed with error : {},errormsg : {} \n", errno, strerror(errno));
+	// 	}
 	return true;
-}
-
-//-------------------------tools--------------------------------
-SOCKET CSocket::CreateSocket(int32 Type, int32 ProtocolFamily, int32 Protocol)
-{
-	SOCKET Socket = socket(ProtocolFamily, Type, Protocol);//¥¥Ω®socket
-	if (Socket == INVALID_SOCKET) {
-		ASSERT_EX(false, return INVALID_SOCKET, "socket failed with error code %d .", PpeGetLastError());
-	}
-	int iVal = 1;
-	if (SOCKET_ERROR ==
-		setsockopt(Socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char *>(&iVal), sizeof(iVal))) {
-		ASSERT_EX(false, return INVALID_SOCKET, "setsockopt failed with error code %d .", PpeGetLastError());
-	}
-	return Socket;
 }
 
 //-----------------------------------------------------------------
 void CSocket::Close()
 {
-	if (m_Socket != INVALID_SOCKET) {
-		CloseSocket(m_Socket);
+	if (m_Socket != INVALID_SOCKET)
+	{
+		close(m_Socket);
 		m_Socket = INVALID_SOCKET;
 	}
 }
@@ -58,9 +40,10 @@ void CSocket::Close()
 //-----------------------------------------------------------------
 void CSocket::Shutdown()
 {
-	if (m_Socket != INVALID_SOCKET) {
-		shutdown(m_Socket, SHUT_RDWR);
-		CloseSocket(m_Socket);
+	if (m_Socket != INVALID_SOCKET)
+	{
+		shutdown(m_Socket, 2);
+		close(m_Socket);
 		m_Socket = INVALID_SOCKET;
 	}
 }
@@ -68,144 +51,84 @@ void CSocket::Shutdown()
 //-----------------------------------------------------------------
 void CSocket::ShutdownRead()
 {
-	if (m_Socket != INVALID_SOCKET) {
-		shutdown(m_Socket, SHUT_RD);
+	if (m_Socket != INVALID_SOCKET)
+	{
+		shutdown(m_Socket, 0);
 	}
 }
 
 //-----------------------------------------------------------------
 void CSocket::ShutdownWrite()
 {
-	if (m_Socket != INVALID_SOCKET) {
-		shutdown(m_Socket, SHUT_WR);
+	if (m_Socket != INVALID_SOCKET)
+	{
+		shutdown(m_Socket, 1);
 	}
 }
 
-//-----------------------------------------------------------------
-void CSocket::SetNonblocking()
+bool CSocket::Bind(int port)
 {
-	//ArkAst(m_oSocket != INVALID_SOCKET);
-	MakeSocketNonblocking(m_Socket);
-}
-
-//-----------------------------------------------------------------
-bool CSocket::GetLocalAddress(CNetAddr &addr) const
-{
-	if (INVALID_SOCKET == m_Socket)
-		return false;
-	sockaddr_in asiAddress;
-
-#ifdef GH_OS_WIN32
-	int32 nSize=0;
-#else
-	socklen_t nSize = 0;
-#endif
-	nSize = sizeof(asiAddress);
-	memset(&asiAddress, 0, nSize);
-	//int nErrorCode;
-	if (getsockname(m_Socket, reinterpret_cast<sockaddr *>(&asiAddress), &nSize)) {
-		//nErrorCode=ArkGetLastError();
-		return false;
-	}
-	addr.SetPort(ntohs(asiAddress.sin_port));
-	addr.SetAddress(inet_ntoa(asiAddress.sin_addr));
-	return true;
-}
-
-//-----------------------------------------------------------------
-bool CSocket::GetRemoteAddress(CNetAddr &add) const
-{
-	if (INVALID_SOCKET == m_Socket)
-		return false;
-	sockaddr_in asiAddress;
-
-#ifdef GH_OS_WIN32
-	int32 nSize=0;
-#else
-	socklen_t nSize = 0;
-#endif
-	nSize = sizeof(asiAddress);
-	memset(&asiAddress, 0, sizeof(asiAddress));
-	if (getpeername(m_Socket, reinterpret_cast<sockaddr *>(&asiAddress), &nSize)) {
-		return false;
-	}
-	add.SetPort(ntohs(asiAddress.sin_port));
-	add.SetAddress(inet_ntoa(asiAddress.sin_addr));
-	return true;
-}
-
-//-----------------------------------------------------------------
-int CSocket::GetSocketError() const
-{
-	int nError = PpeGetLastError();
-	EPipeConnFailedReason eReason;
-	switch (nError) {
-#if defined(GH_OS_WIN32)
-		case EWOULDBLOCK:
-#else
-	case EINPROGRESS:
-#endif
-		break;
-#ifdef GH_OS_WIN32
-		case ENOBUFS:
-			eReason = ePCFR_NOBUFFER;
-#endif
-	case EADDRINUSE:eReason = ePCFR_LOCALADDRINUSE;
-	case ECONNREFUSED:eReason = ePCFR_REFUSED;
-	case ETIMEDOUT:eReason = ePCFR_TIMEDOUT;
-	case ENETUNREACH:eReason = ePCFR_UNREACH;
-	case ECONNRESET:eReason = ePCFR_RESET;
-	default:ASSERT_EX(false, DO_NOTHING, "unknown failed!!");
-	}
-	return eReason;
-
-}
-
-//-----------------------------------------------------------------
-uint32 CSocket::Bind(const CNetAddr &addr)
-{
-	//ArkAst(m_oSocket != INVALID_SOCKET);
-
 	sockaddr_in saiAddress;
-	Address2SockAddrIn(saiAddress, addr);
-	//bind
-	if (bind(m_Socket, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr))) {
-		CloseSocket(m_Socket);
+	memset(&saiAddress, 0, sizeof(saiAddress));
+	saiAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+	saiAddress.sin_port = htons(port);
+	saiAddress.sin_family = AF_INET;
+
+	if (::bind(m_Socket, reinterpret_cast<const sockaddr*>(&saiAddress), sizeof(sockaddr)) == SOCKET_ERROR) {
+		Close();
 		m_Socket = INVALID_SOCKET;
-		return PpeGetLastError();
+		LOG_ERROR("default", "bind failed with error : {},errormsg : {} \n", errno, strerror(errno));
+		return false;
 	}
 	return 0;
 }
 
-//--------------------------------- *tools* -------------------------------------------------------------------
-void CSocket::Address2SockAddrIn(sockaddr_in &saiAddress, const CNetAddr &address)
+bool CSocket::Bind(std::string host, int port)
 {
-	memset(&saiAddress, 0, sizeof(saiAddress));
-	saiAddress.sin_addr.s_addr = inet_addr(address.GetAddress());
-	saiAddress.sin_port = htons(static_cast<u_short>(address.GetPort()));
-	saiAddress.sin_family = AF_INET;
-}
-
-//-----------------------------------------------------------------
-SOCKET CSocket::CreateBindedSocket(const CNetAddr &Address)
-{
-	SOCKET Socket = CreateSocket();
-
 	sockaddr_in saiAddress;
-	Address2SockAddrIn(saiAddress, Address);
-	//bind
-	if (bind(Socket, reinterpret_cast<sockaddr *>(&saiAddress), sizeof(sockaddr))) {
-		CloseSocket(Socket);
-		return PpeGetLastError();
+	memset(&saiAddress, 0, sizeof(saiAddress));
+	saiAddress.sin_addr.s_addr = inet_addr(host.c_str());
+	saiAddress.sin_port = htons(port);
+	saiAddress.sin_family = AF_INET;
+
+	if (::bind(m_Socket, reinterpret_cast<const sockaddr*>(&saiAddress), sizeof(sockaddr)) == SOCKET_ERROR) {
+		Close();
+		m_Socket = INVALID_SOCKET;
+		LOG_ERROR("default", "bind failed error : {},errormsg : {} \n", errno, strerror(errno));
+		return false;
 	}
-	return Socket;
+	return 0;
+}
+
+bool CSocket::Listen()
+{
+	if (listen(m_Socket, TCP_BACK_LOG) == SOCKET_ERROR)
+	{
+		LOG_ERROR("default", "Listen failed error : {},errormsg : {} \n", errno, strerror(errno));
+		Close();
+		return false;
+	}
+	return true;
 }
 
 //-----------------------------------------------------------------
-void CSocket::MakeSocketNonblocking(SOCKET Socket)
+bool CSocket::GetRemoteAddress(CNetAddr & addr) const
 {
-	if (-1 == evutil_make_socket_nonblocking(static_cast<int>(Socket))) {
-		CloseSocket(Socket);
-		ASSERT_EX(false, return, "ioctlsocket failed with error code %d.", PpeGetLastError());
+	if (INVALID_SOCKET == m_Socket)
+		return false;
+	sockaddr_in asiAddress;
+	int nSize = sizeof(asiAddress);
+	memset(&asiAddress, 0, sizeof(asiAddress));
+	if (getpeername(m_Socket, reinterpret_cast<sockaddr *>(&asiAddress), &nSize)) 
+	{
+		return false;
 	}
+	addr.m_uPort = (ntohs(asiAddress.sin_port));
+	addr.m_szAddr = (inet_ntoa(asiAddress.sin_addr));
+	return true;
+}
+
+SOCKET CSocket::GetSocket() const
+{
+	return m_Socket;
 }

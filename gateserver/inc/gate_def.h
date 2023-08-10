@@ -53,9 +53,6 @@
 #define CONFIG_FILE                    "../config/tcpsvrd.cfg"
 #define LOG_FILE                    "../log/tcpsvrd"
 #define MAX_PATH                    260                       // 文件的最大路径名
-#define INVALID_SOCKET              -1                        // 无效socket句柄
-#define SOCKET_ERROR                -1                        // socket api的返回值
-#define INVALID_HANDLE_VALUE        ((void * )(-1))           // 无效句柄值
 #define CloseSocket                 close                     // 关闭socket
 
 #define ERRPACKETLENGTH                -2

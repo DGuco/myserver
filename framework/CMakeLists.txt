@@ -54,24 +54,10 @@ set(FRAMEWORK
         "../common/message/dbmessage.pb.h"
         "../common/message/message.pb.h"
         "../common/message/player.pb.h"
-        "net/byte_buff.cpp" 
-        "net/byte_buff.h" 
-        "net/ccrypto.cpp" 
-        "net/ccrypto.h"
-        "net/client_comm_engine.cpp" 
-        "net/client_comm_engine.h"
-        "net/message_interface.cpp"
-        "net/message_interface.h" 
-        "net/net_addr.h"
-        "net/net_inc.h"
-        "net/runflag.cpp" 
-        "net/runflag.h"
-        "net/server_comm_engine.cpp"
-        "net/server_comm_engine.h" 
-        "net/socket.cpp"
-        "net/socket.h" 
-        "net/statistics.cpp"
-        "net/statistics.h" 
+        "../common/client_comm_engine.cpp" 
+        "../common/client_comm_engine.h"
+        "../common/server_comm_engine.cpp"
+        "../common/server_comm_engine.h" 
         "thread/mythread.cpp"
         "thread/mythread.h" 
         "thread/thread_pool.cpp"
@@ -79,11 +65,26 @@ set(FRAMEWORK
         "timer/clock.cpp" 
         "timer/clock.h"
         "timer/timer.cpp"
-        "timer/timer.h")
+        "timer/timer.h" 
+        "net/statistics.h" 
+        "net/byte_buff.cpp" 
+        "net/byte_buff.h" 
+        "net/ccrypto.cpp" 
+        "net/ccrypto.h"
+        "net/message_interface.cpp"
+        "net/message_interface.h" 
+        "net/runflag.cpp" 
+        "net/runflag.h"
+        "net/socket.cpp"
+        "net/socket.h" 
+        "net/statistics.cpp"
+        
+        )
 
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
+        ${CMAKE_SOURCE_DIR}/common
         ${CMAKE_SOURCE_DIR}/common/message
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const

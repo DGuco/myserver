@@ -4,26 +4,30 @@
 //  Copyright © 2018年 DGuco. All rights reserved.
 //
 
-
 #ifndef _SOCKET_H_
 #define _SOCKET_H_
 
-#include <base.h>
-#include "timer_event.h"
-#include "net_inc.h"
+#include <string>
+#include "t_array.h"
+#include "base.h"
 
-class CNetAddr;
+using namespace my_std;
+
+struct CNetAddr
+{
+	CString<16> m_szAddr;
+	unsigned int m_uPort;
+};
 
 class CSocket
 {
 public:
 	//构造函数
-	CSocket(SOCKET socket);
-	CSocket(int32 nType = SOCK_STREAM, int32 nProtocolFamily = AF_INET, int32 nProtocol = 0);
+	CSocket();
 	//析构函数
 	~CSocket();
 	//打开
-	bool Open();
+	bool Open(int nProtocolFamily = AF_INET, int nType = SOCK_STREAM, int nProtocol = 0);
 	//关闭
 	void Close();
 	//shutdown
@@ -32,36 +36,18 @@ public:
 	void ShutdownRead();
 	//shutdown write
 	void ShutdownWrite();
-	//设置为非阻塞
-	void SetNonblocking();
 	//绑定端口
-	uint32 Bind(const CNetAddr &addr);
-	//获取本地ip
-	bool GetLocalAddress(CNetAddr &addr) const;
+	bool Bind(int port);
+	//绑定端口
+	bool Bind(std::string host,int port);
+	//监听
+	bool Listen();
 	//获取远程ip
-	bool GetRemoteAddress(CNetAddr &add) const;
+	bool GetRemoteAddress(CNetAddr & addr) const;
 	//获取socket fd
-	SOCKET GetSocket() const
-	{ return m_Socket; }
-	//设置socket fd
-	void SetSocket(SOCKET socket)
-	{ m_Socket = socket; }
-	//获取socket errpr
-	int GetSocketError() const;
-	//创建socket
-	static SOCKET CreateSocket(int32 Type = SOCK_STREAM, int32 ProtocolFamily = AF_INET, int32 Protocol = 0);
-	//创建socket并绑定地址
-	static SOCKET CreateBindedSocket(const CNetAddr &address);
-	//创建非阻塞socket
-	static void MakeSocketNonblocking(SOCKET Socket);
-	static void Address2SockAddrIn(sockaddr_in &saiAddress, const CNetAddr &address);
-protected:
-	SOCKET m_Socket;
-
+	SOCKET GetSocket() const;
 private:
-	int32 m_nType;
-	int32 m_nProtocolFamily;
-	int32 m_nProtocol;
+	SOCKET  m_Socket;
 };
 
 #endif

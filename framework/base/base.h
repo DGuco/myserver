@@ -8,16 +8,7 @@
 #ifndef __BASE_H__
 #define __BASE_H__
 
-#include "safe_pointer.h"
-#ifdef __LINUX__
-#include <netinet/in.h>
-#include <sigthread.h>
-#else
-#include <Windows.h>
-#include <WinBase.h>
-#endif // DEBUG
-
-
+#include "platform_def.h"
 #include <vector>
 #include <string>
 #include <csignal>
@@ -35,6 +26,7 @@
 #define MAX_BROADCAST_NUM    (1000)            // 单词最大广播数量
 #define PIPE_SIZE            (0x1000000)    // 共享内存管道大小 16M
 
+#define	TCP_BACK_LOG		 (5)
 #define RECVBUFLENGTH        (1024*1024*6)        // 接收缓冲区大小
 #define POSTBUFLENGTH        (1024*1024*6)        // 发送缓冲区大小
 #define RECV_BUF_LEN         (8 * 1024)   // 接收客户端信息的缓冲区
@@ -43,6 +35,9 @@
 #define MSG_HEAD_LEN 8  // 接收或发送给客户端消息的消息头字节数
 #define MSG_MAX_LEN                10*1024            // 接收或发送给客户端消息的最大字节数
 #define NULL						(0)
+#define INVALID_SOCKET              -1                        // 无效socket句柄
+#define SOCKET_ERROR                -1                        // socket api的返回值
+#define INVALID_HANDLE_VALUE        ((void * )(-1))           // 无效句柄值
 
 typedef unsigned int msize_t;
 typedef unsigned char BYTE;
@@ -55,6 +50,8 @@ typedef unsigned int uint32;
 typedef unsigned short uint16;
 typedef unsigned char uint8;
 typedef unsigned char BYTE;
+typedef int	 SOCKET;
+
 #ifndef TRUE
 #define TRUE 1
 #endif
