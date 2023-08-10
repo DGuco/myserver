@@ -28,7 +28,7 @@ int CServerCommEngine::ConvertStreamToMsg(CByteBuff *pBuff,
 										  CFactory *pMsgFactory)
 {
 	if ((pBuff == NULL) || (pMsg == NULL)) {
-		ASSERT_STR(0, return -1, "CServerCommEngine::ConvertStreamToMsg Input param failed.");
+		ASSERT_EX(0, return -1, "CServerCommEngine::ConvertStreamToMsg Input param failed.");
 	}
 	// 总长度
 	unsigned short tTotalLen = pBuff->ReadUnShort();
@@ -40,7 +40,7 @@ int CServerCommEngine::ConvertStreamToMsg(CByteBuff *pBuff,
 
 	// 补齐的长度一定小于8字节
 	if (tAddLen >= 8) {
-		ASSERT_STR(0, return -3, "CServerCommEngine::ConvertStreamToMsg tAddLen = %d impossibility.", tAddLen);
+		ASSERT_EX(0, return -3, "CServerCommEngine::ConvertStreamToMsg tAddLen = %d impossibility.", tAddLen);
 	}
 	// 直接抛掉补充长度
 	tTotalLen -= tAddLen;
@@ -53,13 +53,13 @@ int CServerCommEngine::ConvertStreamToMsg(CByteBuff *pBuff,
 	CProxyHead *pProxyHead = pMsg->mutable_msghead();
 	// CProxyHead
 	if (!pProxyHead->ParseFromArray(pBuff->CanReadData(), tTmpLen)) {
-		ASSERT_STR(0, return -4, "CServerCommEngine::ConvertStreamToMsg CProxyHead ParseFromArray failed.");
+		ASSERT_EX(0, return -4, "CServerCommEngine::ConvertStreamToMsg CProxyHead ParseFromArray failed.");
 	}
 	pBuff->ReadLen(tTmpLen);
 	tTotalLen -= tTmpLen;
 
 	if (tTotalLen < 0) {
-		ASSERT_STR(0, return -5, "CServerCommEngine::ConvertStreamToMsg tTotalLen = %d impossibility.", tTotalLen);
+		ASSERT_EX(0, return -5, "CServerCommEngine::ConvertStreamToMsg tTotalLen = %d impossibility.", tTotalLen);
 	}
 
 	if (tTotalLen == 0) {
@@ -73,7 +73,7 @@ int CServerCommEngine::ConvertStreamToMsg(CByteBuff *pBuff,
 	if (tTotalLen != tTmpLen)
 	{
 		// msgpara长度不匹配
-		ASSERT_STR(0,return -7,"CServerCommEngine::ConvertStreamToMsg failed, tTotalLen(%d) != tTmpLen.(%d)",tTotalLen,tTmpLen);
+		ASSERT_EX(0,return -7,"CServerCommEngine::ConvertStreamToMsg failed, tTotalLen(%d) != tTmpLen.(%d)",tTotalLen,tTmpLen);
 	}
 
 	if (pMsgFactory) {
@@ -84,7 +84,7 @@ int CServerCommEngine::ConvertStreamToMsg(CByteBuff *pBuff,
 		tpMsgPara = pMsgFactory->CreateMessage(pMsg->msghead().messageid());
 
 		if (tpMsgPara == NULL) {
-			ASSERT_STR(0,
+			ASSERT_EX(0,
 						  return -8,
 						  "CServerCommEngine::ConvertStreamToMsg CMessageFactory can't create msg id = %d.",
 						  pMsg->msghead().messageid());
@@ -94,7 +94,7 @@ int CServerCommEngine::ConvertStreamToMsg(CByteBuff *pBuff,
 			// 因为使用placement new，new在了一块静态存储的buffer上，只能析构，不能delete
 			// 并且是非线程安全的
 			tpMsgPara->~Message();
-			ASSERT_STR(0,return -9,"CServerCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
+			ASSERT_EX(0,return -9,"CServerCommEngine::ConvertStreamToMsg CMessage.msgpara ParseFromArray failed.");
 		}
 		pBuff->ReadLen(tTmpLen);
 		pMsg->set_msgpara((unsigned long) tpMsgPara);
@@ -108,7 +108,7 @@ int CServerCommEngine::ConvertMsgToStream(CProxyMessage *pMsg,
 										  unsigned short &unBuffLen)
 {
 	if ((pBuff == NULL) || (unBuffLen < 8)) {
-		ASSERT_STR(0, return -1, "CServerCommEngine::ConvertMsgToStream Input impossibility.");
+		ASSERT_EX(0, return -1, "CServerCommEngine::ConvertMsgToStream Input impossibility.");
 	}
 
 	unsigned short tLen = 0;
@@ -129,7 +129,7 @@ int CServerCommEngine::ConvertMsgToStream(CProxyMessage *pMsg,
 
 	// 序列化CProxyHead
 	if (!pProxyHead->SerializeToArray(pBuff->CanWriteData(), pBuff->WriteableDataLen())) {
-		ASSERT_STR(0, return -2, "CServerCommEngine::ConvertMsgToStream CProxyHead SerializeToArray failed.");
+		ASSERT_EX(0, return -2, "CServerCommEngine::ConvertMsgToStream CProxyHead SerializeToArray failed.");
 	}
 	tLen += pProxyHead->GetCachedSize();
     pBuff->WriteLen(pProxyHead->GetCachedSize());
@@ -157,7 +157,7 @@ int CServerCommEngine::ConvertMsgToStream(CProxyMessage *pMsg,
 	// 获取msgpara
 	CGooMess *tpMsgPara = (CGooMess *) pMsg->msgpara();
 	if (tpMsgPara == NULL) {
-		ASSERT_STR(0, return -4, "CServerCommEngine::ConvertMsgToStream CMessagePara is NULL.");
+		ASSERT_EX(0, return -4, "CServerCommEngine::ConvertMsgToStream CMessagePara is NULL.");
 	}
 
 	// msgpara长度
@@ -166,7 +166,7 @@ int CServerCommEngine::ConvertMsgToStream(CProxyMessage *pMsg,
 
 	// 序列化msgpara
 	if (!tpMsgPara->SerializeToArray(pBuff->CanWriteData(), unBuffLen - tLen)) {
-		ASSERT_STR(0, return -5, "CServerCommEngine::ConvertMsgToStream msgpara SerializeToArray failed.");
+		ASSERT_EX(0, return -5, "CServerCommEngine::ConvertMsgToStream msgpara SerializeToArray failed.");
 	}
 	tLen += tpMsgPara->GetCachedSize();
     pBuff->WriteLen(tpMsgPara->GetCachedSize());
@@ -190,7 +190,7 @@ int CServerCommEngine::ConvertStreamToProxyHead(CByteBuff *pBuff,
                                                 CProxyHead *pProxyHead)
 {
 	if ((pBuff == NULL) || (pProxyHead == NULL)) {
-		ASSERT_STR(0, return -1, "CServerCommEngine::ConvertStreamToMsg Input param failed.");
+		ASSERT_EX(0, return -1, "CServerCommEngine::ConvertStreamToMsg Input param failed.");
 	}
 	// 总长度
 	unsigned short tTotalLen = pBuff->ReadUnShort();
@@ -202,7 +202,7 @@ int CServerCommEngine::ConvertStreamToProxyHead(CByteBuff *pBuff,
 
 	// 补齐的长度一定小于8字节
 	if (tAddLen >= 8) {
-		ASSERT_STR(0, return -3, "CServerCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tAddLen);
+		ASSERT_EX(0, return -3, "CServerCommEngine::ConvertStreamToMsg tAddLen = %d impoosibility.", tAddLen);
 	}
 	// 直接抛掉补充长度
 	tTotalLen -= tAddLen;
@@ -214,13 +214,13 @@ int CServerCommEngine::ConvertStreamToProxyHead(CByteBuff *pBuff,
 
 	// CProxyHead
 	if (!pProxyHead->ParseFromArray(pBuff->CanReadData(), tHeadTmpLen)) {
-		ASSERT_STR(0, return -4, "CServerCommEngine::ConvertStreamToMsg CProxyHead ParseFromArray failed.");
+		ASSERT_EX(0, return -4, "CServerCommEngine::ConvertStreamToMsg CProxyHead ParseFromArray failed.");
 	}
 	pBuff->ReadLen(tHeadTmpLen);
 	tTotalLen -= tHeadTmpLen;
 
 	if (tTotalLen < 0) {
-		ASSERT_STR(0, return -5, "CServerCommEngine::ConvertStreamToMsg tTotalLen = %d impossibility.", tTotalLen);
+		ASSERT_EX(0, return -5, "CServerCommEngine::ConvertStreamToMsg tTotalLen = %d impossibility.", tTotalLen);
 	}
 
 	return 0;

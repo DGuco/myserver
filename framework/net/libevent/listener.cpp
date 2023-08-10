@@ -40,7 +40,7 @@ bool CListener::RegisterToReactor()
 										  (struct sockaddr *) &sin,
 										  sizeof(sin));
 #endif
-	ASSERT_STR(m_pListener != NULL, exit(0), "Create evconnlistener failed,msg : %s", strerror(errno))
+	ASSERT_EX(m_pListener != NULL, exit(0), "Create evconnlistener failed,msg : %s", strerror(errno))
 	evconnlistener_set_error_cb(m_pListener, lcb_AcceptError);
 	SetState(eLS_Listened);
 	return true;
@@ -88,7 +88,7 @@ void CListener::lcb_Listen(struct evconnlistener *listener,
 void CListener::lcb_AcceptError(struct evconnlistener *listener, void *ctx)
 {
 	int err = EVUTIL_SOCKET_ERROR();
-	ASSERT_STR(false, DO_NOTHING, "Got an error  (%s) on the listener.\n", evutil_socket_error_to_string(err));
+	ASSERT_EX(false, DO_NOTHING, "Got an error  (%s) on the listener.\n", evutil_socket_error_to_string(err));
 }
 
 void CListener::HandleInput(int socket, struct sockaddr *sa)

@@ -105,9 +105,9 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 										 m_pFuncAcceptorOnDataSend,
 										 m_pFuncAcceptorOnDataRecv,
 										 m_pFuncAcceptorDisconnected);
-	ASSERT_STR(pAcceptor != NULL, return, "Create CAcceptor failed");
+	ASSERT_EX(pAcceptor != NULL, return, "Create CAcceptor failed");
 	bool bRet = GetEventReactor()->Register(pAcceptor);
-	ASSERT_STR(bRet, return, "Acceptor register failed");
+	ASSERT_EX(bRet, return, "Acceptor register failed");
 	m_pOnNew(socket, pAcceptor);
 }
 

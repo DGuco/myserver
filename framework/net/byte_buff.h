@@ -95,7 +95,6 @@ private:
 	unsigned int m_uiLen;
 	unsigned int m_uiCapacity;
 	BYTE*		 m_acData;
-	string		 a;
 };
 
 

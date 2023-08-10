@@ -100,7 +100,7 @@ shared_ptr<CNetWork> &CNetManager::GetNetWork()
 
 void CNetManager::ClearSocket(CAcceptor *tmpAcceptor, short iError)
 {
-	MY_ASSERT(tmpAcceptor != NULL, return)
+	ASSERT(tmpAcceptor != NULL, return)
 	//非gameserver 主动请求关闭
 	if (Client_Succeed != iError) {
 		DisConnect(tmpAcceptor, iError);
@@ -110,7 +110,7 @@ void CNetManager::ClearSocket(CAcceptor *tmpAcceptor, short iError)
 
 void CNetManager::DisConnect(CAcceptor *tmpAcceptor, short iError)
 {
-	MY_ASSERT(tmpAcceptor != NULL, return);
+	ASSERT(tmpAcceptor != NULL, return);
 	static CMessage tmpMessage;
 	tmpMessage.Clear( );
 	CMesHead *tmpHead = tmpMessage.mutable_msghead( );
@@ -147,7 +147,7 @@ void CNetManager::DisConnect(CAcceptor *tmpAcceptor, short iError)
 
 void CNetManager::RecvClientData(CAcceptor *tmpAcceptor)
 {
-	MY_ASSERT(tmpAcceptor != NULL, return);
+	ASSERT(tmpAcceptor != NULL, return);
 	//数据不完整
 	if (!tmpAcceptor->IsPackageComplete( )) {
 		return;
@@ -168,7 +168,7 @@ void CNetManager::RecvClientData(CAcceptor *tmpAcceptor)
 void CNetManager::DealClientData(CAcceptor *tmpAcceptor,
                                  unsigned short tmpLastLen)
 {
-    MY_ASSERT(tmpAcceptor != NULL, return)
+    ASSERT(tmpAcceptor != NULL, return)
     static CMessage tmpMessage;
     tmpMessage.Clear( );
     CMesHead *tmpHead = tmpMessage.mutable_msghead( );
@@ -240,7 +240,7 @@ bool CNetManager::BeginListen()
 void CNetManager::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
 {
 	//客户端主动断开连接
-    MY_ASSERT(tmpAcceptor != NULL, return);
+    ASSERT(tmpAcceptor != NULL, return);
     LOG_DEBUG("default", "New acceptor,socket id {}", tmpAcceptor->GetSocket( ).GetSocket( ));
     CGateCtrl::GetSingletonPtr( )->GetNetManager( )->GetNetWork()->InsertNewAcceptor(uId, (CAcceptor *) (tmpAcceptor));
     //检测是否又数据要发送
@@ -249,7 +249,7 @@ void CNetManager::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
 
 void CNetManager::lcb_OnCnsDisconnected(IBufferEvent *tmpAcceptor)
 {
-	MY_ASSERT(tmpAcceptor != NULL, return);
+	ASSERT(tmpAcceptor != NULL, return);
     std::shared_ptr<CNetManager> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetNetManager();
     tmpClientManager->ClearSocket((CAcceptor *) tmpAcceptor, Err_ClientClose);
     //检测是否又数据要发送

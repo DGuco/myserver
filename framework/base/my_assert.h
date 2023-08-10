@@ -17,7 +17,7 @@
         fail_handle;                                                    \
     }
 
-#define ASSERT_STR(a, fail_handle, str, ...)                            \
+#define ASSERT_EX(a, fail_handle, str, ...)                            \
     if((a) == false)                                                        \
     {                                                                        \
         char log_str[ 1024 ];                                                \
@@ -33,7 +33,7 @@
 		assert(a); 					\
 	} while(0);
 
-#define ASSERT_STR(a, fail_handle, str, ...) 			MY_ASSERT(a, fail_handle)
+#define ASSERT_EX(a, fail_handle, str, ...) 			MY_ASSERT(a, fail_handle)
 
 #endif // USE_MY_ASSERT
 
