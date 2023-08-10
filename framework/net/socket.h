@@ -42,10 +42,26 @@ public:
 	bool Bind(std::string host,int port);
 	//监听
 	bool Listen();
+	//读取
+	int  Read(char* data,int len);
+	//写入
+	int  Write(char* data, int len);
 	//获取远程ip
 	bool GetRemoteAddress(CNetAddr & addr) const;
+	//设置发送缓冲区大小
+	bool SetSendBufSize(int size);
+	//获取发送缓冲区大小
+	int GetSendBuffSize();
+	//设置接收缓冲区大小
+	bool SetRecvBufSize(int size);
+	//获取接收缓冲区大小
+	int GetRecvBuffSize();
 	//获取socket fd
 	SOCKET GetSocket() const;
+	//set opt
+	int SetSocketOpt(int sol, int type,const void* value, int size);
+	//get opt
+	int GetSocketOpt(int sol, int type,void* value, int* size);
 private:
 	SOCKET  m_Socket;
 };

@@ -111,6 +111,45 @@ bool CSocket::Listen()
 	return true;
 }
 
+int CSocket::Read(char* data, int len)
+{
+	int iRecvedBytes = recv(m_Socket,data,len,0);
+	if (iRecvedBytes == 0)
+	{
+		CNetAddr tmAddr;
+		GetRemoteAddress(tmAddr);
+		LOG_ERROR("default", "Socket recved 0 from {}:{} , fd = {}, errno : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
+			tmAddr.m_uPort, m_Socket, errno, strerror(errno));
+		Close();
+		return iRecvedBytes;
+	}
+	else if (errno != OPT_WOULD_BLOCK)
+	{
+		CNetAddr tmAddr;
+		GetRemoteAddress(tmAddr);
+		LOG_ERROR("default", "recv error! from {}:{} , fd = {}, errno : {},errormsg :{}.",tmAddr.m_szAddr.c_str(),
+			tmAddr.m_uPort, m_Socket, errno, strerror(errno));
+		Close();
+		return SOCKET_ERROR;
+	}
+	return iRecvedBytes;
+}
+
+int CSocket::Write(char* data, int len)
+{
+	int iBytesSent = send(m_Socket, (const char*)data, len, 0);
+	if (iBytesSent < 0 && errno != OPT_WOULD_BLOCK)
+	{
+		CNetAddr tmAddr;
+		GetRemoteAddress(tmAddr);
+		LOG_ERROR("default", "send error! to {}:{} , fd = {}, errno : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
+			tmAddr.m_uPort, m_Socket, errno, strerror(errno));
+		Close();
+		return SOCKET_ERROR;
+	}
+	return iBytesSent;
+}
+
 //-----------------------------------------------------------------
 bool CSocket::GetRemoteAddress(CNetAddr & addr) const
 {
@@ -128,7 +167,69 @@ bool CSocket::GetRemoteAddress(CNetAddr & addr) const
 	return true;
 }
 
+bool CSocket::SetSendBufSize(int size)
+{
+	if (SetSocketOpt(SOL_SOCKET, SO_SNDBUF,&size, sizeof(size)) == SOCKET_ERROR)
+	{
+		LOG_ERROR("default", "SetSendBufSize error , fd = {}, errno : {},errormsg :{}.", m_Socket, errno, strerror(errno));
+		return false;
+	}
+	return true;
+}
+
+int CSocket::GetSendBuffSize()
+{
+	int nBuffLen = 0;
+	int nSize = sizeof(nBuffLen);
+	if (GetSocketOpt(SOL_SOCKET, SO_SNDBUF, &nBuffLen, &nSize) == SOCKET_ERROR)
+	{
+		LOG_ERROR("default", "GetSendBuffSize error , fd = {}, errno : {},errormsg :{}.", m_Socket, errno, strerror(errno));
+		return -1;
+	}
+	return nBuffLen;
+}
+
+bool CSocket::SetRecvBufSize(int size)
+{
+	if (SetSocketOpt(SOL_SOCKET, SO_RCVBUF, &size, sizeof(size)) == SOCKET_ERROR)
+	{
+		LOG_ERROR("default", "SetRecvBufSize error , fd = {}, errno : {},errormsg :{}.", m_Socket, errno, strerror(errno));
+		return false;
+	}
+	return true;
+}
+
+int CSocket::GetRecvBuffSize()
+{
+	int nBuffLen = 0;
+	int nSize = sizeof(nBuffLen);
+	if (GetSocketOpt(SOL_SOCKET, SO_RCVBUF, &nBuffLen, &nSize) == SOCKET_ERROR)
+	{
+		LOG_ERROR("default", "GetRecvBuffSize error , fd = {}, errno : {},errormsg :{}.", m_Socket, errno, strerror(errno));
+		return -1;
+	}
+	return nBuffLen;
+}
+
 SOCKET CSocket::GetSocket() const
 {
 	return m_Socket;
+}
+
+int CSocket::SetSocketOpt(int sol, int type, const void* value, int size)
+{
+#ifdef __LINUX__
+	return setsockopt(m_Socket, sol, type,value, size);
+#else
+	return setsockopt(m_Socket, sol, type, (const char*)value, size);
+#endif
+}
+
+int CSocket::GetSocketOpt(int sol, int type,void* value, int* size)
+{
+#ifdef __LINUX__
+	return getsockopt(m_Socket, sol, type, value, (socklen_t*)size);
+#else
+	return getsockopt(m_Socket, sol, type, (char*)value, (int*)size);
+#endif
 }

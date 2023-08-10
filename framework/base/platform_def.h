@@ -37,6 +37,7 @@
     #define __WRITE_BARRIER__ \
         __asm__ __volatile__("sfence":::"memory")
 
+    #define OPT_WOULD_BLOCK   (EAGAIN)
     typedef int sm_handler;
     typedef int sm_key;
 #else
@@ -46,6 +47,7 @@
     #define __READ_BARRIER__ LoadFence
     #define __WRITE_BARRIER__ StoreFence
 
+    #define OPT_WOULD_BLOCK   (WSAEWOULDBLOCK)
     typedef int sm_key;
     typedef void* sm_handler;
 #endif
