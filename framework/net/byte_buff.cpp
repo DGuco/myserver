@@ -93,7 +93,7 @@ CByteBuff &CByteBuff::operator=(CByteBuff &&byteBuff)
 
 CByteBuff::~CByteBuff()
 {
-	delete[] m_acData;
+	DELETE_ARR(m_acData);
 }
 
 void CByteBuff::Clear()

@@ -40,19 +40,22 @@ using namespace std;
         __asm__ __volatile__("sfence":::"memory")
 
     #define OPT_WOULD_BLOCK   (EAGAIN)
+    #define SOCKET_CONNECTING  (EINPROGRESS)
     typedef int sm_handler;
     typedef int sm_key;
 	typedef int	SOCKET;
 #else
-    std::string GetErrorMessage()
+    std::string GetErrorMessage(int errorCode)
     {
-	    int errorCode = WSAGetLastError();
-	    errorCode = WSAEWOULDBLOCK;
 	    LPSTR errorMessage = nullptr;
 	    DWORD result = FormatMessageA(
 		    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-		    NULL, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		    (LPSTR)&errorMessage, 0, NULL);
+		    NULL, 
+            errorCode, 
+            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		    (LPSTR)&errorMessage,
+            0, 
+            NULL);
 	    if (result == 0)
         {
 		    return "Failed to get error message";
@@ -63,12 +66,14 @@ using namespace std;
     }
 
     #define errno (WSAGetLastError())
-    #define strerror(code) (WSAGetLastError(code))
+    #define strerror(code) (GetErrorMessage(code))
     #define __MEM_BARRIER MemoryFence 
     #define __READ_BARRIER__ LoadFence
     #define __WRITE_BARRIER__ StoreFence
 
     #define OPT_WOULD_BLOCK   (WSAEWOULDBLOCK)
+    #define SOCKET_CONNECTING  (WSAEWOULDBLOCK)
+
     typedef int sm_key;
     typedef void* sm_handler;
 #endif

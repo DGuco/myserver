@@ -14,7 +14,6 @@
 #include "message.pb.h"
 #include "base.h"
 #include "config.h"
-#include "net_work.h"
 #include "net_manager.h"
 #include "mes_handle.h"
 #include "thread_pool.h"

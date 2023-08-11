@@ -39,6 +39,29 @@
 #define SOCKET_ERROR                -1                        // socket api的返回值
 #define INVALID_HANDLE_VALUE        ((void * )(-1))           // 无效句柄值
 
+
+#define DELETE(ptr) \
+	do \
+	{\
+		if(ptr != NULL)\
+		{\
+			delete ptr;\
+			ptr = NULL;\
+		}\
+	}\
+	while(0);\
+
+#define DELETE_ARR(ptr) \
+	do \
+	{\
+		if(ptr != NULL)\
+		{\
+			delete[] ptr;\
+			ptr = NULL;\
+		}\
+	}\
+	while(0);\
+
 typedef unsigned int msize_t;
 typedef unsigned char BYTE;
 typedef long long int64;

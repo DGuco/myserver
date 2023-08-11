@@ -78,8 +78,7 @@ set(FRAMEWORK
         "net/socket.cpp"
         "net/socket.h" 
         "net/statistics.cpp"
-        
-        )
+        "net/tcp_client.h")
 
 
 include_directories(

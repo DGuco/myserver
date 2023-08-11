@@ -40,6 +40,8 @@ public:
 	bool Bind(int port);
 	//绑定端口
 	bool Bind(std::string host,int port);
+	//conn
+	bool Conn(std::string host, int port);
 	//监听
 	bool Listen();
 	//读取
@@ -62,8 +64,13 @@ public:
 	int SetSocketOpt(int sol, int type,const void* value, int size);
 	//get opt
 	int GetSocketOpt(int sol, int type,void* value, int* size);
+	//设置非阻塞
+	bool SetSocketNoBlock();
+	//是否有效
+	bool IsValid();
 private:
-	SOCKET  m_Socket;
+	SOCKET  m_nSocket;
+	bool	m_bBlock;
 };
 
 #endif
