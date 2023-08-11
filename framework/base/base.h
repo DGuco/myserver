@@ -50,7 +50,6 @@ typedef unsigned int uint32;
 typedef unsigned short uint16;
 typedef unsigned char uint8;
 typedef unsigned char BYTE;
-typedef int	 SOCKET;
 
 #ifndef TRUE
 #define TRUE 1

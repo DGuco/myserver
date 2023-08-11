@@ -157,8 +157,8 @@ int CClientCommEngine::ConvertToGameStream(CByteBuff *pBuff,
 			ASSERT_EX(0, return -1, "CClientCommEngine::ConvertToGateStream cast to CGooMess failed.");
 		}
 		else {
-			char tEncryBuff[MAX_PACKAGE_LEN] = {0};
-			char *tpEncryBuff = &tEncryBuff[0];
+			BYTE tEncryBuff[MAX_PACKAGE_LEN] = {0};
+			BYTE *tpEncryBuff = &tEncryBuff[0];
 			unsigned short iMsgParaLen = MAX_PACKAGE_LEN;
 			if (!pMsg->SerializeToArray(tpEncryBuff, iMsgParaLen)) {
 				ASSERT_EX(0, return -1, "CClientCommEngine::ConvertToGateStream MsgPara SerializeToArray failed.");
