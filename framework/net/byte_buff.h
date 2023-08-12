@@ -36,8 +36,6 @@ public:
 	CByteBuff &operator=(CByteBuff &&byteBuff);
 	~CByteBuff();
 	void Clear();
-	//大小端转换
-	BYTE* Flip(BYTE*netStr, size_t len);
 	short ReadShort(bool ispeek = false);
 	int ReadInt(bool ispeek = false);
 	long ReadLong(bool ispeek = false);
@@ -84,7 +82,10 @@ public:
 	static bool IsLittleEndian();
 	static void Reverse(BYTE*str, size_t len);
 private:
-	template<class T,int len_ = sizeof(T)> //只读取基本类型
+	//大小端转换
+	BYTE* Flip(BYTE* netStr, size_t len);
+	//只读取基本类型
+	template<class T,int len_ = sizeof(T)>
 	T ReadT(bool ispeek);
 	/**
 	 *
@@ -94,7 +95,8 @@ private:
 	 */
 	template<class T, int len_ = sizeof(T)> //只写基本类型
 	void WriteT(T t, int offset = 0);
-	void Copy(const CByteBuff *srcBuff);
+	//不要随便调用
+	void Copy(const CByteBuff& srcBuff);
 private:
 	static bool m_bIsLittleEndian;
 private:

@@ -43,7 +43,7 @@ CByteBuff::CByteBuff(const CByteBuff &byteBuff)
 		return;
 	}
 	m_aData = new BYTE[m_nCapacity]( );
-	Copy(&byteBuff);
+	Copy(byteBuff);
 }
 
 CByteBuff::CByteBuff(CByteBuff &&byteBuff)
@@ -61,7 +61,7 @@ CByteBuff &CByteBuff::operator=(CByteBuff &byteBuff)
 	if (this == &(byteBuff)) {
 		return *this;
 	}
-	Copy(&byteBuff);
+	Copy(byteBuff);
 	return *this;
 }
 
@@ -87,14 +87,6 @@ void CByteBuff::Clear()
 	m_nReadIndex = 0;
 	m_nWriteIndex = 0;
 	memset(m_aData, 0, m_nCapacity);
-}
-
-BYTE*CByteBuff::Flip(BYTE*netStr, size_t len)
-{
-	if (IsLittleEndian( )) {
-		Reverse(netStr, len);
-	}
-	return netStr;
 }
 
 short CByteBuff::ReadShort(bool ispeek)
@@ -167,8 +159,8 @@ int CByteBuff::ReadBytes(BYTE* pOutCode, msize_t tmLen, bool ispeek)
 	}
 	if (!ispeek)
 	{
-		//m_nReadIndex = (m_nReadIndex + usInLength) % m_nCapacity;
-		m_nReadIndex = (m_nReadIndex + usOutLength) & (m_nCapacity - 1);
+		m_nReadIndex = (m_nReadIndex + usOutLength) % m_nCapacity;
+		//m_nReadIndex = (m_nReadIndex + usOutLength) & (m_nCapacity - 1);
 	}
 }
 
@@ -245,8 +237,8 @@ int CByteBuff::WriteBytes(BYTE* pInCode, msize_t tmLen)
 	{
 		memcpy((void*)pTempDst, (const void*)(pInCode + nWriteLen), tmpLastLen);
 	}
-	//m_nWriteIndex = (m_nWriteIndex + usInLength) % m_nCapacity;
-	m_nWriteIndex = (m_nWriteIndex + usInLength) & (m_nCapacity - 1);
+	m_nWriteIndex = (m_nWriteIndex + usInLength) % m_nCapacity;
+	//m_nWriteIndex = (m_nWriteIndex + usInLength) & (m_nCapacity - 1);
 }
 
 BYTE*CByteBuff::CanReadData() const
@@ -273,10 +265,10 @@ T CByteBuff::ReadT(bool ispeek)
 	*/
 	if (IsLittleEndian( )) 
 	{
-		Reverse(tmpData, len);
+		Reverse(tmpData, len_);
 	}
 	T result = *(T *) tmpData;
-	m_nReadIndex += len;
+	m_nReadIndex += len_;
 	return result;
 }
 
@@ -295,17 +287,17 @@ void CByteBuff::WriteT(T t, int offset)
 	*/
 	if (IsLittleEndian()) 
 	{
-		pSendStr = Reverse(tmpData, len);
+		pSendStr = Reverse(&tmpData, len_);
 	}
 	WriteBytes(pSendStr, len_);
 }
 
-void CByteBuff::Copy(const CByteBuff *srcBuff)
+void CByteBuff::Copy(const CByteBuff& srcBuff)
 {
-	m_nReadIndex = srcBuff->m_nReadIndex;
-	m_nWriteIndex = srcBuff->m_nWriteIndex;
-	m_nCapacity = srcBuff->m_nCapacity;
-	memcpy(m_aData, srcBuff->m_aData, m_nCapacity);
+	m_nReadIndex = srcBuff.m_nReadIndex;
+	m_nWriteIndex = srcBuff.m_nWriteIndex;
+	m_nCapacity = srcBuff.m_nCapacity;
+	memcpy(m_aData, srcBuff.m_aData, m_nCapacity);
 }
 
 unsigned int CByteBuff::GetReadIndex() const
@@ -335,14 +327,14 @@ void CByteBuff::ResetWriteIndex()
 
 void CByteBuff::WriteLen(msize_t len)
 {
-	//m_nWriteIndex = (m_nWriteIndex + usInLength) % m_nCapacity;
+	//m_nWriteIndex = (m_nWriteIndex + len) % m_nCapacity;
 	m_nWriteIndex = (m_nWriteIndex + len) & (m_nCapacity - 1);
 }
 
 void CByteBuff::ReadLen(msize_t len)
 {
-	//m_nReadIndex = (m_nReadIndex + usInLength) % m_nCapacity;
-	m_nReadIndex = (m_nReadIndex + len) & (m_nCapacity - 1);
+	m_nReadIndex = (m_nReadIndex + len) % m_nCapacity;
+	//m_nReadIndex = (m_nReadIndex + len) & (m_nCapacity - 1);
 }
 
 void CByteBuff::SetReadIndex(msize_t uiReadIndex)
@@ -395,6 +387,14 @@ msize_t CByteBuff::CanWriteLen() const
 	 */
 	nCanWriteSpace -= BUFF_EXTRA_SIZE;
 	return nCanWriteSpace;
+}
+
+BYTE* CByteBuff::Flip(BYTE* netStr, size_t len)
+{
+	if (IsLittleEndian()) {
+		Reverse(netStr, len);
+	}
+	return netStr;
 }
 
 bool CByteBuff::IsLittleEndian()
