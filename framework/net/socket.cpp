@@ -103,7 +103,7 @@ bool CSocket::Bind(std::string host, int port)
 	}
 	return 0;
 }
-bool CSocket::Conn(std::string host, int port)
+int CSocket::Conn(std::string host, int port, bool block)
 {
 	sockaddr_in saiAddress;
 	memset(&saiAddress, 0, sizeof(saiAddress));
@@ -113,17 +113,34 @@ bool CSocket::Conn(std::string host, int port)
 
 	if (connect(m_nSocket, reinterpret_cast<const sockaddr*>(&saiAddress), sizeof(sockaddr)) == SOCKET_ERROR)
 	{
-		if (m_bBlock && errno == SOCKET_CONNECTING)
+		if (!block && errno == SOCKET_CONNECTING)
 		{
-			return true;
+			return 1;
 		}
 
 		Close();
 		m_nSocket = INVALID_SOCKET;
 		LOG_ERROR("default", "connect {}:{} failed error : {},errormsg : {} \n", host, port, errno, strerror(errno));
-		return false;
+		return SOCKET_ERROR;
 	}
-	return true;
+	return 0;
+}
+
+int CSocket::Conn(sockaddr_in& addr, int addrsize, bool block)
+{
+	if (connect(m_nSocket, reinterpret_cast<const sockaddr*>(&addr), addrsize) == SOCKET_ERROR)
+	{
+		if (!block && errno == SOCKET_CONNECTING)
+		{
+			return 1;
+		}
+
+		Close();
+		m_nSocket = INVALID_SOCKET;
+		LOG_ERROR("default", "connect {}:{} failed error : {},errormsg : {} \n", addr.sin_addr.s_addr, ntohl(addr.sin_port), errno, strerror(errno));
+		return SOCKET_ERROR;
+	}
+	return 0;
 }
 
 bool CSocket::Listen()
@@ -268,7 +285,6 @@ bool CSocket::SetSocketNoBlock()
 	iFlags |= O_NONBLOCK;
 	iFlags |= O_NDELAY;
 	fcntl(m_nSocket, F_SETFL, iFlags);
-	m_bBlock = true;
 	return true;
 #else
 	unsigned long cmd = 1;
@@ -277,7 +293,6 @@ bool CSocket::SetSocketNoBlock()
 		LOG_ERROR("default", "ioctlsocket error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
 		return false;
 	}
-	m_bBlock = true;
 	return true;
 #endif
 }
@@ -367,4 +382,15 @@ bool CSocket::IsTcpNoDelay()
 bool CSocket::IsValid()
 {
 	return m_nSocket != INVALID_SOCKET;
+}
+
+bool CSocket::IsSocketError()
+{
+	int nError = 0;
+	int nSize = sizeof(nError);
+	if (GetSocketOpt(SOL_SOCKET, SO_ERROR, &nError, &(nSize)) == SOCKET_ERROR )
+	{
+		return true;
+	}
+	return nError == 1;
 }

@@ -97,6 +97,11 @@ public:
 		return this->nDataH != pOhter->nDataH && this->nDataL != pOhter->nDataL;
 	}
 
+	Tp* operator()()
+	{
+		return Get();
+	}
+
 	template<typename NewTp>
 	void DynamicCastTo()
 	{
@@ -124,6 +129,11 @@ public:
 			return SafePointer<NewTp>();
 		}
 	}
+
+	Tp* Get() const
+	{
+		return GetThrow();
+	}
 private:
 	Tp* GetThrow() const
 	{
@@ -132,21 +142,15 @@ private:
 		{
 			char eMsg[256] = { 0 };
 			sprintf(eMsg, SPO_ERROR_MSG, static_cast<unsigned long>(GetFlagH()), GetFlagL(), pPoint);
-			throw  std::runtime_error(eMsg);
+			throw std::runtime_error(eMsg);
 		}
 
 		if (pPoint == NULL)
 		{
 			char eMsg[256] = { 0 };
 			sprintf(eMsg, SPO_ERROR_MSG, GetFlagH(), GetFlagL(), pPoint);
-			throw  std::runtime_error(eMsg);
+			throw std::runtime_error(eMsg);
 		}
-		return pPoint;
-	}
-
-	Tp* Get() const
-	{
-		Tp* pPoint = (Tp*)((nDataL & SPO_MAGIC_NUM_L) | (nDataH & SPO_MAGIC_NUM_H));
 		return pPoint;
 	}
 

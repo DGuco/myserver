@@ -13,13 +13,14 @@
 enum eTcpStatus
 {
 	eTcpClosed = 0,
-	eTcpConnecting = 1,
-	eTcpConnected = 2,
+	eTcpCreated = 1,
+	eTcpConnecting = 2,
+	eTcpConnected = 3,
 	eTcpRegisting = 4,
 	eTcpRegistered = 5,
 };
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
 class CTCPClient
 {
 public:
@@ -27,25 +28,20 @@ public:
 	CTCPClient();
 	//
 	~CTCPClient();
-	//
-	int GetSocketFD();
-	//
-	int GetStatus();
-	//
-	inline void SetSocketFD(int nSockFD) { m_iSocketFD = nSockFD; }
-	//
-	inline void SetStatus(int nStatus) { m_iStatus = nStatus; }
-	//
-	int ConnectTo(char* szIPAddr, unsigned short unPort);
-	//
-	int ConnectTo(u_long ulIPNetAddr, u_short unPort, eLinkMode emBlock = em_block_mode);
-	//
-	int Accept(int iAcceptFD);
-	//
+	//获取socketid
+	SOCKET GetSocketFD();
+	//获取连接状态
+	eTcpStatus GetStatus();
+	//连接
+	int ConnectTo(char* szIPAddr, u_short unPort,bool block = true);
+	//连接
+	int ConnectTo(u_long ulIPNetAddr, u_short unPort,bool block = true);
+	//检查非阻塞连接是否连接成功
+	int CheckNoblockConnecting();
+	//读取数据
 	int RecvData();
 	//
 	int GetOneCode(unsigned short& nCodeLength, BYTE* pCode, eByteMode emByte = use_host_byte);
-	//int GetOneHttpCode( int &nCodeLength, BYTE *pHeadCode, BYTE* pBodyCode); 
 	//
 	int GetOneHttpCode(int& nCodeLength, BYTE* pCode);
 	//
@@ -55,11 +51,9 @@ public:
 	//
 	int SendOneCode32(int nCodeLength, BYTE* pCode);
 	//
-	int AddToCheckSet(fd_set* pCheckSet);
+	bool AddToFDSet(fd_set& pCheckSet);
 	//
-	int IsFDSetted(fd_set* pCheckSet);
-	//
-	int SetNBlock(int iSock);
+	bool IsFDSetted(fd_set& pCheckSet);
 	//
 	int HasReserveData();
 	//
@@ -67,10 +61,7 @@ public:
 	//
 	int PrintfSocketStat();
 	//
-	int CheckNoblockConnecting(int nto = 0);
-	//
-	void GetCriticalData(int& iReadBegin, int& iReadEnd, int& iPostBegin, int& iPostEnd);
-	//
+	int CheckNoblockConnecting();
 	int Close();
 protected:
 	CSocket					m_Socket; //Socket 描述符
@@ -80,40 +71,97 @@ protected:
 };
 
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-CTCPClient<uiRecvBufLen, uiSendBufLen>::CTCPClient()
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+CTCPClient<RecvBufLen_, SendBufLen_>::CTCPClient()
 {
 	m_iStatus = eTcpClosed;
-	m_iReadBegin = 0;
-	m_iReadEnd = 0;
-	m_iPostBegin = m_iPostEnd = 0;
-	m_ReadBuff = new CByteBuff(uiRecvBufLen);
-	m_WriteBuff = new CByteBuff(uiSendBufLen);
+	m_ReadBuff = new CByteBuff(RecvBufLen_);
+	m_WriteBuff = new CByteBuff(SendBufLen_);
 }
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-CTCPClient<uiRecvBufLen, uiSendBufLen>::~CTCPClient()
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+CTCPClient<RecvBufLen_, SendBufLen_>::~CTCPClient()
 {
 	DELETE(m_ReadBuff);
 	DELETE(m_WriteBuff);
 }
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::ConnectTo(u_long ulIPNetAddr, u_short unPort, eLinkMode emBlock)
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::ConnectTo(char* szIPAddr, u_short unPort, bool block)
 {
 	m_Socket.Open();
-
 	if (!m_Socket.IsValid())
 	{
-		return false;
+		return -1;
+	}
+	m_iStatus = eTcpCreated;
+	if (!m_Socket.SetRecvBufSize(RecvBufLen_))
+	{
+		Close();
+		return -1;
 	}
 
-	iOptLen = sizeof(socklen_t);
-	iOptVal = uiSendBufLen;
-	if (m_Socket.SetSocketOpt(SOL_SOCKET, SO_SNDBUF, (const void*)&iOptVal, iOptLen))  // 设置发送缓冲区的大小
+	if (!m_Socket.SetSendBufSize(SendBufLen_))
 	{
-		LOG_ERROR("default", "Set send buffer size to %d failed!", iOptVal);
+		Close();
 		return -1;
+	}
+
+	if (!block)
+	{
+		m_Socket.SetSocketNoBlock();
+	}
+
+	sockaddr_in stTempAddr;
+	memset((void*)&stTempAddr, 0, sizeof(sockaddr_in));
+	stTempAddr.sin_family = AF_INET;
+	stTempAddr.sin_port = htons(unPort);
+	stTempAddr.sin_addr.s_addr = inet_addr(szIPAddr);
+	int nConRet = m_Socket.Conn(stTempAddr, sizeof(stTempAddr), block);
+	if (nConRet == SOCKET_ERROR)
+	{
+		Close();
+		return -2;
+	}
+	else if (nConRet == 1)
+	{
+		m_iStatus = eTcpConnecting;
+		//非阻塞连接中，检查是否连接成功
+		CheckNoblockConnecting();
+	}
+
+	if (block)
+	{
+		m_Socket.SetSocketNoBlock();
+		m_iStatus = eTcpConnected;
+	}
+	return 0;
+}
+
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::ConnectTo(u_long ulIPNetAddr, u_short unPort, bool block)
+{
+	m_Socket.Open();
+	if (!m_Socket.IsValid())
+	{
+		return -1;
+	}
+	m_iStatus = eTcpCreated;
+	if (!m_Socket.SetRecvBufSize(RecvBufLen_))
+	{
+		Close();
+		return -1;
+	}
+
+	if (!m_Socket.SetSendBufSize(SendBufLen_))
+	{
+		Close();
+		return -1;
+	}
+
+	if (!block)
+	{
+		m_Socket.SetSocketNoBlock();
 	}
 
 	sockaddr_in stTempAddr;
@@ -121,215 +169,98 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::ConnectTo(u_long ulIPNetAddr, u_shor
 	stTempAddr.sin_family = AF_INET;
 	stTempAddr.sin_port = htons(unPort);
 	stTempAddr.sin_addr.s_addr = ulIPNetAddr;
-
-	if (emBlock == em_nblock_mode)
+	int nConRet = m_Socket.Conn(stTempAddr, sizeof(stTempAddr), block);
+	if (nConRet == SOCKET_ERROR)
 	{
-		SetNBlock(m_iSocketFD);
+		Close();
+		return -2;
 	}
-
-	if (connect(m_iSocketFD, (const struct sockaddr*)&stTempAddr, sizeof(stTempAddr)))
+	else if(nConRet == 1)
 	{
-		if (emBlock == em_block_mode)
-		{
-			Close();
-			return -3;
-		}
-
-		if (errno != EINPROGRESS)
-		{
-			Close();
-			return -3;
-		}
 		m_iStatus = eTcpConnecting;
-		return 0;
+		//非阻塞连接中，检查是否连接成功
+		CheckNoblockConnecting();
 	}
 
-	if (emBlock == em_block_mode)
+	if (block)
 	{
-		SetNBlock(m_iSocketFD);
+		m_Socket.SetSocketNoBlock();
+		m_iStatus = eTcpConnected;
 	}
 	return 0;
 }
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::CheckNoblockConnecting(int nto)
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::CheckNoblockConnecting()
 {
+	if (!m_Socket.IsValid())
+	{
+		return -1;
+	}
 	struct timeval tv;
-	tv.tv_sec = nto / 1000000;
-	tv.tv_usec = nto % 1000000;
+	tv.tv_sec = 0;
+	tv.tv_usec = 10000; //10毫秒
 
 	fd_set readfds, writefds, execpfds;
+	SOCKET nSocketFd = m_Socket.GetSocket();
 
 	FD_ZERO(&writefds);
-	FD_SET(m_iSocketFD, &writefds);
+	FD_SET(m_Socket.GetSocket(), &writefds);
 	readfds = writefds;
 	execpfds = writefds;
-
-	int n = select(m_iSocketFD + 1, &readfds, &writefds, &execpfds, &tv);
-
+	int n = select(nSocketFd + 1, &readfds, &writefds, &execpfds, &tv);
 	if (n < 0)
 	{
-		LOG_ERROR("default", "select error(%d:%s)", errno, strerror(errno));
+		LOG_ERROR("default", "select error({}:{})", errno, strerror(errno));
 		Close();
-		return -4;
+		return -2;
 	}
 
 	if (n == 0)
 	{
-		if (nto != 0)
-		{
-			LOG_ERROR("default", "select timeout of (%d sec %d usec)", tv.tv_sec, tv.tv_usec);
-		}
-
-		//Close();
 		return 0;
 	}
 
-	if (!FD_ISSET(m_iSocketFD, &readfds) && !FD_ISSET(m_iSocketFD, &writefds))
+	if (!FD_ISSET(nSocketFd, &readfds) && !FD_ISSET(nSocketFd, &writefds))
 	{
-		LOG_ERROR("default", "FD %d can't read & write", m_iSocketFD);
-		Close();
-		return -6;
-	}
-
-	int err = 0;
-	socklen_t len = sizeof(sockaddr);
-	if (getsockopt(m_iSocketFD, SOL_SOCKET, SO_ERROR, &err, &len) < 0 || err != 0)
-	{
-		LOG_ERROR("default", "connect failure on getsockopt(SO_ERROR) err(%d)", err);
-		Close();
-		return -7;
-	}
-
-
-	m_iReadBegin = m_iReadEnd = 0;
-	m_iPostBegin = m_iPostEnd = 0;
-	m_iStatus = tcs_connected;
-
-	return 0;
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::ConnectTo(char* szIPAddr, unsigned short unPort)
-{
-	sockaddr_in stTempAddr;
-
-	if (!szIPAddr)
-	{
-		return -1;
-	}
-
-	if (m_iStatus != tcs_opened || m_iSocketFD < 0)
-	{
-		return -2;
-	}
-
-	memset((void*)&stTempAddr, 0, sizeof(sockaddr_in));
-	stTempAddr.sin_family = AF_INET;
-	stTempAddr.sin_port = htons(unPort);
-	stTempAddr.sin_addr.s_addr = inet_addr(szIPAddr);
-
-	if (connect(m_iSocketFD, (const struct sockaddr*)&stTempAddr, sizeof(stTempAddr)))
-	{
+		LOG_ERROR("default", "socket {} can't read and write", nSocketFd);
 		Close();
 		return -3;
 	}
 
-	SetNBlock(m_iSocketFD);
-	m_iReadBegin = m_iReadEnd = 0;
-	m_iPostBegin = m_iPostEnd = 0;
-	m_iStatus = tcs_connected;
-
-	return 0;
-}
-
-// -1 --- Invalid input fd, -2 ----- socket already connected
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::Accept(int iAcceptFD)
-{
-	int iTempRet = 0;
-
-	if (iAcceptFD < 0)
+	if (m_Socket.IsSocketError())
 	{
-		return -1;
-	}
-#ifdef _POSIX_MT_
-	pthread_mutex_lock(&m_stMutex);
-#endif
-	if (m_iSocketFD > 0 && m_iStatus == tcs_connected)
-	{
-		LOG_ERROR("default", "Warning, another connection request from remote, close the previous(%d).", m_iSocketFD);
+		LOG_ERROR("default", "connect failure on SOCKET {} error:{} msg:{}.", m_nSocket, errno, strerror(errno))
 		Close();
-		//iTempRet = -2;
+		return -4;
 	}
-
-	m_iSocketFD = iAcceptFD;
-	m_iSocketType = sot_comm;
-	m_iStatus = tcs_connected;
-	m_iReadBegin = 0;
-	m_iReadEnd = 0;
-	m_iPostBegin = m_iPostEnd = 0;
-	SetNBlock(m_iSocketFD);
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock(&m_stMutex);
-#endif
-	return iTempRet;
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::Close()
-{
-	if (m_iSocketFD > 0)
-	{
-		close(m_iSocketFD);
-	}
-
-	m_iSocketFD = -1;
-	m_iStatus = tcs_closed;
-
+	m_iStatus = eTcpConnected;
 	return 0;
 }
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::GetSocketFD()
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::Close()
 {
-	int iTmpFD = -1;
-
-#ifdef _POSIX_MT_
-	pthread_mutex_lock(&m_stMutex);
-#endif
-
-	iTmpFD = m_iSocketFD;
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock(&m_stMutex);
-#endif
-
-	return iTmpFD;
+	m_Socket.Close();
+	m_iStatus = eTcpClosed;
+	return 0;
 }
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::GetStatus()
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+SOCKET CTCPClient<RecvBufLen_, SendBufLen_>::GetSocketFD()
 {
-	int iTmpStatus = tcs_closed;
+	return m_Socket.GetSocket();
+}
 
-#ifdef _POSIX_MT_
-	pthread_mutex_lock(&m_stMutex);
-#endif
-
-	iTmpStatus = m_iStatus;
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock(&m_stMutex);
-#endif
-
-	return iTmpStatus;
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+eTcpStatus CTCPClient<RecvBufLen_, SendBufLen_>::GetStatus()
+{
+	return m_iStatus;
 }
 
 // 返回值：-1 ：Socket状态错误；-2 ：接收缓冲区已满；-3 ：对端断开连接；-4 ：接收错误
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::RecvData()
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::RecvData()
 {
 	int iRecvedBytes = 0;
 	int iTempRet = 0;
@@ -339,16 +270,9 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::RecvData()
 	memset(&stPeerAddr, 0, sizeof(sockaddr_in));
 	socklen_t iPeerAddrLen = sizeof(stPeerAddr);
 
-	//使用互斥锁保护临界区代码
-#ifdef _POSIX_MT_
-	pthread_mutex_lock(&m_stMutex);
-#endif
-
 	if (m_iSocketFD < 0 || m_iStatus != tcs_connected)
 	{
-#ifdef _POSIX_MT_
-		pthread_mutex_unlock(&m_stMutex);
-#endif
+
 		LOG_ERROR("default", "RecvData Failed : m_iSocketFD(%d), m_iStatus(%d).",
 			m_iSocketFD, m_iStatus);
 		return ERR_RECV_NOSOCK;
@@ -396,15 +320,11 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::RecvData()
 		}
 	} while (iRecvedBytes > 0);
 
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock(&m_stMutex);
-#endif
-
 	return iTempRet;
 }
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short& nCodeLength, BYTE* pCode, eByteMode emByte)
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::GetOneCode(unsigned short& nCodeLength, BYTE* pCode, eByteMode emByte)
 {
 	unsigned short shMaxBufferLen = nCodeLength;
 	int iDataLength = 0;
@@ -501,8 +421,8 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::GetOneCode(unsigned short& nCodeLeng
 }
 
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::GetOneHttpCode(int& nCodeLength, BYTE* pCode)
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::GetOneHttpCode(int& nCodeLength, BYTE* pCode)
 {
 	int shMaxBufferLen = nCodeLength;
 	int iDataLength = 0;
@@ -618,8 +538,8 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::GetOneHttpCode(int& nCodeLength, BYT
 	return iTempRet;
 }
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::GetOneCode32(int& iCodeLength, BYTE* pCode)
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::GetOneCode32(int& iCodeLength, BYTE* pCode)
 {
 	int iMaxBufferLen = iCodeLength;
 	int iDataLength = 0;
@@ -699,8 +619,8 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::GetOneCode32(int& iCodeLength, BYTE*
 
 
 // 返回值说明：-1：参数错误或状态非法；-2：发送缓冲区满；-3：发送系统错误；
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLength, BYTE* pCode)
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::SendOneCode(unsigned short nCodeLength, BYTE* pCode)
 {
 	int iBytesSent = 0;
 	int iBytesLeft = nCodeLength;
@@ -713,16 +633,8 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 		return ERR_SEND_NOSOCK;
 	}
 
-#ifdef _POSIX_MT_
-	pthread_mutex_lock(&m_stMutex);
-#endif
-
-
 	if (m_iSocketFD < 0 || m_iStatus != tcs_connected)
 	{
-#ifdef _POSIX_MT_
-		pthread_mutex_unlock(&m_stMutex);
-#endif
 		LOG_ERROR("default", "SendOneCode Failed : m_iSocketFD(%d), m_iStatus(%d).",
 			m_iSocketFD, m_iStatus);
 		return ERR_SEND_NOSOCK;
@@ -761,9 +673,6 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 	else
 	{
 		// 否则，直接返回
-#ifdef _POSIX_MT_
-		pthread_mutex_unlock(&m_stMutex);
-#endif
 		if (iBytesLeft < 0)
 		{
 			iTempRet = ERR_SEND_UNKOWN;
@@ -835,16 +744,12 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::SendOneCode(unsigned short nCodeLeng
 
 	}
 
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock(&m_stMutex);
-#endif
-
 	return iTempRet;
 }
 
 // 返回值说明：-1：参数错误或状态非法；-2：发送缓冲区满；-3：发送系统错误；
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::SendOneCode32(int iCodeLength, BYTE* pCode)
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::SendOneCode32(int iCodeLength, BYTE* pCode)
 {
 	int iBytesSent = 0;
 	int iBytesLeft = iCodeLength;
@@ -856,16 +761,8 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::SendOneCode32(int iCodeLength, BYTE*
 		return ERR_SEND_NOSOCK;
 	}
 
-#ifdef _POSIX_MT_
-	pthread_mutex_lock(&m_stMutex);
-#endif
-
-
 	if (m_iSocketFD < 0 || m_iStatus != tcs_connected)
 	{
-#ifdef _POSIX_MT_
-		pthread_mutex_unlock(&m_stMutex);
-#endif
 		return ERR_SEND_NOSOCK;
 	}
 
@@ -906,9 +803,6 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::SendOneCode32(int iCodeLength, BYTE*
 	else
 	{
 		// 否则，直接返回
-#ifdef _POSIX_MT_
-		pthread_mutex_unlock(&m_stMutex);
-#endif	
 		return iTempRet;
 	}
 
@@ -946,90 +840,40 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::SendOneCode32(int iCodeLength, BYTE*
 
 	}
 
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock(&m_stMutex);
-#endif
-
 	return iTempRet;
 }
 
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::AddToCheckSet(fd_set* pCheckSet)
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+bool CTCPClient<RecvBufLen_, SendBufLen_>::AddToFDSet(fd_set& tmFdSet)
 {
-	int iTempRet = 0;
-
-	if (!pCheckSet)
+	SOCKET nSocket = m_Socket.GetSocket();
+	if (nSocket > 0 && m_iStatus == eTcpConnected)
 	{
-		return -1;
+		FD_SET(nSocket, &tmFdSet);
+		return true;
 	}
-
-#ifdef _POSIX_MT_
-	pthread_mutex_lock(&m_stMutex);
-#endif
-
-	if (m_iSocketFD > 0 && m_iStatus == tcs_connected)
-	{
-		FD_SET(m_iSocketFD, pCheckSet);
-	}
-	else if (m_iSocketFD > 0)
+	else if (m_Socket.IsValid())
 	{
 		Close();
-		iTempRet = -2;
+		return 0;
 	}
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock(&m_stMutex);
-#endif
-
-	return iTempRet;
+	return true;
 }
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::IsFDSetted(fd_set* pCheckSet)
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+bool CTCPClient<RecvBufLen_, SendBufLen_>::IsFDSetted(fd_set& tmFdSet)
 {
-	int iTempRet = False;
-
-	if (!pCheckSet)
+	SOCKET nSocket = m_Socket.GetSocket();
+	if (nSocket > 0 && m_iStatus == eTcpConnected)
 	{
-		return False;
+		return  = FD_ISSET(nSocket, tmFdSet);
 	}
-
-#ifdef _POSIX_MT_
-	pthread_mutex_lock(&m_stMutex);
-#endif
-
-	if (m_iSocketFD > 0 && m_iStatus == tcs_connected)
-	{
-		iTempRet = FD_ISSET(m_iSocketFD, pCheckSet);
-	}
-	else
-	{
-		iTempRet = False;
-	}
-
-#ifdef _POSIX_MT_
-	pthread_mutex_unlock(&m_stMutex);
-#endif
-
-	return iTempRet;
+	return false;
 }
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::SetNBlock(int iSock)
-{
-
-	int iFlags;
-	iFlags = fcntl(iSock, F_GETFL, 0);
-	iFlags |= O_NONBLOCK;
-	iFlags |= O_NDELAY;
-	fcntl(iSock, F_SETFL, iFlags);
-	return 0;
-
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-void CTCPClient<uiRecvBufLen, uiSendBufLen>::GetCriticalData(int& iReadBegin, int& iReadEnd, int& iPostBegin, int& iPostEnd)
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+void CTCPClient<RecvBufLen_, SendBufLen_>::GetCriticalData(int& iReadBegin, int& iReadEnd, int& iPostBegin, int& iPostEnd)
 {
 	iReadBegin = m_iReadBegin;
 	iReadEnd = m_iReadEnd;
@@ -1038,8 +882,8 @@ void CTCPClient<uiRecvBufLen, uiSendBufLen>::GetCriticalData(int& iReadBegin, in
 }
 
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::HasReserveData()
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::HasReserveData()
 {
 	if (m_iPostEnd - m_iPostBegin > 0)
 	{
@@ -1051,8 +895,8 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::HasReserveData()
 	}
 }
 
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPClient<uiRecvBufLen, uiSendBufLen>::CleanReserveData()
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPClient<RecvBufLen_, SendBufLen_>::CleanReserveData()
 {
 	int iBytesSent = 0, iBytesLeft = 0, iBytesCleaned = 0, iTempRet = 0;
 	BYTE* pbyTemp = NULL;
@@ -1095,110 +939,4 @@ int CTCPClient<uiRecvBufLen, uiSendBufLen>::CleanReserveData()
 	//SAY("%d bytes is cleaned, left %d bytes.", iBytesCleaned, iBytesLeft);                                      
 	return iTempRet;
 }
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-CTCPConn<uiRecvBufLen, uiSendBufLen>::CTCPConn()
-{
-	m_ulIPAddr = 0;
-	m_nEntityID = -1;
-	m_nEntityType = -1;
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-CTCPConn<uiRecvBufLen, uiSendBufLen>::~CTCPConn()
-{
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPConn<uiRecvBufLen, uiSendBufLen>::Initialize(short nEntityType, short nEntityID, u_long ulIPAddr, u_short unPort)
-{
-	m_ulIPAddr = ulIPAddr;
-	m_unPort = unPort;
-	m_nEntityID = nEntityID;
-	m_nEntityType = nEntityType;
-
-	return 0;
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPConn<uiRecvBufLen, uiSendBufLen>::ConnectToServer(char* szLocalAddr, eLinkMode emBlock)
-{
-	if (m_nEntityID <= 0)
-	{
-		return -1;
-	}
-
-	if (m_stSocket.CreateClient(szLocalAddr))
-	{
-		LOG_ERROR("default", "Conn create client of  %d failed.", m_nEntityID);
-		return -1;
-	}
-
-	return m_stSocket.ConnectTo(m_ulIPAddr, m_unPort, emBlock);
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPConn<uiRecvBufLen, uiSendBufLen>::CreateServer()
-{
-	struct in_addr in;
-	if (m_nEntityID <= 0)
-	{
-		return -1;
-	}
-
-	in.s_addr = m_ulIPAddr;
-	if (m_stSocket.CreateServer(m_unPort, inet_ntoa(in)/*将in转变成xx.xx.xx.xx的形式*/))
-	{
-		LOG_ERROR("default", "Conn create DB Listen Server  %d failed.", m_nEntityID);
-		return -1;
-	}
-	return 0;
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-CTCPClient<uiRecvBufLen, uiSendBufLen>* CTCPConn<uiRecvBufLen, uiSendBufLen>::GetSocket()
-{
-	return &m_stSocket;
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-int CTCPConn<uiRecvBufLen, uiSendBufLen>::GetEntityInfo(short* pnEntityType, short* pnEntityID, unsigned long* pulIpAddr)
-{
-	if (!pnEntityType || !pnEntityID || !pulIpAddr)
-	{
-		return -1;
-	}
-
-	*pnEntityType = m_nEntityType;
-	*pnEntityID = m_nEntityID;
-	*pulIpAddr = m_ulIPAddr;
-
-	return 0;
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-u_long CTCPConn<uiRecvBufLen, uiSendBufLen>::GetConnAddr()
-{
-	return m_ulIPAddr;
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-u_short CTCPConn<uiRecvBufLen, uiSendBufLen>::GetConnPort()
-{
-	return m_unPort;
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-short CTCPConn<uiRecvBufLen, uiSendBufLen>::GetEntityType()
-{
-	return m_nEntityType;
-}
-
-template<unsigned int uiRecvBufLen, unsigned int uiSendBufLen>
-short CTCPConn<uiRecvBufLen, uiSendBufLen>::GetEntityID()
-{
-	return m_nEntityID;
-}
-
-
 #endif //__TCP_CLIENT_H__

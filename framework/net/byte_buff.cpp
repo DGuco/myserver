@@ -239,12 +239,11 @@ void CByteBuff::WriteBytes(BYTE*data, unsigned int len)
 	m_uiWriteIndex += len;
 }
 
-template<class T>
+template<class T,int len_>
 T CByteBuff::ReadT()
 {
-	BYTE tmpData[64];
-	size_t len = sizeof(T);
-	memcpy((void *) tmpData, m_acData + m_uiReadIndex, len);
+	BYTE tmpData[len_];
+	memcpy((void *) tmpData, m_acData + m_uiReadIndex, len_);
 	//因为不知道发送方是大端还是小端，所以默认发送方必须转换成大端发送(网络字节流默认以大端形式发送)，
 	//如果本机是小端，接收到数据后把大端字节流转换成小端然后再使用
 	/* plus
@@ -261,10 +260,10 @@ T CByteBuff::ReadT()
 	return result;
 }
 
-template<class T>
+template<class T, int len_>
 void CByteBuff::WriteT(T t, int offset)
 {
-	BYTE tmpData[64];
+	BYTE tmpData[len_];
 	*(T *) tmpData = t;
 	//因为不知道接收方是大端还是小端，所以默认发送方必须转换成大端发送(网络字节流默认以大端形式发送)，
 	//如果本机是小端，发送前把小端内存序转换为大端字网络流序再发送
@@ -278,9 +277,8 @@ void CByteBuff::WriteT(T t, int offset)
 	{
 		pSendStr = Reverse(tmpData, len);
 	}
-	size_t len = sizeof(T);
 	m_uiWriteIndex += offset;
-	memcpy(m_acData + m_uiWriteIndex, pSendStr, len);
+	memcpy(m_acData + m_uiWriteIndex, pSendStr, len_);
 	m_uiWriteIndex += len;
 }
 

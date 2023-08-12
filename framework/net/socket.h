@@ -41,7 +41,9 @@ public:
 	//绑定端口
 	bool Bind(std::string host,int port);
 	//conn
-	bool Conn(std::string host, int port);
+	int Conn(std::string host, int port,bool block);
+	//conn
+	int Conn(sockaddr_in& addr,int addrsize, bool block);
 	//监听
 	bool Listen();
 	//读取
@@ -68,25 +70,26 @@ public:
 	bool SetSocketNoBlock();
 	//socket 重用
 	bool SetReuseAddr();
-	//
+	//是否重用
 	bool IsReuseAddr();
-	//
+	//set Linger
 	bool SetLinger(int lingertime);
-	//
+	//get Linger
 	int GetLinger();
-	//
+	//tcp 心跳
 	bool SetKeepAlive();
-	//
+	///tcp 心跳
 	bool IsKeepAlive();
-	//
+	//tcp NoDelay
 	bool SetTcpNoDelay();
-	//
+	//tcp NoDelay
 	bool IsTcpNoDelay();
 	//是否有效
 	bool IsValid();
+	//socket 是否出错
+	bool IsSocketError();
 private:
 	SOCKET  m_nSocket;
-	bool	m_bBlock;
 };
 
 #endif

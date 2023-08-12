@@ -76,7 +76,7 @@ public:
 	static bool IsLittleEndian();
 	static void Reverse(BYTE*str, size_t len);
 private:
-	template<class T> //只读取基本类型
+	template<class T,int len_ = sizeof(T)> //只读取基本类型
 	T ReadT();
 	/**
 	 *
@@ -84,7 +84,7 @@ private:
 	 * @param t
 	 * @param pos 	相对writeindex 的偏移
 	 */
-	template<class T> //只写基本类型
+	template<class T, int len_ = sizeof(T)> //只写基本类型
 	void WriteT(T t, int offset = 0);
 	void Copy(const CByteBuff *srcBuff);
 private:
