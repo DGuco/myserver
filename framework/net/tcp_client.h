@@ -46,13 +46,11 @@ public:
 	int GetOneHttpCode(int& nCodeLength, BYTE* pCode);
 	//
 	int GetOneCode32(int& iCodeLength, BYTE* pCode);
-	//
-	int SendOneCode(unsigned short nCodeLength, BYTE* pCode);
-	//
-	int SendOneCode32(int nCodeLength, BYTE* pCode);
-	//
+	//把数据写到缓冲区准备发送
+	int Send(msize_t nCodeLength, BYTE* pCode);
+	//添加socket到fdset
 	bool AddToFDSet(fd_set& pCheckSet);
-	//
+	//是否添加到fdset中
 	bool IsFDSetted(fd_set& pCheckSet);
 	//
 	int HasReserveData();
@@ -66,8 +64,8 @@ public:
 protected:
 	CSocket					m_Socket; //Socket 描述符
 	int						m_iStatus;	 //连接状态
-	SafePointer<CByteBuff>	m_ReadBuff;  //读缓冲
-	SafePointer<CByteBuff>	m_WriteBuff; //写缓冲
+	SafePointer<CByteBuff>	m_pReadBuff;  //读缓冲
+	SafePointer<CByteBuff>	m_pWriteBuff; //写缓冲
 };
 
 
@@ -75,15 +73,15 @@ template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
 CTCPClient<RecvBufLen_, SendBufLen_>::CTCPClient()
 {
 	m_iStatus = eTcpClosed;
-	m_ReadBuff = new CByteBuff(RecvBufLen_);
-	m_WriteBuff = new CByteBuff(SendBufLen_);
+	m_pReadBuff = new CByteBuff(RecvBufLen_);
+	m_pWriteBuff = new CByteBuff(SendBufLen_);
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
 CTCPClient<RecvBufLen_, SendBufLen_>::~CTCPClient()
 {
-	DELETE(m_ReadBuff);
-	DELETE(m_WriteBuff);
+	DELETE(m_pReadBuff);
+	DELETE(m_pWriteBuff);
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
@@ -618,10 +616,21 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::GetOneCode32(int& iCodeLength, BYTE* p
 }
 
 
-// 返回值说明：-1：参数错误或状态非法；-2：发送缓冲区满；-3：发送系统错误；
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::SendOneCode(unsigned short nCodeLength, BYTE* pCode)
+int CTCPClient<RecvBufLen_, SendBufLen_>::Send(msize_t nCodeLength, BYTE* pCode)
 {
+	if (m_iStatus != eTcpConnected)
+	{
+		return -1;
+	}
+	if (!m_Socket.IsValid())
+	{
+		return -2;
+	}
+
+	SOCKET nTmSocket = m_Socket.GetSocket();
+
+	m_pWriteBuff->WriteBytes(pCode, nCodeLength);
 	int iBytesSent = 0;
 	int iBytesLeft = nCodeLength;
 	BYTE* pbyTemp = NULL;
@@ -746,103 +755,6 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::SendOneCode(unsigned short nCodeLength
 
 	return iTempRet;
 }
-
-// 返回值说明：-1：参数错误或状态非法；-2：发送缓冲区满；-3：发送系统错误；
-template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::SendOneCode32(int iCodeLength, BYTE* pCode)
-{
-	int iBytesSent = 0;
-	int iBytesLeft = iCodeLength;
-	BYTE* pbyTemp = NULL;
-	int iTempRet = 0;
-
-	if (!pCode)
-	{
-		return ERR_SEND_NOSOCK;
-	}
-
-	if (m_iSocketFD < 0 || m_iStatus != tcs_connected)
-	{
-		return ERR_SEND_NOSOCK;
-	}
-
-	// 首先检查是否有滞留数据
-	iBytesLeft = m_iPostEnd - m_iPostBegin;
-	pbyTemp = &(m_abyPostBuffer[m_iPostBegin]);
-	while (iBytesLeft > 0)
-	{
-		iBytesSent = send(m_iSocketFD, (const char*)pbyTemp, iBytesLeft, 0);
-
-		if (iBytesSent > 0)
-		{
-			pbyTemp += iBytesSent;
-			iBytesLeft -= iBytesSent;
-			m_iPostBegin += iBytesSent;
-		}
-
-
-		if (iBytesSent < 0 && errno != EAGAIN)
-
-		{
-			m_iStatus = tcs_error;
-			iTempRet = ERR_SEND_FAILED;
-			break;
-		}
-		else if (iBytesSent < 0)
-		{
-			iTempRet = ERR_SEND_NOBUFF;
-			break;
-		}
-	}
-
-	if (iBytesLeft == 0)
-	{
-		// 滞留数据发送成功，则继续发送本次提交的数据
-		m_iPostBegin = m_iPostEnd = 0;
-	}
-	else
-	{
-		// 否则，直接返回
-		return iTempRet;
-	}
-
-	//发送本次提交的数据
-	iBytesLeft = iCodeLength;
-	pbyTemp = pCode;
-
-	while (iBytesLeft > 0)
-	{
-		iBytesSent = send(m_iSocketFD, (const char*)pbyTemp, iBytesLeft, 0);
-
-		if (iBytesSent > 0)
-		{
-			pbyTemp += iBytesSent;
-			iBytesLeft -= iBytesSent;
-		}
-
-
-		if (iBytesSent < 0 && errno != EAGAIN)
-
-		{
-			m_iStatus = tcs_error;
-			iTempRet = ERR_SEND_FAILED;
-			break;
-		}
-
-		else if (iBytesSent < 0)
-		{
-			// Socket发送缓冲区满，则将剩余的数据放到缓存中
-			memcpy((void*)&(m_abyPostBuffer[m_iPostEnd]), (const void*)pbyTemp, iBytesLeft);
-			m_iPostEnd += iBytesLeft;
-			iTempRet = ERR_SEND_NOBUFF;
-			break;
-		}
-
-	}
-
-	return iTempRet;
-}
-
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
 bool CTCPClient<RecvBufLen_, SendBufLen_>::AddToFDSet(fd_set& tmFdSet)

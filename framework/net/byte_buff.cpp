@@ -21,32 +21,20 @@ bool CByteBuff::m_bIsLittleEndian = IsSystemLittleEndian( );
 
 CByteBuff::CByteBuff()
 	:
-	m_uiReadIndex(0),
-	m_uiWriteIndex(0),
-	m_uiLen(0),
-	m_uiCapacity(MAX_PACKAGE_LEN)
+	m_nReadIndex(0),
+	m_nWriteIndex(0)
 {
-	m_acData = new BYTE[m_uiCapacity]( );
+	m_aData = new BYTE[m_nCapacity + BUFF_EXTRA_SIZE]( );
+	m_nCapacity = MAX_PACKAGE_LEN + BUFF_EXTRA_SIZE;
 }
 
-CByteBuff::CByteBuff(unsigned int tmpCap)
+CByteBuff::CByteBuff(msize_t tmpCap)
 	:
-	m_uiReadIndex(0),
-	m_uiWriteIndex(0),
-	m_uiLen(0),
-	m_uiCapacity(tmpCap)
+	m_nReadIndex(0),
+	m_nWriteIndex(0)
 {
-	m_acData = new BYTE[tmpCap]( );
-}
-
-CByteBuff::CByteBuff(BYTE*data, unsigned tmpCap)
-{
-	m_uiReadIndex = 0;
-	m_uiWriteIndex = 0;
-	m_uiLen = 0;
-	m_uiCapacity = tmpCap;
-	m_acData = new BYTE[tmpCap];
-	memcpy(m_acData, data, tmpCap);
+	m_aData = new BYTE[tmpCap + BUFF_EXTRA_SIZE]( );
+	m_nCapacity = tmpCap + BUFF_EXTRA_SIZE;
 }
 
 CByteBuff::CByteBuff(const CByteBuff &byteBuff)
@@ -54,19 +42,18 @@ CByteBuff::CByteBuff(const CByteBuff &byteBuff)
 	if (this == &(byteBuff)) {
 		return;
 	}
-	m_acData = new BYTE[m_uiCapacity]( );
+	m_aData = new BYTE[m_nCapacity]( );
 	Copy(&byteBuff);
 }
 
 CByteBuff::CByteBuff(CByteBuff &&byteBuff)
 	:
-	m_uiReadIndex(std::move(byteBuff.m_uiReadIndex)),
-	m_uiWriteIndex(std::move(byteBuff.m_uiWriteIndex)),
-	m_uiLen(std::move(byteBuff.m_uiLen)),
-	m_uiCapacity(std::move(byteBuff.m_uiCapacity)),
-	m_acData(std::move(byteBuff.m_acData))
+	m_nReadIndex(std::move(byteBuff.m_nReadIndex)),
+	m_nWriteIndex(std::move(byteBuff.m_nWriteIndex)),
+	m_nCapacity(std::move(byteBuff.m_nCapacity)),
+	m_aData(std::move(byteBuff.m_aData))
 {
-	byteBuff.m_acData = NULL;
+	byteBuff.m_aData = NULL;
 }
 
 CByteBuff &CByteBuff::operator=(CByteBuff &byteBuff)
@@ -83,25 +70,23 @@ CByteBuff &CByteBuff::operator=(CByteBuff &&byteBuff)
 	if (this == &(byteBuff)) {
 		return *this;
 	}
-	m_uiReadIndex = std::move(byteBuff.m_uiReadIndex);
-	m_uiWriteIndex = std::move(byteBuff.m_uiWriteIndex);
-	m_uiLen = std::move(byteBuff.m_uiLen);
-	m_uiCapacity = std::move(byteBuff.m_uiCapacity);
-	m_acData = std::move(byteBuff.m_acData);
+	m_nReadIndex = std::move(byteBuff.m_nReadIndex);
+	m_nWriteIndex = std::move(byteBuff.m_nWriteIndex);
+	m_nCapacity = std::move(byteBuff.m_nCapacity);
+	m_aData = std::move(byteBuff.m_aData);
 	return *this;
 }
 
 CByteBuff::~CByteBuff()
 {
-	DELETE_ARR(m_acData);
+	DELETE_ARR(m_aData);
 }
 
 void CByteBuff::Clear()
 {
-	m_uiReadIndex = 0;
-	m_uiWriteIndex = 0;
-	m_uiLen = 0;
-	memset(m_acData, 0, m_uiCapacity);
+	m_nReadIndex = 0;
+	m_nWriteIndex = 0;
+	memset(m_aData, 0, m_nCapacity);
 }
 
 BYTE*CByteBuff::Flip(BYTE*netStr, size_t len)
@@ -112,54 +97,79 @@ BYTE*CByteBuff::Flip(BYTE*netStr, size_t len)
 	return netStr;
 }
 
-short CByteBuff::ReadShort()
+short CByteBuff::ReadShort(bool ispeek)
 {
-	return ReadT<short>( );
+	return ReadT<short>(ispeek);
 }
 
-int CByteBuff::ReadInt()
+int CByteBuff::ReadInt(bool ispeek)
 {
-	return ReadT<int>( );
+	return ReadT<int>(ispeek);
 }
 
-long CByteBuff::ReadLong()
+long CByteBuff::ReadLong(bool ispeek)
 {
-	return ReadT<long>( );
+	return ReadT<long>(ispeek);
 }
 
-long long CByteBuff::ReadLongLong()
+long long CByteBuff::ReadLongLong(bool ispeek)
 {
-	return ReadT<long long>( );
+	return ReadT<long long>(ispeek);
 }
 
-unsigned short CByteBuff::ReadUnShort()
+unsigned short CByteBuff::ReadUnShort(bool ispeek)
 {
-	return ReadT<unsigned short>( );
+	return ReadT<unsigned short>(ispeek);
 }
 
-unsigned int CByteBuff::ReadUnInt()
+unsigned int CByteBuff::ReadUnInt(bool ispeek)
 {
-	return ReadT<unsigned int>( );
+	return ReadT<unsigned int>(ispeek);
 }
 
-unsigned long CByteBuff::ReadUnLong()
+unsigned long CByteBuff::ReadUnLong(bool ispeek)
 {
-	return ReadT<unsigned long>( );
+	return ReadT<unsigned long>(ispeek);
 }
 
-unsigned long long CByteBuff::ReadUnLongLong()
+unsigned long long CByteBuff::ReadUnLongLong(bool ispeek)
 {
-	return ReadT<unsigned long long>( );
+	return ReadT<unsigned long long>(ispeek);
 }
 
-float CByteBuff::ReadFloat()
+float CByteBuff::ReadFloat(bool ispeek)
 {
-	return ReadT<float>( );
+	return ReadT<float>(ispeek);
 }
 
-double CByteBuff::ReadDouble()
+double CByteBuff::ReadDouble(bool ispeek)
 {
-	return ReadT<double>( );
+	return ReadT<double>(ispeek);
+}
+
+int CByteBuff::ReadBytes(BYTE* pOutCode, msize_t tmLen, bool ispeek)
+{
+	int nCanReadSpace = CanReadLen();
+	if (nCanReadSpace <= 0 || tmLen > nCanReadSpace)
+	{
+		return -1;
+	}
+
+	msize_t usOutLength = tmLen;
+	BYTE* pTempSrc = m_aData;
+	BYTE* pTempDst = pOutCode;  // 设置接收 Code 的地址
+	msize_t nReadLen = MIN(usOutLength, m_nCapacity - m_nReadIndex);
+	memcpy((void*)pTempDst, (const void*)(pTempSrc + m_nReadIndex), nReadLen);
+	msize_t tmpLast = usOutLength - nReadLen;
+	if (tmpLast > 0)
+	{
+		memcpy((void*)(pTempDst + nReadLen), (const void*)pTempSrc, tmpLast);
+	}
+	if (!ispeek)
+	{
+		//m_nReadIndex = (m_nReadIndex + usInLength) % m_nCapacity;
+		m_nReadIndex = (m_nReadIndex + usOutLength) & (m_nCapacity - 1);
+	}
 }
 
 void CByteBuff::WriteShort(short value, int offset)
@@ -214,36 +224,46 @@ void CByteBuff::WriteDouble(double value, int offset)
 
 BYTE*CByteBuff::GetData() const
 {
-	return m_acData;
+	return m_aData;
+}
+
+int CByteBuff::WriteBytes(BYTE* pInCode, msize_t tmLen)
+{
+	msize_t nCanWriteSpace = CanWriteLen();
+	//剩余空间不足
+	if (tmLen > nCanWriteSpace)
+	{
+		return -1;
+	}
+	msize_t usInLength = tmLen;
+	BYTE* pTempDst = m_aData;
+	msize_t nWriteLen = MIN(usInLength, m_nCapacity - m_nWriteIndex);
+	memcpy((void*)(pTempDst + m_nWriteIndex), (const void*)pInCode, (size_t)nWriteLen);
+	size_t tmpLastLen = nCanWriteSpace - nWriteLen;
+	//如果有剩余，说明空闲部分在内存的两头，在头部继续放
+	if (tmpLastLen > 0)
+	{
+		memcpy((void*)pTempDst, (const void*)(pInCode + nWriteLen), tmpLastLen);
+	}
+	//m_nWriteIndex = (m_nWriteIndex + usInLength) % m_nCapacity;
+	m_nWriteIndex = (m_nWriteIndex + usInLength) & (m_nCapacity - 1);
 }
 
 BYTE*CByteBuff::CanReadData() const
 {
-	return m_acData + m_uiReadIndex;
+	return m_aData + m_nReadIndex;
 }
 
 BYTE*CByteBuff::CanWriteData() const
 {
-	return m_acData + m_uiWriteIndex;
-}
-
-void CByteBuff::ReadBytes(BYTE*data, unsigned int len)
-{
-	memcpy(data, m_acData + m_uiReadIndex, len);
-	m_uiReadIndex += len;
-}
-
-void CByteBuff::WriteBytes(BYTE*data, unsigned int len)
-{
-	memcpy(m_acData, data, len);
-	m_uiWriteIndex += len;
+	return m_aData + m_nWriteIndex;
 }
 
 template<class T,int len_>
-T CByteBuff::ReadT()
+T CByteBuff::ReadT(bool ispeek)
 {
 	BYTE tmpData[len_];
-	memcpy((void *) tmpData, m_acData + m_uiReadIndex, len_);
+	ReadBytes(&tmpData[0], len_, ispeek);
 	//因为不知道发送方是大端还是小端，所以默认发送方必须转换成大端发送(网络字节流默认以大端形式发送)，
 	//如果本机是小端，接收到数据后把大端字节流转换成小端然后再使用
 	/* plus
@@ -256,7 +276,7 @@ T CByteBuff::ReadT()
 		Reverse(tmpData, len);
 	}
 	T result = *(T *) tmpData;
-	m_uiReadIndex += len;
+	m_nReadIndex += len;
 	return result;
 }
 
@@ -265,6 +285,7 @@ void CByteBuff::WriteT(T t, int offset)
 {
 	BYTE tmpData[len_];
 	*(T *) tmpData = t;
+	BYTE* pSendStr = tmpData;
 	//因为不知道接收方是大端还是小端，所以默认发送方必须转换成大端发送(网络字节流默认以大端形式发送)，
 	//如果本机是小端，发送前把小端内存序转换为大端字网络流序再发送
 	/* plus
@@ -272,78 +293,108 @@ void CByteBuff::WriteT(T t, int offset)
 	  数值(short / int / float / double / ......)，有多个字符组成，在读写时会有大小端；
 	  字符串可以理解为单字节的字符数组，字符之间没有直接关联，不存在字节序问题；
 	*/
-	BYTE* pSendStr = tmpData;
 	if (IsLittleEndian()) 
 	{
 		pSendStr = Reverse(tmpData, len);
 	}
-	m_uiWriteIndex += offset;
-	memcpy(m_acData + m_uiWriteIndex, pSendStr, len_);
-	m_uiWriteIndex += len;
+	WriteBytes(pSendStr, len_);
 }
 
 void CByteBuff::Copy(const CByteBuff *srcBuff)
 {
-	m_uiReadIndex = srcBuff->m_uiReadIndex;
-	m_uiWriteIndex = srcBuff->m_uiWriteIndex;
-	m_uiLen = srcBuff->m_uiLen;
-	m_uiCapacity = srcBuff->m_uiCapacity;
-	memcpy(m_acData, srcBuff->m_acData, m_uiCapacity);
+	m_nReadIndex = srcBuff->m_nReadIndex;
+	m_nWriteIndex = srcBuff->m_nWriteIndex;
+	m_nCapacity = srcBuff->m_nCapacity;
+	memcpy(m_aData, srcBuff->m_aData, m_nCapacity);
 }
 
 unsigned int CByteBuff::GetReadIndex() const
 {
-	return m_uiReadIndex;
+	return m_nReadIndex;
 }
 
 unsigned int CByteBuff::GetWriteIndex() const
 {
-	return m_uiWriteIndex;
+	return m_nWriteIndex;
 }
 
 unsigned int CByteBuff::GetCapaticy() const
 {
-	return m_uiCapacity;
+	return m_nCapacity;
 }
 
 void CByteBuff::ResetReadIndex()
 {
-	m_uiReadIndex = 0;
+	m_nReadIndex = 0;
 }
 
 void CByteBuff::ResetWriteIndex()
 {
-	m_uiWriteIndex = 0;
+	m_nWriteIndex = 0;
 }
 
-void CByteBuff::WriteLen(unsigned int len)
+void CByteBuff::WriteLen(msize_t len)
 {
-	m_uiWriteIndex += len;
+	//m_nWriteIndex = (m_nWriteIndex + usInLength) % m_nCapacity;
+	m_nWriteIndex = (m_nWriteIndex + len) & (m_nCapacity - 1);
 }
 
-void CByteBuff::ReadLen(unsigned int len)
+void CByteBuff::ReadLen(msize_t len)
 {
-	m_uiReadIndex += len;
+	//m_nReadIndex = (m_nReadIndex + usInLength) % m_nCapacity;
+	m_nReadIndex = (m_nReadIndex + len) & (m_nCapacity - 1);
 }
 
-void CByteBuff::SetReadIndex(unsigned int uiReadIndex)
+void CByteBuff::SetReadIndex(msize_t uiReadIndex)
 {
-	m_uiReadIndex = uiReadIndex;
+	m_nReadIndex = uiReadIndex;
 }
 
-void CByteBuff::SetWriteIndex(unsigned int uiWriteIndex)
+void CByteBuff::SetWriteIndex(msize_t uiWriteIndex)
 {
-	m_uiWriteIndex = uiWriteIndex;
+	m_nWriteIndex = uiWriteIndex;
 }
 
-unsigned int CByteBuff::WriteableDataLen() const
+msize_t CByteBuff::CanReadLen() const
 {
-	return m_uiCapacity - m_uiWriteIndex;
+	if (m_nReadIndex == m_nWriteIndex) 
+	{
+		return 0;
+	}
+	else if (m_nReadIndex < m_nWriteIndex) 
+	{
+		//获取数据大小
+		return (m_nWriteIndex - m_nReadIndex);
+	}
+	else 
+	{
+		return (m_nCapacity - (m_nReadIndex - m_nWriteIndex));
+	}
 }
 
-unsigned int CByteBuff::ReadableDataLen() const
+msize_t CByteBuff::CanWriteLen() const
 {
-	return m_uiWriteIndex - m_uiReadIndex;
+	msize_t nCanWriteSpace = 0;
+	//获得剩余空间大小
+	if (m_nReadIndex == m_nWriteIndex) 
+	{
+		nCanWriteSpace = m_nCapacity;
+	}
+	else if (m_nReadIndex > m_nWriteIndex)
+	{
+		nCanWriteSpace = m_nReadIndex - m_nWriteIndex;
+	}
+	else 
+	{
+		nCanWriteSpace = m_nCapacity - (m_nWriteIndex - m_nReadIndex);
+	}
+
+	/**
+	 * 最大长度应该减去预留部分长度，保证首尾不会相接,
+	 * 以此区分数据头不在共享内存区头部写满数据，和没有数据的情况
+	 */
+	nCanWriteSpace -= BUFF_EXTRA_SIZE;
+	return nCanWriteSpace;
 }
 
 bool CByteBuff::IsLittleEndian()

@@ -51,9 +51,6 @@ int CMessageQueue::SendMessage(BYTE* message, msize_t length)
     msize_t usInLength = length;
 	msize_t usInLength = length;
     BYTE* pTempDst = m_pQueueAddr;
-    BYTE* pTempSrc = (BYTE*)(&usInLength);
-    //写入的时候我们在数据头插上数据的长度，方便准确取数据,每次写入一个字节可能会分散在队列的头和尾
-    unsigned int tmpEnd = m_stMemTrunk->m_iEnd;
 
     unsigned int tmpLen = std::min(usInLength, m_stMemTrunk->m_iSize - tmpEnd);
     memcpy((void*)(&pTempDst[tmpEnd]), (const void*)message, (size_t)tmpLen);

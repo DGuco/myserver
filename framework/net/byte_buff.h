@@ -13,13 +13,19 @@
 
 using namespace std;
 
+
+/**
+ * 最大长度应该减去预留部分长度，保证首尾不会相接,
+ * 以此区分数据分布在内存区的两侧，和没有数据的情况
+ */
+#define BUFF_EXTRA_SIZE (8)
+
 class CByteBuff
 {
 public:
 	//构造函数
 	CByteBuff();
-	CByteBuff(unsigned int tmpCap);
-	CByteBuff(BYTE*data, unsigned int tmpCap);
+	CByteBuff(msize_t tmpCap);
 	//拷贝构造函数
 	CByteBuff(const CByteBuff &byteBuff);
 	//移动构造函数
@@ -32,16 +38,17 @@ public:
 	void Clear();
 	//大小端转换
 	BYTE* Flip(BYTE*netStr, size_t len);
-	short ReadShort();
-	int ReadInt();
-	long ReadLong();
-	long long ReadLongLong();
-	unsigned short ReadUnShort();
-	unsigned int ReadUnInt();
-	unsigned long ReadUnLong();
-	unsigned long long ReadUnLongLong();
-	float ReadFloat();
-	double ReadDouble();
+	short ReadShort(bool ispeek = false);
+	int ReadInt(bool ispeek = false);
+	long ReadLong(bool ispeek = false);
+	long long ReadLongLong(bool ispeek = false);
+	unsigned short ReadUnShort(bool ispeek = false);
+	unsigned int ReadUnInt(bool ispeek = false);
+	unsigned long ReadUnLong(bool ispeek = false);
+	unsigned long long ReadUnLongLong(bool ispeek = false);
+	float ReadFloat(bool ispeek = false);
+	double ReadDouble(bool ispeek = false);
+	int  ReadBytes(BYTE* pOutCode, msize_t tmLen, bool ispeek = false);
 	void WriteShort(short value, int offset = 0);
 	void WriteInt(int value, int offset = 0);
 	void WriteLong(long value, int offset = 0);
@@ -52,32 +59,33 @@ public:
 	void WriteUnLongLong(unsigned long long value, int offset = 0);
 	void WriteFloat(float value, int offset = 0);
 	void WriteDouble(double value, int offset = 0);
-
+	int  WriteBytes(BYTE* pInCode, msize_t tmLen);
 	unsigned int GetReadIndex() const;
 	unsigned int GetWriteIndex() const;
 	unsigned int GetCapaticy() const;
 	void ResetReadIndex();
 	void ResetWriteIndex();
-	void WriteLen(unsigned int len);
-	void ReadLen(unsigned int len);
-	void SetReadIndex(unsigned int uiReadIndex);
-	void SetWriteIndex(unsigned int uiWriteIndex);
-	unsigned int WriteableDataLen() const;
-	unsigned int ReadableDataLen() const;
+	void WriteLen(msize_t len);
+	void ReadLen(msize_t len);
+	void SetReadIndex(msize_t uiReadIndex);
+	void SetWriteIndex(msize_t uiWriteIndex);
+	//获取可读数据长度
+	msize_t CanReadLen() const;
+	//获取可写数据长度
+	msize_t CanWriteLen() const;
+	//
 	BYTE* GetData() const;
 	//获取可读数据
 	BYTE* CanReadData() const;
 	//获取可写数据空间
 	BYTE* CanWriteData() const;
-	void  ReadBytes(BYTE*data, unsigned int len);
-	void  WriteBytes(BYTE*data, unsigned int len);
 public:
 	//判断是否是小端
 	static bool IsLittleEndian();
 	static void Reverse(BYTE*str, size_t len);
 private:
 	template<class T,int len_ = sizeof(T)> //只读取基本类型
-	T ReadT();
+	T ReadT(bool ispeek);
 	/**
 	 *
 	 * @tparam T
@@ -90,11 +98,10 @@ private:
 private:
 	static bool m_bIsLittleEndian;
 private:
-	unsigned int m_uiReadIndex;
-	unsigned int m_uiWriteIndex;
-	unsigned int m_uiLen;
-	unsigned int m_uiCapacity;
-	BYTE*		 m_acData;
+	msize_t m_nReadIndex;
+	msize_t m_nWriteIndex;
+	msize_t m_nCapacity;
+	BYTE*	m_aData;
 };
 
 
