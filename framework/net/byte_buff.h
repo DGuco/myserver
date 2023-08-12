@@ -58,9 +58,9 @@ public:
 	void WriteFloat(float value, int offset = 0);
 	void WriteDouble(double value, int offset = 0);
 	int  WriteBytes(BYTE* pInCode, msize_t tmLen);
-	unsigned int GetReadIndex() const;
-	unsigned int GetWriteIndex() const;
-	unsigned int GetCapaticy() const;
+	msize_t GetReadIndex() const;
+	msize_t GetWriteIndex() const;
+	msize_t GetCapaticy() const;
 	void ResetReadIndex();
 	void ResetWriteIndex();
 	void WriteLen(msize_t len);

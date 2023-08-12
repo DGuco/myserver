@@ -300,17 +300,17 @@ void CByteBuff::Copy(const CByteBuff& srcBuff)
 	memcpy(m_aData, srcBuff.m_aData, m_nCapacity);
 }
 
-unsigned int CByteBuff::GetReadIndex() const
+msize_t CByteBuff::GetReadIndex() const
 {
 	return m_nReadIndex;
 }
 
-unsigned int CByteBuff::GetWriteIndex() const
+msize_t CByteBuff::GetWriteIndex() const
 {
 	return m_nWriteIndex;
 }
 
-unsigned int CByteBuff::GetCapaticy() const
+msize_t CByteBuff::GetCapaticy() const
 {
 	return m_nCapacity;
 }
