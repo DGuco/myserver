@@ -66,6 +66,22 @@ public:
 	int GetSocketOpt(int sol, int type,void* value, int* size);
 	//设置非阻塞
 	bool SetSocketNoBlock();
+	//socket 重用
+	bool SetReuseAddr();
+	//
+	bool IsReuseAddr();
+	//
+	bool SetLinger(int lingertime);
+	//
+	int GetLinger();
+	//
+	bool SetKeepAlive();
+	//
+	bool IsKeepAlive();
+	//
+	bool SetTcpNoDelay();
+	//
+	bool IsTcpNoDelay();
 	//是否有效
 	bool IsValid();
 private:

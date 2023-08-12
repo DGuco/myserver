@@ -282,6 +282,88 @@ bool CSocket::SetSocketNoBlock()
 #endif
 }
 
+bool CSocket::SetReuseAddr()
+{
+	int iReusePortFlag = 1;
+	if (SetSocketOpt(SOL_SOCKET, SO_REUSEADDR, &iReusePortFlag, sizeof(iReusePortFlag)) == SOCKET_ERROR)
+	{
+		LOG_ERROR("default", "SetReuseAddr error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		return false;
+	}
+	return true;
+}
+
+bool CSocket::IsReuseAddr()
+{
+	int resuaddr = 0;
+	INT nSize = sizeof(resuaddr);
+	GetSocketOpt(SOL_SOCKET, SO_REUSEADDR, &resuaddr, &(nSize));
+	return resuaddr == 1;
+}
+
+bool CSocket::SetLinger(int lingertime)
+{
+	struct linger ling = { 0, 0 };
+	if (lingertime > 0)
+	{
+		ling.l_onoff = 1;
+		ling.l_linger = lingertime;
+	}
+	if (SetSocketOpt(SOL_SOCKET, SO_LINGER, &ling, sizeof(ling)) == INVALID_SOCKET)
+	{
+		LOG_ERROR("default", "SetLinger error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		return false;
+	}
+	return true;
+
+}
+
+int CSocket::GetLinger()
+{
+	struct linger ling = { 0, 0 };
+	int len = sizeof(ling);
+	GetSocketOpt(SOL_SOCKET, SO_LINGER, &ling, &(len));
+	return ling.l_linger;
+}
+
+bool CSocket::SetKeepAlive()
+{
+	int nKeepAlive = 1;
+	if (SetSocketOpt(SOL_SOCKET, SO_KEEPALIVE, &nKeepAlive, sizeof(nKeepAlive)) == SOCKET_ERROR)
+	{
+		LOG_ERROR("default", "SetKeepAlive error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		return false;
+	}
+	return true;
+}
+
+bool CSocket::IsKeepAlive()
+{
+	int nKeepAlive = 0;
+	int nSize = sizeof(nKeepAlive);
+	GetSocketOpt(SOL_SOCKET, SO_KEEPALIVE, &nKeepAlive, &(nSize));
+	return nKeepAlive == 1;
+}
+
+bool CSocket::SetTcpNoDelay()
+{
+	int nNoDelay = 1;
+	if (SetSocketOpt(IPPROTO_TCP, TCP_NODELAY, &nNoDelay, sizeof(nNoDelay)) == SOCKET_ERROR)
+	{
+		LOG_ERROR("default", "SetTcpNoDelay error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		return false;
+	}
+	return true;
+}
+
+bool CSocket::IsTcpNoDelay()
+{
+	int nNoDelay = 0;
+	int nSize = sizeof(nNoDelay);
+	GetSocketOpt(IPPROTO_TCP, TCP_NODELAY, &nNoDelay, &(nSize));
+	return nNoDelay == 1;
+}
+
 bool CSocket::IsValid()
 {
 	return m_nSocket != INVALID_SOCKET;
