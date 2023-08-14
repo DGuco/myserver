@@ -21,13 +21,13 @@ enum eTcpStatus
 };
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-class CTCPClient
+class CTCPSocket
 {
 public:
 	//
-	CTCPClient();
+	CTCPSocket();
 	//
-	~CTCPClient();
+	~CTCPSocket();
 	//获取socketid
 	SOCKET GetSocketFD();
 	//获取连接状态
@@ -47,7 +47,7 @@ public:
 	//
 	int GetOneCode32(int& iCodeLength, BYTE* pCode);
 	//把数据写到缓冲区准备发送
-	int Send(msize_t nCodeLength, BYTE* pCode);
+	int Write(BYTE* pCode, msize_t nCodeLength);
 	//添加socket到fdset
 	bool AddToFDSet(fd_set& pCheckSet);
 	//是否添加到fdset中
@@ -61,16 +61,19 @@ public:
 	//
 	int CheckNoblockConnecting();
 	int Close();
+public:
+	//是否可读写
+	virtual CanReadWrite() = 0;
 protected:
-	CSocket					m_Socket; //Socket 描述符
-	int						m_iStatus;	 //连接状态
-	SafePointer<CByteBuff>	m_pReadBuff;  //读缓冲
-	SafePointer<CByteBuff>	m_pWriteBuff; //写缓冲
+	CSocket					m_Socket;	     //Socket 描述符
+	int						m_iStatus;	     //连接状态
+	SafePointer<CByteBuff>	m_pReadBuff;     //读缓冲
+	SafePointer<CByteBuff>	m_pWriteBuff;    //写缓冲
 };
 
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-CTCPClient<RecvBufLen_, SendBufLen_>::CTCPClient()
+CTCPSocket<RecvBufLen_, SendBufLen_>::CTCPSocket()
 {
 	m_iStatus = eTcpClosed;
 	m_pReadBuff = new CByteBuff(RecvBufLen_);
@@ -78,14 +81,14 @@ CTCPClient<RecvBufLen_, SendBufLen_>::CTCPClient()
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-CTCPClient<RecvBufLen_, SendBufLen_>::~CTCPClient()
+CTCPSocket<RecvBufLen_, SendBufLen_>::~CTCPSocket()
 {
 	DELETE(m_pReadBuff);
 	DELETE(m_pWriteBuff);
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::ConnectTo(char* szIPAddr, u_short unPort, bool block)
+int CTCPSocket<RecvBufLen_, SendBufLen_>::ConnectTo(char* szIPAddr, u_short unPort, bool block)
 {
 	m_Socket.Open();
 	if (!m_Socket.IsValid())
@@ -137,7 +140,7 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::ConnectTo(char* szIPAddr, u_short unPo
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::ConnectTo(u_long ulIPNetAddr, u_short unPort, bool block)
+int CTCPSocket<RecvBufLen_, SendBufLen_>::ConnectTo(u_long ulIPNetAddr, u_short unPort, bool block)
 {
 	m_Socket.Open();
 	if (!m_Socket.IsValid())
@@ -189,7 +192,7 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::ConnectTo(u_long ulIPNetAddr, u_short 
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::CheckNoblockConnecting()
+int CTCPSocket<RecvBufLen_, SendBufLen_>::CheckNoblockConnecting()
 {
 	if (!m_Socket.IsValid())
 	{
@@ -237,7 +240,7 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::CheckNoblockConnecting()
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::Close()
+int CTCPSocket<RecvBufLen_, SendBufLen_>::Close()
 {
 	m_Socket.Close();
 	m_iStatus = eTcpClosed;
@@ -245,20 +248,20 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::Close()
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-SOCKET CTCPClient<RecvBufLen_, SendBufLen_>::GetSocketFD()
+SOCKET CTCPSocket<RecvBufLen_, SendBufLen_>::GetSocketFD()
 {
 	return m_Socket.GetSocket();
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-eTcpStatus CTCPClient<RecvBufLen_, SendBufLen_>::GetStatus()
+eTcpStatus CTCPSocket<RecvBufLen_, SendBufLen_>::GetStatus()
 {
 	return m_iStatus;
 }
 
 // 返回值：-1 ：Socket状态错误；-2 ：接收缓冲区已满；-3 ：对端断开连接；-4 ：接收错误
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::RecvData()
+int CTCPSocket<RecvBufLen_, SendBufLen_>::RecvData()
 {
 	int iRecvedBytes = 0;
 	int iTempRet = 0;
@@ -322,7 +325,7 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::RecvData()
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::GetOneCode(unsigned short& nCodeLength, BYTE* pCode, eByteMode emByte)
+int CTCPSocket<RecvBufLen_, SendBufLen_>::GetOneCode(unsigned short& nCodeLength, BYTE* pCode, eByteMode emByte)
 {
 	unsigned short shMaxBufferLen = nCodeLength;
 	int iDataLength = 0;
@@ -420,7 +423,7 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::GetOneCode(unsigned short& nCodeLength
 
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::GetOneHttpCode(int& nCodeLength, BYTE* pCode)
+int CTCPSocket<RecvBufLen_, SendBufLen_>::GetOneHttpCode(int& nCodeLength, BYTE* pCode)
 {
 	int shMaxBufferLen = nCodeLength;
 	int iDataLength = 0;
@@ -537,7 +540,7 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::GetOneHttpCode(int& nCodeLength, BYTE*
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::GetOneCode32(int& iCodeLength, BYTE* pCode)
+int CTCPSocket<RecvBufLen_, SendBufLen_>::GetOneCode32(int& iCodeLength, BYTE* pCode)
 {
 	int iMaxBufferLen = iCodeLength;
 	int iDataLength = 0;
@@ -617,7 +620,7 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::GetOneCode32(int& iCodeLength, BYTE* p
 
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::Send(msize_t nCodeLength, BYTE* pCode)
+int CTCPSocket<RecvBufLen_, SendBufLen_>::Write(BYTE* pCode, msize_t nCodeLength)
 {
 	if (m_iStatus != eTcpConnected)
 	{
@@ -628,29 +631,24 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::Send(msize_t nCodeLength, BYTE* pCode)
 		return -2;
 	}
 
-	SOCKET nTmSocket = m_Socket.GetSocket();
-
-	m_pWriteBuff->WriteBytes(pCode, nCodeLength);
-	int iBytesSent = 0;
-	int iBytesLeft = nCodeLength;
-	BYTE* pbyTemp = NULL;
-	int iTempRet = 0;
+	if (!CanReadWrite())
+	{
+		return -3;
+	}
 
 	if (!pCode)
 	{
-		LOG_ERROR("default", "SendOneCode Failed : pCode is NULL.");
-		return ERR_SEND_NOSOCK;
+		return -4;
 	}
 
-	if (m_iSocketFD < 0 || m_iStatus != tcs_connected)
-	{
-		LOG_ERROR("default", "SendOneCode Failed : m_iSocketFD(%d), m_iStatus(%d).",
-			m_iSocketFD, m_iStatus);
-		return ERR_SEND_NOSOCK;
-	}
+	SOCKET nTmSocket = m_Socket.GetSocket();
+/*	m_pWriteBuff->WriteBytes(pCode, nCodeLength);*/
+	msize_t nSent = 0;
+	msize_t nLast = nCodeLength;
+	BYTE* pbyTemp = NULL;
+	int iTempRet = 0;
 
-	// 首先检查是否有滞留数据
-	iBytesLeft = m_iPostEnd - m_iPostBegin;
+	nLast = m_iPostEnd - m_iPostBegin;
 	pbyTemp = &(m_abyPostBuffer[m_iPostBegin]);
 	while (iBytesLeft > 0)
 	{
@@ -757,7 +755,7 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::Send(msize_t nCodeLength, BYTE* pCode)
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-bool CTCPClient<RecvBufLen_, SendBufLen_>::AddToFDSet(fd_set& tmFdSet)
+bool CTCPSocket<RecvBufLen_, SendBufLen_>::AddToFDSet(fd_set& tmFdSet)
 {
 	SOCKET nSocket = m_Socket.GetSocket();
 	if (nSocket > 0 && m_iStatus == eTcpConnected)
@@ -774,7 +772,7 @@ bool CTCPClient<RecvBufLen_, SendBufLen_>::AddToFDSet(fd_set& tmFdSet)
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-bool CTCPClient<RecvBufLen_, SendBufLen_>::IsFDSetted(fd_set& tmFdSet)
+bool CTCPSocket<RecvBufLen_, SendBufLen_>::IsFDSetted(fd_set& tmFdSet)
 {
 	SOCKET nSocket = m_Socket.GetSocket();
 	if (nSocket > 0 && m_iStatus == eTcpConnected)
@@ -785,7 +783,7 @@ bool CTCPClient<RecvBufLen_, SendBufLen_>::IsFDSetted(fd_set& tmFdSet)
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-void CTCPClient<RecvBufLen_, SendBufLen_>::GetCriticalData(int& iReadBegin, int& iReadEnd, int& iPostBegin, int& iPostEnd)
+void CTCPSocket<RecvBufLen_, SendBufLen_>::GetCriticalData(int& iReadBegin, int& iReadEnd, int& iPostBegin, int& iPostEnd)
 {
 	iReadBegin = m_iReadBegin;
 	iReadEnd = m_iReadEnd;
@@ -795,7 +793,7 @@ void CTCPClient<RecvBufLen_, SendBufLen_>::GetCriticalData(int& iReadBegin, int&
 
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::HasReserveData()
+int CTCPSocket<RecvBufLen_, SendBufLen_>::HasReserveData()
 {
 	if (m_iPostEnd - m_iPostBegin > 0)
 	{
@@ -808,7 +806,7 @@ int CTCPClient<RecvBufLen_, SendBufLen_>::HasReserveData()
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPClient<RecvBufLen_, SendBufLen_>::CleanReserveData()
+int CTCPSocket<RecvBufLen_, SendBufLen_>::CleanReserveData()
 {
 	int iBytesSent = 0, iBytesLeft = 0, iBytesCleaned = 0, iTempRet = 0;
 	BYTE* pbyTemp = NULL;

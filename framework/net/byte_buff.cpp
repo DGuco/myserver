@@ -2,7 +2,8 @@
 // Created by dguco on 18-403.
 //
 
-#include <cstring>
+#include <string>
+#include <stdio.h>
 #include "byte_buff.h"
 
 bool IsSystemLittleEndian()
@@ -39,9 +40,6 @@ CByteBuff::CByteBuff(msize_t tmpCap)
 
 CByteBuff::CByteBuff(const CByteBuff &byteBuff)
 {
-	if (this == &(byteBuff)) {
-		return;
-	}
 	m_aData = new BYTE[m_nCapacity]( );
 	Copy(byteBuff);
 }
@@ -237,18 +235,6 @@ int CByteBuff::WriteBytes(BYTE* pInCode, msize_t tmLen)
 	{
 		memcpy((void*)pTempDst, (const void*)(pInCode + nWriteLen), tmpLastLen);
 	}
-	m_nWriteIndex = (m_nWriteIndex + usInLength) % m_nCapacity;
-	//m_nWriteIndex = (m_nWriteIndex + usInLength) & (m_nCapacity - 1);
-}
-
-BYTE*CByteBuff::CanReadData() const
-{
-	return m_aData + m_nReadIndex;
-}
-
-BYTE*CByteBuff::CanWriteData() const
-{
-	return m_aData + m_nWriteIndex;
 }
 
 template<class T,int len_>
@@ -268,7 +254,6 @@ T CByteBuff::ReadT(bool ispeek)
 		Reverse(tmpData, len_);
 	}
 	T result = *(T *) tmpData;
-	m_nReadIndex += len_;
 	return result;
 }
 
@@ -297,7 +282,7 @@ void CByteBuff::Copy(const CByteBuff& srcBuff)
 	m_nReadIndex = srcBuff.m_nReadIndex;
 	m_nWriteIndex = srcBuff.m_nWriteIndex;
 	m_nCapacity = srcBuff.m_nCapacity;
-	memcpy(m_aData, srcBuff.m_aData, m_nCapacity);
+	memcpy((void*)m_aData, (const void*)srcBuff.m_aData, m_nCapacity);
 }
 
 msize_t CByteBuff::GetReadIndex() const
@@ -411,4 +396,172 @@ void CByteBuff::Reverse(BYTE*str, size_t len)
 		*p-- = *str;
 		*str++ = temp;
 	}
+}
+
+int CByteBuff::Send(CSocket& socket)
+{
+	if (!socket.IsValid())
+	{
+		return -1;
+	}
+	msize_t nCanReadSpace = CanReadLen();
+	//没有数据
+	if (nCanReadSpace <= 0)
+	{
+		return 0;
+	}
+	
+	SOCKET fd = socket.GetSocket();
+	msize_t nByteLeft = MIN(nCanReadSpace, m_nCapacity - m_nReadIndex);
+	BYTE* pByteSend = m_aData + m_nReadIndex;
+	int nByteSent = 0;
+	while (nByteLeft > 0)
+	{
+		nByteSent = send(fd, (const char*)(pByteSend), nByteLeft, 0);
+		if (nByteSent > 0)
+		{
+			pByteSend += nByteSent;
+			nByteLeft -= nByteLeft;
+			m_nReadIndex = (m_nReadIndex + nByteSent) % m_nCapacity;
+		}
+
+		//发送出错
+		if (nByteSent < 0)
+		{
+			if (errno != OPT_WOULD_BLOCK)
+			{
+				return -2;
+			}
+			else
+			{
+				return 0;  //下次继续尝试发送
+			}
+		}
+	}
+
+	nByteLeft = nCanReadSpace - nByteSent;
+	//头部还有数据待发送
+	if (nByteLeft > 0)
+	{
+		pByteSend = m_aData;
+		while (nByteLeft > 0)
+		{
+			nByteSent = send(fd, (const char*)(pByteSend), nByteLeft, 0);
+			if (nByteSent > 0)
+			{
+				pByteSend += nByteSent;
+				nByteLeft -= nByteLeft;
+				m_nReadIndex = (m_nReadIndex + nByteSent) % m_nCapacity;
+			}
+
+			//发送出错
+			if (nByteSent < 0)
+			{
+				if (errno != OPT_WOULD_BLOCK)
+				{
+					return -1;
+				}
+				else
+				{
+					return 0;  //下次继续尝试发送
+				}
+			}
+		}
+	}
+}
+
+int CByteBuff::Recv(CSocket& socket)
+{
+	if (!socket.IsValid())
+	{
+		return -1;
+	}
+
+	msize_t nCanReadSpace = CanReadLen();
+	//没有数据
+	if (nCanReadSpace <= 0)
+	{
+		return -2;
+	}
+
+	SOCKET fd = socket.GetSocket();
+	if (m_nReadIndex == m_nWriteIndex)
+	{
+		m_nReadIndex = 0;
+		m_nWriteIndex = 0;
+	}
+
+	msize_t nCanReadLen = MIN(nCanReadSpace, m_nCapacity - m_nWriteIndex);
+	int nByteRecved = 0;
+	BYTE* pTempSrc = m_aData + m_nWriteIndex;
+	int nReadLen = 0;
+	do
+	{
+		nReadLen = recv(fd, (char*)pTempSrc,nCanReadLen, 0);
+		if (nReadLen > 0)
+		{
+			nByteRecved += nReadLen;
+			m_nWriteIndex = (m_nWriteIndex + nReadLen) % m_nCapacity;
+			pTempSrc += nReadLen;
+			//尾部没有空间了，剩下的放到数组头部接收
+			if (nByteRecved >= nCanReadLen)
+			{
+				break;
+			}
+		}
+		else if (nReadLen == 0)
+		{
+			return -3;
+		}
+		else
+		{
+			if (errno != EAGAIN)
+			{
+				return -4;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+	} while (nReadLen > 0);
+
+	msize_t nLastBytes = nCanReadSpace - nByteRecved;
+	if (nLastBytes > 0)
+	{
+		nByteRecved = 0;
+		pTempSrc = m_aData;
+		nReadLen = 0;
+		do
+		{
+			nReadLen = recv(fd, (char*)pTempSrc, nLastBytes, 0);
+			if (nReadLen > 0)
+			{
+				nByteRecved += nReadLen;
+				m_nWriteIndex = (m_nWriteIndex + nReadLen) % m_nCapacity;
+				pTempSrc += nReadLen;
+				//没有空间用了
+				if (nByteRecved >= nLastBytes)
+				{
+					return -5;
+				}
+			}
+			else if (nReadLen == 0)
+			{
+				return -3;
+			}
+			else
+			{
+				if (errno != EAGAIN)
+				{
+					return -4;
+				}
+				else
+				{
+					return 0;
+				}
+			}
+		} while (nReadLen > 0);
+	}
+	return 0;
 }

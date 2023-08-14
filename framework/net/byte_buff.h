@@ -10,9 +10,8 @@
 
 #include <base.h>
 #include <string>
-
+#include "socket.h"
 using namespace std;
-
 
 /**
  * 最大长度应该减去预留部分长度，保证首尾不会相接,
@@ -73,10 +72,10 @@ public:
 	msize_t CanWriteLen() const;
 	//
 	BYTE* GetData() const;
-	//获取可读数据
-	BYTE* CanReadData() const;
-	//获取可写数据空间
-	BYTE* CanWriteData() const;
+	//发送缓冲区数据到tcp
+	int Send(CSocket& socket);
+	//接收数据
+	int Recv(CSocket& socket);
 public:
 	//判断是否是小端
 	static bool IsLittleEndian();
