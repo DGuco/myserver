@@ -18,7 +18,6 @@ enum eTcpStatus
 	eTcpConnected = 3,
 	eTcpRegisting = 4,
 	eTcpRegistered = 5,
-	eTcpListened = 6,
 };
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
@@ -57,7 +56,7 @@ public:
 	int Close();
 public:
 	//是否可读写
-	virtual CanReadWrite() { return 0};
+	virtual CanReadWrite() { return 1};
 protected:
 	CSocket					m_Socket;	     //Socket 描述符
 	int						m_iStatus;	     //连接状态
@@ -84,10 +83,12 @@ CTCPSocket<RecvBufLen_, SendBufLen_>::~CTCPSocket()
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
 int CTCPSocket<RecvBufLen_, SendBufLen_>::ConnectTo(char* szIPAddr, u_short unPort, bool block)
 {
-	m_Socket.Open();
 	if (!m_Socket.IsValid())
 	{
-		return -1;
+		if (!m_Socket.Open())
+		{
+			return -1;
+		}
 	}
 	m_iStatus = eTcpCreated;
 	if (!m_Socket.SetRecvBufSize(RecvBufLen_))
@@ -136,10 +137,12 @@ int CTCPSocket<RecvBufLen_, SendBufLen_>::ConnectTo(char* szIPAddr, u_short unPo
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
 int CTCPSocket<RecvBufLen_, SendBufLen_>::ConnectTo(u_long ulIPNetAddr, u_short unPort, bool block)
 {
-	m_Socket.Open();
 	if (!m_Socket.IsValid())
 	{
-		return -1;
+		if (!m_Socket.Open())
+		{
+			return -1;
+		}
 	}
 	m_iStatus = eTcpCreated;
 	if (!m_Socket.SetRecvBufSize(RecvBufLen_))
@@ -236,9 +239,13 @@ int CTCPSocket<RecvBufLen_, SendBufLen_>::CheckConnectedOk()
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
 int CTCPSocket<RecvBufLen_, SendBufLen_>::InitTcpServer(const char* ip, int port)
 {
-	m_Socket.Open();
-	if (!m_Socket.IsValid()) return -1;
-	m_iStatus = eTcpCreated;
+	if (!m_Socket.IsValid())
+	{
+		if (!m_Socket.Open())
+		{
+			return -1;
+		}
+	}
 
 	//允许套接口和一个已在使用中的地址捆绑
 	if (!m_Socket.SetReuseAddr())  return -1;

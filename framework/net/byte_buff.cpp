@@ -272,7 +272,7 @@ void CByteBuff::WriteT(T t, int offset)
 	*/
 	if (IsLittleEndian()) 
 	{
-		pSendStr = Reverse(&tmpData, len_);
+		Reverse(pSendStr, len_);
 	}
 	WriteBytes(pSendStr, len_);
 }
