@@ -39,9 +39,9 @@ public:
 	//绑定端口
 	bool Bind(int port);
 	//绑定端口
-	bool Bind(std::string host,int port);
+	bool Bind(const char* ipaddr,int port);
 	//conn
-	int Conn(std::string host, int port,bool block);
+	int Conn(const char* ipaddr, int port,bool block);
 	//conn
 	int Conn(sockaddr_in& addr,int addrsize, bool block);
 	//监听

@@ -84,7 +84,6 @@ void CByteBuff::Clear()
 {
 	m_nReadIndex = 0;
 	m_nWriteIndex = 0;
-	memset(m_aData, 0, m_nCapacity);
 }
 
 short CByteBuff::ReadShort(bool ispeek)
@@ -235,6 +234,7 @@ int CByteBuff::WriteBytes(BYTE* pInCode, msize_t tmLen)
 	{
 		memcpy((void*)pTempDst, (const void*)(pInCode + nWriteLen), tmpLastLen);
 	}
+	return 0;
 }
 
 template<class T,int len_>
@@ -402,13 +402,13 @@ int CByteBuff::Send(CSocket& socket)
 {
 	if (!socket.IsValid())
 	{
-		return -1;
+		return ERR_SEND_NOSOCK;
 	}
 	msize_t nCanReadSpace = CanReadLen();
 	//没有数据
 	if (nCanReadSpace <= 0)
 	{
-		return 0;
+		return ERR_SEND_OK;
 	}
 	
 	SOCKET fd = socket.GetSocket();
@@ -430,11 +430,11 @@ int CByteBuff::Send(CSocket& socket)
 		{
 			if (errno != OPT_WOULD_BLOCK)
 			{
-				return -2;
+				return ERR_SEND_SOCKET_ERROR;
 			}
 			else
 			{
-				return 0;  //下次继续尝试发送
+				return ERR_SEND_WOULD_BLOCK;  //下次继续尝试发送
 			}
 		}
 	}
@@ -459,29 +459,30 @@ int CByteBuff::Send(CSocket& socket)
 			{
 				if (errno != OPT_WOULD_BLOCK)
 				{
-					return -1;
+					return ERR_SEND_SOCKET_ERROR;
 				}
 				else
 				{
-					return 0;  //下次继续尝试发送
+					return ERR_SEND_WOULD_BLOCK;  //下次继续尝试发送
 				}
 			}
 		}
 	}
+	return ERR_SEND_OK;
 }
 
 int CByteBuff::Recv(CSocket& socket)
 {
 	if (!socket.IsValid())
 	{
-		return -1;
+		return ERR_RECV_NOSOCK;
 	}
 
 	msize_t nCanReadSpace = CanReadLen();
 	//没有数据
 	if (nCanReadSpace <= 0)
 	{
-		return -2;
+		return ERR_RECV_NOBUFF;
 	}
 
 	SOCKET fd = socket.GetSocket();
@@ -511,17 +512,17 @@ int CByteBuff::Recv(CSocket& socket)
 		}
 		else if (nReadLen == 0)
 		{
-			return -3;
+			return ERR_RECV_REMOTE_CLOSED;
 		}
 		else
 		{
 			if (errno != EAGAIN)
 			{
-				return -4;
+				return ERR_RECV_SOCKET_ERROR;
 			}
 			else
 			{
-				return 0;
+				return ERR_RECV_WOULD_BLOCK;
 			}
 		}
 	} while (nReadLen > 0);
@@ -543,25 +544,25 @@ int CByteBuff::Recv(CSocket& socket)
 				//没有空间用了
 				if (nByteRecved >= nLastBytes)
 				{
-					return -5;
+					return ERR_RECV_NOBUFF;
 				}
 			}
 			else if (nReadLen == 0)
 			{
-				return -3;
+				return ERR_RECV_REMOTE_CLOSED;
 			}
 			else
 			{
 				if (errno != EAGAIN)
 				{
-					return -4;
+					return ERR_RECV_SOCKET_ERROR;
 				}
 				else
 				{
-					return 0;
+					return ERR_RECV_WOULD_BLOCK;
 				}
 			}
 		} while (nReadLen > 0);
 	}
-	return 0;
+	return ERR_RECV_OK;
 }

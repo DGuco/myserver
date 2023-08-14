@@ -87,11 +87,11 @@ bool CSocket::Bind(int port)
 	return 0;
 }
 
-bool CSocket::Bind(std::string host, int port)
+bool CSocket::Bind(const char* ipaddr, int port)
 {
 	sockaddr_in saiAddress;
 	memset(&saiAddress, 0, sizeof(saiAddress));
-	saiAddress.sin_addr.s_addr = inet_addr(host.c_str());
+	saiAddress.sin_addr.s_addr = inet_addr(ipaddr);
 	saiAddress.sin_port = htons(port);
 	saiAddress.sin_family = AF_INET;
 
@@ -103,11 +103,11 @@ bool CSocket::Bind(std::string host, int port)
 	}
 	return 0;
 }
-int CSocket::Conn(std::string host, int port, bool block)
+int CSocket::Conn(const char* ipaddr, int port, bool block)
 {
 	sockaddr_in saiAddress;
 	memset(&saiAddress, 0, sizeof(saiAddress));
-	saiAddress.sin_addr.s_addr = inet_addr(host.c_str());
+	saiAddress.sin_addr.s_addr = inet_addr(ipaddr);
 	saiAddress.sin_port = htons(port);
 	saiAddress.sin_family = AF_INET;
 

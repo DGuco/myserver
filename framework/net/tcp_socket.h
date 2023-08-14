@@ -18,6 +18,7 @@ enum eTcpStatus
 	eTcpConnected = 3,
 	eTcpRegisting = 4,
 	eTcpRegistered = 5,
+	eTcpListened = 6,
 };
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
@@ -37,33 +38,26 @@ public:
 	//连接
 	int ConnectTo(u_long ulIPNetAddr, u_short unPort,bool block = true);
 	//检查非阻塞连接是否连接成功
-	int CheckNoblockConnecting();
+	int CheckConnectedOk();
 	//读取数据
 	int RecvData();
-	//
-	int GetOneCode(unsigned short& nCodeLength, BYTE* pCode, eByteMode emByte = use_host_byte);
-	//
-	int GetOneHttpCode(int& nCodeLength, BYTE* pCode);
-	//
-	int GetOneCode32(int& iCodeLength, BYTE* pCode);
 	//把数据写到缓冲区准备发送
 	int Write(BYTE* pCode, msize_t nCodeLength);
+	//获取读缓冲区中的一段信息
+	int GetOneCode(unsigned short& nCodeLength, BYTE* pCode);
 	//添加socket到fdset
 	bool AddToFDSet(fd_set& pCheckSet);
 	//是否添加到fdset中
 	bool IsFDSetted(fd_set& pCheckSet);
-	//
-	int HasReserveData();
-	//
-	int CleanReserveData();
-	//
-	int PrintfSocketStat();
-	//
-	int CheckNoblockConnecting();
+	//是否连接成功
+	int CheckConnectedOk();
+	//Init tcp Server
+	int InitTcpServer(const char* ip,int port);
+	//关闭
 	int Close();
 public:
 	//是否可读写
-	virtual CanReadWrite() = 0;
+	virtual CanReadWrite() { return 0};
 protected:
 	CSocket					m_Socket;	     //Socket 描述符
 	int						m_iStatus;	     //连接状态
@@ -128,7 +122,7 @@ int CTCPSocket<RecvBufLen_, SendBufLen_>::ConnectTo(char* szIPAddr, u_short unPo
 	{
 		m_iStatus = eTcpConnecting;
 		//非阻塞连接中，检查是否连接成功
-		CheckNoblockConnecting();
+		CheckConnectedOk();
 	}
 
 	if (block)
@@ -180,7 +174,7 @@ int CTCPSocket<RecvBufLen_, SendBufLen_>::ConnectTo(u_long ulIPNetAddr, u_short 
 	{
 		m_iStatus = eTcpConnecting;
 		//非阻塞连接中，检查是否连接成功
-		CheckNoblockConnecting();
+		CheckConnectedOk();
 	}
 
 	if (block)
@@ -192,7 +186,7 @@ int CTCPSocket<RecvBufLen_, SendBufLen_>::ConnectTo(u_long ulIPNetAddr, u_short 
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPSocket<RecvBufLen_, SendBufLen_>::CheckNoblockConnecting()
+int CTCPSocket<RecvBufLen_, SendBufLen_>::CheckConnectedOk()
 {
 	if (!m_Socket.IsValid())
 	{
@@ -240,6 +234,34 @@ int CTCPSocket<RecvBufLen_, SendBufLen_>::CheckNoblockConnecting()
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPSocket<RecvBufLen_, SendBufLen_>::InitTcpServer(const char* ip, int port)
+{
+	m_Socket.Open();
+	if (!m_Socket.IsValid()) return -1;
+	m_iStatus = eTcpCreated;
+
+	//允许套接口和一个已在使用中的地址捆绑
+	if (!m_Socket.SetReuseAddr())  return -1;
+
+	bool bRet = 0;
+	if (ip != NULL)
+	{
+		bRet = m_Socket.Bind(port);
+	}
+	else
+	{
+		bRet = m_Socket.Bind(ip,port);
+	}
+
+	if (!bRet) return -1;
+
+	if (!m_Socket.Listen()) return -1;
+
+	m_Socket.SetSocketNoBlock();
+	return 0;
+}
+
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
 int CTCPSocket<RecvBufLen_, SendBufLen_>::Close()
 {
 	m_Socket.Close();
@@ -263,495 +285,85 @@ eTcpStatus CTCPSocket<RecvBufLen_, SendBufLen_>::GetStatus()
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
 int CTCPSocket<RecvBufLen_, SendBufLen_>::RecvData()
 {
-	int iRecvedBytes = 0;
-	int iTempRet = 0;
-
-	char szPeerAddr[32];
-	sockaddr_in stPeerAddr;
-	memset(&stPeerAddr, 0, sizeof(sockaddr_in));
-	socklen_t iPeerAddrLen = sizeof(stPeerAddr);
-
-	if (m_iSocketFD < 0 || m_iStatus != tcs_connected)
+	if (!CanReadWrite())
 	{
+		return ERR_RECV_NOT_READY;
+	}
+	int nRetCode =  m_pReadBuff->Recv(m_Socket);
+	if (nRetCode == ERR_RECV_WOULD_BLOCK)
+	{
+		nRetCode = ERR_RECV_OK;
+	}
+	return nRetCode;
+}
 
-		LOG_ERROR("default", "RecvData Failed : m_iSocketFD(%d), m_iStatus(%d).",
-			m_iSocketFD, m_iStatus);
-		return ERR_RECV_NOSOCK;
+template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
+int CTCPSocket<RecvBufLen_, SendBufLen_>::Write(BYTE* pCode, msize_t nCodeLength)
+{
+	if (!m_Socket.IsValid())
+	{
+		return ERR_SEND_NOSOCK;
 	}
 
-	if (m_iReadEnd == m_iReadBegin)
+	if (!pCode)
 	{
-		m_iReadBegin = 0;
-		m_iReadEnd = 0;
+		return ERR_SEND_NODATA;
 	}
 
-	do
+	if (!CanReadWrite())
 	{
+		return ERR_SEND_NOT_READY;
+	}
 
-		if (m_iReadEnd == sizeof(m_abyRecvBuffer))
+	int retCode = ERR_SEND_OK;
+	//有残留数据待发送
+	if (m_pWriteBuff->CanReadLen() > 0)
+	{
+		int retCode = m_pWriteBuff->Send(m_Socket);
+		if (retCode < 0)
 		{
-			LOG_ERROR("default", "The recv buffer is full now(%d, %d), stop recv data, fd = %d.", m_iReadBegin, m_iReadEnd, m_iSocketFD);
-			iTempRet = ERR_RECV_NOBUFF;
-			break;
+			return retCode;
+		}
+	}
+
+	//没有数据了，索引都归0吧
+	if (m_pWriteBuff->CanReadLen() == 0)
+	{
+		m_pWriteBuff->Clear();
+	}
+
+	//把本次的数据写入缓冲区
+	SOCKET nTmSocket = m_Socket.GetSocket();
+	if (m_pWriteBuff->WriteBytes(pCode, nCodeLength) == -1)
+	{
+		return ERR_SEND_NOBUFF;
+	}
+
+	if (retCode != ERR_SEND_WOULD_BLOCK)
+	{
+		//再次尝试发送本次写入缓冲区的数据
+		if (m_pWriteBuff->CanReadLen() > 0)
+		{
+			retCode = m_pWriteBuff->Send(m_Socket);
+			if (retCode < 0)
+			{
+				return retCode;
+			}
 		}
 
-		iRecvedBytes = recv(m_iSocketFD, &m_abyRecvBuffer[m_iReadEnd],
-			sizeof(m_abyRecvBuffer) - m_iReadEnd, 0);
-		if (iRecvedBytes > 0)
+		//没有数据了，索引都归0吧
+		if (m_pWriteBuff->CanReadLen() == 0)
 		{
-			m_iReadEnd += iRecvedBytes;
+			m_pWriteBuff->Clear();
 		}
-		else if (iRecvedBytes == 0)
-		{
-			getpeername(m_iSocketFD, (struct sockaddr*)&stPeerAddr, &iPeerAddrLen);
-			SockAddrToString(&stPeerAddr, szPeerAddr);
-			LOG_ERROR("default", "recv error! RecvedBytes(%d) from %s , fd = %d, errno = %d.", iRecvedBytes, szPeerAddr, m_iSocketFD, errno);
-			Close();
-			iTempRet = ERR_RECV_REMOTE;
-			break;
-		}
-		else if (errno != EAGAIN)
-		{
-			getpeername(m_iSocketFD, (struct sockaddr*)&stPeerAddr, &iPeerAddrLen);
-			SockAddrToString(&stPeerAddr, szPeerAddr);
-			LOG_ERROR("default", "Error in read, %s, socket fd = %d, remote site %s.", strerror(errno), m_iSocketFD, szPeerAddr);
-			Close();
-			iTempRet = ERR_RECV_FALIED;
-			break;
-		}
-	} while (iRecvedBytes > 0);
-
-	return iTempRet;
+	}
+	return ERR_SEND_OK;
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
 int CTCPSocket<RecvBufLen_, SendBufLen_>::GetOneCode(unsigned short& nCodeLength, BYTE* pCode, eByteMode emByte)
 {
-	unsigned short shMaxBufferLen = nCodeLength;
-	int iDataLength = 0;
-	unsigned short nTempLength;
 
-	if (!pCode)
-	{
-		LOG_ERROR("default", "GetOneCode Failed : pCode is NULL.");
-		return -1;
-	}
-
-	//RecvData();
-
-	iDataLength = m_iReadEnd - m_iReadBegin;
-
-	if (iDataLength <= 0)
-	{
-		//LOG_ERROR("default", "GetOneCode Failed : iDataLength(%d) <= 0.", iDataLength);
-		return 0;
-	}
-
-	if (iDataLength < (int)sizeof(short))
-	{
-		if (m_iReadEnd == sizeof(m_abyRecvBuffer))
-		{
-			//memcpy((void *)&m_abyRecvBuffer[0], (const void *)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			memmove((void*)&m_abyRecvBuffer[0], (const void*)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			m_iReadBegin = 0;
-			m_iReadEnd = iDataLength;
-		}
-
-		LOG_INFO("default", "GetOneCode Failed : iDataLength(%d) < sizeof(short).", iDataLength);
-		return 0;
-	}
-
-	if (emByte == use_network_byte)
-	{
-		nTempLength = ntohs(*((unsigned short*)&m_abyRecvBuffer[m_iReadBegin]));
-	}
-	else
-	{
-		nTempLength = /*ntohs*/(*((unsigned short*)&m_abyRecvBuffer[m_iReadBegin]));
-	}
-
-	if (nTempLength == 0 || nTempLength + sizeof(short) > sizeof(m_abyRecvBuffer))
-	{
-		m_iReadBegin = m_iReadEnd = 0;
-		Close();
-		LOG_ERROR("default", "GetOneCode Failed : nTempLength(%d), m_abyRecvBuffer length(%d).",
-			nTempLength, sizeof(m_abyRecvBuffer));
-		return -2;
-	}
-
-	if (iDataLength < (int)nTempLength)
-	{
-		if (m_iReadEnd == sizeof(m_abyRecvBuffer))
-		{
-			//memcpy((void *)&m_abyRecvBuffer[0], (const void *)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			memmove((void*)&m_abyRecvBuffer[0], (const void*)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			m_iReadBegin = 0;
-			m_iReadEnd = iDataLength;
-		}
-
-		//LOG_ERROR("default", "GetOneCode Failed : iDataLength(%d) < nTempLength(%d).",
-		//	iDataLength, nTempLength);
-		return 0;
-	}
-
-
-	int iTempRet = 1;
-	nCodeLength = nTempLength;
-
-	if (nCodeLength < shMaxBufferLen)
-	{
-		memcpy((void*)pCode, (const void*)&m_abyRecvBuffer[m_iReadBegin], nCodeLength);
-	}
-	else
-	{
-		iTempRet = -2;
-		Close();
-		LOG_ERROR("default", "GetOneCode Failed : nCodeLength(%d) < shMaxBufferLen(%d).",
-			nCodeLength, shMaxBufferLen);
-		return iTempRet;
-	}
-
-	m_iReadBegin += nTempLength;
-
-	if (m_iReadBegin == m_iReadEnd)
-	{
-		m_iReadBegin = m_iReadEnd = 0;
-	}
-
-	return iTempRet;
-}
-
-
-template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPSocket<RecvBufLen_, SendBufLen_>::GetOneHttpCode(int& nCodeLength, BYTE* pCode)
-{
-	int shMaxBufferLen = nCodeLength;
-	int iDataLength = 0;
-	unsigned int nTempLength;
-
-	if (!pCode)
-	{
-		return -1;
-	}
-
-	iDataLength = m_iReadEnd - m_iReadBegin;
-
-	if (iDataLength <= 0)
-	{
-		return 0;
-	}
-
-	const char* LENTH_TOKEN = "Content-Length";
-	const char* HEAD_BODY_SPLITTER = "\n\n";
-
-	char* pSpliter = strstr((const char*)&m_abyRecvBuffer[m_iReadBegin], HEAD_BODY_SPLITTER);
-	if (pSpliter != NULL)
-	{
-		char* pToken = strstr((const char*)&m_abyRecvBuffer[m_iReadBegin], LENTH_TOKEN);
-		if (pToken != NULL)
-		{
-			char* pStart = strstr(pToken + strlen(LENTH_TOKEN), ":");
-			char* pEnd = NULL;
-
-			if (pStart != NULL) pEnd = strstr(pStart, "\n");
-
-			if (pStart != NULL && pEnd != NULL && pStart < pSpliter && pEnd <= pSpliter)
-			{
-				nTempLength = atoi(pStart + 1) + (pSpliter - (char*)m_abyRecvBuffer) + strlen(HEAD_BODY_SPLITTER);
-			}
-			else
-			{
-				// 协议格式不正确
-				m_iReadBegin = m_iReadEnd = 0;
-				Close();
-				return -1;
-			}
-		}
-		else
-		{
-			// 协议格式不正确
-			m_iReadBegin = m_iReadEnd = 0;
-			Close();
-			return -1;
-		}
-	}
-	else
-	{
-		if (iDataLength > 4096)
-		{
-			// 协议格式不正确
-			m_iReadBegin = m_iReadEnd = 0;
-			Close();
-			return -1;
-		}
-
-		if (m_iReadEnd == sizeof(m_abyRecvBuffer))
-		{
-			memcpy((void*)&m_abyRecvBuffer[0], (const void*)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			m_iReadBegin = 0;
-			m_iReadEnd = iDataLength;
-		}
-
-		return 0;
-	}
-
-	if (nTempLength == 0 || nTempLength > sizeof(m_abyRecvBuffer))
-	{
-		m_iReadBegin = m_iReadEnd = 0;
-		Close();
-		return -2;
-	}
-
-	if (iDataLength < nTempLength)
-	{
-		if (m_iReadEnd == sizeof(m_abyRecvBuffer))
-		{
-			memcpy((void*)&m_abyRecvBuffer[0], (const void*)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			m_iReadBegin = 0;
-			m_iReadEnd = iDataLength;
-		}
-
-		return 0;
-	}
-
-
-	int iTempRet = 1;
-	nCodeLength = nTempLength;
-
-	if (nCodeLength < shMaxBufferLen)
-	{
-		memcpy((void*)pCode, (const void*)&m_abyRecvBuffer[m_iReadBegin], nCodeLength);
-	}
-	else
-	{
-		iTempRet = -2;
-		Close();
-		return iTempRet;
-	}
-
-	m_iReadBegin += nTempLength;
-
-	if (m_iReadBegin == m_iReadEnd)
-	{
-		m_iReadBegin = m_iReadEnd = 0;
-	}
-
-	return iTempRet;
-}
-
-template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPSocket<RecvBufLen_, SendBufLen_>::GetOneCode32(int& iCodeLength, BYTE* pCode)
-{
-	int iMaxBufferLen = iCodeLength;
-	int iDataLength = 0;
-	int iTempLength = 0;
-
-	if (!pCode)
-	{
-		return -1;
-	}
-
-	//RecvData();
-
-	iDataLength = m_iReadEnd - m_iReadBegin;
-
-	if (iDataLength <= 0)
-	{
-		return 0;
-	}
-
-	if (iDataLength < sizeof(int))
-	{
-		if (m_iReadEnd == sizeof(m_abyRecvBuffer))
-		{
-			memcpy((void*)&m_abyRecvBuffer[0], (const void*)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			m_iReadBegin = 0;
-			m_iReadEnd = iDataLength;
-		}
-
-		return 0;
-	}
-
-	iTempLength = (int)/*ntohl*/(*((int*)&m_abyRecvBuffer[m_iReadBegin]));
-
-	if (iTempLength <= 0 || iTempLength + sizeof(int) > sizeof(m_abyRecvBuffer))
-	{
-		m_iReadBegin = m_iReadEnd = 0;
-		Close();
-		return -2;
-	}
-
-	if (iDataLength < iTempLength)
-	{
-		if (m_iReadEnd == sizeof(m_abyRecvBuffer))
-		{
-			memcpy((void*)&m_abyRecvBuffer[0], (const void*)&m_abyRecvBuffer[m_iReadBegin], iDataLength);
-			m_iReadBegin = 0;
-			m_iReadEnd = iDataLength;
-		}
-
-		return 0;
-	}
-
-
-	int iTempRet = 1;
-	iCodeLength = iTempLength;
-
-	if (iCodeLength < iMaxBufferLen)
-	{
-		memcpy((void*)pCode, (const void*)&m_abyRecvBuffer[m_iReadBegin], iCodeLength);
-	}
-	else
-	{
-		iTempRet = -2;
-		Close();
-		return iTempRet;
-	}
-
-	m_iReadBegin += iTempLength;
-
-	if (m_iReadBegin == m_iReadEnd)
-	{
-		m_iReadBegin = m_iReadEnd = 0;
-	}
-
-	return iTempRet;
-}
-
-
-template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPSocket<RecvBufLen_, SendBufLen_>::Write(BYTE* pCode, msize_t nCodeLength)
-{
-	if (m_iStatus != eTcpConnected)
-	{
-		return -1;
-	}
-	if (!m_Socket.IsValid())
-	{
-		return -2;
-	}
-
-	if (!CanReadWrite())
-	{
-		return -3;
-	}
-
-	if (!pCode)
-	{
-		return -4;
-	}
-
-	SOCKET nTmSocket = m_Socket.GetSocket();
-/*	m_pWriteBuff->WriteBytes(pCode, nCodeLength);*/
-	msize_t nSent = 0;
-	msize_t nLast = nCodeLength;
-	BYTE* pbyTemp = NULL;
-	int iTempRet = 0;
-
-	nLast = m_iPostEnd - m_iPostBegin;
-	pbyTemp = &(m_abyPostBuffer[m_iPostBegin]);
-	while (iBytesLeft > 0)
-	{
-		iBytesSent = send(m_iSocketFD, (const char*)pbyTemp, iBytesLeft, 0);
-
-		if (iBytesSent > 0)
-		{
-			pbyTemp += iBytesSent;
-			iBytesLeft -= iBytesSent;
-			m_iPostBegin += iBytesSent;
-		}
-
-		if (iBytesSent < 0 && errno != EAGAIN)
-
-		{
-			m_iStatus = tcs_error;
-			iTempRet = ERR_SEND_FAILED;
-			LOG_ERROR("default", "SendOneCode Failed : part1 : iBytesSent(%d), errno(%d : %s).",
-				iBytesSent, errno, strerror(errno));
-			break;
-		}
-	}
-
-	if (iBytesLeft == 0)
-	{
-		// 滞留数据发送成功，则继续发送本次提交的数据
-		m_iPostBegin = m_iPostEnd = 0;
-	}
-	else
-	{
-		// 否则，直接返回
-		if (iBytesLeft < 0)
-		{
-			iTempRet = ERR_SEND_UNKOWN;
-		}
-		else
-		{
-			// Socket发送缓冲区满，则将剩余的数据放到缓存中
-			// 为了效率考虑,只在m_iPostBegin大于1M时才做处理
-			if (m_iPostBegin > (1024 * 1024))
-			{
-				memmove((void*)&(m_abyPostBuffer[0]), (const void*)pbyTemp, iBytesLeft);
-				m_iPostBegin = 0;
-				m_iPostEnd = iBytesLeft;
-			}
-
-			if ((m_iPostEnd + nCodeLength) <= (int)(sizeof(m_abyPostBuffer) - 1))
-			{
-				// 成功拷贝进缓冲区也算成功
-				int iBytesLeftNow = nCodeLength;
-				BYTE* pbyTempNow = pCode;
-				memcpy((void*)&(m_abyPostBuffer[m_iPostEnd]), (const void*)pbyTempNow, iBytesLeftNow);
-				m_iPostEnd += iBytesLeftNow;
-			}
-			else
-			{
-				// 数据丢失
-				LOG_ERROR("default", "SendOneCode Failed : lost data ! m_iPostBegin(%d), m_iPostEnd(%d), iBytesLeft(%d), lostLen(%d)!",
-					m_iPostBegin, m_iPostEnd, iBytesLeft, nCodeLength);
-				iTempRet = ERR_SEND_NOBUFF;
-			}
-		}
-		return iTempRet;
-	}
-
-	// 发送本次提交的数据
-	iBytesLeft = nCodeLength;
-	pbyTemp = pCode;
-
-	while (iBytesLeft > 0)
-	{
-		iBytesSent = send(m_iSocketFD, (const char*)pbyTemp, iBytesLeft, 0);
-
-		if (iBytesSent > 0)
-		{
-			pbyTemp += iBytesSent;
-			iBytesLeft -= iBytesSent;
-		}
-
-
-		if (iBytesSent < 0 && errno != EAGAIN)
-		{
-			m_iStatus = tcs_error;
-			iTempRet = ERR_SEND_FAILED;
-			LOG_ERROR("default", "SendOneCode Failed : part3 : iBytesSent(%d), iBytesLeft(%d), errno(%d : %s).",
-				iBytesSent, iBytesLeft, errno, strerror(errno));
-			break;
-		}
-
-		else if (iBytesSent < 0)
-		{
-			// Socket发送缓冲区满，则将剩余的数据放到缓存中
-			memcpy((void*)&(m_abyPostBuffer[m_iPostEnd]), (const void*)pbyTemp, iBytesLeft);
-			m_iPostEnd += iBytesLeft;
-			iTempRet = ERR_SEND_NOBUFF;
-			LOG_ERROR("default", "SendOneCode Failed : part4 : iBytesSent(%d), iBytesLeft(%d), sendtotallen(%d), errno(%d : %s).",
-				iBytesSent, iBytesLeft, nCodeLength, errno, strerror(errno));
-			break;
-		}
-
-	}
-
-	return iTempRet;
 }
 
 template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
@@ -782,71 +394,4 @@ bool CTCPSocket<RecvBufLen_, SendBufLen_>::IsFDSetted(fd_set& tmFdSet)
 	return false;
 }
 
-template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-void CTCPSocket<RecvBufLen_, SendBufLen_>::GetCriticalData(int& iReadBegin, int& iReadEnd, int& iPostBegin, int& iPostEnd)
-{
-	iReadBegin = m_iReadBegin;
-	iReadEnd = m_iReadEnd;
-	iPostBegin = m_iPostBegin;
-	iPostEnd = m_iPostEnd;
-}
-
-
-template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPSocket<RecvBufLen_, SendBufLen_>::HasReserveData()
-{
-	if (m_iPostEnd - m_iPostBegin > 0)
-	{
-		return True;
-	}
-	else
-	{
-		return False;
-	}
-}
-
-template<unsigned int RecvBufLen_, unsigned int SendBufLen_>
-int CTCPSocket<RecvBufLen_, SendBufLen_>::CleanReserveData()
-{
-	int iBytesSent = 0, iBytesLeft = 0, iBytesCleaned = 0, iTempRet = 0;
-	BYTE* pbyTemp = NULL;
-
-	if (m_iSocketFD < 0 || m_iStatus != tcs_connected)
-	{
-		return ERR_SEND_NOSOCK;
-	}
-	iBytesLeft = m_iPostEnd - m_iPostBegin;
-	pbyTemp = &(m_abyPostBuffer[m_iPostBegin]);
-	while (iBytesLeft > 0)
-	{
-		iBytesSent = send(m_iSocketFD, (const char*)pbyTemp, iBytesLeft, 0);
-		if (iBytesSent > 0)
-		{
-			pbyTemp += iBytesSent;
-			iBytesLeft -= iBytesSent;
-			m_iPostBegin += iBytesSent;
-			iBytesCleaned += iBytesSent;
-		}
-		if (iBytesSent < 0 && errno != EAGAIN)
-		{
-			m_iStatus = tcs_error;
-			iTempRet = ERR_SEND_FAILED;
-			break;
-		}
-		else if (iBytesSent < 0)
-		{
-			iTempRet = ERR_SEND_NOBUFF;
-			LOG_ERROR("default", "CleanReserveData Failed : iBytesSent(%d), iBytesLeft(%d), errno(%d : %s).",
-				iBytesSent, iBytesLeft, errno, strerror(errno));
-			break;
-		}
-	}
-	if (iBytesLeft == 0)
-	{
-		m_iPostBegin = m_iPostEnd = 0;
-		iTempRet = 0;
-	}
-	//SAY("%d bytes is cleaned, left %d bytes.", iBytesCleaned, iBytesLeft);                                      
-	return iTempRet;
-}
 #endif //__TCP_CLIENT_H__

@@ -18,6 +18,28 @@ using namespace std;
  * 以此区分数据分布在内存区的两侧，和没有数据的情况
  */
 #define BUFF_EXTRA_SIZE (8)
+ //以下定义接受/发送错误类型
+enum eRecvErrs
+{
+	ERR_RECV_WOULD_BLOCK		= 1,
+	ERR_RECV_OK					=  0,
+	ERR_RECV_NOT_READY			= -1,
+	ERR_RECV_NOSOCK				= -2,
+	ERR_RECV_NOBUFF				= -3,
+	ERR_RECV_REMOTE_CLOSED		= -4,
+	ERR_RECV_SOCKET_ERROR		= -5
+};
+
+enum eSendErrs
+{
+	ERR_SEND_WOULD_BLOCK	= 1,
+	ERR_SEND_OK				= 0,
+	ERR_SEND_NOT_READY		= -1,
+	ERR_SEND_NOSOCK			= -2,
+	ERR_SEND_NOBUFF			= -3,
+	ERR_SEND_NODATA			= -4,
+	ERR_SEND_SOCKET_ERROR	= -5,
+};
 
 class CByteBuff
 {
