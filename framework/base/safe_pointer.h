@@ -134,6 +134,14 @@ public:
 	{
 		return GetThrow();
 	}
+
+	void ForceFree()
+	{
+		Tp* pPointer = GetThrow();
+		DELETE pPointer;
+		nDataH = SPO_FLAG_H;
+		nDataL = SPO_FLAG_L;
+	}
 private:
 	Tp* GetThrow() const
 	{
