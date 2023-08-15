@@ -33,7 +33,7 @@
 		assert(a); 					\
 	} while(0);
 
-#define ASSERT_EX(a, fail_handle, str, ...) 			MY_ASSERT(a, fail_handle)
+#define ASSERT_EX(a, fail_handle, str, ...) 			ASSERT(a, fail_handle)
 
 #endif // USE_MY_ASSERT
 

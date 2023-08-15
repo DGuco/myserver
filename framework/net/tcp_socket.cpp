@@ -17,7 +17,7 @@ CTCPSocket::~CTCPSocket()
 	m_pWriteBuff.ForceFree();
 }
 
-int CTCPSocket::ConnectTo(char* szIPAddr, u_short unPort, bool block)
+int CTCPSocket::ConnectTo(const char* szIPAddr, u_short unPort, bool block)
 {
 	if (!m_Socket.IsValid())
 	{

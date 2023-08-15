@@ -6,6 +6,15 @@
 ******************************************************************/
 #ifndef __TCP_CLIENT_H__
 #define __TCP_CLIENT_H__
+#include "tcp_socket.h"
 
+class CTCPClient : public CTCPSocket
+{	
+public:
+	//
+	CTCPClient(unsigned int RecvBufLen_, unsigned int SendBufLen_);
+	//
+	virtual ~CTCPClient();
 
+};
 #endif //__TCP_CLIENT_H__
