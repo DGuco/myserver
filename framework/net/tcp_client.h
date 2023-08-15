@@ -16,5 +16,8 @@ public:
 	//
 	virtual ~CTCPClient();
 
+private:
+	int m_nType;
+	int m_nId;
 };
 #endif //__TCP_CLIENT_H__

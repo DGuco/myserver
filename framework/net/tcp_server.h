@@ -9,6 +9,8 @@
 
 #include "t_array.h"
 #include "tcp_socket.h"
+#include "tcp_conn.h"
+#include "tcp_client.h"
 
 enum eTcpServerModule
 {
@@ -23,7 +25,7 @@ public:
 	//
 	CTCPServer(eTcpServerModule module, unsigned int RecvBufLen_, unsigned int SendBufLen_);
 	//
-	~CTCPServer();
+	virtual ~CTCPServer();
 	//
 	int InitServer(const char* ipAddr, u_short unPort);
 	//
@@ -44,6 +46,10 @@ public:
 	short  GetEntityID();
 	//
 	CTCPSocket& GetSocket();
+
+public:
+	virtual SafePointer<CTCPClient> CreateTcpClient() = 0;
+	virtual SafePointer<CTCPClient> CreateTcpConn() = 0;
 private:
 private:
 	CTCPSocket			 m_Socket;

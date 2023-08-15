@@ -4,8 +4,8 @@
 * Date	  :2023-8-11
 * Author  :DGuco(1139140909@qq.com)
 ******************************************************************/
-#ifndef __TCP_CLIENT_H__
-#define __TCP_CLIENT_H__
+#ifndef __TCP_SOCKET_H__
+#define __TCP_SOCKET_H__
 #include "safe_pointer.h"
 #include "byte_buff.h"
 #include "socket.h"
@@ -64,4 +64,4 @@ protected:
 	SafePointer<CByteBuff>	m_pReadBuff;     //¶Á»º³å
 	SafePointer<CByteBuff>	m_pWriteBuff;    //Ð´»º³å
 };
-#endif //__TCP_CLIENT_H__
+#endif //__TCP_SOCKET_H__
