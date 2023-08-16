@@ -22,7 +22,7 @@ enum eTcpServerModule
 typedef std::unordered_map<int, SafePointer<CTCPClient>> ClientMap;
 typedef std::unordered_map<int, SafePointer<CTCPConn>>   ConnMap;
 
-class CTCPServer : public CTCPSocket
+class CTCPServer
 {
 public:
 	//
@@ -44,10 +44,13 @@ private:
 	bool SelectTick();
 	//
 	bool EpollTick();
+
+	bool InitTcpServer(const char* ip, int port);
 public:
 	virtual SafePointer<CTCPClient> CreateTcpClient() = 0;
 	virtual SafePointer<CTCPConn> CreateTcpConn() = 0;
 private:
+	CSocket			     m_ListenSocket;
 	eTcpServerModule     m_nRunModule;
 	CString<ADDR_LENGTH> m_IPAddr;
 	int					 m_nPort;

@@ -51,13 +51,13 @@ public:
 	bool IsFDSetted(fd_set& pCheckSet);
 	//是否连接成功
 	int CheckConnectedOk();
-	//Init tcp Server
-	int InitTcpServer(const char* ip,int port);
 	//关闭
 	int Close();
 public:
-	//是否可读写
-	virtual bool CanReadWrite() { return 1;};
+	virtual int Key() = 0;
+	virtual int DoRecvLogic() = 0;
+	virtual int DoWriteLogic() = 0;
+	virtual int DoFdErrorLogic() = 0;
 protected:
 	CSocket					m_Socket;	     //Socket 描述符
 	int						m_nStatus;	     //连接状态

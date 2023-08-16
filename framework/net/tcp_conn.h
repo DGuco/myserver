@@ -16,7 +16,10 @@ public:
 	//
 	virtual ~CTCPConn();
 public:
-	virtual int Key() = 0;
+	virtual int Key();
+	virtual int DoRecvLogic();
+	virtual int DoWriteLogic();
+	virtual int DoFdErrorLogic();
 private:
 	int m_nType;
 	int m_nId;

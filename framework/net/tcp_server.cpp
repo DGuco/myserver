@@ -3,8 +3,7 @@
 #include "log.h"
 
 CTCPServer::CTCPServer(eTcpServerModule module, unsigned int RecvBufLen_, unsigned int SendBufLen_)
-	:	CTCPSocket(RecvBufLen_, SendBufLen_),
-		m_nRunModule(module)
+	: m_nRunModule(module)
 {
 
 }
@@ -41,7 +40,7 @@ bool CTCPServer::Run()
 #ifdef __WINDOWS__
 	ASSERT_EX(m_nRunModule == eTcpSelect, return, "Windows platform only run in select module");
 #endif
-	ASSERT_EX(m_Socket.IsValid(), return, "Listen socket is not valid");
+	ASSERT_EX(m_ListenSocket.IsValid(), return, "Listen socket is not valid");
 	if (m_nRunModule == eTcpSelect)
 	{
 		return SelectTick();
@@ -50,6 +49,37 @@ bool CTCPServer::Run()
 	{
 		return EpollTick();
 	}
+}
+
+bool CTCPServer::InitTcpServer(const char* ip, int port)
+{
+	if (!m_ListenSocket.IsValid())
+	{
+		if (!m_ListenSocket.Open())
+		{
+			return -1;
+		}
+	}
+
+	//允许套接口和一个已在使用中的地址捆绑
+	if (!m_ListenSocket.SetReuseAddr())  return -1;
+
+	bool bRet = 0;
+	if (ip != NULL)
+	{
+		bRet = m_ListenSocket.Bind(port);
+	}
+	else
+	{
+		bRet = m_ListenSocket.Bind(ip, port);
+	}
+
+	if (!bRet) return -1;
+
+	if (!m_ListenSocket.Listen()) return -1;
+
+	m_ListenSocket.SetSocketNoBlock();
+	return 0;
 }
 
 bool CTCPServer::SelectTick()
@@ -64,7 +94,7 @@ bool CTCPServer::SelectTick()
 	tvListen.tv_sec = 0;
 	tvListen.tv_usec = 100000;
 
-	int iListenSocketFD = GetSocketFD();
+	int iListenSocketFD = m_ListenSocket.GetSocket();
 	FD_SET(iListenSocketFD, &fds_read);  // 将listen端口加入端口集
 	int iMaxSocketFD = iListenSocketFD;
 	struct sockaddr_in stConnAddr;
@@ -97,7 +127,6 @@ bool CTCPServer::SelectTick()
 			}
 		}
 	}
-
 
 	// 等待读取
 	int iTmp = select(iMaxSocketFD + 1, &fds_read, NULL, NULL, &tvListen);

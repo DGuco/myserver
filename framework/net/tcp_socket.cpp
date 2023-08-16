@@ -170,37 +170,6 @@ int CTCPSocket::CheckConnectedOk()
 	return 0;
 }
 
-int CTCPSocket::InitTcpServer(const char* ip, int port)
-{
-	if (!m_Socket.IsValid())
-	{
-		if (!m_Socket.Open())
-		{
-			return -1;
-		}
-	}
-
-	//允许套接口和一个已在使用中的地址捆绑
-	if (!m_Socket.SetReuseAddr())  return -1;
-
-	bool bRet = 0;
-	if (ip != NULL)
-	{
-		bRet = m_Socket.Bind(port);
-	}
-	else
-	{
-		bRet = m_Socket.Bind(ip, port);
-	}
-
-	if (!bRet) return -1;
-
-	if (!m_Socket.Listen()) return -1;
-
-	m_Socket.SetSocketNoBlock();
-	return 0;
-}
-
 int CTCPSocket::Close()
 {
 	m_Socket.Close();
@@ -225,10 +194,6 @@ eTcpStatus CTCPSocket::GetStatus()
 
 int CTCPSocket::RecvData()
 {
-	if (!CanReadWrite())
-	{
-		return ERR_RECV_NOT_READY;
-	}
 	int nRetCode = m_pReadBuff->Recv(m_Socket);
 	if (nRetCode == ERR_RECV_WOULD_BLOCK)
 	{
@@ -242,11 +207,6 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength)
 	if (!m_Socket.IsValid())
 	{
 		return ERR_SEND_NOSOCK;
-	}
-
-	if (!CanReadWrite())
-	{
-		return ERR_SEND_NOT_READY;
 	}
 
 	int retCode = ERR_SEND_OK;
