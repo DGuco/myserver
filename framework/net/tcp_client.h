@@ -15,7 +15,8 @@ public:
 	CTCPClient(unsigned int RecvBufLen_, unsigned int SendBufLen_);
 	//
 	virtual ~CTCPClient();
-
+public:
+	virtual int Key() = 0;
 private:
 	int m_nType;
 	int m_nId;

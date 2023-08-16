@@ -3,7 +3,7 @@
 #include "log.h"
 
 CTCPServer::CTCPServer(eTcpServerModule module, unsigned int RecvBufLen_, unsigned int SendBufLen_)
-	:	m_Socket(RecvBufLen_, SendBufLen_),
+	:	CTCPSocket(RecvBufLen_, SendBufLen_),
 		m_nRunModule(module)
 {
 
@@ -23,12 +23,12 @@ int CTCPServer::InitServer(const char* ipAddr, u_short unPort)
 
 int CTCPServer::ConnectTo(const char* szLocalAddr,int port,bool bblock)
 {
-	return m_Socket.ConnectTo(szLocalAddr, port, bblock);
+	return ConnectTo(szLocalAddr, port, bblock);
 }
 
 int CTCPServer::CreateServer()
 {
-	if (m_Socket.InitTcpServer(m_IPAddr.c_str(),m_nPort))
+	if (InitTcpServer(m_IPAddr.c_str(),m_nPort))
 	{
 		LOG_ERROR("default", "InitTcpServer Listen Server  {}: {} failed.", m_IPAddr.c_str(),m_nPort);
 		return -1;
@@ -36,47 +36,71 @@ int CTCPServer::CreateServer()
 	return 0;
 }
 
-void CTCPServer::Run()
+bool CTCPServer::Run()
 {
-#ifdef __LINUX__
-#else
-	ASSERT_EX(m_nRunModule == eTcpSelect,return,"Windows platform only run in select module");
+#ifdef __WINDOWS__
+	ASSERT_EX(m_nRunModule == eTcpSelect, return, "Windows platform only run in select module");
 #endif
-	fd_set fds_read;
-	timeval tvListen;
-	int i = 0, iTmp;
-	int iListenSocketFD = -1;
-	int iNewSocketFD = -1;
-	struct sockaddr_in stConnAddr;
-	CString<32> szConnAddr;
-	int iMaxSocketFD = -1;
+	ASSERT_EX(m_Socket.IsValid(), return, "Listen socket is not valid");
+	if (m_nRunModule == eTcpSelect)
+	{
+		return SelectTick();
+	}
+	else
+	{
+		return EpollTick();
+	}
+}
 
-	memset(&stConnAddr, 0, sizeof(stConnAddr));
-	socklen_t iAddrLength = sizeof(stConnAddr);
+bool CTCPServer::SelectTick()
+{
+	fd_set fds_read;
+	fd_set fds_write;
+	FD_ZERO(&fds_read);  // 清除端口集
+	FD_ZERO(&fds_write);  // 清除端口集
 
 	// 每隔100毫秒超时
+	timeval tvListen;
 	tvListen.tv_sec = 0;
 	tvListen.tv_usec = 100000;
-	FD_ZERO(&fds_read);  // 清除端口集
-	iListenSocketFD = m_Socket.GetSocketFD();
 
+	int iListenSocketFD = GetSocketFD();
 	FD_SET(iListenSocketFD, &fds_read);  // 将listen端口加入端口集
-	iMaxSocketFD = iListenSocketFD;
+	int iMaxSocketFD = iListenSocketFD;
+	struct sockaddr_in stConnAddr;
+	int iAddrLength = sizeof(stConnAddr);
 
-	for (i = 0; i < m_iCurrentUnRegisterNum; i++)
+	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end(); it++)
 	{
-		if (m_astUnRegisterInfo[i].m_iRegisted == 0)
+		if (it->second->GetSocket().IsValid())
 		{
-			FD_SET(m_astUnRegisterInfo[i].m_iSocketFD, &fds_read);
-			if (m_astUnRegisterInfo[i].m_iSocketFD > iMaxSocketFD)
+			SOCKET tmFd = it->second->GetSocketFD();
+			FD_SET(tmFd, &fds_read);  // 将listen端口加入端口集
+			FD_SET(tmFd, &fds_write);  // 将listen端口加入端口集
+			if (it->second->GetSocketFD() > iMaxSocketFD)
 			{
-				iMaxSocketFD = m_astUnRegisterInfo[i].m_iSocketFD;
+				iMaxSocketFD = it->second->GetSocketFD();
 			}
 		}
 	}
 
+	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end(); it++)
+	{
+		if (it->second->GetSocket().IsValid())
+		{
+			SOCKET tmFd = it->second->GetSocketFD();
+			FD_SET(tmFd, &fds_read);  // 将listen端口加入端口集
+			FD_SET(tmFd, &fds_write);  // 将listen端口加入端口集
+			if (it->second->GetSocketFD() > iMaxSocketFD)
+			{
+				iMaxSocketFD = it->second->GetSocketFD();
+			}
+		}
+	}
+
+
 	// 等待读取
-	iTmp = select(iMaxSocketFD + 1, &fds_read, NULL, NULL, &tvListen);
+	int iTmp = select(iMaxSocketFD + 1, &fds_read, NULL, NULL, &tvListen);
 
 	// 如果没有可读或者出错则返回
 	if (iTmp <= 0)
@@ -85,92 +109,55 @@ void CTCPServer::Run()
 		{
 			LOG_ERROR("default", "Select error, %s.", strerror(errno));
 		}
-		return iTmp;
+		return;
 	}
 
 	// 如果iListenSocketFD在fds_read中
 	if (FD_ISSET(iListenSocketFD, &fds_read))
 	{
-		iNewSocketFD = accept(iListenSocketFD, (struct sockaddr*)&stConnAddr, &iAddrLength);
-		SockAddrToString(&stConnAddr, (char*)szConnAddr);
-		LOG_INFO("default", "Get a conn request from %s socket fd %d.", szConnAddr, iNewSocketFD);
+		SOCKET iNewSocketFD = accept(iListenSocketFD, (struct sockaddr*)&stConnAddr, &iAddrLength);
+	}
 
-		if (m_iCurrentUnRegisterNum >= MAX_UNREGISTER_NUM)
+	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end(); it++)
+	{
+		if (it->second->GetSocket().IsValid())
 		{
-			LOG_ERROR("default", "Error there is no empty space(cur num: %d) to record.", m_iCurrentUnRegisterNum);
-			close(iNewSocketFD);
-		}
-		else
-		{
-			m_astUnRegisterInfo[m_iCurrentUnRegisterNum].m_iSocketFD = iNewSocketFD;
-			m_astUnRegisterInfo[m_iCurrentUnRegisterNum].m_ulIPAddr = stConnAddr.sin_addr.s_addr;
-			m_astUnRegisterInfo[m_iCurrentUnRegisterNum].m_tAcceptTime = time(NULL);
-			m_iCurrentUnRegisterNum++;
-
-			int iOptLen = sizeof(socklen_t);
-			int iOptVal = SENDBUFSIZE;
-			//				if (setsockopt(iNewSocketFD, SOL_SOCKET, SO_SNDBUF, (const void *)&iOptVal, iOptLen))  // 设置发送缓冲区的大小
-			//				{
-			//					LOG_ERROR( "default", "Socket(%d) Set send buffer size to %d failed!", iNewSocketFD, iOptVal);
-			//				}
-			//				else
-			if (getsockopt(iNewSocketFD, SOL_SOCKET, SO_SNDBUF, (void*)&iOptVal, (socklen_t*)&iOptLen) == 0)  // 查看是否设置成功
+			if (FD_ISSET(it->second->GetSocketFD(), &fds_read))
 			{
-				LOG_INFO("default", "Socket(%d) Set Send buf of socket is %d.", iNewSocketFD, iOptVal);
+				it->second->RecvData();
+			}
+
+			if (FD_ISSET(it->second->GetSocketFD(), &fds_write))
+			{
+				it->second->RecvData();
 			}
 		}
-		//}
 	}
 
-	// 注意这里是从后向前扫描，因为在此过程中
-	// 有可能会删除当前元素并把最后一个填充到此处
-	for (i = m_iCurrentUnRegisterNum - 1; i >= 0; i--) {
-		if (FD_ISSET(m_astUnRegisterInfo[i].m_iSocketFD, &fds_read)) {
-			ReceiveAndProcessRegister(i);
+	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end(); it++)
+	{
+		if (it->second->GetSocket().IsValid())
+		{
+			if (FD_ISSET(it->second->GetSocketFD(), &fds_read))
+			{
+				it->second->Write();
+			}
+
+			if (FD_ISSET(it->second->GetSocketFD(), &fds_write))
+			{
+				it->second->Write();
+			}
 		}
 	}
-
-	//	sleep(0);
-
-	return 1;
+	return;
 }
 
-CTCPSocket & CTCPServer::GetSocket()
+bool CTCPServer::EpollTick()
 {
-	return m_Socket;
-}
+#ifdef __LINUX__
 
-int CTCPServer::GetEntityInfo(short* pnEntityType, short* pnEntityID, unsigned long* pulIpAddr)
-{
-	if (!pnEntityType || !pnEntityID || !pulIpAddr)
-	{
-		return -1;
-	}
-
-	*pnEntityType = m_nEntityType;
-	*pnEntityID = m_nEntityID;
-	*pulIpAddr = m_ulIPAddr;
-
+#else
 	return 0;
-}
+#endif
 
-u_long CTCPServer::GetConnAddr()
-{
-	return m_ulIPAddr;
 }
-
-u_short CTCPServer::GetConnPort()
-{
-	return m_nPort;
-}
-
-short CTCPServer::GetEntityType()
-{
-	return m_nEntityType;
-}
-
-short CTCPServer::GetEntityID()
-{
-	return m_nEntityID;
-}
-

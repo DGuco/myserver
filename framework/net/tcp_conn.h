@@ -15,6 +15,8 @@ public:
 	CTCPConn(unsigned int RecvBufLen_, unsigned int SendBufLen_);
 	//
 	virtual ~CTCPConn();
+public:
+	virtual int Key() = 0;
 private:
 	int m_nType;
 	int m_nId;

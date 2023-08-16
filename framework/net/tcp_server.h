@@ -11,6 +11,7 @@
 #include "tcp_socket.h"
 #include "tcp_conn.h"
 #include "tcp_client.h"
+#include <unordered_map>
 
 enum eTcpServerModule
 {
@@ -18,8 +19,10 @@ enum eTcpServerModule
 	eTcpEpoll = 1,
 };
 
+typedef std::unordered_map<int, SafePointer<CTCPClient>> ClientMap;
+typedef std::unordered_map<int, SafePointer<CTCPConn>>   ConnMap;
 
-class CTCPServer
+class CTCPServer : public CTCPSocket
 {
 public:
 	//
@@ -33,29 +36,23 @@ public:
 	//
 	int CreateServer();
 	//
-	void Run();
-	//
-	int GetEntityInfo(short* pnEntityType, short* pnEntityID, unsigned long* pulIpAddr);
-	//
-	u_long GetConnAddr();
-	//
-	u_short GetConnPort();
-	//
-	short  GetEntityType();
-	//
-	short  GetEntityID();
-	//
-	CTCPSocket& GetSocket();
+	bool Run();
 
+	CTCPSocket& GetSocket();
+private:
+	//
+	bool SelectTick();
+	//
+	bool EpollTick();
 public:
 	virtual SafePointer<CTCPClient> CreateTcpClient() = 0;
-	virtual SafePointer<CTCPClient> CreateTcpConn() = 0;
+	virtual SafePointer<CTCPConn> CreateTcpConn() = 0;
 private:
-private:
-	CTCPSocket			 m_Socket;
 	eTcpServerModule     m_nRunModule;
 	CString<ADDR_LENGTH> m_IPAddr;
 	int					 m_nPort;
+	ClientMap			 m_ClientMap;
+	ConnMap				 m_ConnMap;
 };
 
 #endif //__TCP_SERVER_H__

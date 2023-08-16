@@ -213,6 +213,11 @@ SOCKET CTCPSocket::GetSocketFD()
 	return m_Socket.GetSocket();
 }
 
+CSocket& CTCPSocket::GetSocket()
+{
+	return m_Socket;
+}
+
 eTcpStatus CTCPSocket::GetStatus()
 {
 	return (eTcpStatus)m_nStatus;
@@ -239,11 +244,6 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength)
 		return ERR_SEND_NOSOCK;
 	}
 
-	if (!pCode)
-	{
-		return ERR_SEND_NODATA;
-	}
-
 	if (!CanReadWrite())
 	{
 		return ERR_SEND_NOT_READY;
@@ -266,29 +266,32 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength)
 		m_pWriteBuff->Clear();
 	}
 
-	//把本次的数据写入缓冲区
-	SOCKET nTmSocket = m_Socket.GetSocket();
-	if (m_pWriteBuff->WriteBytes(pCode, nCodeLength) == -1)
+	if (pCode != NULL && nCodeLength > 0)
 	{
-		return ERR_SEND_NOBUFF;
-	}
-
-	if (retCode != ERR_SEND_WOULD_BLOCK)
-	{
-		//再次尝试发送本次写入缓冲区的数据
-		if (m_pWriteBuff->CanReadLen() > 0)
+		//把本次的数据写入缓冲区
+		SOCKET nTmSocket = m_Socket.GetSocket();
+		if (m_pWriteBuff->WriteBytes(pCode, nCodeLength) == -1)
 		{
-			retCode = m_pWriteBuff->Send(m_Socket);
-			if (retCode < 0)
-			{
-				return retCode;
-			}
+			return ERR_SEND_NOBUFF;
 		}
 
-		//没有数据了，索引都归0吧
-		if (m_pWriteBuff->CanReadLen() == 0)
+		if (retCode != ERR_SEND_WOULD_BLOCK)
 		{
-			m_pWriteBuff->Clear();
+			//再次尝试发送本次写入缓冲区的数据
+			if (m_pWriteBuff->CanReadLen() > 0)
+			{
+				retCode = m_pWriteBuff->Send(m_Socket);
+				if (retCode < 0)
+				{
+					return retCode;
+				}
+			}
+
+			//没有数据了，索引都归0吧
+			if (m_pWriteBuff->CanReadLen() == 0)
+			{
+				m_pWriteBuff->Clear();
+			}
 		}
 	}
 	return ERR_SEND_OK;

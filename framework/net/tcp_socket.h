@@ -29,6 +29,8 @@ public:
 	virtual ~CTCPSocket();
 	//获取socketid
 	SOCKET GetSocketFD();
+	//socket 
+	CSocket& GetSocket();
 	//获取连接状态
 	eTcpStatus GetStatus();
 	//连接
@@ -40,7 +42,7 @@ public:
 	//读取数据
 	int RecvData();
 	//把数据写到缓冲区准备发送
-	int Write(BYTE* pCode, msize_t nCodeLength);
+	int Write(BYTE* pCode = NULL, msize_t nCodeLength = 0);
 	//获取读缓冲区中的一段信息
 	int GetOneCode(unsigned short& nCodeLength, BYTE* pCode);
 	//添加socket到fdset
