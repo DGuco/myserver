@@ -42,7 +42,9 @@ public:
 	//读取数据
 	int RecvData();
 	//把数据写到缓冲区准备发送
-	int Write(BYTE* pCode = NULL, msize_t nCodeLength = 0);
+	int Write(BYTE* pCode, msize_t nCodeLength);
+	//把缓冲区数据发送
+	int Flush();
 	//获取读缓冲区中的一段信息
 	int GetOneCode(unsigned short& nCodeLength, BYTE* pCode);
 	//添加socket到fdset

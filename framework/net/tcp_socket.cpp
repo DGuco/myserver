@@ -228,8 +228,6 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength)
 
 	if (pCode != NULL && nCodeLength > 0)
 	{
-		//把本次的数据写入缓冲区
-		SOCKET nTmSocket = m_Socket.GetSocket();
 		if (m_pWriteBuff->WriteBytes(pCode, nCodeLength) == -1)
 		{
 			return ERR_SEND_NOBUFF;
@@ -255,6 +253,11 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength)
 		}
 	}
 	return ERR_SEND_OK;
+}
+
+int CTCPSocket::Flush()
+{
+	return Write(NULL,0);
 }
 
 int CTCPSocket::GetOneCode(unsigned short& nCodeLength, BYTE* pCode)

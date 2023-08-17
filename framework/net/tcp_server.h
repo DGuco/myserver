@@ -19,6 +19,8 @@ enum eTcpServerModule
 	eTcpEpoll = 1,
 };
 
+# define MAX_SOCKET_NUM 65536
+
 typedef std::unordered_map<int, SafePointer<CTCPClient>> ClientMap;
 typedef std::unordered_map<int, SafePointer<CTCPConn>>   ConnMap;
 
@@ -41,11 +43,15 @@ public:
 	CTCPSocket& GetSocket();
 private:
 	//
+	bool InitSelect(const char* ip, int port);
+	//
+	bool InitEpoll(const char* ip, int port);
+	//
 	bool SelectTick();
 	//
 	bool EpollTick();
-
-	bool InitTcpServer(const char* ip, int port);
+	//
+	bool EpollDelSocket(CTCPSocket* pSocket);
 public:
 	virtual SafePointer<CTCPClient> CreateTcpClient() = 0;
 	virtual SafePointer<CTCPConn> CreateTcpConn() = 0;
@@ -56,6 +62,11 @@ private:
 	int					 m_nPort;
 	ClientMap			 m_ClientMap;
 	ConnMap				 m_ConnMap;
+	fd_set				 m_fdsRead;
+	fd_set				 m_fdsWrite;
+	struct epoll_event*	 m_pEpollEventList;
+	int                  m_nEpollFd;
+	struct epoll_event   m_stEpollEvent;
 };
 
 #endif //__TCP_SERVER_H__
