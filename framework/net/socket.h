@@ -42,10 +42,10 @@ public:
 	bool Bind(const char* ipaddr,int port);
 	//conn
 	int Conn(const char* ipaddr, int port,bool block);
-	//conn
-	int Conn(sockaddr_in& addr,int addrsize, bool block);
 	//监听
 	bool Listen();
+	//accept
+	CSocket Accept();
 	//读取
 	int  Read(char* data,int len);
 	//写入
@@ -88,8 +88,15 @@ public:
 	bool IsValid();
 	//socket 是否出错
 	bool IsSocketError();
+	// host 
+	const CString<ADDR_LENGTH>& GetHost() const;
+	//port
+	int	GetPort() const;
 private:
-	SOCKET  m_nSocket;
+	sockaddr_in				m_SocketAddr;
+	CString<ADDR_LENGTH>	m_Host;
+	int						m_nPort;
+	SOCKET					m_nSocket;
 };
 
 #endif

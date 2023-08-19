@@ -23,11 +23,8 @@ bool CSocket::Open(int nProtocolFamily, int nType, int nProtocol)
 		LOG_ERROR("default", "CreateSocket failed with error : {},errormsg : {} \n", errno, strerror(errno));
 		return false;
 	}
-	// 	int iVal = 1;
-	// 	if (SOCKET_ERROR == setsockopt(Socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char *>(&iVal), sizeof(iVal))) 
-	// 	{
-	// 		LOG_ERROR("default", "setsockopt failed with error : {},errormsg : {} \n", errno, strerror(errno));
-	// 	}
+	memset(&m_SocketAddr, 0, sizeof(m_SocketAddr));
+	m_SocketAddr.sin_family = AF_INET;
 	return true;
 }
 
@@ -105,13 +102,14 @@ bool CSocket::Bind(const char* ipaddr, int port)
 }
 int CSocket::Conn(const char* ipaddr, int port, bool block)
 {
-	sockaddr_in saiAddress;
-	memset(&saiAddress, 0, sizeof(saiAddress));
-	saiAddress.sin_addr.s_addr = inet_addr(ipaddr);
-	saiAddress.sin_port = htons(port);
-	saiAddress.sin_family = AF_INET;
+	memset(&m_SocketAddr, 0, sizeof(m_SocketAddr));
+	m_SocketAddr.sin_addr.s_addr = inet_addr(ipaddr);
+	m_SocketAddr.sin_port = htons(port);
+	m_SocketAddr.sin_family = AF_INET;
 
-	if (connect(m_nSocket, reinterpret_cast<const sockaddr*>(&saiAddress), sizeof(sockaddr)) == SOCKET_ERROR)
+	m_Host = ipaddr;
+	m_nPort = port;
+	if (connect(m_nSocket, reinterpret_cast<const sockaddr*>(&m_SocketAddr), sizeof(sockaddr)) == SOCKET_ERROR)
 	{
 		if (!block && errno == SOCKET_CONNECTING)
 		{
@@ -120,24 +118,7 @@ int CSocket::Conn(const char* ipaddr, int port, bool block)
 
 		Close();
 		m_nSocket = INVALID_SOCKET;
-		LOG_ERROR("default", "connect {}:{} failed error : {},errormsg : {} \n", host, port, errno, strerror(errno));
-		return SOCKET_ERROR;
-	}
-	return 0;
-}
-
-int CSocket::Conn(sockaddr_in& addr, int addrsize, bool block)
-{
-	if (connect(m_nSocket, reinterpret_cast<const sockaddr*>(&addr), addrsize) == SOCKET_ERROR)
-	{
-		if (!block && errno == SOCKET_CONNECTING)
-		{
-			return 1;
-		}
-
-		Close();
-		m_nSocket = INVALID_SOCKET;
-		LOG_ERROR("default", "connect {}:{} failed error : {},errormsg : {} \n", addr.sin_addr.s_addr, ntohl(addr.sin_port), errno, strerror(errno));
+		LOG_ERROR("default", "connect {}:{} failed error : {},errormsg : {} \n", ipaddr, port, errno, strerror(errno));
 		return SOCKET_ERROR;
 	}
 	return 0;
@@ -154,6 +135,22 @@ bool CSocket::Listen()
 	return true;
 }
 
+CSocket CSocket::Accept()
+{
+	if (!IsValid())
+	{
+		return CSocket();
+	}
+	CSocket newSocket;
+	int iAddrLength = sizeof(sockaddr_in);
+	SOCKET iNewSocketFD = accept(m_nSocket, (struct sockaddr*)&(newSocket.m_SocketAddr), &iAddrLength);
+	newSocket.m_nSocket = iNewSocketFD;
+	if (newSocket.IsValid())
+	{
+		newSocket.m_nPort = (ntohs(newSocket.m_SocketAddr.sin_port));
+		newSocket.m_Host = (inet_ntoa(newSocket.m_SocketAddr.sin_addr));
+	}
+}
 int CSocket::Read(char* data, int len)
 {
 	int iRecvedBytes = recv(m_nSocket,data,len,0);
@@ -393,4 +390,14 @@ bool CSocket::IsSocketError()
 		return true;
 	}
 	return nError == 1;
+}
+
+const CString<ADDR_LENGTH>& CSocket::GetHost() const
+{
+	return m_Host;
+}
+
+int	CSocket::GetPort() const
+{
+	return m_nPort;
 }

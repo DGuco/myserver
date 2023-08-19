@@ -53,8 +53,8 @@ private:
 	//
 	bool EpollDelSocket(CTCPSocket* pSocket);
 public:
-	virtual SafePointer<CTCPClient> CreateTcpClient() = 0;
-	virtual SafePointer<CTCPConn> CreateTcpConn() = 0;
+	virtual SafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket) = 0;
+	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket) = 0;
 private:
 	CSocket			     m_ListenSocket;
 	eTcpServerModule     m_nRunModule;

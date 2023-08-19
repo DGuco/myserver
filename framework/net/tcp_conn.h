@@ -12,7 +12,7 @@ class CTCPConn : public CTCPSocket
 {
 public:
 	//
-	CTCPConn(unsigned int RecvBufLen_, unsigned int SendBufLen_);
+	CTCPConn(CSocket tmSocket, int RecvBufLen_, unsigned int SendBufLen_);
 	//
 	virtual ~CTCPConn();
 public:

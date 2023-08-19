@@ -44,65 +44,7 @@ int CTCPSocket::ConnectTo(const char* szIPAddr, u_short unPort, bool block)
 		m_Socket.SetSocketNoBlock();
 	}
 
-	sockaddr_in stTempAddr;
-	memset((void*)&stTempAddr, 0, sizeof(sockaddr_in));
-	stTempAddr.sin_family = AF_INET;
-	stTempAddr.sin_port = htons(unPort);
-	stTempAddr.sin_addr.s_addr = inet_addr(szIPAddr);
-	int nConRet = m_Socket.Conn(stTempAddr, sizeof(stTempAddr), block);
-	if (nConRet == SOCKET_ERROR)
-	{
-		Close();
-		return -2;
-	}
-	else if (nConRet == 1)
-	{
-		m_nStatus = eTcpConnecting;
-		//非阻塞连接中，检查是否连接成功
-		CheckConnectedOk();
-	}
-
-	if (block)
-	{
-		m_Socket.SetSocketNoBlock();
-		m_nStatus = eTcpConnected;
-	}
-	return 0;
-}
-
-int CTCPSocket::ConnectTo(u_long ulIPNetAddr, u_short unPort, bool block)
-{
-	if (!m_Socket.IsValid())
-	{
-		if (!m_Socket.Open())
-		{
-			return -1;
-		}
-	}
-	m_nStatus = eTcpCreated;
-	if (!m_Socket.SetRecvBufSize(m_nRecvBuffLen))
-	{
-		Close();
-		return -1;
-	}
-
-	if (!m_Socket.SetSendBufSize(m_nSendBuffLen))
-	{
-		Close();
-		return -1;
-	}
-
-	if (!block)
-	{
-		m_Socket.SetSocketNoBlock();
-	}
-
-	sockaddr_in stTempAddr;
-	memset((void*)&stTempAddr, 0, sizeof(sockaddr_in));
-	stTempAddr.sin_family = AF_INET;
-	stTempAddr.sin_port = htons(unPort);
-	stTempAddr.sin_addr.s_addr = ulIPNetAddr;
-	int nConRet = m_Socket.Conn(stTempAddr, sizeof(stTempAddr), block);
+	int nConRet = m_Socket.Conn(szIPAddr,unPort,block);
 	if (nConRet == SOCKET_ERROR)
 	{
 		Close();

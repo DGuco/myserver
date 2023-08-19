@@ -187,9 +187,9 @@ bool CTCPServer::SelectTick()
 	tvListen.tv_sec = 0;
 	tvListen.tv_usec = 100000;
 
-	int iListenSocketFD = m_ListenSocket.GetSocket();
-	FD_SET(iListenSocketFD, &m_fdsRead);  // 将listen端口加入端口集
-	int iMaxSocketFD = iListenSocketFD;
+	int nListenFD = m_ListenSocket.GetSocket();
+	FD_SET(nListenFD, &m_fdsRead);  // 将listen端口加入端口集
+	int iMaxSocketFD = nListenFD;
 	struct sockaddr_in stConnAddr;
 	int iAddrLength = sizeof(stConnAddr);
 
@@ -235,9 +235,19 @@ bool CTCPServer::SelectTick()
 	}
 
 	// 如果iListenSocketFD在fds_read中
-	if (FD_ISSET(iListenSocketFD, &m_fdsRead))
+	if (FD_ISSET(nListenFD, &m_fdsRead))
 	{
-		SOCKET iNewSocketFD = accept(iListenSocketFD, (struct sockaddr*)&stConnAddr, &iAddrLength);
+		CSocket newSocket = m_ListenSocket.Accept();
+		if (newSocket.IsValid())
+		{
+			SafePointer<CTCPClient> pClient = CreateTcpClient(newSocket);
+			m_ClientMap.insert(std::make_pair(pClient->GetSocketFD(), pClient));
+			LOG_DEBUG("default", "Accept new socket fd = {} ,host = {},port = {}",newSocket.GetSocket(),newSocket.GetHost().c_str(),newSocket.GetPort());
+		}
+		else
+		{
+			LOG_ERROR("default", "Accept new socket error,listenfd = {},erromsg =  %s.", strerror(errno));
+		}
 	}
 
 	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end(); it++)

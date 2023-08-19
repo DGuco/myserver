@@ -35,8 +35,6 @@ public:
 	eTcpStatus GetStatus();
 	//连接
 	int ConnectTo(const char* szIPAddr, u_short unPort,bool block = true);
-	//连接
-	int ConnectTo(u_long ulIPNetAddr, u_short unPort,bool block = true);
 	//检查非阻塞连接是否连接成功
 	int CheckConnectedOk();
 	//读取数据

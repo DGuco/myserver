@@ -12,7 +12,7 @@ class CTCPClient : public CTCPSocket
 {	
 public:
 	//
-	CTCPClient(unsigned int RecvBufLen_, unsigned int SendBufLen_);
+	CTCPClient(CSocket tmSocket,int RecvBufLen_, unsigned int SendBufLen_);
 	//
 	virtual ~CTCPClient();
 public:
