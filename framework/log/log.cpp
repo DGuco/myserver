@@ -9,107 +9,83 @@
 #include "log.h"
 
 // 初始一种类型的日志
-int InitBaseLog(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
+int INIT_BASE_LOG(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
 				const char *vLogDir,                        /*文件名称(路径)*/
 				level_enum level,        /*日志等级*/
 				bool vAppend)
 {
-	if (NULL == vLogName || NULL == vLogDir) {
+	if (NULL == vLogName || NULL == vLogDir)
+	{
 		return -1;
 	}
-#ifdef LOG_THREAD_SAFE
-	auto log = spdlog::create<spdlog::sinks::basic_file_sink_mt>(vLogName, vLogDir, vAppend);
-#ifdef _DEBUG_
+	auto logger = spdlog::create<spdlog::sinks::basic_file_sink_mt>(vLogName, vLogDir, vAppend);
+	if (logger == nullptr)
+	{
+		return -1;
+	}
+	logger->set_level(level);
+	logger->flush_on(level);
+#ifdef __WINDOWS__
 	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_mt>(CONSOLE_LOG_NAME);
-#endif
-#else
-	auto log = spdlog::create<spdlog::sinks::basic_file_sink_st>(vLogName, vLogDir, vAppend);
-#ifdef _DEBUG_
-	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_st>(CONSOLE_LOG_NAME);
-#else
-#endif
-#endif
-
-#ifdef _DEBUG_
 	console->set_level(level);
 	console->flush_on(level);
 #endif
-	if (log == nullptr) {
-		return -1;
-	}
-	log->set_level(level);
-	log->flush_on(level);
 	return 0;
 }
 
-int InitRoatingLog(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
+int INIT_ROATING_LOG(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
 				   const char *vLogDir,                        /*文件名称(路径)*/
 				   level_enum level,        /*日志等级*/
 				   unsigned int vMaxFileSize,    /*回卷文件最大长度*/
-				   unsigned int vMaxBackupIndex)           /*回卷文件个数*/
+				   unsigned int vMaxBackupIndex)          /*回卷文件个数*/
 {
-	if (NULL == vLogName || NULL == vLogDir) {
+	if (NULL == vLogName || NULL == vLogDir) 
+	{
 		return -1;
 	}
-#ifdef LOG_THREAD_SAFE
-	auto log = spdlog::create<spdlog::sinks::rotating_file_sink_mt>(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
-#ifdef _DEBUG_
-	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_mt>(CONSOLE_LOG_NAME);
-#endif
-#else
-	auto log = spdlog::create<spdlog::sinks::rotating_file_sink_st>(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
-#ifdef _DEBUG_
-	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_st>(CONSOLE_LOG_NAME);
-#endif
-#endif
-
-#ifdef _DEBUG_
+	std::shared_ptr<spdlog::logger> logger = spdlog::create<spdlog::sinks::rotating_file_sink_mt>(vLogName, vLogDir, vMaxFileSize, vMaxBackupIndex);
+	if (logger == NULL)
+	{
+		return -1;
+	}
+	logger->set_level(level);
+	logger->flush_on(level);
+#ifdef __WINDOWS__
+	std::shared_ptr<spdlog::logger> console = spdlog::create<spdlog::sinks::stdout_color_sink_mt>(CONSOLE_LOG_NAME);
 	console->set_level(level);
 	console->flush_on(level);
 #endif
-	if (log == NULL) {
-		return -1;
-	}
-	log->set_level(level);
-	log->flush_on(level);
 	return 0;
 }
 
-int InitDailyLog(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
+int INIT_DAILY_LOG(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
 				 const char *vLogDir,                        /*文件名称(路径)*/
 				 level_enum level,        /*日志等级*/
 				 unsigned int hour,
 				 unsigned int minute)
 {
-	if (NULL == vLogName || NULL == vLogDir) {
+	if (NULL == vLogName || NULL == vLogDir) 
+	{
 		return -1;
 	}
-#ifdef LOG_THREAD_SAFE
-	auto log = spdlog::create<spdlog::sinks::daily_file_sink_mt>(vLogName, vLogDir, hour, minute);
-#ifdef _DEBUG_
-	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_mt>(CONSOLE_LOG_NAME);
-#endif
-#else
-	auto log = spdlog::create<spdlog::sinks::daily_file_sink_st>(vLogName, vLogDir, hour, minute);
-#ifdef _DEBUG_
-	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_st>(CONSOLE_LOG_NAME);
-#endif
-#endif
+	std::shared_ptr<spdlog::logger> logger = spdlog::create<spdlog::sinks::daily_file_sink_mt>(vLogName, vLogDir, hour, minute);
+	if (logger == NULL)
+	{
+		return -1;
+	}
 
-#ifdef _DEBUG_
+	logger->set_level(level);
+	logger->flush_on(level);
+	
+#ifdef __WINDOWS__
+	std::shared_ptr<spdlog::logger> console = spdlog::create<spdlog::sinks::stdout_color_sink_mt>(CONSOLE_LOG_NAME);
 	console->set_level(level);
 	console->flush_on(level);
 #endif
-	if (log == NULL) {
-		return -1;
-	}
-
-	log->set_level(level);
-	log->flush_on(level);
 	return 0;
 }
 
-int ShutdownAllLog()
+int LOG_SHUTDOWN_ALL()
 {
 	spdlog::drop_all();
 	return 0;

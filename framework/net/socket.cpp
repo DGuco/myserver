@@ -277,12 +277,17 @@ int CSocket::GetSocketOpt(int sol, int type,void* value, int* size)
 bool CSocket::SetSocketNoBlock()
 {
 #ifdef __LINUX__
-	int iFlags;
-	iFlags = fcntl(m_nSocket, F_GETFL, 0);
-	iFlags |= O_NONBLOCK;
-	iFlags |= O_NDELAY;
-	fcntl(m_nSocket, F_SETFL, iFlags);
-	return true;
+	int flags;
+	if (m_nSocket == -1)
+	{
+		return 0;
+	}
+	if (ioctl(m_nSocket FIONBIO, &flags)
+		&& ((flags = fcntl(m_nSocket, F_GETFL, 0)) < 0
+		|| fcntl(m_nSocket, F_SETFL, flags | O_NONBLOCK) < 0))
+	{
+		return 0;
+	}
 #else
 	unsigned long cmd = 1;
 	if (ioctlsocket(m_nSocket, FIONBIO, &cmd) == SOCKET_ERROR)

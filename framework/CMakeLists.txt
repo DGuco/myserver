@@ -6,7 +6,8 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     set(CMAKE_CXX_COMPILER g++)
     set(CMAKE_CXX_STANDARD 11)
     add_compile_options(-Wall -fPIC -ggdb -pipe -std=c++11)
-
+    
+    set(CMAKE_CXX_STANDARD 11)
     add_definitions(-D__LINUX__ )
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     set(CMAKE_CXX_STANDARD 11)
@@ -40,8 +41,8 @@ set(FRAMEWORK
         "json/config.h"
         "json/json_interface.cpp"
         "json/json_interface.h"
-        "log/log.cpp" 
         "log/log.h"
+        "log/log.cpp" 
         "mem/shm_queue.cpp" 
         "mem/shm_queue.h"
         "mem/mempool_safty.h" 
@@ -121,7 +122,7 @@ add_library(framework ${FRAMEWORK})
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries(framework pthread spdlog protobuf crypto)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(framework ws2_32 spdlogd protobuf crypto )
+    target_link_libraries(framework ws2_32 protobuf crypto )
 endif()
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

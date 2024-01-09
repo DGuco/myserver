@@ -6,9 +6,16 @@
 
 
 inline CThreadPool::CThreadPool()
-	: CThreadPool(thread::hardware_concurrency())
 {
-
+	int threads = thread::hardware_concurrency();
+	for (size_t i = 0; i < threads; ++i) 
+	{
+		std::shared_ptr<thread> th = std::make_shared<thread>(std::mem_fn(&CThreadPool::ThreadFunc), this);
+		if (th) 
+		{
+			m_mWorkers[th->get_id()] = std::move(th);
+		}
+	}
 }
 
 
@@ -16,9 +23,11 @@ inline CThreadPool::CThreadPool(size_t threads)
 	: m_fBeforeRun(&runWithNothing),
 	  m_stop(false)
 {
-	for (size_t i = 0; i < threads; ++i) {
+	for (size_t i = 0; i < threads; ++i) 
+	{
 		std::shared_ptr<thread> th = std::make_shared<thread>(std::mem_fn(&CThreadPool::ThreadFunc), this);
-		if (th) {
+		if (th) 
+		{
 			m_mWorkers[th->get_id()] = std::move(th);
 		}
 	}
@@ -28,9 +37,11 @@ inline CThreadPool::CThreadPool(size_t threads, FuncBeforeRun func)
 	: m_fBeforeRun(func),
 	  m_stop(false)
 {
-	for (size_t i = 0; i < threads; ++i) {
+	for (size_t i = 0; i < threads; ++i)
+	{
 		std::shared_ptr<thread> th = std::make_shared<thread>(std::mem_fn(&CThreadPool::ThreadFunc), this);
-		if (th) {
+		if (th) 
+		{
 			m_mWorkers[th->get_id()] = std::move(th);
 		}
 	}
@@ -44,7 +55,8 @@ inline CThreadPool::~CThreadPool()
 		m_stop = true;
 		m_condition.notify_all();
 	}
-	for (auto it = m_mWorkers.begin(); it != m_mWorkers.end();) {
+	for (auto it = m_mWorkers.begin(); it != m_mWorkers.end();) 
+	{
 		it->second->join();
 		m_mWorkers.erase(it);
 	}
@@ -60,11 +72,13 @@ inline bool CThreadPool::IsInThisThread()
 
 inline bool CThreadPool::IsThisThreadIn(thread *thrd)
 {
-	if (thrd) {
+	if (thrd) 
+	{
 		auto it = m_mWorkers.find(thrd->get_id());
 		return it != m_mWorkers.end();
 	}
-	else {
+	else 
+	{
 		return false;
 	}
 }
@@ -72,7 +86,8 @@ inline bool CThreadPool::IsThisThreadIn(thread *thrd)
 inline void CThreadPool::ThreadFunc()
 {
 	m_fBeforeRun();
-	while (true) {
+	while (true) 
+	{
 		std::function<void()> task;
 		std::unique_lock<std::mutex> lock(this->m_mutex);
 		this->m_condition.wait(lock,
@@ -138,14 +153,17 @@ auto CThreadPool::PushTaskFront(F &&f, Args &&... args)
 
 	std::future<return_type> res = task->get_future();
 	//如果在当前线程内，则直接执行
-	if (IsInThisThread()) {
+	if (IsInThisThread()) 
+	{
 		(*task)();
 	}
-	else {
+	else
+	{
 		std::unique_lock<std::mutex> lock(m_mutex);
 		if (m_stop)
 			throw std::runtime_error("ThreadPool has stopped");
-		else {
+		else 
+		{
 			m_qTasks.emplace_front([task]()
 								   { (*task)(); });
 			m_condition.notify_one();

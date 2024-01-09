@@ -43,15 +43,19 @@ public:
 	CTCPSocket& GetSocket();
 private:
 	//
-	bool InitSelect(const char* ip, int port);
+	int InitSelect(const char* ip, int port);
 	//
-	bool InitEpoll(const char* ip, int port);
+	int SelectTick();
+#ifdef __LINUX__
 	//
-	bool SelectTick();
+	int InitEpoll(const char* ip, int port);
 	//
-	bool EpollTick();
+	int EpollTick();
 	//
-	bool EpollDelSocket(CTCPSocket* pSocket);
+	int EpollDelSocket(CTCPSocket* pSocket);
+	//
+	int ClearEpoll();
+#endif
 public:
 	virtual SafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket) = 0;
 	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket) = 0;
@@ -64,9 +68,10 @@ private:
 	ConnMap				 m_ConnMap;
 	fd_set				 m_fdsRead;
 	fd_set				 m_fdsWrite;
+#ifdef __LINUX__
 	struct epoll_event*	 m_pEpollEventList;
 	int                  m_nEpollFd;
-	struct epoll_event   m_stEpollEvent;
+#endif
 };
 
 #endif //__TCP_SERVER_H__
