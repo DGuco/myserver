@@ -155,7 +155,7 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength)
 	//有残留数据待发送
 	if (m_pWriteBuff->CanReadLen() > 0)
 	{
-		int retCode = m_pWriteBuff->Send(m_Socket);
+		retCode = m_pWriteBuff->Send(m_Socket);
 		if (retCode < 0)
 		{
 			return retCode;
