@@ -21,26 +21,35 @@ enum eTcpServerModule
 
 # define MAX_SOCKET_NUM 65536
 
-typedef std::unordered_map<int, SafePointer<CTCPClient>> ClientMap;
-typedef std::unordered_map<int, SafePointer<CTCPConn>>   ConnMap;
+typedef std::unordered_map<SOCKET, SafePointer<CTCPClient>> ClientMap;
+typedef std::unordered_map<SOCKET, SafePointer<CTCPConn>>   ConnMap;
 
 class CTCPServer
 {
 public:
 	//
-	CTCPServer(eTcpServerModule module, unsigned int RecvBufLen_, unsigned int SendBufLen_);
+	CTCPServer(eTcpServerModule module);
 	//
 	virtual ~CTCPServer();
 	//
-	int InitServer(const char* ipAddr, u_short unPort);
+	int InitTcpServer(const char* ipAddr, u_short unPort);
 	//
-	int ConnectTo(const char* szLocalAddr,int port, bool bblock);
+	SafePointer<CTCPClient> ConnectTo(const char* szLocalAddr,
+										int port,
+										unsigned int RecvBufLen_,
+										unsigned int SendBufLen_,
+										bool bblock);
 	//
-	int CreateServer();
+	int InitTcpServer();
 	//
 	bool Run();
 
 	CTCPSocket& GetSocket();
+private:
+	//
+	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket) = 0;
+	//
+	virtual SafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket) = 0;
 private:
 	//
 	int InitSelect(const char* ip, int port);
@@ -52,13 +61,12 @@ private:
 	//
 	int EpollTick();
 	//
-	int EpollDelSocket(CTCPSocket* pSocket);
+	int EpollDelSocket(SOCKET socket);
+	//
+	int EpollAddSocket(SOCKET socket);
 	//
 	int ClearEpoll();
 #endif
-public:
-	virtual SafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket) = 0;
-	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket) = 0;
 private:
 	CSocket			     m_ListenSocket;
 	eTcpServerModule     m_nRunModule;

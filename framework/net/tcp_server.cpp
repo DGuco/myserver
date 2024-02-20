@@ -1,8 +1,9 @@
 #include "tcp_server.h"
 #include "my_assert.h"
+#include "tcp_socket.h"
 #include "log.h"
 
-CTCPServer::CTCPServer(eTcpServerModule module, unsigned int RecvBufLen_, unsigned int SendBufLen_)
+CTCPServer::CTCPServer(eTcpServerModule module)
 	: m_nRunModule(module)
 {
 #ifdef __LINUX__
@@ -18,19 +19,48 @@ CTCPServer::~CTCPServer()
 #endif
 }
 
-int CTCPServer::InitServer(const char* ipAddr, u_short unPort)
+int CTCPServer::InitTcpServer(const char* ipAddr, u_short unPort)
 {
 	m_IPAddr = ipAddr;
 	m_nPort = unPort;
 	return 0;
 }
 
-int CTCPServer::ConnectTo(const char* szLocalAddr,int port,bool bblock)
+SafePointer<CTCPClient> CTCPServer::ConnectTo(const char* szLocalAddr,
+											int port,
+											unsigned int RecvBufLen_,
+											unsigned int SendBufLen_,
+											bool bblock)
 {
-	return ConnectTo(szLocalAddr, port, bblock);
+	CSocket tmSocket;
+	tmSocket.Open();
+	SafePointer<CTCPClient> tcpClient =  CreateTcpClient(tmSocket);
+	if (tcpClient != NULL)
+	{
+		if (tcpClient->ConnectTo(szLocalAddr, port, false) != 0)
+		{
+			tcpClient.ForceFree();
+			return NULL;
+		}
+		else
+		{
+#ifdef __LINUX__
+			if (m_nRunModule == eTcpSelect)
+			{
+			}
+			else
+			{
+				EpollAddSocket(tcpClient->GetSocketFD());
+			}
+#else
+#endif
+		}
+		m_ClientMap.insert(std::make_pair(tcpClient->GetSocketFD(), tcpClient));
+	}
+	return tcpClient;
 }
 
-int CTCPServer::CreateServer()
+int CTCPServer::InitTcpServer()
 {
 #ifdef __LINUX__
 	if (m_nRunModule == eTcpSelect)
@@ -158,9 +188,17 @@ int CTCPServer::SelectTick()
 		CSocket newSocket = m_ListenSocket.Accept();
 		if (newSocket.IsValid())
 		{
-			SafePointer<CTCPClient> pClient = CreateTcpClient(newSocket);
-			m_ClientMap.insert(std::make_pair(pClient->GetSocketFD(), pClient));
-			LOG_DEBUG("default", "Accept new socket fd = {} ,host = {},port = {}",newSocket.GetSocket(),newSocket.GetHost().c_str(),newSocket.GetPort());
+			SafePointer<CTCPConn> pConn = CreateTcpConn(newSocket);
+			if (pConn != NULL)
+			{
+				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
+				LOG_DEBUG("default", "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+			}
+			else
+			{
+				LOG_ERROR("default", "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+				newSocket.Close();
+			}
 		}
 		else
 		{
@@ -330,11 +368,11 @@ int CTCPServer::EpollTick()
 			continue;
 		}
 		
-		if (0 == (EPOLLIN & cevents->events))
-		{
-			LOG_ERROR("default","cevents->events is not input event!");
-			continue;
-        }
+// 		if (0 == (EPOLLIN & cevents->events))
+// 		{
+// 			LOG_ERROR("default", "cevents->events is not input event!");
+// 			continue;
+// 		}
 
 		//监听描述符
 		if (nTmFd == m_ListenSocket.GetSocket())
@@ -343,163 +381,90 @@ int CTCPServer::EpollTick()
 			if (!tmConnSocket.IsValid())
 			{
 				// 客户端连接上来以后又立即关闭了
-				LOG_ERROR("default", "client connected port {} and disconnected! iNewSocket = {}, errno({} : {})",
-					m_pSocketInfo->m_iConnectedPort, iNewSocket, errno, strerror(errno));
+				LOG_ERROR("default", "client connected port {} and disconnected! errno({} : {})",
+					tmConnSocket.GetHost().c_str(), errno, strerror(errno));
 				continue;
 			}
 
+			SOCKET iNewSocket = tmConnSocket.GetSocket();
 			if (MAX_SOCKET_NUM <= iNewSocket)
 			{
 				LOG_ERROR("default", "error: socket id is so big {}", iNewSocket);
 				close(iNewSocket);
 				continue;
 			}
-
-			m_stEpollEvent.data.fd = iNewSocket;
-			if (epoll_ctl(kdpfd, EPOLL_CTL_ADD, sfd, &m_stEpollEvent) < 0)
+			if (!tmConnSocket.SetSocketNoBlock())
 			{
-				return -1;
+				LOG_ERROR("default", "error: socket set noblock failed ,fd = {}", iNewSocket);
+				tmConnSocket.Close();
+				continue;
 			}
-			return 0;
-		}
-		for (auto it = m_ConnMap.begin(); it != m_ConnMap.end(); it++)
-		{
-			if (it->second->GetSocket().IsValid())
+
+			SafePointer<CTCPConn> pConn = CreateTcpConn(tmConnSocket);
+			if (pConn != NULL)
 			{
-				SOCKET tmFd = it->second->GetSocketFD();
-				FD_SET(tmFd, &m_fdsRead);  // 将listen端口加入端口集
-				FD_SET(tmFd, &m_fdsWrite);  // 将listen端口加入端口集
-				if (it->second->GetSocketFD() > iMaxSocketFD)
+				if (EpollAddSocket(iNewSocket) != 0)
 				{
-					iMaxSocketFD = it->second->GetSocketFD();
+					LOG_ERROR("default", "error: EpollAddSocket failed ,fd = {}", iNewSocket);
+					tmConnSocket.Close();
+					continue;
 				}
+				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
+				LOG_DEBUG("default", "Accept new socket fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
 			}
-		}
-
-		for (auto it = m_ClientMap.begin(); it != m_ClientMap.end(); it++)
-		{
-			if (it->second->GetSocket().IsValid())
+			else
 			{
-				SOCKET tmFd = it->second->GetSocketFD();
-				FD_SET(tmFd, &m_fdsRead);  // 将listen端口加入端口集
-				FD_SET(tmFd, &m_fdsWrite);  // 将listen端口加入端口集
-				if (it->second->GetSocketFD() > iMaxSocketFD)
-				{
-					iMaxSocketFD = it->second->GetSocketFD();
-				}
-			}
-		}
-
-
-		m_pSocketInfo = &m_pstSocketInfo[iFDTemp];
-		if (0 >= iFDTemp)
-		{
-			LOG_ERROR("default", "Error cevents->data.fd = {}!", cevents->data.fd);
-			continue;
-		}
-
-		if (0 != (EPOLLERR & cevents->events))
-		{
-			LOG_ERROR("default", "cevents->events generate error event!");
-			m_pSocketInfo = &m_pstSocketInfo[iFDTemp];
-			ClearSocketInfo(Err_ClientClose);
-			continue;
-		}
-
-		if (0 == (EPOLLIN & cevents->events))
-		{
-			LOG_ERROR("default", "cevents->events does not generate input event!");
-			continue;
-		}
-
-		if (LISTEN_SOCKET == m_pSocketInfo->m_iSocketType)
-		{
-			LOG_NOTICE("default", "recv  events:{} fd:{}", nfds, iFDTemp);
-
-			iNewSocket = accept(iFDTemp, (struct sockaddr*)&m_stSockAddr, (socklen_t*)&iSockAddrSize);
-			if (0 >= iNewSocket)
-			{
-				// 客户端连接上来以后又立即关闭了
-				LOG_NOTICE("default", "client connected port %d and disconnected! iNewSocket = {}, errno({} : {})",
-					m_pSocketInfo->m_iConnectedPort, iNewSocket, errno, strerror(errno));
-
+				LOG_ERROR("default", "CreateTcpConn failed fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
+				tmConnSocket.Close();
 				continue;
 			}
-
-			m_stTcpStat.m_iConnIncoming++;
-			if (MAX_SOCKET_NUM <= iNewSocket)
-			{
-				LOG_ERROR("default", "error: socket id is so big {}", iNewSocket);
-				closesocket(iNewSocket);
-				continue;
-			}
-
-			if (ioctl(iNewSocket, FIONBIO, &flags) &&
-				((flags = fcntl(iNewSocket, F_GETFL, 0)) < 0 ||
-					fcntl(iNewSocket, F_SETFL, flags | O_NONBLOCK) < 0))
-			{
-				LOG_ERROR("default", "operate on socket %d error connect port {}!", iNewSocket, m_pSocketInfo->m_iConnectedPort);
-				closesocket(iNewSocket);
-				continue;
-			}
-
-			iTempRet = eph_new_conn(iNewSocket);
-			if (0 != iTempRet)
-			{
-				LOG_ERROR("default", "add to epoll failed [socket {} connect port {}]!", iNewSocket, m_pSocketInfo->m_iConnectedPort);
-				closesocket(iNewSocket);
-				continue;
-			}
-
-			// 更改当前最大分配socket
-			if (iNewSocket > maxfds)
-			{
-				maxfds = iNewSocket;
-			}
-			// 总连接数加1
-			m_stTcpStat.m_iConnTotal++;
-
-			// 搜索一个空闲的socket结构
-			j = iNewSocket;
-			char* pTempIP = inet_ntoa(m_stSockAddr.sin_addr);
-			m_pstSocketInfo[j].m_iSrcIP = m_stSockAddr.sin_addr.s_addr;
-			m_pstSocketInfo[j].m_nSrcPort = m_stSockAddr.sin_port;
-			strncpy(m_pstSocketInfo[j].m_szClientIP, pTempIP, sizeof(m_pstSocketInfo[j].m_szClientIP) - 1);
-			time(&(m_pstSocketInfo[j].m_tCreateTime)); // 记录该socket的生成时间
-			m_pstSocketInfo[j].m_tStamp = m_pstSocketInfo[j].m_tCreateTime;
-			m_pstSocketInfo[j].m_iSocketType = CONNECT_SOCKET;
-			m_pstSocketInfo[j].m_iSocket = iNewSocket;
-			m_pstSocketInfo[j].m_iSocketFlag = RECV_DATA;  // 设置socket的状态是待接收数据
-			m_pstSocketInfo[j].m_iConnectedPort = m_pSocketInfo->m_iConnectedPort;
-
-			m_pstSocketInfo[j].m_iUin = 0;
-
-			LOG_NOTICE("default", "{} connected port {}, socket id = {}.", pTempIP, m_pSocketInfo->m_iConnectedPort, iNewSocket);
-		}
-		else
+		//可读
+		}else if(EPOLLIN & cevents->events)
 		{
-			m_pSocketInfo = &m_pstSocketInfo[iFDTemp];
-			RecvClientData(iFDTemp);
+
+		}
+		//可写
+		else if (EPOLLOUT & cevents->events)
+		{
+
 		}
 	}
 
 	return 0;
 }
 
-int CTCPServer::EpollDelSocket(CTCPSocket* pSocket)
+int CTCPServer::EpollDelSocket(SOCKET socket)
 {
 	int iTempRet;
 	// 关闭Socket，把socket相关信息清空
-	if (pSocket != NULL && pSocket->GetSocket().IsValid())
+	if (socket != INVALID_SOCKET)
 	{
 		epoll_event tmEvent;
-		tmEvent.data.fd = pSocket->GetSocketFD();
-		if (epoll_ctl(m_nEpollFd, EPOLL_CTL_DEL, pSocket->GetSocketFD(), &tmEvent) < 0)
+		tmEvent.events = EPOLLIN | EPOLLERR | EPOLLHUP;
+		tmEvent.data.ptr = NULL;
+		tmEvent.data.fd = socket;
+		if (epoll_ctl(m_nEpollFd, EPOLL_CTL_DEL, socket, &tmEvent) < 0)
 		{
-			LOG_ERROR("default", "epoll remove socket error: fd = {} ", pSocket->GetSocketFD());
+			LOG_ERROR("default", "epoll remove socket error: fd = {} ", socket);
+			return -1;
 		}
+	}
+	return 0;
+}
 
-		pSocket->Close();
+int CTCPServer::EpollAddSocket(SOCKET socket)
+{
+	if (socket != INVALID_SOCKET)
+	{
+		epoll_event tmEvent;
+		tmEvent.events = EPOLLIN | EPOLLERR | EPOLLHUP;
+		tmEvent.data.ptr = NULL;
+		tmEvent.data.fd = socket;
+		if (epoll_ctl(m_nEpollFd, EPOLL_CTL_ADD, socket, &tmEvent) < 0)
+		{
+			LOG_ERROR("default", "epoll remove socket error: fd = {} ", socket);
+			return -1;
+		}
 	}
 	return 0;
 }

@@ -10,17 +10,3 @@ CTCPClient::~CTCPClient()
 {
 
 }
-
-int CTCPClient::DoRecvLogic()
-{
-
-}
-int CTCPClient::DoWriteLogic()
-{
-
-}
-
-int CTCPClient::DoFdErrorLogic()
-{
-
-}

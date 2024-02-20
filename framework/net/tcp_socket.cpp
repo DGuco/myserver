@@ -144,7 +144,7 @@ int CTCPSocket::RecvData()
 	return nRetCode;
 }
 
-int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength)
+int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength, bool sendnow)
 {
 	if (!m_Socket.IsValid())
 	{
@@ -152,13 +152,16 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength)
 	}
 
 	int retCode = ERR_SEND_OK;
-	//有残留数据待发送
-	if (m_pWriteBuff->CanReadLen() > 0)
+	if (sendnow)
 	{
-		retCode = m_pWriteBuff->Send(m_Socket);
-		if (retCode < 0)
+		//有残留数据待发送并且剩余空间不够
+		if (m_pWriteBuff->CanReadLen() > 0 && nCodeLength > m_pWriteBuff->CanWriteLen())
 		{
-			return retCode;
+			retCode = m_pWriteBuff->Send(m_Socket);
+			if (retCode < 0)
+			{
+				return retCode;
+			}
 		}
 	}
 
@@ -175,7 +178,7 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength)
 			return ERR_SEND_NOBUFF;
 		}
 
-		if (retCode != ERR_SEND_WOULD_BLOCK)
+		if (retCode != ERR_SEND_WOULD_BLOCK && sendnow)
 		{
 			//再次尝试发送本次写入缓冲区的数据
 			if (m_pWriteBuff->CanReadLen() > 0)

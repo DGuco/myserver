@@ -10,22 +10,3 @@ CTCPConn::~CTCPConn()
 {
 
 }
-
-int CTCPConn::Key()
-{
-
-}
-
-int CTCPConn::DoRecvLogic()
-{
-
-}
-int CTCPConn::DoWriteLogic()
-{
-
-}
-
-int CTCPConn::DoFdErrorLogic()
-{
-
-}

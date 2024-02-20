@@ -8,6 +8,9 @@
 #define __TCP_CLIENT_H__
 #include "tcp_socket.h"
 
+/**
+ * 
+ */
 class CTCPClient : public CTCPSocket
 {	
 public:
@@ -16,10 +19,9 @@ public:
 	//
 	virtual ~CTCPClient();
 public:
-	virtual int Key();
-	virtual int DoRecvLogic();
-	virtual int DoWriteLogic();
-	virtual int DoFdErrorLogic();
+	virtual int DoRecvLogic() = 0;
+	virtual int DoWriteLogic() = 0;
+	virtual int DoFdErrorLogic() = 0;
 private:
 	int m_nType;
 	int m_nId;

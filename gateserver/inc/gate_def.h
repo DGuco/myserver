@@ -15,19 +15,6 @@
 #define RECV_QUEUQ_MAX             1024                 //接收队列大小
 #define MESSAGE_EXTRA_LEN          10                   //消息额外长度增加破译难度
 
-#ifdef SMALL_SIZE
-#define MAX_SOCKET_NUM				500					// 单个TCPCtrl支持的连接数
-#endif
-
-#ifdef MEDIUM_SIZE
-#define MAX_SOCKET_NUM                6000                // 单个TCPCtrl支持的连接数
-#endif
-
-#ifdef LARGE_SIZE
-#define MAX_SOCKET_NUM				15000				// 单个TCPCtrl支持的连接数
-#endif
-
-
 #define MAX_PORT_NUM                3                    // 最大端口数
 #define LISTEN_SOCKET                1                    // 监听socket
 #define CONNECT_SOCKET                2                    // 连接socket
