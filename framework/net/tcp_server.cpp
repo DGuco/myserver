@@ -421,15 +421,48 @@ int CTCPServer::EpollTick()
 		//可读
 		}else if(EPOLLIN & cevents->events)
 		{
-
+			ClientMap::iterator itcleint = m_ClientMap.find(nTmFd);
+			if (itcleint != m_ClientMap.end())
+			{
+				//接受tcp数据
+				it->second->RecvData();
+				//处理数据
+				it->second->DoRecvLogic();
+				continue;
+			}
+			ConnMap::iterator itconn = m_ConnMap.find(nTmFd);
+			if (itcleint != m_ConnMap.end())
+			{
+				//接受tcp数据
+				it->second->RecvData();
+				//处理数据
+				it->second->DoRecvLogic();
+				continue;
+			}
 		}
 		//可写
 		else if (EPOLLOUT & cevents->events)
 		{
-
+			ClientMap::iterator itcleint = m_ClientMap.find(nTmFd);
+			if (itcleint != m_ClientMap.end())
+			{
+				//把缓冲区数据发送出去
+				it->second->Flush();
+				//发送完成后逻辑
+				it->second->DoWriteLogic();
+				continue;
+			}
+			ConnMap::iterator itconn = m_ConnMap.find(nTmFd);
+			if (itcleint != m_ConnMap.end())
+			{
+				//把缓冲区数据发送出去
+				it->second->Flush();
+				//发送完成后逻辑
+				it->second->DoWriteLogic();
+				continue;
+			}
 		}
 	}
-
 	return 0;
 }
 

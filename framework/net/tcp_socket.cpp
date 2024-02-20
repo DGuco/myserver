@@ -177,24 +177,24 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength, bool sendnow)
 		{
 			return ERR_SEND_NOBUFF;
 		}
+	}
 
-		if (retCode != ERR_SEND_WOULD_BLOCK && sendnow)
+	if (retCode != ERR_SEND_WOULD_BLOCK && sendnow)
+	{
+		//再次尝试发送本次写入缓冲区的数据
+		if (m_pWriteBuff->CanReadLen() > 0)
 		{
-			//再次尝试发送本次写入缓冲区的数据
-			if (m_pWriteBuff->CanReadLen() > 0)
+			retCode = m_pWriteBuff->Send(m_Socket);
+			if (retCode < 0)
 			{
-				retCode = m_pWriteBuff->Send(m_Socket);
-				if (retCode < 0)
-				{
-					return retCode;
-				}
+				return retCode;
 			}
+		}
 
-			//没有数据了，索引都归0吧
-			if (m_pWriteBuff->CanReadLen() == 0)
-			{
-				m_pWriteBuff->Clear();
-			}
+		//没有数据了，索引都归0吧
+		if (m_pWriteBuff->CanReadLen() == 0)
+		{
+			m_pWriteBuff->Clear();
 		}
 	}
 	return ERR_SEND_OK;
@@ -202,7 +202,7 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength, bool sendnow)
 
 int CTCPSocket::Flush()
 {
-	return Write(NULL,0);
+	return Write(NULL,0,true);
 }
 
 int CTCPSocket::GetOneCode(unsigned short& nCodeLength, BYTE* pCode)
