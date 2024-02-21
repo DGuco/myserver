@@ -11,8 +11,6 @@
 #include "my_assert.h"
 #include "file_listener.h"
 
-template<> shared_ptr<CNetWork> CSingleton<CNetWork>::spSingleton = NULL;
-
 CNetWork::CNetWork()
 	:
 	m_pEventReactor(new CEventReactor),

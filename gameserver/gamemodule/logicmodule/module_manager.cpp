@@ -5,8 +5,6 @@
 #include "core_module.h"
 #include "db_module.h"
 
-template<> shared_ptr<CModuleManager> CSingleton<CModuleManager>::spSingleton = NULL;
-
 CModuleManager::CModuleManager()
 {
     Initialize();

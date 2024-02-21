@@ -10,8 +10,6 @@
 #include "../inc/message_dispatcher.h"
 #include "../inc/game_server.h"
 
-template<> shared_ptr<CMessageDispatcher> CSingleton<CMessageDispatcher>::spSingleton = NULL;
-
 CMessageDispatcher::CMessageDispatcher()
 {
 

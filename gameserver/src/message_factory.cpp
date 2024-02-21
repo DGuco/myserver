@@ -9,9 +9,6 @@
 #include "../inc/message_factory.h"
 
 
-// 单件定义
-template<> shared_ptr<CMessageFactory> CSingleton<CMessageFactory>::spSingleton = NULL;
-
 CMessageFactory::CMessageFactory()
 	:
 	m_iFront(0),

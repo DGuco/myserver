@@ -5,12 +5,8 @@
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
-
-#include <share_mem.h>
 #include "my_assert.h"
 #include "../inc/gate_ctrl.h"
-
-template<> std::shared_ptr<CGateCtrl> CSingleton<CGateCtrl>::spSingleton = NULL;
 
 CGateCtrl::CGateCtrl()
 	: m_pNetManager(std::make_shared<CGateServer>()),

@@ -12,8 +12,6 @@
 #include "message_factory.h"
 #include "database_mysql.h"
 
-template<> shared_ptr<CDBCtrl> CSingleton<CDBCtrl>::spSingleton = NULL;
-
 int CDBCtrl::m_iProxyId = 0;
 
 CByteBuff CDBCtrl::m_acRecvBuff = CByteBuff();

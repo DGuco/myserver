@@ -5,8 +5,6 @@
 #include "logic_module.h"
 #include "server_tool.h"
 
-template<> shared_ptr<CLogicModule> CSingleton<CLogicModule>::spSingleton = NULL;
-
 CLogicModule::CLogicModule()
 {
     mRegist = false;

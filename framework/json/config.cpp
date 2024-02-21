@@ -4,7 +4,6 @@
 #include "safe_pointer.h"
 #include "config.h"
 
-template<> SafePointer<CServerConfig> CSingleton<CServerConfig>::spSingleton = NULL;
 CServerConfig::CServerConfig()
 {
     Clear();

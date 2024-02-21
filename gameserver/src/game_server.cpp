@@ -9,8 +9,6 @@
 #include "../inc/game_server.h"
 #include "../inc/message_factory.h"
 
-template<> shared_ptr<CGameServer> CSingleton<CGameServer>::spSingleton = NULL;
-
 CGameServer::CGameServer()
 	: m_pClientHandle(std::make_shared<CClientHandle>()),
 	  m_pServerHandle(std::make_shared<CServerHandle>()),

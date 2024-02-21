@@ -11,8 +11,6 @@
 #include "sceneobjmanager.h"
 #include "game_server.h"
 
-template<> shared_ptr<CDbModule> CSingleton<CDbModule>::spSingleton = NULL;
-
 CDbModule::CDbModule()
 {
 

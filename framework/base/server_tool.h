@@ -14,7 +14,6 @@
 #include <math.h>
 #include <memory>
 #include "safe_pointer.h"
-#include "clock.h"
 #include "object.h"
 #include "log.h"
 
@@ -27,30 +26,16 @@ template<typename T>
 class CSingleton
 {
 public:
-	CSingleton()
-	{};
+	~CSingleton() = default;
 private:
+	CSingleton() = default;
 	CSingleton(const CSingleton &temp) = delete;
 	CSingleton &operator=(const CSingleton &temp) = delete;
-
-private:
-	static SafePointer<T> spSingleton;
-
 public:
 	static SafePointer<T> &GetSingletonPtr()
 	{
-		if (spSingleton == NULL) {
-			return CreateInstance();
-		}
-		return spSingleton;
-	}
-
-	static SafePointer<T> &CreateInstance()
-	{
-		if (spSingleton == NULL) {
-			spSingleton = new T();
-		}
-		return spSingleton;
+		static SafePointer<T> intance;
+		return intance;
 	}
 };
 
