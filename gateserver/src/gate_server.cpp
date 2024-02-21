@@ -3,48 +3,43 @@
 //
 
 #include <config.h>
-#include <client_comm_engine.h>
+#include "client_comm_engine.h"
 #include "my_assert.h"
-#include "../inc/net_manager.h"
-#include "../inc/gate_def.h"
-#include "../inc/gate_ctrl.h"
+#include "gate_server.h"
+#include "game_player.h"
+#include "gate_def.h"
+#include "gate_ctrl.h"
 
-CNetManager::CNetManager()
-	: m_pNetWork(CNetWork::GetSingletonPtr()),
-	  m_pSendBuff(std::make_shared<CByteBuff>( )),
-	  m_pRecvBuff(std::make_shared<CByteBuff>( )),
-      m_pSendMsgTimer(NULL)
+CGateServer::CGateServer()
+	: CTCPServer(eTcpEpoll)
 {
 }
 
-CNetManager::~CNetManager()
+CGateServer::~CGateServer()
 {
 
 }
 
-int CNetManager::PrepareToRun()
+bool CGateServer::PrepareToRun()
 {
-	BeginListen( );
-    m_pSendMsgTimer = std::make_shared<CTimerEvent>(
-	        m_pNetWork->GetEventReactor(),
-            &CNetManager::lcb_OnCheckSendMsg,
-            (void*)NULL,
-            0,
-            100,
-            -1);  //100毫秒检测一次是否又数据要发送
-	return 0;
+	SafePointer<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
+	SafePointer<ServerInfo> gateInfo = tmpConfig->GetServerInfo(enServerType::FE_GATESERVER);
+	int nRet = InitTcpServer(eTcpEpoll, gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
+	if (nRet == 0)
+	{
+		LOG_INFO("default", "Server PrepareToRun success at {} : {}", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
+		return true;
+	}
+	else
+	{
+		LOG_ERROR("default""Server PrepareToRun at {} : {} failed,failed reason {]", gateInfo->m_sHost.c_str(),
+			gateInfo->m_iPort, strerror(errno));
+		exit(0);
+	}
+	return false;
 }
 
-//准备run
-int CNetManager::DispatchEvents()
-{
-    LOG_INFO("default", "Libevent run with net module {}",
-             event_base_get_method(reinterpret_cast<const event_base *>(m_pNetWork->GetEventReactor( )
-                     ->GetEventBase( ))));
-    m_pNetWork->DispatchEvents();
-}
-
-void CNetManager::SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len)
+void CGateServer::SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len)
 {
 	CAcceptor *pAcceptor = m_pNetWork->FindAcceptor(socketInfo.socketid( ));
 	if (pAcceptor == NULL) {
@@ -69,7 +64,7 @@ void CNetManager::SendToClient(const CSocketInfo &socketInfo, const char *data, 
 	int iRet = pAcceptor->Send(data, len);
 	if (iRet != 0) {
 		//发送失败
-		CNetManager::ClearSocket(pAcceptor, Err_ClientClose);
+		CGateServer::ClearSocket(pAcceptor, Err_ClientClose);
 		LOG_ERROR("default",
 				  "send to client {} Failed due to error {}",
 				  pAcceptor->GetSocket( ).GetSocket( ),
@@ -79,26 +74,26 @@ void CNetManager::SendToClient(const CSocketInfo &socketInfo, const char *data, 
 
 	//gameserver 主动关闭
 	if (iTmpCloseFlag < 0) {
-		CNetManager::ClearSocket(pAcceptor, Client_Succeed);
+		CGateServer::ClearSocket(pAcceptor, Client_Succeed);
 	}
 }
 
-shared_ptr<CByteBuff> &CNetManager::GetRecvBuff()
+shared_ptr<CByteBuff> &CGateServer::GetRecvBuff()
 {
 	return m_pRecvBuff;
 }
 
-shared_ptr<CByteBuff> &CNetManager::GetSendBuff()
+shared_ptr<CByteBuff> &CGateServer::GetSendBuff()
 {
 	return m_pSendBuff;
 }
 
-shared_ptr<CNetWork> &CNetManager::GetNetWork()
+shared_ptr<CNetWork> &CGateServer::GetNetWork()
 {
 	return m_pNetWork;
 }
 
-void CNetManager::ClearSocket(CAcceptor *tmpAcceptor, short iError)
+void CGateServer::ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError)
 {
 	ASSERT(tmpAcceptor != NULL, return)
 	//非gameserver 主动请求关闭
@@ -108,7 +103,7 @@ void CNetManager::ClearSocket(CAcceptor *tmpAcceptor, short iError)
 	m_pNetWork->ShutDownAcceptor(tmpAcceptor->GetSocket( ).GetSocket( ));
 }
 
-void CNetManager::DisConnect(CAcceptor *tmpAcceptor, short iError)
+void CGateServer::DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError)
 {
 	ASSERT(tmpAcceptor != NULL, return);
 	static CMessage tmpMessage;
@@ -145,11 +140,11 @@ void CNetManager::DisConnect(CAcceptor *tmpAcceptor, short iError)
 	return;
 }
 
-void CNetManager::RecvClientData(CAcceptor *tmpAcceptor)
+void CGateServer::RecvClientData(SafePointer<CGamePlayer> pGamePlayer)
 {
-	ASSERT(tmpAcceptor != NULL, return);
+	ASSERT(pGamePlayer != NULL, return);
 	//数据不完整
-	if (!tmpAcceptor->IsPackageComplete( )) {
+	if (!pGamePlayer->IsPackageComplete( )) {
 		return;
 	}
 	int packLen = tmpAcceptor->GetRecvPackLen( );
@@ -165,10 +160,10 @@ void CNetManager::RecvClientData(CAcceptor *tmpAcceptor)
 	DealClientData(tmpAcceptor, iTmpLen);
 }
 
-void CNetManager::DealClientData(CAcceptor *tmpAcceptor,
+void CGateServer::DealClientData(SafePointer<CGamePlayer> pGamePlayer,
                                  unsigned short tmpLastLen)
 {
-    ASSERT(tmpAcceptor != NULL, return)
+    ASSERT(pGamePlayer != NULL, return)
     static CMessage tmpMessage;
     tmpMessage.Clear( );
     CMesHead *tmpHead = tmpMessage.mutable_msghead( );
@@ -213,17 +208,17 @@ void CNetManager::DealClientData(CAcceptor *tmpAcceptor,
     }
 }
 
-bool CNetManager::BeginListen()
+bool CGateServer::BeginListen()
 {
-	shared_ptr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr( );
+	SafePointer<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr( );
 	ServerInfo *gateInfo = tmpConfig->GetServerInfo(enServerType::FE_GATESERVER);
-	bool iRet = m_pNetWork->BeginListen(gateInfo->m_sHost.c_str( ),
+	bool iRet = listen(gateInfo->m_sHost.c_str( ),
 										gateInfo->m_iPort,
-										&CNetManager::lcb_OnAcceptCns,
-										&CNetManager::lcb_OnCnsSomeDataSend,
-										&CNetManager::lcb_OnCnsSomeDataRecv,
-										&CNetManager::lcb_OnCnsDisconnected,
-										&CNetManager::lcb_OnCheckAcceptorTimeOut,
+										&CGateServer::lcb_OnAcceptCns,
+										&CGateServer::lcb_OnCnsSomeDataSend,
+										&CGateServer::lcb_OnCnsSomeDataRecv,
+										&CGateServer::lcb_OnCnsDisconnected,
+										&CGateServer::lcb_OnCheckAcceptorTimeOut,
 										RECV_QUEUQ_MAX,
 										tmpConfig->GetSocketTimeOut( ));
 	if (iRet) {
@@ -237,7 +232,7 @@ bool CNetManager::BeginListen()
 	}
 }
 
-void CNetManager::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
+void CGateServer::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
 {
 	//客户端主动断开连接
     ASSERT(tmpAcceptor != NULL, return);
@@ -247,31 +242,31 @@ void CNetManager::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
     CGateCtrl::GetSingletonPtr()->GetMesManager()->DealMsg();
 }
 
-void CNetManager::lcb_OnCnsDisconnected(IBufferEvent *tmpAcceptor)
+void CGateServer::lcb_OnCnsDisconnected(IBufferEvent *tmpAcceptor)
 {
 	ASSERT(tmpAcceptor != NULL, return);
-    std::shared_ptr<CNetManager> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetNetManager();
+    std::shared_ptr<CGateServer> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetNetManager();
     tmpClientManager->ClearSocket((CAcceptor *) tmpAcceptor, Err_ClientClose);
     //检测是否又数据要发送
     CGateCtrl::GetSingletonPtr()->GetMesManager()->DealMsg();
 }
 
-void CNetManager::lcb_OnCnsSomeDataRecv(IBufferEvent *tmpAcceptor)
+void CGateServer::lcb_OnCnsSomeDataRecv(IBufferEvent *tmpAcceptor)
 {
-    std::shared_ptr<CNetManager> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetNetManager();
+    std::shared_ptr<CGateServer> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetNetManager();
     tmpClientManager->RecvClientData((CAcceptor *) tmpAcceptor);
     //检测是否又数据要发送
     CGateCtrl::GetSingletonPtr()->GetMesManager()->DealMsg();
 }
 
-void CNetManager::lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor)
+void CGateServer::lcb_OnCnsSomeDataSend(IBufferEvent *tmpAcceptor)
 {
 
 }
 
-void CNetManager::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
+void CGateServer::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
 {
-    shared_ptr<CNetManager> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetNetManager();
+    shared_ptr<CGateServer> tmpClientManager = CGateCtrl::GetSingletonPtr()->GetNetManager();
     shared_ptr<CNetWork> &tmpNet = tmpClientManager->GetNetWork( );
     std::shared_ptr<CServerConfig> &tmpConfig = CServerConfig::GetSingletonPtr( );
     int tmpPingTime = tmpConfig->GetTcpKeepAlive( );
@@ -293,7 +288,27 @@ void CNetManager::lcb_OnCheckAcceptorTimeOut(int fd, short what, void *param)
 }
 
 //检测是否又数据要发送
-void CNetManager::lcb_OnCheckSendMsg(int fd, short what, void *param)
+void CGateServer::lcb_OnCheckSendMsg(int fd, short what, void *param)
 {
     CGateCtrl::GetSingletonPtr()->GetMesManager()->DealMsg();
+}
+
+void CGateServer::OnNewConnect(SafePointer<CTCPConn> pConnn)
+{
+	SafePointer<CGamePlayer> pConn = pConnn.DynamicCastTo<CGamePlayer>();
+	if (pConnn != NULL)
+	{}
+}
+
+//
+SafePointer<CTCPConn> CGateServer::CreateTcpConn(CSocket tmSocket)
+{
+	SafePointer<CGamePlayer> pConn = new CGamePlayer();
+	return pConn.DynamicCastTo<CTCPConn>();
+}
+
+//
+SafePointer<CTCPClient> CGateServer::CreateTcpClient(CSocket tmSocket)
+{
+	return NULL;
 }

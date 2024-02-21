@@ -27,7 +27,8 @@ enum eRecvErrs
 	ERR_RECV_NOSOCK				= -2,
 	ERR_RECV_NOBUFF				= -3,
 	ERR_RECV_REMOTE_CLOSED		= -4,
-	ERR_RECV_SOCKET_ERROR		= -5
+	ERR_RECV_SOCKET_ERROR		= -5,
+	ERR_RECV_PARSE_ERROR		= -6,
 };
 
 enum eSendErrs

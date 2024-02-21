@@ -6,9 +6,7 @@ CSocket::CSocket()	: m_nSocket(INVALID_SOCKET)
 {}
 
 CSocket::~CSocket()
-{
-	Close();
-}
+{}
 
 //----------------------------------------------------------------
 bool CSocket::Open(int nProtocolFamily, int nType, int nProtocol)

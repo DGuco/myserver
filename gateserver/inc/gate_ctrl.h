@@ -16,6 +16,7 @@
 #include "config.h"
 #include "net_manager.h"
 #include "mes_handle.h"
+#include "tcp_server.h"
 #include "thread_pool.h"
 
 class CGateCtrl: public CSingleton<CGateCtrl>
@@ -30,13 +31,13 @@ public:
 	//run
 	int Run();
 	//获取线程池
-	shared_ptr<CNetManager> &GetNetManager();
+	shared_ptr<CGateServer> &GetNetManager();
 	shared_ptr<CMessHandle> &GetMesManager();
 private:
 	//读取配置文件
 	void ReadConfig();
 private:
-	shared_ptr<CNetManager> m_pNetManager;
+	shared_ptr<CGateServer> m_pNetManager;
 	shared_ptr<CMessHandle> m_pMessManager;
     shared_ptr<CServerConfig> m_pConfig;
 };

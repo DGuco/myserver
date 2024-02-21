@@ -13,7 +13,7 @@
 template<> std::shared_ptr<CGateCtrl> CSingleton<CGateCtrl>::spSingleton = NULL;
 
 CGateCtrl::CGateCtrl()
-	: m_pNetManager(std::make_shared<CNetManager>()),
+	: m_pNetManager(std::make_shared<CGateServer>()),
 	  m_pMessManager(std::make_shared<CMessHandle>("CMessHandle", 1000 /*超时时间1ms*/))
 {
 }
@@ -44,7 +44,7 @@ int CGateCtrl::Run()
 	m_pNetManager->DispatchEvents( );
 }
 
-shared_ptr<CNetManager> &CGateCtrl::GetNetManager()
+shared_ptr<CGateServer> &CGateCtrl::GetNetManager()
 {
 	return m_pNetManager;
 }

@@ -29,7 +29,7 @@ void CClientCommEngine::CopyMesHead(CMesHead *from, CMesHead *to)
 
 }
 
-int CClientCommEngine::ParseClientStream(CByteBuff *parseByteBuff,
+int CClientCommEngine::ParseClientStream(SafePointer<CByteBuff> parseByteBuff,
 										 CMesHead *pHead)
 {
 	if ((parseByteBuff == NULL) || (pHead == NULL)) {
@@ -37,8 +37,8 @@ int CClientCommEngine::ParseClientStream(CByteBuff *parseByteBuff,
 	}
 
 	//小于最小长度(包头长度 - 包总长度所占字节长度)
-	if (parseByteBuff->ReadableDataLen( ) < MSG_HEAD_LEN - sizeof(unsigned short)) {
-		ASSERT_EX(0,return -1,"The package len is less than base len ,receive len %d",parseByteBuff->ReadableDataLen( ));
+	if (parseByteBuff->CanReadLen( ) < MSG_HEAD_LEN - sizeof(unsigned short)) {
+		ASSERT_EX(0,return -1,"The package len is less than base len ,receive len %d",parseByteBuff->CanReadLen( ));
 	}
 	pHead->set_serial(parseByteBuff->ReadUnShort( ));
 	pHead->set_seq(parseByteBuff->ReadUnShort( ));
@@ -215,7 +215,8 @@ int CClientCommEngine::ConvertToGateStream(CByteBuff *pBuff,
 	unLength += sizeof(unsigned short);
 
 	// MesHead
-	if (!tmpHead->SerializeToArray(pBuff->CanWriteData(), pBuff->WriteableDataLen())) {
+	if (!tmpHead->SerializeToArray(pBuff->CanWriteData(), pBuff->WriteableDataLen())) 
+	{
 		ASSERT_EX(0, return -1, "CClientCommEngine::ConvertToGateStream CTcpHead SerializeToArray failed.");
 	}
 	pBuff->WriteLen(tmpHead->GetCachedSize( ));

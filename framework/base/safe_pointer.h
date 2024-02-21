@@ -103,7 +103,7 @@ public:
 	}
 
 	template<typename NewTp>
-	void DynamicCastTo()
+	SafePointer<NewTp> DynamicCastTo()
 	{
 		Tp* pPointer = GetThrow();
 		if (pPointer != NULL)

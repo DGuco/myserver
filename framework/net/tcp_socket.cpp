@@ -11,10 +11,28 @@ CTCPSocket::CTCPSocket(unsigned int RecvBufLen_, unsigned int SendBufLen_)
 	m_pWriteBuff = new CByteBuff(SendBufLen_);
 }
 
+CTCPSocket::CTCPSocket(CSocket socket,unsigned int RecvBufLen_, unsigned int SendBufLen_)
+{
+	m_Socket = socket;
+	if (m_Socket.IsValid())
+	{
+		m_nStatus = eTcpCreated;
+	}
+	else
+	{
+		m_nStatus = eTcpClosed;
+	}
+	m_nRecvBuffLen = RecvBufLen_;
+	m_nSendBuffLen = SendBufLen_;
+	m_pReadBuff = new CByteBuff(RecvBufLen_);
+	m_pWriteBuff = new CByteBuff(SendBufLen_);
+}
+
 CTCPSocket::~CTCPSocket()
 {
 	m_pReadBuff.Free();
 	m_pWriteBuff.Free();
+	m_Socket.Close();
 }
 
 int CTCPSocket::ConnectTo(const char* szIPAddr, u_short unPort, bool block)

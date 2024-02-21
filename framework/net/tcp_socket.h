@@ -26,6 +26,8 @@ public:
 	//
 	CTCPSocket(unsigned int RecvBufLen_, unsigned int SendBufLen_);
 	//
+	CTCPSocket(CSocket socket,unsigned int RecvBufLen_, unsigned int SendBufLen_);
+	//
 	virtual ~CTCPSocket();
 	//获取socketid
 	SOCKET GetSocketFD();
@@ -54,6 +56,10 @@ public:
 	int CheckConnectedOk();
 	//关闭
 	int Close();
+public:
+	virtual int DoRecvLogic() = 0;
+	virtual int DoWriteLogic() = 0;
+	virtual int DoErrorLogic(int errcode) = 0;
 protected:
 	CSocket					m_Socket;	     //Socket 描述符
 	int						m_nStatus;	     //连接状态

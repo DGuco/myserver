@@ -28,11 +28,11 @@ class CTCPServer
 {
 public:
 	//
-	CTCPServer(eTcpServerModule module);
+	CTCPServer();
 	//
 	virtual ~CTCPServer();
 	//
-	int InitTcpServer(const char* ipAddr, u_short unPort);
+	int InitTcpServer(eTcpServerModule module,const char* ipAddr, u_short unPort);
 	//
 	SafePointer<CTCPClient> ConnectTo(const char* szLocalAddr,
 										int port,
@@ -40,10 +40,12 @@ public:
 										unsigned int SendBufLen_,
 										bool bblock);
 	//
-	int InitTcpServer();
-	//
 	bool Run();
 private:
+	//
+	int PrepareToRun();
+	//
+	virtual void OnNewConnect(SafePointer<CTCPConn> pConnn) = 0;
 	//
 	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket) = 0;
 	//

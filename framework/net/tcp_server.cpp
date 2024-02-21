@@ -3,8 +3,8 @@
 #include "tcp_socket.h"
 #include "log.h"
 
-CTCPServer::CTCPServer(eTcpServerModule module)
-	: m_nRunModule(module)
+CTCPServer::CTCPServer()
+	: m_nRunModule(eTcpSelect)
 {
 #ifdef __LINUX__
 	m_pEpollEventList = NULL;
@@ -19,11 +19,12 @@ CTCPServer::~CTCPServer()
 #endif
 }
 
-int CTCPServer::InitTcpServer(const char* ipAddr, u_short unPort)
+int CTCPServer::InitTcpServer(eTcpServerModule module,const char* ipAddr, u_short unPort)
 {
+	m_nRunModule = module;
 	m_IPAddr = ipAddr;
 	m_nPort = unPort;
-	return 0;
+	return PrepareToRun();
 }
 
 SafePointer<CTCPClient> CTCPServer::ConnectTo(const char* szLocalAddr,
@@ -60,7 +61,7 @@ SafePointer<CTCPClient> CTCPServer::ConnectTo(const char* szLocalAddr,
 	return tcpClient;
 }
 
-int CTCPServer::InitTcpServer()
+int CTCPServer::PrepareToRun()
 {
 #ifdef __LINUX__
 	if (m_nRunModule == eTcpSelect)
@@ -72,6 +73,10 @@ int CTCPServer::InitTcpServer()
 		return InitEpoll(m_IPAddr.c_str(), m_nPort);
 	}
 #else
+	if (m_nRunModule = eTcpEpoll)
+	{
+		m_nRunModule = eTcpSelect;
+	}
 	ASSERT_EX(m_nRunModule == eTcpSelect, return, "Windows platform only run in select module");
 	return InitSelect(m_IPAddr.c_str(), m_nPort);
 #endif
@@ -195,6 +200,7 @@ int CTCPServer::SelectTick()
 			{
 				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
 				LOG_DEBUG("default", "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+				OnNewConnect(pConn);
 			}
 			else
 			{
@@ -223,7 +229,13 @@ int CTCPServer::SelectTick()
 					continue;
 				}
 				//处理数据
-				it->second->DoRecvLogic();
+				nRet = it->second->DoRecvLogic();
+				if (nRet != ERR_RECV_OK)
+				{
+					it->second->DoErrorLogic(nRet);
+					it->second->Close();
+					continue;
+				}
 				continue;
 			}
 
@@ -238,7 +250,13 @@ int CTCPServer::SelectTick()
 					continue;
 				}
 				//发送完成后逻辑
-				it->second->DoWriteLogic();
+				nRet = it->second->DoWriteLogic();
+				if (nRet != ERR_RECV_OK)
+				{
+					it->second->DoErrorLogic(nRet);
+					it->second->Close();
+					continue;
+				}
 				continue;
 			}
 		}
@@ -259,7 +277,14 @@ int CTCPServer::SelectTick()
 					continue;
 				}
 				//处理数据
-				it->second->DoRecvLogic();
+				nRet = it->second->DoRecvLogic();
+				if (nRet != ERR_RECV_OK)
+				{
+					it->second->DoErrorLogic(nRet);
+					it->second->Close();
+					continue;
+				}
+				continue;
 			}
 
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsWrite))
@@ -273,10 +298,20 @@ int CTCPServer::SelectTick()
 					continue;
 				}
 				//发送完成后逻辑
-				it->second->DoWriteLogic();
+				nRet = it->second->DoWriteLogic();
+				if (nRet != ERR_RECV_OK)
+				{
+					it->second->DoErrorLogic(nRet);
+					it->second->Close();
+					continue;
+				}
+				continue;
 			}
 		}
 	}
+
+	//回收已关闭或者出错的连接
+	FreeClosedSocket();
 	return;
 }
 
@@ -468,6 +503,7 @@ int CTCPServer::EpollTick()
 				}
 				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
 				LOG_DEBUG("default", "Accept new socket fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
+				OnNewConnect(pConn);
 			}
 			else
 			{
@@ -491,7 +527,14 @@ int CTCPServer::EpollTick()
 					continue;
 				}
 				//处理数据
-				it->second->DoRecvLogic();
+				retCode = it->second->DoRecvLogic();
+				if (nRet != ERR_RECV_OK)
+				{
+					itcleint->second->DoErrorLogic(retCode);
+					EpollDelSocket(itcleint->second->GetSocketFD());
+					itcleint->second->Close();
+					continue;
+				}
 				continue;
 			}
 			ConnMap::iterator itconn = m_ConnMap.find(nTmFd);
@@ -507,7 +550,14 @@ int CTCPServer::EpollTick()
 					continue;
 				}
 				//处理数据
-				it->second->DoRecvLogic();
+				retCode = itcleint->second->DoRecvLogic();
+				if (nRet != ERR_RECV_OK)
+				{
+					itcleint->second->DoErrorLogic(retCode);
+					EpollDelSocket(itcleint->second->GetSocketFD());
+					itcleint->second->Close();
+					continue;
+				}
 				continue;
 			}
 		}
@@ -527,7 +577,14 @@ int CTCPServer::EpollTick()
 					continue;
 				}
 				//发送完成后逻辑
-				it->second->DoWriteLogic();
+				retCode = itcleint->second->DoWriteLogic();
+				if (nRet != ERR_SEND_OK)
+				{
+					itcleint->second->DoErrorLogic(retCode);
+					EpollDelSocket(itcleint->second->GetSocketFD());
+					itcleint->second->Close();
+					continue;
+				}
 				continue;
 			}
 			ConnMap::iterator itconn = m_ConnMap.find(nTmFd);
@@ -543,11 +600,20 @@ int CTCPServer::EpollTick()
 					continue;
 				}
 				//发送完成后逻辑
-				it->second->DoWriteLogic();
+				retCode = itcleint->second->DoWriteLogic();
+				if (nRet != ERR_SEND_OK)
+				{
+					itcleint->second->DoErrorLogic(retCode);
+					EpollDelSocket(itcleint->second->GetSocketFD());
+					itcleint->second->Close();
+					continue;
+				}
 				continue;
 			}
 		}
 	}
+	//回收已关闭或者出错的连接
+	FreeClosedSocket();
 	return 0;
 }
 

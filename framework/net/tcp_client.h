@@ -15,15 +15,13 @@ class CTCPClient : public CTCPSocket
 {	
 public:
 	//
-	CTCPClient(CSocket tmSocket,int RecvBufLen_, unsigned int SendBufLen_);
+	CTCPClient(unsigned int RecvBufLen_, unsigned int SendBufLen_);
+	CTCPClient(CSocket socket, unsigned int RecvBufLen_, unsigned int SendBufLen_);
 	//
 	virtual ~CTCPClient();
+	void SetLastSendKeepLive(time_t nKeepAliveTime);
+	time_t GetLastSendKeepLive();
 public:
-	virtual int DoRecvLogic() = 0;
-	virtual int DoWriteLogic() = 0;
-	virtual int DoErrorLogic(int errcode) = 0;
-private:
-	int m_nType;
-	int m_nId;
+	time_t m_nLastSendKeepLive;
 };
 #endif //__TCP_CLIENT_H__

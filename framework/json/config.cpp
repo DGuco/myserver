@@ -1,9 +1,10 @@
 //
 // Created by dguco on 17-2-16.
 //
+#include "safe_pointer.h"
 #include "config.h"
 
-template<> shared_ptr<CServerConfig> CSingleton<CServerConfig>::spSingleton = NULL;
+template<> SafePointer<CServerConfig> CSingleton<CServerConfig>::spSingleton = NULL;
 CServerConfig::CServerConfig()
 {
     Clear();
@@ -66,7 +67,7 @@ void CServerConfig::Clear()
 }
 
 
-ServerInfo* CServerConfig::GetServerInfo(enServerType type)
+SafePointer<ServerInfo> CServerConfig::GetServerInfo(enServerType type)
 {
     auto it =  m_mServerMap.find(type);
     if (it != m_mServerMap.end())

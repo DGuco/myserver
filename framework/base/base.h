@@ -65,7 +65,7 @@
 #define MAX(a,b)            (((a) > (b)) ? (a) : (b))
 #define MIN(a,b)            (((a) < (b)) ? (a) : (b))
 
-typedef int msize_t;
+typedef unsigned int msize_t;
 typedef unsigned char BYTE;
 typedef long long int64;
 typedef int int32;

@@ -21,7 +21,7 @@ public:
 	 * @param pHead
 	 * @return
 	 */
-	static int ParseClientStream(CByteBuff *parseByteBuff,
+	static int ParseClientStream(SafePointer<CByteBuff> parseByteBuff,
 								 CMesHead *pHead);
 
 	/**

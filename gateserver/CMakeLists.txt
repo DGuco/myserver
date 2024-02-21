@@ -18,15 +18,18 @@ set(SOURCE_FILES
     "inc/gate_ctrl.h" 
     "inc/gate_def.h"
     "inc/mes_handle.h"
-    "inc/net_manager.h" 
+    "inc/gate_server.h" 
     "src/gate_ctrl.cpp" 
     "src/mes_handle.cpp"
-    "src/net_manager.cpp"
+    "src/gate_server.cpp"
     "../common/message/common.pb.h" 
-    "../common/message/message.pb.h")
+    "../common/message/message.pb.h" 
+    "inc/game_player.h"
+    "src/game_player.cpp")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
+        ${CMAKE_SOURCE_DIR}/common
         ${CMAKE_SOURCE_DIR}/common/message
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const
@@ -36,6 +39,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/framework/timer
+        ${CMAKE_SOURCE_DIR}/gateserver/inc
 )
 
 link_directories(

@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <memory>
+#include "safe_pointer.h"
 #include "clock.h"
 #include "object.h"
 #include "log.h"
@@ -33,10 +34,10 @@ private:
 	CSingleton &operator=(const CSingleton &temp) = delete;
 
 private:
-	static std::shared_ptr<T> spSingleton;
+	static SafePointer<T> spSingleton;
 
 public:
-	static std::shared_ptr<T> &GetSingletonPtr()
+	static SafePointer<T> &GetSingletonPtr()
 	{
 		if (spSingleton == NULL) {
 			return CreateInstance();
@@ -44,10 +45,10 @@ public:
 		return spSingleton;
 	}
 
-	static std::shared_ptr<T> &CreateInstance()
+	static SafePointer<T> &CreateInstance()
 	{
 		if (spSingleton == NULL) {
-			spSingleton = std::make_shared<T>();
+			spSingleton = new T();
 		}
 		return spSingleton;
 	}
