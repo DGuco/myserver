@@ -39,7 +39,7 @@ SafePointer<CTCPClient> CTCPServer::ConnectTo(const char* szLocalAddr,
 	{
 		if (tcpClient->ConnectTo(szLocalAddr, port, false) != 0)
 		{
-			tcpClient.ForceFree();
+			tcpClient.Free();
 			return NULL;
 		}
 		else
@@ -121,6 +121,8 @@ int CTCPServer::InitSelect(const char* ip, int port)
 	if (!m_ListenSocket.Listen()) return -1;
 
 	m_ListenSocket.SetSocketNoBlock();
+
+	LOG_DEBUG("default", "CTCPServer::InitSelect listen {} : {},fdsize = {}.", ip,port,FD_SETSIZE);
 	return 0;
 }
 
@@ -176,7 +178,7 @@ int CTCPServer::SelectTick()
 	{
 		if (iTmp < 0)
 		{
-			LOG_ERROR("default", "Select error, %s.", strerror(errno));
+			LOG_ERROR("default", "Select error, {}.", strerror(errno));
 		}
 		return;
 	}
@@ -213,17 +215,31 @@ int CTCPServer::SelectTick()
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsRead))
 			{
 				//接受tcp数据
-				it->second->RecvData();
+				int nRet = it->second->Recv();
+				if (nRet != ERR_RECV_OK)
+				{
+					it->second->DoErrorLogic(nRet);
+					it->second->Close();
+					continue;
+				}
 				//处理数据
 				it->second->DoRecvLogic();
+				continue;
 			}
 
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsWrite))
 			{
 				//把缓冲区数据发送出去
-				it->second->Flush();
+				int nRet =  it->second->Flush();
+				if (nRet != ERR_SEND_OK)
+				{
+					it->second->DoErrorLogic(nRet);
+					it->second->Close();
+					continue;
+				}
 				//发送完成后逻辑
 				it->second->DoWriteLogic();
+				continue;
 			}
 		}
 	}
@@ -235,7 +251,13 @@ int CTCPServer::SelectTick()
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsRead))
 			{
 				//接受tcp数据
-				it->second->RecvData();
+				int nRet = it->second->Recv();
+				if (nRet != ERR_RECV_OK)
+				{
+					it->second->DoErrorLogic(nRet);
+					it->second->Close();
+					continue;
+				}
 				//处理数据
 				it->second->DoRecvLogic();
 			}
@@ -243,13 +265,48 @@ int CTCPServer::SelectTick()
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsWrite))
 			{
 				//把缓冲区数据发送出去
-				it->second->Flush();
+				int nRet = it->second->Flush();
+				if (nRet != ERR_SEND_OK)
+				{
+					it->second->DoErrorLogic(nRet);
+					it->second->Close();
+					continue;
+				}
 				//发送完成后逻辑
 				it->second->DoWriteLogic();
 			}
 		}
 	}
 	return;
+}
+
+void CTCPServer::FreeClosedSocket()
+{
+	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end();)
+	{
+		if (!it->second->GetSocket().IsValid() || !it->second->GetStatus() == eTcpClosed)
+		{
+			it->second.Free();
+			it = m_ConnMap.erase(it);
+		}
+		else
+		{
+			it++;
+		}
+	}
+
+	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end();)
+	{
+		if (!it->second->GetSocket().IsValid() || !it->second->GetStatus() == eTcpClosed)
+		{
+			it->second.Free();
+			it = m_ClientMap.erase(it);
+		}
+		else
+		{
+			it++;
+		}
+	}
 }
 
 #ifdef __LINUX__
@@ -425,7 +482,14 @@ int CTCPServer::EpollTick()
 			if (itcleint != m_ClientMap.end())
 			{
 				//接受tcp数据
-				it->second->RecvData();
+				int retCode = it->second->RecvData();
+				if (retCode != ERR_RECV_OK)
+				{
+					itcleint->second->DoErrorLogic(retCode);
+					EpollDelSocket(itcleint->second->GetSocketFD());
+					itcleint->second->Close();
+					continue;
+				}
 				//处理数据
 				it->second->DoRecvLogic();
 				continue;
@@ -434,7 +498,14 @@ int CTCPServer::EpollTick()
 			if (itcleint != m_ConnMap.end())
 			{
 				//接受tcp数据
-				it->second->RecvData();
+				int retCode = it->second->RecvData();
+				if (retCode != ERR_RECV_OK)
+				{
+					itcleint->second->DoErrorLogic(retCode);
+					EpollDelSocket(itcleint->second->GetSocketFD());
+					itcleint->second->Close();
+					continue;
+				}
 				//处理数据
 				it->second->DoRecvLogic();
 				continue;
@@ -447,7 +518,14 @@ int CTCPServer::EpollTick()
 			if (itcleint != m_ClientMap.end())
 			{
 				//把缓冲区数据发送出去
-				it->second->Flush();
+				int retCode = itcleint->second->Flush();
+				if (retCode != ERR_SEND_OK)
+				{
+					itcleint->second->DoErrorLogic(retCode);
+					EpollDelSocket(itcleint->second->GetSocketFD());
+					itcleint->second->Close();
+					continue;
+				}
 				//发送完成后逻辑
 				it->second->DoWriteLogic();
 				continue;
@@ -456,7 +534,14 @@ int CTCPServer::EpollTick()
 			if (itcleint != m_ConnMap.end())
 			{
 				//把缓冲区数据发送出去
-				it->second->Flush();
+				int retCode = itcleint->second->Flush();
+				if (retCode != ERR_SEND_OK)
+				{
+					itcleint->second->DoErrorLogic(retCode);
+					EpollDelSocket(itcleint->second->GetSocketFD());
+					itcleint->second->Close();
+					continue;
+				}
 				//发送完成后逻辑
 				it->second->DoWriteLogic();
 				continue;

@@ -13,8 +13,8 @@ CTCPSocket::CTCPSocket(unsigned int RecvBufLen_, unsigned int SendBufLen_)
 
 CTCPSocket::~CTCPSocket()
 {
-	m_pReadBuff.ForceFree();
-	m_pWriteBuff.ForceFree();
+	m_pReadBuff.Free();
+	m_pWriteBuff.Free();
 }
 
 int CTCPSocket::ConnectTo(const char* szIPAddr, u_short unPort, bool block)
@@ -134,7 +134,7 @@ eTcpStatus CTCPSocket::GetStatus()
 	return (eTcpStatus)m_nStatus;
 }
 
-int CTCPSocket::RecvData()
+int CTCPSocket::Recv()
 {
 	int nRetCode = m_pReadBuff->Recv(m_Socket);
 	if (nRetCode == ERR_RECV_WOULD_BLOCK)
@@ -158,10 +158,6 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength, bool sendnow)
 		if (m_pWriteBuff->CanReadLen() > 0 && nCodeLength > m_pWriteBuff->CanWriteLen())
 		{
 			retCode = m_pWriteBuff->Send(m_Socket);
-			if (retCode < 0)
-			{
-				return retCode;
-			}
 		}
 	}
 
@@ -185,10 +181,6 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength, bool sendnow)
 		if (m_pWriteBuff->CanReadLen() > 0)
 		{
 			retCode = m_pWriteBuff->Send(m_Socket);
-			if (retCode < 0)
-			{
-				return retCode;
-			}
 		}
 
 		//没有数据了，索引都归0吧
@@ -197,7 +189,12 @@ int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength, bool sendnow)
 			m_pWriteBuff->Clear();
 		}
 	}
-	return ERR_SEND_OK;
+
+	if (retCode == ERR_RECV_WOULD_BLOCK)
+	{
+		retCode = ERR_RECV_OK;
+	}
+	return retCode;
 }
 
 int CTCPSocket::Flush()

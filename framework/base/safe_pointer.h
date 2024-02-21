@@ -135,7 +135,7 @@ public:
 		return GetThrow();
 	}
 
-	void ForceFree()
+	void Free()
 	{
 		Tp* pPointer = GetThrow();
 		DELETE pPointer;

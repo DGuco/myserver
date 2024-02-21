@@ -38,7 +38,7 @@ public:
 	//检查非阻塞连接是否连接成功
 	int CheckConnectedOk();
 	//读取数据
-	int RecvData();
+	int Recv();
 	//把数据写到缓冲区准备发送
 	//sendnow 是否立刻发送到网络中，1 立刻发送 2 不发送只暂存到缓冲区中等tcp发送缓冲区可写是再一起发出去
 	int Write(BYTE* pCode, msize_t nCodeLength,bool sendnow = false);

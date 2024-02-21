@@ -43,8 +43,6 @@ public:
 	int InitTcpServer();
 	//
 	bool Run();
-
-	CTCPSocket& GetSocket();
 private:
 	//
 	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket) = 0;
@@ -55,6 +53,8 @@ private:
 	int InitSelect(const char* ip, int port);
 	//
 	int SelectTick();
+	//
+	void FreeClosedSocket();
 #ifdef __LINUX__
 	//
 	int InitEpoll(const char* ip, int port);
