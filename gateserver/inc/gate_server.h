@@ -1,15 +1,17 @@
-//
-// Created by dguco on 18-1-30.
-//
+/*****************************************************************
+* FileName:gate_server.h
+* Summary :
+* Date	  :2024-2-22
+* Author  :DGuco(1139140909@qq.com)
+******************************************************************/
+#ifndef __GATE_SERVER_H__
+#define __GATE_SERVER_H__
+#include "tcp_server.h"
+#include "server_tool.h"
+#include "message.pb.h"
 
-#ifndef __NET_MANAGER_H__
-#define __NET_MANAGER_H__
-
-#include "code_queue.h"
-#include "byte_buff.h"
-#include "mythread.h"
-
-class CGateServer : public CTCPServer
+class CGamePlayer;
+class CGateServer : public CTCPServer,public CSingleton<CGateServer>
 {
 public:
 	//构造函数
@@ -23,10 +25,6 @@ public:
 	void DealClientData(SafePointer<CGamePlayer> pGamePlayer, unsigned short len);
 	//给特定client发送数据
 	void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
-	shared_ptr<CByteBuff> &GetRecvBuff();
-	shared_ptr<CByteBuff> &GetSendBuff();
-	shared_ptr<CNetWork> &GetNetWork();
-private:
 	//清除socket
 	void ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError);
 	//通知gameserver client 断开连接
@@ -52,14 +50,7 @@ protected:
 	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket);
 	//
 	virtual SafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket);
-private:
-	//开始监听
-	bool BeginListen();
-	//客户端断开连接
-private:
-	shared_ptr<CNetWork> m_pNetWork;
-	shared_ptr<CByteBuff> m_pRecvBuff; //客户端上行数据buff
-	shared_ptr<CByteBuff> m_pSendBuff; //客户端下行数据buff
-    shared_ptr<CTimerEvent> m_pSendMsgTimer;
 };
-#endif //__NET_MANAGER_H__
+
+#endif //__GATE_SERVER_H__
+

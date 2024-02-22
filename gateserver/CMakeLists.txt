@@ -24,6 +24,14 @@ set(SOURCE_FILES
     "src/gate_server.cpp"
     "../common/message/common.pb.h" 
     "../common/message/message.pb.h" 
+    "../common/message/common.pb.h" 
+    "../common/message/dbmessage.pb.h"
+    "../common/message/message.pb.h"
+    "../common/message/player.pb.h"
+    "../common/client_comm_engine.cpp" 
+    "../common/client_comm_engine.h"
+    "../common/server_comm_engine.cpp"
+    "../common/server_comm_engine.h" 
     "inc/game_player.h"
     "src/game_player.cpp")
 

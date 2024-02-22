@@ -96,20 +96,7 @@ typedef std::vector<std::string> Tokens;
 
 Tokens StrSplit(const std::string &src, const std::string &sep);
 
-// 通过unix时间戳获取是当年的第几天
-int GetDayOfYear(time_t tTime);
-// 获取当前秒数
-int GetSecondTime();
-// 判断两个时间戳是否是同一天
-bool IsSameDay(time_t tFirstTime, time_t tSecondTime);
-
 void ignore_pipe();
-
-// 获取当前微秒
-time_t GetMSTime();
-
-// 获取当前微秒
-time_t GetUSTime();
 
 // 分割字符串，获取单词
 void TrimStr(char *strInput);

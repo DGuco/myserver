@@ -32,7 +32,7 @@ public:
 	 * @param pHead
 	 * @return
 	 */
-	static int ConvertToGameStream(CByteBuff *convertBuff,
+	static int ConvertToGameStream(SafePointer<CByteBuff> convertBuff,
 								   const void *pDataBuff,
 								   unsigned short &unDataLen,
 								   CMesHead *pHead);

@@ -7,7 +7,6 @@
 #define SERVER_S2C_THREAD_H
 
 #include <message.pb.h>
-#include <net_work.h>
 #include <byte_buff.h>
 #include "code_queue.h"
 #include "mythread.h"

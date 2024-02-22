@@ -1,6 +1,7 @@
 #include "tcp_server.h"
 #include "my_assert.h"
 #include "tcp_socket.h"
+#include "time_helper.h"
 #include "log.h"
 
 CTCPServer::CTCPServer()
@@ -198,6 +199,7 @@ int CTCPServer::SelectTick()
 			SafePointer<CTCPConn> pConn = CreateTcpConn(newSocket);
 			if (pConn != NULL)
 			{
+				pConn->SetCreateTime(CTimeHelper::GetSingletonPtr()->GetANSITime());
 				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
 				LOG_DEBUG("default", "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
 				OnNewConnect(pConn);
@@ -319,7 +321,7 @@ void CTCPServer::FreeClosedSocket()
 {
 	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end();)
 	{
-		if (!it->second->GetSocket().IsValid() || !it->second->GetStatus() == eTcpClosed)
+		if (!it->second->GetSocket().IsValid())
 		{
 			it->second.Free();
 			it = m_ConnMap.erase(it);
@@ -332,7 +334,7 @@ void CTCPServer::FreeClosedSocket()
 
 	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end();)
 	{
-		if (!it->second->GetSocket().IsValid() || !it->second->GetStatus() == eTcpClosed)
+		if (!it->second->GetSocket().IsValid())
 		{
 			it->second.Free();
 			it = m_ClientMap.erase(it);

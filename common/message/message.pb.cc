@@ -34,6 +34,21 @@ struct CSocketInfoDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSocketInfoDefaultTypeInternal _CSocketInfo_default_instance_;
+PROTOBUF_CONSTEXPR CMessG2G::CMessG2G(
+    ::_pbi::ConstantInitialized)
+  : socketinfos_()
+  , messerial_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
+  , opflag_(0)
+{}
+struct CMessG2GDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CMessG2GDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CMessG2GDefaultTypeInternal() {}
+  union {
+    CMessG2G _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMessG2GDefaultTypeInternal _CMessG2G_default_instance_;
 PROTOBUF_CONSTEXPR CMesHead::CMesHead(
     ::_pbi::ConstantInitialized)
   : socketinfos_()
@@ -97,7 +112,7 @@ struct CProxyMessageDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CProxyMessageDefaultTypeInternal _CProxyMessage_default_instance_;
-static ::_pb::Metadata file_level_metadata_message_2eproto[5];
+static ::_pb::Metadata file_level_metadata_message_2eproto[6];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_message_2eproto[2];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_message_2eproto = nullptr;
 
@@ -114,6 +129,18 @@ const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   1,
   0,
   2,
+  PROTOBUF_FIELD_OFFSET(::CMessG2G, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CMessG2G, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CMessG2G, opflag_),
+  PROTOBUF_FIELD_OFFSET(::CMessG2G, socketinfos_),
+  PROTOBUF_FIELD_OFFSET(::CMessG2G, messerial_),
+  1,
+  ~0u,
+  0,
   PROTOBUF_FIELD_OFFSET(::CMesHead, _has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMesHead, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -175,14 +202,16 @@ const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 9, -1, sizeof(::CSocketInfo)},
-  { 12, 23, -1, sizeof(::CMesHead)},
-  { 28, 36, -1, sizeof(::CMessage)},
-  { 38, 52, -1, sizeof(::CProxyHead)},
-  { 60, 68, -1, sizeof(::CProxyMessage)},
+  { 12, 21, -1, sizeof(::CMessG2G)},
+  { 24, 35, -1, sizeof(::CMesHead)},
+  { 40, 48, -1, sizeof(::CMessage)},
+  { 50, 64, -1, sizeof(::CProxyHead)},
+  { 72, 80, -1, sizeof(::CProxyMessage)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
   &::_CSocketInfo_default_instance_._instance,
+  &::_CMessG2G_default_instance_._instance,
   &::_CMesHead_default_instance_._instance,
   &::_CMessage_default_instance_._instance,
   &::_CProxyHead_default_instance_._instance,
@@ -191,33 +220,36 @@ static const ::_pb::Message* const file_default_instances[] = {
 
 const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\rmessage.proto\"B\n\013CSocketInfo\022\020\n\010socket"
-  "ID\030\001 \001(\005\022\022\n\ncreateTime\030\002 \001(\003\022\r\n\005state\030\003 "
-  "\001(\005\"\201\001\n\010CMesHead\022(\n\006opFlag\030\001 \002(\0162\r.enMes"
-  "sageCmd:\tMESS_NULL\022!\n\013socketInfos\030\002 \003(\0132"
-  "\014.CSocketInfo\022\013\n\003cmd\030\003 \001(\005\022\016\n\006serial\030\004 \001"
-  "(\005\022\013\n\003seq\030\005 \001(\005\":\n\010CMessage\022\032\n\007msgHead\030\001"
-  " \002(\0132\t.CMesHead\022\022\n\007msgPara\030\002 \002(\006:\0010\"\264\001\n\n"
-  "CProxyHead\022\r\n\005srcFE\030\001 \002(\r\022\r\n\005srcID\030\002 \002(\r"
-  "\022\r\n\005dstFE\030\003 \002(\r\022\r\n\005dstID\030\004 \002(\r\022\021\n\ttimeSt"
-  "amp\030\005 \002(\004\022(\n\006opFlag\030\006 \001(\0162\r.enMessageCmd"
-  ":\tMESS_NULL\022\021\n\tmessageId\030\007 \001(\r\022\032\n\007msgHea"
-  "d\030\010 \001(\0132\t.CMesHead\"A\n\rCProxyMessage\022\034\n\007m"
-  "sgHead\030\001 \002(\0132\013.CProxyHead\022\022\n\007msgPara\030\002 \001"
-  "(\006:\0010*\200\002\n\014enServerType\022\014\n\010FE_TIMER\020\000\022\r\n\t"
-  "FE_CLIENT\020\001\022\021\n\rFE_GAMESERVER\020\002\022\022\n\016FE_LOG"
-  "INSERVER\020\003\022\017\n\013FE_DBSERVER\020\004\022\022\n\016FE_PROXYS"
-  "ERVER\020\005\022\022\n\016FE_WORLDSERVER\020\006\022\020\n\014FE_WEBSER"
-  "VER\020\007\022\024\n\020FE_OFFLINESERVER\020\010\022\022\n\016FE_CHECKS"
-  "ERVER\020\t\022\021\n\rFE_HALLSERVER\020\n\022\021\n\rFE_GATESER"
-  "VER\020\013\022\021\n\rFE_ROOMSERVER\020\014*R\n\014enMessageCmd"
-  "\022\r\n\tMESS_NULL\020\000\022\017\n\013MESS_REGIST\020\001\022\022\n\016MESS"
-  "_KEEPALIVE\020\002\022\016\n\nMESS_LOGIC\020\003B\002H\001"
+  "ID\030\001 \002(\005\022\022\n\ncreateTime\030\002 \002(\003\022\r\n\005state\030\003 "
+  "\002(\005\"j\n\010CMessG2G\022(\n\006opFlag\030\001 \002(\0162\r.enMess"
+  "ageCmd:\tMESS_NULL\022!\n\013socketInfos\030\002 \003(\0132\014"
+  ".CSocketInfo\022\021\n\tmesserial\030\003 \002(\014\"\201\001\n\010CMes"
+  "Head\022(\n\006opFlag\030\001 \002(\0162\r.enMessageCmd:\tMES"
+  "S_NULL\022!\n\013socketInfos\030\002 \003(\0132\014.CSocketInf"
+  "o\022\013\n\003cmd\030\003 \001(\005\022\016\n\006serial\030\004 \001(\005\022\013\n\003seq\030\005 "
+  "\001(\005\":\n\010CMessage\022\032\n\007msgHead\030\001 \002(\0132\t.CMesH"
+  "ead\022\022\n\007msgPara\030\002 \002(\006:\0010\"\264\001\n\nCProxyHead\022\r"
+  "\n\005srcFE\030\001 \002(\r\022\r\n\005srcID\030\002 \002(\r\022\r\n\005dstFE\030\003 "
+  "\002(\r\022\r\n\005dstID\030\004 \002(\r\022\021\n\ttimeStamp\030\005 \002(\004\022(\n"
+  "\006opFlag\030\006 \001(\0162\r.enMessageCmd:\tMESS_NULL\022"
+  "\021\n\tmessageId\030\007 \001(\r\022\032\n\007msgHead\030\010 \001(\0132\t.CM"
+  "esHead\"A\n\rCProxyMessage\022\034\n\007msgHead\030\001 \002(\013"
+  "2\013.CProxyHead\022\022\n\007msgPara\030\002 \001(\006:\0010*\200\002\n\014en"
+  "ServerType\022\014\n\010FE_TIMER\020\000\022\r\n\tFE_CLIENT\020\001\022"
+  "\021\n\rFE_GAMESERVER\020\002\022\022\n\016FE_LOGINSERVER\020\003\022\017"
+  "\n\013FE_DBSERVER\020\004\022\022\n\016FE_PROXYSERVER\020\005\022\022\n\016F"
+  "E_WORLDSERVER\020\006\022\020\n\014FE_WEBSERVER\020\007\022\024\n\020FE_"
+  "OFFLINESERVER\020\010\022\022\n\016FE_CHECKSERVER\020\t\022\021\n\rF"
+  "E_HALLSERVER\020\n\022\021\n\rFE_GATESERVER\020\013\022\021\n\rFE_"
+  "ROOMSERVER\020\014*R\n\014enMessageCmd\022\r\n\tMESS_NUL"
+  "L\020\000\022\017\n\013MESS_REGIST\020\001\022\022\n\016MESS_KEEPALIVE\020\002"
+  "\022\016\n\nMESS_LOGIC\020\003B\002H\001"
   ;
 static ::_pbi::once_flag descriptor_table_message_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_message_2eproto = {
-    false, false, 872, descriptor_table_protodef_message_2eproto,
+    false, false, 980, descriptor_table_protodef_message_2eproto,
     "message.proto",
-    &descriptor_table_message_2eproto_once, nullptr, 0, 5,
+    &descriptor_table_message_2eproto_once, nullptr, 0, 6,
     schemas, file_default_instances, TableStruct_message_2eproto::offsets,
     file_level_metadata_message_2eproto, file_level_enum_descriptors_message_2eproto,
     file_level_service_descriptors_message_2eproto,
@@ -284,6 +316,9 @@ class CSocketInfo::_Internal {
   static void set_has_state(HasBits* has_bits) {
     (*has_bits)[0] |= 4u;
   }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000007) ^ 0x00000007) != 0;
+  }
 };
 
 CSocketInfo::CSocketInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
@@ -349,7 +384,7 @@ const char* CSocketInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* c
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional int32 socketID = 1;
+      // required int32 socketID = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_socketid(&has_bits);
@@ -358,7 +393,7 @@ const char* CSocketInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* c
         } else
           goto handle_unusual;
         continue;
-      // optional int64 createTime = 2;
+      // required int64 createTime = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_createtime(&has_bits);
@@ -367,7 +402,7 @@ const char* CSocketInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* c
         } else
           goto handle_unusual;
         continue;
-      // optional int32 state = 3;
+      // required int32 state = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_state(&has_bits);
@@ -407,19 +442,19 @@ uint8_t* CSocketInfo::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
-  // optional int32 socketID = 1;
+  // required int32 socketID = 1;
   if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_socketid(), target);
   }
 
-  // optional int64 createTime = 2;
+  // required int64 createTime = 2;
   if (cached_has_bits & 0x00000001u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt64ToArray(2, this->_internal_createtime(), target);
   }
 
-  // optional int32 state = 3;
+  // required int32 state = 3;
   if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_state(), target);
@@ -433,32 +468,48 @@ uint8_t* CSocketInfo::_InternalSerialize(
   return target;
 }
 
+size_t CSocketInfo::RequiredFieldsByteSizeFallback() const {
+// @@protoc_insertion_point(required_fields_byte_size_fallback_start:CSocketInfo)
+  size_t total_size = 0;
+
+  if (_internal_has_createtime()) {
+    // required int64 createTime = 2;
+    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(this->_internal_createtime());
+  }
+
+  if (_internal_has_socketid()) {
+    // required int32 socketID = 1;
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_socketid());
+  }
+
+  if (_internal_has_state()) {
+    // required int32 state = 3;
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_state());
+  }
+
+  return total_size;
+}
 size_t CSocketInfo::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CSocketInfo)
   size_t total_size = 0;
 
+  if (((_has_bits_[0] & 0x00000007) ^ 0x00000007) == 0) {  // All required fields are present.
+    // required int64 createTime = 2;
+    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(this->_internal_createtime());
+
+    // required int32 socketID = 1;
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_socketid());
+
+    // required int32 state = 3;
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_state());
+
+  } else {
+    total_size += RequiredFieldsByteSizeFallback();
+  }
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  cached_has_bits = _has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
-    // optional int64 createTime = 2;
-    if (cached_has_bits & 0x00000001u) {
-      total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(this->_internal_createtime());
-    }
-
-    // optional int32 socketID = 1;
-    if (cached_has_bits & 0x00000002u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_socketid());
-    }
-
-    // optional int32 state = 3;
-    if (cached_has_bits & 0x00000004u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_state());
-    }
-
-  }
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
@@ -505,6 +556,7 @@ void CSocketInfo::CopyFrom(const CSocketInfo& from) {
 }
 
 bool CSocketInfo::IsInitialized() const {
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
   return true;
 }
 
@@ -524,6 +576,307 @@ void CSocketInfo::InternalSwap(CSocketInfo* other) {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
       file_level_metadata_message_2eproto[0]);
+}
+
+// ===================================================================
+
+class CMessG2G::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CMessG2G>()._has_bits_);
+  static void set_has_opflag(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static void set_has_messerial(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000003) ^ 0x00000003) != 0;
+  }
+};
+
+CMessG2G::CMessG2G(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  socketinfos_(arena) {
+  SharedCtor();
+  // @@protoc_insertion_point(arena_constructor:CMessG2G)
+}
+CMessG2G::CMessG2G(const CMessG2G& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _has_bits_(from._has_bits_),
+      socketinfos_(from.socketinfos_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  messerial_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    messerial_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_messerial()) {
+    messerial_.Set(from._internal_messerial(), 
+      GetArenaForAllocation());
+  }
+  opflag_ = from.opflag_;
+  // @@protoc_insertion_point(copy_constructor:CMessG2G)
+}
+
+inline void CMessG2G::SharedCtor() {
+messerial_.InitDefault();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  messerial_.Set("", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+opflag_ = 0;
+}
+
+CMessG2G::~CMessG2G() {
+  // @@protoc_insertion_point(destructor:CMessG2G)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CMessG2G::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  messerial_.Destroy();
+}
+
+void CMessG2G::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void CMessG2G::Clear() {
+// @@protoc_insertion_point(message_clear_start:CMessG2G)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  socketinfos_.Clear();
+  cached_has_bits = _has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    messerial_.ClearNonDefaultToEmpty();
+  }
+  opflag_ = 0;
+  _has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CMessG2G::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // required .enMessageCmd opFlag = 1 [default = MESS_NULL];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          if (PROTOBUF_PREDICT_TRUE(::enMessageCmd_IsValid(val))) {
+            _internal_set_opflag(static_cast<::enMessageCmd>(val));
+          } else {
+            ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(1, val, mutable_unknown_fields());
+          }
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .CSocketInfo socketInfos = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_socketinfos(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // required bytes messerial = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          auto str = _internal_mutable_messerial();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CMessG2G::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CMessG2G)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _has_bits_[0];
+  // required .enMessageCmd opFlag = 1 [default = MESS_NULL];
+  if (cached_has_bits & 0x00000002u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      1, this->_internal_opflag(), target);
+  }
+
+  // repeated .CSocketInfo socketInfos = 2;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_socketinfos_size()); i < n; i++) {
+    const auto& repfield = this->_internal_socketinfos(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // required bytes messerial = 3;
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->WriteBytesMaybeAliased(
+        3, this->_internal_messerial(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CMessG2G)
+  return target;
+}
+
+size_t CMessG2G::RequiredFieldsByteSizeFallback() const {
+// @@protoc_insertion_point(required_fields_byte_size_fallback_start:CMessG2G)
+  size_t total_size = 0;
+
+  if (_internal_has_messerial()) {
+    // required bytes messerial = 3;
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+        this->_internal_messerial());
+  }
+
+  if (_internal_has_opflag()) {
+    // required .enMessageCmd opFlag = 1 [default = MESS_NULL];
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_opflag());
+  }
+
+  return total_size;
+}
+size_t CMessG2G::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CMessG2G)
+  size_t total_size = 0;
+
+  if (((_has_bits_[0] & 0x00000003) ^ 0x00000003) == 0) {  // All required fields are present.
+    // required bytes messerial = 3;
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+        this->_internal_messerial());
+
+    // required .enMessageCmd opFlag = 1 [default = MESS_NULL];
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_opflag());
+
+  } else {
+    total_size += RequiredFieldsByteSizeFallback();
+  }
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .CSocketInfo socketInfos = 2;
+  total_size += 1UL * this->_internal_socketinfos_size();
+  for (const auto& msg : this->socketinfos_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMessG2G::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    CMessG2G::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMessG2G::GetClassData() const { return &_class_data_; }
+
+void CMessG2G::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<CMessG2G *>(to)->MergeFrom(
+      static_cast<const CMessG2G &>(from));
+}
+
+
+void CMessG2G::MergeFrom(const CMessG2G& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CMessG2G)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  socketinfos_.MergeFrom(from.socketinfos_);
+  cached_has_bits = from._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _internal_set_messerial(from._internal_messerial());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      opflag_ = from.opflag_;
+    }
+    _has_bits_[0] |= cached_has_bits;
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CMessG2G::CopyFrom(const CMessG2G& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CMessG2G)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CMessG2G::IsInitialized() const {
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
+  if (!::PROTOBUF_NAMESPACE_ID::internal::AllAreInitialized(socketinfos_))
+    return false;
+  return true;
+}
+
+void CMessG2G::InternalSwap(CMessG2G* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_has_bits_[0], other->_has_bits_[0]);
+  socketinfos_.InternalSwap(&other->socketinfos_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &messerial_, lhs_arena,
+      &other->messerial_, rhs_arena
+  );
+  swap(opflag_, other->opflag_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CMessG2G::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
+      file_level_metadata_message_2eproto[1]);
 }
 
 // ===================================================================
@@ -828,6 +1181,8 @@ void CMesHead::CopyFrom(const CMesHead& from) {
 
 bool CMesHead::IsInitialized() const {
   if (_Internal::MissingRequiredFields(_has_bits_)) return false;
+  if (!::PROTOBUF_NAMESPACE_ID::internal::AllAreInitialized(socketinfos_))
+    return false;
   return true;
 }
 
@@ -847,7 +1202,7 @@ void CMesHead::InternalSwap(CMesHead* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMesHead::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
-      file_level_metadata_message_2eproto[1]);
+      file_level_metadata_message_2eproto[2]);
 }
 
 // ===================================================================
@@ -1110,7 +1465,7 @@ void CMessage::InternalSwap(CMessage* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMessage::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
-      file_level_metadata_message_2eproto[2]);
+      file_level_metadata_message_2eproto[3]);
 }
 
 // ===================================================================
@@ -1551,7 +1906,7 @@ void CProxyHead::InternalSwap(CProxyHead* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CProxyHead::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
-      file_level_metadata_message_2eproto[3]);
+      file_level_metadata_message_2eproto[4]);
 }
 
 // ===================================================================
@@ -1796,7 +2151,7 @@ void CProxyMessage::InternalSwap(CProxyMessage* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CProxyMessage::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
-      file_level_metadata_message_2eproto[4]);
+      file_level_metadata_message_2eproto[5]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -1804,6 +2159,10 @@ PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::CSocketInfo*
 Arena::CreateMaybeMessage< ::CSocketInfo >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CSocketInfo >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CMessG2G*
+Arena::CreateMaybeMessage< ::CMessG2G >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CMessG2G >(arena);
 }
 template<> PROTOBUF_NOINLINE ::CMesHead*
 Arena::CreateMaybeMessage< ::CMesHead >(Arena* arena) {

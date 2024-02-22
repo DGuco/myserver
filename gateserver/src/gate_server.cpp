@@ -1,17 +1,15 @@
 //
 // Created by dguco on 18-1-30.
 //
-
-#include <config.h>
+#include "config.h"
 #include "client_comm_engine.h"
 #include "my_assert.h"
 #include "gate_server.h"
 #include "game_player.h"
 #include "gate_def.h"
-#include "gate_ctrl.h"
+#include "time_helper.h"
 
-CGateServer::CGateServer()
-	: CTCPServer(eTcpEpoll)
+CGateServer::CGateServer() : CTCPServer()
 {
 }
 
@@ -78,24 +76,9 @@ void CGateServer::SendToClient(const CSocketInfo &socketInfo, const char *data, 
 	}
 }
 
-shared_ptr<CByteBuff> &CGateServer::GetRecvBuff()
-{
-	return m_pRecvBuff;
-}
-
-shared_ptr<CByteBuff> &CGateServer::GetSendBuff()
-{
-	return m_pSendBuff;
-}
-
-shared_ptr<CNetWork> &CGateServer::GetNetWork()
-{
-	return m_pNetWork;
-}
-
 void CGateServer::ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError)
 {
-	ASSERT(tmpAcceptor != NULL, return)
+	ASSERT(tmpAcceptor != NULL, return);
 	//非gameserver 主动请求关闭
 	if (Client_Succeed != iError) {
 		DisConnect(tmpAcceptor, iError);
@@ -143,11 +126,7 @@ void CGateServer::DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError)
 void CGateServer::RecvClientData(SafePointer<CGamePlayer> pGamePlayer)
 {
 	ASSERT(pGamePlayer != NULL, return);
-	//数据不完整
-	if (!pGamePlayer->IsPackageComplete( )) {
-		return;
-	}
-	int packLen = tmpAcceptor->GetRecvPackLen( );
+	int packLen = pGamePlayer->GetRecvPackLen( );
 	int iTmpLen = packLen - sizeof(unsigned short);
 	//读取数据
 	m_pRecvBuff->Clear( );
@@ -206,30 +185,6 @@ void CGateServer::DealClientData(SafePointer<CGamePlayer> pGamePlayer,
     else {
         //心跳信息不做处理
     }
-}
-
-bool CGateServer::BeginListen()
-{
-	SafePointer<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr( );
-	ServerInfo *gateInfo = tmpConfig->GetServerInfo(enServerType::FE_GATESERVER);
-	bool iRet = listen(gateInfo->m_sHost.c_str( ),
-										gateInfo->m_iPort,
-										&CGateServer::lcb_OnAcceptCns,
-										&CGateServer::lcb_OnCnsSomeDataSend,
-										&CGateServer::lcb_OnCnsSomeDataRecv,
-										&CGateServer::lcb_OnCnsDisconnected,
-										&CGateServer::lcb_OnCheckAcceptorTimeOut,
-										RECV_QUEUQ_MAX,
-										tmpConfig->GetSocketTimeOut( ));
-	if (iRet) {
-		LOG_INFO("default", "Server listen success at {} : {}", gateInfo->m_sHost.c_str( ), gateInfo->m_iPort);
-		return true;
-	}
-	else {
-		LOG_ERROR("default""Server listen at {} : {} failed,failed reason {]", gateInfo->m_sHost.c_str( ),
-				  gateInfo->m_iPort, strerror(errno));
-		exit(0);
-	}
 }
 
 void CGateServer::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)

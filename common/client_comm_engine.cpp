@@ -14,8 +14,10 @@ unsigned char *CClientCommEngine::tpKey = &tKey[0];
 
 void CClientCommEngine::CopyMesHead(CMesHead *from, CMesHead *to)
 {
-	if (from && to) {
-		for (int i = 0; i < from->socketinfos_size( ); ++i) {
+	if (from && to) 
+	{
+		for (int i = 0; i < from->socketinfos_size( ); ++i) 
+		{
 			CSocketInfo *pSocketInfo = to->mutable_socketinfos( )->Add( );
 			CSocketInfo socketInfo = from->socketinfos(i);
 			pSocketInfo->set_socketid(socketInfo.socketid( ));
@@ -46,7 +48,7 @@ int CClientCommEngine::ParseClientStream(SafePointer<CByteBuff> parseByteBuff,
 	return 0;
 }
 
-int CClientCommEngine::ConvertToGameStream(CByteBuff *convertBuff,
+int CClientCommEngine::ConvertToGameStream(SafePointer<CByteBuff> convertBuff,
 										   const void *pDataBuff,
 										   unsigned short &unDataLen,
 										   CMesHead *pHead)
