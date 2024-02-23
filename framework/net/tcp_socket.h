@@ -56,6 +56,10 @@ public:
 	int CheckConnectedOk();
 	//¹Ø±Õ
 	int Close();
+	//
+	SafePointer<CByteBuff> GetReadBuff();
+	//
+	SafePointer<CByteBuff> GetSendBuff();
 public:
 	virtual int DoRecvLogic() = 0;
 	virtual int DoWriteLogic() = 0;

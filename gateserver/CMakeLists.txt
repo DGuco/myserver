@@ -33,7 +33,8 @@ set(SOURCE_FILES
     "../common/server_comm_engine.cpp"
     "../common/server_comm_engine.h" 
     "inc/game_player.h"
-    "src/game_player.cpp")
+    "src/game_player.cpp"
+    "../common/common_def.h")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty

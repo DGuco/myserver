@@ -24,7 +24,6 @@
 #define GUIDE_MAX            (100)
 #define MAX_PACKAGE_LEN		 (1024*60)        // 单个包的最大长度
 #define MAX_BROADCAST_NUM    (1000)            // 单词最大广播数量
-#define PIPE_SIZE            (0x1000000)    // 共享内存管道大小 16M
 
 #define	TCP_BACK_LOG		 (1024)
 #define RECVBUFLENGTH        (1024*1024*6)        // 接收缓冲区大小

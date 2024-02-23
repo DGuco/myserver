@@ -93,7 +93,7 @@ public:
 	msize_t CanReadLen() const;
 	//获取可写数据长度
 	msize_t CanWriteLen() const;
-	//
+	//获取数据指针
 	BYTE* GetData() const;
 	//发送缓冲区数据到tcp
 	int Send(CSocket& socket);

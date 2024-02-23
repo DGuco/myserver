@@ -8,9 +8,11 @@
 #include "game_player.h"
 #include "gate_def.h"
 #include "time_helper.h"
+#include "mes_handle.h"
 
 CGateServer::CGateServer() : CTCPServer()
 {
+
 }
 
 CGateServer::~CGateServer()
@@ -125,67 +127,50 @@ void CGateServer::DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError)
 
 void CGateServer::RecvClientData(SafePointer<CGamePlayer> pGamePlayer)
 {
-	ASSERT(pGamePlayer != NULL, return);
-	int packLen = pGamePlayer->GetRecvPackLen( );
-	int iTmpLen = packLen - sizeof(unsigned short);
-	//读取数据
-	m_pRecvBuff->Clear( );
-	m_pRecvBuff->WriteUnShort(packLen);
-	iTmpLen = tmpAcceptor->RecvData(m_pRecvBuff->CanWriteData( ), iTmpLen);
-	m_pRecvBuff->WriteLen(iTmpLen);
-	//当前数据包已全部读取，清除当前数据包缓存长度
-	tmpAcceptor->CurrentPackRecved( );
-	//发送数据包到game server
-	DealClientData(tmpAcceptor, iTmpLen);
+	SafePointer<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
+	int packLen = pRecvBuff->ReadUnInt(true);
+	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
+	{
+		//断开连接
+		ClearSocket(pGamePlayer, Err_PacketError);
+		return;
+	}
+	if (pRecvBuff->ReadBytes(m_CacheData, packLen) != 0)
+	{
+		//断开连接
+		ClearSocket(pGamePlayer, Err_PacketError);
+		return;
+	}
+	time_t tNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+	pGamePlayer->SetLastRecvKeepLive(tNow);
+
+	CMessG2G msgG2g;
+	CSocketInfo* tmpSocketInfo = msgG2g.mutable_socketinfos()->Add();
+	tmpSocketInfo->Clear();
+	tmpSocketInfo->set_createtime(pGamePlayer->GetCreateTime());
+	tmpSocketInfo->set_socketid(pGamePlayer->GetSocketFD());
+	tmpSocketInfo->set_state(0);
+	msgG2g.mutable_messerial()->reserve(packLen);
+	msgG2g.mutable_messerial()->assign((char*)m_CacheData, packLen);
+	if (!msgG2g.SerializeToArray(m_CacheData, GAMEPLAYER_RECV_BUFF_LEN))
+	{
+		//断开连接
+		ClearSocket(pGamePlayer, Err_PacketError);
+		return;
+	}
+	int iTmRet = CMessHandle::GetSingletonPtr()->SendToGame((char*)m_CacheData, msgG2g.GetCachedSize());
+	if (iTmRet != 0)
+	{
+		LOG_ERROR("defalut", "CNetManager::DealClientData to game error, error code {}", iTmRet);
+		ClearSocket(pGamePlayer, Err_SendToMainSvrd);
+	}
+	else 
+	{
+		LOG_DEBUG("default", "gate ==>game succeed");
+	}
+	return;
 }
 
-void CGateServer::DealClientData(SafePointer<CGamePlayer> pGamePlayer,
-                                 unsigned short tmpLastLen)
-{
-    ASSERT(pGamePlayer != NULL, return)
-    static CMessage tmpMessage;
-    tmpMessage.Clear( );
-    CMesHead *tmpHead = tmpMessage.mutable_msghead( );
-    int iTmpRet = CClientCommEngine::ParseClientStream(m_pRecvBuff.get( ), tmpMessage.mutable_msghead( ));
-    if (iTmpRet < 0) {
-        //断开连接
-        ClearSocket(tmpAcceptor, Err_PacketError);
-        return;
-    }
-    time_t tNow = GetMSTime( );
-    tmpAcceptor->SetLastKeepAlive(tNow);
-    //组织转发消息
-    if (0 == iTmpRet && tmpHead->cmd( ) != 103 && tmpLastLen >= 0) {
-        CSocketInfo *tmpSocketInfo = tmpHead->mutable_socketinfos( )->Add( );
-        tmpSocketInfo->Clear( );
-        tmpSocketInfo->set_createtime(tmpAcceptor->GetCreateTime( ));
-        tmpSocketInfo->set_socketid(tmpAcceptor->GetSocket( ).GetSocket( ));
-        tmpSocketInfo->set_state(0);
-        m_pSendBuff->Clear();
-        iTmpRet = CClientCommEngine::ConvertToGameStream(m_pSendBuff.get( ),
-                                                         m_pRecvBuff->CanReadData( ),
-                                                         tmpLastLen,
-                                                         tmpHead);
-        if (iTmpRet != 0) {
-            //断开连接
-            ClearSocket(tmpAcceptor, Err_PacketError);
-            return;
-        }
-
-        shared_ptr<CMessHandle> &tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetMesManager();
-        iTmpRet = tmpServerHandle->SendToGame(m_pSendBuff->CanReadData( ), m_pSendBuff->ReadableDataLen( ));
-        if (iTmpRet != 0) {
-            LOG_ERROR("defalut", "CNetManager::DealClientData to game error, error code {}", iTmpRet);
-            ClearSocket(tmpAcceptor, Err_SendToMainSvrd);
-        }
-        else {
-            LOG_DEBUG("default", "gate ==>game succeed");
-        }
-    }
-    else {
-        //心跳信息不做处理
-    }
-}
 
 void CGateServer::lcb_OnAcceptCns(unsigned int uId, IBufferEvent *tmpAcceptor)
 {

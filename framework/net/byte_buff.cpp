@@ -211,7 +211,7 @@ void CByteBuff::WriteDouble(double value, int offset)
 	WriteT<double>(value, offset);
 }
 
-BYTE*CByteBuff::GetData() const
+BYTE* CByteBuff::GetData() const
 {
 	return m_aData;
 }

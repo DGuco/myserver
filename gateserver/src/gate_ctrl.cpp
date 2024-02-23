@@ -6,12 +6,11 @@
 //
 
 #include "my_assert.h"
-#include "../inc/gate_ctrl.h"
+#include "gate_ctrl.h"
 
 CGateCtrl::CGateCtrl()
-	: m_pNetManager(std::make_shared<CGateServer>()),
-	  m_pMessManager(std::make_shared<CMessHandle>("CMessHandle", 1000 /*超时时间1ms*/))
 {
+
 }
 
 CGateCtrl::~CGateCtrl()
@@ -29,32 +28,19 @@ int CGateCtrl::PrepareToRun()
 #endif
 	//读取配置文件
 	ReadConfig( );
-	m_pMessManager->PrepareToRun( );
-	m_pNetManager->PrepareToRun( );
 	return 0;
 }
 
 int CGateCtrl::Run()
 {
-	//libevent事件循环
-	m_pNetManager->DispatchEvents( );
-}
 
-shared_ptr<CGateServer> &CGateCtrl::GetNetManager()
-{
-	return m_pNetManager;
-}
-
-shared_ptr<CMessHandle> &CGateCtrl::GetMesManager()
-{
-	return m_pMessManager;
 }
 
 void CGateCtrl::ReadConfig()
 {
-    m_pConfig = CServerConfig::CreateInstance( );
 	string filePath = "../config/serverinfo.json";
-	if (-1 == m_pConfig->LoadFromFile(filePath)) {
+	if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filePath)) 
+	{
 		LOG_ERROR("default", "Get ServerConfig failed");
 		exit(0);
 	}

@@ -2,66 +2,50 @@
 // Created by dguco on 18-1-30.
 //
 
-#include <share_mem.h>
-#include <acceptor.h>
-#include <client_comm_engine.h>
-#include <my_assert.h>
-#include "net_work.h"
-#include "../inc/mes_handle.h"
-#include "../inc/gate_ctrl.h"
+#include "mes_handle.h"
+#include "common_def.h"
+#include "shm_api.h"
 
-CMessHandle::CMessHandle(const string &threadName, long timeOut)
-	: m_pRecvBuff(std::make_shared<CByteBuff>( ))
+CMessHandle::CMessHandle()
 {
+
 }
 
 CMessHandle::~CMessHandle()
 {
 }
 
-int CMessHandle::PrepareToRun()
+bool CMessHandle::PrepareToRun()
 {
-	CreatePipe( );
-	return true;
+	return CreatePipe( );
 }
 
-void CMessHandle::CreatePipe()
+bool CMessHandle::CreatePipe()
 {
-	int iTempSize = sizeof(CSharedMem) + CCodeQueue::CountQueueSize(PIPE_SIZE);
+	// create c2spipe
+	int iTempSize = CCodeQueue::CountQueueSize(PIPE_SIZE);
+	CSharedMem c2sSharedMem;
+	bool ret = c2sSharedMem.Init(SHM_INIT, C2S_SHM_KEY, iTempSize);
+	if (!ret)
+	{
+		return false;
+	}
+	CCodeQueue::pCurrentShm = &c2sSharedMem;
+	m_C2SCodeQueue = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_C2S);
+	CCodeQueue::pCurrentShm = NULL;
 
 	// create s2cpipe
-	system("touch ./scpipefile");
-
-	char *pcTmpSCPipeID = getenv("SC_PIPE_ID");
-	int iTmpSCPipeID = 0;
-	if (pcTmpSCPipeID) {
-		iTmpSCPipeID = atoi(pcTmpSCPipeID);
+	iTempSize = CCodeQueue::CountQueueSize(PIPE_SIZE);
+	CSharedMem s2cSharedMem;
+	bool ret = s2cSharedMem.Init(SHM_INIT, S2C_SHM_KEY, iTempSize);
+	if (!ret)
+	{
+		return false;
 	}
 
-	key_t iTmpKeyS2C = MakeKey("./scpipefile", iTmpSCPipeID);
-	BYTE *pbyTmpS2CPipe = CreateShareMem(iTmpKeyS2C, iTempSize);
-	MY_ASSERT(pbyTmpS2CPipe != NULL, exit(0));
-
-	CSharedMem::pbCurrentShm = pbyTmpS2CPipe;
-	CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize);
-	m_S2CCodeQueue = shared_ptr<CCodeQueue>(CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_S2C));
-
-	// create c2spipe
-	system("touch ./cspipefile");
-
-	char *pcTmpCSPipeID = getenv("CS_PIPE_ID");
-	int iTmpCSPipeID = 0;
-	if (pcTmpCSPipeID) {
-		iTmpCSPipeID = atoi(pcTmpCSPipeID);
-	}
-
-	key_t iTmpKeyC2S = MakeKey("./cspipefile", iTmpCSPipeID);
-	BYTE *pbyTmpC2SPipe = CreateShareMem(iTmpKeyC2S, iTempSize);
-
-	MY_ASSERT(pbyTmpC2SPipe != NULL, exit(0));
-	CSharedMem::pbCurrentShm = pbyTmpC2SPipe;
-	CCodeQueue::pCurrentShm = CSharedMem::CreateInstance(iTmpKeyS2C, iTempSize);
-	m_S2CCodeQueue = shared_ptr<CCodeQueue>(CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_C2S));
+	CCodeQueue::pCurrentShm = &s2cSharedMem;
+	m_S2CCodeQueue = CCodeQueue::CreateInstance(PIPE_SIZE, IDX_PIPELOCK_S2C);
+	CCodeQueue::pCurrentShm = NULL;
 }
 
 int CMessHandle::SendClientData(CMessage &tmpMes, char *data, int len)

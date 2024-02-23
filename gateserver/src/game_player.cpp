@@ -23,7 +23,7 @@ int CGamePlayer::DoRecvLogic()
 	{
 		return ERR_RECV_OK;
 	}
-
+	//有完整的数据包，读取处理
 	CGateServer::GetSingletonPtr()->RecvClientData(this);
 }
 
@@ -34,5 +34,5 @@ int CGamePlayer::DoWriteLogic()
 
 int CGamePlayer::DoErrorLogic(int errcode)
 {
-
+	CGateServer::GetSingletonPtr()->DisConnect(this, errcode);
 }

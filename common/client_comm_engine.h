@@ -21,8 +21,8 @@ public:
 	 * @param pHead
 	 * @return
 	 */
-	static int ParseClientStream(SafePointer<CByteBuff> parseByteBuff,
-								 CMesHead *pHead);
+	static int ParseClientStream(SafePointer<CByteBuff> pSoucreByteBuff,
+								 SafePointer<CMesHead> pHead);
 
 	/**
 	 * 序列化消息Message 发送到gameserver（gateserver==>gameserver）

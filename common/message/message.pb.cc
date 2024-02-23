@@ -37,9 +37,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR CMessG2G::CMessG2G(
     ::_pbi::ConstantInitialized)
   : socketinfos_()
-  , messerial_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
-  , opflag_(0)
-{}
+  , messerial_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}){}
 struct CMessG2GDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CMessG2GDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -135,10 +133,8 @@ const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CMessG2G, opflag_),
   PROTOBUF_FIELD_OFFSET(::CMessG2G, socketinfos_),
   PROTOBUF_FIELD_OFFSET(::CMessG2G, messerial_),
-  1,
   ~0u,
   0,
   PROTOBUF_FIELD_OFFSET(::CMesHead, _has_bits_),
@@ -202,11 +198,11 @@ const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 9, -1, sizeof(::CSocketInfo)},
-  { 12, 21, -1, sizeof(::CMessG2G)},
-  { 24, 35, -1, sizeof(::CMesHead)},
-  { 40, 48, -1, sizeof(::CMessage)},
-  { 50, 64, -1, sizeof(::CProxyHead)},
-  { 72, 80, -1, sizeof(::CProxyMessage)},
+  { 12, 20, -1, sizeof(::CMessG2G)},
+  { 22, 33, -1, sizeof(::CMesHead)},
+  { 38, 46, -1, sizeof(::CMessage)},
+  { 48, 62, -1, sizeof(::CProxyHead)},
+  { 70, 78, -1, sizeof(::CProxyMessage)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -221,33 +217,32 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\rmessage.proto\"B\n\013CSocketInfo\022\020\n\010socket"
   "ID\030\001 \002(\005\022\022\n\ncreateTime\030\002 \002(\003\022\r\n\005state\030\003 "
-  "\002(\005\"j\n\010CMessG2G\022(\n\006opFlag\030\001 \002(\0162\r.enMess"
-  "ageCmd:\tMESS_NULL\022!\n\013socketInfos\030\002 \003(\0132\014"
-  ".CSocketInfo\022\021\n\tmesserial\030\003 \002(\014\"\201\001\n\010CMes"
-  "Head\022(\n\006opFlag\030\001 \002(\0162\r.enMessageCmd:\tMES"
-  "S_NULL\022!\n\013socketInfos\030\002 \003(\0132\014.CSocketInf"
-  "o\022\013\n\003cmd\030\003 \001(\005\022\016\n\006serial\030\004 \001(\005\022\013\n\003seq\030\005 "
-  "\001(\005\":\n\010CMessage\022\032\n\007msgHead\030\001 \002(\0132\t.CMesH"
-  "ead\022\022\n\007msgPara\030\002 \002(\006:\0010\"\264\001\n\nCProxyHead\022\r"
-  "\n\005srcFE\030\001 \002(\r\022\r\n\005srcID\030\002 \002(\r\022\r\n\005dstFE\030\003 "
-  "\002(\r\022\r\n\005dstID\030\004 \002(\r\022\021\n\ttimeStamp\030\005 \002(\004\022(\n"
-  "\006opFlag\030\006 \001(\0162\r.enMessageCmd:\tMESS_NULL\022"
-  "\021\n\tmessageId\030\007 \001(\r\022\032\n\007msgHead\030\010 \001(\0132\t.CM"
-  "esHead\"A\n\rCProxyMessage\022\034\n\007msgHead\030\001 \002(\013"
-  "2\013.CProxyHead\022\022\n\007msgPara\030\002 \001(\006:\0010*\200\002\n\014en"
-  "ServerType\022\014\n\010FE_TIMER\020\000\022\r\n\tFE_CLIENT\020\001\022"
-  "\021\n\rFE_GAMESERVER\020\002\022\022\n\016FE_LOGINSERVER\020\003\022\017"
-  "\n\013FE_DBSERVER\020\004\022\022\n\016FE_PROXYSERVER\020\005\022\022\n\016F"
-  "E_WORLDSERVER\020\006\022\020\n\014FE_WEBSERVER\020\007\022\024\n\020FE_"
-  "OFFLINESERVER\020\010\022\022\n\016FE_CHECKSERVER\020\t\022\021\n\rF"
-  "E_HALLSERVER\020\n\022\021\n\rFE_GATESERVER\020\013\022\021\n\rFE_"
-  "ROOMSERVER\020\014*R\n\014enMessageCmd\022\r\n\tMESS_NUL"
-  "L\020\000\022\017\n\013MESS_REGIST\020\001\022\022\n\016MESS_KEEPALIVE\020\002"
-  "\022\016\n\nMESS_LOGIC\020\003B\002H\001"
+  "\002(\005\"@\n\010CMessG2G\022!\n\013socketInfos\030\001 \003(\0132\014.C"
+  "SocketInfo\022\021\n\tmesserial\030\002 \002(\014\"\201\001\n\010CMesHe"
+  "ad\022(\n\006opFlag\030\001 \002(\0162\r.enMessageCmd:\tMESS_"
+  "NULL\022!\n\013socketInfos\030\002 \003(\0132\014.CSocketInfo\022"
+  "\013\n\003cmd\030\003 \001(\005\022\016\n\006serial\030\004 \001(\005\022\013\n\003seq\030\005 \001("
+  "\005\":\n\010CMessage\022\032\n\007msgHead\030\001 \002(\0132\t.CMesHea"
+  "d\022\022\n\007msgPara\030\002 \002(\006:\0010\"\264\001\n\nCProxyHead\022\r\n\005"
+  "srcFE\030\001 \002(\r\022\r\n\005srcID\030\002 \002(\r\022\r\n\005dstFE\030\003 \002("
+  "\r\022\r\n\005dstID\030\004 \002(\r\022\021\n\ttimeStamp\030\005 \002(\004\022(\n\006o"
+  "pFlag\030\006 \001(\0162\r.enMessageCmd:\tMESS_NULL\022\021\n"
+  "\tmessageId\030\007 \001(\r\022\032\n\007msgHead\030\010 \001(\0132\t.CMes"
+  "Head\"A\n\rCProxyMessage\022\034\n\007msgHead\030\001 \002(\0132\013"
+  ".CProxyHead\022\022\n\007msgPara\030\002 \001(\006:\0010*\200\002\n\014enSe"
+  "rverType\022\014\n\010FE_TIMER\020\000\022\r\n\tFE_CLIENT\020\001\022\021\n"
+  "\rFE_GAMESERVER\020\002\022\022\n\016FE_LOGINSERVER\020\003\022\017\n\013"
+  "FE_DBSERVER\020\004\022\022\n\016FE_PROXYSERVER\020\005\022\022\n\016FE_"
+  "WORLDSERVER\020\006\022\020\n\014FE_WEBSERVER\020\007\022\024\n\020FE_OF"
+  "FLINESERVER\020\010\022\022\n\016FE_CHECKSERVER\020\t\022\021\n\rFE_"
+  "HALLSERVER\020\n\022\021\n\rFE_GATESERVER\020\013\022\021\n\rFE_RO"
+  "OMSERVER\020\014*R\n\014enMessageCmd\022\r\n\tMESS_NULL\020"
+  "\000\022\017\n\013MESS_REGIST\020\001\022\022\n\016MESS_KEEPALIVE\020\002\022\016"
+  "\n\nMESS_LOGIC\020\003B\002H\001"
   ;
 static ::_pbi::once_flag descriptor_table_message_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_message_2eproto = {
-    false, false, 980, descriptor_table_protodef_message_2eproto,
+    false, false, 938, descriptor_table_protodef_message_2eproto,
     "message.proto",
     &descriptor_table_message_2eproto_once, nullptr, 0, 6,
     schemas, file_default_instances, TableStruct_message_2eproto::offsets,
@@ -583,14 +578,11 @@ void CSocketInfo::InternalSwap(CSocketInfo* other) {
 class CMessG2G::_Internal {
  public:
   using HasBits = decltype(std::declval<CMessG2G>()._has_bits_);
-  static void set_has_opflag(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
   static void set_has_messerial(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
   static bool MissingRequiredFields(const HasBits& has_bits) {
-    return ((has_bits[0] & 0x00000003) ^ 0x00000003) != 0;
+    return ((has_bits[0] & 0x00000001) ^ 0x00000001) != 0;
   }
 };
 
@@ -614,7 +606,6 @@ CMessG2G::CMessG2G(const CMessG2G& from)
     messerial_.Set(from._internal_messerial(), 
       GetArenaForAllocation());
   }
-  opflag_ = from.opflag_;
   // @@protoc_insertion_point(copy_constructor:CMessG2G)
 }
 
@@ -623,7 +614,6 @@ messerial_.InitDefault();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
   messerial_.Set("", GetArenaForAllocation());
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-opflag_ = 0;
 }
 
 CMessG2G::~CMessG2G() {
@@ -655,7 +645,6 @@ void CMessG2G::Clear() {
   if (cached_has_bits & 0x00000001u) {
     messerial_.ClearNonDefaultToEmpty();
   }
-  opflag_ = 0;
   _has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -667,35 +656,22 @@ const char* CMessG2G::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // required .enMessageCmd opFlag = 1 [default = MESS_NULL];
+      // repeated .CSocketInfo socketInfos = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-          if (PROTOBUF_PREDICT_TRUE(::enMessageCmd_IsValid(val))) {
-            _internal_set_opflag(static_cast<::enMessageCmd>(val));
-          } else {
-            ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(1, val, mutable_unknown_fields());
-          }
-        } else
-          goto handle_unusual;
-        continue;
-      // repeated .CSocketInfo socketInfos = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_socketinfos(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
         } else
           goto handle_unusual;
         continue;
-      // required bytes messerial = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+      // required bytes messerial = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           auto str = _internal_mutable_messerial();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
@@ -732,26 +708,19 @@ uint8_t* CMessG2G::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  cached_has_bits = _has_bits_[0];
-  // required .enMessageCmd opFlag = 1 [default = MESS_NULL];
-  if (cached_has_bits & 0x00000002u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      1, this->_internal_opflag(), target);
-  }
-
-  // repeated .CSocketInfo socketInfos = 2;
+  // repeated .CSocketInfo socketInfos = 1;
   for (unsigned i = 0,
       n = static_cast<unsigned>(this->_internal_socketinfos_size()); i < n; i++) {
     const auto& repfield = this->_internal_socketinfos(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
+        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
   }
 
-  // required bytes messerial = 3;
+  cached_has_bits = _has_bits_[0];
+  // required bytes messerial = 2;
   if (cached_has_bits & 0x00000001u) {
     target = stream->WriteBytesMaybeAliased(
-        3, this->_internal_messerial(), target);
+        2, this->_internal_messerial(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -762,47 +731,21 @@ uint8_t* CMessG2G::_InternalSerialize(
   return target;
 }
 
-size_t CMessG2G::RequiredFieldsByteSizeFallback() const {
-// @@protoc_insertion_point(required_fields_byte_size_fallback_start:CMessG2G)
-  size_t total_size = 0;
-
-  if (_internal_has_messerial()) {
-    // required bytes messerial = 3;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
-        this->_internal_messerial());
-  }
-
-  if (_internal_has_opflag()) {
-    // required .enMessageCmd opFlag = 1 [default = MESS_NULL];
-    total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_opflag());
-  }
-
-  return total_size;
-}
 size_t CMessG2G::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CMessG2G)
   size_t total_size = 0;
 
-  if (((_has_bits_[0] & 0x00000003) ^ 0x00000003) == 0) {  // All required fields are present.
-    // required bytes messerial = 3;
+  // required bytes messerial = 2;
+  if (_internal_has_messerial()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_messerial());
-
-    // required .enMessageCmd opFlag = 1 [default = MESS_NULL];
-    total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_opflag());
-
-  } else {
-    total_size += RequiredFieldsByteSizeFallback();
   }
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .CSocketInfo socketInfos = 2;
+  // repeated .CSocketInfo socketInfos = 1;
   total_size += 1UL * this->_internal_socketinfos_size();
   for (const auto& msg : this->socketinfos_) {
     total_size +=
@@ -832,15 +775,8 @@ void CMessG2G::MergeFrom(const CMessG2G& from) {
   (void) cached_has_bits;
 
   socketinfos_.MergeFrom(from.socketinfos_);
-  cached_has_bits = from._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    if (cached_has_bits & 0x00000001u) {
-      _internal_set_messerial(from._internal_messerial());
-    }
-    if (cached_has_bits & 0x00000002u) {
-      opflag_ = from.opflag_;
-    }
-    _has_bits_[0] |= cached_has_bits;
+  if (from._internal_has_messerial()) {
+    _internal_set_messerial(from._internal_messerial());
   }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -870,7 +806,6 @@ void CMessG2G::InternalSwap(CMessG2G* other) {
       &messerial_, lhs_arena,
       &other->messerial_, rhs_arena
   );
-  swap(opflag_, other->opflag_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata CMessG2G::GetMetadata() const {

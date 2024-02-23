@@ -37,8 +37,6 @@ public:
 public:
     //析构函数
     ~CSharedMem();
-    //设置共享内存创建时间戳
-	void SetStamp();
 //     //new 操作符重载将类对象定义到共享内存区地址
 // 	void* operator new( size_t nSize);
 //     //delete 操作符重载

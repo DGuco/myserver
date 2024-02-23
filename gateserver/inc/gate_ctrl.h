@@ -11,13 +11,11 @@
 #include "gate_def.h"
 #include "log.h"
 #include "server_tool.h"
-#include "message.pb.h"
 #include "base.h"
 #include "config.h"
-#include "net_manager.h"
 #include "mes_handle.h"
 #include "tcp_server.h"
-#include "thread_pool.h"
+#include "safe_pointer.h"
 
 class CGateCtrl: public CSingleton<CGateCtrl>
 {
@@ -30,16 +28,12 @@ public:
 	int PrepareToRun();
 	//run
 	int Run();
-	//获取线程池
-	shared_ptr<CGateServer> &GetNetManager();
-	shared_ptr<CMessHandle> &GetMesManager();
 private:
 	//读取配置文件
 	void ReadConfig();
 private:
-	shared_ptr<CGateServer> m_pNetManager;
-	shared_ptr<CMessHandle> m_pMessManager;
-    shared_ptr<CServerConfig> m_pConfig;
+	SafePointer<CMessHandle> m_pMessManager;
+	SafePointer<CServerConfig> m_pConfig;
 };
 
 #endif

@@ -447,11 +447,10 @@ class CMessG2G final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kSocketInfosFieldNumber = 2,
-    kMesserialFieldNumber = 3,
-    kOpFlagFieldNumber = 1,
+    kSocketInfosFieldNumber = 1,
+    kMesserialFieldNumber = 2,
   };
-  // repeated .CSocketInfo socketInfos = 2;
+  // repeated .CSocketInfo socketInfos = 1;
   int socketinfos_size() const;
   private:
   int _internal_socketinfos_size() const;
@@ -469,7 +468,7 @@ class CMessG2G final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo >&
       socketinfos() const;
 
-  // required bytes messerial = 3;
+  // required bytes messerial = 2;
   bool has_messerial() const;
   private:
   bool _internal_has_messerial() const;
@@ -487,25 +486,9 @@ class CMessG2G final :
   std::string* _internal_mutable_messerial();
   public:
 
-  // required .enMessageCmd opFlag = 1 [default = MESS_NULL];
-  bool has_opflag() const;
-  private:
-  bool _internal_has_opflag() const;
-  public:
-  void clear_opflag();
-  ::enMessageCmd opflag() const;
-  void set_opflag(::enMessageCmd value);
-  private:
-  ::enMessageCmd _internal_opflag() const;
-  void _internal_set_opflag(::enMessageCmd value);
-  public:
-
   // @@protoc_insertion_point(class_scope:CMessG2G)
  private:
   class _Internal;
-
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
@@ -514,7 +497,6 @@ class CMessG2G final :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo > socketinfos_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr messerial_;
-  int opflag_;
   friend struct ::TableStruct_message_2eproto;
 };
 // -------------------------------------------------------------------
@@ -1457,36 +1439,7 @@ inline void CSocketInfo::set_state(int32_t value) {
 
 // CMessG2G
 
-// required .enMessageCmd opFlag = 1 [default = MESS_NULL];
-inline bool CMessG2G::_internal_has_opflag() const {
-  bool value = (_has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CMessG2G::has_opflag() const {
-  return _internal_has_opflag();
-}
-inline void CMessG2G::clear_opflag() {
-  opflag_ = 0;
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline ::enMessageCmd CMessG2G::_internal_opflag() const {
-  return static_cast< ::enMessageCmd >(opflag_);
-}
-inline ::enMessageCmd CMessG2G::opflag() const {
-  // @@protoc_insertion_point(field_get:CMessG2G.opFlag)
-  return _internal_opflag();
-}
-inline void CMessG2G::_internal_set_opflag(::enMessageCmd value) {
-  assert(::enMessageCmd_IsValid(value));
-  _has_bits_[0] |= 0x00000002u;
-  opflag_ = value;
-}
-inline void CMessG2G::set_opflag(::enMessageCmd value) {
-  _internal_set_opflag(value);
-  // @@protoc_insertion_point(field_set:CMessG2G.opFlag)
-}
-
-// repeated .CSocketInfo socketInfos = 2;
+// repeated .CSocketInfo socketInfos = 1;
 inline int CMessG2G::_internal_socketinfos_size() const {
   return socketinfos_.size();
 }
@@ -1526,7 +1479,7 @@ CMessG2G::socketinfos() const {
   return socketinfos_;
 }
 
-// required bytes messerial = 3;
+// required bytes messerial = 2;
 inline bool CMessG2G::_internal_has_messerial() const {
   bool value = (_has_bits_[0] & 0x00000001u) != 0;
   return value;

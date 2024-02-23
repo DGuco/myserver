@@ -31,20 +31,22 @@ void CClientCommEngine::CopyMesHead(CMesHead *from, CMesHead *to)
 
 }
 
-int CClientCommEngine::ParseClientStream(SafePointer<CByteBuff> parseByteBuff,
-										 CMesHead *pHead)
+int CClientCommEngine::ParseClientStream(SafePointer<CByteBuff> pSoucreByteBuff,
+										 SafePointer<CMesHead> pHead)
 {
-	if ((parseByteBuff == NULL) || (pHead == NULL)) {
+	if ((pSoucreByteBuff == NULL) || (pHead == NULL))
+	{
 		ASSERT_EX(0, return -1, "CClientCommEngine::ParseClientStream Input param failed.");
 	}
 
 	//小于最小长度(包头长度 - 包总长度所占字节长度)
-	if (parseByteBuff->CanReadLen( ) < MSG_HEAD_LEN - sizeof(unsigned short)) {
+	if (pSoucreByteBuff->CanReadLen( ) < MSG_HEAD_LEN - sizeof(unsigned short))
+	{
 		ASSERT_EX(0,return -1,"The package len is less than base len ,receive len %d",parseByteBuff->CanReadLen( ));
 	}
-	pHead->set_serial(parseByteBuff->ReadUnShort( ));
-	pHead->set_seq(parseByteBuff->ReadUnShort( ));
-	pHead->set_cmd(parseByteBuff->ReadUnShort( ));
+	pHead->set_serial(pSoucreByteBuff->ReadUnShort( ));
+	pHead->set_seq(pSoucreByteBuff->ReadUnShort( ));
+	pHead->set_cmd(pSoucreByteBuff->ReadUnShort( ));
 	return 0;
 }
 

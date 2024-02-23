@@ -9,8 +9,8 @@
 #include "tcp_server.h"
 #include "server_tool.h"
 #include "message.pb.h"
+#include "game_player.h"
 
-class CGamePlayer;
 class CGateServer : public CTCPServer,public CSingleton<CGateServer>
 {
 public:
@@ -21,8 +21,6 @@ public:
 public:
 	//准备run
 	bool PrepareToRun();
-	//发送数据给gameserver
-	void DealClientData(SafePointer<CGamePlayer> pGamePlayer, unsigned short len);
 	//给特定client发送数据
 	void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
 	//清除socket
@@ -50,6 +48,8 @@ protected:
 	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket);
 	//
 	virtual SafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket);
+private:
+	BYTE m_CacheData[GAMEPLAYER_RECV_BUFF_LEN];
 };
 
 #endif //__GATE_SERVER_H__
