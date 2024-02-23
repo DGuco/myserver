@@ -7,6 +7,8 @@
 
 #include "my_assert.h"
 #include "gate_ctrl.h"
+#include "gate_server.h"
+#include "mes_handle.h"
 
 CGateCtrl::CGateCtrl()
 {
@@ -17,7 +19,7 @@ CGateCtrl::~CGateCtrl()
 {
 }
 
-int CGateCtrl::PrepareToRun()
+bool CGateCtrl::PrepareToRun()
 {
 #ifdef _DEBUG_
 	//初始化日志
@@ -27,21 +29,44 @@ int CGateCtrl::PrepareToRun()
 	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::info);
 #endif
 	//读取配置文件
-	ReadConfig( );
-	return 0;
+	if (!ReadConfig()) exit(0);
+	if (!CMessHandle::GetSingletonPtr()->PrepareToRun()) exit(0);
+	if (!CGateServer::GetSingletonPtr()->PrepareToRun()) exit(0);
+	return true;
 }
 
 int CGateCtrl::Run()
 {
+	while (true)
+	{
+		try
+		{
+			CGateServer::GetSingletonPtr()->Run();
+		}
+		catch (const std::exception& e)
+		{
+			LOG_ERROR("default""CGateServer Run  cache execption msg {]", e.what());
+		}
 
+		try
+		{
+			CMessHandle::GetSingletonPtr()->Run();
+		}
+		catch (const std::exception& e)
+		{
+			LOG_ERROR("default""CMessHandle Run  cache execption msg {]", e.what());
+		}
+		SLEEP(10);
+	}
 }
 
-void CGateCtrl::ReadConfig()
+bool CGateCtrl::ReadConfig()
 {
 	string filePath = "../config/serverinfo.json";
 	if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filePath)) 
 	{
 		LOG_ERROR("default", "Get ServerConfig failed");
-		exit(0);
+		return false;
 	}
+	return true;
 }

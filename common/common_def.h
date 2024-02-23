@@ -10,6 +10,7 @@
 #define PIPE_SIZE            (0x1000000)    // 共享内存管道大小 16M
 #define C2S_SHM_KEY			 (20000000)
 #define S2C_SHM_KEY			 (20000001)
+#define MAX_SOCKET_NUM	     (65536)
 
 // 管道标识符
 enum enLockIdx

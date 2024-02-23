@@ -36,7 +36,7 @@ set(FRAMEWORK
         "base/rbthash_map.h"
         "base/time_helper.h"
         "base/time_helper.cpp"
-        "const/common_def.h"
+        
         "const/dblogin_type.h"
         "const/err_code.h"
         "json/config.cpp"

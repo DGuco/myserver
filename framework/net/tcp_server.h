@@ -19,10 +19,8 @@ enum eTcpServerModule
 	eTcpEpoll = 1,
 };
 
-# define MAX_SOCKET_NUM 65536
-
-typedef std::unordered_map<SOCKET, SafePointer<CTCPClient>> ClientMap;
 typedef std::unordered_map<SOCKET, SafePointer<CTCPConn>>   ConnMap;
+typedef std::unordered_map<SOCKET, SafePointer<CTCPClient>> ClientMap;
 
 class CTCPServer
 {
@@ -41,6 +39,10 @@ public:
 										bool bblock);
 	//
 	bool Run();
+	//
+	SafePointer<CTCPConn>     FindTcpConn(SOCKET socket);
+	//
+	SafePointer<CTCPClient>   FindTcpClient(SOCKET socket);
 private:
 	//
 	int PrepareToRun();

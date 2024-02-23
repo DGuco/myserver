@@ -5,6 +5,7 @@
 #include "mes_handle.h"
 #include "common_def.h"
 #include "shm_api.h"
+#include "gate_ctrl.h"
 
 CMessHandle::CMessHandle()
 {
@@ -18,6 +19,12 @@ CMessHandle::~CMessHandle()
 bool CMessHandle::PrepareToRun()
 {
 	return CreatePipe( );
+}
+
+void CMessHandle::Run()
+{
+	RecvGameData();
+	DealMsg();
 }
 
 bool CMessHandle::CreatePipe()
@@ -52,23 +59,26 @@ int CMessHandle::SendClientData(CMessage &tmpMes, char *data, int len)
 {
 	int nTmpSocket;
 	auto tmpSendList = tmpMes.msghead( ).socketinfos( );
-	for (int i = 0; i < tmpSendList.size( ); ++i) {
+	for (int i = 0; i < tmpSendList.size( ); ++i) 
+	{
 		//向后移动socket索引
 		const CSocketInfo &tmpSocketInfo = tmpSendList.Get(i);
 		nTmpSocket = tmpSocketInfo.socketid( );
 		//socket 非法
-		if (nTmpSocket <= 0 || MAX_SOCKET_NUM <= nTmpSocket) {
+		if (nTmpSocket <= 0 || MAX_SOCKET_NUM <= nTmpSocket) 
+		{
 			LOG_ERROR("default", "Invalid socket index {}", nTmpSocket);
 			continue;
 		}
-        CGateCtrl::GetSingletonPtr()->GetNetManager()->SendToClient(tmpSocketInfo, data, len);
+        CGateCtrl::GetSingletonPtr()->SendToClient(tmpSocketInfo, data, len);
 	}
 	return 0;
 }
 
 void CMessHandle::DealMsg()
 {
-	while (!m_S2CCodeQueue->IsQueueEmpty( )) {
+	while (!m_S2CCodeQueue->IsQueueEmpty( ))
+	{
         RecvGameData( );
 	}
 }
@@ -79,10 +89,12 @@ void CMessHandle::RecvGameData()
 	int iTmpLen = 0;
 	//获取成功
 	int iRet = 0;
-	if ((iRet = m_S2CCodeQueue->GetHeadCode((BYTE *) (m_pRecvBuff->CanWriteData( )), iTmpLen)) == 0) {
+	if ((iRet = m_S2CCodeQueue->GetHeadCode((BYTE *) (m_pRecvBuff->GetData( )), iTmpLen)) == 0) 
+	{
 		m_pRecvBuff->WriteLen(iTmpLen);
 	}
-	else {
+	else
+	{
 		LOG_ERROR("default", "CMessHandle::m_S2CCodeQueue->GetHeadCode failed,error code {}", iRet);
 		return;
 	}
@@ -103,7 +115,6 @@ void CMessHandle::RecvGameData()
 
 	SendClientData(tmpMes, m_pRecvBuff->CanReadData( ), m_pRecvBuff->ReadableDataLen( ));
 }
-
 
 int CMessHandle::SendToGame(char *data, int iTmpLen)
 {

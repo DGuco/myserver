@@ -25,14 +25,13 @@ public:
 	//析构函数
 	~CGateCtrl();
 	//准备run
-	int PrepareToRun();
+	bool PrepareToRun();
 	//run
 	int Run();
 private:
 	//读取配置文件
-	void ReadConfig();
+	bool ReadConfig();
 private:
-	SafePointer<CMessHandle> m_pMessManager;
 	SafePointer<CServerConfig> m_pConfig;
 };
 

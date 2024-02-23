@@ -41,6 +41,7 @@ using namespace std;
 
     #define OPT_WOULD_BLOCK   (EAGAIN)
     #define SOCKET_CONNECTING  (EINPROGRESS)
+    #define SLEEP(miseconds) sleep(miseconds)
     typedef int sm_handler;
     typedef int sm_key;
 	typedef int	SOCKET;
@@ -73,6 +74,7 @@ using namespace std;
 
     #define OPT_WOULD_BLOCK   (WSAEWOULDBLOCK)
     #define SOCKET_CONNECTING  (WSAEWOULDBLOCK)
+    #define SLEEP(miseconds) Sleep(miseconds)
 
     typedef int sm_key;
     typedef void* sm_handler;

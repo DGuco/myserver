@@ -99,6 +99,28 @@ bool CTCPServer::Run()
 #endif
 }
 
+//
+SafePointer<CTCPConn> CTCPServer::FindTcpConn(SOCKET socket)
+{
+	ConnMap::iterator itconn = m_ConnMap.find(socket);
+	if (itconn != m_ConnMap.end())
+	{
+		return itconn->second;
+	}
+	return NULL;
+}
+
+//
+SafePointer<CTCPClient>   CTCPServer::FindTcpClient(SOCKET socket)
+{
+	ClientMap::iterator itcleint = m_ClientMap.find(socket);
+	if (itcleint != m_ClientMap.end())
+	{
+		return itcleint->second;
+	}
+	return NULL;
+}
+
 int CTCPServer::InitSelect(const char* ip, int port)
 {
 	if (!m_ListenSocket.IsValid())

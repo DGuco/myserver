@@ -6,20 +6,17 @@
 //
 
 #include <memory>
-#include "inc/gate_ctrl.h"
+#include "gate_ctrl.h"
 
 using namespace std;
 int main(int argc, char **argv)
 {
-
-	
-	std::shared_ptr<CGateCtrl> &pGateCtrl = CGateCtrl::CreateInstance();
-	int iTmpRet = pGateCtrl->PrepareToRun();
+	int iTmpRet = CGateCtrl::GetSingletonPtr()->PrepareToRun();
 	if (iTmpRet != 0) {
 		LOG_ERROR("default", "CGateCtrl PrepareToRun failed,iRet = {}", iTmpRet);
 		exit(0);
 	}
-	pGateCtrl->Run();
+	CGateCtrl::GetSingletonPtr()->Run();
 	// 关闭日志
 	LOG_SHUTDOWN_ALL;
 }

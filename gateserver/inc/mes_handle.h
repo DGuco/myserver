@@ -21,6 +21,8 @@ public:
 public:
 	//准备run
 	bool PrepareToRun();
+	//
+	void Run();
 	//创建pipe
 	bool CreatePipe();
 	//向client下行数据包

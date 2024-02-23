@@ -286,8 +286,9 @@ int CCodeQueue::AppendOneCode(const BYTE *pInCode, int sInLength)
 			memcpy((void *) &pbyCodeBuf[0], (const void *) &pInCode[(m_stQueueHead.m_iSize - nTempWrite)],
 				   (size_t) (sInLength - (m_stQueueHead.m_iSize - nTempWrite)));
 		}
-			//内存区尾部够够长不需要分片
-		else {
+		//内存区尾部够够长不需要分片
+		else 
+		{
 			memcpy((void *) &pbyCodeBuf[nTempWrite], (const void *) &pInCode[0], (size_t) sInLength);
 		}
 	}
@@ -363,13 +364,16 @@ int CCodeQueue::GetHeadCode(BYTE *pOutCode, int &psOutLength)
 
 	pTempDst = &pOutCode[0];  // 设置接收 Code 的地址
 	//数据在内存去中间
-	if (nTempRead < nTempWrite) {
+	if (nTempRead < nTempWrite) 
+	{
 		memcpy((void *) pTempDst, (const void *) &pTempSrc[nTempRead], (size_t) (psOutLength));
 	}
-		//数据在内存区两头
-	else {
+	//数据在内存区两头
+	else 
+	{
 		// 如果出现分片，则分段拷贝
-		if (m_stQueueHead.m_iSize - nTempRead < psOutLength) {
+		if (m_stQueueHead.m_iSize - nTempRead < psOutLength) 
+		{
 			memcpy((void *) pTempDst,
 				   (const void *) &pTempSrc[nTempRead],
 				   (size_t) (m_stQueueHead.m_iSize - nTempRead));
@@ -378,8 +382,9 @@ int CCodeQueue::GetHeadCode(BYTE *pOutCode, int &psOutLength)
 				   (const void *) &pTempSrc[0],
 				   (size_t) (psOutLength - (m_stQueueHead.m_iSize - nTempRead)));
 		}
-			// 否则，直接拷贝
-		else {
+		// 否则，直接拷贝
+		else
+		{
 			memcpy((void *) pTempDst, (const void *) &pTempSrc[nTempRead], (size_t) (psOutLength));
 		}
 	}
