@@ -22,7 +22,7 @@ public:
 	//准备run
 	bool PrepareToRun();
 	//给特定client发送数据
-	void SendToClient(const CSocketInfo &socketInfo, const char *data, unsigned int len);
+	void SendToClient(const CSocketInfo &socketInfo,const char *data, unsigned int len);
 	//清除socket
 	void ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError);
 	//通知gameserver client 断开连接

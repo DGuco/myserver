@@ -159,6 +159,7 @@ int CByteBuff::ReadBytes(BYTE* pOutCode, msize_t tmLen, bool ispeek)
 		m_nReadIndex = (m_nReadIndex + usOutLength) % m_nCapacity;
 		//m_nReadIndex = (m_nReadIndex + usOutLength) & (m_nCapacity - 1);
 	}
+	return 0;
 }
 
 void CByteBuff::WriteShort(short value, int offset)

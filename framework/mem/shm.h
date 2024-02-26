@@ -12,9 +12,6 @@
 
 #define YEARSEC 31536000
 
-#define PIPE_SIZE            (0x1000000)    // 共享内存管道大小 16M
-#define C2S_SHM_KEY			 (20000000)
-#define S2C_SHM_KEY			 (20000001)
 #define MAX_SOCKET_NUM	     (65536)
 
 struct SSmHead
@@ -25,6 +22,7 @@ struct SSmHead
 	size_t			m_nShmSize;
 	//起始地址
 	BYTE*			m_pSegment;
+	sm_handler      m_Handler;
 };
 
 class CSharedMem
@@ -40,9 +38,9 @@ public:
 //     //delete 操作符重载
 // 	void  operator delete(void* pMem);
 	//初始化
-	bool Init(EIMode module,sm_key nSmKey, size_t nSize);
+	bool Init(eShmModule module,sm_key nSmKey, size_t nSize);
 	//获取对象创建类型
-	EIMode GetInitMode();
+	eShmModule GetInitMode();
     //设置对象创建类型
 	bool CreateSegment(sm_key nSmKey,size_t nSize);
 	//attach
@@ -61,9 +59,7 @@ private:
 	//可用内存的大小
 	size_t					m_nSize;
     //对象初始化类型
-	EIMode					m_InitMode;
-	//共享内存句柄
-	sm_handler				m_Handler;
+	eShmModule				m_InitMode;
 };
 
 

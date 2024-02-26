@@ -38,7 +38,6 @@ CSharedMem::CSharedMem()
 	m_pCurrentSegMent = NULL;
 	m_InitMode = SHM_INVALID;
 	m_nSize = 0;
-	m_Handler = NULL;
 }
 
 CSharedMem::~CSharedMem()
@@ -48,21 +47,21 @@ CSharedMem::~CSharedMem()
 	m_nSize = 0;
 }
 
-bool CSharedMem::Init(EIMode module,sm_key nSmKey, size_t nSize)
+bool CSharedMem::Init(eShmModule module,sm_key nSmKey, size_t nSize)
 {
 	m_InitMode = module;
 	if (m_InitMode == SHM_INIT)
 	{
 		return CreateSegment(nSmKey, nSize);
 	}
-	else if (m_InitMode == SHM_RECOVER)
+	else if (m_InitMode == SHM_RESUME)
 	{
 		return AttachSegment(nSmKey, nSize);
 	}
 	return false;
 }
 
-EIMode CSharedMem::GetInitMode()
+eShmModule CSharedMem::GetInitMode()
 {
 	return m_InitMode;
 }
@@ -70,13 +69,13 @@ EIMode CSharedMem::GetInitMode()
 bool CSharedMem::CreateSegment(sm_key nSmKey, size_t nSize)
 {
 	size_t smSize = nSize + sizeof(SSmHead);
-	m_Handler = ShareMemAPI::CreateShareMem(nSmKey, smSize);
-	if (m_Handler == NULL)
+	sm_handler handler = ShareMemAPI::CreateShareMem(nSmKey, smSize);
+	if (handler == INVALID_SM_HADLER)
 	{
 		LOG_ERROR("default", "CreateSegment CreateShareMem failed nSmKey = {} error : {} errormsg : {}", nSmKey,errno,strerror(errno));
 		return false;
 	}
-	BYTE* pAddr = ShareMemAPI::AttachShareMem(m_Handler);
+	BYTE* pAddr = ShareMemAPI::AttachShareMem(handler);
 	if (pAddr == NULL)
 	{
 		LOG_ERROR("default", "AttachShareMem AttachShareMem failed nSmKey = {} error : {} errormsg : {}", nSmKey, errno,strerror(errno));
@@ -86,6 +85,7 @@ bool CSharedMem::CreateSegment(sm_key nSmKey, size_t nSize)
 	m_pHead->m_nShmKey = nSmKey;
 	m_pHead->m_nShmSize = nSize + sizeof(SSmHead);
 	m_pHead->m_pSegment = pAddr;
+	m_pHead->m_Handler = handler;
 	m_pCurrentSegMent = ((BYTE*)(pAddr + sizeof(SSmHead)));
 	m_nSize = nSize;
 	LogDebug("default", "CSharedMem::CreateSegment OK nSmKey = {} size = {}", nSmKey, nSize);
@@ -95,13 +95,13 @@ bool CSharedMem::CreateSegment(sm_key nSmKey, size_t nSize)
 bool CSharedMem::AttachSegment(sm_key nSmKey, size_t nSize)
 {
 	size_t smSize = nSize + sizeof(SSmHead);
-	m_Handler = ShareMemAPI::OpenShareMem(nSmKey, smSize);
-	if (m_Handler == (sm_handler)(-1))
+	sm_handler handler = ShareMemAPI::OpenShareMem(nSmKey, smSize);
+	if (handler == INVALID_SM_HADLER)
 	{
 		LOG_ERROR("default", "AttachSegment OpenShareMem failed nSmKey = {} error : {} errormsg : {}", nSmKey, errno, strerror(errno));
 		return false;
 	}
-	BYTE* pAddr = ShareMemAPI::AttachShareMem(m_Handler);
+	BYTE* pAddr = ShareMemAPI::AttachShareMem(handler);
 	if (pAddr == NULL)
 	{
 		LOG_ERROR("default", "AttachSegment AttachShareMem failed nSmKey = {} error : {} errormsg : {}", nSmKey, errno, strerror(errno));
@@ -111,6 +111,7 @@ bool CSharedMem::AttachSegment(sm_key nSmKey, size_t nSize)
 	m_pHead->m_nShmKey = nSmKey;
 	m_pHead->m_nShmSize = nSize + sizeof(SSmHead);
 	m_pHead->m_pSegment = pAddr;
+	m_pHead->m_Handler = handler;
 	m_pCurrentSegMent = ((BYTE*)(pAddr + sizeof(SSmHead)));
 	m_nSize = nSize;
 	LogDebug("default", "CSharedMem::AttachSegment OK nSmKey = {} size = {}", nSmKey, nSize);
@@ -142,9 +143,9 @@ bool CSharedMem::CloseSegment()
 			LOG_ERROR("default", "CloseSegment DetachShareMem failed nSmKey = {} error : {} errormsg : {}", m_pHead->m_nShmKey, errno, strerror(errno));
 		}
 	}
-	if (m_Handler != NULL)
+	if (m_pHead->m_Handler != NULL)
 	{
-		if (!ShareMemAPI::DestroyShareMem(m_Handler))
+		if (!ShareMemAPI::DestroyShareMem(m_pHead->m_Handler))
 		{
 			LOG_ERROR("default", "CloseSegment DestroyShareMem failed nSmKey = {} error : {} errormsg : {}", m_pHead->m_nShmKey, errno, strerror(errno));
 		}
@@ -154,7 +155,6 @@ bool CSharedMem::CloseSegment()
 		}
 	}
 	m_pHead = NULL;
-	m_Handler = NULL;
 	return ret;
 }
 

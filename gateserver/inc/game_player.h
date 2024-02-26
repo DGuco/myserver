@@ -9,9 +9,6 @@
 
 #include "tcp_conn.h"
 
-#define  GAMEPLAYER_RECV_BUFF_LEN (1024 * 1024 * 2)  //2mb
-#define  GAMEPLAYER_SEND_BUFF_LEN (1024 * 1024 * 2)  //2mb
-
 class CGamePlayer : public CTCPConn
 {
 public:

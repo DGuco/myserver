@@ -38,20 +38,13 @@ struct stMemTrunk
 class CShmMessQueue
 {
 public:
-    /**
-     *
-     * @param module
-     * @param shmKey
-     * @param shmId
-     * @param size 如果传入的size != 2^n,size 会初始化为>size的最小的2^n的数
-     * 例如　2^n-1 < size < 2^n,则MessageQueue被初始化为2^n
-     */
-    CShmMessQueue(BYTE* pCurrAddr, eQueueModel module, int shmKey, int shmId, size_t size);
+    CShmMessQueue();
     ~CShmMessQueue();
     CShmMessQueue(const CShmMessQueue&) = delete;
     CShmMessQueue(CShmMessQueue&&) = delete;
     CShmMessQueue& operator=(const CShmMessQueue&) = delete;
 public:
+    bool Init(sm_key shmKey,size_t size);
     /**
      * 添加消息 对于mes queue来说是写操作，因为在队列中添加了一个消息包,仅修改m_iEnd
      * 写取共享内存管道（改变读写索引）,，读共享内存仅改变m_iEnd，保证读单进程读和写进程不会发生竞争，写不会造成数据不一致
@@ -83,16 +76,16 @@ public:
     int DeleteHeadMessage();
     /**
      * 打印队列信息
-     * 这里没有加锁打印仅供参考，不一定是正确的
      **/
     void DebugTrunk();
-private:
     //获取空闲区大小
     unsigned int GetFreeSize();
     //获取数据长度
     unsigned int GetDataSize();
     //获取存储数据的内存取长度（空闲的和占用的）
     unsigned int GetQueueLength();
+    //是否数据为空
+    bool IsEmpty();
 public:
     //是否是2的次方
     static bool IsPowerOfTwo(size_t size);
@@ -105,17 +98,12 @@ public:
      * @param shmkey
      * @param queuesize 如果传入的size != 2^n,size 会初始化为>size的最小的2^n的数,例如2^n-1 < size < 2^n,
      *                  则MessageQueue被初始化为2^n
-     * @param queueModule
      * @return
      */
-    static CShmMessQueue* CreateInstance(int shmkey,
-        size_t queuesize,
-        eQueueModel queueModule = eQueueModel::MUL_READ_MUL_WRITE);
-private:
+    static CShmMessQueue* CreateInstance(int shmkey,size_t queuesize);
 private:
     stMemTrunk* m_stMemTrunk;
     BYTE*       m_pQueueAddr;
-    void*       m_pShm;
     CSharedMem  m_ShareMem;
 };
 #endif //__SHM_QUEUE_H__

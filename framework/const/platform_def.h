@@ -42,6 +42,7 @@ using namespace std;
     #define OPT_WOULD_BLOCK   (EAGAIN)
     #define SOCKET_CONNECTING  (EINPROGRESS)
     #define SLEEP(miseconds) sleep(miseconds)
+	#define INVALID_SM_HADLER (-1)
     typedef int sm_handler;
     typedef int sm_key;
 	typedef int	SOCKET;
@@ -78,6 +79,8 @@ using namespace std;
 
     typedef int sm_key;
     typedef void* sm_handler;
+	#define INVALID_SM_HADLER (NULL)
+
 #endif
 
 #define CACHE_LINE_SIZE 64
@@ -109,17 +112,10 @@ enum eQueueModel
 	MUL_READ_MUL_WRITE,   //多个进程读消息多个进程写消息
 };
 
-enum enShmModule
+enum eShmModule
 {
+	SHM_INVALID = -1,
 	SHM_INIT,     //第一次申请共享内存，初始化
 	SHM_RESUME,   //共享内存已存在，恢复重新映射共享内存数据
 };
-
-enum EIMode
-{
-	SHM_INVALID = -1,
-	SHM_RECOVER = 0,
-	SHM_INIT = 1,
-};
-
 #endif //__PLATFORM_DEF_H__

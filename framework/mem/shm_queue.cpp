@@ -1,26 +1,38 @@
 #include "shm_queue.h"
 #include "log.h"
 
-CShmMessQueue::CShmMessQueue(BYTE* pCurrAddr, eQueueModel module, int shmKey, int shmId, size_t size)
+CShmMessQueue::CShmMessQueue()
 {
-    m_pShm = (void*)pCurrAddr;
-    m_pQueueAddr = pCurrAddr;
-    m_stMemTrunk = new (m_pQueueAddr) stMemTrunk();
-    m_pQueueAddr += sizeof(stMemTrunk);
-    m_stMemTrunk->m_iBegin = 0;
-    m_stMemTrunk->m_iEnd = 0;
-    m_stMemTrunk->m_iShmKey = shmKey;
-    m_stMemTrunk->m_iShmId = shmId;
-    m_stMemTrunk->m_iSize = (unsigned int)size;
+	m_pQueueAddr = NULL;
+	m_stMemTrunk = NULL;
 }
 
 CShmMessQueue::~CShmMessQueue()
 {
     if (m_stMemTrunk) 
     {
-        DestroyShareMem(m_pShm, m_stMemTrunk->m_iShmKey);
         m_stMemTrunk->~stMemTrunk();
     }
+
+    m_pQueueAddr = NULL;
+    //m_ShareMem.DetachSegment();
+}
+
+bool CShmMessQueue::Init(sm_key shmKey,size_t size)
+{
+    bool bRet = m_ShareMem.CreateSegment(shmKey, size + sizeof(SSmHead) + sizeof(stMemTrunk));
+    if (!bRet)
+    {
+        return false;
+    }
+	m_pQueueAddr = m_ShareMem.GetSegment();
+	m_stMemTrunk = new (m_pQueueAddr) stMemTrunk();
+	m_pQueueAddr += sizeof(stMemTrunk);
+	m_stMemTrunk->m_iBegin = 0;
+	m_stMemTrunk->m_iEnd = 0;
+	m_stMemTrunk->m_iShmKey = shmKey;
+	m_stMemTrunk->m_iSize = (unsigned int)size;
+    return true;
 }
 
 int CShmMessQueue::SendMessage(BYTE* message, msize_t length)
@@ -136,7 +148,8 @@ int CShmMessQueue::GetMessage(BYTE* pOutCode)
 **/
 int CShmMessQueue::ReadHeadMessage(BYTE* pOutCode)
 {
-    if (!pOutCode) {
+    if (!pOutCode) 
+    {
         return (int)eQueueErrorCode::QUEUE_PARAM_ERROR;
     }
 
@@ -275,6 +288,13 @@ unsigned int CShmMessQueue::GetQueueLength()
     return (unsigned int)m_stMemTrunk->m_iSize;
 }
 
+
+//是否数据为空
+bool  CShmMessQueue::IsEmpty()
+{
+    return GetDataSize() <= 0;
+}
+
 bool CShmMessQueue::IsPowerOfTwo(size_t size) 
 {
     if (size < 1)
@@ -305,9 +325,7 @@ size_t CShmMessQueue::RoundupPowofTwo(size_t size)
     return 1UL << Fls(size - 1);
 }
 
-CShmMessQueue* CShmMessQueue::CreateInstance(int shmkey,
-    size_t queuesize,
-    eQueueModel queueModule)
+CShmMessQueue* CShmMessQueue::CreateInstance(int shmkey,size_t queuesize)
 {
     if (queuesize <= 0)
     {
@@ -319,10 +337,18 @@ CShmMessQueue* CShmMessQueue::CreateInstance(int shmkey,
     {
         return NULL;
     }
-    enShmModule shmModule;
+    eShmModule shmModule;
     int shmId = 0;
-    BYTE* tmpMem = CShmMessQueue::CreateShareMem(shmkey, queuesize + sizeof(stMemTrunk), shmModule, shmId);
-    CShmMessQueue* messageQueue = new CShmMessQueue(tmpMem, queueModule, shmkey, shmId, queuesize);
-    messageQueue->DebugTrunk();
-    return messageQueue;
+    CShmMessQueue* pMessQueue = new CShmMessQueue();
+    if (pMessQueue == NULL)
+    {
+        return NULL;
+    }
+    bool bRet = pMessQueue->Init(shmkey, queuesize);
+    if (!bRet)
+    {
+        DELETE(pMessQueue);
+        return NULL;
+    }
+    return pMessQueue;
 }

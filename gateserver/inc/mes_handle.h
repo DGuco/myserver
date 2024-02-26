@@ -7,9 +7,10 @@
 #define SERVER_S2C_THREAD_H
 
 #include "byte_buff.h"
-#include "code_queue.h"
+#include "shm_queue.h"
 #include "message.pb.h"
 #include "server_tool.h"
+#include "common_def.h"
 
 class CMessHandle : public CSingleton<CMessHandle>
 {
@@ -26,7 +27,7 @@ public:
 	//创建pipe
 	bool CreatePipe();
 	//向client下行数据包
-	int SendClientData(CMessage &tmpMes, char *data, int len);
+	int SendClientData(CMessG2G &tmpMes);
 	//接收game消息
 	void RecvGameData();
 	//向game 发送消息
@@ -35,10 +36,11 @@ public:
 	void DealMsg();
 private:
 	//gateserver ==> gameserver
-	SafePointer<CCodeQueue> m_C2SCodeQueue;
+	SafePointer<CShmMessQueue>	m_C2SCodeQueue;
 	//gameserver ==> gateserver
-	SafePointer<CCodeQueue> m_S2CCodeQueue;
-	SafePointer<CByteBuff> m_pRecvBuff;      //gameserver 返回数据buff
+	SafePointer<CShmMessQueue>	m_S2CCodeQueue;
+	SafePointer<CByteBuff>		m_pRecvBuff;      //gameserver 返回数据buff
+	BYTE						m_CacheData[GAMEPLAYER_RECV_BUFF_LEN];
 };
 
 
