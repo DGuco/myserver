@@ -4,8 +4,8 @@
 //  Copyright © 2018年 DGuco. All rights reserved.
 //
 
-#ifndef _LOG_H_
-#define _LOG_H_
+#ifndef _LOG_DEF_H_
+#define _LOG_DEF_H_
 
 #include <string>
 #include <stdarg.h>
@@ -17,25 +17,25 @@ using namespace spdlog::level;
 
 #define  CONSOLE_LOG_NAME "console"
 
-int INIT_BASE_LOG(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
+extern int INIT_BASE_LOG(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
 				 const char *vLogDir,                        /*文件名称(路径)*/
 				 level_enum level,						/*日志等级*/
 				 bool vAppend = true);					 /*是否截断(默认即可)*/
 
 
-int INIT_ROATING_LOG(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
-				    const char *vLogDir,                        /*文件名称(路径)*/
-				   level_enum level,        /*日志等级*/
-				   unsigned int vMaxFileSize = 10 * 1024 * 1024,    /*回卷文件最大长度*/
-				   unsigned int vMaxBackupIndex = 5);            /*回卷文件个数*/
+extern int INIT_ROATING_LOG(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
+				     const char *vLogDir,                        /*文件名称(路径)*/
+				     level_enum level,        /*日志等级*/
+				     unsigned int vMaxFileSize = 10 * 1024 * 1024,    /*回卷文件最大长度*/
+				     unsigned int vMaxBackupIndex = 5);            /*回卷文件个数*/
 
-int INIT_DAILY_LOG(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
+extern int INIT_DAILY_LOG(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
 				 const char *vLogDir,                        /*文件名称(路径)*/
 				 level_enum level,        /*日志等级*/
 				 unsigned int hour,
 				 unsigned int minute);
 
-int LOG_SHUTDOWN_ALL();
+extern int LOG_SHUTDOWN_ALL();
 
 template<typename... Args>
 int LOG_NOTICE(const char *vLogName, const char *vFmt, const Args &... args);
@@ -189,4 +189,4 @@ int LogCritical(const char *vLogName, const char *vFmt, const Args &... args)
 	return 0;
 }
 
-#endif // _LOG_H_
+#endif // _LOG_DEF_H_

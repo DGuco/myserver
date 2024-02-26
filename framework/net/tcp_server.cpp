@@ -208,7 +208,7 @@ int CTCPServer::SelectTick()
 		{
 			LOG_ERROR("default", "Select error, {}.", strerror(errno));
 		}
-		return;
+		return -1;
 	}
 
 	// 如果iListenSocketFD在fds_read中
@@ -336,7 +336,7 @@ int CTCPServer::SelectTick()
 
 	//回收已关闭或者出错的连接
 	FreeClosedSocket();
-	return;
+	return 0;
 }
 
 void CTCPServer::FreeClosedSocket()

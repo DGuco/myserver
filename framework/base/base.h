@@ -13,10 +13,12 @@
 #include <string>
 #include <csignal>
 #include <stdio.h>
+
+#define MIN(a，b)((a) <= (b) ? (a) : (b))
+#define MAX(a，b)((a) >= (b) ? (a) : (b))
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 #define STR(x)			#x
 
-#define CACHE_LINE_SIZE		(64)
 #define UID_LENGTH			 (64)    // 帐号长度
 #define NAME_LENGTH          (32)    // 名字长度
 #define PATH_LENGTH			 (256)    // 文件路径字符长度

@@ -27,7 +27,7 @@ set(FRAMEWORK
         "base/reflection.h"
         "base/server_tool.cpp"
         "base/server_tool.h"
-        "base/platform_def.h" 
+        "const/platform_def.h" 
         "base/t_array.h"
         "base/safe_pointer.h" 
         "base/rb_tree.h"
@@ -36,7 +36,6 @@ set(FRAMEWORK
         "base/rbthash_map.h"
         "base/time_helper.h"
         "base/time_helper.cpp"
-        
         "const/dblogin_type.h"
         "const/err_code.h"
         "json/config.cpp"
@@ -55,8 +54,6 @@ set(FRAMEWORK
         "mem/shm.h"
         "thread/mythread.cpp"
         "thread/mythread.h" 
-        "thread/thread_pool.cpp"
-        "thread/thread_pool.h" 
         "net/statistics.h" 
         "net/statistics.cpp"
         "net/byte_buff.cpp" 
@@ -92,7 +89,6 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/framework/timer
-        ${CMAKE_SOURCE_DIR}/framework/hiredis
 )
 
 link_directories(

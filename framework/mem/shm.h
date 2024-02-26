@@ -12,12 +12,10 @@
 
 #define YEARSEC 31536000
 
-typedef enum
-{
-	SHM_INVALID = -1,
-	SHM_RECOVER = 0,
-	SHM_INIT = 1,
-} EIMode;
+#define PIPE_SIZE            (0x1000000)    // 共享内存管道大小 16M
+#define C2S_SHM_KEY			 (20000000)
+#define S2C_SHM_KEY			 (20000001)
+#define MAX_SOCKET_NUM	     (65536)
 
 struct SSmHead
 {

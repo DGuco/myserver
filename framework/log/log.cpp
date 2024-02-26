@@ -35,8 +35,8 @@ int INIT_BASE_LOG(const char *vLogName,                        /*日志类型的
 
 int INIT_ROATING_LOG(const char *vLogName,                        /*日志类型的名称(关键字,由此定位到日志文件)*/
 				   const char *vLogDir,                        /*文件名称(路径)*/
-				   level_enum level,        /*日志等级*/
-				   unsigned int vMaxFileSize,    /*回卷文件最大长度*/
+				   level_enum level,					/*日志等级*/
+				   unsigned int vMaxFileSize,				 /*回卷文件最大长度*/
 				   unsigned int vMaxBackupIndex)          /*回卷文件个数*/
 {
 	if (NULL == vLogName || NULL == vLogDir) 

@@ -52,8 +52,6 @@ public:
 	bool AddToFDSet(fd_set& pCheckSet);
 	//是否添加到fdset中
 	bool IsFDSetted(fd_set& pCheckSet);
-	//是否连接成功
-	int CheckConnectedOk();
 	//关闭
 	int Close();
 	//

@@ -26,7 +26,8 @@ int CMyThread::Run()
 {
 	m_iRunStatus = rt_running;
 	//创建线程
-	if (m_pThread != NULL) {
+	if (m_pThread != NULL) 
+	{
 		m_pThread = std::make_shared<thread>(mem_fn(&CMyThread::ThreadFunc), this);
 	}
 	return 0;
@@ -34,20 +35,23 @@ int CMyThread::Run()
 
 void CMyThread::ThreadFunc()
 {
-	while (true) {
+	while (true) 
+	{
 		std::unique_lock<std::mutex> lk(m_condMut);
 		// 该过程需要在线程锁内完成
 		m_iRunStatus = rt_blocked;
 		LOG_DEBUG("default", "Thread [{}] would blocked.", m_sThreadName);
 		//超时
-		if (m_lTimeOut > 0) {
+		if (m_lTimeOut > 0) 
+		{
 			data_cond.wait_for(lk, std::chrono::microseconds(m_lTimeOut),
 							   [this]
 							   {
 								   return (m_iRunStatus == rt_stopped || !IsToBeBlocked());
 							   });
 		}
-		else {
+		else
+		{
 			std::unique_lock<std::mutex> lk(m_condMut);
 			data_cond.wait(lk, [this]
 			{
@@ -55,14 +59,16 @@ void CMyThread::ThreadFunc()
 			});
 		}
 		// 如果线程需要停止则终止线程
-		if (m_iRunStatus == rt_stopped) {
+		if (m_iRunStatus == rt_stopped)
+		{
 			//退出线程
 			LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
-			pthread_exit((void *) 0);
+			//pthread_exit((void *) 0);
 		}
 
 		//意外唤醒线程,继续阻塞
-		if (IsToBeBlocked()) {
+		if (IsToBeBlocked()) 
+		{
 			continue;
 		}
 		// 线程状态变为rt_running
@@ -75,7 +81,8 @@ void CMyThread::ThreadFunc()
 int CMyThread::WakeUp()
 {
 	std::lock_guard<std::mutex> lk(m_condMut);
-	if (!IsToBeBlocked() && m_iRunStatus == rt_blocked) {
+	if (!IsToBeBlocked() && m_iRunStatus == rt_blocked) 
+	{
 		std::lock_guard<std::mutex> guard(m_condMut);
 		// 向线程发出信号以唤醒
 		data_cond.notify_one();
@@ -100,13 +107,14 @@ void CMyThread::StopForce()
 	std::lock_guard<std::mutex> guard(m_condMut);
 	//退出线程
 	LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
-	pthread_exit((void *) 0);
+	//pthread_exit((void *) 0);
 }
 
 void CMyThread::Join()
 {
 	std::lock_guard<std::mutex> guard(m_condMut);
-	if (m_pThread->joinable()) {
+	if (m_pThread->joinable())
+	{
 		m_pThread->join();
 	}
 }
