@@ -61,9 +61,9 @@ endif()
 
 add_executable(gateserver ${SOURCE_FILES})
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-    target_link_libraries(gateserver framework pthread protobuf crypto)
+    target_link_libraries(gateserver framework pthread spdlog protobuf crypto)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(gateserver framework ws2_32 protobuf crypto)
+    target_link_libraries(gateserver framework ws2_32 spdlog protobuf crypto)
 endif()
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)

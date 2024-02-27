@@ -26,6 +26,8 @@
 
 #endif
 
+#include "base.h"
+
 template<typename Tp>
 class SafePointer
 {
@@ -108,7 +110,7 @@ public:
 		Tp* pPointer = GetThrow();
 		if (pPointer != NULL)
 		{
-			return SafePointer<NewTp>(dynamic_cast<NewTp>(pPointer))
+			return SafePointer<NewTp>(dynamic_cast<NewTp*>(pPointer));
 		}
 		else
 		{
@@ -138,7 +140,7 @@ public:
 	void Free()
 	{
 		Tp* pPointer = GetThrow();
-		DELETE pPointer;
+		DELETE(pPointer);
 		nDataH = SPO_FLAG_H;
 		nDataL = SPO_FLAG_L;
 	}
@@ -149,14 +151,14 @@ private:
 		if (GetFlagH() != SPO_FLAG_H || GetFlagL() != SPO_FLAG_L)
 		{
 			char eMsg[256] = { 0 };
-			sprintf(eMsg, SPO_ERROR_MSG, static_cast<unsigned long>(GetFlagH()), GetFlagL(), pPoint);
+			sprintf(eMsg, SPO_ERROR_MSG, static_cast<unsigned long>(GetFlagH()), GetFlagL(), (void*)pPoint);
 			throw std::runtime_error(eMsg);
 		}
 
 		if (pPoint == NULL)
 		{
 			char eMsg[256] = { 0 };
-			sprintf(eMsg, SPO_ERROR_MSG, GetFlagH(), GetFlagL(), pPoint);
+			sprintf(eMsg, SPO_ERROR_MSG, GetFlagH(), GetFlagL(), (void*)pPoint);
 			throw std::runtime_error(eMsg);
 		}
 		return pPoint;

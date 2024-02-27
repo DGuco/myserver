@@ -1,11 +1,12 @@
-//
-//  log.h
-//  Created by DGuco on 18/02/28.
-//  Copyright © 2018年 DGuco. All rights reserved.
-//
+/*****************************************************************
+* FileName:log.h
+* Summary :
+* Date	  :2024-2-27
+* Author  :DGuco(1139140909@qq.com)
+******************************************************************/
+#ifndef __LOG_H__
+#define __LOG_H__
 
-#ifndef _LOG_DEF_H_
-#define _LOG_DEF_H_
 
 #include <string>
 #include <stdarg.h>
@@ -294,4 +295,5 @@ int CLog::LogCritical(const char* vLogName, const char* vFmt, const Args &... ar
 #define LOG_ERROR  CLog::GetSingletonPtr()->LogError
 #define LOG_CRITICAL CLog::GetSingletonPtr()->LogCritical
 			
-#endif // _LOG_DEF_H_
+#endif //__LOG_H__
+

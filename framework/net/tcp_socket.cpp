@@ -220,11 +220,6 @@ int CTCPSocket::Flush()
 	return Write(NULL,0,true);
 }
 
-int CTCPSocket::GetOneCode(unsigned short& nCodeLength, BYTE* pCode)
-{
-
-}
-
 bool CTCPSocket::AddToFDSet(fd_set& tmFdSet)
 {
 	SOCKET nSocket = m_Socket.GetSocket();

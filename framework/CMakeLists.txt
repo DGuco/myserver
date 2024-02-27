@@ -105,7 +105,7 @@ add_library(framework ${FRAMEWORK})
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries(framework pthread spdlog protobuf crypto)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(framework ws2_32 protobuf crypto )
+    target_link_libraries(framework ws2_32 spdlog protobuf crypto )
 endif()
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

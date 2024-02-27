@@ -248,7 +248,7 @@ int CShmMessQueue::DeleteHeadMessage()
 void CShmMessQueue::DebugTrunk()
 {
     LOG_ERROR("default","Mem trunk address 0x%p,shmkey {} ,shmid {}, size {}, begin {}, end {}\n",
-        m_stMemTrunk,
+        (void*)m_stMemTrunk,
         m_stMemTrunk->m_iShmKey,
         m_stMemTrunk->m_iShmId,
         m_stMemTrunk->m_iSize,

@@ -36,9 +36,6 @@
 #define MSG_HEAD_LEN 8  // 接收或发送给客户端消息的消息头字节数
 #define MSG_MAX_LEN                10*1024            // 接收或发送给客户端消息的最大字节数
 #define NULL						(0)
-#define INVALID_SOCKET              -1                        // 无效socket句柄
-#define SOCKET_ERROR                -1                        // socket api的返回值
-#define INVALID_HANDLE_VALUE        ((void * )(-1))           // 无效句柄值
 
 
 #define DELETE(ptr) \

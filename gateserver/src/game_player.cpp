@@ -36,4 +36,5 @@ int CGamePlayer::DoWriteLogic()
 int CGamePlayer::DoErrorLogic(int errcode)
 {
 	CGateServer::GetSingletonPtr()->DisConnect(this, errcode);
+	return 0;
 }

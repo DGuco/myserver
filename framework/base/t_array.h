@@ -18,6 +18,7 @@ namespace my_std
 	template<typename Type_, int Len_>
 	class TArray
 	{
+	public:
 		static_assert(std::is_standard_layout<Type_>::value, "TArray not support not stand layout class");
 		TArray()
 		{
@@ -41,7 +42,7 @@ namespace my_std
 			return m_data;
 		}
 
-	private:
+	protected:
 		Type_ m_data[Len_];
 	};
 
@@ -63,11 +64,8 @@ namespace my_std
 
 		CString(std::string str)
 		{
-			if (pstr != NULL)
-			{
-				strncpy(TArray<char, Len_>::m_data, str.c_str(), Len_);
-				TArray<char, Len_>::m_data[Len_ - 1] = '\0';
-			}
+			strncpy(TArray<char, Len_>::m_data, str.c_str(), Len_);
+			TArray<char, Len_>::m_data[Len_ - 1] = '\0';
 		}
 
 		template<int LenFrom_>

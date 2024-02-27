@@ -46,8 +46,6 @@ public:
 	int Write(BYTE* pCode, msize_t nCodeLength,bool sendnow = false);
 	//把缓冲区数据发送
 	int Flush();
-	//获取读缓冲区中的一段信息
-	int GetOneCode(unsigned short& nCodeLength, BYTE* pCode);
 	//添加socket到fdset
 	bool AddToFDSet(fd_set& pCheckSet);
 	//是否添加到fdset中
@@ -58,10 +56,6 @@ public:
 	SafePointer<CByteBuff> GetReadBuff();
 	//
 	SafePointer<CByteBuff> GetSendBuff();
-public:
-	virtual int DoRecvLogic() = 0;
-	virtual int DoWriteLogic() = 0;
-	virtual int DoErrorLogic(int errcode) = 0;
 protected:
 	CSocket					m_Socket;	     //Socket 描述符
 	int						m_nStatus;	     //连接状态
