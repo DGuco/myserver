@@ -22,11 +22,18 @@ CGateCtrl::~CGateCtrl()
 bool CGateCtrl::PrepareToRun()
 {
 #ifdef _DEBUG_
+// 	std::shared_ptr<spdlog::logger> logger = spdlog::create<spdlog::sinks::rotating_file_sink_mt>("default", "../log/gatesvrd.log", level_enum::trace, 10 * 1024 * 1024, 5);
+// 	if (logger == NULL)
+// 	{
+// 		return -1;
+// 	}
+// 	logger->set_level(level_enum::trace);
+// 	logger->flush_on(level_enum::trace);
 	//初始化日志
-	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::trace);
+	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::trace,10 * 1024 * 1024,5);
 #else
 	//初始化日志
-	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::info);
+	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::info, 10 * 1024 * 1024, 5);
 #endif
 	//读取配置文件
 	if (!ReadConfig()) exit(0);

@@ -13,9 +13,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <memory>
+
 #include "safe_pointer.h"
-#include "object.h"
-#include "log.h"
 
 using namespace std;
 

@@ -9,7 +9,6 @@
 #define __GATE_CTRL_H__
 
 #include "gate_def.h"
-#include "log.h"
 #include "server_tool.h"
 #include "base.h"
 #include "config.h"

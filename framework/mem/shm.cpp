@@ -88,7 +88,7 @@ bool CSharedMem::CreateSegment(sm_key nSmKey, size_t nSize)
 	m_pHead->m_Handler = handler;
 	m_pCurrentSegMent = ((BYTE*)(pAddr + sizeof(SSmHead)));
 	m_nSize = nSize;
-	LogDebug("default", "CSharedMem::CreateSegment OK nSmKey = {} size = {}", nSmKey, nSize);
+	LOG_DEBUG("default", "CSharedMem::CreateSegment OK nSmKey = {} size = {}", nSmKey, nSize);
 	return true;
 }
 
@@ -114,7 +114,7 @@ bool CSharedMem::AttachSegment(sm_key nSmKey, size_t nSize)
 	m_pHead->m_Handler = handler;
 	m_pCurrentSegMent = ((BYTE*)(pAddr + sizeof(SSmHead)));
 	m_nSize = nSize;
-	LogDebug("default", "CSharedMem::AttachSegment OK nSmKey = {} size = {}", nSmKey, nSize);
+	LOG_DEBUG("default", "CSharedMem::AttachSegment OK nSmKey = {} size = {}", nSmKey, nSize);
 	return true;
 }
 

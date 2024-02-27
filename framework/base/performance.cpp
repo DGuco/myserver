@@ -6,7 +6,10 @@
 CPerfInfo::CPerfInfo()
 	: mPerfLog(1), mTotalCalled(0), mCostTime(0), mMostCostTime(0), mLestCostTime(1000)
 {
-	INIT_ROATING_LOG("Perf", "../log/perf.log", level_enum::info, 10 * 1024 * 1024, 20);
+	//INIT_ROATING_LOG("Perf", "../log/perf.log", level_enum::info, 10 * 1024 * 1024, 20);
+	std::shared_ptr<spdlog::logger> logger = spdlog::create<spdlog::sinks::rotating_file_sink_mt>("Perf", "../log/perf.log", level_enum::info, 10 * 1024 * 1024, 5);
+	logger->set_level(level_enum::trace);
+	logger->flush_on(level_enum::trace);
 }
 
 CPerfInfo::~CPerfInfo()

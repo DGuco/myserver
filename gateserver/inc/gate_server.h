@@ -10,6 +10,7 @@
 #include "server_tool.h"
 #include "message.pb.h"
 #include "game_player.h"
+#include "common_def.h"
 
 class CGateServer : public CTCPServer,public CSingleton<CGateServer>
 {

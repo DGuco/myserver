@@ -1,6 +1,7 @@
 #include "game_player.h"
 #include "gate_server.h"
 #include "server_tool.h"
+#include "common_def.h"
 
 CGamePlayer::CGamePlayer() 
 	:CTCPConn(GAMEPLAYER_RECV_BUFF_LEN, GAMEPLAYER_SEND_BUFF_LEN)

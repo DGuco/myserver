@@ -18,6 +18,6 @@ int main(int argc, char **argv)
 	}
 	CGateCtrl::GetSingletonPtr()->Run();
 	// 关闭日志
-	LOG_SHUTDOWN_ALL;
+	SHUTDOWN_ALL_LOG();
 }
 
