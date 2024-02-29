@@ -34,9 +34,11 @@ set(FRAMEWORK
         "base/time_helper.h"
         "base/time_helper.cpp"
         "base/log.h"
+        "base/log.cpp"
         "const/dblogin_type.h"
         "const/err_code.h"
         "const/platform_def.h" 
+        "const/platform_def.cpp" 
         "json/config.cpp"
         "json/config.h"
         "json/json_interface.cpp"
@@ -70,7 +72,7 @@ set(FRAMEWORK
         "net/tcp_conn.h" 
         "net/tcp_conn.cpp"
         "net/tcp_client.h"
-        "net/tcp_client.cpp")
+        "net/tcp_client.cpp" )
 
 
 include_directories(
@@ -103,9 +105,9 @@ endif()
 add_library(framework ${FRAMEWORK})
 
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-    target_link_libraries(framework pthread spdlog protobuf crypto)
+    target_link_libraries(framework pthread spdlog crypto)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(framework ws2_32 spdlog protobuf crypto )
+    target_link_libraries(framework ws2_32 spdlogd crypto )
 endif()
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

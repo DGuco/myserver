@@ -8,11 +8,11 @@
 #ifndef __BASE_H__
 #define __BASE_H__
 
-#include "platform_def.h"
 #include <vector>
 #include <string>
 #include <csignal>
 #include <stdio.h>
+#include "platform_def.h"
 
 #define MIN(a，b)((a) <= (b) ? (a) : (b))
 #define MAX(a，b)((a) >= (b) ? (a) : (b))

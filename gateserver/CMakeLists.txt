@@ -22,12 +22,8 @@ set(SOURCE_FILES
     "src/gate_ctrl.cpp" 
     "src/mes_handle.cpp"
     "src/gate_server.cpp"
-    "../common/message/common.pb.h" 
-    "../common/message/message.pb.h" 
-    "../common/message/common.pb.h" 
-    "../common/message/dbmessage.pb.h"
+    "../common/message/message.pb.cc" 
     "../common/message/message.pb.h"
-    "../common/message/player.pb.h"
     "inc/game_player.h"
     "src/game_player.cpp"
     "../common/common_def.h")
@@ -52,18 +48,20 @@ link_directories(
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
         /usr/lib
         /usr/local/lib
+        ${CMAKE_SOURCE_DIR}/lib
         ${CMAKE_SOURCE_DIR}/lib/linux
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
         C:/Windows/System32
+        ${CMAKE_SOURCE_DIR}/lib
         ${CMAKE_SOURCE_DIR}/lib/win64
 endif()
 )
 
 add_executable(gateserver ${SOURCE_FILES})
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-    target_link_libraries(gateserver framework pthread spdlog protobuf crypto)
+    target_link_libraries(gateserver framework pthread)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(gateserver framework ws2_32 spdlog protobuf crypto)
+    target_link_libraries(gateserver framework protobufd)
 endif()
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)

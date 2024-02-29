@@ -49,25 +49,7 @@ using namespace std;
     typedef int sm_key;
 	typedef int	SOCKET;
 #else
-    std::string GetErrorMessage(int errorCode)
-    {
-	    LPSTR errorMessage = nullptr;
-	    DWORD result = FormatMessageA(
-		    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-		    NULL, 
-            errorCode, 
-            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		    (LPSTR)&errorMessage,
-            0, 
-            NULL);
-	    if (result == 0)
-        {
-		    return "Failed to get error message";
-	    }
-	    std::string errorMessageStr(errorMessage);
-	    LocalFree(errorMessage);
-	    return errorMessageStr;
-    }
+    std::string GetErrorMessage(int errorCode);
 
     #define strerror(code) (GetErrorMessage(code))
     #define __MEM_BARRIER MemoryFence 
