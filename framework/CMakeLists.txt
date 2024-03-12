@@ -14,6 +14,12 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     add_definitions(-D__WINDOWS__)
 endif()
 
+# 仅对 Visual Studio 编译器生效
+if(MSVC)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
+
 set(FRAMEWORK
         "base/base.cpp"
         "base/base.h"

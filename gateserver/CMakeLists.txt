@@ -13,6 +13,12 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     add_definitions(-D__WINDOWS__ -D_DEBUG_ -DUSE_MY_ASSERT -D_USING_V110_SDK71_)
 endif()
 
+# 仅对 Visual Studio 编译器生效
+if(MSVC)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
+
 set(SOURCE_FILES
     "main.cpp" 
     "inc/gate_ctrl.h" 
