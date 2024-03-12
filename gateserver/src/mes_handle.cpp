@@ -9,7 +9,9 @@
 
 CMessHandle::CMessHandle()
 {
-
+	m_C2SCodeQueue = NULL;
+	m_S2CCodeQueue = NULL;
+	m_pRecvBuff = NULL;
 }
 
 CMessHandle::~CMessHandle()
@@ -18,6 +20,7 @@ CMessHandle::~CMessHandle()
 
 bool CMessHandle::PrepareToRun()
 {
+	m_pRecvBuff = new CByteBuff(MAX_PACKAGE_LEN);
 	return CreatePipe( );
 }
 
@@ -71,6 +74,12 @@ void CMessHandle::RecvGameData()
 	int iTmpLen = 0;
 	//获取成功
 	int iRet = 0;
+
+	//没有数据可读
+	if (m_S2CCodeQueue->IsEmpty())
+	{
+		return;
+	}
 	if ((iTmpLen = m_S2CCodeQueue->ReadHeadMessage((BYTE *) (m_pRecvBuff->GetData( )))) > 0)
 	{
 		m_pRecvBuff->WriteLen(iTmpLen);

@@ -74,7 +74,7 @@ int CTCPServer::PrepareToRun()
 		return InitEpoll(m_IPAddr.c_str(), m_nPort);
 	}
 #else
-	if (m_nRunModule = eTcpEpoll)
+	if (m_nRunModule == eTcpEpoll)
 	{
 		m_nRunModule = eTcpSelect;
 	}

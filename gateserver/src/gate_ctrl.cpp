@@ -12,11 +12,20 @@
 
 CGateCtrl::CGateCtrl()
 {
-
+#ifdef __WINDOWS__
+	WORD wVersionRequested;
+	WSADATA wsaData;
+	int err;
+	wVersionRequested = MAKEWORD(2, 2);
+	err = WSAStartup(wVersionRequested, &wsaData);
+#endif
 }
 
 CGateCtrl::~CGateCtrl()
 {
+#ifdef __WINDOWS__
+	WSACleanup();
+#endif
 }
 
 bool CGateCtrl::PrepareToRun()
@@ -36,9 +45,18 @@ bool CGateCtrl::PrepareToRun()
 	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::info, 10 * 1024 * 1024, 5);
 #endif
 	//读取配置文件
-	if (!ReadConfig()) exit(0);
-	if (!CMessHandle::GetSingletonPtr()->PrepareToRun()) exit(0);
-	if (!CGateServer::GetSingletonPtr()->PrepareToRun()) exit(0);
+	if (!ReadConfig())
+	{
+		return false;
+	}
+	if (!CMessHandle::GetSingletonPtr()->PrepareToRun())
+	{
+		return false;
+	}
+	if (!CGateServer::GetSingletonPtr()->PrepareToRun())
+	{
+		return false;
+	}
 	return true;
 }
 

@@ -79,7 +79,7 @@ bool CSocket::Bind(int port)
 		LOG_ERROR("default", "bind failed with error : {},errormsg : {} \n", errno, strerror(errno));
 		return false;
 	}
-	return 0;
+	return true;
 }
 
 bool CSocket::Bind(const char* ipaddr, int port)

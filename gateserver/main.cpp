@@ -12,7 +12,8 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	int iTmpRet = CGateCtrl::GetSingletonPtr()->PrepareToRun();
-	if (iTmpRet != 0) {
+	if (!iTmpRet) 
+	{
 		LOG_ERROR("default", "CGateCtrl PrepareToRun failed,iRet = {}", iTmpRet);
 		exit(0);
 	}
