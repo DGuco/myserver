@@ -7,9 +7,9 @@
 #ifndef __T_ARRAY_H__
 #define __T_ARRAY_H__
 
-#include "my_assert.h"
 #include <string>
 #include <type_traits>
+#include "my_assert.h"
 
 using namespace std;
 
@@ -27,13 +27,13 @@ namespace my_std
 
 		Type_& operator[] (int index)
 		{
-			ASSERT(index >= 0 && index < Len_, "index is out of range");
+			//ASSERT_EX(index >= 0 && index < Len_, "index is out of range");
 			return m_data[index];
 		}
 
 		const Type_& operator[] (int index) const
 		{
-			ASSERT(index >= 0 && index < Len_, "index is out of range");
+			//ASSERT_EX(index >= 0 && index < Len_, "index is out of range");
 			return m_data[index];
 		}
 

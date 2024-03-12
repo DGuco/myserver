@@ -44,6 +44,7 @@ bool CGateCtrl::PrepareToRun()
 	//初始化日志
 	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::info, 10 * 1024 * 1024, 5);
 #endif
+	ASSERT_EX(false, "CGateCtrl::PrepareToRun =====");
 	//读取配置文件
 	if (!ReadConfig())
 	{

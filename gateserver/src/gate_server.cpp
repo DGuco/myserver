@@ -82,7 +82,7 @@ void CGateServer::SendToClient(const CSocketInfo &socketInfo, const char *data, 
 
 void CGateServer::ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError)
 {
-	ASSERT(pGamePlayer != NULL, return);
+	ASSERT(pGamePlayer != NULL);
 	//非gameserver 主动请求关闭
 	if (Client_Succeed != iError) 
 	{
@@ -92,7 +92,7 @@ void CGateServer::ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError
 
 void CGateServer::DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError)
 {
-	ASSERT(pGamePlayer != NULL, return);
+	ASSERT(pGamePlayer != NULL);
 	static CMessage tmpMessage;
 	tmpMessage.Clear( );
 	CMesHead *tmpHead = tmpMessage.mutable_msghead( );

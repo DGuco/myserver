@@ -78,7 +78,7 @@ int CTCPServer::PrepareToRun()
 	{
 		m_nRunModule = eTcpSelect;
 	}
-	ASSERT_EX(m_nRunModule == eTcpSelect, return, "Windows platform only run in select module");
+	ASSERT_EX(m_nRunModule == eTcpSelect, "Windows platform only run in select module");
 	return InitSelect(m_IPAddr.c_str(), m_nPort);
 #endif
 }

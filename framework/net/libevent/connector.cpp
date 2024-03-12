@@ -140,7 +140,7 @@ int CConnector::GetTargetId() const
 void CConnector::lcb_OnPingServer(int fd, short event, void *param)
 {
 	CConnector *pConnector = (CConnector *) param;
-	ASSERT(pConnector != NULL, return;)
+	ASSERT(pConnector != NULL)
 	if (pConnector->GetState() == eConnectorState::eCS_Connected) {
 		pConnector->m_pFuncOnPingServer(fd, event, pConnector);
 	}
