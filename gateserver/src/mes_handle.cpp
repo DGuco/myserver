@@ -42,6 +42,7 @@ bool CMessHandle::CreatePipe()
 	{
 		return false;
 	}
+	return true;
 }
 
 int CMessHandle::SendClientData(CMessG2G& tmpMes)

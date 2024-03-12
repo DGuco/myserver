@@ -1,5 +1,3 @@
-.gradle
-slg_gm/target
 *.xml
 *.class
 *.log
@@ -7,14 +5,16 @@ slg_gm/target
 *.log
 *.idea
 *.logs
-build
-/build/*
+log
+out
 cmake-build-debug
 /cmake-build-debug/*
 /.vs/*
-
-/bin/*.exe
-out
+/lib/framework.lib
+/run/*.exe
+/run/*.exe.*
+/run/*.ilk
+/run/*.pdb
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 

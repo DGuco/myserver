@@ -87,4 +87,4 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(gameserver framework ws2_32 protobuf crypto)
 endif()
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/run/)
