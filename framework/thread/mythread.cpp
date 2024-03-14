@@ -40,7 +40,6 @@ void CMyThread::ThreadFunc()
 		std::unique_lock<std::mutex> lk(m_condMut);
 		// 该过程需要在线程锁内完成
 		m_iRunStatus = rt_blocked;
-		LOG_DEBUG("default", "Thread [{}] would blocked.", m_sThreadName);
 		//超时
 		if (m_lTimeOut > 0) 
 		{
@@ -62,7 +61,7 @@ void CMyThread::ThreadFunc()
 		if (m_iRunStatus == rt_stopped)
 		{
 			//退出线程
-			LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
+			DISK_LOG(DEBUG_DISK, "Thread [{}] exit.", m_sThreadName);
 			//pthread_exit((void *) 0);
 		}
 
@@ -98,7 +97,7 @@ int CMyThread::StopThread()
 	data_cond.notify_one();
 	// 等待该线程终止
 	Join();
-	LOG_DEBUG("default", "Thread [{}] stopped.", m_sThreadName);
+	DISK_LOG(DEBUG_DISK, "Thread [{}] stopped.", m_sThreadName);
 	return 0;
 }
 
@@ -106,7 +105,7 @@ void CMyThread::StopForce()
 {
 	std::lock_guard<std::mutex> guard(m_condMut);
 	//退出线程
-	LOG_DEBUG("default", "Thread [{}] exit.", m_sThreadName);
+	DISK_LOG(DEBUG_DISK, "Thread [{}] exit.", m_sThreadName);
 	//pthread_exit((void *) 0);
 }
 

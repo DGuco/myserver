@@ -52,7 +52,7 @@ void CPerfStat::LogPerfInfo()
 	sprintf(szTitle, "%38s\t%6s\t%6s\t%6s\t%6s\t%6s",
 			"name", "called", "cost", "most", "lest", "avg");
 
-	LOG_INFO("Perf", "{}", szTitle);
+	CACHE_LOG(PERF_CACHE, "{}", szTitle);
 
 	PerfMapIterator endi = msPerfMap.end();
 
@@ -65,11 +65,11 @@ void CPerfStat::LogPerfInfo()
 				perfInfo.mCostTime, perfInfo.mMostCostTime, perfInfo.mLestCostTime,
 				(perfInfo.mTotalCalled != 0) ? perfInfo.mCostTime / perfInfo.mTotalCalled : 0);
 
-		LOG_INFO("Perf", "{}", szRecord);
+		CACHE_LOG(PERF_CACHE, "{}", szRecord);
 
 		perfInfo.Reset();
 	}
 
 	msPerfMap.clear();
-	LOG_INFO("Perf", "----------------------------------------------------------------------------------");
+	CACHE_LOG(PERF_CACHE, "----------------------------------------------------------------------------------");
 }

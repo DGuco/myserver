@@ -16,13 +16,13 @@ int main(int argc, char **argv)
 		int iTmpRet = CGateCtrl::GetSingletonPtr()->PrepareToRun();
 		if (!iTmpRet)
 		{
-			LOG_ERROR("default", "CGateCtrl PrepareToRun failed,iRet = {}", iTmpRet);
+			DISK_LOG(ERROR_DISK, "CGateCtrl PrepareToRun failed,iRet = {}", iTmpRet);
 			exit(0);
 		}
 	}
 	catch (const std::exception& e)
 	{
-		LOG_ERROR("default", "CGateCtrl PrepareToRun failed,get exception = {}", e.what());
+		DISK_LOG(ERROR_DISK, "CGateCtrl PrepareToRun failed,get exception = {}", e.what());
 		exit(0);
 	}
 

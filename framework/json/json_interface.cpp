@@ -21,8 +21,9 @@ int AJson::LoadFromFile(std::string filename)
 	try {
 		std::fstream fp;
 		fp.open(filename.c_str());
-		if (!fp.is_open()) {
-			LOG_ERROR("default", "config file not exist: {}", filename.c_str());
+		if (!fp.is_open()) 
+		{
+			DISK_LOG(ERROR_DISK, "config file not exist: {}", filename.c_str());
 			return -1;
 		}
 		std::string data;

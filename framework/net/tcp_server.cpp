@@ -150,7 +150,7 @@ int CTCPServer::InitSelect(const char* ip, int port)
 
 	m_ListenSocket.SetSocketNoBlock();
 
-	LOG_DEBUG("default", "CTCPServer::InitSelect listen {} : {},fdsize = {}.", ip,port,FD_SETSIZE);
+	DISK_LOG(TCP_DEBUG, "CTCPServer::InitSelect listen {} : {},fdsize = {}.", ip,port,FD_SETSIZE);
 	return 0;
 }
 
@@ -206,7 +206,7 @@ int CTCPServer::SelectTick()
 	{
 		if (iTmp < 0)
 		{
-			LOG_ERROR("default", "Select error, {}.", strerror(errno));
+			DISK_LOG(TCP_ERROR, "Select error, {}.", strerror(errno));
 		}
 		return -1;
 	}
@@ -223,18 +223,18 @@ int CTCPServer::SelectTick()
 			{
 				pConn->SetCreateTime(CTimeHelper::GetSingletonPtr()->GetANSITime());
 				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
-				LOG_DEBUG("default", "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+				DISK_LOG(DEBUG_DISK, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
 				OnNewConnect(pConn);
 			}
 			else
 			{
-				LOG_ERROR("default", "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+				DISK_LOG(DEBUG_DISK, "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
 				newSocket.Close();
 			}
 		}
 		else
 		{
-			LOG_ERROR("default", "Accept new socket error,listenfd = {},erromsg =  %s.", strerror(errno));
+			DISK_LOG(ERROR_DISK, "Accept new socket error,listenfd = {},erromsg =  %s.", strerror(errno));
 		}
 	}
 

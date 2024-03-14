@@ -26,12 +26,12 @@ bool CGateServer::PrepareToRun()
 	int nRet = InitTcpServer(eTcpEpoll, gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
 	if (nRet == 0)
 	{
-		LOG_INFO("default", "Server PrepareToRun success at {} : {}", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
+		DISK_LOG(DEBUG_DISK, "Server PrepareToRun success at {} : {}", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
 		return true;
 	}
 	else
 	{
-		LOG_ERROR("default""Server PrepareToRun at {} : {} failed,failed reason {]", gateInfo->m_sHost.c_str(),
+		DISK_LOG(DEBUG_DISK,"Server PrepareToRun at {} : {} failed,failed reason {]", gateInfo->m_sHost.c_str(),
 			gateInfo->m_iPort, strerror(errno));
 	}
 	return false;
@@ -42,7 +42,7 @@ void CGateServer::SendToClient(const CSocketInfo &socketInfo, const char *data, 
 	SafePointer<CGamePlayer> pGamePlayer = FindTcpConn(socketInfo.socketid()).DynamicCastTo<CGamePlayer>();
 	if (pGamePlayer == NULL)
 	{
-		LOG_ERROR("default", "CAcceptor has gone, socket = {}", socketInfo.socketid( ));
+		DISK_LOG(TCP_ERROR, "CAcceptor has gone, socket = {}", socketInfo.socketid( ));
 		return;
 	}
 
@@ -53,7 +53,7 @@ void CGateServer::SendToClient(const CSocketInfo &socketInfo, const char *data, 
 	*/
 	if (pGamePlayer->GetCreateTime( ) != socketInfo.createtime( ))
 	{
-		LOG_ERROR("default",
+		DISK_LOG(TCP_ERROR,
 				  "sokcet[{}] already closed(tcp createtime:{}:gate createtime:{}) : gate ==> client failed",
 				  socketInfo.socketid( ),
 				  pGamePlayer->GetCreateTime( ),
@@ -66,7 +66,7 @@ void CGateServer::SendToClient(const CSocketInfo &socketInfo, const char *data, 
 	{
 		//发送失败
 		CGateServer::ClearSocket(pGamePlayer, Err_ClientClose);
-		LOG_ERROR("default",
+		DISK_LOG(TCP_ERROR,
 				  "send to client {} Failed due to error {}",
 					pGamePlayer->GetSocketFD(),
 				  errno);
@@ -97,8 +97,8 @@ void CGateServer::DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError)
 	tmpMessage.Clear( );
 	CMesHead *tmpHead = tmpMessage.mutable_msghead( );
 	CSocketInfo *pSocketInfo = tmpHead->mutable_socketinfos( )->Add( );
-	if (pSocketInfo == NULL) {
-		LOG_ERROR("default", "CTcpCtrl::DisConnect add_socketinfos ERROR");
+	if (pSocketInfo == NULL) 
+	{
 		return;
 	}
 	pSocketInfo->set_socketid(pGamePlayer->GetSocketFD());
@@ -163,12 +163,12 @@ void CGateServer::RecvClientData(SafePointer<CGamePlayer> pGamePlayer)
 	int iTmRet = CMessHandle::GetSingletonPtr()->SendToGame((char*)m_CacheData, msgG2g.GetCachedSize());
 	if (iTmRet != 0)
 	{
-		LOG_ERROR("defalut", "CNetManager::DealClientData to game error, error code {}", iTmRet);
+		DISK_LOG(TCP_ERROR, "CNetManager::DealClientData to game error, error code {}", iTmRet);
 		ClearSocket(pGamePlayer, Err_SendToMainSvrd);
 	}
 	else 
 	{
-		LOG_DEBUG("default", "gate ==>game succeed");
+		DISK_LOG(TCP_ERROR, "gate ==>game succeed");
 	}
 	return;
 }

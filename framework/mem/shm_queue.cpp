@@ -101,7 +101,7 @@ int CShmMessQueue::GetMessage(BYTE* pOutCode)
     // 如果数据的最大长度不到sizeof(MESS_SIZE_TYPE)（存入数据时在数据头插入了数据的长度,长度本身）
     if (nTempMaxLength <= (int)sizeof(msize_t))
     {
-        LOG_ERROR("default","ReadHeadMessage data len illegal,nTempMaxLength {}", nTempMaxLength);
+        DISK_LOG(SHM_ERROR,"ReadHeadMessage data len illegal,nTempMaxLength {}", nTempMaxLength);
         DebugTrunk();
         m_stMemTrunk->m_iBegin = m_stMemTrunk->m_iEnd;
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
@@ -121,7 +121,7 @@ int CShmMessQueue::GetMessage(BYTE* pOutCode)
     //取出的数据的长度实际有的数据长度，非法
     if (usOutLength > (int) (nTempMaxLength - sizeof(msize_t)) || usOutLength < 0) 
     {
-        LOG_ERROR("default","ReadHeadMessage usOutLength illegal,usOutLength: %d,nTempMaxLength {}\n",usOutLength, nTempMaxLength);
+        DISK_LOG(SHM_ERROR,"ReadHeadMessage usOutLength illegal,usOutLength: %d,nTempMaxLength {}\n",usOutLength, nTempMaxLength);
         DebugTrunk();
         m_stMemTrunk->m_iBegin = m_stMemTrunk->m_iEnd;
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
@@ -163,7 +163,7 @@ int CShmMessQueue::ReadHeadMessage(BYTE* pOutCode)
     // 如果数据的最大长度不到sizeof(MESS_SIZE_TYPE)（存入数据时在数据头插入了数据的长度,长度本身）
     if (nTempMaxLength <= (int)sizeof(msize_t)) 
     {
-        LOG_ERROR("default","ReadHeadMessage data len illegal, nTempMaxLength{}",nTempMaxLength);
+        DISK_LOG(SHM_ERROR,"ReadHeadMessage data len illegal, nTempMaxLength{}",nTempMaxLength);
         DebugTrunk();
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
     }
@@ -182,7 +182,7 @@ int CShmMessQueue::ReadHeadMessage(BYTE* pOutCode)
     //取出的数据的长度实际有的数据长度，非法
     if (usOutLength > (int) (nTempMaxLength - sizeof(msize_t)) || usOutLength < 0) 
     {
-        LOG_ERROR("default", "ReadHeadMessage usOutLength illegal, usOutLength: {}, nTempMaxLength{} ",usOutLength, nTempMaxLength);
+        DISK_LOG(SHM_ERROR, "ReadHeadMessage usOutLength illegal, usOutLength: {}, nTempMaxLength{} ",usOutLength, nTempMaxLength);
         DebugTrunk();
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
     }
@@ -215,7 +215,7 @@ int CShmMessQueue::DeleteHeadMessage()
     // 如果数据的最大长度不到sizeof(MESS_SIZE_TYPE)（存入数据时在数据头插入了数据的长度,长度本身）
     if (nTempMaxLength <= (int)sizeof(msize_t)) 
     {
-        printf("[%s:%d] ReadHeadMessage data len illegal,nTempMaxLength %d \n", __FILE__, __LINE__, nTempMaxLength);
+		DISK_LOG(SHM_ERROR, "ReadHeadMessage data len illegal,nTempMaxLength {}", nTempMaxLength);
         DebugTrunk();
         m_stMemTrunk->m_iBegin = m_stMemTrunk->m_iEnd;
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
@@ -235,7 +235,7 @@ int CShmMessQueue::DeleteHeadMessage()
     //取出的数据的长度实际有的数据长度，非法
     if (usOutLength > (int) (nTempMaxLength - sizeof(msize_t)) || usOutLength < 0) 
     {
-        LOG_ERROR("default","ReadHeadMessage usOutLength illegal,usOutLength: {},nTempMaxLength {}",usOutLength, nTempMaxLength);
+        DISK_LOG(SHM_ERROR,"ReadHeadMessage usOutLength illegal,usOutLength: {},nTempMaxLength {}",usOutLength, nTempMaxLength);
         DebugTrunk();
         m_stMemTrunk->m_iBegin = m_stMemTrunk->m_iEnd;
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
@@ -247,7 +247,7 @@ int CShmMessQueue::DeleteHeadMessage()
 
 void CShmMessQueue::DebugTrunk()
 {
-    LOG_ERROR("default","Mem trunk address 0x%p,shmkey {} ,shmid {}, size {}, begin {}, end {}\n",
+    DISK_LOG(SHM_DEBUG,"Mem trunk address 0x%p,shmkey {} ,shmid {}, size {}, begin {}, end {}\n",
         (void*)m_stMemTrunk,
         m_stMemTrunk->m_iShmKey,
         m_stMemTrunk->m_iShmId,

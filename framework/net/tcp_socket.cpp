@@ -103,7 +103,7 @@ int CTCPSocket::CheckConnectedOk()
 	int n = select(nSocketFd + 1, &readfds, &writefds, &execpfds, &tv);
 	if (n < 0)
 	{
-		LOG_ERROR("default", "select error({}:{})", errno, strerror(errno));
+		DISK_LOG(ERROR_DISK, "select error({}:{})", errno, strerror(errno));
 		Close();
 		return -2;
 	}
@@ -115,14 +115,14 @@ int CTCPSocket::CheckConnectedOk()
 
 	if (!FD_ISSET(nSocketFd, &readfds) && !FD_ISSET(nSocketFd, &writefds))
 	{
-		LOG_ERROR("default", "socket {} can't read and write", nSocketFd);
+		DISK_LOG(ERROR_DISK, "socket {} can't read and write", nSocketFd);
 		Close();
 		return -3;
 	}
 
 	if (m_Socket.IsSocketError())
 	{
-		LOG_ERROR("default", "connect failure on SOCKET {} error:{} msg:{}.", m_Socket.GetSocket(), errno, strerror(errno));
+		DISK_LOG(ERROR_DISK, "connect failure on SOCKET {} error:{} msg:{}.", m_Socket.GetSocket(), errno, strerror(errno));
 		Close();
 		return -4;
 	}

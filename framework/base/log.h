@@ -7,13 +7,14 @@
 #ifndef __LOG_H__
 #define __LOG_H__
 
-
 #include <string>
 #include <stdarg.h>
 #include <spdlog/spdlog.h>
+#include <spdlog/common.h>
 #include <spdlog/async.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/daily_file_sink.h>
+#include <spdlog/sinks/hour_file_sink.h>
 #include <spdlog/sinks/null_sink.h>
 #include <spdlog/sinks/ostream_sink.h>
 #include <spdlog/sinks/rotating_file_sink.h>
@@ -25,20 +26,66 @@ using namespace spdlog;
 using namespace spdlog::level;
 
 #define  CONSOLE_LOG_NAME "console"
+#define  MAX_SPDLOG_QUEUE_SIZE (102400)
+#define  MAX_SPDLOG_THREAD_POOL (4)
+
+struct stLogInfo
+{
+	char* logName;
+	level_enum level;
+};
+
+enum enDiskLog
+{
+	ASSERT_DISK = 0,
+	DEBUG_DISK = 1,
+	ERROR_DISK = 2,
+	TCP_DEBUG = 3,
+	TCP_ERROR = 4,
+	DB_ERROR = 5,
+	SHM_DEBUG = 6,
+	SHM_ERROR = 7,
+	DIS_LOG_MAX,
+};
+
+enum enCacheLog
+{
+	DEBUG_CACHE = 100,
+	ERROR_CACHE = 101,
+	TRACE_CACHE = 102,
+	LUA_CACHE = 103,
+	LUA_ERROR = 104,
+	PERF_CACHE = 105,
+	CACHE_LOG_MAX,
+};
 
 class CLog : public CSingleton<CLog>
 {
 public:
-	CLog() {};
-	~CLog() {};
+	CLog();
+	~CLog();
+	bool Init(const char* modulename);
+	//关闭所有日志
+	int ShutDownAll();
+	template<typename... Args>
+	int DiskLog(enDiskLog log_type, const char* vFmt, const Args &... args);
+	template<typename... Args>
+	int CacheLog(enCacheLog log_type, const char* vFmt, const Args &... args);
+private:
+	stLogInfo* GetLogInfo(int log_type);
+	/**
+	 * vLogName 日志类型的名称(关键字,由此定位到日志文件)
+	 * vLogDir 文件名称(路径)
+	 * level 日志等级
+	 */
+	int InitHourLog(const char* vLogName, const char* vLogDir, level_enum level,bool async = false);
 	/**
 	 * vLogName 日志类型的名称(关键字,由此定位到日志文件)
 	 * vLogDir 文件名称(路径)
 	 * level 日志等级
 	 * vAppend 是否截断(默认即可)
 	 */
-	int InitBaseLog(const char* vLogName,const char* vLogDir,level_enum level,bool vAppend = true);					   
-
+	int InitBaseLog(const char* vLogName,const char* vLogDir,level_enum level,bool vAppend = true, bool async = false);
 	/**
 	 * vLogName 日志类型的名称(关键字,由此定位到日志文件)
 	 * vLogDir 文件名称(路径)
@@ -46,7 +93,7 @@ public:
 	 * vMaxFileSize 回卷文件最大长度
 	 * vMaxFileSize 回卷文件个数
 	 */
-	int Init_Roating_Log(const char* vLogName,const char* vLogDir,level_enum level,int vMaxFileSize,int vMaxBackupIndex);          
+	int Init_Roating_Log(const char* vLogName,const char* vLogDir,level_enum level,int vMaxFileSize,int vMaxBackupIndex, bool async = false);
 	/**
 	 * vLogName 日志类型的名称(关键字,由此定位到日志文件)
 	 * vLogDir 文件名称(路径)
@@ -54,174 +101,62 @@ public:
 	 * vMaxFileSize 回卷文件最大长度
 	 * vMaxFileSize 回卷文件个数
 	 */
-	int Init_Daily_Log(const char* vLogName, const char* vLogDir,level_enum level,int hour,int minute);
-	
-	//关闭所有日志
-	int ShutDownAll();
-
-	template<typename... Args>
-	int LogTrace(const char* vLogName, const char* vFmt, const Args &... args);
-	template<typename... Args>
-	int LogDebug(const char* vLogName, const char* vFmt, const Args &... args);
-	template<typename... Args>
-	int LogInfo(const char* vLogName, const char* vFmt, const Args &... args);
-	template<typename... Args>
-	int LogWarn(const char* vLogName, const char* vFmt, const Args &... args);
-	template<typename... Args>
-	int LogError(const char* vLogName, const char* vFmt, const Args &... args);
-	template<typename... Args>
-	int LogCritical(const char* vLogName, const char* vFmt, const Args &... args);
+	int Init_Daily_Log(const char* vLogName, const char* vLogDir,level_enum level,int hour = 0,int minute = 0, bool async = false);
 };
 
 template<typename... Args>
-int CLog::LogTrace(const char* vLogName, const char* vFmt, const Args &... args)
+int CLog::DiskLog(enDiskLog log_type, const char* vFmt, const Args &... args)
 {
+	stLogInfo* pLogInfo = GetLogInfo((int)log_type);
+	if (pLogInfo == NULL)
+	{
+		return -1;
+	}
 #ifdef __WINDOWS__
 	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
 	if (consoleLog)
 	{
-		consoleLog->log(level_enum::trace, vFmt, args...);
+		consoleLog->log(pLogInfo->level, vFmt, args...);
 	}
 #endif
-	auto log = spdlog::get(vLogName);
-	log->log(level_enum::trace, vFmt, args...);
-	if (NULL == vLogName)
+	auto log = spdlog::get(pLogInfo->logName);
+	if (NULL == log)
 	{
 		return -1;
 	}
-
-	if (NULL == log) {
-		return -1;
-	}
-
+	log->log(pLogInfo->level, vFmt, args...);
 	return 0;
 }
 
 template<typename... Args>
-int CLog::LogDebug(const char* vLogName, const char* vFmt, const Args &... args)
+int CLog::CacheLog(enCacheLog log_type, const char* vFmt, const Args &... args)
 {
+	stLogInfo* pLogInfo = GetLogInfo((int)log_type);
+	if (pLogInfo == NULL)
+	{
+		return -1;
+	}
 #ifdef __WINDOWS__
 	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
 	if (consoleLog)
 	{
-		consoleLog->log(level_enum::debug, vFmt, args...);
+		consoleLog->log(pLogInfo->level, vFmt, args...);
 	}
 #endif
-	if (NULL == vLogName) {
-		return -1;
-	}
 
-	auto log = spdlog::get(vLogName);
-	if (NULL == log) {
-		return -1;
-	}
-
-	log->log(level_enum::debug, vFmt, args...);
-	return 0;
-}
-
-template<typename... Args>
-int CLog::LogInfo(const char* vLogName, const char* vFmt, const Args &... args)
-{
-#ifdef __WINDOWS__
-	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
-	if (consoleLog)
+	auto log = spdlog::get(pLogInfo->logName);
+	if (NULL == log) 
 	{
-		consoleLog->log(level_enum::info, vFmt, args...);
-	}
-#endif
-	if (NULL == vLogName) {
 		return -1;
 	}
-
-	auto log = spdlog::get(vLogName);
-	if (NULL == log) {
-		return -1;
-	}
-
-	log->log(level_enum::info, vFmt, args...);
+	log->log(pLogInfo->level, vFmt, args...);
 	return 0;
 }
 
-template<typename... Args>
-int CLog::LogWarn(const char* vLogName, const char* vFmt, const Args &... args)
-{
-#ifdef __WINDOWS__
-	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
-	if (consoleLog)
-	{
-		consoleLog->log(level_enum::warn, vFmt, args...);
-	}
-#endif
-	if (NULL == vLogName) {
-		return -1;
-	}
+#define INIT_LOG(modulename)  CLog::GetSingletonPtr()->Init(modulename)
+#define DISK_LOG  CLog::GetSingletonPtr()->DiskLog
+#define CACHE_LOG  CLog::GetSingletonPtr()->CacheLog
+#define SHUTDOWN_ALL_LOG()  CLog::GetSingletonPtr()->ShutDownAll()
 
-	auto log = spdlog::get(vLogName);
-	if (NULL == log) {
-		return -1;
-	}
-
-	log->log(level_enum::warn, vFmt, args...);
-	return 0;
-}
-
-template<typename... Args>
-int CLog::LogError(const char* vLogName, const char* vFmt, const Args &... args)
-{
-#ifdef __WINDOWS__
-	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
-	if (consoleLog)
-	{
-		consoleLog->log(level_enum::err, vFmt, args...);
-	}
-#endif
-	if (NULL == vLogName) {
-		return -1;
-	}
-
-	auto log = spdlog::get(vLogName);
-	if (NULL == log) {
-		return -1;
-	}
-
-	log->log(level_enum::err, vFmt, args...);
-	return 0;
-}
-
-template<typename... Args>
-int CLog::LogCritical(const char* vLogName, const char* vFmt, const Args &... args)
-{
-#ifdef __WINDOWS__
-	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
-	if (consoleLog)
-	{
-		consoleLog->log(level_enum::critical, vFmt, args...);
-	}
-#endif
-	if (NULL == vLogName) {
-		return -1;
-	}
-
-	auto log = spdlog::get(vLogName);
-	if (NULL == log) {
-		return -1;
-	}
-
-	log->log(level_enum::critical, vFmt, args...);
-	return 0;
-}
-
-#define INIT_BASE_LOG CLog::GetSingletonPtr()->InitBaseLog
-#define INIT_ROATING_LOG CLog::GetSingletonPtr()->Init_Roating_Log
-#define INIT_DAILY_LOG  CLog::GetSingletonPtr()->Init_Daily_Log
-#define SHUTDOWN_ALL_LOG CLog::GetSingletonPtr()->ShutDownAll
-#define LOG_TRACE  CLog::GetSingletonPtr()->LogTrace
-#define LOG_DEBUG  CLog::GetSingletonPtr()->LogDebug
-#define LOG_INFO   CLog::GetSingletonPtr()->LogInfo
-#define LOG_WARN  CLog::GetSingletonPtr()->LogWarn
-#define LOG_ERROR  CLog::GetSingletonPtr()->LogError
-#define LOG_CRITICAL CLog::GetSingletonPtr()->LogCritical
-			
 #endif //__LOG_H__
 

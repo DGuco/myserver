@@ -30,21 +30,11 @@ CGateCtrl::~CGateCtrl()
 
 bool CGateCtrl::PrepareToRun()
 {
-#ifdef _DEBUG_
-// 	std::shared_ptr<spdlog::logger> logger = spdlog::create<spdlog::sinks::rotating_file_sink_mt>("default", "../log/gatesvrd.log", level_enum::trace, 10 * 1024 * 1024, 5);
-// 	if (logger == NULL)
-// 	{
-// 		return -1;
-// 	}
-// 	logger->set_level(level_enum::trace);
-// 	logger->flush_on(level_enum::trace);
-	//初始化日志
-	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::trace,10 * 1024 * 1024,5);
-#else
-	//初始化日志
-	INIT_ROATING_LOG("default", "../log/gatesvrd.log", level_enum::info, 10 * 1024 * 1024, 5);
-#endif
-	ASSERT_EX(false, "CGateCtrl::PrepareToRun =====");
+	if (!INIT_LOG("gateserver"))
+	{
+		return false;
+	}
+	int a = 0;
 	//读取配置文件
 	if (!ReadConfig())
 	{
@@ -63,6 +53,7 @@ bool CGateCtrl::PrepareToRun()
 
 int CGateCtrl::Run()
 {
+	long long nTick = 0;
 	while (true)
 	{
 		try
@@ -71,7 +62,7 @@ int CGateCtrl::Run()
 		}
 		catch (const std::exception& e)
 		{
-			LOG_ERROR("default""CGateServer Run  cache execption msg {]", e.what());
+			CACHE_LOG(ERROR_CACHE,"CGateServer Run  cache execption msg {]", e.what());
 		}
 
 		try
@@ -80,9 +71,11 @@ int CGateCtrl::Run()
 		}
 		catch (const std::exception& e)
 		{
-			LOG_ERROR("default""CMessHandle Run  cache execption msg {]", e.what());
+			CACHE_LOG(ERROR_CACHE,"CMessHandle Run  cache execption msg {]", e.what());
 		}
-		SLEEP(10);
+		nTick++;
+		CACHE_LOG(DEBUG_CACHE, "CGateCtrl::Run tick {}", nTick);
+		SLEEP(1000);
 	}
 }
 
@@ -91,7 +84,7 @@ bool CGateCtrl::ReadConfig()
 	string filePath = "../config/serverinfo.json";
 	if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filePath)) 
 	{
-		LOG_ERROR("default", "Get ServerConfig failed");
+		DISK_LOG(ERROR_DISK, "Get ServerConfig failed");
 		return false;
 	}
 	return true;

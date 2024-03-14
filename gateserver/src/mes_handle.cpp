@@ -86,20 +86,20 @@ void CMessHandle::RecvGameData()
 	}
 	else
 	{
-		LOG_ERROR("default", "CMessHandle::m_S2CCodeQueue->GetHeadCode failed,error code {}", iRet);
+		DISK_LOG(TCP_ERROR, "CMessHandle::m_S2CCodeQueue->GetHeadCode failed,error code {}", iRet);
 		return;
 	}
 
 	if (iTmpLen > GAMEPLAYER_RECV_BUFF_LEN)
 	{
-		LOG_ERROR("default", "CMessHandle::m_S2CCodeQueue->GetHeadCode len illegal,len {}", iTmpLen);
+		DISK_LOG(TCP_ERROR, "CMessHandle::m_S2CCodeQueue->GetHeadCode len illegal,len {}", iTmpLen);
 		return;
 	}
 	int iTmpRet = 0;
 	iTmpRet = m_pRecvBuff->ReadBytes(m_CacheData, iTmpLen);
 	if (iTmpLen != 0)
 	{
-		LOG_ERROR("default", "CMessHandle::m_pRecvBuff->ReadBytes failed,iTmpRet {}", iTmpRet);
+		DISK_LOG(TCP_ERROR, "CMessHandle::m_pRecvBuff->ReadBytes failed,iTmpRet {}", iTmpRet);
 		return;
 	}
 
@@ -107,7 +107,7 @@ void CMessHandle::RecvGameData()
 	iTmpRet = msgG2g.ParseFromArray(m_CacheData, iTmpLen);
 	if (iTmpLen == false)
 	{
-		LOG_ERROR("default", "CMessHandle::msgG2g.ParseFromArray failed,iTmpRet {}", iTmpRet);
+		DISK_LOG(TCP_ERROR, "CMessHandle::msgG2g.ParseFromArray failed,iTmpRet {}", iTmpRet);
 		return;
 	}
 	SendClientData(msgG2g);

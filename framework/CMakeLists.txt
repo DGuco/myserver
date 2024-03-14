@@ -8,10 +8,10 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     add_compile_options(-Wall -fPIC -ggdb -pipe -std=c++11)
     
     set(CMAKE_CXX_STANDARD 11)
-    add_definitions(-D__LINUX__ )
+    add_definitions(-D__LINUX__ -DSPDLOG_NO_NAME)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     set(CMAKE_CXX_STANDARD 11)
-    add_definitions(-D__WINDOWS__)
+    add_definitions(-D__WINDOWS__ -DSPDLOG_NO_NAME)
 endif()
 
 # 仅对 Visual Studio 编译器生效

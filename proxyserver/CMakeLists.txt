@@ -8,11 +8,9 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     set(CMAKE_CXX_COMPILER g++)
     add_compile_options(-Wall -ggdb -pipe -std=c++14)
 
-    #libevent 多线程开启-DEVENT_THREAD_SAFE
-    add_definitions(-D_LINUX_ -D_DEBUG_ -DUSE_MY_ASSERT)
+    add_definitions(-D_LINUX_ -D_DEBUG_ -DSPDLOG_NO_NAME)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    #libevent 多线程开启-DEVENT_THREAD_SAFE
-    add_definitions(-D_WINDOWS_ -DWIN32 -D_WIN32_ -D_WIN32 -D_X86_ -D_DEBUG_ -DUSE_MY_ASSERT)
+    add_definitions(-D__WINDOWS__ -D_DEBUG_ -DSPDLOG_NO_NAME)
 endif()
 
 set(HEAD_FILES
