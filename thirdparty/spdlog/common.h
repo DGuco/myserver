@@ -124,6 +124,7 @@ using level_t = details::null_atomic_int;
 using level_t = std::atomic<int>;
 #endif
 
+#define SPDLOG_DELAY_OPEN_FILE 1  //真正写文件是再创建日志文件
 #define SPDLOG_LEVEL_TRACE 0
 #define SPDLOG_LEVEL_DEBUG 1
 #define SPDLOG_LEVEL_INFO 2

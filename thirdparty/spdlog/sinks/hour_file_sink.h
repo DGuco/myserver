@@ -54,7 +54,10 @@ namespace spdlog {
             {
                 auto now = log_clock::now();
                 auto filename = FileNameCalc::calc_filename(base_filename_, now_tm(now));
-                file_helper_.open(filename, truncate_);
+				if (!SPDLOG_DELAY_OPEN_FILE)
+				{
+					file_helper_.open(filename, truncate);
+				}
                 rotation_tp_ = next_rotation_tp_();
 
                 if (max_files_ > 0)

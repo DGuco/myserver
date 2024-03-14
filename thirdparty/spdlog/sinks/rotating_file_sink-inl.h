@@ -30,7 +30,10 @@ SPDLOG_INLINE rotating_file_sink<Mutex>::rotating_file_sink(
     , max_size_(max_size)
     , max_files_(max_files)
 {
-    file_helper_.open(calc_filename(base_filename_, 0));
+	if (!SPDLOG_DELAY_OPEN_FILE)
+	{
+        file_helper_.open(calc_filename(base_filename_, 0));
+	}
     current_size_ = file_helper_.size(); // expensive. called only once
     if (rotate_on_open && current_size_ > 0)
     {
