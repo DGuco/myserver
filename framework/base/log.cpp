@@ -1,6 +1,7 @@
 #include "log.h"
 
-stLogInfo g_DisLogFile[] =
+
+static stLogInfo g_DisLogFile[] =
 {
 	{"assert",level_enum::critical},
 	{"debug_disk",level_enum::debug},
@@ -12,7 +13,7 @@ stLogInfo g_DisLogFile[] =
 	{"shm_error",level_enum::err},
 };
 
-stLogInfo g_CacheLogFile[] =
+static stLogInfo g_CacheLogFile[] =
 {
 	{"debug_cache",level_enum::debug},
 	{"error_cache",level_enum::err},

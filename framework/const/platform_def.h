@@ -48,6 +48,7 @@ using namespace std;
     typedef int sm_handler;
     typedef int sm_key;
 	typedef int	SOCKET;
+	typedef pthread_t	TID;
 #else
     std::string GetErrorMessage(int errorCode);
 
@@ -63,6 +64,7 @@ using namespace std;
     typedef int sm_key;
     typedef void* sm_handler;
 	#define INVALID_SM_HADLER (NULL)
+	typedef DWORD		TID;
 
 #endif
 
@@ -70,6 +72,8 @@ using namespace std;
 //修改字对齐规则，避免false sharing
 #define CACHE_LINE_ALIGN  __attribute__((aligned(CACHE_LINE_SIZE)))
 
+TID  MyGetCurrentThreadID();
+void DumpStack(const char* filename);
 // 管道标识符
 enum enLockIdx
 {

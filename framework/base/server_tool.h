@@ -221,7 +221,5 @@ protected:
 	CDoubleLinker *mpEnd;
 	int miCnt;    // 链表中元素数量
 };
-
-
 #endif // __SERVER_TOOL_H__
 

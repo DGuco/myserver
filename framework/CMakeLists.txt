@@ -41,6 +41,8 @@ set(FRAMEWORK
         "base/time_helper.cpp"
         "base/log.h"
         "base/log.cpp"
+        "base/signal_handler.h"
+        "base/signal_handler.cpp"
         "const/dblogin_type.h"
         "const/err_code.h"
         "const/platform_def.h" 
@@ -78,7 +80,7 @@ set(FRAMEWORK
         "net/tcp_conn.h" 
         "net/tcp_conn.cpp"
         "net/tcp_client.h"
-        "net/tcp_client.cpp" )
+        "net/tcp_client.cpp")
 
 
 include_directories(
