@@ -8,23 +8,19 @@
 #ifndef SERVER_GAMESERVER_H
 #define SERVER_GAMESERVER_H
 
-#include <thread_pool.h>
 #include "server_tool.h"
 #include "runflag.h"
 #include "base.h"
-#include "timer.h"
 #include "message_interface.h"
-#include "message.pb.h"
-#include "dbmessage.pb.h"
 #include "message_dispatcher.h"
+#include "tcp_server.h"
 #include "client_handle.h"
-#include "net_work.h"
 #include "server_handle.h"
 #include "../gamemodule/datamodule/player.h"
 #include "../gamemodule/logicmodule/module_manager.h"
 #include "config_handle.h"
 
-class CGameServer: public CSingleton<CGameServer>
+class CGameServer: public CTCPServer,public CSingleton<CGameServer>
 {
 public:
 	enum EServerState

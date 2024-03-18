@@ -49,16 +49,15 @@ set(SOURCE_FILES
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
+        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/message
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const
-        ${CMAKE_SOURCE_DIR}/framework/event
         ${CMAKE_SOURCE_DIR}/framework/json
         ${CMAKE_SOURCE_DIR}/framework/log
         ${CMAKE_SOURCE_DIR}/framework/mem
-        ${CMAKE_SOURCE_DIR}/framework/message
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
-        ${CMAKE_SOURCE_DIR}/framework/timer
         ${CMAKE_SOURCE_DIR}/gameserver/inc
         ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/datamodule/
         ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/logicmodule/
