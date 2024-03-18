@@ -51,6 +51,8 @@ bool CLog::Init(const char* modulename)
 	}
 
 #ifdef __WINDOWS__
+	//这里在控制台左键点击出现光标后，输出日志会卡当前输出日志的线程，ctrl+c恢复正常，或者右键执行程序
+	//选择属性 取消选中"快速编辑模式"生效一次,或者右键执行窗口右键默认值中取消选中"快速编辑模式"永久有效
 	auto console = spdlog::create<spdlog::sinks::stdout_color_sink_mt>(CONSOLE_LOG_NAME);
 	console->set_level(level_enum::trace);
 	console->flush_on(level_enum::trace);

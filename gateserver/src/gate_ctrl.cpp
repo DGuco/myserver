@@ -72,7 +72,7 @@ int CGateCtrl::Run()
 
 		nTick++;
 		CACHE_LOG(DEBUG_CACHE, "CGateCtrl::Run tick {}", nTick);
-		SLEEP(10);
+		SLEEP(1000);
 	}
 }
 
