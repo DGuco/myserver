@@ -12,7 +12,6 @@
 #include "server_tool.h"
 #include "base.h"
 #include "config.h"
-#include "mes_handle.h"
 #include "tcp_server.h"
 #include "safe_pointer.h"
 

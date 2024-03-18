@@ -16,6 +16,7 @@
 #include <spdlog/sinks/daily_file_sink.h>
 #include <spdlog/sinks/hour_file_sink.h>
 #include <spdlog/sinks/null_sink.h>
+#include <spdlog/sinks/msvc_sink.h>
 #include <spdlog/sinks/ostream_sink.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -31,6 +32,7 @@ using namespace spdlog::level;
 
 struct stLogInfo
 {
+	int	  log_type;
 	char* logName;
 	level_enum level;
 };
@@ -40,11 +42,9 @@ enum enDiskLog
 	ASSERT_DISK = 0,
 	DEBUG_DISK = 1,
 	ERROR_DISK = 2,
-	TCP_DEBUG = 3,
-	TCP_ERROR = 4,
-	DB_ERROR = 5,
-	SHM_DEBUG = 6,
-	SHM_ERROR = 7,
+	DB_ERROR = 3,
+	SHM_DEBUG = 4,
+	SHM_ERROR = 5,
 	DIS_LOG_MAX,
 };
 
@@ -56,6 +56,8 @@ enum enCacheLog
 	LUA_CACHE = 103,
 	LUA_ERROR = 104,
 	PERF_CACHE = 105,
+	TCP_DEBUG = 106,
+	TCP_ERROR = 107,
 	CACHE_LOG_MAX,
 };
 

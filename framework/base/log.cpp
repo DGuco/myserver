@@ -3,24 +3,24 @@
 
 static stLogInfo g_DisLogFile[] =
 {
-	{"assert",level_enum::critical},
-	{"debug_disk",level_enum::debug},
-	{"error_disk",level_enum::err},
-	{"tcp_debug",level_enum::debug},
-	{"tcp_error",level_enum::err},
-	{"db_error",level_enum::err},
-	{"shm_debug",level_enum::debug},
-	{"shm_error",level_enum::err},
+	{enDiskLog::ASSERT_DISK,"assert",level_enum::critical},
+	{enDiskLog::DEBUG_DISK,"debug_disk",level_enum::debug},
+	{enDiskLog::ERROR_DISK,"error_disk",level_enum::err},
+	{enDiskLog::DB_ERROR,"db_error",level_enum::err},
+	{enDiskLog::SHM_DEBUG,"shm_debug",level_enum::debug},
+	{enDiskLog::SHM_ERROR,"shm_error",level_enum::err},
 };
 
 static stLogInfo g_CacheLogFile[] =
 {
-	{"debug_cache",level_enum::debug},
-	{"error_cache",level_enum::err},
-	{"trace_cache",level_enum::trace},
-	{"lua_cache",level_enum::debug},
-	{"lua_error",level_enum::err},
-	{"perf_cache",level_enum::debug},
+	{enCacheLog::DEBUG_CACHE,"debug_cache",level_enum::debug},
+	{enCacheLog::ERROR_CACHE,"error_cache",level_enum::err},
+	{enCacheLog::TRACE_CACHE,"trace_cache",level_enum::trace},
+	{enCacheLog::LUA_CACHE,"lua_cache",level_enum::debug},
+	{enCacheLog::LUA_ERROR,"lua_error",level_enum::err},
+	{enCacheLog::PERF_CACHE,"perf_cache",level_enum::debug},
+	{enCacheLog::TCP_DEBUG,"tcp_debug",level_enum::debug},
+	{enCacheLog::TCP_ERROR,"tcp_error",level_enum::err},
 };
 
 CLog::CLog()

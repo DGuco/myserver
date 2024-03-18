@@ -8,7 +8,6 @@
 #include "my_assert.h"
 #include "gate_ctrl.h"
 #include "gate_server.h"
-#include "mes_handle.h"
 
 CGateCtrl::CGateCtrl()
 {
@@ -40,10 +39,7 @@ bool CGateCtrl::PrepareToRun()
 	{
 		return false;
 	}
-	if (!CMessHandle::GetSingletonPtr()->PrepareToRun())
-	{
-		return false;
-	}
+
 	if (!CGateServer::GetSingletonPtr()->PrepareToRun())
 	{
 		return false;
@@ -58,24 +54,25 @@ int CGateCtrl::Run()
 	{
 		try
 		{
-			CGateServer::GetSingletonPtr()->Run();
+			CGateServer::GetSingletonPtr()->TcpTick();
 		}
 		catch (const std::exception& e)
 		{
-			CACHE_LOG(ERROR_CACHE,"CGateServer Run  cache execption msg {]", e.what());
+			CACHE_LOG(ERROR_CACHE,"CGateServer TcpTick  cache execption msg {]", e.what());
 		}
 
 		try
 		{
-			CMessHandle::GetSingletonPtr()->Run();
+			CGateServer::GetSingletonPtr()->RecvGameData();
 		}
 		catch (const std::exception& e)
 		{
-			CACHE_LOG(ERROR_CACHE,"CMessHandle Run  cache execption msg {]", e.what());
+			CACHE_LOG(ERROR_CACHE, "CGateServer RecvGameData  cache execption msg {]", e.what());
 		}
+
 		nTick++;
 		CACHE_LOG(DEBUG_CACHE, "CGateCtrl::Run tick {}", nTick);
-		SLEEP(1000);
+		SLEEP(10);
 	}
 }
 

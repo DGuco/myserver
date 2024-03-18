@@ -73,7 +73,6 @@ using namespace std;
 #define CACHE_LINE_ALIGN  __attribute__((aligned(CACHE_LINE_SIZE)))
 
 TID  MyGetCurrentThreadID();
-void DumpStack(const char* filename);
 // 管道标识符
 enum enLockIdx
 {

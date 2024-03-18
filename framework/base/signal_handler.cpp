@@ -47,7 +47,26 @@ static stSinInfo g_SigInfoList[] =
 
 void SigHandler(int sig, siginfo_t* siginfo, void* data)
 {
-	DumpStack("../log/dum.log");
+	char* signame = "";
+	for (int index = 0; index < sizeof(g_SigInfoList) / sizeof(stSinInfo); index++)
+	{
+		if (siginfo->sig_ == sig)
+		{
+			signame = siginfo->signame_;
+			break;
+		}
+	}
+
+	CSignalHandler::GetSingletonPtr()->DumpLog("------------------CoreDump Start------------------")
+	CSignalHandler::GetSingletonPtr()->DumpStack(signame);
+	CSignalHandler::GetSingletonPtr()->DumpLog("-------------------Core Dump End------------------")
+	//设置系统默认函数
+	struct sigaction sigopt;
+	sigemptyset(&sigopt.sa_mask)
+	act.sa_flags = SA_NODEFER | SA_ONSTACK | SA_RESETHAND;
+	act.sa_handler = SIG_DFL;
+	sigaction(sig, &sigopt, NULL);
+	kill(getpid(), sig);
 }
 
 #endif
@@ -59,8 +78,9 @@ CSignalHandler::CSignalHandler()
 CSignalHandler::~CSignalHandler()
 {}
 
-void CSignalHandler::RegisterHandler()
+void CSignalHandler::RegisterHandler(std::string modulename_)
 {
+	moduleName = modulename_;
 #ifdef __LINUX__
 	/*
 		在调用进程处理器函数时，内核通常会在进程栈中为其创建一栈。不过，如果进程对栈的扩展突破了对栈大小的限制时，这种做法就不太可行了。比如，栈的增长过大，以至于会触及到一片映射内存或者向上增长的堆，又或者栈的大小已经直逼RLIMIT_STACK资源限制，这些都会造成这种情况的发生。
@@ -99,23 +119,81 @@ void CSignalHandler::RegisterHandler()
 	SA_SIGINFO
 	信号处理程序接受三个参数，而不是一个。 在这种情况下，应设置 sa_sigaction 而不是 sa_handler。 此标志仅在建立信号处理程序时才有意义。
 	*/
-	struct sigaction act;
-	act.sa_flags = SA_NODEFER | SA_ONSTACK | SA_RESETHAND | SA_SIGINFO;
-	act.sa_sigaction = SigHandler;
+	struct sigaction sigopt;
+	sigopt.sa_flags = SA_NODEFER | SA_ONSTACK | SA_RESETHAND | SA_SIGINFO;
+	sigopt.sa_sigaction = SigHandler;
 
-	sigaction(SIGINT, &act, NULL);
-	sigaction(SIGQUIT, &act, NULL);
-	sigaction(SIGILL, &act, NULL);
-	sigaction(SIGABRT, &act, NULL);
-	sigaction(SIGFPE, &act, NULL);
-	sigaction(SIGSEGV, &act, NULL);
-	sigaction(SIGBUS, &act, NULL);
-	sigaction(SIGPROF, &act, NULL);
-	sigaction(SIGSYS, &act, NULL);
-	sigaction(SIGTRAP, &act, NULL);
-	sigaction(SIGXFSZ, &act, NULL);
-	sigaction(SIGPWR, &act, NULL);
+	sigaction(SIGINT, &sigopt, NULL);
+	sigaction(SIGQUIT, &sigopt, NULL);
+	sigaction(SIGILL, &sigopt, NULL);
+	sigaction(SIGABRT, &sigopt, NULL);
+	sigaction(SIGFPE, &sigopt, NULL);
+	sigaction(SIGSEGV, &sigopt, NULL);
+	sigaction(SIGBUS, &sigopt, NULL);
+	sigaction(SIGPROF, &sigopt, NULL);
+	sigaction(SIGSYS, &sigopt, NULL);
+	sigaction(SIGTRAP, &sigopt, NULL);
+	sigaction(SIGXFSZ, &sigopt, NULL);
+	sigaction(SIGPWR, &sigopt, NULL);
 #endif
 	return;
 }
 
+void CSignalHandler::DumpStack(const char* sigtype)
+{
+#ifdef __LINUX__
+	if (sigtype == NULL)
+	{
+		return;
+	}
+	void* DumpArray[25];
+	int	Size = backtrace(DumpArray, 25);
+	char** symbols = backtrace_symbols(DumpArray, Size);
+	if (symbols)
+	{
+		if (Size > 10) Size = 10;
+		if (Size > 0)
+		{
+			FILE* f = fopen(DumpFileName().c_str(), "a");
+			char threadinfo[256] = { 0 };
+			sprintf(threadinfo, "thread = %lld raise signal,sigtype = %s \r\n", MyGetCurrentThreadID(), sigtype);
+			fwrite(threadinfo, 1, strlen(threadinfo), f);
+			for (int i = 0; i < Size; i++)
+			{
+				printf("%s\r\n", symbols[i]);
+				fwrite(symbols[i], 1, strlen(symbols[i]), f);
+				fwrite("\r\n", 1, 2, f);
+			}
+			fclose(f);
+		}
+		free(symbols);
+	}
+	else
+	{
+		FILE* f = fopen(DumpFileName().c_str(), "a");
+		char	buffer[256] = { 0 };
+		char threadinfo[256] = { 0 };
+		sprintf(threadinfo, "thread = %lld raise signal,sigtype = %s \r\n", MyGetCurrentThreadID(), sigtype);
+		fwrite(sigtype, 1, strlen(sigtype), f);
+		fclose(f);
+	}
+#endif
+}
+
+std::string CSignalHandler::DumpFileName()
+{
+	std::string filename = "../log/";
+	filename = filename + moduleName + "_dump.log";
+	return filename;
+}
+
+void CSignalHandler::DumpLog(const char* msg)
+{
+	if ( msg == NULL)
+	{
+		return;
+	}
+	FILE* f = fopen(DumpFileName().c_str(), "a");
+	fwrite(msg, 1, strlen(msg), f);
+	fclose(f);
+}

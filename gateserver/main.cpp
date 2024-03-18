@@ -7,10 +7,14 @@
 
 #include <memory>
 #include "gate_ctrl.h"
+#include "signal_handler.h"
 
 using namespace std;
 int main(int argc, char **argv)
 {
+	//信号处理注册
+	CSignalHandler::GetSingletonPtr()->RegisterHandler("gateserver");
+	
 	try
 	{
 		int iTmpRet = CGateCtrl::GetSingletonPtr()->PrepareToRun();

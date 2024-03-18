@@ -14,7 +14,13 @@ class CSignalHandler : public CSingleton<CSignalHandler>
 public:
 	CSignalHandler();
 	~CSignalHandler();
-	void RegisterHandler();
+	void RegisterHandler(std::string modulename_);
+	void DumpStack(const char* sigtype);
+	void DumpLog(const char* msg);
+private:
+	std::string DumpFileName();
+private:
+	std::string moduleName;
 };
 
 #endif //__SIGNAL_HANDLER_H__

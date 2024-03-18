@@ -83,7 +83,7 @@ int CTCPServer::PrepareToRun()
 #endif
 }
 
-bool CTCPServer::Run()
+bool CTCPServer::TcpTick()
 {
 #ifdef __LINUX__
 	if (m_nRunModule == eTcpSelect)
@@ -150,7 +150,7 @@ int CTCPServer::InitSelect(const char* ip, int port)
 
 	m_ListenSocket.SetSocketNoBlock();
 
-	DISK_LOG(TCP_DEBUG, "CTCPServer::InitSelect listen {} : {},fdsize = {}.", ip,port,FD_SETSIZE);
+	CACHE_LOG(TCP_DEBUG, "CTCPServer::InitSelect listen {} : {},fdsize = {}.", ip,port,FD_SETSIZE);
 	return 0;
 }
 
@@ -206,7 +206,7 @@ int CTCPServer::SelectTick()
 	{
 		if (iTmp < 0)
 		{
-			DISK_LOG(TCP_ERROR, "Select error, {}.", strerror(errno));
+			CACHE_LOG(TCP_ERROR, "Select error, {}.", strerror(errno));
 		}
 		return -1;
 	}
@@ -223,18 +223,18 @@ int CTCPServer::SelectTick()
 			{
 				pConn->SetCreateTime(CTimeHelper::GetSingletonPtr()->GetANSITime());
 				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
-				DISK_LOG(DEBUG_DISK, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+				CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
 				OnNewConnect(pConn);
 			}
 			else
 			{
-				DISK_LOG(DEBUG_DISK, "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+				CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
 				newSocket.Close();
 			}
 		}
 		else
 		{
-			DISK_LOG(ERROR_DISK, "Accept new socket error,listenfd = {},erromsg =  %s.", strerror(errno));
+			CACHE_LOG(TCP_ERROR, "Accept new socket error,listenfd = {},erromsg =  %s.", strerror(errno));
 		}
 	}
 
@@ -383,13 +383,13 @@ int CTCPServer::InitEpoll(const char* ip, int port)
 	{
 		if (!(m_pEpollEventList = (struct epoll_event*)malloc(MAX_SOCKET_NUM * sizeof(struct epoll_event))))
 		{
-			LOG_ERROR("default", "malloc() error!");
+			CACHE_LOG(TCP_ERROR, "malloc epoll_event error!");
 			return -1;
 		}
 		if ((m_nEpollFd = epoll_create(MAX_SOCKET_NUM)) < 0)
 		{
-			LOG_ERROR("default", "Error : {}", strerror(errno));
-			LOG_ERROR("default", "epoll_create error!");
+			CACHE_LOG(TCP_ERROR, "epoll_create Error : {}", strerror(errno));
+			CACHE_LOG(TCP_ERROR, "epoll_create error!");
 			return -1;
 		}
 
@@ -437,7 +437,7 @@ int CTCPServer::InitEpoll(const char* ip, int port)
 	{
 		ClearEpoll();
 		m_ListenSocket.Close();
-		LOG_ERROR("default", "listen fd = {} connection error!", mEpollSocket);
+		CACHE_LOG(TCP_ERROR, "listen fd = {} connection error!", mEpollSocket);
 		return -6;
 	}
 
@@ -466,7 +466,7 @@ int CTCPServer::EpollTick()
 	nfds = epoll_wait(m_nEpollFd, m_pEpollEventList, MAX_SOCKET_NUM, 100);
 	if (-1 == nfds)
 	{
-		LOG_ERROR("default", "epoll_wait return -1!");
+		CACHE_LOG(TCP_ERROR, "epoll_wait return -1!");
 	}
 
 	for (i = 0, cevents = m_pEpollEventList; i < nfds; i++, cevents++)
@@ -474,13 +474,13 @@ int CTCPServer::EpollTick()
 		SOCKET nTmFd = cevents->data.fd;
 		if (0 >= nTmFd)
 		{
-			LOG_ERROR("default", "Error cevents->data.fd = {}!", cevents->data.fd);
+			CACHE_LOG(TCP_ERROR, "Error cevents->data.fd = {}!", cevents->data.fd);
 			continue;
 		}
 
 		if (0 != (EPOLLERR & cevents->events))
 		{
-			LOG_ERROR("default", "cevents->events generate error event!");
+			CACHE_LOG(TCP_ERROR, "cevents->events generate error event!");
 			continue;
 		}
 		
@@ -497,7 +497,7 @@ int CTCPServer::EpollTick()
 			if (!tmConnSocket.IsValid())
 			{
 				// 客户端连接上来以后又立即关闭了
-				LOG_ERROR("default", "client connected port {} and disconnected! errno({} : {})",
+				CACHE_LOG(TCP_ERROR, "client connected port {} and disconnected! errno({} : {})",
 					tmConnSocket.GetHost().c_str(), errno, strerror(errno));
 				continue;
 			}
@@ -505,13 +505,13 @@ int CTCPServer::EpollTick()
 			SOCKET iNewSocket = tmConnSocket.GetSocket();
 			if (MAX_SOCKET_NUM <= iNewSocket)
 			{
-				LOG_ERROR("default", "error: socket id is so big {}", iNewSocket);
+				CACHE_LOG(TCP_ERROR, "error: socket id is so big {}", iNewSocket);
 				close(iNewSocket);
 				continue;
 			}
 			if (!tmConnSocket.SetSocketNoBlock())
 			{
-				LOG_ERROR("default", "error: socket set noblock failed ,fd = {}", iNewSocket);
+				CACHE_LOG(TCP_ERROR, "error: socket set noblock failed ,fd = {}", iNewSocket);
 				tmConnSocket.Close();
 				continue;
 			}
@@ -521,17 +521,17 @@ int CTCPServer::EpollTick()
 			{
 				if (EpollAddSocket(iNewSocket) != 0)
 				{
-					LOG_ERROR("default", "error: EpollAddSocket failed ,fd = {}", iNewSocket);
+					CACHE_LOG(TCP_ERROR, "error: EpollAddSocket failed ,fd = {}", iNewSocket);
 					tmConnSocket.Close();
 					continue;
 				}
 				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
-				LOG_DEBUG("default", "Accept new socket fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
+				CACHE_LOG(TCP_ERROR, "Accept new socket fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
 				OnNewConnect(pConn);
 			}
 			else
 			{
-				LOG_ERROR("default", "CreateTcpConn failed fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
+				CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
 				tmConnSocket.Close();
 				continue;
 			}
@@ -653,7 +653,7 @@ int CTCPServer::EpollDelSocket(SOCKET socket)
 		tmEvent.data.fd = socket;
 		if (epoll_ctl(m_nEpollFd, EPOLL_CTL_DEL, socket, &tmEvent) < 0)
 		{
-			LOG_ERROR("default", "epoll remove socket error: fd = {} ", socket);
+			CACHE_LOG(TCP_ERROR, "epoll remove socket error: fd = {} ", socket);
 			return -1;
 		}
 	}
@@ -670,7 +670,7 @@ int CTCPServer::EpollAddSocket(SOCKET socket)
 		tmEvent.data.fd = socket;
 		if (epoll_ctl(m_nEpollFd, EPOLL_CTL_ADD, socket, &tmEvent) < 0)
 		{
-			LOG_ERROR("default", "epoll remove socket error: fd = {} ", socket);
+			CACHE_LOG(TCP_ERROR, "epoll remove socket error: fd = {} ", socket);
 			return -1;
 		}
 	}

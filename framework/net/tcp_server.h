@@ -38,7 +38,7 @@ public:
 										unsigned int SendBufLen_,
 										bool bblock);
 	//
-	bool Run();
+	bool TcpTick();
 	//
 	SafePointer<CTCPConn>     FindTcpConn(SOCKET socket);
 	//

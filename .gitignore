@@ -6,6 +6,7 @@
 *.idea
 *.logs
 log
+enc_temp_folder
 out
 cmake-build-debug
 /cmake-build-debug/*

@@ -21,10 +21,10 @@ set(SOURCE_FILES
     "main.cpp" 
     "inc/gate_ctrl.h" 
     "inc/gate_def.h"
-    "inc/mes_handle.h"
+    
     "inc/gate_server.h" 
     "src/gate_ctrl.cpp" 
-    "src/mes_handle.cpp"
+    
     "src/gate_server.cpp"
     "../common/message/message.pb.cc" 
     "../common/message/message.pb.h"
