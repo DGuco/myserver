@@ -64,7 +64,8 @@ public:
 		{
 			file_helper_.open(filename, truncate);
 		}
-        rotation_tp_ = next_rotation_tp_();
+        //rotation_tp_ = next_rotation_tp_();
+		rotation_tp_ = log_clock::from_time_t(0);
 
         if (max_files_ > 0)
         {

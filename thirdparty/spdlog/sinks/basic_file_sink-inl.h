@@ -16,10 +16,7 @@ namespace sinks {
 template<typename Mutex>
 SPDLOG_INLINE basic_file_sink<Mutex>::basic_file_sink(const filename_t &filename, bool truncate)
 {
-    if(!SPDLOG_DELAY_OPEN_FILE)
-    {
-        file_helper_.open(filename, truncate);
-    }
+	file_helper_.open(filename, truncate);
 }
 
 template<typename Mutex>
