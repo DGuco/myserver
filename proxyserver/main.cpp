@@ -1,39 +1,37 @@
 //
 //  main.cpp
 //  gateserver
-//  Created by DGuco on 16/12/6.
+//  Created by DGuco on 16/12/8.
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
-#include <clocale>
-#include <signal.h>
-#include <runflag.h>
-#include <config.h>
-#include "inc/proxy_ctrl.h"
+#include <memory>
+#include "proxy_ctrl.h"
+#include "signal_handler.h"
 
-CRunFlag g_byRunFlag;
-
-void sigpipe_handle(int sig)
-{
-    LOG_ERROR("default", "receive sigpipe,do sigpipe_handle");
-}
-
+using namespace std;
 int main(int argc, char **argv)
 {
-	std::shared_ptr<CProxyCtrl> &pProxyCtrl = CProxyCtrl::GetSingletonPtr( );
-	if (pProxyCtrl->PrepareToRun( )) {
-		LOG_ERROR("default", "ProxyServer prepare to fun failed.");
-		exit(3);
+	//信号处理注册
+	CSignalHandler::GetSingletonPtr()->RegisterHandler("gateserver");
+	
+	try
+	{
+		int iTmpRet = CProxyCtrl::GetSingletonPtr()->PrepareToRun();
+		if (!iTmpRet)
+		{
+			DISK_LOG(ERROR_DISK, "CGateCtrl PrepareToRun failed,iRet = {}", iTmpRet);
+			exit(0);
+		}
+	}
+	catch (const std::exception& e)
+	{
+		DISK_LOG(ERROR_DISK, "CGateCtrl PrepareToRun failed,get exception = {}", e.what());
+		exit(0);
 	}
 
-    struct sigaction sa;
-    sa.sa_handler = sigpipe_handle;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sigaction(SIGPIPE,&sa,NULL);
-
-	pProxyCtrl->Run( );
+	CProxyCtrl::GetSingletonPtr()->Run();
 	// 关闭日志
-	LOG_SHUTDOWN_ALL;
-	return 0;
+	SHUTDOWN_ALL_LOG();
 }
+

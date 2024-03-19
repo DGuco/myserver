@@ -5,8 +5,8 @@
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
-#ifndef __GATE_DEF_H__
-#define __GATE_DEF_H__
+#ifndef __PROXY_DEF_H__
+#define __PROXY_DEF_H__
 
 #include <time.h>
 #include <string.h>

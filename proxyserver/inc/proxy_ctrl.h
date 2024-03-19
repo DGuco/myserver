@@ -1,47 +1,19 @@
 //
-//  gate_ctrl.h
-//  gate_ctrl 管理类头文件
+//  gatectrl.h
+//  客户端tcp管理类头文件
 //  Created by DGuco on 16/12/6.
 //  Copyright © 2016年 DGuco. All rights reserved.
 //
 
-#ifndef _PROXY_CTRL_HPP_
-#define _PROXY_CTRL_HPP_
+#ifndef __PROXY_CTRL_H__
+#define __PROXY_CTRL_H__
 
-#include <mutex>
-#include <byte_buff.h>
-#include <memory>
+#include "proxy_def.h"
 #include "server_tool.h"
-#include "net_work.h"
-
-using namespace std;
-
-struct TStatLog
-{
-	int iRcvCnt;
-	int iRcvSize;
-	int iRcvErrCnt;
-	int iSndCnt;
-	int iSndSize;
-	int iClnCnt;
-	int iClnSize;
-
-	TStatLog()
-	{
-		Clear();
-	}
-
-	void Clear()
-	{
-		iRcvCnt = 0;
-		iRcvSize = 0;
-		iRcvErrCnt = 0;
-		iSndCnt = 0;
-		iSndSize = 0;
-		iClnCnt = 0;
-		iClnSize = 0;
-	}
-};
+#include "base.h"
+#include "config.h"
+#include "tcp_server.h"
+#include "safe_pointer.h"
 
 class CProxyCtrl: public CSingleton<CProxyCtrl>
 {
@@ -50,39 +22,15 @@ public:
 	CProxyCtrl();
 	//析构函数
 	~CProxyCtrl();
-	// 准备
-	int PrepareToRun();
-	// 执行线程
+	//准备run
+	bool PrepareToRun();
+	//run
 	int Run();
-	// 通过KEY获取连接信息
-	IBufferEvent *GetConnByKey(int iKey);
-	// 通过FE和ID创建KEY
-	int MakeConnKey(const short nType, const short nID);
-	//处理注册消息
-	int DealRegisterMes(IBufferEvent *pBufferEvent, unsigned short iLen);
-	// 转发数据
-	int TransferOneCode(IBufferEvent *pBufferEvent, unsigned short nCodeLength);
-	//关闭socket
-	void CloseConnection(int socket);
-	// 发送数据
-	int SendOneCodeTo(short nCodeLength, BYTE *pbyCode, int iKey, bool bKeepalive);
-protected:
-	//客户端连接还回调
-	static void lcb_OnAcceptCns(uint32 uId, CAcceptor *pAcceptor);
-	//客户端断开连接回调
-	static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
-	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
-	//客户端上行数据回调
-	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
-	//连接超时
-	static void lcb_OnAcceptorTimeOut(int fd, short what, void *param);
 private:
-	std::shared_ptr<CNetWork> m_pNetWork;
-	TStatLog m_stStatLog;
-	static std::map<int/*key*/, int/*socket id*/> m_mapRegister;
-	static std::map<int/*socket id*/, int/*key*/> m_mapSocket2Key;
-	static CByteBuff *m_pRecvBuff;
+	//读取配置文件
+	bool ReadConfig();
+private:
+	SafePointer<CServerConfig> m_pConfig;
 };
 
-#endif // _PROXY_CTRL_HPP_
+#endif

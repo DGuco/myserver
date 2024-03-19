@@ -1,18 +1,18 @@
 /*****************************************************************
-* FileName:gameplayer.h
+* FileName:proxy_player.h
 * Summary :
-* Date	  :2024-2-21
+* Date	  :2024-3-19
 * Author  :DGuco(1139140909@qq.com)
 ******************************************************************/
-#ifndef __GAME_PLAYER_H__
-#define __GAME_PLAYER_H__
+#ifndef __PROXY_PLAYER_H__
+#define __PROXY_PLAYER_H__
 
 #include "tcp_conn.h"
 
-class CGamePlayer : public CTCPConn
+class CProxyPlayer : public CTCPConn
 {
 public:
-	CGamePlayer();
+	CProxyPlayer();
 	virtual int DoRecvLogic();
 	virtual int DoWriteLogic();
 	virtual int DoErrorLogic(int errcode);

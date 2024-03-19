@@ -1,26 +1,25 @@
 //
 // Created by dguco on 18-1-30.
 //
+#include "proxy_server.h"
+#include "proxy_def.h"
 #include "config.h"
 #include "my_assert.h"
-#include "gate_server.h"
-#include "game_player.h"
-#include "gate_def.h"
 #include "time_helper.h"
 
-CGateServer::CGateServer() : CTCPServer()
+CProxyServer::CProxyServer() : CTCPServer()
 {
 	m_C2SCodeQueue.Reset();
 	m_S2CCodeQueue.Reset();
 	m_pRecvBuff.Reset();
 }
 
-CGateServer::~CGateServer()
+CProxyServer::~CProxyServer()
 {
 
 }
 
-bool CGateServer::PrepareToRun()
+bool CProxyServer::PrepareToRun()
 {
 	m_pRecvBuff = new CByteBuff(MAX_PACKAGE_LEN);
 	// create c2spipe
@@ -53,7 +52,7 @@ bool CGateServer::PrepareToRun()
 	return false;
 }
 
-void CGateServer::ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError)
+void CProxyServer::ClearSocket(SafePointer<CProxyPlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
 	//非gameserver 主动请求关闭
@@ -63,7 +62,7 @@ void CGateServer::ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError
 	}
 }
 
-void CGateServer::DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError)
+void CProxyServer::DisConnect(SafePointer<CProxyPlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
 	static CMessage tmpMessage;
@@ -100,7 +99,7 @@ void CGateServer::DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError)
 	return;
 }
 
-void CGateServer::RecvClientData(SafePointer<CGamePlayer> pGamePlayer)
+void CProxyServer::RecvClientData(SafePointer<CProxyPlayer> pGamePlayer)
 {
 	SafePointer<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
 	int packLen = pRecvBuff->ReadUnInt(true);
@@ -147,7 +146,7 @@ void CGateServer::RecvClientData(SafePointer<CGamePlayer> pGamePlayer)
 }
 
 
-int CGateServer::SendToClient(CMessG2G& tmpMes)
+int CProxyServer::SendToClient(CMessG2G& tmpMes)
 {
 	int nTmpSocket;
 	auto tmpSendList = tmpMes.socketinfos();
@@ -159,7 +158,7 @@ int CGateServer::SendToClient(CMessG2G& tmpMes)
 	return 0;
 }
 
-void CGateServer::RecvGameData()
+void CProxyServer::RecvGameData()
 {
 	while (!m_S2CCodeQueue->IsEmpty())
 	{
@@ -179,20 +178,20 @@ void CGateServer::RecvGameData()
 		}
 		else
 		{
-			CACHE_LOG(TCP_ERROR, "CMessHandle::m_S2CCodeQueue->GetHeadCode failed,error code {}", iRet);
+			CACHE_LOG(TCP_ERROR, "CProxyServer::m_S2CCodeQueue->GetHeadCode failed,error code {}", iRet);
 			return;
 		}
 
 		if (iTmpLen > GAMEPLAYER_RECV_BUFF_LEN)
 		{
-			CACHE_LOG(TCP_ERROR, "CMessHandle::m_S2CCodeQueue->GetHeadCode len illegal,len {}", iTmpLen);
+			CACHE_LOG(TCP_ERROR, "CProxyServer::m_S2CCodeQueue->GetHeadCode len illegal,len {}", iTmpLen);
 			return;
 		}
 		int iTmpRet = 0;
 		iTmpRet = m_pRecvBuff->ReadBytes(m_CacheData, iTmpLen);
 		if (iTmpLen != 0)
 		{
-			CACHE_LOG(TCP_ERROR, "CMessHandle::m_pRecvBuff->ReadBytes failed,iTmpRet {}", iTmpRet);
+			CACHE_LOG(TCP_ERROR, "CProxyServer::m_pRecvBuff->ReadBytes failed,iTmpRet {}", iTmpRet);
 			return;
 		}
 
@@ -200,21 +199,21 @@ void CGateServer::RecvGameData()
 		iTmpRet = msgG2g.ParseFromArray(m_CacheData, iTmpLen);
 		if (iTmpLen == false)
 		{
-			CACHE_LOG(TCP_ERROR, "CMessHandle::msgG2g.ParseFromArray failed,iTmpRet {}", iTmpRet);
+			CACHE_LOG(TCP_ERROR, "CProxyServer::msgG2g.ParseFromArray failed,iTmpRet {}", iTmpRet);
 			return;
 		}
 		SendToClient(msgG2g);
 	}
 }
 
-int CGateServer::SendToGame(char* data, int iTmpLen)
+int CProxyServer::SendToGame(char* data, int iTmpLen)
 {
 	return m_C2SCodeQueue->SendMessage((BYTE*)data, iTmpLen);
 }
 
-void CGateServer::OnNewConnect(SafePointer<CTCPConn> pConnn)
+void CProxyServer::OnNewConnect(SafePointer<CTCPConn> pConnn)
 {
-	SafePointer<CGamePlayer> pConn = pConnn.DynamicCastTo<CGamePlayer>();
+	SafePointer<CProxyPlayer> pConn = pConnn.DynamicCastTo<CProxyPlayer>();
 	if (pConnn != NULL)
 	{
 
@@ -222,21 +221,21 @@ void CGateServer::OnNewConnect(SafePointer<CTCPConn> pConnn)
 }
 
 //
-SafePointer<CTCPConn> CGateServer::CreateTcpConn(CSocket tmSocket)
+SafePointer<CTCPConn> CProxyServer::CreateTcpConn(CSocket tmSocket)
 {
-	SafePointer<CGamePlayer> pConn = new CGamePlayer();
+	SafePointer<CProxyPlayer> pConn = new CProxyPlayer();
 	return pConn.DynamicCastTo<CTCPConn>();
 }
 
 //
-SafePointer<CTCPClient> CGateServer::CreateTcpClient(CSocket tmSocket)
+SafePointer<CTCPClient> CProxyServer::CreateTcpClient(CSocket tmSocket)
 {
 	return NULL;
 }
 
-void CGateServer::SendToClient(const CSocketInfo& socketInfo, const char* data, unsigned int len)
+void CProxyServer::SendToClient(const CSocketInfo& socketInfo, const char* data, unsigned int len)
 {
-	SafePointer<CGamePlayer> pGamePlayer = FindTcpConn(socketInfo.socketid()).DynamicCastTo<CGamePlayer>();
+	SafePointer<CProxyPlayer> pGamePlayer = FindTcpConn(socketInfo.socketid()).DynamicCastTo<CProxyPlayer>();
 	if (pGamePlayer == NULL)
 	{
 		CACHE_LOG(TCP_ERROR, "CAcceptor has gone, socket = {}", socketInfo.socketid());

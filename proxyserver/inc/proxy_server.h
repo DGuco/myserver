@@ -4,32 +4,32 @@
 * Date	  :2024-2-22
 * Author  :DGuco(1139140909@qq.com)
 ******************************************************************/
-#ifndef __GATE_SERVER_H__
-#define __GATE_SERVER_H__
+#ifndef __PROXY_SERVER_H__
+#define __PROXY_SERVER_H__
 #include "safe_pointer.h"
 #include "tcp_server.h"
 #include "server_tool.h"
 #include "message.pb.h"
-#include "game_player.h"
+#include "proxy_player.h"
 #include "common_def.h"
 #include "shm_queue.h"
 
-class CGateServer : public CTCPServer,public CSingleton<CGateServer>
+class CProxyServer : public CTCPServer,public CSingleton<CProxyServer>
 {
 public:
 	//构造函数
-	CGateServer();
+	CProxyServer();
 	//析构函数
-	virtual ~CGateServer();
+	virtual ~CProxyServer();
 public:
 	//准备run
 	bool PrepareToRun();
 	//清除socket
-	void ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError);
+	void ClearSocket(SafePointer<CProxyPlayer> pGamePlayer, short iError);
 	//通知gameserver client 断开连接
-	void DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError);
+	void DisConnect(SafePointer<CProxyPlayer> pGamePlayer, short iError);
 	//接受客户端数据
-	void RecvClientData(SafePointer<CGamePlayer> pGamePlayer);
+	void RecvClientData(SafePointer<CProxyPlayer> pGamePlayer);
 	//发送消息给client
 	void RecvGameData();
 	//向game 发送消息
