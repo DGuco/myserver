@@ -6,8 +6,9 @@
 ******************************************************************/
 #ifndef __GAME_CTRL_H__
 #define __GAME_CTRL_H__
+#include "server_tool.h"
 
-class CGameCtrl
+class CGameCtrl : public CSingleton<CGameCtrl>
 {
 public:
 	//¹¹Ôìº¯Êý
@@ -18,6 +19,8 @@ public:
 	bool PrepareToRun();
 	//run
 	int Run();
+	//
+	bool ReadConfig();
 };
 
 #endif //__GAME_CTRL_H__

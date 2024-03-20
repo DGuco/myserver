@@ -29,6 +29,8 @@ CLog::CLog()
 
 CLog::~CLog()
 {
+	// πÿ±’»’÷æ
+	ShutDownAll();
 }
 
 bool CLog::Init(const char* modulename)

@@ -2,8 +2,6 @@
 #define MESSAGE_INTERFACE_H_
 
 #include <google/protobuf/message.h>
-#include "server_tool.h"
-#include "base.h"
 
 typedef ::google::protobuf::Message CGooMess;
 

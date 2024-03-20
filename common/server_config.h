@@ -9,10 +9,10 @@
 #define SERVER_CONFIG_H_H
 #include <memory>
 #include <map>
-#include "server_tool.h"
-#include "json_interface.h"
+#include "singleton.h"
+#include "json_reader.h"
 #include "common_def.h"
-#include "message.pb.h"
+#include "./message/message.pb.h"
 
 struct ServerInfo
 {
@@ -21,7 +21,7 @@ struct ServerInfo
 	int m_iPort;
 };
 
-class CServerConfig: public CSingleton<CServerConfig>, public AJson
+class CServerConfig: public CSingleton<CServerConfig>, public CJsonReader
 {
 public:
 	CServerConfig();

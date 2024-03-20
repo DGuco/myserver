@@ -1,5 +1,5 @@
 #include "proxy_player.h"
-#include "server_tool.h"
+#include "singleton.h"
 #include "common_def.h"
 #include "proxy_server.h"
 

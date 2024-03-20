@@ -8,7 +8,7 @@
 #define __PROXY_SERVER_H__
 #include "safe_pointer.h"
 #include "tcp_server.h"
-#include "server_tool.h"
+#include "singleton.h"
 #include "message.pb.h"
 #include "proxy_player.h"
 #include "common_def.h"

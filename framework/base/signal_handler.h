@@ -7,7 +7,7 @@
 #ifndef __SIGNAL_HANDLER_H__
 #define __SIGNAL_HANDLER_H__
 
-#include "server_tool.h"
+#include "singleton.h"
 
 class CSignalHandler : public CSingleton<CSignalHandler>
 {

@@ -10,7 +10,7 @@
 #include <ctime>
 #include <ratio>
 #include "base.h"
-#include "server_tool.h"
+#include "singleton.h"
 
 class CTimeHelper : public CSingleton<CTimeHelper>
 {

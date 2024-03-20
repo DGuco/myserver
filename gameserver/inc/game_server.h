@@ -104,8 +104,6 @@ public:
 	void SetRunFlag(ERunFlag eRunFlag);
 	// 检查服务器状态
 	int CheckRunFlags();
-	// 开启所有定时器
-	int StartAllTimers();
 	// perf日志打印
 	static void OnTimePerfLog(CTimerBase *pTimer);
 

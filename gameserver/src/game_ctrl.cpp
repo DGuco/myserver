@@ -23,10 +23,6 @@ CGameCtrl::~CGameCtrl()
 
 bool CGameCtrl::PrepareToRun()
 {
-	if (!INIT_LOG("gameserver"))
-	{
-		return false;
-	}
 	int a = 0;
 	//¶ÁÈ¡ÅäÖÃÎÄ¼þ
 	if (!ReadConfig())
@@ -44,4 +40,15 @@ bool CGameCtrl::PrepareToRun()
 int CGameCtrl::Run()
 {
 
+}
+
+bool CGameCtrl::ReadConfig()
+{
+	string filePath = "../config/serverinfo.json";
+	if (-1 == CServerConfig::GetSingletonPtr()->LoadFromFile(filePath))
+	{
+		DISK_LOG(ERROR_DISK, "Get ServerConfig failed");
+		return false;
+	}
+	return true;
 }

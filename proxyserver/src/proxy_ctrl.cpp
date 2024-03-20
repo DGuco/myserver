@@ -29,10 +29,6 @@ CProxyCtrl::~CProxyCtrl()
 
 bool CProxyCtrl::PrepareToRun()
 {
-	if (!INIT_LOG("gateserver"))
-	{
-		return false;
-	}
 	int a = 0;
 	//读取配置文件
 	if (!ReadConfig())

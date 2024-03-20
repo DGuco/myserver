@@ -2,7 +2,7 @@
 // Created by dguco on 17-2-16.
 //
 #include "safe_pointer.h"
-#include "config.h"
+#include "server_config.h"
 
 CServerConfig::CServerConfig()
 {

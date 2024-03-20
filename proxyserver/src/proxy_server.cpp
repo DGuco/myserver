@@ -3,7 +3,7 @@
 //
 #include "proxy_server.h"
 #include "proxy_def.h"
-#include "config.h"
+#include "server_config.h"
 #include "my_assert.h"
 #include "time_helper.h"
 
@@ -37,7 +37,7 @@ bool CProxyServer::PrepareToRun()
 	}
 
 	SafePointer<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
-	SafePointer<ServerInfo> gateInfo = tmpConfig->GetServerInfo(enServerType::FE_GATESERVER);
+	SafePointer<ServerInfo> gateInfo = tmpConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 	int nRet = InitTcpServer(eTcpEpoll, gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
 	if (nRet == 0)
 	{

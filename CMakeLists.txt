@@ -11,7 +11,7 @@ endif()
 
 add_subdirectory(framework)
 add_subdirectory(proxyserver)
-add_subdirectory(gameserver)
+#add_subdirectory(gameserver)
 #add_subdirectory(dbserver)
 
 

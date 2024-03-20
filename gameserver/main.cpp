@@ -6,51 +6,40 @@
 //
 
 #include <signal.h>
-#include <dlfcn.h>
 #include "config.h"
+#include "signal_handler.h"
 #include "inc/game_server.h"
-
-void sigusr1_handle(int iSigVal)
-{
-    CGameServer::GetSingletonPtr()->SetRunFlag(ERF_RELOAD);
-    signal(SIGUSR1, sigusr1_handle);
-}
-
-void sigusr2_handle(int iSigVal)
-{
-    CGameServer::GetSingletonPtr()->SetRunFlag(ERF_QUIT);
-    signal(SIGUSR2, sigusr2_handle);
-}
-
-void sigpipe_handle(int sig)
-{
-    LOG_ERROR("default", "receive sigpipe,do sigpipe_handle");
-}
+#include "game_ctrl.h"
 
 int main(int argc, char *argv[])
 {
-	// 准备启动服务器
-	shared_ptr<CGameServer> &pTmpGameServer = CGameServer::CreateInstance();
-	int iRet = pTmpGameServer->PrepareToRun();
-	if (iRet != 0) {
-		LOG_ERROR("default", "CGameServer prepare to run failed, iRet = {}.", iRet);
+	//信号处理注册
+	CSignalHandler::GetSingletonPtr()->RegisterHandler("gameserver");
+	
+	if (!INIT_LOG("gameserver"))
+	{
 		exit(0);
 	}
-	// 信号
-	signal(SIGUSR1, sigusr1_handle);
-	signal(SIGUSR2, sigusr2_handle);
 
-    struct sigaction sa;
-    sa.sa_handler = sigpipe_handle;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sigaction(SIGPIPE,&sa,NULL);
+	try
+	{
 
-	// 启动服务器
-	pTmpGameServer->Run();
-	// 关闭日志
-	LOG_SHUTDOWN_ALL;
-	LOG_INFO("default", "Game server is going to stop...");
+		int iTmpRet = CGameCtrl::GetSingletonPtr()->PrepareToRun();
+		if (!iTmpRet)
+		{
+			DISK_LOG(ERROR_DISK, "CGateCtrl PrepareToRun failed,iRet = {}", iTmpRet);
+			exit(0);
+		}
+	}
+	catch (const std::exception& e)
+	{
+		DISK_LOG(ERROR_DISK, "CGateCtrl PrepareToRun failed,get exception = {}", e.what());
+		exit(0);
+	}
+
+	CGameCtrl::GetSingletonPtr()->Run();
+	SHUTDOWN_ALL_LOG();
+
 	return 0;
 }
 

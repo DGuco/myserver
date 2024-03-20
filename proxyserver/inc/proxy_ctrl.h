@@ -9,11 +9,10 @@
 #define __PROXY_CTRL_H__
 
 #include "proxy_def.h"
-#include "server_tool.h"
 #include "base.h"
-#include "config.h"
 #include "tcp_server.h"
 #include "safe_pointer.h"
+#include "server_config.h"
 
 class CProxyCtrl: public CSingleton<CProxyCtrl>
 {

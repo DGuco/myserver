@@ -21,18 +21,15 @@ if(MSVC)
 endif()
 
 set(FRAMEWORK
-        "base/base.cpp"
-        "base/base.h"
+        
+        "../common/base.h"
         "base/my_assert.h"
         "base/my_macro.h" 
         "base/object.h"
         "base/performance.cpp"
         "base/performance.h"
         "base/reflection.h"
-        "base/server_tool.cpp"
-        "base/server_tool.h"
         "base/t_array.h"
-        "base/safe_pointer.h" 
         "base/rb_tree.h"
         "base/hash_function.h"
         "base/hash_helper.h"
@@ -47,8 +44,6 @@ set(FRAMEWORK
         "const/err_code.h"
         "const/platform_def.h" 
         "const/platform_def.cpp" 
-        "base/json_interface.cpp"
-        "base/json_interface.h"
         "mem/shm_queue.cpp" 
         "mem/shm_queue.h"
         "mem/mempool_safty.h" 
@@ -65,8 +60,8 @@ set(FRAMEWORK
         "net/byte_buff.h" 
         "net/ccrypto.cpp" 
         "net/ccrypto.h"
-        "net/message_interface.cpp"
-        "net/message_interface.h" 
+        
+        "../common/message_interface.h" 
         "net/runflag.cpp" 
         "net/runflag.h"
         "net/socket.cpp"

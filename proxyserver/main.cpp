@@ -13,8 +13,13 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	//信号处理注册
-	CSignalHandler::GetSingletonPtr()->RegisterHandler("gateserver");
+	CSignalHandler::GetSingletonPtr()->RegisterHandler("proxyserver");
 	
+	if (!INIT_LOG("proxyserver"))
+	{
+		exit(0);
+	}
+
 	try
 	{
 		int iTmpRet = CProxyCtrl::GetSingletonPtr()->PrepareToRun();

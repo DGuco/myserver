@@ -31,30 +31,6 @@ int CGameServer::Initialize()
 // 运行准备
 int CGameServer::PrepareToRun()
 {
-#ifdef _DEBUG_
-	// 初始化日志
-	INIT_ROATING_LOG("default", "../log/gameserver.log", level_enum::trace);
-#else
-	// 初始化日志
-	INIT_ROATING_LOG("default", "../log/gameserver.log", level_enum::info);
-#endif
-	// 读取服务器配置信息
-	if (m_pConfigHandle->PrepareToRun( ) != 0) {
-		return -1;
-	}
-
-	if (StartAllTimers( ) != 0) {
-		return -4;
-	}
-
-	if (m_pClientHandle->PrepareToRun( )) {
-		return -1;
-	}
-
-	if (m_pConfigHandle->PrepareToRun( )) {
-        return -1;
-    }
-
 	// 通知各模块启动
 	if (m_pModuleManager->OnLaunchServer( ) != 0) {
 		return -5;
@@ -66,18 +42,11 @@ int CGameServer::PrepareToRun()
 	return 0;
 }
 
-// 开启所有定时器
-int CGameServer::StartAllTimers()
-{
-	return 0;
-}
-
 void CGameServer::OnNewConnect(SafePointer<CTCPConn> pConnn)
 {
 	SafePointer<CGamePlayer> pConn = pConnn.DynamicCastTo<CGamePlayer>();
 	if (pConnn != NULL)
 	{
-
 	}
 }
 
@@ -92,28 +61,18 @@ SafePointer<CTCPConn> CGameServer::CreateTcpConn(CSocket tmSocket)
 SafePointer<CTCPClient> CGameServer::CreateTcpClient(CSocket tmSocket)
 {
 	SafePointer<CServerClient> pConn = new CServerClient();
-	return pConn.DynamicCastTo<CTCPConn>();
-}
-
-// perf日志打印
-void CGameServer::OnTimePerfLog(CTimerBase *pTimer)
-{
-
+	return pConn.DynamicCastTo<CTCPClient>();
 }
 
 // 运行
 void CGameServer::Run()
 {
-	LOG_INFO("default", "CGameServer start to run now.");
-	//libevent事件循环
-	m_pServerHandle->DispatchEvents();
+
 }
 
 // 退出
 void CGameServer::Exit()
 {
-	LOG_INFO("default", "Save all data finished. now exit.");
-	printf("exit gameserver succeed!\n");
 	exit(0);
 }
 
@@ -125,7 +84,8 @@ void CGameServer::ProcessClientMessage(CMessage *pMsg, CPlayer *pPlayer)
 	try {
 		m_pModuleManager->OnClientMessage(iTmpType, pPlayer, pMsg);
 	}
-	catch (std::logic_error error) {
+	catch (std::logic_error error) 
+	{
 		LOG_ERROR("default", "Catch logic exception,msg {}", error.what( ));
 	}
 }
