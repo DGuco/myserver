@@ -8,10 +8,10 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     add_compile_options(-Wall -fPIC -ggdb -pipe -std=c++11)
     
     set(CMAKE_CXX_STANDARD 11)
-    add_definitions(-D__LINUX__ -DSPDLOG_NO_NAME)
+    add_definitions(-D__LINUX__ -DSPDLOG_NO_NAME -DLUABRIDGE_CXX11 -DCOMPILE_LUA_WITH_CXX)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     set(CMAKE_CXX_STANDARD 11)
-    add_definitions(-D__WINDOWS__ -DSPDLOG_NO_NAME)
+    add_definitions(-D__WINDOWS__ -DSPDLOG_NO_NAME -DLUABRIDGE_CXX11 -DCOMPILE_LUA_WITH_CXX)
 endif()
 
 # 仅对 Visual Studio 编译器生效
@@ -20,8 +20,28 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif()
 
+set(LUA_BRIDGE_HEADER_FILES
+        "lua/core/func_traits.h"
+        "lua/core/class_key.h"
+        "lua/core/constructor.h"
+        "lua/core/lua_functions.h"
+        "lua/core/lua_exception.h"
+        "lua/core/lua_helpers.h"
+        "lua/core/lua_ref.h"
+        "lua/core/lua_space.h"
+        "lua/core/lua_vm.h"
+        "lua/core/security.h"
+        "lua/core/type_list.h"
+        "lua/core/type_traits.h"
+        "lua/core/user_data.h"
+        "lua/core/lua_library.h"
+        "lua/core/lua_stack.h"
+        "lua/core/caller.h"
+        "lua/core/lua_class.h"
+        "lua/lua_file.h"
+        "lua/lua_bridge.h")
+
 set(FRAMEWORK
-        
         "../common/base.h"
         "base/my_assert.h"
         "base/my_macro.h" 
@@ -60,8 +80,6 @@ set(FRAMEWORK
         "net/byte_buff.h" 
         "net/ccrypto.cpp" 
         "net/ccrypto.h"
-        
-        "../common/message_interface.h" 
         "net/runflag.cpp" 
         "net/runflag.h"
         "net/socket.cpp"
@@ -80,6 +98,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
         ${CMAKE_SOURCE_DIR}/common
         ${CMAKE_SOURCE_DIR}/common/message
+        ${CMAKE_SOURCE_DIR}/lua-5.3.6/
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const
         ${CMAKE_SOURCE_DIR}/framework/json
@@ -103,12 +122,12 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 endif()
 )
 
-add_library(framework ${FRAMEWORK})
+add_library(framework ${LUA_BRIDGE_HEADER_FILES} ${FRAMEWORK})
 
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries(framework pthread spdlog crypto)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(framework ws2_32 spdlogd crypto )
+    target_link_libraries(framework ws2_32 spdlogd crypto)
 endif()
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

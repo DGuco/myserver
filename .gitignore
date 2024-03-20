@@ -12,6 +12,7 @@ cmake-build-debug
 /cmake-build-debug/*
 /.vs/*
 /lib/framework.lib
+/lib/lua.lib
 /run/*.exe
 /run/*.exe.*
 /run/*.ilk
