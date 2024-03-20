@@ -17,14 +17,18 @@ set(SOURCE_FILES
         inc/client_handle.h
         inc/message_factory.h
         inc/server_handle.h
+        inc/game_ctrl.h
+        inc/config_handle.h
+        inc/message_dispatcher.h
+        inc/game_player.h
+        src/game_ctrl.cpp
         src/server_handle.cpp
         src/game_server.cpp
         src/client_handle.cpp
         src/message_factory.cpp
-        inc/config_handle.h
         src/config_handle.cpp
-        inc/message_dispatcher.h
         src/message_dispatcher.cpp
+        src/game_player.cpp
         gamemodule/datamodule/sceneobjmanager.h
         gamemodule/datamodule/player.h
         gamemodule/datamodule/playerdata.h

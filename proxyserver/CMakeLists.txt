@@ -18,17 +18,19 @@ if(MSVC)
 endif()
 
 set(SOURCE_FILES
+    "../common/message/message.pb.cc" 
+    "../common/message/message.pb.h"
+    "../common/common_def.h"
+    "../common/config.h"
+    "../common/config.cpp"
     "main.cpp" 
     "inc/proxy_ctrl.h" 
     "inc/proxy_def.h"
     "inc/proxy_server.h" 
     "src/proxy_ctrl.cpp" 
     "src/proxy_server.cpp"
-    "../common/message/message.pb.cc" 
-    "../common/message/message.pb.h"
     "inc/proxy_player.h"
-    "src/proxy_player.cpp"
-    "../common/common_def.h")
+    "src/proxy_player.cpp")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty

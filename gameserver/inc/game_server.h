@@ -46,6 +46,13 @@ public:
 	void Run();
 	// 退出
 	void Exit();
+public:
+	//新链接回调
+	virtual void OnNewConnect(SafePointer<CTCPConn> pConnn);
+	//
+	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket);
+	//
+	virtual SafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket);
 
 public:
 	// 设置服务器状态
@@ -142,10 +149,6 @@ private:
 	std::shared_ptr<CServerHandle> m_pServerHandle;             // 与服务器的连接管理(proxyserver)
 	std::shared_ptr<CModuleManager> m_pModuleManager;           // 模块管理器
 	std::shared_ptr<CFactory> m_pMessageFactory;                // 消息工厂
-	std::shared_ptr<CTimerManager> m_pTimerManager;             // 定时器管理器
-	std::shared_ptr<CThreadPool> m_pLogicThread;                // 逻辑线程
-	std::shared_ptr<CThreadPool> m_pComputeThread;				// 计算线程
-	std::shared_ptr<CConfigHandle> m_pConfigHandle;				// 计算线程
 
 	CRunFlag m_oRunFlag;                         // 服务器运行状态
 	int m_iServerState;    // 服务器状态

@@ -4,19 +4,15 @@
 #include "my_assert.h"
 #include "config.h"
 #include "base.h"
-#include "../inc/client_handle.h"
-#include "../inc/game_server.h"
-#include "../inc/message_factory.h"
+#include "game_player.h"
+#include "game_server.h"
+#include "server_client.h"
 
 CGameServer::CGameServer()
 	: m_pClientHandle(std::make_shared<CClientHandle>()),
 	  m_pServerHandle(std::make_shared<CServerHandle>()),
 	  m_pModuleManager(std::make_shared<CModuleManager>( )),
-	  m_pMessageFactory(std::make_shared<CMessageFactory>( )),
-	  m_pTimerManager(std::make_shared<CTimerManager>( )),
-	  m_pLogicThread(std::make_shared<CThreadPool>(1,ignore_pipe)),
-	  m_pComputeThread(std::make_shared<CThreadPool>(2)),
-	  m_pConfigHandle(std::make_shared<CConfigHandle>( )),
+	  m_pMessageFactory(std::make_shared<CMessageFactory>( ))
 	  m_iServerState(0)
 {
 	Initialize( );
@@ -74,6 +70,29 @@ int CGameServer::PrepareToRun()
 int CGameServer::StartAllTimers()
 {
 	return 0;
+}
+
+void CGameServer::OnNewConnect(SafePointer<CTCPConn> pConnn)
+{
+	SafePointer<CGamePlayer> pConn = pConnn.DynamicCastTo<CGamePlayer>();
+	if (pConnn != NULL)
+	{
+
+	}
+}
+
+//
+SafePointer<CTCPConn> CGameServer::CreateTcpConn(CSocket tmSocket)
+{
+	SafePointer<CGamePlayer> pConn = new CGamePlayer();
+	return pConn.DynamicCastTo<CTCPConn>();
+}
+
+//
+SafePointer<CTCPClient> CGameServer::CreateTcpClient(CSocket tmSocket)
+{
+	SafePointer<CServerClient> pConn = new CServerClient();
+	return pConn.DynamicCastTo<CTCPConn>();
 }
 
 // perf日志打印
