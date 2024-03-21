@@ -2,43 +2,53 @@
 // Created by DGuco on 17-3-1.
 //
 #include "my_assert.h"
-#include "config.h"
+#include "common_def.h"
+#include "server_config.h"
 #include "base.h"
+#include "my_assert.h"
 #include "game_player.h"
 #include "game_server.h"
 #include "server_client.h"
+#include "time_helper.h"
+#include "module_manager.h"
 
 CGameServer::CGameServer()
-	: m_pClientHandle(std::make_shared<CClientHandle>()),
-	  m_pServerHandle(std::make_shared<CServerHandle>()),
-	  m_pModuleManager(std::make_shared<CModuleManager>( )),
-	  m_pMessageFactory(std::make_shared<CMessageFactory>( ))
-	  m_iServerState(0)
 {
-	Initialize( );
 }
 
 CGameServer::~CGameServer()
 {
-    Exit();
 }
 
-int CGameServer::Initialize()
-{
-	return 0;
-}
 
 // 运行准备
 int CGameServer::PrepareToRun()
 {
-	// 通知各模块启动
-	if (m_pModuleManager->OnLaunchServer( ) != 0) {
-		return -5;
+	SafePointer<CServerConfig> pConfig = CServerConfig::GetSingletonPtr();
+	SafePointer<ServerInfo> pGameInfo = pConfig->GetServerInfo(enServerType::FE_GAMESERVER);
+	int nRet = InitTcpServer(eTcpEpoll, pGameInfo->m_sHost.c_str(), pGameInfo->m_iPort);
+	if (nRet == 0)
+	{
+		DISK_LOG(DEBUG_DISK, "CGameServer PrepareToRun success at {} : {}", pGameInfo->m_sHost.c_str(), pGameInfo->m_iPort);
+		return true;
+	}
+	else
+	{
+		DISK_LOG(DEBUG_DISK, "CGameServer PrepareToRun at {} : {} failed,failed reason {]", pGameInfo->m_sHost.c_str(),
+			pGameInfo->m_iPort, strerror(errno));
+		return false;
 	}
 
-    if (m_pServerHandle->PrepareToRun( )) {
-        return -1;
-    }
+	SafePointer<ServerInfo> pRroxyInfo = pConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
+	ConnectTo(pRroxyInfo->m_sHost.c_str(), pRroxyInfo->m_iPort,false);
+// 	// 通知各模块启动
+// 	if (m_pModuleManager->OnLaunchServer( ) != 0) {
+// 		return -5;
+// 	}
+// 
+//     if (m_pServerHandle->PrepareToRun( )) {
+//         return -1;
+//     }
 	return 0;
 }
 
@@ -76,18 +86,70 @@ void CGameServer::Exit()
 	exit(0);
 }
 
-void CGameServer::ProcessClientMessage(CMessage *pMsg, CPlayer *pPlayer)
+//读取客户端上行数据
+void CGameServer::RecvClientData(SafePointer<CGamePlayer> pGamePlayer)
 {
-	MY_ASSERT(pMsg != NULL && pPlayer != NULL, return);
-//    MY_ASSERT(pMsg->has_msghead() == true, return);
-	int iTmpType = GetModuleClass(pMsg->msghead( ).cmd( ));
-	try {
-		m_pModuleManager->OnClientMessage(iTmpType, pPlayer, pMsg);
-	}
-	catch (std::logic_error error) 
+	SafePointer<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
+	int packLen = pRecvBuff->ReadUnInt(true);
+	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
 	{
-		LOG_ERROR("default", "Catch logic exception,msg {}", error.what( ));
+		//断开连接
+		ClearSocket(pGamePlayer, Err_PacketError);
+		return;
 	}
+	if (pRecvBuff->ReadBytes(m_CacheData, packLen) != 0)
+	{
+		//断开连接
+		ClearSocket(pGamePlayer, Err_PacketError);
+		return;
+	}
+	time_t tNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+	pGamePlayer->SetLastRecvKeepLive(tNow);
+	CMessage tmMessage;
+	if (!tmMessage.ParseFromArray(m_CacheData, packLen))
+	{
+		//断开连接
+		ClearSocket(pGamePlayer, Err_PacketError);
+		return;
+	}
+	ProcessClientMessage(&tmMessage, pGamePlayer);
+	return;
+}
+
+void CGameServer::ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError)
+{
+	ASSERT(pGamePlayer != NULL);
+	//非gameserver 主动请求关闭
+	if (Client_Succeed != iError)
+	{
+		DisConnect(pGamePlayer, iError);
+	}
+}
+
+void CGameServer::DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError)
+{
+	ASSERT(pGamePlayer != NULL);
+	static CMessage tmpMessage;
+	tmpMessage.Clear();
+	CMesHead* tmpHead = tmpMessage.mutable_msghead();
+	CSocketInfo* pSocketInfo = tmpHead->mutable_socketinfos()->Add();
+	if (pSocketInfo == NULL)
+	{
+		return;
+	}
+	pSocketInfo->set_socketid(pGamePlayer->GetSocketFD());
+	pSocketInfo->set_createtime(pGamePlayer->GetCreateTime());
+	pSocketInfo->set_state(iError);
+
+
+	return;
+}
+
+void CGameServer::ProcessClientMessage(SafePointer<CMessage> pMsg, SafePointer<CGamePlayer> pPlayer)
+{
+	ASSERT(pMsg != NULL && pPlayer != NULL);
+	int iTmpType = GetModuleClass(pMsg->msghead( ).cmd( ));
+	CModuleManager::GetSingletonPtr()->OnClientMessage(iTmpType, pPlayer, pMsg);
 }
 
 void CGameServer::ProcessRouterMessage(CProxyMessage *pMsg)

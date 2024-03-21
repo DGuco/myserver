@@ -36,8 +36,8 @@ bool CProxyServer::PrepareToRun()
 		return false;
 	}
 
-	SafePointer<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
-	SafePointer<ServerInfo> gateInfo = tmpConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
+	CSafePointer<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
+	CSafePointer<ServerInfo> gateInfo = tmpConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 	int nRet = InitTcpServer(eTcpEpoll, gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
 	if (nRet == 0)
 	{
@@ -48,11 +48,12 @@ bool CProxyServer::PrepareToRun()
 	{
 		DISK_LOG(DEBUG_DISK,"Server PrepareToRun at {} : {} failed,failed reason {]", gateInfo->m_sHost.c_str(),
 			gateInfo->m_iPort, strerror(errno));
+		return false;
 	}
-	return false;
+	return true;
 }
 
-void CProxyServer::ClearSocket(SafePointer<CProxyPlayer> pGamePlayer, short iError)
+void CProxyServer::ClearSocket(CSafePointer<CProxyPlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
 	//非gameserver 主动请求关闭
@@ -62,7 +63,7 @@ void CProxyServer::ClearSocket(SafePointer<CProxyPlayer> pGamePlayer, short iErr
 	}
 }
 
-void CProxyServer::DisConnect(SafePointer<CProxyPlayer> pGamePlayer, short iError)
+void CProxyServer::DisConnect(CSafePointer<CProxyPlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
 	static CMessage tmpMessage;
@@ -99,9 +100,9 @@ void CProxyServer::DisConnect(SafePointer<CProxyPlayer> pGamePlayer, short iErro
 	return;
 }
 
-void CProxyServer::RecvClientData(SafePointer<CProxyPlayer> pGamePlayer)
+void CProxyServer::RecvClientData(CSafePointer<CProxyPlayer> pGamePlayer)
 {
-	SafePointer<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
+	CSafePointer<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
 	int packLen = pRecvBuff->ReadUnInt(true);
 	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
 	{
@@ -211,9 +212,9 @@ int CProxyServer::SendToGame(char* data, int iTmpLen)
 	return m_C2SCodeQueue->SendMessage((BYTE*)data, iTmpLen);
 }
 
-void CProxyServer::OnNewConnect(SafePointer<CTCPConn> pConnn)
+void CProxyServer::OnNewConnect(CSafePointer<CTCPConn> pConnn)
 {
-	SafePointer<CProxyPlayer> pConn = pConnn.DynamicCastTo<CProxyPlayer>();
+	CSafePointer<CProxyPlayer> pConn = pConnn.DynamicCastTo<CProxyPlayer>();
 	if (pConnn != NULL)
 	{
 
@@ -221,21 +222,21 @@ void CProxyServer::OnNewConnect(SafePointer<CTCPConn> pConnn)
 }
 
 //
-SafePointer<CTCPConn> CProxyServer::CreateTcpConn(CSocket tmSocket)
+CSafePointer<CTCPConn> CProxyServer::CreateTcpConn(CSocket tmSocket)
 {
-	SafePointer<CProxyPlayer> pConn = new CProxyPlayer();
+	CSafePointer<CProxyPlayer> pConn = new CProxyPlayer();
 	return pConn.DynamicCastTo<CTCPConn>();
 }
 
 //
-SafePointer<CTCPClient> CProxyServer::CreateTcpClient(CSocket tmSocket)
+CSafePointer<CTCPClient> CProxyServer::CreateTcpClient(CSocket tmSocket)
 {
 	return NULL;
 }
 
 void CProxyServer::SendToClient(const CSocketInfo& socketInfo, const char* data, unsigned int len)
 {
-	SafePointer<CProxyPlayer> pGamePlayer = FindTcpConn(socketInfo.socketid()).DynamicCastTo<CProxyPlayer>();
+	CSafePointer<CProxyPlayer> pGamePlayer = FindTcpConn(socketInfo.socketid()).DynamicCastTo<CProxyPlayer>();
 	if (pGamePlayer == NULL)
 	{
 		CACHE_LOG(TCP_ERROR, "CAcceptor has gone, socket = {}", socketInfo.socketid());

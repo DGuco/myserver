@@ -19,8 +19,8 @@ enum eTcpServerModule
 	eTcpEpoll = 1,
 };
 
-typedef std::unordered_map<SOCKET, SafePointer<CTCPConn>>   ConnMap;
-typedef std::unordered_map<SOCKET, SafePointer<CTCPClient>> ClientMap;
+typedef std::unordered_map<SOCKET, CSafePointer<CTCPConn>>   ConnMap;
+typedef std::unordered_map<SOCKET, CSafePointer<CTCPClient>> ClientMap;
 
 class CTCPServer
 {
@@ -32,26 +32,22 @@ public:
 	//
 	int InitTcpServer(eTcpServerModule module,const char* ipAddr, u_short unPort);
 	//
-	SafePointer<CTCPClient> ConnectTo(const char* szLocalAddr,
-										int port,
-										unsigned int RecvBufLen_,
-										unsigned int SendBufLen_,
-										bool bblock);
+	CSafePointer<CTCPClient> ConnectTo(const char* szLocalAddr,int port,bool bblock);
 	//
 	bool TcpTick();
 	//
-	SafePointer<CTCPConn>     FindTcpConn(SOCKET socket);
+	CSafePointer<CTCPConn>     FindTcpConn(SOCKET socket);
 	//
-	SafePointer<CTCPClient>   FindTcpClient(SOCKET socket);
+	CSafePointer<CTCPClient>   FindTcpClient(SOCKET socket);
 private:
 	//
 	int PrepareToRun();
 	//
-	virtual void OnNewConnect(SafePointer<CTCPConn> pConnn) = 0;
+	virtual void OnNewConnect(CSafePointer<CTCPConn> pConnn) = 0;
 	//
-	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket) = 0;
+	virtual CSafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket) = 0;
 	//
-	virtual SafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket) = 0;
+	virtual CSafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket) = 0;
 private:
 	//
 	int InitSelect(const char* ip, int port);

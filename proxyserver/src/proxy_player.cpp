@@ -11,7 +11,7 @@ CProxyPlayer::CProxyPlayer()
 
 int CProxyPlayer::DoRecvLogic()
 {
-	unsigned short tmCurPacketLen = m_pReadBuff->CanReadLen();
+	msize_t tmCurPacketLen = m_pReadBuff->CanReadLen();
 	//包头前两个字节为数据总长度，如果数据长度小于两个字节返回0
 	if (tmCurPacketLen < sizeof(msize_t))
 	{

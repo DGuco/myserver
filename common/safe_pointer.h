@@ -29,11 +29,11 @@
 #include "base.h"
 
 template<typename Tp>
-class SafePointer
+class CSafePointer
 {
 public:
-	SafePointer() : nDataH(SPO_FLAG_H), nDataL(SPO_FLAG_L) {}
-	SafePointer(Tp* pointer)
+	CSafePointer() : nDataH(SPO_FLAG_H), nDataL(SPO_FLAG_L) {}
+	CSafePointer(Tp* pointer)
 	{
 		nDataH = SPO_FLAG_H;
 		nDataL = SPO_FLAG_L;
@@ -89,12 +89,12 @@ public:
 		return Get() != pOhter;
 	}
 
-	bool operator==(const SafePointer<Tp> pOhter)
+	bool operator==(const CSafePointer<Tp> pOhter)
 	{
 		return this->nDataH == pOhter->nDataH && this->nDataL == pOhter->nDataL;
 	}
 
-	bool operator != (const SafePointer<Tp> pOhter)
+	bool operator != (const CSafePointer<Tp> pOhter)
 	{
 		return this->nDataH != pOhter->nDataH && this->nDataL != pOhter->nDataL;
 	}
@@ -105,16 +105,16 @@ public:
 	}
 
 	template<typename NewTp>
-	SafePointer<NewTp> DynamicCastTo()
+	CSafePointer<NewTp> DynamicCastTo()
 	{
 		Tp* pPointer = GetThrow();
 		if (pPointer != NULL)
 		{
-			return SafePointer<NewTp>(dynamic_cast<NewTp*>(pPointer));
+			return CSafePointer<NewTp>(dynamic_cast<NewTp*>(pPointer));
 		}
 		else
 		{
-			return SafePointer<NewTp>();
+			return CSafePointer<NewTp>();
 		}
 	}
 
@@ -124,11 +124,11 @@ public:
 		Tp* pPointer = GetThrow();
 		if (pPointer != NULL)
 		{
-			return SafePointer<NewTp>(static_cast<NewTp>(pPointer))
+			return CSafePointer<NewTp>(static_cast<NewTp>(pPointer))
 		}
 		else
 		{
-			return SafePointer<NewTp>();
+			return CSafePointer<NewTp>();
 		}
 	}
 

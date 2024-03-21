@@ -28,8 +28,6 @@ public:
 private:
 	//读取配置文件
 	bool ReadConfig();
-private:
-	SafePointer<CServerConfig> m_pConfig;
 };
 
 #endif

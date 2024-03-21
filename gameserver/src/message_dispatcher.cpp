@@ -21,9 +21,9 @@ CMessageDispatcher::~CMessageDispatcher()
 }
 
 // 消息客户端上传的消息派发
-int CMessageDispatcher::ProcessClientMessage(std::shared_ptr<CMessage> pMsg)
+int CMessageDispatcher::ProcessClientMessage(SafePointer<CMessage> pMsg)
 {
-	MY_ASSERT(pMsg != NULL && pMsg->has_msghead(), return -1);
+	ASSERT(pMsg != NULL && pMsg->has_msghead());
 	CGooMess *pMsgPara = (CGooMess *) pMsg->msgpara();
 	if (!pMsgPara) {
 		return -2;

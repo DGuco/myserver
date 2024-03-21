@@ -8,16 +8,15 @@
 #ifndef SERVER_GAMESERVER_H
 #define SERVER_GAMESERVER_H
 
-#include "server_tool.h"
+#include "singleton.h"
 #include "runflag.h"
 #include "base.h"
 #include "message_interface.h"
 #include "message_dispatcher.h"
 #include "tcp_server.h"
+#include "game_player.h"
 #include "client_handle.h"
 #include "server_handle.h"
-#include "../gamemodule/datamodule/player.h"
-#include "../gamemodule/logicmodule/module_manager.h"
 #include "config_handle.h"
 
 class CGameServer: public CTCPServer,public CSingleton<CGameServer>
@@ -37,15 +36,18 @@ public:
 public:
 	CGameServer();
 	~CGameServer();
-
-	// 初始化
-	int Initialize();
 	// 运行准备
 	int PrepareToRun();
 	// 运行
 	void Run();
 	// 退出
 	void Exit();
+	//读取客户端上行数据
+	void RecvClientData(SafePointer<CGamePlayer> pGamePlayer);
+	//
+	void ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError);
+	//
+	void DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError);
 public:
 	//新链接回调
 	virtual void OnNewConnect(SafePointer<CTCPConn> pConnn);
@@ -78,7 +80,7 @@ public:
 	{ return (m_iServerState & ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG; }
 
 	// 处理客户端上行消息
-	void ProcessClientMessage(CMessage *pMsg, CPlayer *pPlayer);
+	void ProcessClientMessage(SafePointer<CMessage> pMsg, SafePointer<CGamePlayer> pPlayer);
 	// 处理服务器内部消息
 	void ProcessRouterMessage(CProxyMessage *pMsg);
 
@@ -124,15 +126,6 @@ public:
 	int InitStaticLog();
 	// 限制玩家登陆
 	int LimitTeamLogin(unsigned int iTeamID, time_t iTimes); // itimes 暂定为小时
-public:
-	shared_ptr<CClientHandle> &GetClientHandle();
-	shared_ptr<CServerHandle> &GetServerHandle();
-	shared_ptr<CModuleManager> &GetModuleManager();
-	shared_ptr<CFactory> &GetMessageFactory();
-	shared_ptr<CTimerManager> &GetTimerManager();
-	shared_ptr<CThreadPool> &GetLogicThread();
-	shared_ptr<CThreadPool> &GetComputeThread();
-	shared_ptr<CConfigHandle> &GetConfigHandle();
 	CRunFlag &GetRunFlag();
 	int GetMiServerState();
 public:
@@ -142,13 +135,8 @@ public:
 									int iServerID,
 									time_t tCreateTime,
 									bool bKickOff = false);
-private:
-	std::shared_ptr<CClientHandle> m_pClientHandle;             // 与客户端通信的连接线程
-	std::shared_ptr<CServerHandle> m_pServerHandle;             // 与服务器的连接管理(proxyserver)
-	std::shared_ptr<CModuleManager> m_pModuleManager;           // 模块管理器
-	std::shared_ptr<CFactory> m_pMessageFactory;                // 消息工厂
-
-	CRunFlag m_oRunFlag;                         // 服务器运行状态
-	int m_iServerState;    // 服务器状态
+	CRunFlag	m_oRunFlag;                         // 服务器运行状态
+	int			m_iServerState;    // 服务器状态
+	BYTE		m_CacheData[GAMEPLAYER_RECV_BUFF_LEN];
 };
 #endif //SERVER_GAMESERVER_H

@@ -9,7 +9,9 @@
 #define SERVER_MODULE_MANAGER_H
 
 #include "message.pb.h"
-#include "server_tool.h"
+#include "singleton.h"
+#include "game_player.h"
+#include "safe_pointer.h"
 #include "logic_module.h"
 
 class CLogicModule;
@@ -35,7 +37,7 @@ public:
     void OnRouterMessage(int iModuleType, CProxyMessage* pMsg);
 
     // 客户端消息
-    void OnClientMessage(int iModuleType, CPlayer* pTeam, CMessage* pMsg);
+    void OnClientMessage(int iModuleType,CSafePoint, CMessage* pMsg);
 
     // 创建实体
     int OnCreateEntity(CPlayer* pTeam);

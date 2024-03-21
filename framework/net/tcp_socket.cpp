@@ -247,13 +247,13 @@ bool CTCPSocket::IsFDSetted(fd_set& tmFdSet)
 }
 
 //
-SafePointer<CByteBuff> CTCPSocket::GetReadBuff()
+CSafePointer<CByteBuff> CTCPSocket::GetReadBuff()
 {
 	return m_pReadBuff;
 }
 
 //
-SafePointer<CByteBuff> CTCPSocket::GetSendBuff()
+CSafePointer<CByteBuff> CTCPSocket::GetSendBuff()
 {
 	return m_pWriteBuff;
 }

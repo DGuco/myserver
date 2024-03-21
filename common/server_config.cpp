@@ -66,7 +66,7 @@ void CServerConfig::Clear()
 }
 
 
-SafePointer<ServerInfo> CServerConfig::GetServerInfo(enServerType type)
+CSafePointer<ServerInfo> CServerConfig::GetServerInfo(enServerType type)
 {
     auto it =  m_mServerMap.find(type);
     if (it != m_mServerMap.end())

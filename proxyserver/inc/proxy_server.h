@@ -25,11 +25,11 @@ public:
 	//准备run
 	bool PrepareToRun();
 	//清除socket
-	void ClearSocket(SafePointer<CProxyPlayer> pGamePlayer, short iError);
+	void ClearSocket(CSafePointer<CProxyPlayer> pGamePlayer, short iError);
 	//通知gameserver client 断开连接
-	void DisConnect(SafePointer<CProxyPlayer> pGamePlayer, short iError);
+	void DisConnect(CSafePointer<CProxyPlayer> pGamePlayer, short iError);
 	//接受客户端数据
-	void RecvClientData(SafePointer<CProxyPlayer> pGamePlayer);
+	void RecvClientData(CSafePointer<CProxyPlayer> pGamePlayer);
 	//发送消息给client
 	void RecvGameData();
 	//向game 发送消息
@@ -41,17 +41,17 @@ private:
 	void SendToClient(const CSocketInfo& socketInfo, const char* data, unsigned int len);
 public:
 	//新链接回调
-	virtual void OnNewConnect(SafePointer<CTCPConn> pConnn);
+	virtual void OnNewConnect(CSafePointer<CTCPConn> pConnn);
 	//
-	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket);
+	virtual CSafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket);
 	//
-	virtual SafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket);
+	virtual CSafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket);
 private:
 	//gateserver ==> gameserver
-	SafePointer<CShmMessQueue>	m_C2SCodeQueue;
+	CSafePointer<CShmMessQueue>	m_C2SCodeQueue;
 	//gameserver ==> gateserver
-	SafePointer<CShmMessQueue>	m_S2CCodeQueue;
-	SafePointer<CByteBuff>		m_pRecvBuff;
+	CSafePointer<CShmMessQueue>	m_S2CCodeQueue;
+	CSafePointer<CByteBuff>		m_pRecvBuff;
 	BYTE						m_CacheData[GAMEPLAYER_RECV_BUFF_LEN];
 };
 

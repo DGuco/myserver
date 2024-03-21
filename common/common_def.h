@@ -12,4 +12,25 @@
 #define S2C_SHM_KEY					(20000001)
 #define  GAMEPLAYER_RECV_BUFF_LEN	(1024 * 1024 * 2)  //2mb
 #define  GAMEPLAYER_SEND_BUFF_LEN	(1024 * 1024 * 2)  //2mb
+
+// Socket 连接错误码
+typedef enum _EnSocketStatus
+{
+	Client_Succeed = 0,    // 客户端连接正常
+	Err_ClientClose = -1,    // 客户端关闭
+	Err_ClientTimeout = -2,    // 客户端超时
+	Err_PacketError = -3,    // 客户端发送的包错误
+	Err_TCPBuffOver = -4,    // TCP缓冲区已满
+	Err_SendToMainSvrd = -5,    // 数据包放入内存管道失败
+	Err_System = -6    // 系统错误，暂时未用
+} EnSocketStatus;
+
+// 定义返回结果
+typedef enum _EnResult
+{
+	TCP_SUCCESS = 0,                        // 成功
+	TCP_FAILED,                             // 失败
+	TCP_CONTINUERECV,                       // 消息还未接收完毕继续接收
+	TCP_LENGTHERROR,                        // 接收的消息长度和标实的长度不一致
+} EnResult;
 #endif //__COMMON_DEF_H__
