@@ -7,6 +7,7 @@
 #ifndef __COMMON_DEF_H__
 #define __COMMON_DEF_H__
 
+#define MAX_PACKAGE_LEN				(1024*60)        // 单个包的最大长度
 #define PIPE_SIZE					(0x1000000)    // 共享内存管道大小 16M
 #define C2S_SHM_KEY					(20000000)
 #define S2C_SHM_KEY					(20000001)

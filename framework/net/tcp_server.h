@@ -30,9 +30,9 @@ public:
 	//
 	virtual ~CTCPServer();
 	//
-	int InitTcpServer(eTcpServerModule module,const char* ipAddr, u_short unPort);
+	int InitTcpServer(eTcpServerModule module,const char* ipAddr = "", u_short unPort = 0);
 	//
-	CSafePointer<CTCPClient> ConnectTo(const char* szLocalAddr,int port,bool bblock);
+	bool ConnectTo(CSafePointer<CTCPClient> pClient,const char* szLocalAddr,int port,bool bblock);
 	//
 	bool TcpTick();
 	//
@@ -46,8 +46,6 @@ private:
 	virtual void OnNewConnect(CSafePointer<CTCPConn> pConnn) = 0;
 	//
 	virtual CSafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket) = 0;
-	//
-	virtual CSafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket) = 0;
 private:
 	//
 	int InitSelect(const char* ip, int port);

@@ -37,7 +37,7 @@ public:
 	CGameServer();
 	~CGameServer();
 	// 运行准备
-	int PrepareToRun();
+	bool PrepareToRun();
 	// 运行
 	void Run();
 	// 退出
@@ -82,12 +82,9 @@ public:
 	// 处理客户端上行消息
 	void ProcessClientMessage(SafePointer<CMessage> pMsg, SafePointer<CGamePlayer> pPlayer);
 	// 处理服务器内部消息
-	void ProcessRouterMessage(CProxyMessage *pMsg);
-
+	void ProcessServerMessage(SafePointer<CProxyMessage> pMsg);
 	// 给DB Server发消息
-	bool SendMessageToDB(CProxyMessage *pMsg);
-	// 给World Server 发消息
-
+	bool SendMessageToDB(SafePointer <CProxyMessage> pMsg);
 	// 广播消息给玩家，广播时，发起人一定放第一个
 	int BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, stPointList *pTeamList);
 	// 推送消息给单个玩家
@@ -101,40 +98,8 @@ public:
 
 	// 主动断开链接
 	void DisconnectClient(CPlayer *pPlayer);
+private:
 
-	// 设置服务器运行状态
-	void SetRunFlag(ERunFlag eRunFlag);
-	// 检查服务器状态
-	int CheckRunFlags();
-	// perf日志打印
-	static void OnTimePerfLog(CTimerBase *pTimer);
-
-	// 存储所有玩家数据(一般故障拉起或程序退出时使用)
-	void SaveAllTeamdata();
-	// 检测是否所有玩家存储结束
-	static void CheckSaveAllTeamsFinish(CTimerBase *pTimer);
-
-	// 拉取服务器数据
-	void StartLoadAllData();
-	// 检测是否开启拉取服务器数据
-	static void CheckStartLoadAllData(CTimerBase *pTimer);
-	// 存储服务器数据
-	void StartSaveAllData();
-	// 检测是否停服存储数据
-	static void CheckStartSaveAllData(CTimerBase *pTimer);
-	// 获取服务器ID
-	int InitStaticLog();
-	// 限制玩家登陆
-	int LimitTeamLogin(unsigned int iTeamID, time_t iTimes); // itimes 暂定为小时
-	CRunFlag &GetRunFlag();
-	int GetMiServerState();
-public:
-	// 为找不到CTeam的连接发送消息
-	void SendMsgSystemErrorResponse(int iResult,
-									long lMsgGuid,
-									int iServerID,
-									time_t tCreateTime,
-									bool bKickOff = false);
 	CRunFlag	m_oRunFlag;                         // 服务器运行状态
 	int			m_iServerState;    // 服务器状态
 	BYTE		m_CacheData[GAMEPLAYER_RECV_BUFF_LEN];

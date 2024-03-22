@@ -228,12 +228,6 @@ CSafePointer<CTCPConn> CProxyServer::CreateTcpConn(CSocket tmSocket)
 	return pConn.DynamicCastTo<CTCPConn>();
 }
 
-//
-CSafePointer<CTCPClient> CProxyServer::CreateTcpClient(CSocket tmSocket)
-{
-	return NULL;
-}
-
 void CProxyServer::SendToClient(const CSocketInfo& socketInfo, const char* data, unsigned int len)
 {
 	CSafePointer<CProxyPlayer> pGamePlayer = FindTcpConn(socketInfo.socketid()).DynamicCastTo<CProxyPlayer>();

@@ -24,7 +24,6 @@
 #define PATH_LENGTH			 (256)    // 文件路径字符长度
 #define ADDR_LENGTH          (32)    // IP和PORT的长度
 #define GUIDE_MAX            (100)
-#define MAX_PACKAGE_LEN		 (1024*60)        // 单个包的最大长度
 #define MAX_BROADCAST_NUM    (1000)            // 单词最大广播数量
 
 #define	TCP_BACK_LOG		 (1024)

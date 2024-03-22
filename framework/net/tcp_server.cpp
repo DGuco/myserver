@@ -28,34 +28,37 @@ int CTCPServer::InitTcpServer(eTcpServerModule module,const char* ipAddr, u_shor
 	return PrepareToRun();
 }
 
-CSafePointer<CTCPClient> CTCPServer::ConnectTo(const char* szLocalAddr,int port,bool bblock)
+bool CTCPServer::ConnectTo(CSafePointer<CTCPClient> pClient,const char* szLocalAddr,int port,bool bblock)
 {
-	CSocket tmSocket;
-	tmSocket.Open();
-	CSafePointer<CTCPClient> tcpClient =  CreateTcpClient(tmSocket);
-	if (tcpClient != NULL)
+	if (pClient == NULL)
 	{
-		if (tcpClient->ConnectTo(szLocalAddr, port, false) != 0)
-		{
-			tcpClient.Free();
-			return NULL;
-		}
-		else
-		{
+		return false;
+	}
+
+	if (pClient->GetSocket().IsValid())
+	{
+		m_ClientMap.erase(pClient->GetSocketFD());
+		pClient->Close();
+	}
+
+	int nRet = pClient->ConnectTo(szLocalAddr, port, false);
+	if (nRet != 0)
+	{
+		CACHE_LOG(TCP_ERROR, "Conn to [{} : {}] failed,errorcode = {}", szLocalAddr, port, nRet);
+		return false;
+	}
 #ifdef __LINUX__
-			if (m_nRunModule == eTcpSelect)
-			{
-			}
-			else
-			{
-				EpollAddSocket(tcpClient->GetSocketFD());
-			}
+	if (m_nRunModule == eTcpSelect)
+	{
+	}
+	else
+	{
+		EpollAddSocket(tcpClient->GetSocketFD());
+	}
 #else
 #endif
-		}
-		m_ClientMap.insert(std::make_pair(tcpClient->GetSocketFD(), tcpClient));
-	}
-	return tcpClient;
+	m_ClientMap.insert(std::make_pair(pClient->GetSocketFD(), pClient));
+	return true;
 }
 
 int CTCPServer::PrepareToRun()

@@ -10,9 +10,6 @@
 
 #include "message_interface.h"
 
-//实际可用空间MSG_POOL_SIZE - 1
-#define MSG_POOL_SIZE 1024 + 1
-
 #define CASE_NEW_MSG(msgname, msgid, addr)  \
     case msgid:                       \
     {                                 \
@@ -21,7 +18,7 @@
     }
 
 
-class CMessageFactory: public CFactory, public CSingleton<CMessageFactory>
+class CMessageFactory : public CSingleton<CMessageFactory>
 {
 public:
 	CMessageFactory();
@@ -32,13 +29,8 @@ public:
 private:
 	CGooMess *CreateClientMessage(unsigned int uiMessageID);
 	CGooMess *CreateServerMessage(unsigned int uiMessageID);
-	int GetFreeSize();
 public:
-	char macMessageBuff[MSG_POOL_SIZE][MAX_PACKAGE_LEN];
-private:
-	int m_iFront;
-	int m_iBack;
-	std::mutex m_oMutex;
+	char m_aMessageBuff[MAX_PACKAGE_LEN];
 };
 
 

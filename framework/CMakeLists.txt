@@ -60,6 +60,7 @@ set(FRAMEWORK
         "base/log.cpp"
         "base/signal_handler.h"
         "base/signal_handler.cpp"
+        "base/message_factory.h"
         "const/dblogin_type.h"
         "const/err_code.h"
         "const/platform_def.h" 

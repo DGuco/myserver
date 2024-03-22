@@ -44,8 +44,6 @@ public:
 	virtual void OnNewConnect(CSafePointer<CTCPConn> pConnn);
 	//
 	virtual CSafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket);
-	//
-	virtual CSafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket);
 private:
 	//gateserver ==> gameserver
 	CSafePointer<CShmMessQueue>	m_C2SCodeQueue;

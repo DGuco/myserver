@@ -28,12 +28,15 @@
 
 #include "base.h"
 
+/**
+ * 仅仅做空指针和bad指针的访问检测，不负责管理指针的内存释放
+ */
 template<typename Tp>
 class CSafePointer
 {
 public:
 	CSafePointer() : nDataH(SPO_FLAG_H), nDataL(SPO_FLAG_L) {}
-	CSafePointer(Tp* pointer)
+	CSafePointer(Tp* pointer,bool autofree = false)
 	{
 		nDataH = SPO_FLAG_H;
 		nDataL = SPO_FLAG_L;
