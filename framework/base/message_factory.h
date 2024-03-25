@@ -1,26 +1,30 @@
-#ifndef MESSAGE_INTERFACE_H_
-#define MESSAGE_INTERFACE_H_
+/*****************************************************************
+* FileName:message_factory.h
+* Summary :
+* Date	  :2024-3-25
+* Author  :DGuco(1139140909@qq.com)
+******************************************************************/
+#ifndef __MESSAGE_FACTORY_H__
+#define __MESSAGE_FACTORY_H__
 
-#include <type_traits>
-#include <google/protobuf/message.h>
 #include "safe_pointer.h"
-#include "tcp_socket.h"
 
-using namespace std;
+class CTCPSocket;
+class CGameMess
+{
+public:
+	CGameMess();
+	virtual ~CGameMess();
+	virtual int Execute(CSafePtr<CTCPSocket> pSocket) = 0;
+};
 
-typedef ::google::protobuf::Message CGoogleMess;
-
-template<typename M_>
 class CMessageFactory
 {
-	static_assert(std::is_base_of<CGoogleMess, M_>, "is not a google protobuf message");
 public:
-	CMessageFactory() {}
-	~CMessageFactory() {}
-	virtual Execute(CSafePointer<M_> pMessage, CSafePointer<CTCPSocket> pSocket) = 0;
-private:
-	CSafePointer<M_> m_pMessage;
+	CMessageFactory() {};
+	virtual ~CMessageFactory() {};
+	virtual CSafePtr<CGameMess> CreateMessage() = 0;
 };
 
 
-#endif /* MESSAGE_INTERFACE_H_ */
+#endif /* __MESSAGE_FACTORY_H__ */

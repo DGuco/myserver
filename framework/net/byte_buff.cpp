@@ -5,6 +5,7 @@
 #include <string>
 #include <stdio.h>
 #include "byte_buff.h"
+#include "common_def.h"
 
 bool IsSystemLittleEndian()
 {

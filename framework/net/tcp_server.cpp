@@ -28,7 +28,7 @@ int CTCPServer::InitTcpServer(eTcpServerModule module,const char* ipAddr, u_shor
 	return PrepareToRun();
 }
 
-bool CTCPServer::ConnectTo(CSafePointer<CTCPClient> pClient,const char* szLocalAddr,int port,bool bblock)
+bool CTCPServer::ConnectTo(CSafePtr<CTCPClient> pClient,const char* szLocalAddr,int port,bool bblock)
 {
 	if (pClient == NULL)
 	{
@@ -99,7 +99,7 @@ bool CTCPServer::TcpTick()
 }
 
 //
-CSafePointer<CTCPConn> CTCPServer::FindTcpConn(SOCKET socket)
+CSafePtr<CTCPConn> CTCPServer::FindTcpConn(SOCKET socket)
 {
 	ConnMap::iterator itconn = m_ConnMap.find(socket);
 	if (itconn != m_ConnMap.end())
@@ -110,7 +110,7 @@ CSafePointer<CTCPConn> CTCPServer::FindTcpConn(SOCKET socket)
 }
 
 //
-CSafePointer<CTCPClient>   CTCPServer::FindTcpClient(SOCKET socket)
+CSafePtr<CTCPClient>   CTCPServer::FindTcpClient(SOCKET socket)
 {
 	ClientMap::iterator itcleint = m_ClientMap.find(socket);
 	if (itcleint != m_ClientMap.end())
@@ -217,7 +217,7 @@ int CTCPServer::SelectTick()
 		CSocket newSocket = m_ListenSocket.Accept();
 		if (newSocket.IsValid())
 		{
-			CSafePointer<CTCPConn> pConn = CreateTcpConn(newSocket);
+			CSafePtr<CTCPConn> pConn = CreateTcpConn(newSocket);
 			if (pConn != NULL)
 			{
 				pConn->SetCreateTime(CTimeHelper::GetSingletonPtr()->GetANSITime());
@@ -515,7 +515,7 @@ int CTCPServer::EpollTick()
 				continue;
 			}
 
-			CSafePointer<CTCPConn> pConn = CreateTcpConn(tmConnSocket);
+			CSafePtr<CTCPConn> pConn = CreateTcpConn(tmConnSocket);
 			if (pConn != NULL)
 			{
 				if (EpollAddSocket(iNewSocket) != 0)

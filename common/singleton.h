@@ -31,7 +31,7 @@ private:
 	CSingleton(const CSingleton &temp) = delete;
 	CSingleton &operator=(const CSingleton &temp) = delete;
 public:
-	static CSafePointer<T> GetSingletonPtr()
+	static CSafePtr<T> GetSingletonPtr()
 	{
 		static T intance;
 		return &intance;

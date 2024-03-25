@@ -52,7 +52,7 @@ public:
 	const int GetSocketTimeOut() const
 	{ return m_iSokcetTimeout; }
 
-	CSafePointer<ServerInfo> GetServerInfo(enServerType type);
+	CSafePtr<ServerInfo> GetServerInfo(enServerType type);
 private:
 	string m_sDbIp;
 	string m_sDblInfo;

@@ -21,26 +21,12 @@ int CServerConfig::Parse()
     m_iChecktimeOutGap = m_Obj["checktimeOutGap"].GetInt();
     m_iSokcetTimeout = m_Obj["socketTimeout"].GetInt();
 
-    ServerInfo gateServer;
-    Value& gateinfo = m_Obj["gateinfo"];
-    gateServer.m_iPort =  gateinfo["port"].GetInt();
-    gateServer.m_sHost =  gateinfo["host"].GetString();
-    gateServer.m_iServerId = gateinfo["serverid"].GetInt();
-    m_mServerMap[enServerType::FE_GATESERVER] = gateServer;
-
     ServerInfo gameServer;
     Value& gameinfo = m_Obj["gameinfo"];
     gameServer.m_iServerId =  gameinfo["serverid"].GetInt();
     gameServer.m_iPort =  gameinfo["port"].GetInt();
     gameServer.m_sHost =  gameinfo["host"].GetString();
     m_mServerMap[enServerType::FE_GAMESERVER] = gameServer;
-
-    ServerInfo dbServer;
-    Value& dbinfo = m_Obj["dbinfo"];
-    dbServer.m_iServerId =  dbinfo["serverid"].GetInt();
-    dbServer.m_iPort =  dbinfo["port"].GetInt();
-    dbServer.m_sHost =  dbinfo["host"].GetString();
-    m_mServerMap[enServerType::FE_DBSERVER] = gameServer;
 
     ServerInfo proxyServer;
     Value& proxyinfo = m_Obj["proxyinfo"];
@@ -66,7 +52,7 @@ void CServerConfig::Clear()
 }
 
 
-CSafePointer<ServerInfo> CServerConfig::GetServerInfo(enServerType type)
+CSafePtr<ServerInfo> CServerConfig::GetServerInfo(enServerType type)
 {
     auto it =  m_mServerMap.find(type);
     if (it != m_mServerMap.end())

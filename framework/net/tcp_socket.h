@@ -53,15 +53,15 @@ public:
 	//关闭
 	int Close();
 	//
-	CSafePointer<CByteBuff> GetReadBuff();
+	CSafePtr<CByteBuff> GetReadBuff();
 	//
-	CSafePointer<CByteBuff> GetSendBuff();
+	CSafePtr<CByteBuff> GetSendBuff();
 protected:
 	CSocket					m_Socket;	     //Socket 描述符
 	int						m_nStatus;	     //连接状态
 	int						m_nRecvBuffLen;  //接受缓冲区大小
 	int						m_nSendBuffLen;  //发送缓冲区大小
-	CSafePointer<CByteBuff>	m_pReadBuff;     //读缓冲
-	CSafePointer<CByteBuff>	m_pWriteBuff;    //写缓冲
+	CSafePtr<CByteBuff>	m_pReadBuff;     //读缓冲
+	CSafePtr<CByteBuff>	m_pWriteBuff;    //写缓冲
 };
 #endif //__TCP_SOCKET_H__

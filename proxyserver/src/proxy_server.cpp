@@ -36,8 +36,8 @@ bool CProxyServer::PrepareToRun()
 		return false;
 	}
 
-	CSafePointer<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
-	CSafePointer<ServerInfo> gateInfo = tmpConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
+	CSafePtr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
+	CSafePtr<ServerInfo> gateInfo = tmpConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 	int nRet = InitTcpServer(eTcpEpoll, gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
 	if (nRet == 0)
 	{
@@ -53,7 +53,7 @@ bool CProxyServer::PrepareToRun()
 	return true;
 }
 
-void CProxyServer::ClearSocket(CSafePointer<CProxyPlayer> pGamePlayer, short iError)
+void CProxyServer::ClearSocket(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
 	//非gameserver 主动请求关闭
@@ -63,53 +63,28 @@ void CProxyServer::ClearSocket(CSafePointer<CProxyPlayer> pGamePlayer, short iEr
 	}
 }
 
-void CProxyServer::DisConnect(CSafePointer<CProxyPlayer> pGamePlayer, short iError)
+void CProxyServer::DisConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
-	static CMessage tmpMessage;
+	static CProxyMessage tmpMessage;
 	tmpMessage.Clear( );
-	CMesHead *tmpHead = tmpMessage.mutable_msghead( );
-	CSocketInfo *pSocketInfo = tmpHead->mutable_socketinfos( )->Add( );
-	if (pSocketInfo == NULL) 
-	{
-		return;
-	}
-	pSocketInfo->set_socketid(pGamePlayer->GetSocketFD());
-	pSocketInfo->set_createtime(pGamePlayer->GetCreateTime( ));
-	pSocketInfo->set_state(iError);
-
-// 	int iRet =
-// 		CClientCommEngine::ConvertToGameStream(m_pSendBuff, &tmpMessage);
-// 	if (iRet != 0) {
-// 		LOG_ERROR("default", "[{}: {} : {}] ConvertMsgToStream failed,iRet = {} ",
-// 				  __MY_FILE__, __LINE__, __FUNCTION__, iRet);
-// 		return;
-// 	}
-// 	shared_ptr<CMessHandle> &tmpServerHandle = CGateCtrl::GetSingletonPtr()->GetMesManager();
-// 	iRet = tmpServerHandle->SendToGame(m_pSendBuff->CanReadData( ), m_pSendBuff->ReadableDataLen( ));
-// 	if (iRet == 0) {
-// 		LOG_DEBUG("default",
-// 				  "Client disconnected ,socket {},reason {}",
-// 				  tmpAcceptor->GetSocket( ).GetSocket( ),
-// 				  iError);
-// 	}
-// 	else {
-// 		LOG_ERROR("defalut", "CNetManager::DisConnect to game error, error code {}", iRet);
-// 		ClearSocket(tmpAcceptor, Err_SendToMainSvrd);
-// 	}
+	CProxyHead *tmpHead = tmpMessage.mutable_msghead( );
 	return;
 }
 
-void CProxyServer::RecvClientData(CSafePointer<CProxyPlayer> pGamePlayer)
+void CProxyServer::RecvClientData(CSafePtr<CProxyPlayer> pGamePlayer)
 {
-	CSafePointer<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
-	int packLen = pRecvBuff->ReadUnInt(true);
+	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
+	int packLen = pRecvBuff->ReadUnInt();
 	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
 	{
 		//断开连接
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
+	
+	int nCmd = pRecvBuff->ReadInt();
+	int nSeq = pRecvBuff->ReadInt();
 	if (pRecvBuff->ReadBytes(m_CacheData, packLen) != 0)
 	{
 		//断开连接
@@ -118,22 +93,26 @@ void CProxyServer::RecvClientData(CSafePointer<CProxyPlayer> pGamePlayer)
 	}
 	time_t tNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
 	pGamePlayer->SetLastRecvKeepLive(tNow);
-
-	CMessG2G msgG2g;
-	CSocketInfo* tmpSocketInfo = msgG2g.mutable_socketinfos()->Add();
-	tmpSocketInfo->Clear();
-	tmpSocketInfo->set_createtime(pGamePlayer->GetCreateTime());
-	tmpSocketInfo->set_socketid(pGamePlayer->GetSocketFD());
-	tmpSocketInfo->set_state(0);
-	msgG2g.mutable_messerial()->reserve(packLen);
-	if (!msgG2g.SerializeToArray(m_CacheData, GAMEPLAYER_RECV_BUFF_LEN))
+	CProxyMessage tmMessage;
+	if (!tmMessage.ParseFromArray(m_CacheData, packLen))
 	{
 		//断开连接
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
-	msgG2g.mutable_messerial()->assign((char*)m_CacheData, packLen);
-	int iTmRet = SendToGame((char*)m_CacheData, msgG2g.GetCachedSize());
+	const CProxyHead& tmHead = tmMessage.msghead();
+	if (!tmMessage.SerializeToArray(m_CacheData, GAMEPLAYER_RECV_BUFF_LEN))
+	{
+		//断开连接
+		ClearSocket(pGamePlayer, Err_PacketError);
+		return;
+	}
+	int nSrcType = tmHead.srcfe();
+	int nSrcId = tmHead.srcfe();
+	int nDesType = tmHead.dstfe();
+	int nDesId = tmHead.dstid();
+
+	int iTmRet = SendToGame((char*)m_CacheData, tmMessage.GetCachedSize());
 	if (iTmRet != 0)
 	{
 		CACHE_LOG(TCP_ERROR, "CNetManager::DealClientData to game error, error code {}", iTmRet);
@@ -147,17 +126,17 @@ void CProxyServer::RecvClientData(CSafePointer<CProxyPlayer> pGamePlayer)
 }
 
 
-int CProxyServer::SendToClient(CMessG2G& tmpMes)
-{
-	int nTmpSocket;
-	auto tmpSendList = tmpMes.socketinfos();
-	for (int i = 0; i < tmpSendList.size(); ++i)
-	{
-		const CSocketInfo& tmpSocketInfo = tmpSendList.Get(i);
-		SendToClient(tmpSocketInfo, tmpMes.messerial().c_str(), tmpMes.messerial().length());
-	}
-	return 0;
-}
+//int CProxyServer::SendToClient(CMessG2G& tmpMes)
+//{
+// 	int nTmpSocket;
+// 	auto tmpSendList = tmpMes.socketinfos();
+// 	for (int i = 0; i < tmpSendList.size(); ++i)
+// 	{
+// 		const CSocketInfo& tmpSocketInfo = tmpSendList.Get(i);
+// 		SendToClient(tmpSocketInfo, tmpMes.messerial().c_str(), tmpMes.messerial().length());
+// 	}
+// 	return 0;
+//}
 
 void CProxyServer::RecvGameData()
 {
@@ -196,14 +175,14 @@ void CProxyServer::RecvGameData()
 			return;
 		}
 
-		CMessG2G msgG2g;
-		iTmpRet = msgG2g.ParseFromArray(m_CacheData, iTmpLen);
-		if (iTmpLen == false)
-		{
-			CACHE_LOG(TCP_ERROR, "CProxyServer::msgG2g.ParseFromArray failed,iTmpRet {}", iTmpRet);
-			return;
-		}
-		SendToClient(msgG2g);
+// 		CMessG2G msgG2g;
+// 		iTmpRet = msgG2g.ParseFromArray(m_CacheData, iTmpLen);
+// 		if (iTmpLen == false)
+// 		{
+// 			CACHE_LOG(TCP_ERROR, "CProxyServer::msgG2g.ParseFromArray failed,iTmpRet {}", iTmpRet);
+// 			return;
+// 		}
+// 		SendToClient(msgG2g);
 	}
 }
 
@@ -212,9 +191,9 @@ int CProxyServer::SendToGame(char* data, int iTmpLen)
 	return m_C2SCodeQueue->SendMessage((BYTE*)data, iTmpLen);
 }
 
-void CProxyServer::OnNewConnect(CSafePointer<CTCPConn> pConnn)
+void CProxyServer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
 {
-	CSafePointer<CProxyPlayer> pConn = pConnn.DynamicCastTo<CProxyPlayer>();
+	CSafePtr<CProxyPlayer> pConn = pConnn.DynamicCastTo<CProxyPlayer>();
 	if (pConnn != NULL)
 	{
 
@@ -222,51 +201,51 @@ void CProxyServer::OnNewConnect(CSafePointer<CTCPConn> pConnn)
 }
 
 //
-CSafePointer<CTCPConn> CProxyServer::CreateTcpConn(CSocket tmSocket)
+CSafePtr<CTCPConn> CProxyServer::CreateTcpConn(CSocket tmSocket)
 {
-	CSafePointer<CProxyPlayer> pConn = new CProxyPlayer();
+	CSafePtr<CProxyPlayer> pConn = new CProxyPlayer();
 	return pConn.DynamicCastTo<CTCPConn>();
 }
 
-void CProxyServer::SendToClient(const CSocketInfo& socketInfo, const char* data, unsigned int len)
-{
-	CSafePointer<CProxyPlayer> pGamePlayer = FindTcpConn(socketInfo.socketid()).DynamicCastTo<CProxyPlayer>();
-	if (pGamePlayer == NULL)
-	{
-		CACHE_LOG(TCP_ERROR, "CAcceptor has gone, socket = {}", socketInfo.socketid());
-		return;
-	}
-
-	/*
-	 * 时间不一样，说明这个socket是个新的连接，原来的连接已经关闭,注(原来的
-	 * 的连接断开后，新的客户端用了原来的socket fd ，因此数据不是现在这个连
-	 * 接的数据，原来连接的数据,中断发送l
-	*/
-	if (pGamePlayer->GetCreateTime() != socketInfo.createtime())
-	{
-		CACHE_LOG(TCP_ERROR,
-			"sokcet[{}] already closed(tcp createtime:{}:gate createtime:{}) : gate ==> client failed",
-			socketInfo.socketid(),
-			pGamePlayer->GetCreateTime(),
-			socketInfo.createtime());
-		return;
-	}
-	int iTmpCloseFlag = socketInfo.state();
-	int iRet = pGamePlayer->Write((BYTE*)data, len);
-	if (iRet != 0)
-	{
-		//发送失败
-		ClearSocket(pGamePlayer, Err_ClientClose);
-		CACHE_LOG(TCP_ERROR,
-			"send to client {} Failed due to error {}",
-			pGamePlayer->GetSocketFD(),
-			errno);
-		return;
-	}
-
-	//gameserver 主动关闭
-	if (iTmpCloseFlag < 0)
-	{
-		ClearSocket(pGamePlayer, Client_Succeed);
-	}
-}
+//void CProxyServer::SendToClient(const CSocketInfo& socketInfo, const char* data, unsigned int len)
+//{
+// 	CSafePtr<CProxyPlayer> pGamePlayer = FindTcpConn(socketInfo.socketid()).DynamicCastTo<CProxyPlayer>();
+// 	if (pGamePlayer == NULL)
+// 	{
+// 		CACHE_LOG(TCP_ERROR, "CAcceptor has gone, socket = {}", socketInfo.socketid());
+// 		return;
+// 	}
+// 
+// 	/*
+// 	 * 时间不一样，说明这个socket是个新的连接，原来的连接已经关闭,注(原来的
+// 	 * 的连接断开后，新的客户端用了原来的socket fd ，因此数据不是现在这个连
+// 	 * 接的数据，原来连接的数据,中断发送l
+// 	*/
+// 	if (pGamePlayer->GetCreateTime() != socketInfo.createtime())
+// 	{
+// 		CACHE_LOG(TCP_ERROR,
+// 			"sokcet[{}] already closed(tcp createtime:{}:gate createtime:{}) : gate ==> client failed",
+// 			socketInfo.socketid(),
+// 			pGamePlayer->GetCreateTime(),
+// 			socketInfo.createtime());
+// 		return;
+// 	}
+// 	int iTmpCloseFlag = socketInfo.state();
+// 	int iRet = pGamePlayer->Write((BYTE*)data, len);
+// 	if (iRet != 0)
+// 	{
+// 		//发送失败
+// 		ClearSocket(pGamePlayer, Err_ClientClose);
+// 		CACHE_LOG(TCP_ERROR,
+// 			"send to client {} Failed due to error {}",
+// 			pGamePlayer->GetSocketFD(),
+// 			errno);
+// 		return;
+// 	}
+// 
+// 	//gameserver 主动关闭
+// 	if (iTmpCloseFlag < 0)
+// 	{
+// 		ClearSocket(pGamePlayer, Client_Succeed);
+// 	}
+//}

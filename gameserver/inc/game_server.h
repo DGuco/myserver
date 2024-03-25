@@ -11,9 +11,8 @@
 #include "singleton.h"
 #include "runflag.h"
 #include "base.h"
-#include "message_interface.h"
-#include "message_dispatcher.h"
 #include "tcp_server.h"
+#include "safe_pointer.h"
 #include "game_player.h"
 #include "client_handle.h"
 #include "server_handle.h"
@@ -43,18 +42,18 @@ public:
 	// 退出
 	void Exit();
 	//读取客户端上行数据
-	void RecvClientData(SafePointer<CGamePlayer> pGamePlayer);
+	void RecvClientData(CSafePtr<CGamePlayer> pGamePlayer);
 	//
-	void ClearSocket(SafePointer<CGamePlayer> pGamePlayer, short iError);
+	void ClearSocket(CSafePtr<CGamePlayer> pGamePlayer, short iError);
 	//
-	void DisConnect(SafePointer<CGamePlayer> pGamePlayer, short iError);
+	void DisConnect(CSafePtr<CGamePlayer> pGamePlayer, short iError);
 public:
 	//新链接回调
-	virtual void OnNewConnect(SafePointer<CTCPConn> pConnn);
+	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);
 	//
-	virtual SafePointer<CTCPConn> CreateTcpConn(CSocket tmSocket);
+	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket tmSocket);
 	//
-	virtual SafePointer<CTCPClient> CreateTcpClient(CSocket tmSocket);
+	virtual CSafePtr<CTCPClient> CreateTcpClient(CSocket tmSocket);
 
 public:
 	// 设置服务器状态
@@ -79,23 +78,10 @@ public:
 	bool CanProcessingClientMsg()
 	{ return (m_iServerState & ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG; }
 
-	// 处理客户端上行消息
-	void ProcessClientMessage(SafePointer<CMessage> pMsg, SafePointer<CGamePlayer> pPlayer);
-	// 处理服务器内部消息
-	void ProcessServerMessage(SafePointer<CProxyMessage> pMsg);
 	// 给DB Server发消息
-	bool SendMessageToDB(SafePointer <CProxyMessage> pMsg);
-	// 广播消息给玩家，广播时，发起人一定放第一个
-	int BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, stPointList *pTeamList);
-	// 推送消息给单个玩家
-	int BroadcastMsg(unsigned int iMsgID, std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer);
-	// 回复客户端上行的请求
-	int SendResponse(std::shared_ptr<CGooMess> pMsgPara, CPlayer *pPlayer);
-	int SendResponse(std::shared_ptr<CGooMess> pMsgPara, std::shared_ptr<CMesHead> mesHead);
-
+	bool SendMessageToDB(CSafePtr <CProxyMessage> pMsg);
 	// 通过消息ID获取模块类型
 	int GetModuleClass(int iMsgID);
-
 	// 主动断开链接
 	void DisconnectClient(CPlayer *pPlayer);
 private:

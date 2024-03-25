@@ -32,11 +32,11 @@
  * 仅仅做空指针和bad指针的访问检测，不负责管理指针的内存释放
  */
 template<typename Tp>
-class CSafePointer
+class CSafePtr
 {
 public:
-	CSafePointer() : nDataH(SPO_FLAG_H), nDataL(SPO_FLAG_L) {}
-	CSafePointer(Tp* pointer,bool autofree = false)
+	CSafePtr() : nDataH(SPO_FLAG_H), nDataL(SPO_FLAG_L) {}
+	CSafePtr(Tp* pointer,bool autofree = false)
 	{
 		nDataH = SPO_FLAG_H;
 		nDataL = SPO_FLAG_L;
@@ -92,12 +92,12 @@ public:
 		return Get() != pOhter;
 	}
 
-	bool operator==(const CSafePointer<Tp> pOhter)
+	bool operator==(const CSafePtr<Tp> pOhter)
 	{
 		return this->nDataH == pOhter->nDataH && this->nDataL == pOhter->nDataL;
 	}
 
-	bool operator != (const CSafePointer<Tp> pOhter)
+	bool operator != (const CSafePtr<Tp> pOhter)
 	{
 		return this->nDataH != pOhter->nDataH && this->nDataL != pOhter->nDataL;
 	}
@@ -108,16 +108,16 @@ public:
 	}
 
 	template<typename NewTp>
-	CSafePointer<NewTp> DynamicCastTo()
+	CSafePtr<NewTp> DynamicCastTo()
 	{
 		Tp* pPointer = GetThrow();
 		if (pPointer != NULL)
 		{
-			return CSafePointer<NewTp>(dynamic_cast<NewTp*>(pPointer));
+			return CSafePtr<NewTp>(dynamic_cast<NewTp*>(pPointer));
 		}
 		else
 		{
-			return CSafePointer<NewTp>();
+			return CSafePtr<NewTp>();
 		}
 	}
 
@@ -127,11 +127,11 @@ public:
 		Tp* pPointer = GetThrow();
 		if (pPointer != NULL)
 		{
-			return CSafePointer<NewTp>(static_cast<NewTp>(pPointer))
+			return CSafePtr<NewTp>(static_cast<NewTp>(pPointer))
 		}
 		else
 		{
-			return CSafePointer<NewTp>();
+			return CSafePtr<NewTp>();
 		}
 	}
 

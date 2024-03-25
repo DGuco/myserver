@@ -45,51 +45,73 @@ struct TableStruct_message_2eproto {
   static const uint32_t offsets[];
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_message_2eproto;
-class CMesHead;
-struct CMesHeadDefaultTypeInternal;
-extern CMesHeadDefaultTypeInternal _CMesHead_default_instance_;
-class CMessG2G;
-struct CMessG2GDefaultTypeInternal;
-extern CMessG2GDefaultTypeInternal _CMessG2G_default_instance_;
-class CMessage;
-struct CMessageDefaultTypeInternal;
-extern CMessageDefaultTypeInternal _CMessage_default_instance_;
+class CGonnProto;
+struct CGonnProtoDefaultTypeInternal;
+extern CGonnProtoDefaultTypeInternal _CGonnProto_default_instance_;
 class CProxyHead;
 struct CProxyHeadDefaultTypeInternal;
 extern CProxyHeadDefaultTypeInternal _CProxyHead_default_instance_;
 class CProxyMessage;
 struct CProxyMessageDefaultTypeInternal;
 extern CProxyMessageDefaultTypeInternal _CProxyMessage_default_instance_;
-class CSocketInfo;
-struct CSocketInfoDefaultTypeInternal;
-extern CSocketInfoDefaultTypeInternal _CSocketInfo_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
-template<> ::CMesHead* Arena::CreateMaybeMessage<::CMesHead>(Arena*);
-template<> ::CMessG2G* Arena::CreateMaybeMessage<::CMessG2G>(Arena*);
-template<> ::CMessage* Arena::CreateMaybeMessage<::CMessage>(Arena*);
+template<> ::CGonnProto* Arena::CreateMaybeMessage<::CGonnProto>(Arena*);
 template<> ::CProxyHead* Arena::CreateMaybeMessage<::CProxyHead>(Arena*);
 template<> ::CProxyMessage* Arena::CreateMaybeMessage<::CProxyMessage>(Arena*);
-template<> ::CSocketInfo* Arena::CreateMaybeMessage<::CSocketInfo>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
+enum CProxyMessage_Msg : int {
+  CProxyMessage_Msg_MsgID = 10000
+};
+bool CProxyMessage_Msg_IsValid(int value);
+constexpr CProxyMessage_Msg CProxyMessage_Msg_Msg_MIN = CProxyMessage_Msg_MsgID;
+constexpr CProxyMessage_Msg CProxyMessage_Msg_Msg_MAX = CProxyMessage_Msg_MsgID;
+constexpr int CProxyMessage_Msg_Msg_ARRAYSIZE = CProxyMessage_Msg_Msg_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CProxyMessage_Msg_descriptor();
+template<typename T>
+inline const std::string& CProxyMessage_Msg_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CProxyMessage_Msg>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CProxyMessage_Msg_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CProxyMessage_Msg_descriptor(), enum_t_value);
+}
+inline bool CProxyMessage_Msg_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CProxyMessage_Msg* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CProxyMessage_Msg>(
+    CProxyMessage_Msg_descriptor(), name, value);
+}
+enum CGonnProto_Msg : int {
+  CGonnProto_Msg_MsgID = 10001
+};
+bool CGonnProto_Msg_IsValid(int value);
+constexpr CGonnProto_Msg CGonnProto_Msg_Msg_MIN = CGonnProto_Msg_MsgID;
+constexpr CGonnProto_Msg CGonnProto_Msg_Msg_MAX = CGonnProto_Msg_MsgID;
+constexpr int CGonnProto_Msg_Msg_ARRAYSIZE = CGonnProto_Msg_Msg_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CGonnProto_Msg_descriptor();
+template<typename T>
+inline const std::string& CGonnProto_Msg_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CGonnProto_Msg>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CGonnProto_Msg_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CGonnProto_Msg_descriptor(), enum_t_value);
+}
+inline bool CGonnProto_Msg_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CGonnProto_Msg* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CGonnProto_Msg>(
+    CGonnProto_Msg_descriptor(), name, value);
+}
 enum enServerType : int {
-  FE_TIMER = 0,
-  FE_CLIENT = 1,
-  FE_GAMESERVER = 2,
-  FE_LOGINSERVER = 3,
-  FE_DBSERVER = 4,
-  FE_PROXYSERVER = 5,
-  FE_WORLDSERVER = 6,
-  FE_WEBSERVER = 7,
-  FE_OFFLINESERVER = 8,
-  FE_CHECKSERVER = 9,
-  FE_HALLSERVER = 10,
-  FE_GATESERVER = 11,
-  FE_ROOMSERVER = 12
+  FE_GAMESERVER = 0,
+  FE_PROXYSERVER = 1,
+  FE_WEBSERVER = 2
 };
 bool enServerType_IsValid(int value);
-constexpr enServerType enServerType_MIN = FE_TIMER;
-constexpr enServerType enServerType_MAX = FE_ROOMSERVER;
+constexpr enServerType enServerType_MIN = FE_GAMESERVER;
+constexpr enServerType enServerType_MAX = FE_WEBSERVER;
 constexpr int enServerType_ARRAYSIZE = enServerType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* enServerType_descriptor();
@@ -107,14 +129,13 @@ inline bool enServerType_Parse(
     enServerType_descriptor(), name, value);
 }
 enum enMessageCmd : int {
-  MESS_NULL = 0,
-  MESS_REGIST = 1,
-  MESS_KEEPALIVE = 2,
-  MESS_LOGIC = 3
+  MESS_LOGIC = 0,
+  MESS_REGISTER = 1,
+  MESS_KEEPALIVE = 2
 };
 bool enMessageCmd_IsValid(int value);
-constexpr enMessageCmd enMessageCmd_MIN = MESS_NULL;
-constexpr enMessageCmd enMessageCmd_MAX = MESS_LOGIC;
+constexpr enMessageCmd enMessageCmd_MIN = MESS_LOGIC;
+constexpr enMessageCmd enMessageCmd_MAX = MESS_KEEPALIVE;
 constexpr int enMessageCmd_ARRAYSIZE = enMessageCmd_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* enMessageCmd_descriptor();
@@ -132,772 +153,6 @@ inline bool enMessageCmd_Parse(
     enMessageCmd_descriptor(), name, value);
 }
 // ===================================================================
-
-class CSocketInfo final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSocketInfo) */ {
- public:
-  inline CSocketInfo() : CSocketInfo(nullptr) {}
-  ~CSocketInfo() override;
-  explicit PROTOBUF_CONSTEXPR CSocketInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CSocketInfo(const CSocketInfo& from);
-  CSocketInfo(CSocketInfo&& from) noexcept
-    : CSocketInfo() {
-    *this = ::std::move(from);
-  }
-
-  inline CSocketInfo& operator=(const CSocketInfo& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CSocketInfo& operator=(CSocketInfo&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CSocketInfo& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CSocketInfo* internal_default_instance() {
-    return reinterpret_cast<const CSocketInfo*>(
-               &_CSocketInfo_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    0;
-
-  friend void swap(CSocketInfo& a, CSocketInfo& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CSocketInfo* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CSocketInfo* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CSocketInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CSocketInfo>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CSocketInfo& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const CSocketInfo& from);
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CSocketInfo* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CSocketInfo";
-  }
-  protected:
-  explicit CSocketInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kCreateTimeFieldNumber = 2,
-    kSocketIDFieldNumber = 1,
-    kStateFieldNumber = 3,
-  };
-  // required int64 createTime = 2;
-  bool has_createtime() const;
-  private:
-  bool _internal_has_createtime() const;
-  public:
-  void clear_createtime();
-  int64_t createtime() const;
-  void set_createtime(int64_t value);
-  private:
-  int64_t _internal_createtime() const;
-  void _internal_set_createtime(int64_t value);
-  public:
-
-  // required int32 socketID = 1;
-  bool has_socketid() const;
-  private:
-  bool _internal_has_socketid() const;
-  public:
-  void clear_socketid();
-  int32_t socketid() const;
-  void set_socketid(int32_t value);
-  private:
-  int32_t _internal_socketid() const;
-  void _internal_set_socketid(int32_t value);
-  public:
-
-  // required int32 state = 3;
-  bool has_state() const;
-  private:
-  bool _internal_has_state() const;
-  public:
-  void clear_state();
-  int32_t state() const;
-  void set_state(int32_t value);
-  private:
-  int32_t _internal_state() const;
-  void _internal_set_state(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CSocketInfo)
- private:
-  class _Internal;
-
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  int64_t createtime_;
-  int32_t socketid_;
-  int32_t state_;
-  friend struct ::TableStruct_message_2eproto;
-};
-// -------------------------------------------------------------------
-
-class CMessG2G final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMessG2G) */ {
- public:
-  inline CMessG2G() : CMessG2G(nullptr) {}
-  ~CMessG2G() override;
-  explicit PROTOBUF_CONSTEXPR CMessG2G(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CMessG2G(const CMessG2G& from);
-  CMessG2G(CMessG2G&& from) noexcept
-    : CMessG2G() {
-    *this = ::std::move(from);
-  }
-
-  inline CMessG2G& operator=(const CMessG2G& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CMessG2G& operator=(CMessG2G&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CMessG2G& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CMessG2G* internal_default_instance() {
-    return reinterpret_cast<const CMessG2G*>(
-               &_CMessG2G_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    1;
-
-  friend void swap(CMessG2G& a, CMessG2G& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CMessG2G* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CMessG2G* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CMessG2G* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CMessG2G>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CMessG2G& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const CMessG2G& from);
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CMessG2G* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CMessG2G";
-  }
-  protected:
-  explicit CMessG2G(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kSocketInfosFieldNumber = 1,
-    kMesserialFieldNumber = 2,
-  };
-  // repeated .CSocketInfo socketInfos = 1;
-  int socketinfos_size() const;
-  private:
-  int _internal_socketinfos_size() const;
-  public:
-  void clear_socketinfos();
-  ::CSocketInfo* mutable_socketinfos(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo >*
-      mutable_socketinfos();
-  private:
-  const ::CSocketInfo& _internal_socketinfos(int index) const;
-  ::CSocketInfo* _internal_add_socketinfos();
-  public:
-  const ::CSocketInfo& socketinfos(int index) const;
-  ::CSocketInfo* add_socketinfos();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo >&
-      socketinfos() const;
-
-  // required bytes messerial = 2;
-  bool has_messerial() const;
-  private:
-  bool _internal_has_messerial() const;
-  public:
-  void clear_messerial();
-  const std::string& messerial() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_messerial(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_messerial();
-  PROTOBUF_NODISCARD std::string* release_messerial();
-  void set_allocated_messerial(std::string* messerial);
-  private:
-  const std::string& _internal_messerial() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_messerial(const std::string& value);
-  std::string* _internal_mutable_messerial();
-  public:
-
-  // @@protoc_insertion_point(class_scope:CMessG2G)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo > socketinfos_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr messerial_;
-  friend struct ::TableStruct_message_2eproto;
-};
-// -------------------------------------------------------------------
-
-class CMesHead final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMesHead) */ {
- public:
-  inline CMesHead() : CMesHead(nullptr) {}
-  ~CMesHead() override;
-  explicit PROTOBUF_CONSTEXPR CMesHead(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CMesHead(const CMesHead& from);
-  CMesHead(CMesHead&& from) noexcept
-    : CMesHead() {
-    *this = ::std::move(from);
-  }
-
-  inline CMesHead& operator=(const CMesHead& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CMesHead& operator=(CMesHead&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CMesHead& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CMesHead* internal_default_instance() {
-    return reinterpret_cast<const CMesHead*>(
-               &_CMesHead_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    2;
-
-  friend void swap(CMesHead& a, CMesHead& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CMesHead* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CMesHead* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CMesHead* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CMesHead>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CMesHead& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const CMesHead& from);
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CMesHead* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CMesHead";
-  }
-  protected:
-  explicit CMesHead(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kSocketInfosFieldNumber = 2,
-    kOpFlagFieldNumber = 1,
-    kCmdFieldNumber = 3,
-    kSerialFieldNumber = 4,
-    kSeqFieldNumber = 5,
-  };
-  // repeated .CSocketInfo socketInfos = 2;
-  int socketinfos_size() const;
-  private:
-  int _internal_socketinfos_size() const;
-  public:
-  void clear_socketinfos();
-  ::CSocketInfo* mutable_socketinfos(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo >*
-      mutable_socketinfos();
-  private:
-  const ::CSocketInfo& _internal_socketinfos(int index) const;
-  ::CSocketInfo* _internal_add_socketinfos();
-  public:
-  const ::CSocketInfo& socketinfos(int index) const;
-  ::CSocketInfo* add_socketinfos();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo >&
-      socketinfos() const;
-
-  // required .enMessageCmd opFlag = 1 [default = MESS_NULL];
-  bool has_opflag() const;
-  private:
-  bool _internal_has_opflag() const;
-  public:
-  void clear_opflag();
-  ::enMessageCmd opflag() const;
-  void set_opflag(::enMessageCmd value);
-  private:
-  ::enMessageCmd _internal_opflag() const;
-  void _internal_set_opflag(::enMessageCmd value);
-  public:
-
-  // optional int32 cmd = 3;
-  bool has_cmd() const;
-  private:
-  bool _internal_has_cmd() const;
-  public:
-  void clear_cmd();
-  int32_t cmd() const;
-  void set_cmd(int32_t value);
-  private:
-  int32_t _internal_cmd() const;
-  void _internal_set_cmd(int32_t value);
-  public:
-
-  // optional int32 serial = 4;
-  bool has_serial() const;
-  private:
-  bool _internal_has_serial() const;
-  public:
-  void clear_serial();
-  int32_t serial() const;
-  void set_serial(int32_t value);
-  private:
-  int32_t _internal_serial() const;
-  void _internal_set_serial(int32_t value);
-  public:
-
-  // optional int32 seq = 5;
-  bool has_seq() const;
-  private:
-  bool _internal_has_seq() const;
-  public:
-  void clear_seq();
-  int32_t seq() const;
-  void set_seq(int32_t value);
-  private:
-  int32_t _internal_seq() const;
-  void _internal_set_seq(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CMesHead)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo > socketinfos_;
-  int opflag_;
-  int32_t cmd_;
-  int32_t serial_;
-  int32_t seq_;
-  friend struct ::TableStruct_message_2eproto;
-};
-// -------------------------------------------------------------------
-
-class CMessage final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMessage) */ {
- public:
-  inline CMessage() : CMessage(nullptr) {}
-  ~CMessage() override;
-  explicit PROTOBUF_CONSTEXPR CMessage(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CMessage(const CMessage& from);
-  CMessage(CMessage&& from) noexcept
-    : CMessage() {
-    *this = ::std::move(from);
-  }
-
-  inline CMessage& operator=(const CMessage& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CMessage& operator=(CMessage&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CMessage& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CMessage* internal_default_instance() {
-    return reinterpret_cast<const CMessage*>(
-               &_CMessage_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    3;
-
-  friend void swap(CMessage& a, CMessage& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CMessage* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CMessage* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CMessage* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CMessage>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CMessage& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const CMessage& from);
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CMessage* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CMessage";
-  }
-  protected:
-  explicit CMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kMsgHeadFieldNumber = 1,
-    kMsgParaFieldNumber = 2,
-  };
-  // required .CMesHead msgHead = 1;
-  bool has_msghead() const;
-  private:
-  bool _internal_has_msghead() const;
-  public:
-  void clear_msghead();
-  const ::CMesHead& msghead() const;
-  PROTOBUF_NODISCARD ::CMesHead* release_msghead();
-  ::CMesHead* mutable_msghead();
-  void set_allocated_msghead(::CMesHead* msghead);
-  private:
-  const ::CMesHead& _internal_msghead() const;
-  ::CMesHead* _internal_mutable_msghead();
-  public:
-  void unsafe_arena_set_allocated_msghead(
-      ::CMesHead* msghead);
-  ::CMesHead* unsafe_arena_release_msghead();
-
-  // required fixed64 msgPara = 2 [default = 0];
-  bool has_msgpara() const;
-  private:
-  bool _internal_has_msgpara() const;
-  public:
-  void clear_msgpara();
-  uint64_t msgpara() const;
-  void set_msgpara(uint64_t value);
-  private:
-  uint64_t _internal_msgpara() const;
-  void _internal_set_msgpara(uint64_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CMessage)
- private:
-  class _Internal;
-
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  ::CMesHead* msghead_;
-  uint64_t msgpara_;
-  friend struct ::TableStruct_message_2eproto;
-};
-// -------------------------------------------------------------------
 
 class CProxyHead final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CProxyHead) */ {
@@ -954,7 +209,7 @@ class CProxyHead final :
                &_CProxyHead_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    0;
 
   friend void swap(CProxyHead& a, CProxyHead& b) {
     a.Swap(&b);
@@ -1025,33 +280,13 @@ class CProxyHead final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMsgHeadFieldNumber = 8,
     kSrcFEFieldNumber = 1,
     kSrcIDFieldNumber = 2,
     kDstFEFieldNumber = 3,
     kDstIDFieldNumber = 4,
     kTimeStampFieldNumber = 5,
     kOpFlagFieldNumber = 6,
-    kMessageIdFieldNumber = 7,
   };
-  // optional .CMesHead msgHead = 8;
-  bool has_msghead() const;
-  private:
-  bool _internal_has_msghead() const;
-  public:
-  void clear_msghead();
-  const ::CMesHead& msghead() const;
-  PROTOBUF_NODISCARD ::CMesHead* release_msghead();
-  ::CMesHead* mutable_msghead();
-  void set_allocated_msghead(::CMesHead* msghead);
-  private:
-  const ::CMesHead& _internal_msghead() const;
-  ::CMesHead* _internal_mutable_msghead();
-  public:
-  void unsafe_arena_set_allocated_msghead(
-      ::CMesHead* msghead);
-  ::CMesHead* unsafe_arena_release_msghead();
-
   // required uint32 srcFE = 1;
   bool has_srcfe() const;
   private:
@@ -1117,7 +352,7 @@ class CProxyHead final :
   void _internal_set_timestamp(uint64_t value);
   public:
 
-  // optional .enMessageCmd opFlag = 6 [default = MESS_NULL];
+  // optional .enMessageCmd opFlag = 6;
   bool has_opflag() const;
   private:
   bool _internal_has_opflag() const;
@@ -1128,19 +363,6 @@ class CProxyHead final :
   private:
   ::enMessageCmd _internal_opflag() const;
   void _internal_set_opflag(::enMessageCmd value);
-  public:
-
-  // optional uint32 messageId = 7;
-  bool has_messageid() const;
-  private:
-  bool _internal_has_messageid() const;
-  public:
-  void clear_messageid();
-  uint32_t messageid() const;
-  void set_messageid(uint32_t value);
-  private:
-  uint32_t _internal_messageid() const;
-  void _internal_set_messageid(uint32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:CProxyHead)
@@ -1155,14 +377,12 @@ class CProxyHead final :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  ::CMesHead* msghead_;
   uint32_t srcfe_;
   uint32_t srcid_;
   uint32_t dstfe_;
   uint32_t dstid_;
   uint64_t timestamp_;
   int opflag_;
-  uint32_t messageid_;
   friend struct ::TableStruct_message_2eproto;
 };
 // -------------------------------------------------------------------
@@ -1222,7 +442,7 @@ class CProxyMessage final :
                &_CProxyMessage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    1;
 
   friend void swap(CProxyMessage& a, CProxyMessage& b) {
     a.Swap(&b);
@@ -1290,6 +510,34 @@ class CProxyMessage final :
 
   // nested types ----------------------------------------------------
 
+  typedef CProxyMessage_Msg Msg;
+  static constexpr Msg MsgID =
+    CProxyMessage_Msg_MsgID;
+  static inline bool Msg_IsValid(int value) {
+    return CProxyMessage_Msg_IsValid(value);
+  }
+  static constexpr Msg Msg_MIN =
+    CProxyMessage_Msg_Msg_MIN;
+  static constexpr Msg Msg_MAX =
+    CProxyMessage_Msg_Msg_MAX;
+  static constexpr int Msg_ARRAYSIZE =
+    CProxyMessage_Msg_Msg_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  Msg_descriptor() {
+    return CProxyMessage_Msg_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& Msg_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, Msg>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function Msg_Name.");
+    return CProxyMessage_Msg_Name(enum_t_value);
+  }
+  static inline bool Msg_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      Msg* value) {
+    return CProxyMessage_Msg_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   enum : int {
@@ -1340,6 +588,252 @@ class CProxyMessage final :
   uint64_t msgpara_;
   friend struct ::TableStruct_message_2eproto;
 };
+// -------------------------------------------------------------------
+
+class CGonnProto final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGonnProto) */ {
+ public:
+  inline CGonnProto() : CGonnProto(nullptr) {}
+  ~CGonnProto() override;
+  explicit PROTOBUF_CONSTEXPR CGonnProto(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CGonnProto(const CGonnProto& from);
+  CGonnProto(CGonnProto&& from) noexcept
+    : CGonnProto() {
+    *this = ::std::move(from);
+  }
+
+  inline CGonnProto& operator=(const CGonnProto& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CGonnProto& operator=(CGonnProto&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CGonnProto& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CGonnProto* internal_default_instance() {
+    return reinterpret_cast<const CGonnProto*>(
+               &_CGonnProto_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(CGonnProto& a, CGonnProto& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CGonnProto* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CGonnProto* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CGonnProto* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CGonnProto>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CGonnProto& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const CGonnProto& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CGonnProto* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CGonnProto";
+  }
+  protected:
+  explicit CGonnProto(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef CGonnProto_Msg Msg;
+  static constexpr Msg MsgID =
+    CGonnProto_Msg_MsgID;
+  static inline bool Msg_IsValid(int value) {
+    return CGonnProto_Msg_IsValid(value);
+  }
+  static constexpr Msg Msg_MIN =
+    CGonnProto_Msg_Msg_MIN;
+  static constexpr Msg Msg_MAX =
+    CGonnProto_Msg_Msg_MAX;
+  static constexpr int Msg_ARRAYSIZE =
+    CGonnProto_Msg_Msg_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  Msg_descriptor() {
+    return CGonnProto_Msg_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& Msg_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, Msg>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function Msg_Name.");
+    return CGonnProto_Msg_Name(enum_t_value);
+  }
+  static inline bool Msg_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      Msg* value) {
+    return CGonnProto_Msg_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kAccountFieldNumber = 1,
+    kPasswordFieldNumber = 2,
+    kSessionFieldNumber = 4,
+    kPFromFieldNumber = 3,
+  };
+  // required string Account = 1;
+  bool has_account() const;
+  private:
+  bool _internal_has_account() const;
+  public:
+  void clear_account();
+  const std::string& account() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_account(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_account();
+  PROTOBUF_NODISCARD std::string* release_account();
+  void set_allocated_account(std::string* account);
+  private:
+  const std::string& _internal_account() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_account(const std::string& value);
+  std::string* _internal_mutable_account();
+  public:
+
+  // optional string Password = 2;
+  bool has_password() const;
+  private:
+  bool _internal_has_password() const;
+  public:
+  void clear_password();
+  const std::string& password() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_password(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_password();
+  PROTOBUF_NODISCARD std::string* release_password();
+  void set_allocated_password(std::string* password);
+  private:
+  const std::string& _internal_password() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_password(const std::string& value);
+  std::string* _internal_mutable_password();
+  public:
+
+  // required string Session = 4;
+  bool has_session() const;
+  private:
+  bool _internal_has_session() const;
+  public:
+  void clear_session();
+  const std::string& session() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_session(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_session();
+  PROTOBUF_NODISCARD std::string* release_session();
+  void set_allocated_session(std::string* session);
+  private:
+  const std::string& _internal_session() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_session(const std::string& value);
+  std::string* _internal_mutable_session();
+  public:
+
+  // optional int32 PFrom = 3;
+  bool has_pfrom() const;
+  private:
+  bool _internal_has_pfrom() const;
+  public:
+  void clear_pfrom();
+  int32_t pfrom() const;
+  void set_pfrom(int32_t value);
+  private:
+  int32_t _internal_pfrom() const;
+  void _internal_set_pfrom(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CGonnProto)
+ private:
+  class _Internal;
+
+  // helper for ByteSizeLong()
+  size_t RequiredFieldsByteSizeFallback() const;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr account_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr password_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr session_;
+  int32_t pfrom_;
+  friend struct ::TableStruct_message_2eproto;
+};
 // ===================================================================
 
 
@@ -1349,490 +843,11 @@ class CProxyMessage final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// CSocketInfo
-
-// required int32 socketID = 1;
-inline bool CSocketInfo::_internal_has_socketid() const {
-  bool value = (_has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CSocketInfo::has_socketid() const {
-  return _internal_has_socketid();
-}
-inline void CSocketInfo::clear_socketid() {
-  socketid_ = 0;
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline int32_t CSocketInfo::_internal_socketid() const {
-  return socketid_;
-}
-inline int32_t CSocketInfo::socketid() const {
-  // @@protoc_insertion_point(field_get:CSocketInfo.socketID)
-  return _internal_socketid();
-}
-inline void CSocketInfo::_internal_set_socketid(int32_t value) {
-  _has_bits_[0] |= 0x00000002u;
-  socketid_ = value;
-}
-inline void CSocketInfo::set_socketid(int32_t value) {
-  _internal_set_socketid(value);
-  // @@protoc_insertion_point(field_set:CSocketInfo.socketID)
-}
-
-// required int64 createTime = 2;
-inline bool CSocketInfo::_internal_has_createtime() const {
-  bool value = (_has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CSocketInfo::has_createtime() const {
-  return _internal_has_createtime();
-}
-inline void CSocketInfo::clear_createtime() {
-  createtime_ = int64_t{0};
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline int64_t CSocketInfo::_internal_createtime() const {
-  return createtime_;
-}
-inline int64_t CSocketInfo::createtime() const {
-  // @@protoc_insertion_point(field_get:CSocketInfo.createTime)
-  return _internal_createtime();
-}
-inline void CSocketInfo::_internal_set_createtime(int64_t value) {
-  _has_bits_[0] |= 0x00000001u;
-  createtime_ = value;
-}
-inline void CSocketInfo::set_createtime(int64_t value) {
-  _internal_set_createtime(value);
-  // @@protoc_insertion_point(field_set:CSocketInfo.createTime)
-}
-
-// required int32 state = 3;
-inline bool CSocketInfo::_internal_has_state() const {
-  bool value = (_has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool CSocketInfo::has_state() const {
-  return _internal_has_state();
-}
-inline void CSocketInfo::clear_state() {
-  state_ = 0;
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline int32_t CSocketInfo::_internal_state() const {
-  return state_;
-}
-inline int32_t CSocketInfo::state() const {
-  // @@protoc_insertion_point(field_get:CSocketInfo.state)
-  return _internal_state();
-}
-inline void CSocketInfo::_internal_set_state(int32_t value) {
-  _has_bits_[0] |= 0x00000004u;
-  state_ = value;
-}
-inline void CSocketInfo::set_state(int32_t value) {
-  _internal_set_state(value);
-  // @@protoc_insertion_point(field_set:CSocketInfo.state)
-}
-
-// -------------------------------------------------------------------
-
-// CMessG2G
-
-// repeated .CSocketInfo socketInfos = 1;
-inline int CMessG2G::_internal_socketinfos_size() const {
-  return socketinfos_.size();
-}
-inline int CMessG2G::socketinfos_size() const {
-  return _internal_socketinfos_size();
-}
-inline void CMessG2G::clear_socketinfos() {
-  socketinfos_.Clear();
-}
-inline ::CSocketInfo* CMessG2G::mutable_socketinfos(int index) {
-  // @@protoc_insertion_point(field_mutable:CMessG2G.socketInfos)
-  return socketinfos_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo >*
-CMessG2G::mutable_socketinfos() {
-  // @@protoc_insertion_point(field_mutable_list:CMessG2G.socketInfos)
-  return &socketinfos_;
-}
-inline const ::CSocketInfo& CMessG2G::_internal_socketinfos(int index) const {
-  return socketinfos_.Get(index);
-}
-inline const ::CSocketInfo& CMessG2G::socketinfos(int index) const {
-  // @@protoc_insertion_point(field_get:CMessG2G.socketInfos)
-  return _internal_socketinfos(index);
-}
-inline ::CSocketInfo* CMessG2G::_internal_add_socketinfos() {
-  return socketinfos_.Add();
-}
-inline ::CSocketInfo* CMessG2G::add_socketinfos() {
-  ::CSocketInfo* _add = _internal_add_socketinfos();
-  // @@protoc_insertion_point(field_add:CMessG2G.socketInfos)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo >&
-CMessG2G::socketinfos() const {
-  // @@protoc_insertion_point(field_list:CMessG2G.socketInfos)
-  return socketinfos_;
-}
-
-// required bytes messerial = 2;
-inline bool CMessG2G::_internal_has_messerial() const {
-  bool value = (_has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CMessG2G::has_messerial() const {
-  return _internal_has_messerial();
-}
-inline void CMessG2G::clear_messerial() {
-  messerial_.ClearToEmpty();
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline const std::string& CMessG2G::messerial() const {
-  // @@protoc_insertion_point(field_get:CMessG2G.messerial)
-  return _internal_messerial();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void CMessG2G::set_messerial(ArgT0&& arg0, ArgT... args) {
- _has_bits_[0] |= 0x00000001u;
- messerial_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:CMessG2G.messerial)
-}
-inline std::string* CMessG2G::mutable_messerial() {
-  std::string* _s = _internal_mutable_messerial();
-  // @@protoc_insertion_point(field_mutable:CMessG2G.messerial)
-  return _s;
-}
-inline const std::string& CMessG2G::_internal_messerial() const {
-  return messerial_.Get();
-}
-inline void CMessG2G::_internal_set_messerial(const std::string& value) {
-  _has_bits_[0] |= 0x00000001u;
-  messerial_.Set(value, GetArenaForAllocation());
-}
-inline std::string* CMessG2G::_internal_mutable_messerial() {
-  _has_bits_[0] |= 0x00000001u;
-  return messerial_.Mutable(GetArenaForAllocation());
-}
-inline std::string* CMessG2G::release_messerial() {
-  // @@protoc_insertion_point(field_release:CMessG2G.messerial)
-  if (!_internal_has_messerial()) {
-    return nullptr;
-  }
-  _has_bits_[0] &= ~0x00000001u;
-  auto* p = messerial_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (messerial_.IsDefault()) {
-    messerial_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void CMessG2G::set_allocated_messerial(std::string* messerial) {
-  if (messerial != nullptr) {
-    _has_bits_[0] |= 0x00000001u;
-  } else {
-    _has_bits_[0] &= ~0x00000001u;
-  }
-  messerial_.SetAllocated(messerial, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (messerial_.IsDefault()) {
-    messerial_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:CMessG2G.messerial)
-}
-
-// -------------------------------------------------------------------
-
-// CMesHead
-
-// required .enMessageCmd opFlag = 1 [default = MESS_NULL];
-inline bool CMesHead::_internal_has_opflag() const {
-  bool value = (_has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CMesHead::has_opflag() const {
-  return _internal_has_opflag();
-}
-inline void CMesHead::clear_opflag() {
-  opflag_ = 0;
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline ::enMessageCmd CMesHead::_internal_opflag() const {
-  return static_cast< ::enMessageCmd >(opflag_);
-}
-inline ::enMessageCmd CMesHead::opflag() const {
-  // @@protoc_insertion_point(field_get:CMesHead.opFlag)
-  return _internal_opflag();
-}
-inline void CMesHead::_internal_set_opflag(::enMessageCmd value) {
-  assert(::enMessageCmd_IsValid(value));
-  _has_bits_[0] |= 0x00000001u;
-  opflag_ = value;
-}
-inline void CMesHead::set_opflag(::enMessageCmd value) {
-  _internal_set_opflag(value);
-  // @@protoc_insertion_point(field_set:CMesHead.opFlag)
-}
-
-// repeated .CSocketInfo socketInfos = 2;
-inline int CMesHead::_internal_socketinfos_size() const {
-  return socketinfos_.size();
-}
-inline int CMesHead::socketinfos_size() const {
-  return _internal_socketinfos_size();
-}
-inline void CMesHead::clear_socketinfos() {
-  socketinfos_.Clear();
-}
-inline ::CSocketInfo* CMesHead::mutable_socketinfos(int index) {
-  // @@protoc_insertion_point(field_mutable:CMesHead.socketInfos)
-  return socketinfos_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo >*
-CMesHead::mutable_socketinfos() {
-  // @@protoc_insertion_point(field_mutable_list:CMesHead.socketInfos)
-  return &socketinfos_;
-}
-inline const ::CSocketInfo& CMesHead::_internal_socketinfos(int index) const {
-  return socketinfos_.Get(index);
-}
-inline const ::CSocketInfo& CMesHead::socketinfos(int index) const {
-  // @@protoc_insertion_point(field_get:CMesHead.socketInfos)
-  return _internal_socketinfos(index);
-}
-inline ::CSocketInfo* CMesHead::_internal_add_socketinfos() {
-  return socketinfos_.Add();
-}
-inline ::CSocketInfo* CMesHead::add_socketinfos() {
-  ::CSocketInfo* _add = _internal_add_socketinfos();
-  // @@protoc_insertion_point(field_add:CMesHead.socketInfos)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSocketInfo >&
-CMesHead::socketinfos() const {
-  // @@protoc_insertion_point(field_list:CMesHead.socketInfos)
-  return socketinfos_;
-}
-
-// optional int32 cmd = 3;
-inline bool CMesHead::_internal_has_cmd() const {
-  bool value = (_has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CMesHead::has_cmd() const {
-  return _internal_has_cmd();
-}
-inline void CMesHead::clear_cmd() {
-  cmd_ = 0;
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline int32_t CMesHead::_internal_cmd() const {
-  return cmd_;
-}
-inline int32_t CMesHead::cmd() const {
-  // @@protoc_insertion_point(field_get:CMesHead.cmd)
-  return _internal_cmd();
-}
-inline void CMesHead::_internal_set_cmd(int32_t value) {
-  _has_bits_[0] |= 0x00000002u;
-  cmd_ = value;
-}
-inline void CMesHead::set_cmd(int32_t value) {
-  _internal_set_cmd(value);
-  // @@protoc_insertion_point(field_set:CMesHead.cmd)
-}
-
-// optional int32 serial = 4;
-inline bool CMesHead::_internal_has_serial() const {
-  bool value = (_has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool CMesHead::has_serial() const {
-  return _internal_has_serial();
-}
-inline void CMesHead::clear_serial() {
-  serial_ = 0;
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline int32_t CMesHead::_internal_serial() const {
-  return serial_;
-}
-inline int32_t CMesHead::serial() const {
-  // @@protoc_insertion_point(field_get:CMesHead.serial)
-  return _internal_serial();
-}
-inline void CMesHead::_internal_set_serial(int32_t value) {
-  _has_bits_[0] |= 0x00000004u;
-  serial_ = value;
-}
-inline void CMesHead::set_serial(int32_t value) {
-  _internal_set_serial(value);
-  // @@protoc_insertion_point(field_set:CMesHead.serial)
-}
-
-// optional int32 seq = 5;
-inline bool CMesHead::_internal_has_seq() const {
-  bool value = (_has_bits_[0] & 0x00000008u) != 0;
-  return value;
-}
-inline bool CMesHead::has_seq() const {
-  return _internal_has_seq();
-}
-inline void CMesHead::clear_seq() {
-  seq_ = 0;
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline int32_t CMesHead::_internal_seq() const {
-  return seq_;
-}
-inline int32_t CMesHead::seq() const {
-  // @@protoc_insertion_point(field_get:CMesHead.seq)
-  return _internal_seq();
-}
-inline void CMesHead::_internal_set_seq(int32_t value) {
-  _has_bits_[0] |= 0x00000008u;
-  seq_ = value;
-}
-inline void CMesHead::set_seq(int32_t value) {
-  _internal_set_seq(value);
-  // @@protoc_insertion_point(field_set:CMesHead.seq)
-}
-
-// -------------------------------------------------------------------
-
-// CMessage
-
-// required .CMesHead msgHead = 1;
-inline bool CMessage::_internal_has_msghead() const {
-  bool value = (_has_bits_[0] & 0x00000001u) != 0;
-  PROTOBUF_ASSUME(!value || msghead_ != nullptr);
-  return value;
-}
-inline bool CMessage::has_msghead() const {
-  return _internal_has_msghead();
-}
-inline void CMessage::clear_msghead() {
-  if (msghead_ != nullptr) msghead_->Clear();
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline const ::CMesHead& CMessage::_internal_msghead() const {
-  const ::CMesHead* p = msghead_;
-  return p != nullptr ? *p : reinterpret_cast<const ::CMesHead&>(
-      ::_CMesHead_default_instance_);
-}
-inline const ::CMesHead& CMessage::msghead() const {
-  // @@protoc_insertion_point(field_get:CMessage.msgHead)
-  return _internal_msghead();
-}
-inline void CMessage::unsafe_arena_set_allocated_msghead(
-    ::CMesHead* msghead) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(msghead_);
-  }
-  msghead_ = msghead;
-  if (msghead) {
-    _has_bits_[0] |= 0x00000001u;
-  } else {
-    _has_bits_[0] &= ~0x00000001u;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CMessage.msgHead)
-}
-inline ::CMesHead* CMessage::release_msghead() {
-  _has_bits_[0] &= ~0x00000001u;
-  ::CMesHead* temp = msghead_;
-  msghead_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::CMesHead* CMessage::unsafe_arena_release_msghead() {
-  // @@protoc_insertion_point(field_release:CMessage.msgHead)
-  _has_bits_[0] &= ~0x00000001u;
-  ::CMesHead* temp = msghead_;
-  msghead_ = nullptr;
-  return temp;
-}
-inline ::CMesHead* CMessage::_internal_mutable_msghead() {
-  _has_bits_[0] |= 0x00000001u;
-  if (msghead_ == nullptr) {
-    auto* p = CreateMaybeMessage<::CMesHead>(GetArenaForAllocation());
-    msghead_ = p;
-  }
-  return msghead_;
-}
-inline ::CMesHead* CMessage::mutable_msghead() {
-  ::CMesHead* _msg = _internal_mutable_msghead();
-  // @@protoc_insertion_point(field_mutable:CMessage.msgHead)
-  return _msg;
-}
-inline void CMessage::set_allocated_msghead(::CMesHead* msghead) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete msghead_;
-  }
-  if (msghead) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(msghead);
-    if (message_arena != submessage_arena) {
-      msghead = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, msghead, submessage_arena);
-    }
-    _has_bits_[0] |= 0x00000001u;
-  } else {
-    _has_bits_[0] &= ~0x00000001u;
-  }
-  msghead_ = msghead;
-  // @@protoc_insertion_point(field_set_allocated:CMessage.msgHead)
-}
-
-// required fixed64 msgPara = 2 [default = 0];
-inline bool CMessage::_internal_has_msgpara() const {
-  bool value = (_has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CMessage::has_msgpara() const {
-  return _internal_has_msgpara();
-}
-inline void CMessage::clear_msgpara() {
-  msgpara_ = uint64_t{0u};
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline uint64_t CMessage::_internal_msgpara() const {
-  return msgpara_;
-}
-inline uint64_t CMessage::msgpara() const {
-  // @@protoc_insertion_point(field_get:CMessage.msgPara)
-  return _internal_msgpara();
-}
-inline void CMessage::_internal_set_msgpara(uint64_t value) {
-  _has_bits_[0] |= 0x00000002u;
-  msgpara_ = value;
-}
-inline void CMessage::set_msgpara(uint64_t value) {
-  _internal_set_msgpara(value);
-  // @@protoc_insertion_point(field_set:CMessage.msgPara)
-}
-
-// -------------------------------------------------------------------
-
 // CProxyHead
 
 // required uint32 srcFE = 1;
 inline bool CProxyHead::_internal_has_srcfe() const {
-  bool value = (_has_bits_[0] & 0x00000002u) != 0;
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
   return value;
 }
 inline bool CProxyHead::has_srcfe() const {
@@ -1840,7 +855,7 @@ inline bool CProxyHead::has_srcfe() const {
 }
 inline void CProxyHead::clear_srcfe() {
   srcfe_ = 0u;
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000001u;
 }
 inline uint32_t CProxyHead::_internal_srcfe() const {
   return srcfe_;
@@ -1850,7 +865,7 @@ inline uint32_t CProxyHead::srcfe() const {
   return _internal_srcfe();
 }
 inline void CProxyHead::_internal_set_srcfe(uint32_t value) {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000001u;
   srcfe_ = value;
 }
 inline void CProxyHead::set_srcfe(uint32_t value) {
@@ -1860,7 +875,7 @@ inline void CProxyHead::set_srcfe(uint32_t value) {
 
 // required uint32 srcID = 2;
 inline bool CProxyHead::_internal_has_srcid() const {
-  bool value = (_has_bits_[0] & 0x00000004u) != 0;
+  bool value = (_has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
 inline bool CProxyHead::has_srcid() const {
@@ -1868,7 +883,7 @@ inline bool CProxyHead::has_srcid() const {
 }
 inline void CProxyHead::clear_srcid() {
   srcid_ = 0u;
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline uint32_t CProxyHead::_internal_srcid() const {
   return srcid_;
@@ -1878,7 +893,7 @@ inline uint32_t CProxyHead::srcid() const {
   return _internal_srcid();
 }
 inline void CProxyHead::_internal_set_srcid(uint32_t value) {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000002u;
   srcid_ = value;
 }
 inline void CProxyHead::set_srcid(uint32_t value) {
@@ -1888,7 +903,7 @@ inline void CProxyHead::set_srcid(uint32_t value) {
 
 // required uint32 dstFE = 3;
 inline bool CProxyHead::_internal_has_dstfe() const {
-  bool value = (_has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
 inline bool CProxyHead::has_dstfe() const {
@@ -1896,7 +911,7 @@ inline bool CProxyHead::has_dstfe() const {
 }
 inline void CProxyHead::clear_dstfe() {
   dstfe_ = 0u;
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline uint32_t CProxyHead::_internal_dstfe() const {
   return dstfe_;
@@ -1906,7 +921,7 @@ inline uint32_t CProxyHead::dstfe() const {
   return _internal_dstfe();
 }
 inline void CProxyHead::_internal_set_dstfe(uint32_t value) {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000004u;
   dstfe_ = value;
 }
 inline void CProxyHead::set_dstfe(uint32_t value) {
@@ -1916,7 +931,7 @@ inline void CProxyHead::set_dstfe(uint32_t value) {
 
 // required uint32 dstID = 4;
 inline bool CProxyHead::_internal_has_dstid() const {
-  bool value = (_has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
 inline bool CProxyHead::has_dstid() const {
@@ -1924,7 +939,7 @@ inline bool CProxyHead::has_dstid() const {
 }
 inline void CProxyHead::clear_dstid() {
   dstid_ = 0u;
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline uint32_t CProxyHead::_internal_dstid() const {
   return dstid_;
@@ -1934,7 +949,7 @@ inline uint32_t CProxyHead::dstid() const {
   return _internal_dstid();
 }
 inline void CProxyHead::_internal_set_dstid(uint32_t value) {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000008u;
   dstid_ = value;
 }
 inline void CProxyHead::set_dstid(uint32_t value) {
@@ -1944,7 +959,7 @@ inline void CProxyHead::set_dstid(uint32_t value) {
 
 // required uint64 timeStamp = 5;
 inline bool CProxyHead::_internal_has_timestamp() const {
-  bool value = (_has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CProxyHead::has_timestamp() const {
@@ -1952,7 +967,7 @@ inline bool CProxyHead::has_timestamp() const {
 }
 inline void CProxyHead::clear_timestamp() {
   timestamp_ = uint64_t{0u};
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline uint64_t CProxyHead::_internal_timestamp() const {
   return timestamp_;
@@ -1962,7 +977,7 @@ inline uint64_t CProxyHead::timestamp() const {
   return _internal_timestamp();
 }
 inline void CProxyHead::_internal_set_timestamp(uint64_t value) {
-  _has_bits_[0] |= 0x00000020u;
+  _has_bits_[0] |= 0x00000010u;
   timestamp_ = value;
 }
 inline void CProxyHead::set_timestamp(uint64_t value) {
@@ -1970,9 +985,9 @@ inline void CProxyHead::set_timestamp(uint64_t value) {
   // @@protoc_insertion_point(field_set:CProxyHead.timeStamp)
 }
 
-// optional .enMessageCmd opFlag = 6 [default = MESS_NULL];
+// optional .enMessageCmd opFlag = 6;
 inline bool CProxyHead::_internal_has_opflag() const {
-  bool value = (_has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool CProxyHead::has_opflag() const {
@@ -1980,7 +995,7 @@ inline bool CProxyHead::has_opflag() const {
 }
 inline void CProxyHead::clear_opflag() {
   opflag_ = 0;
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000020u;
 }
 inline ::enMessageCmd CProxyHead::_internal_opflag() const {
   return static_cast< ::enMessageCmd >(opflag_);
@@ -1991,130 +1006,12 @@ inline ::enMessageCmd CProxyHead::opflag() const {
 }
 inline void CProxyHead::_internal_set_opflag(::enMessageCmd value) {
   assert(::enMessageCmd_IsValid(value));
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000020u;
   opflag_ = value;
 }
 inline void CProxyHead::set_opflag(::enMessageCmd value) {
   _internal_set_opflag(value);
   // @@protoc_insertion_point(field_set:CProxyHead.opFlag)
-}
-
-// optional uint32 messageId = 7;
-inline bool CProxyHead::_internal_has_messageid() const {
-  bool value = (_has_bits_[0] & 0x00000080u) != 0;
-  return value;
-}
-inline bool CProxyHead::has_messageid() const {
-  return _internal_has_messageid();
-}
-inline void CProxyHead::clear_messageid() {
-  messageid_ = 0u;
-  _has_bits_[0] &= ~0x00000080u;
-}
-inline uint32_t CProxyHead::_internal_messageid() const {
-  return messageid_;
-}
-inline uint32_t CProxyHead::messageid() const {
-  // @@protoc_insertion_point(field_get:CProxyHead.messageId)
-  return _internal_messageid();
-}
-inline void CProxyHead::_internal_set_messageid(uint32_t value) {
-  _has_bits_[0] |= 0x00000080u;
-  messageid_ = value;
-}
-inline void CProxyHead::set_messageid(uint32_t value) {
-  _internal_set_messageid(value);
-  // @@protoc_insertion_point(field_set:CProxyHead.messageId)
-}
-
-// optional .CMesHead msgHead = 8;
-inline bool CProxyHead::_internal_has_msghead() const {
-  bool value = (_has_bits_[0] & 0x00000001u) != 0;
-  PROTOBUF_ASSUME(!value || msghead_ != nullptr);
-  return value;
-}
-inline bool CProxyHead::has_msghead() const {
-  return _internal_has_msghead();
-}
-inline void CProxyHead::clear_msghead() {
-  if (msghead_ != nullptr) msghead_->Clear();
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline const ::CMesHead& CProxyHead::_internal_msghead() const {
-  const ::CMesHead* p = msghead_;
-  return p != nullptr ? *p : reinterpret_cast<const ::CMesHead&>(
-      ::_CMesHead_default_instance_);
-}
-inline const ::CMesHead& CProxyHead::msghead() const {
-  // @@protoc_insertion_point(field_get:CProxyHead.msgHead)
-  return _internal_msghead();
-}
-inline void CProxyHead::unsafe_arena_set_allocated_msghead(
-    ::CMesHead* msghead) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(msghead_);
-  }
-  msghead_ = msghead;
-  if (msghead) {
-    _has_bits_[0] |= 0x00000001u;
-  } else {
-    _has_bits_[0] &= ~0x00000001u;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CProxyHead.msgHead)
-}
-inline ::CMesHead* CProxyHead::release_msghead() {
-  _has_bits_[0] &= ~0x00000001u;
-  ::CMesHead* temp = msghead_;
-  msghead_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::CMesHead* CProxyHead::unsafe_arena_release_msghead() {
-  // @@protoc_insertion_point(field_release:CProxyHead.msgHead)
-  _has_bits_[0] &= ~0x00000001u;
-  ::CMesHead* temp = msghead_;
-  msghead_ = nullptr;
-  return temp;
-}
-inline ::CMesHead* CProxyHead::_internal_mutable_msghead() {
-  _has_bits_[0] |= 0x00000001u;
-  if (msghead_ == nullptr) {
-    auto* p = CreateMaybeMessage<::CMesHead>(GetArenaForAllocation());
-    msghead_ = p;
-  }
-  return msghead_;
-}
-inline ::CMesHead* CProxyHead::mutable_msghead() {
-  ::CMesHead* _msg = _internal_mutable_msghead();
-  // @@protoc_insertion_point(field_mutable:CProxyHead.msgHead)
-  return _msg;
-}
-inline void CProxyHead::set_allocated_msghead(::CMesHead* msghead) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete msghead_;
-  }
-  if (msghead) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(msghead);
-    if (message_arena != submessage_arena) {
-      msghead = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, msghead, submessage_arena);
-    }
-    _has_bits_[0] |= 0x00000001u;
-  } else {
-    _has_bits_[0] &= ~0x00000001u;
-  }
-  msghead_ = msghead;
-  // @@protoc_insertion_point(field_set_allocated:CProxyHead.msgHead)
 }
 
 // -------------------------------------------------------------------
@@ -2239,15 +1136,245 @@ inline void CProxyMessage::set_msgpara(uint64_t value) {
   // @@protoc_insertion_point(field_set:CProxyMessage.msgPara)
 }
 
+// -------------------------------------------------------------------
+
+// CGonnProto
+
+// required string Account = 1;
+inline bool CGonnProto::_internal_has_account() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CGonnProto::has_account() const {
+  return _internal_has_account();
+}
+inline void CGonnProto::clear_account() {
+  account_.ClearToEmpty();
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CGonnProto::account() const {
+  // @@protoc_insertion_point(field_get:CGonnProto.Account)
+  return _internal_account();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CGonnProto::set_account(ArgT0&& arg0, ArgT... args) {
+ _has_bits_[0] |= 0x00000001u;
+ account_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CGonnProto.Account)
+}
+inline std::string* CGonnProto::mutable_account() {
+  std::string* _s = _internal_mutable_account();
+  // @@protoc_insertion_point(field_mutable:CGonnProto.Account)
+  return _s;
+}
+inline const std::string& CGonnProto::_internal_account() const {
+  return account_.Get();
+}
+inline void CGonnProto::_internal_set_account(const std::string& value) {
+  _has_bits_[0] |= 0x00000001u;
+  account_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CGonnProto::_internal_mutable_account() {
+  _has_bits_[0] |= 0x00000001u;
+  return account_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CGonnProto::release_account() {
+  // @@protoc_insertion_point(field_release:CGonnProto.Account)
+  if (!_internal_has_account()) {
+    return nullptr;
+  }
+  _has_bits_[0] &= ~0x00000001u;
+  auto* p = account_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (account_.IsDefault()) {
+    account_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CGonnProto::set_allocated_account(std::string* account) {
+  if (account != nullptr) {
+    _has_bits_[0] |= 0x00000001u;
+  } else {
+    _has_bits_[0] &= ~0x00000001u;
+  }
+  account_.SetAllocated(account, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (account_.IsDefault()) {
+    account_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CGonnProto.Account)
+}
+
+// optional string Password = 2;
+inline bool CGonnProto::_internal_has_password() const {
+  bool value = (_has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CGonnProto::has_password() const {
+  return _internal_has_password();
+}
+inline void CGonnProto::clear_password() {
+  password_.ClearToEmpty();
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CGonnProto::password() const {
+  // @@protoc_insertion_point(field_get:CGonnProto.Password)
+  return _internal_password();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CGonnProto::set_password(ArgT0&& arg0, ArgT... args) {
+ _has_bits_[0] |= 0x00000002u;
+ password_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CGonnProto.Password)
+}
+inline std::string* CGonnProto::mutable_password() {
+  std::string* _s = _internal_mutable_password();
+  // @@protoc_insertion_point(field_mutable:CGonnProto.Password)
+  return _s;
+}
+inline const std::string& CGonnProto::_internal_password() const {
+  return password_.Get();
+}
+inline void CGonnProto::_internal_set_password(const std::string& value) {
+  _has_bits_[0] |= 0x00000002u;
+  password_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CGonnProto::_internal_mutable_password() {
+  _has_bits_[0] |= 0x00000002u;
+  return password_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CGonnProto::release_password() {
+  // @@protoc_insertion_point(field_release:CGonnProto.Password)
+  if (!_internal_has_password()) {
+    return nullptr;
+  }
+  _has_bits_[0] &= ~0x00000002u;
+  auto* p = password_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (password_.IsDefault()) {
+    password_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CGonnProto::set_allocated_password(std::string* password) {
+  if (password != nullptr) {
+    _has_bits_[0] |= 0x00000002u;
+  } else {
+    _has_bits_[0] &= ~0x00000002u;
+  }
+  password_.SetAllocated(password, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (password_.IsDefault()) {
+    password_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CGonnProto.Password)
+}
+
+// optional int32 PFrom = 3;
+inline bool CGonnProto::_internal_has_pfrom() const {
+  bool value = (_has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CGonnProto::has_pfrom() const {
+  return _internal_has_pfrom();
+}
+inline void CGonnProto::clear_pfrom() {
+  pfrom_ = 0;
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline int32_t CGonnProto::_internal_pfrom() const {
+  return pfrom_;
+}
+inline int32_t CGonnProto::pfrom() const {
+  // @@protoc_insertion_point(field_get:CGonnProto.PFrom)
+  return _internal_pfrom();
+}
+inline void CGonnProto::_internal_set_pfrom(int32_t value) {
+  _has_bits_[0] |= 0x00000008u;
+  pfrom_ = value;
+}
+inline void CGonnProto::set_pfrom(int32_t value) {
+  _internal_set_pfrom(value);
+  // @@protoc_insertion_point(field_set:CGonnProto.PFrom)
+}
+
+// required string Session = 4;
+inline bool CGonnProto::_internal_has_session() const {
+  bool value = (_has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CGonnProto::has_session() const {
+  return _internal_has_session();
+}
+inline void CGonnProto::clear_session() {
+  session_.ClearToEmpty();
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline const std::string& CGonnProto::session() const {
+  // @@protoc_insertion_point(field_get:CGonnProto.Session)
+  return _internal_session();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CGonnProto::set_session(ArgT0&& arg0, ArgT... args) {
+ _has_bits_[0] |= 0x00000004u;
+ session_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CGonnProto.Session)
+}
+inline std::string* CGonnProto::mutable_session() {
+  std::string* _s = _internal_mutable_session();
+  // @@protoc_insertion_point(field_mutable:CGonnProto.Session)
+  return _s;
+}
+inline const std::string& CGonnProto::_internal_session() const {
+  return session_.Get();
+}
+inline void CGonnProto::_internal_set_session(const std::string& value) {
+  _has_bits_[0] |= 0x00000004u;
+  session_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CGonnProto::_internal_mutable_session() {
+  _has_bits_[0] |= 0x00000004u;
+  return session_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CGonnProto::release_session() {
+  // @@protoc_insertion_point(field_release:CGonnProto.Session)
+  if (!_internal_has_session()) {
+    return nullptr;
+  }
+  _has_bits_[0] &= ~0x00000004u;
+  auto* p = session_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (session_.IsDefault()) {
+    session_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CGonnProto::set_allocated_session(std::string* session) {
+  if (session != nullptr) {
+    _has_bits_[0] |= 0x00000004u;
+  } else {
+    _has_bits_[0] &= ~0x00000004u;
+  }
+  session_.SetAllocated(session, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (session_.IsDefault()) {
+    session_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CGonnProto.Session)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
@@ -2258,6 +1385,16 @@ inline void CProxyMessage::set_msgpara(uint64_t value) {
 
 PROTOBUF_NAMESPACE_OPEN
 
+template <> struct is_proto_enum< ::CProxyMessage_Msg> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::CProxyMessage_Msg>() {
+  return ::CProxyMessage_Msg_descriptor();
+}
+template <> struct is_proto_enum< ::CGonnProto_Msg> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::CGonnProto_Msg>() {
+  return ::CGonnProto_Msg_descriptor();
+}
 template <> struct is_proto_enum< ::enServerType> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::enServerType>() {

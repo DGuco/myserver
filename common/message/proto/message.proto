@@ -38,3 +38,15 @@ message CProxyMessage
 	required	CProxyHead		msgHead	= 1;						// 消息头+
 	optional	fixed64			msgPara	= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
 };
+
+message CGonnProto
+{
+	enum Msg
+	{
+		MsgID	= 10001;
+	}
+	required	string	Account			= 1;		// 账号(uid)
+	optional	string	Password		= 2;		// 密码 (可以不填)
+	optional	int32	PFrom			= 3;		// 平台ID(预留字段,为以后多平台合服同一个帐号不同平台做区分)
+	required	string	Session			= 4;		// 平台的session
+};

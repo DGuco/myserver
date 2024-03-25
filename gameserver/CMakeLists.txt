@@ -15,17 +15,14 @@ set(SOURCE_FILES
         main.cpp
         inc/game_server.h
         inc/client_handle.h
-        inc/message_factory.h
         inc/server_handle.h
         inc/game_ctrl.h
         inc/config_handle.h
-        inc/message_dispatcher.h
         inc/game_player.h
         src/game_ctrl.cpp
         src/server_handle.cpp
         src/game_server.cpp
         src/client_handle.cpp
-        src/message_factory.cpp
         src/config_handle.cpp
         src/message_dispatcher.cpp
         src/game_player.cpp
@@ -49,17 +46,15 @@ set(SOURCE_FILES
         gamemodule/logicmodule/db_module.cpp
         gamemodule/metamodule/parameter_config.h
         gamemodule/metamodule/parameter_config.cpp
+        gamemodule/messagemodule/cgconn_req.h
         )
 
 include_directories(
-        ${CMAKE_SOURCE_DIR}/thirdparty
         ${CMAKE_SOURCE_DIR}/common
-        ${CMAKE_SOURCE_DIR}/common/message
+        ${CMAKE_SOURCE_DIR}/thirdparty
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const
-        ${CMAKE_SOURCE_DIR}/framework/json
         ${CMAKE_SOURCE_DIR}/framework/log
-        ${CMAKE_SOURCE_DIR}/framework/mem
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/gameserver/inc
