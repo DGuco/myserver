@@ -101,11 +101,10 @@ void CGameServer::RecvClientData(CSafePtr<CGamePlayer> pGamePlayer)
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
-	CSafePtr<ProtoMess> pMessage = pFactory->CreateMessage();
+	shared_ptr<ProtoMess> pMessage = pFactory->CreateMessage();
 	ASSERT(pMessage != NULL);
 	if (!pMessage->ParseFromArray(m_CacheData, packLen))
 	{
-		pFactory->FreeMesage();
 		//断开连接
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
@@ -118,7 +117,6 @@ void CGameServer::RecvClientData(CSafePtr<CGamePlayer> pGamePlayer)
 	catch (const std::exception& e)
 	{
 		CACHE_LOG(ERROR_CACHE, "Message execute failed,msg = {},msgid = {}", e.what(), pFactory->MessId());
-		pFactory->FreeMesage();
 	}
 
 	return;

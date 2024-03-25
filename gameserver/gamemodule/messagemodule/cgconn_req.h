@@ -12,29 +12,22 @@
 #include "game_player.h"
 #include "message_factory.h"
 
-
 class CCGConnReqFacory : public CMessageFactory
 {
 public:
 	CCGConnReqFacory() {};
 	virtual ~CCGConnReqFacory() {};
-	virtual CSafePtr<ProtoMess> CreateMessage();
-	virtual void				FreeMesage();
+	virtual shared_ptr<ProtoMess> CreateMessage();
 	virtual int					MessId();
 	virtual int					Execute(CSafePtr<CTCPSocket> pSocket);
 private:
-	CSafePtr<CGonnReq> m_pMessage;
+	shared_ptr<CGonnReq>		m_pMessage;
 };
 
-CSafePtr<ProtoMess> CCGConnReqFacory::CreateMessage()
+shared_ptr<ProtoMess> CCGConnReqFacory::CreateMessage()
 {
-	m_pMessage = new CGonnReq();
-	return m_pMessage.DynamicCastTo<ProtoMess>();
-}
-
-void CCGConnReqFacory::FreeMesage()
-{
-	m_pMessage.Free();
+	m_pMessage = std::make_shared<CGonnReq>();
+	return std::dynamic_pointer_cast<ProtoMess>(m_pMessage);
 }
 
 int	CCGConnReqFacory::MessId()
