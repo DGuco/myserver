@@ -21,6 +21,7 @@ public:
 	virtual CSafePtr<ProtoMess> CreateMessage() = 0;
 	virtual void				FreeMesage() = 0;
 	virtual int					Execute(CSafePtr<CTCPSocket> pSocket) = 0;
+	virtual int					MessId() = 0;
 };
 
 

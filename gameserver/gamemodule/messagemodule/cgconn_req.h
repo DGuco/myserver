@@ -20,6 +20,7 @@ public:
 	virtual ~CCGConnReqFacory() {};
 	virtual CSafePtr<ProtoMess> CreateMessage();
 	virtual void				FreeMesage();
+	virtual int					MessId();
 	virtual int					Execute(CSafePtr<CTCPSocket> pSocket);
 private:
 	CSafePtr<CGonnReq> m_pMessage;
@@ -34,6 +35,11 @@ CSafePtr<ProtoMess> CCGConnReqFacory::CreateMessage()
 void CCGConnReqFacory::FreeMesage()
 {
 	m_pMessage.Free();
+}
+
+int	CCGConnReqFacory::MessId()
+{
+	return CGonnReq::Msg::CGonnReq_Msg_MsgID;
 }
 
 int CCGConnReqFacory::Execute(CSafePtr<CTCPSocket> pSocket)

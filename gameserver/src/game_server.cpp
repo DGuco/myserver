@@ -105,11 +105,22 @@ void CGameServer::RecvClientData(CSafePtr<CGamePlayer> pGamePlayer)
 	ASSERT(pMessage != NULL);
 	if (!pMessage->ParseFromArray(m_CacheData, packLen))
 	{
+		pFactory->FreeMesage();
 		//断开连接
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
-	pFactory->Execute(pGamePlayer.DynamicCastTo<CTCPSocket>());
+
+	try
+	{
+		pFactory->Execute(pGamePlayer.DynamicCastTo<CTCPSocket>());
+	}
+	catch (const std::exception& e)
+	{
+		CACHE_LOG(ERROR_CACHE, "Message execute failed,msg = {},msgid = {}", e.what(), pFactory->MessId());
+		pFactory->FreeMesage();
+	}
+
 	return;
 }
 
