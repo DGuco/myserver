@@ -6,7 +6,6 @@
 //
 
 #include <signal.h>
-#include "config.h"
 #include "signal_handler.h"
 #include "inc/game_server.h"
 #include "game_ctrl.h"

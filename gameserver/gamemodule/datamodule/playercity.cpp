@@ -16,5 +16,5 @@ CPlayerCity::~CPlayerCity()
 
 int CPlayerCity::Initialize()
 {
-
+	return 0;
 }

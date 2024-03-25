@@ -11,42 +11,38 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     add_definitions(-D__WINDOWS__ -D_DEBUG_ -DSPDLOG_NO_NAME)
 endif()
 
+# 仅对 Visual Studio 编译器生效
+if(MSVC)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
+
 set(SOURCE_FILES
-        main.cpp
-        inc/game_server.h
-        inc/client_handle.h
-        inc/server_handle.h
-        inc/game_ctrl.h
-        inc/config_handle.h
-        inc/game_player.h
-        src/game_ctrl.cpp
-        src/server_handle.cpp
-        src/game_server.cpp
-        src/client_handle.cpp
-        src/config_handle.cpp
-        src/message_dispatcher.cpp
-        src/game_player.cpp
-        gamemodule/datamodule/sceneobjmanager.h
-        gamemodule/datamodule/player.h
-        gamemodule/datamodule/playerdata.h
-        gamemodule/datamodule/playerbase.h
-        gamemodule/datamodule/playercity.h
-        gamemodule/datamodule/sceneobjmanager.cpp
-        gamemodule/datamodule/player.cpp
-        gamemodule/datamodule/playerbase.cpp
-        gamemodule/datamodule/playerdata.cpp
-        gamemodule/datamodule/playercity.cpp
-        gamemodule/logicmodule/core_module.h
-        gamemodule/logicmodule/logic_module.h
-        gamemodule/logicmodule/module_manager.h
-        gamemodule/logicmodule/db_module.h
-        gamemodule/logicmodule/module_manager.cpp
-        gamemodule/logicmodule/core_module.cpp
-        gamemodule/logicmodule/logic_module.cpp
-        gamemodule/logicmodule/db_module.cpp
-        gamemodule/metamodule/parameter_config.h
-        gamemodule/metamodule/parameter_config.cpp
-        gamemodule/messagemodule/cgconn_req.h
+        "main.cpp"
+        "../common/message/message.pb.cc" 
+        "../common/message/message.pb.h"
+        "../common/common_def.h"
+        "../common/server_config.h"
+        "../common/server_config.cpp"
+        "inc/game_server.h"
+        "inc/game_ctrl.h"
+        "inc/game_player.h"
+        "inc/server_client.h"
+        "inc/mfactory_manager.h"
+        "src/game_ctrl.cpp"
+        "src/game_server.cpp"
+        "src/server_client.cpp"
+        "src/game_player.cpp"
+        "src/mfactory_manager.cpp"
+        "gamemodule/datamodule/player.h"
+        "gamemodule/datamodule/playerdata.h"
+        "gamemodule/datamodule/playerbase.h"
+        "gamemodule/datamodule/playercity.h"
+        "gamemodule/datamodule/player.cpp"
+        "gamemodule/datamodule/playerbase.cpp"
+        "gamemodule/datamodule/playerdata.cpp"
+        "gamemodule/datamodule/playercity.cpp"
+        "gamemodule/messagemodule/cgconn_req.h"
         )
 
 include_directories(
@@ -80,7 +76,7 @@ add_executable(gameserver ${SOURCE_FILES})
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries(gameserver framework pthread protobuf crypto)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(gameserver framework ws2_32 protobuf crypto)
+    target_link_libraries(gameserver framework ws2_32 protobufd crypto)
 endif()
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/run/)

@@ -11,12 +11,10 @@
 #include "singleton.h"
 #include "runflag.h"
 #include "base.h"
+#include "common_def.h"
 #include "tcp_server.h"
 #include "safe_pointer.h"
 #include "game_player.h"
-#include "client_handle.h"
-#include "server_handle.h"
-#include "config_handle.h"
 
 class CGameServer: public CTCPServer,public CSingleton<CGameServer>
 {
@@ -52,9 +50,6 @@ public:
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);
 	//
 	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket tmSocket);
-	//
-	virtual CSafePtr<CTCPClient> CreateTcpClient(CSocket tmSocket);
-
 public:
 	// 设置服务器状态
 	void SetServerState(int iState)
@@ -79,11 +74,9 @@ public:
 	{ return (m_iServerState & ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG; }
 
 	// 给DB Server发消息
-	bool SendMessageToDB(CSafePtr <CProxyMessage> pMsg);
+	//bool SendMessageToDB(CSafePtr <CProxyMessage> pMsg);
 	// 通过消息ID获取模块类型
 	int GetModuleClass(int iMsgID);
-	// 主动断开链接
-	void DisconnectClient(CPlayer *pPlayer);
 private:
 
 	CRunFlag	m_oRunFlag;                         // 服务器运行状态

@@ -26,6 +26,7 @@
 
 #endif
 
+#include <stdexcept>
 #include "base.h"
 
 /**

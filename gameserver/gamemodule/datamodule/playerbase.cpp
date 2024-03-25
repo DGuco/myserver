@@ -16,5 +16,5 @@ CPlayerBase::~CPlayerBase()
 
 int CPlayerBase::Initialize()
 {
-
+    return 0;
 }

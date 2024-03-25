@@ -15,7 +15,6 @@ CPlayer::~CPlayer()
 
 int CPlayer::Initialize()
 {
-    m_oPackage.Initialize();
     m_spPlayerBase = new CPlayerBase(this);
     m_spPlayerCity = new CPlayerCity(this);
     return 0;

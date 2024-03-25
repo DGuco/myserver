@@ -6,6 +6,7 @@
 ******************************************************************/
 #ifndef __MFACTORY_MANAGER_H__
 #define __MFACTORY_MANAGER_H__
+#include "singleton.h"
 #include <unordered_map>
 #include "safe_pointer.h"
 #include "message_factory.h"

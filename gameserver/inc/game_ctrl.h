@@ -6,7 +6,8 @@
 ******************************************************************/
 #ifndef __GAME_CTRL_H__
 #define __GAME_CTRL_H__
-#include "server_tool.h"
+
+#include "singleton.h"
 
 class CGameCtrl : public CSingleton<CGameCtrl>
 {

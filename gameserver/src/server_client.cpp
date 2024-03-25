@@ -7,7 +7,9 @@ CServerClient::CServerClient()
 {}
 
 int CServerClient::DoRecvLogic()
-{}
+{
+	return 0;
+}
 
 int CServerClient::DoWriteLogic()
 {

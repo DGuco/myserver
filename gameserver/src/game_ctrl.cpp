@@ -1,6 +1,7 @@
 #include "base.h"
 #include "game_ctrl.h"
 #include "game_server.h"
+#include "server_config.h"
 #include "log.h"
 
 CGameCtrl::CGameCtrl()
@@ -39,7 +40,7 @@ bool CGameCtrl::PrepareToRun()
 
 int CGameCtrl::Run()
 {
-
+	return 0;
 }
 
 bool CGameCtrl::ReadConfig()

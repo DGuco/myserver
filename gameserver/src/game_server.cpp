@@ -8,7 +8,6 @@
 #include "game_server.h"
 #include "server_client.h"
 #include "time_helper.h"
-#include "module_manager.h"
 #include "mfactory_manager.h"
 #include "safe_pointer.h"
 
@@ -132,22 +131,15 @@ void CGameServer::DisConnect(CSafePtr<CGamePlayer> pGamePlayer, short iError)
 	return;
 }
 
-bool CGameServer::SendMessageToDB(CSafePtr<CProxyMessage> pMsg)
-{
-    //MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return 0,"Do SendMsg must be in logic thread:m_pLogicThread");
-    return true;
-}
+// bool CGameServer::SendMessageToDB(CSafePtr<CProxyMessage> pMsg)
+// {
+//     //MY_ASSERT_STR(m_pLogicThread->IsInThisThread(),return 0,"Do SendMsg must be in logic thread:m_pLogicThread");
+//     return true;
+// }
 
 // 通过消息ID获取模块类型
 int CGameServer::GetModuleClass(int iMsgID)
 {
 //    return ((iMsgID >> 16) & 0xFF);
 	return iMsgID / 100;
-}
-
-void CGameServer::DisconnectClient(CPlayer *pPlayer)
-{
-	if (!pPlayer) {
-		return;
-	}
 }
