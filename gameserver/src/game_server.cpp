@@ -101,17 +101,15 @@ void CGameServer::RecvClientData(CSafePtr<CGamePlayer> pGamePlayer)
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
-	CSafePtr<CGameMess> pMessage = pFactory->CreateMessage();
+	CSafePtr<ProtoMess> pMessage = pFactory->CreateMessage();
 	ASSERT(pMessage != NULL);
-	CSafePtr<::google::protobuf::Message> pGoogleMessage = pMessage.DynamicCastTo<::google::protobuf::Message>();
-	ASSERT(pGoogleMessage != NULL);
-	if (!pGoogleMessage->ParseFromArray(m_CacheData, packLen))
+	if (!pMessage->ParseFromArray(m_CacheData, packLen))
 	{
 		//断开连接
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
-	pMessage->Execute(pGamePlayer.DynamicCastTo<CTCPSocket>());
+	pFactory->Execute(pGamePlayer.DynamicCastTo<CTCPSocket>());
 	return;
 }
 

@@ -39,7 +39,7 @@ message CProxyMessage
 	optional	fixed64			msgPara	= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
 };
 
-message CGonnProto
+message CGonnReq
 {
 	enum Msg
 	{

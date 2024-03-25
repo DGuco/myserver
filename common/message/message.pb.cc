@@ -51,21 +51,21 @@ struct CProxyMessageDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CProxyMessageDefaultTypeInternal _CProxyMessage_default_instance_;
-PROTOBUF_CONSTEXPR CGonnProto::CGonnProto(
+PROTOBUF_CONSTEXPR CGonnReq::CGonnReq(
     ::_pbi::ConstantInitialized)
   : account_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
   , password_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
   , session_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
   , pfrom_(0){}
-struct CGonnProtoDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CGonnProtoDefaultTypeInternal()
+struct CGonnReqDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CGonnReqDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CGonnProtoDefaultTypeInternal() {}
+  ~CGonnReqDefaultTypeInternal() {}
   union {
-    CGonnProto _instance;
+    CGonnReq _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CGonnProtoDefaultTypeInternal _CGonnProto_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CGonnReqDefaultTypeInternal _CGonnReq_default_instance_;
 static ::_pb::Metadata file_level_metadata_message_2eproto[3];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_message_2eproto[4];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_message_2eproto = nullptr;
@@ -99,16 +99,16 @@ const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   PROTOBUF_FIELD_OFFSET(::CProxyMessage, msgpara_),
   0,
   1,
-  PROTOBUF_FIELD_OFFSET(::CGonnProto, _has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CGonnProto, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::CGonnReq, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CGonnReq, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CGonnProto, account_),
-  PROTOBUF_FIELD_OFFSET(::CGonnProto, password_),
-  PROTOBUF_FIELD_OFFSET(::CGonnProto, pfrom_),
-  PROTOBUF_FIELD_OFFSET(::CGonnProto, session_),
+  PROTOBUF_FIELD_OFFSET(::CGonnReq, account_),
+  PROTOBUF_FIELD_OFFSET(::CGonnReq, password_),
+  PROTOBUF_FIELD_OFFSET(::CGonnReq, pfrom_),
+  PROTOBUF_FIELD_OFFSET(::CGonnReq, session_),
   0,
   1,
   3,
@@ -117,13 +117,13 @@ const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 12, -1, sizeof(::CProxyHead)},
   { 18, 26, -1, sizeof(::CProxyMessage)},
-  { 28, 38, -1, sizeof(::CGonnProto)},
+  { 28, 38, -1, sizeof(::CGonnReq)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
   &::_CProxyHead_default_instance_._instance,
   &::_CProxyMessage_default_instance_._instance,
-  &::_CGonnProto_default_instance_._instance,
+  &::_CGonnReq_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -132,17 +132,17 @@ const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "tID\030\004 \002(\r\022\021\n\ttimeStamp\030\005 \002(\004\022\035\n\006opFlag\030\006"
   " \001(\0162\r.enMessageCmd\"T\n\rCProxyMessage\022\034\n\007"
   "msgHead\030\001 \002(\0132\013.CProxyHead\022\022\n\007msgPara\030\002 "
-  "\001(\006:\0010\"\021\n\003Msg\022\n\n\005MsgID\020\220N\"b\n\nCGonnProto\022"
-  "\017\n\007Account\030\001 \002(\t\022\020\n\010Password\030\002 \001(\t\022\r\n\005PF"
-  "rom\030\003 \001(\005\022\017\n\007Session\030\004 \002(\t\"\021\n\003Msg\022\n\n\005Msg"
-  "ID\020\221N*G\n\014enServerType\022\021\n\rFE_GAMESERVER\020\000"
-  "\022\022\n\016FE_PROXYSERVER\020\001\022\020\n\014FE_WEBSERVER\020\002*E"
-  "\n\014enMessageCmd\022\016\n\nMESS_LOGIC\020\000\022\021\n\rMESS_R"
-  "EGISTER\020\001\022\022\n\016MESS_KEEPALIVE\020\002B\002H\001"
+  "\001(\006:\0010\"\021\n\003Msg\022\n\n\005MsgID\020\220N\"`\n\010CGonnReq\022\017\n"
+  "\007Account\030\001 \002(\t\022\020\n\010Password\030\002 \001(\t\022\r\n\005PFro"
+  "m\030\003 \001(\005\022\017\n\007Session\030\004 \002(\t\"\021\n\003Msg\022\n\n\005MsgID"
+  "\020\221N*G\n\014enServerType\022\021\n\rFE_GAMESERVER\020\000\022\022"
+  "\n\016FE_PROXYSERVER\020\001\022\020\n\014FE_WEBSERVER\020\002*E\n\014"
+  "enMessageCmd\022\016\n\nMESS_LOGIC\020\000\022\021\n\rMESS_REG"
+  "ISTER\020\001\022\022\n\016MESS_KEEPALIVE\020\002B\002H\001"
   ;
 static ::_pbi::once_flag descriptor_table_message_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_message_2eproto = {
-    false, false, 473, descriptor_table_protodef_message_2eproto,
+    false, false, 471, descriptor_table_protodef_message_2eproto,
     "message.proto",
     &descriptor_table_message_2eproto_once, nullptr, 0, 3,
     schemas, file_default_instances, TableStruct_message_2eproto::offsets,
@@ -174,11 +174,11 @@ constexpr CProxyMessage_Msg CProxyMessage::Msg_MIN;
 constexpr CProxyMessage_Msg CProxyMessage::Msg_MAX;
 constexpr int CProxyMessage::Msg_ARRAYSIZE;
 #endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CGonnProto_Msg_descriptor() {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CGonnReq_Msg_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_message_2eproto);
   return file_level_enum_descriptors_message_2eproto[1];
 }
-bool CGonnProto_Msg_IsValid(int value) {
+bool CGonnReq_Msg_IsValid(int value) {
   switch (value) {
     case 10001:
       return true;
@@ -188,10 +188,10 @@ bool CGonnProto_Msg_IsValid(int value) {
 }
 
 #if (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
-constexpr CGonnProto_Msg CGonnProto::MsgID;
-constexpr CGonnProto_Msg CGonnProto::Msg_MIN;
-constexpr CGonnProto_Msg CGonnProto::Msg_MAX;
-constexpr int CGonnProto::Msg_ARRAYSIZE;
+constexpr CGonnReq_Msg CGonnReq::MsgID;
+constexpr CGonnReq_Msg CGonnReq::Msg_MIN;
+constexpr CGonnReq_Msg CGonnReq::Msg_MAX;
+constexpr int CGonnReq::Msg_ARRAYSIZE;
 #endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* enServerType_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_message_2eproto);
@@ -838,9 +838,9 @@ void CProxyMessage::InternalSwap(CProxyMessage* other) {
 
 // ===================================================================
 
-class CGonnProto::_Internal {
+class CGonnReq::_Internal {
  public:
-  using HasBits = decltype(std::declval<CGonnProto>()._has_bits_);
+  using HasBits = decltype(std::declval<CGonnReq>()._has_bits_);
   static void set_has_account(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
@@ -858,13 +858,13 @@ class CGonnProto::_Internal {
   }
 };
 
-CGonnProto::CGonnProto(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+CGonnReq::CGonnReq(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  // @@protoc_insertion_point(arena_constructor:CGonnProto)
+  // @@protoc_insertion_point(arena_constructor:CGonnReq)
 }
-CGonnProto::CGonnProto(const CGonnProto& from)
+CGonnReq::CGonnReq(const CGonnReq& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       _has_bits_(from._has_bits_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -893,10 +893,10 @@ CGonnProto::CGonnProto(const CGonnProto& from)
       GetArenaForAllocation());
   }
   pfrom_ = from.pfrom_;
-  // @@protoc_insertion_point(copy_constructor:CGonnProto)
+  // @@protoc_insertion_point(copy_constructor:CGonnReq)
 }
 
-inline void CGonnProto::SharedCtor() {
+inline void CGonnReq::SharedCtor() {
 account_.InitDefault();
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
   account_.Set("", GetArenaForAllocation());
@@ -912,8 +912,8 @@ session_.InitDefault();
 pfrom_ = 0;
 }
 
-CGonnProto::~CGonnProto() {
-  // @@protoc_insertion_point(destructor:CGonnProto)
+CGonnReq::~CGonnReq() {
+  // @@protoc_insertion_point(destructor:CGonnReq)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -921,19 +921,19 @@ CGonnProto::~CGonnProto() {
   SharedDtor();
 }
 
-inline void CGonnProto::SharedDtor() {
+inline void CGonnReq::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   account_.Destroy();
   password_.Destroy();
   session_.Destroy();
 }
 
-void CGonnProto::SetCachedSize(int size) const {
+void CGonnReq::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
 
-void CGonnProto::Clear() {
-// @@protoc_insertion_point(message_clear_start:CGonnProto)
+void CGonnReq::Clear() {
+// @@protoc_insertion_point(message_clear_start:CGonnReq)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -955,7 +955,7 @@ void CGonnProto::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* CGonnProto::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* CGonnReq::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
@@ -969,7 +969,7 @@ const char* CGonnProto::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
           #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CGonnProto.Account");
+          ::_pbi::VerifyUTF8(str, "CGonnReq.Account");
           #endif  // !NDEBUG
         } else
           goto handle_unusual;
@@ -981,7 +981,7 @@ const char* CGonnProto::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
           #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CGonnProto.Password");
+          ::_pbi::VerifyUTF8(str, "CGonnReq.Password");
           #endif  // !NDEBUG
         } else
           goto handle_unusual;
@@ -1002,7 +1002,7 @@ const char* CGonnProto::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
           #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CGonnProto.Session");
+          ::_pbi::VerifyUTF8(str, "CGonnReq.Session");
           #endif  // !NDEBUG
         } else
           goto handle_unusual;
@@ -1031,9 +1031,9 @@ failure:
 #undef CHK_
 }
 
-uint8_t* CGonnProto::_InternalSerialize(
+uint8_t* CGonnReq::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CGonnProto)
+  // @@protoc_insertion_point(serialize_to_array_start:CGonnReq)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1043,7 +1043,7 @@ uint8_t* CGonnProto::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
       this->_internal_account().data(), static_cast<int>(this->_internal_account().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CGonnProto.Account");
+      "CGonnReq.Account");
     target = stream->WriteStringMaybeAliased(
         1, this->_internal_account(), target);
   }
@@ -1053,7 +1053,7 @@ uint8_t* CGonnProto::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
       this->_internal_password().data(), static_cast<int>(this->_internal_password().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CGonnProto.Password");
+      "CGonnReq.Password");
     target = stream->WriteStringMaybeAliased(
         2, this->_internal_password(), target);
   }
@@ -1069,7 +1069,7 @@ uint8_t* CGonnProto::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
       this->_internal_session().data(), static_cast<int>(this->_internal_session().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CGonnProto.Session");
+      "CGonnReq.Session");
     target = stream->WriteStringMaybeAliased(
         4, this->_internal_session(), target);
   }
@@ -1078,12 +1078,12 @@ uint8_t* CGonnProto::_InternalSerialize(
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:CGonnProto)
+  // @@protoc_insertion_point(serialize_to_array_end:CGonnReq)
   return target;
 }
 
-size_t CGonnProto::RequiredFieldsByteSizeFallback() const {
-// @@protoc_insertion_point(required_fields_byte_size_fallback_start:CGonnProto)
+size_t CGonnReq::RequiredFieldsByteSizeFallback() const {
+// @@protoc_insertion_point(required_fields_byte_size_fallback_start:CGonnReq)
   size_t total_size = 0;
 
   if (_internal_has_account()) {
@@ -1102,8 +1102,8 @@ size_t CGonnProto::RequiredFieldsByteSizeFallback() const {
 
   return total_size;
 }
-size_t CGonnProto::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CGonnProto)
+size_t CGonnReq::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CGonnReq)
   size_t total_size = 0;
 
   if (((_has_bits_[0] & 0x00000005) ^ 0x00000005) == 0) {  // All required fields are present.
@@ -1140,21 +1140,21 @@ size_t CGonnProto::ByteSizeLong() const {
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CGonnProto::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CGonnReq::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
-    CGonnProto::MergeImpl
+    CGonnReq::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CGonnProto::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CGonnReq::GetClassData() const { return &_class_data_; }
 
-void CGonnProto::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+void CGonnReq::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
                       const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<CGonnProto *>(to)->MergeFrom(
-      static_cast<const CGonnProto &>(from));
+  static_cast<CGonnReq *>(to)->MergeFrom(
+      static_cast<const CGonnReq &>(from));
 }
 
 
-void CGonnProto::MergeFrom(const CGonnProto& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CGonnProto)
+void CGonnReq::MergeFrom(const CGonnReq& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CGonnReq)
   GOOGLE_DCHECK_NE(&from, this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -1178,19 +1178,19 @@ void CGonnProto::MergeFrom(const CGonnProto& from) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void CGonnProto::CopyFrom(const CGonnProto& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CGonnProto)
+void CGonnReq::CopyFrom(const CGonnReq& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CGonnReq)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool CGonnProto::IsInitialized() const {
+bool CGonnReq::IsInitialized() const {
   if (_Internal::MissingRequiredFields(_has_bits_)) return false;
   return true;
 }
 
-void CGonnProto::InternalSwap(CGonnProto* other) {
+void CGonnReq::InternalSwap(CGonnReq* other) {
   using std::swap;
   auto* lhs_arena = GetArenaForAllocation();
   auto* rhs_arena = other->GetArenaForAllocation();
@@ -1211,7 +1211,7 @@ void CGonnProto::InternalSwap(CGonnProto* other) {
   swap(pfrom_, other->pfrom_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata CGonnProto::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata CGonnReq::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
       file_level_metadata_message_2eproto[2]);
@@ -1227,9 +1227,9 @@ template<> PROTOBUF_NOINLINE ::CProxyMessage*
 Arena::CreateMaybeMessage< ::CProxyMessage >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CProxyMessage >(arena);
 }
-template<> PROTOBUF_NOINLINE ::CGonnProto*
-Arena::CreateMaybeMessage< ::CGonnProto >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CGonnProto >(arena);
+template<> PROTOBUF_NOINLINE ::CGonnReq*
+Arena::CreateMaybeMessage< ::CGonnReq >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CGonnReq >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

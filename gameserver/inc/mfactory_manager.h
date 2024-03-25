@@ -18,14 +18,12 @@ class CMessageFactoryManager : public CSingleton<CMessageFactoryManager>
 public:
 	CMessageFactoryManager();
 	~CMessageFactoryManager();
+	void Init();
 	void RegisterFactory(int messId, CSafePtr<CMessageFactory> pFactory);
 	CSafePtr<CMessageFactory> GetFactory(int messId);
 private:
 	std::unordered_map<int, CSafePtr<CMessageFactory>> m_FatoryMap;
 };
-
-#define REGISTER_FACTORY(messId,factory)  \
-	CMessageFactoryManager::GetSingletonPtr()->RegisterFactory(messId,factory);
 
 #endif //__MFACTORY_MANAGER_H__
 

@@ -47,6 +47,7 @@ set(SOURCE_FILES
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/common/message
         ${CMAKE_SOURCE_DIR}/thirdparty
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const
@@ -54,9 +55,9 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/gameserver/inc
-        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/datamodule/
-        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/logicmodule/
-        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/metamodule/
+        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/datamodule
+        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/metamodule
+        ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/messagemodule
 )
 
 link_directories(

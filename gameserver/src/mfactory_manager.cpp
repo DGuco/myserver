@@ -1,8 +1,14 @@
 #include "mfactory_manager.h"
+#include "cgconn_req.h"
 
 CMessageFactoryManager::CMessageFactoryManager()
 {
 
+}
+
+void CMessageFactoryManager::Init()
+{
+	RegisterFactory(CGonnReq::Msg::CGonnReq_Msg_MsgID, new CCGConnReqFacory());
 }
 
 CMessageFactoryManager::~CMessageFactoryManager()

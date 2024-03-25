@@ -7,23 +7,20 @@
 #ifndef __MESSAGE_FACTORY_H__
 #define __MESSAGE_FACTORY_H__
 
+#include <google/protobuf/message.h>
 #include "safe_pointer.h"
 
 class CTCPSocket;
-class CGameMess
-{
-public:
-	CGameMess();
-	virtual ~CGameMess();
-	virtual int Execute(CSafePtr<CTCPSocket> pSocket) = 0;
-};
+typedef ::google::protobuf::Message ProtoMess;
 
 class CMessageFactory
 {
 public:
 	CMessageFactory() {};
 	virtual ~CMessageFactory() {};
-	virtual CSafePtr<CGameMess> CreateMessage() = 0;
+	virtual CSafePtr<ProtoMess> CreateMessage() = 0;
+	virtual void				FreeMesage() = 0;
+	virtual int					Execute(CSafePtr<CTCPSocket> pSocket) = 0;
 };
 
 
