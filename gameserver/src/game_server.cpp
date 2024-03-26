@@ -61,12 +61,6 @@ CSafePtr<CTCPConn> CGameServer::CreateTcpConn(CSocket tmSocket)
 	return pConn.DynamicCastTo<CTCPConn>();
 }
 
-// 运行
-void CGameServer::Run()
-{
-
-}
-
 // 退出
 void CGameServer::Exit()
 {
@@ -74,7 +68,7 @@ void CGameServer::Exit()
 }
 
 //读取客户端上行数据
-void CGameServer::RecvClientData(CSafePtr<CGamePlayer> pGamePlayer)
+void CGameServer::ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer)
 {
 	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
 	int packLen = pRecvBuff->ReadUnInt();
@@ -101,6 +95,7 @@ void CGameServer::RecvClientData(CSafePtr<CGamePlayer> pGamePlayer)
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
+
 	shared_ptr<ProtoMess> pMessage = pFactory->CreateMessage();
 	ASSERT(pMessage != NULL);
 	if (!pMessage->ParseFromArray(m_CacheData, packLen))
@@ -119,6 +114,53 @@ void CGameServer::RecvClientData(CSafePtr<CGamePlayer> pGamePlayer)
 		CACHE_LOG(ERROR_CACHE, "Message execute failed,msg = {},msgid = {}", e.what(), pFactory->MessId());
 	}
 
+	return;
+}
+
+//处理读取服务器数据
+void CGameServer::ProcessServerMessage(CSafePtr<CServerClient> pServerPlayer)
+{
+	CSafePtr<CByteBuff> pRecvBuff = pServerPlayer->GetReadBuff();
+	int packLen = pRecvBuff->ReadUnInt();
+	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
+	{
+		//断开连接
+		return;
+	}
+	int nCmd = pRecvBuff->ReadInt();
+	if (nCmd != ProxyMessage::Msg::ProxyMessage_Msg_MsgID)
+	{
+		//断开连接
+		return;
+	}
+	int nSeq = pRecvBuff->ReadInt();
+	if (pRecvBuff->ReadBytes(m_CacheData, packLen) != 0)
+	{
+		return;
+	}
+	CSafePtr<CMessageFactory> pFactory = CMessageFactoryManager::GetSingletonPtr()->GetFactory(nCmd);
+	if (pFactory == NULL)
+	{
+		//断开连接
+		return;
+	}
+
+	shared_ptr<ProtoMess> pMessage = pFactory->CreateMessage();
+	ASSERT(pMessage != NULL);
+	if (!pMessage->ParseFromArray(m_CacheData, packLen))
+	{
+		//断开连接
+		return;
+	}
+
+	try
+	{
+		pFactory->Execute(pServerPlayer.DynamicCastTo<CTCPSocket>());
+	}
+	catch (const std::exception& e)
+	{
+		CACHE_LOG(ERROR_CACHE, "Message execute failed,msg = {},msgid = {}", e.what(), pFactory->MessId());
+	}
 	return;
 }
 

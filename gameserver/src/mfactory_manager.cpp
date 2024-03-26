@@ -1,5 +1,6 @@
 #include "mfactory_manager.h"
 #include "cgconn_req.h"
+#include "proxy_message.h"
 
 CMessageFactoryManager::CMessageFactoryManager()
 {
@@ -9,6 +10,7 @@ CMessageFactoryManager::CMessageFactoryManager()
 void CMessageFactoryManager::Init()
 {
 	RegisterFactory(CGonnReq::Msg::CGonnReq_Msg_MsgID, new CCGConnReqFacory());
+	RegisterFactory(ProxyMessage::Msg::ProxyMessage_Msg_MsgID, new CProxyMessageFactory());
 }
 
 CMessageFactoryManager::~CMessageFactoryManager()

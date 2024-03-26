@@ -40,6 +40,22 @@ bool CGameCtrl::PrepareToRun()
 
 int CGameCtrl::Run()
 {
+	long long nTick = 0;
+	while (true)
+	{
+		try
+		{
+			CGameServer::GetSingletonPtr()->TcpTick();
+		}
+		catch (const std::exception& e)
+		{
+			CACHE_LOG(ERROR_CACHE, "CGameServer TcpTick  cache execption msg {]", e.what());
+		}
+
+		nTick++;
+		CACHE_LOG(DEBUG_CACHE, "CProxyServer::Run tick {}", nTick);
+		SLEEP(1000);
+	}
 	return 0;
 }
 

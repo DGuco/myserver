@@ -20,12 +20,13 @@ public:
 	virtual shared_ptr<ProtoMess> CreateMessage();
 	virtual int					MessId();
 	virtual int					Execute(CSafePtr<CTCPSocket> pSocket);
-private:
+public:
 	shared_ptr<CGonnReq>		m_pMessage;
 };
 
 shared_ptr<ProtoMess> CCGConnReqFacory::CreateMessage()
 {
+	m_pMessage.reset();
 	m_pMessage = std::make_shared<CGonnReq>();
 	return std::dynamic_pointer_cast<ProtoMess>(m_pMessage);
 }
@@ -38,7 +39,7 @@ int	CCGConnReqFacory::MessId()
 int CCGConnReqFacory::Execute(CSafePtr<CTCPSocket> pSocket)
 {
 	CSafePtr<CGamePlayer> pGamePlayer = pSocket.DynamicCastTo<CGamePlayer>();
-	ASSERT(pGamePlayer);
+	ASSERT(pGamePlayer != NULL && m_pMessage != NULL);
 	std::string pAccount = m_pMessage->account();
 	std::string pPssward = m_pMessage->password();
 	int pFrom = m_pMessage->pfrom();

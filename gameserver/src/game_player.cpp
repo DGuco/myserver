@@ -24,7 +24,8 @@ int CGamePlayer::DoRecvLogic()
 		return ERR_RECV_OK;
 	}
 	//有完整的数据包，读取处理
-	CGameServer::GetSingletonPtr()->RecvClientData(this);
+	CGameServer::GetSingletonPtr()->ProcessClientMessage(this);
+	return ERR_RECV_OK;
 }
 
 int CGamePlayer::DoWriteLogic()

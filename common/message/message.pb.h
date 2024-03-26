@@ -48,39 +48,39 @@ extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table
 class CGonnReq;
 struct CGonnReqDefaultTypeInternal;
 extern CGonnReqDefaultTypeInternal _CGonnReq_default_instance_;
-class CProxyHead;
-struct CProxyHeadDefaultTypeInternal;
-extern CProxyHeadDefaultTypeInternal _CProxyHead_default_instance_;
-class CProxyMessage;
-struct CProxyMessageDefaultTypeInternal;
-extern CProxyMessageDefaultTypeInternal _CProxyMessage_default_instance_;
+class ProxyHead;
+struct ProxyHeadDefaultTypeInternal;
+extern ProxyHeadDefaultTypeInternal _ProxyHead_default_instance_;
+class ProxyMessage;
+struct ProxyMessageDefaultTypeInternal;
+extern ProxyMessageDefaultTypeInternal _ProxyMessage_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::CGonnReq* Arena::CreateMaybeMessage<::CGonnReq>(Arena*);
-template<> ::CProxyHead* Arena::CreateMaybeMessage<::CProxyHead>(Arena*);
-template<> ::CProxyMessage* Arena::CreateMaybeMessage<::CProxyMessage>(Arena*);
+template<> ::ProxyHead* Arena::CreateMaybeMessage<::ProxyHead>(Arena*);
+template<> ::ProxyMessage* Arena::CreateMaybeMessage<::ProxyMessage>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
-enum CProxyMessage_Msg : int {
-  CProxyMessage_Msg_MsgID = 10000
+enum ProxyMessage_Msg : int {
+  ProxyMessage_Msg_MsgID = 10000
 };
-bool CProxyMessage_Msg_IsValid(int value);
-constexpr CProxyMessage_Msg CProxyMessage_Msg_Msg_MIN = CProxyMessage_Msg_MsgID;
-constexpr CProxyMessage_Msg CProxyMessage_Msg_Msg_MAX = CProxyMessage_Msg_MsgID;
-constexpr int CProxyMessage_Msg_Msg_ARRAYSIZE = CProxyMessage_Msg_Msg_MAX + 1;
+bool ProxyMessage_Msg_IsValid(int value);
+constexpr ProxyMessage_Msg ProxyMessage_Msg_Msg_MIN = ProxyMessage_Msg_MsgID;
+constexpr ProxyMessage_Msg ProxyMessage_Msg_Msg_MAX = ProxyMessage_Msg_MsgID;
+constexpr int ProxyMessage_Msg_Msg_ARRAYSIZE = ProxyMessage_Msg_Msg_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CProxyMessage_Msg_descriptor();
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ProxyMessage_Msg_descriptor();
 template<typename T>
-inline const std::string& CProxyMessage_Msg_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, CProxyMessage_Msg>::value ||
+inline const std::string& ProxyMessage_Msg_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, ProxyMessage_Msg>::value ||
     ::std::is_integral<T>::value,
-    "Incorrect type passed to function CProxyMessage_Msg_Name.");
+    "Incorrect type passed to function ProxyMessage_Msg_Name.");
   return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    CProxyMessage_Msg_descriptor(), enum_t_value);
+    ProxyMessage_Msg_descriptor(), enum_t_value);
 }
-inline bool CProxyMessage_Msg_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CProxyMessage_Msg* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CProxyMessage_Msg>(
-    CProxyMessage_Msg_descriptor(), name, value);
+inline bool ProxyMessage_Msg_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, ProxyMessage_Msg* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ProxyMessage_Msg>(
+    ProxyMessage_Msg_descriptor(), name, value);
 }
 enum CGonnReq_Msg : int {
   CGonnReq_Msg_MsgID = 10001
@@ -154,24 +154,24 @@ inline bool enMessageCmd_Parse(
 }
 // ===================================================================
 
-class CProxyHead final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CProxyHead) */ {
+class ProxyHead final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:ProxyHead) */ {
  public:
-  inline CProxyHead() : CProxyHead(nullptr) {}
-  ~CProxyHead() override;
-  explicit PROTOBUF_CONSTEXPR CProxyHead(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline ProxyHead() : ProxyHead(nullptr) {}
+  ~ProxyHead() override;
+  explicit PROTOBUF_CONSTEXPR ProxyHead(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  CProxyHead(const CProxyHead& from);
-  CProxyHead(CProxyHead&& from) noexcept
-    : CProxyHead() {
+  ProxyHead(const ProxyHead& from);
+  ProxyHead(ProxyHead&& from) noexcept
+    : ProxyHead() {
     *this = ::std::move(from);
   }
 
-  inline CProxyHead& operator=(const CProxyHead& from) {
+  inline ProxyHead& operator=(const ProxyHead& from) {
     CopyFrom(from);
     return *this;
   }
-  inline CProxyHead& operator=(CProxyHead&& from) noexcept {
+  inline ProxyHead& operator=(ProxyHead&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -201,20 +201,20 @@ class CProxyHead final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const CProxyHead& default_instance() {
+  static const ProxyHead& default_instance() {
     return *internal_default_instance();
   }
-  static inline const CProxyHead* internal_default_instance() {
-    return reinterpret_cast<const CProxyHead*>(
-               &_CProxyHead_default_instance_);
+  static inline const ProxyHead* internal_default_instance() {
+    return reinterpret_cast<const ProxyHead*>(
+               &_ProxyHead_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  friend void swap(CProxyHead& a, CProxyHead& b) {
+  friend void swap(ProxyHead& a, ProxyHead& b) {
     a.Swap(&b);
   }
-  inline void Swap(CProxyHead* other) {
+  inline void Swap(ProxyHead* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -227,7 +227,7 @@ class CProxyHead final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(CProxyHead* other) {
+  void UnsafeArenaSwap(ProxyHead* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -235,13 +235,13 @@ class CProxyHead final :
 
   // implements Message ----------------------------------------------
 
-  CProxyHead* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CProxyHead>(arena);
+  ProxyHead* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ProxyHead>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CProxyHead& from);
+  void CopyFrom(const ProxyHead& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const CProxyHead& from);
+  void MergeFrom(const ProxyHead& from);
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
   public:
@@ -258,15 +258,15 @@ class CProxyHead final :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(CProxyHead* other);
+  void InternalSwap(ProxyHead* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CProxyHead";
+    return "ProxyHead";
   }
   protected:
-  explicit CProxyHead(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit ProxyHead(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -365,7 +365,7 @@ class CProxyHead final :
   void _internal_set_opflag(::enMessageCmd value);
   public:
 
-  // @@protoc_insertion_point(class_scope:CProxyHead)
+  // @@protoc_insertion_point(class_scope:ProxyHead)
  private:
   class _Internal;
 
@@ -387,24 +387,24 @@ class CProxyHead final :
 };
 // -------------------------------------------------------------------
 
-class CProxyMessage final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CProxyMessage) */ {
+class ProxyMessage final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:ProxyMessage) */ {
  public:
-  inline CProxyMessage() : CProxyMessage(nullptr) {}
-  ~CProxyMessage() override;
-  explicit PROTOBUF_CONSTEXPR CProxyMessage(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline ProxyMessage() : ProxyMessage(nullptr) {}
+  ~ProxyMessage() override;
+  explicit PROTOBUF_CONSTEXPR ProxyMessage(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  CProxyMessage(const CProxyMessage& from);
-  CProxyMessage(CProxyMessage&& from) noexcept
-    : CProxyMessage() {
+  ProxyMessage(const ProxyMessage& from);
+  ProxyMessage(ProxyMessage&& from) noexcept
+    : ProxyMessage() {
     *this = ::std::move(from);
   }
 
-  inline CProxyMessage& operator=(const CProxyMessage& from) {
+  inline ProxyMessage& operator=(const ProxyMessage& from) {
     CopyFrom(from);
     return *this;
   }
-  inline CProxyMessage& operator=(CProxyMessage&& from) noexcept {
+  inline ProxyMessage& operator=(ProxyMessage&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -434,20 +434,20 @@ class CProxyMessage final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const CProxyMessage& default_instance() {
+  static const ProxyMessage& default_instance() {
     return *internal_default_instance();
   }
-  static inline const CProxyMessage* internal_default_instance() {
-    return reinterpret_cast<const CProxyMessage*>(
-               &_CProxyMessage_default_instance_);
+  static inline const ProxyMessage* internal_default_instance() {
+    return reinterpret_cast<const ProxyMessage*>(
+               &_ProxyMessage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  friend void swap(CProxyMessage& a, CProxyMessage& b) {
+  friend void swap(ProxyMessage& a, ProxyMessage& b) {
     a.Swap(&b);
   }
-  inline void Swap(CProxyMessage* other) {
+  inline void Swap(ProxyMessage* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -460,7 +460,7 @@ class CProxyMessage final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(CProxyMessage* other) {
+  void UnsafeArenaSwap(ProxyMessage* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -468,13 +468,13 @@ class CProxyMessage final :
 
   // implements Message ----------------------------------------------
 
-  CProxyMessage* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CProxyMessage>(arena);
+  ProxyMessage* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ProxyMessage>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CProxyMessage& from);
+  void CopyFrom(const ProxyMessage& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const CProxyMessage& from);
+  void MergeFrom(const ProxyMessage& from);
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
   public:
@@ -491,15 +491,15 @@ class CProxyMessage final :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(CProxyMessage* other);
+  void InternalSwap(ProxyMessage* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CProxyMessage";
+    return "ProxyMessage";
   }
   protected:
-  explicit CProxyMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit ProxyMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -510,82 +510,105 @@ class CProxyMessage final :
 
   // nested types ----------------------------------------------------
 
-  typedef CProxyMessage_Msg Msg;
+  typedef ProxyMessage_Msg Msg;
   static constexpr Msg MsgID =
-    CProxyMessage_Msg_MsgID;
+    ProxyMessage_Msg_MsgID;
   static inline bool Msg_IsValid(int value) {
-    return CProxyMessage_Msg_IsValid(value);
+    return ProxyMessage_Msg_IsValid(value);
   }
   static constexpr Msg Msg_MIN =
-    CProxyMessage_Msg_Msg_MIN;
+    ProxyMessage_Msg_Msg_MIN;
   static constexpr Msg Msg_MAX =
-    CProxyMessage_Msg_Msg_MAX;
+    ProxyMessage_Msg_Msg_MAX;
   static constexpr int Msg_ARRAYSIZE =
-    CProxyMessage_Msg_Msg_ARRAYSIZE;
+    ProxyMessage_Msg_Msg_ARRAYSIZE;
   static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
   Msg_descriptor() {
-    return CProxyMessage_Msg_descriptor();
+    return ProxyMessage_Msg_descriptor();
   }
   template<typename T>
   static inline const std::string& Msg_Name(T enum_t_value) {
     static_assert(::std::is_same<T, Msg>::value ||
       ::std::is_integral<T>::value,
       "Incorrect type passed to function Msg_Name.");
-    return CProxyMessage_Msg_Name(enum_t_value);
+    return ProxyMessage_Msg_Name(enum_t_value);
   }
   static inline bool Msg_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
       Msg* value) {
-    return CProxyMessage_Msg_Parse(name, value);
+    return ProxyMessage_Msg_Parse(name, value);
   }
 
   // accessors -------------------------------------------------------
 
   enum : int {
+    kBuffFieldNumber = 3,
     kMsgHeadFieldNumber = 1,
-    kMsgParaFieldNumber = 2,
+    kMsgcmdFieldNumber = 2,
   };
-  // required .CProxyHead msgHead = 1;
+  // optional bytes buff = 3;
+  bool has_buff() const;
+  private:
+  bool _internal_has_buff() const;
+  public:
+  void clear_buff();
+  const std::string& buff() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_buff(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_buff();
+  PROTOBUF_NODISCARD std::string* release_buff();
+  void set_allocated_buff(std::string* buff);
+  private:
+  const std::string& _internal_buff() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_buff(const std::string& value);
+  std::string* _internal_mutable_buff();
+  public:
+
+  // required .ProxyHead msgHead = 1;
   bool has_msghead() const;
   private:
   bool _internal_has_msghead() const;
   public:
   void clear_msghead();
-  const ::CProxyHead& msghead() const;
-  PROTOBUF_NODISCARD ::CProxyHead* release_msghead();
-  ::CProxyHead* mutable_msghead();
-  void set_allocated_msghead(::CProxyHead* msghead);
+  const ::ProxyHead& msghead() const;
+  PROTOBUF_NODISCARD ::ProxyHead* release_msghead();
+  ::ProxyHead* mutable_msghead();
+  void set_allocated_msghead(::ProxyHead* msghead);
   private:
-  const ::CProxyHead& _internal_msghead() const;
-  ::CProxyHead* _internal_mutable_msghead();
+  const ::ProxyHead& _internal_msghead() const;
+  ::ProxyHead* _internal_mutable_msghead();
   public:
   void unsafe_arena_set_allocated_msghead(
-      ::CProxyHead* msghead);
-  ::CProxyHead* unsafe_arena_release_msghead();
+      ::ProxyHead* msghead);
+  ::ProxyHead* unsafe_arena_release_msghead();
 
-  // optional fixed64 msgPara = 2 [default = 0];
-  bool has_msgpara() const;
+  // required uint32 msgcmd = 2;
+  bool has_msgcmd() const;
   private:
-  bool _internal_has_msgpara() const;
+  bool _internal_has_msgcmd() const;
   public:
-  void clear_msgpara();
-  uint64_t msgpara() const;
-  void set_msgpara(uint64_t value);
+  void clear_msgcmd();
+  uint32_t msgcmd() const;
+  void set_msgcmd(uint32_t value);
   private:
-  uint64_t _internal_msgpara() const;
-  void _internal_set_msgpara(uint64_t value);
+  uint32_t _internal_msgcmd() const;
+  void _internal_set_msgcmd(uint32_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:CProxyMessage)
+  // @@protoc_insertion_point(class_scope:ProxyMessage)
  private:
   class _Internal;
+
+  // helper for ByteSizeLong()
+  size_t RequiredFieldsByteSizeFallback() const;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  ::CProxyHead* msghead_;
-  uint64_t msgpara_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr buff_;
+  ::ProxyHead* msghead_;
+  uint32_t msgcmd_;
   friend struct ::TableStruct_message_2eproto;
 };
 // -------------------------------------------------------------------
@@ -843,219 +866,219 @@ class CGonnReq final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// CProxyHead
+// ProxyHead
 
 // required uint32 srcFE = 1;
-inline bool CProxyHead::_internal_has_srcfe() const {
+inline bool ProxyHead::_internal_has_srcfe() const {
   bool value = (_has_bits_[0] & 0x00000001u) != 0;
   return value;
 }
-inline bool CProxyHead::has_srcfe() const {
+inline bool ProxyHead::has_srcfe() const {
   return _internal_has_srcfe();
 }
-inline void CProxyHead::clear_srcfe() {
+inline void ProxyHead::clear_srcfe() {
   srcfe_ = 0u;
   _has_bits_[0] &= ~0x00000001u;
 }
-inline uint32_t CProxyHead::_internal_srcfe() const {
+inline uint32_t ProxyHead::_internal_srcfe() const {
   return srcfe_;
 }
-inline uint32_t CProxyHead::srcfe() const {
-  // @@protoc_insertion_point(field_get:CProxyHead.srcFE)
+inline uint32_t ProxyHead::srcfe() const {
+  // @@protoc_insertion_point(field_get:ProxyHead.srcFE)
   return _internal_srcfe();
 }
-inline void CProxyHead::_internal_set_srcfe(uint32_t value) {
+inline void ProxyHead::_internal_set_srcfe(uint32_t value) {
   _has_bits_[0] |= 0x00000001u;
   srcfe_ = value;
 }
-inline void CProxyHead::set_srcfe(uint32_t value) {
+inline void ProxyHead::set_srcfe(uint32_t value) {
   _internal_set_srcfe(value);
-  // @@protoc_insertion_point(field_set:CProxyHead.srcFE)
+  // @@protoc_insertion_point(field_set:ProxyHead.srcFE)
 }
 
 // required uint32 srcID = 2;
-inline bool CProxyHead::_internal_has_srcid() const {
+inline bool ProxyHead::_internal_has_srcid() const {
   bool value = (_has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
-inline bool CProxyHead::has_srcid() const {
+inline bool ProxyHead::has_srcid() const {
   return _internal_has_srcid();
 }
-inline void CProxyHead::clear_srcid() {
+inline void ProxyHead::clear_srcid() {
   srcid_ = 0u;
   _has_bits_[0] &= ~0x00000002u;
 }
-inline uint32_t CProxyHead::_internal_srcid() const {
+inline uint32_t ProxyHead::_internal_srcid() const {
   return srcid_;
 }
-inline uint32_t CProxyHead::srcid() const {
-  // @@protoc_insertion_point(field_get:CProxyHead.srcID)
+inline uint32_t ProxyHead::srcid() const {
+  // @@protoc_insertion_point(field_get:ProxyHead.srcID)
   return _internal_srcid();
 }
-inline void CProxyHead::_internal_set_srcid(uint32_t value) {
+inline void ProxyHead::_internal_set_srcid(uint32_t value) {
   _has_bits_[0] |= 0x00000002u;
   srcid_ = value;
 }
-inline void CProxyHead::set_srcid(uint32_t value) {
+inline void ProxyHead::set_srcid(uint32_t value) {
   _internal_set_srcid(value);
-  // @@protoc_insertion_point(field_set:CProxyHead.srcID)
+  // @@protoc_insertion_point(field_set:ProxyHead.srcID)
 }
 
 // required uint32 dstFE = 3;
-inline bool CProxyHead::_internal_has_dstfe() const {
+inline bool ProxyHead::_internal_has_dstfe() const {
   bool value = (_has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
-inline bool CProxyHead::has_dstfe() const {
+inline bool ProxyHead::has_dstfe() const {
   return _internal_has_dstfe();
 }
-inline void CProxyHead::clear_dstfe() {
+inline void ProxyHead::clear_dstfe() {
   dstfe_ = 0u;
   _has_bits_[0] &= ~0x00000004u;
 }
-inline uint32_t CProxyHead::_internal_dstfe() const {
+inline uint32_t ProxyHead::_internal_dstfe() const {
   return dstfe_;
 }
-inline uint32_t CProxyHead::dstfe() const {
-  // @@protoc_insertion_point(field_get:CProxyHead.dstFE)
+inline uint32_t ProxyHead::dstfe() const {
+  // @@protoc_insertion_point(field_get:ProxyHead.dstFE)
   return _internal_dstfe();
 }
-inline void CProxyHead::_internal_set_dstfe(uint32_t value) {
+inline void ProxyHead::_internal_set_dstfe(uint32_t value) {
   _has_bits_[0] |= 0x00000004u;
   dstfe_ = value;
 }
-inline void CProxyHead::set_dstfe(uint32_t value) {
+inline void ProxyHead::set_dstfe(uint32_t value) {
   _internal_set_dstfe(value);
-  // @@protoc_insertion_point(field_set:CProxyHead.dstFE)
+  // @@protoc_insertion_point(field_set:ProxyHead.dstFE)
 }
 
 // required uint32 dstID = 4;
-inline bool CProxyHead::_internal_has_dstid() const {
+inline bool ProxyHead::_internal_has_dstid() const {
   bool value = (_has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
-inline bool CProxyHead::has_dstid() const {
+inline bool ProxyHead::has_dstid() const {
   return _internal_has_dstid();
 }
-inline void CProxyHead::clear_dstid() {
+inline void ProxyHead::clear_dstid() {
   dstid_ = 0u;
   _has_bits_[0] &= ~0x00000008u;
 }
-inline uint32_t CProxyHead::_internal_dstid() const {
+inline uint32_t ProxyHead::_internal_dstid() const {
   return dstid_;
 }
-inline uint32_t CProxyHead::dstid() const {
-  // @@protoc_insertion_point(field_get:CProxyHead.dstID)
+inline uint32_t ProxyHead::dstid() const {
+  // @@protoc_insertion_point(field_get:ProxyHead.dstID)
   return _internal_dstid();
 }
-inline void CProxyHead::_internal_set_dstid(uint32_t value) {
+inline void ProxyHead::_internal_set_dstid(uint32_t value) {
   _has_bits_[0] |= 0x00000008u;
   dstid_ = value;
 }
-inline void CProxyHead::set_dstid(uint32_t value) {
+inline void ProxyHead::set_dstid(uint32_t value) {
   _internal_set_dstid(value);
-  // @@protoc_insertion_point(field_set:CProxyHead.dstID)
+  // @@protoc_insertion_point(field_set:ProxyHead.dstID)
 }
 
 // required uint64 timeStamp = 5;
-inline bool CProxyHead::_internal_has_timestamp() const {
+inline bool ProxyHead::_internal_has_timestamp() const {
   bool value = (_has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
-inline bool CProxyHead::has_timestamp() const {
+inline bool ProxyHead::has_timestamp() const {
   return _internal_has_timestamp();
 }
-inline void CProxyHead::clear_timestamp() {
+inline void ProxyHead::clear_timestamp() {
   timestamp_ = uint64_t{0u};
   _has_bits_[0] &= ~0x00000010u;
 }
-inline uint64_t CProxyHead::_internal_timestamp() const {
+inline uint64_t ProxyHead::_internal_timestamp() const {
   return timestamp_;
 }
-inline uint64_t CProxyHead::timestamp() const {
-  // @@protoc_insertion_point(field_get:CProxyHead.timeStamp)
+inline uint64_t ProxyHead::timestamp() const {
+  // @@protoc_insertion_point(field_get:ProxyHead.timeStamp)
   return _internal_timestamp();
 }
-inline void CProxyHead::_internal_set_timestamp(uint64_t value) {
+inline void ProxyHead::_internal_set_timestamp(uint64_t value) {
   _has_bits_[0] |= 0x00000010u;
   timestamp_ = value;
 }
-inline void CProxyHead::set_timestamp(uint64_t value) {
+inline void ProxyHead::set_timestamp(uint64_t value) {
   _internal_set_timestamp(value);
-  // @@protoc_insertion_point(field_set:CProxyHead.timeStamp)
+  // @@protoc_insertion_point(field_set:ProxyHead.timeStamp)
 }
 
 // optional .enMessageCmd opFlag = 6;
-inline bool CProxyHead::_internal_has_opflag() const {
+inline bool ProxyHead::_internal_has_opflag() const {
   bool value = (_has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
-inline bool CProxyHead::has_opflag() const {
+inline bool ProxyHead::has_opflag() const {
   return _internal_has_opflag();
 }
-inline void CProxyHead::clear_opflag() {
+inline void ProxyHead::clear_opflag() {
   opflag_ = 0;
   _has_bits_[0] &= ~0x00000020u;
 }
-inline ::enMessageCmd CProxyHead::_internal_opflag() const {
+inline ::enMessageCmd ProxyHead::_internal_opflag() const {
   return static_cast< ::enMessageCmd >(opflag_);
 }
-inline ::enMessageCmd CProxyHead::opflag() const {
-  // @@protoc_insertion_point(field_get:CProxyHead.opFlag)
+inline ::enMessageCmd ProxyHead::opflag() const {
+  // @@protoc_insertion_point(field_get:ProxyHead.opFlag)
   return _internal_opflag();
 }
-inline void CProxyHead::_internal_set_opflag(::enMessageCmd value) {
+inline void ProxyHead::_internal_set_opflag(::enMessageCmd value) {
   assert(::enMessageCmd_IsValid(value));
   _has_bits_[0] |= 0x00000020u;
   opflag_ = value;
 }
-inline void CProxyHead::set_opflag(::enMessageCmd value) {
+inline void ProxyHead::set_opflag(::enMessageCmd value) {
   _internal_set_opflag(value);
-  // @@protoc_insertion_point(field_set:CProxyHead.opFlag)
+  // @@protoc_insertion_point(field_set:ProxyHead.opFlag)
 }
 
 // -------------------------------------------------------------------
 
-// CProxyMessage
+// ProxyMessage
 
-// required .CProxyHead msgHead = 1;
-inline bool CProxyMessage::_internal_has_msghead() const {
-  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+// required .ProxyHead msgHead = 1;
+inline bool ProxyMessage::_internal_has_msghead() const {
+  bool value = (_has_bits_[0] & 0x00000002u) != 0;
   PROTOBUF_ASSUME(!value || msghead_ != nullptr);
   return value;
 }
-inline bool CProxyMessage::has_msghead() const {
+inline bool ProxyMessage::has_msghead() const {
   return _internal_has_msghead();
 }
-inline void CProxyMessage::clear_msghead() {
+inline void ProxyMessage::clear_msghead() {
   if (msghead_ != nullptr) msghead_->Clear();
-  _has_bits_[0] &= ~0x00000001u;
+  _has_bits_[0] &= ~0x00000002u;
 }
-inline const ::CProxyHead& CProxyMessage::_internal_msghead() const {
-  const ::CProxyHead* p = msghead_;
-  return p != nullptr ? *p : reinterpret_cast<const ::CProxyHead&>(
-      ::_CProxyHead_default_instance_);
+inline const ::ProxyHead& ProxyMessage::_internal_msghead() const {
+  const ::ProxyHead* p = msghead_;
+  return p != nullptr ? *p : reinterpret_cast<const ::ProxyHead&>(
+      ::_ProxyHead_default_instance_);
 }
-inline const ::CProxyHead& CProxyMessage::msghead() const {
-  // @@protoc_insertion_point(field_get:CProxyMessage.msgHead)
+inline const ::ProxyHead& ProxyMessage::msghead() const {
+  // @@protoc_insertion_point(field_get:ProxyMessage.msgHead)
   return _internal_msghead();
 }
-inline void CProxyMessage::unsafe_arena_set_allocated_msghead(
-    ::CProxyHead* msghead) {
+inline void ProxyMessage::unsafe_arena_set_allocated_msghead(
+    ::ProxyHead* msghead) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(msghead_);
   }
   msghead_ = msghead;
   if (msghead) {
-    _has_bits_[0] |= 0x00000001u;
+    _has_bits_[0] |= 0x00000002u;
   } else {
-    _has_bits_[0] &= ~0x00000001u;
+    _has_bits_[0] &= ~0x00000002u;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CProxyMessage.msgHead)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:ProxyMessage.msgHead)
 }
-inline ::CProxyHead* CProxyMessage::release_msghead() {
-  _has_bits_[0] &= ~0x00000001u;
-  ::CProxyHead* temp = msghead_;
+inline ::ProxyHead* ProxyMessage::release_msghead() {
+  _has_bits_[0] &= ~0x00000002u;
+  ::ProxyHead* temp = msghead_;
   msghead_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -1068,27 +1091,27 @@ inline ::CProxyHead* CProxyMessage::release_msghead() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::CProxyHead* CProxyMessage::unsafe_arena_release_msghead() {
-  // @@protoc_insertion_point(field_release:CProxyMessage.msgHead)
-  _has_bits_[0] &= ~0x00000001u;
-  ::CProxyHead* temp = msghead_;
+inline ::ProxyHead* ProxyMessage::unsafe_arena_release_msghead() {
+  // @@protoc_insertion_point(field_release:ProxyMessage.msgHead)
+  _has_bits_[0] &= ~0x00000002u;
+  ::ProxyHead* temp = msghead_;
   msghead_ = nullptr;
   return temp;
 }
-inline ::CProxyHead* CProxyMessage::_internal_mutable_msghead() {
-  _has_bits_[0] |= 0x00000001u;
+inline ::ProxyHead* ProxyMessage::_internal_mutable_msghead() {
+  _has_bits_[0] |= 0x00000002u;
   if (msghead_ == nullptr) {
-    auto* p = CreateMaybeMessage<::CProxyHead>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::ProxyHead>(GetArenaForAllocation());
     msghead_ = p;
   }
   return msghead_;
 }
-inline ::CProxyHead* CProxyMessage::mutable_msghead() {
-  ::CProxyHead* _msg = _internal_mutable_msghead();
-  // @@protoc_insertion_point(field_mutable:CProxyMessage.msgHead)
+inline ::ProxyHead* ProxyMessage::mutable_msghead() {
+  ::ProxyHead* _msg = _internal_mutable_msghead();
+  // @@protoc_insertion_point(field_mutable:ProxyMessage.msgHead)
   return _msg;
 }
-inline void CProxyMessage::set_allocated_msghead(::CProxyHead* msghead) {
+inline void ProxyMessage::set_allocated_msghead(::ProxyHead* msghead) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete msghead_;
@@ -1100,40 +1123,108 @@ inline void CProxyMessage::set_allocated_msghead(::CProxyHead* msghead) {
       msghead = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, msghead, submessage_arena);
     }
+    _has_bits_[0] |= 0x00000002u;
+  } else {
+    _has_bits_[0] &= ~0x00000002u;
+  }
+  msghead_ = msghead;
+  // @@protoc_insertion_point(field_set_allocated:ProxyMessage.msgHead)
+}
+
+// required uint32 msgcmd = 2;
+inline bool ProxyMessage::_internal_has_msgcmd() const {
+  bool value = (_has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool ProxyMessage::has_msgcmd() const {
+  return _internal_has_msgcmd();
+}
+inline void ProxyMessage::clear_msgcmd() {
+  msgcmd_ = 0u;
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline uint32_t ProxyMessage::_internal_msgcmd() const {
+  return msgcmd_;
+}
+inline uint32_t ProxyMessage::msgcmd() const {
+  // @@protoc_insertion_point(field_get:ProxyMessage.msgcmd)
+  return _internal_msgcmd();
+}
+inline void ProxyMessage::_internal_set_msgcmd(uint32_t value) {
+  _has_bits_[0] |= 0x00000004u;
+  msgcmd_ = value;
+}
+inline void ProxyMessage::set_msgcmd(uint32_t value) {
+  _internal_set_msgcmd(value);
+  // @@protoc_insertion_point(field_set:ProxyMessage.msgcmd)
+}
+
+// optional bytes buff = 3;
+inline bool ProxyMessage::_internal_has_buff() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool ProxyMessage::has_buff() const {
+  return _internal_has_buff();
+}
+inline void ProxyMessage::clear_buff() {
+  buff_.ClearToEmpty();
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& ProxyMessage::buff() const {
+  // @@protoc_insertion_point(field_get:ProxyMessage.buff)
+  return _internal_buff();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ProxyMessage::set_buff(ArgT0&& arg0, ArgT... args) {
+ _has_bits_[0] |= 0x00000001u;
+ buff_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:ProxyMessage.buff)
+}
+inline std::string* ProxyMessage::mutable_buff() {
+  std::string* _s = _internal_mutable_buff();
+  // @@protoc_insertion_point(field_mutable:ProxyMessage.buff)
+  return _s;
+}
+inline const std::string& ProxyMessage::_internal_buff() const {
+  return buff_.Get();
+}
+inline void ProxyMessage::_internal_set_buff(const std::string& value) {
+  _has_bits_[0] |= 0x00000001u;
+  buff_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ProxyMessage::_internal_mutable_buff() {
+  _has_bits_[0] |= 0x00000001u;
+  return buff_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ProxyMessage::release_buff() {
+  // @@protoc_insertion_point(field_release:ProxyMessage.buff)
+  if (!_internal_has_buff()) {
+    return nullptr;
+  }
+  _has_bits_[0] &= ~0x00000001u;
+  auto* p = buff_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (buff_.IsDefault()) {
+    buff_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void ProxyMessage::set_allocated_buff(std::string* buff) {
+  if (buff != nullptr) {
     _has_bits_[0] |= 0x00000001u;
   } else {
     _has_bits_[0] &= ~0x00000001u;
   }
-  msghead_ = msghead;
-  // @@protoc_insertion_point(field_set_allocated:CProxyMessage.msgHead)
-}
-
-// optional fixed64 msgPara = 2 [default = 0];
-inline bool CProxyMessage::_internal_has_msgpara() const {
-  bool value = (_has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CProxyMessage::has_msgpara() const {
-  return _internal_has_msgpara();
-}
-inline void CProxyMessage::clear_msgpara() {
-  msgpara_ = uint64_t{0u};
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline uint64_t CProxyMessage::_internal_msgpara() const {
-  return msgpara_;
-}
-inline uint64_t CProxyMessage::msgpara() const {
-  // @@protoc_insertion_point(field_get:CProxyMessage.msgPara)
-  return _internal_msgpara();
-}
-inline void CProxyMessage::_internal_set_msgpara(uint64_t value) {
-  _has_bits_[0] |= 0x00000002u;
-  msgpara_ = value;
-}
-inline void CProxyMessage::set_msgpara(uint64_t value) {
-  _internal_set_msgpara(value);
-  // @@protoc_insertion_point(field_set:CProxyMessage.msgPara)
+  buff_.SetAllocated(buff, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (buff_.IsDefault()) {
+    buff_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:ProxyMessage.buff)
 }
 
 // -------------------------------------------------------------------
@@ -1385,10 +1476,10 @@ inline void CGonnReq::set_allocated_session(std::string* session) {
 
 PROTOBUF_NAMESPACE_OPEN
 
-template <> struct is_proto_enum< ::CProxyMessage_Msg> : ::std::true_type {};
+template <> struct is_proto_enum< ::ProxyMessage_Msg> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::CProxyMessage_Msg>() {
-  return ::CProxyMessage_Msg_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::ProxyMessage_Msg>() {
+  return ::ProxyMessage_Msg_descriptor();
 }
 template <> struct is_proto_enum< ::CGonnReq_Msg> : ::std::true_type {};
 template <>

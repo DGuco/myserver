@@ -18,7 +18,7 @@ enum enMessageCmd
 
 /////////////////////////////////(dbserver,gameserver等等) <==> ProxyServer/////////////////////
 //发送给proxyserver的消息头
-message CProxyHead
+message ProxyHead
 {
 	required	uint32			srcFE			= 1;							// 源服务器类型
 	required	uint32			srcID			= 2;							// 源服务器ID
@@ -29,14 +29,15 @@ message CProxyHead
 };
 
 // 单个消息
-message CProxyMessage
+message ProxyMessage
 {
 	enum Msg
 	{
 	    MsgID	= 10000;
 	}
-	required	CProxyHead		msgHead	= 1;						// 消息头+
-	optional	fixed64			msgPara	= 2[default = 0];	// 消息体( 指针 4bytes ) 消息传递时是无效的，这是服务器内部自己赋值的，方便获取消息
+	required	ProxyHead		msgHead			= 1;							// 消息头+
+	required	uint32			msgcmd			= 2;							// 消息包id
+	optional	bytes			buff			= 3; 							// 字节流
 };
 
 message CGonnReq

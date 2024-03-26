@@ -44,7 +44,7 @@ set(LUA_BRIDGE_HEADER_FILES
 set(FRAMEWORK
         "../common/base.h"
         "base/my_assert.h"
-        "base/my_macro.h" 
+         
         "base/object.h"
         "base/performance.cpp"
         "base/performance.h"
@@ -61,10 +61,10 @@ set(FRAMEWORK
         "base/signal_handler.h"
         "base/signal_handler.cpp"
         "base/message_factory.h"
-        "const/dblogin_type.h"
+        "../common/dblogin_type.h"
         "const/err_code.h"
-        "const/platform_def.h" 
-        "const/platform_def.cpp" 
+        "../common/platform_def.h" 
+        "../common/platform_def.cpp" 
         "mem/shm_queue.cpp" 
         "mem/shm_queue.h"
         "mem/mempool_safty.h" 

@@ -43,7 +43,7 @@ set(SOURCE_FILES
         "gamemodule/datamodule/playerdata.cpp"
         "gamemodule/datamodule/playercity.cpp"
         "gamemodule/messagemodule/cgconn_req.h"
-        )
+         "gamemodule/messagemodule/proxy_message.h")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/common

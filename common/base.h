@@ -14,8 +14,8 @@
 #include <stdio.h>
 #include "platform_def.h"
 
-#define MIN(a，b)((a) <= (b) ? (a) : (b))
-#define MAX(a，b)((a) >= (b) ? (a) : (b))
+#define MIN(a,b)((a) <= (b) ? (a) : (b))
+#define MAX(a,b)((a) >= (b) ? (a) : (b))
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 #define STR(x)			#x
 
@@ -34,7 +34,6 @@
 #define SECOND_UNDER_CONVERSION_UNIT    1000            // 秒以下换算单位
 #define MSG_HEAD_LEN 8  // 接收或发送给客户端消息的消息头字节数
 #define MSG_MAX_LEN                10*1024            // 接收或发送给客户端消息的最大字节数
-#define NULL						(0)
 
 
 #define DELETE(ptr) \
@@ -58,9 +57,6 @@
 		}\
 	}\
 	while(0);\
-
-#define MAX(a,b)            (((a) > (b)) ? (a) : (b))
-#define MIN(a,b)            (((a) < (b)) ? (a) : (b))
 
 typedef unsigned int msize_t;
 typedef unsigned char BYTE;

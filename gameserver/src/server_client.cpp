@@ -1,5 +1,6 @@
 #include "server_client.h"
 #include "common_def.h"
+#include "game_server.h"
 
 
 CServerClient::CServerClient()
@@ -8,7 +9,22 @@ CServerClient::CServerClient()
 
 int CServerClient::DoRecvLogic()
 {
-	return 0;
+	msize_t tmCurPacketLen = m_pReadBuff->CanReadLen();
+	//包头前两个字节为数据总长度，如果数据长度小于两个字节返回0
+	if (tmCurPacketLen < sizeof(msize_t))
+	{
+		return ERR_RECV_OK;
+	}
+	msize_t tmPacketLen = m_pReadBuff->ReadUnInt(true);
+	msize_t tmFullPacketLen = tmPacketLen + sizeof(msize_t);
+	//数据不完整
+	if (tmFullPacketLen > tmCurPacketLen)
+	{
+		return ERR_RECV_OK;
+	}
+	//有完整的数据包，读取处理
+	CGameServer::GetSingletonPtr()->ProcessServerMessage(this);
+	return ERR_RECV_OK;
 }
 
 int CServerClient::DoWriteLogic()

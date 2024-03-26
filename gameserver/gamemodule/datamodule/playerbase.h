@@ -14,7 +14,6 @@
 #include "player.h"
 #include "base.h"
 #include "object.h"
-#include "my_macro.h"
 
 // 玩家链接信息
 struct STConnectInfo
@@ -124,11 +123,7 @@ public:
     int GetLoginTime() {return m_SocketInfo.m_tLoginTime;}
     // 帐号
     void SetAccount(const char* p)
-    {
-        if (p == NULL) {return;}
-        int iTmpLen = strlen(p);
-        strncpy(m_acAccount, p, iTmpLen >= ARRAY_CNT(m_acAccount) ? (ARRAY_CNT(m_acAccount) - 1) : iTmpLen);
-    }
+    { }
     char* GetAccount() {return &m_acAccount[0];}
     // 获取连接信息
     STConnectInfo* GetSocketInfoPtr() {return &m_SocketInfo;}

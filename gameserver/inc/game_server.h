@@ -7,14 +7,14 @@
 
 #ifndef SERVER_GAMESERVER_H
 #define SERVER_GAMESERVER_H
-
+#include "base.h"
 #include "singleton.h"
 #include "runflag.h"
-#include "base.h"
 #include "common_def.h"
-#include "tcp_server.h"
 #include "safe_pointer.h"
+#include "tcp_server.h"
 #include "game_player.h"
+#include "server_client.h"
 
 class CGameServer: public CTCPServer,public CSingleton<CGameServer>
 {
@@ -35,12 +35,12 @@ public:
 	~CGameServer();
 	// 运行准备
 	bool PrepareToRun();
-	// 运行
-	void Run();
 	// 退出
 	void Exit();
-	//读取客户端上行数据
-	void RecvClientData(CSafePtr<CGamePlayer> pGamePlayer);
+	//处理客户端上行数据
+	void ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer);
+	//处理读取服务器数据
+	void ProcessServerMessage(CSafePtr<CServerClient> pServerPlayer);
 	//
 	void ClearSocket(CSafePtr<CGamePlayer> pGamePlayer, short iError);
 	//

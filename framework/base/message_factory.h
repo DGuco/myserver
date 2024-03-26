@@ -26,4 +26,7 @@ public:
 };
 
 
+#define CHECK_MESSAGE_INVALID(pMessageFactory) \
+	if(pMessageFactory->m_pMessage == NULL)
+
 #endif /* __MESSAGE_FACTORY_H__ */

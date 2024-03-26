@@ -66,62 +66,62 @@ void CProxyServer::ClearSocket(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
 void CProxyServer::DisConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
-	static CProxyMessage tmpMessage;
-	tmpMessage.Clear( );
-	CProxyHead *tmpHead = tmpMessage.mutable_msghead( );
+// 	static ProxyMessage tmpMessage;
+// 	tmpMessage.Clear( );
+// 	ProxyMessage* tmpHead = tmpMessage.mutable_msghead( );
 	return;
 }
 
 void CProxyServer::RecvClientData(CSafePtr<CProxyPlayer> pGamePlayer)
 {
-	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
-	int packLen = pRecvBuff->ReadUnInt();
-	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
-	{
-		//断开连接
-		ClearSocket(pGamePlayer, Err_PacketError);
-		return;
-	}
-	
-	int nCmd = pRecvBuff->ReadInt();
-	int nSeq = pRecvBuff->ReadInt();
-	if (pRecvBuff->ReadBytes(m_CacheData, packLen) != 0)
-	{
-		//断开连接
-		ClearSocket(pGamePlayer, Err_PacketError);
-		return;
-	}
-	time_t tNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
-	pGamePlayer->SetLastRecvKeepLive(tNow);
-	CProxyMessage tmMessage;
-	if (!tmMessage.ParseFromArray(m_CacheData, packLen))
-	{
-		//断开连接
-		ClearSocket(pGamePlayer, Err_PacketError);
-		return;
-	}
-	const CProxyHead& tmHead = tmMessage.msghead();
-	if (!tmMessage.SerializeToArray(m_CacheData, GAMEPLAYER_RECV_BUFF_LEN))
-	{
-		//断开连接
-		ClearSocket(pGamePlayer, Err_PacketError);
-		return;
-	}
-	int nSrcType = tmHead.srcfe();
-	int nSrcId = tmHead.srcfe();
-	int nDesType = tmHead.dstfe();
-	int nDesId = tmHead.dstid();
-
-	int iTmRet = SendToGame((char*)m_CacheData, tmMessage.GetCachedSize());
-	if (iTmRet != 0)
-	{
-		CACHE_LOG(TCP_ERROR, "CNetManager::DealClientData to game error, error code {}", iTmRet);
-		ClearSocket(pGamePlayer, Err_SendToMainSvrd);
-	}
-	else 
-	{
-		CACHE_LOG(TCP_ERROR, "gate ==>game succeed");
-	}
+// 	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
+// 	int packLen = pRecvBuff->ReadUnInt();
+// 	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
+// 	{
+// 		//断开连接
+// 		ClearSocket(pGamePlayer, Err_PacketError);
+// 		return;
+// 	}
+// 	
+// 	int nCmd = pRecvBuff->ReadInt();
+// 	int nSeq = pRecvBuff->ReadInt();
+// 	if (pRecvBuff->ReadBytes(m_CacheData, packLen) != 0)
+// 	{
+// 		//断开连接
+// 		ClearSocket(pGamePlayer, Err_PacketError);
+// 		return;
+// 	}
+// 	time_t tNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+// 	pGamePlayer->SetLastRecvKeepLive(tNow);
+// 	CProxyMessage tmMessage;
+// 	if (!tmMessage.ParseFromArray(m_CacheData, packLen))
+// 	{
+// 		//断开连接
+// 		ClearSocket(pGamePlayer, Err_PacketError);
+// 		return;
+// 	}
+// 	const CProxyHead& tmHead = tmMessage.msghead();
+// 	if (!tmMessage.SerializeToArray(m_CacheData, GAMEPLAYER_RECV_BUFF_LEN))
+// 	{
+// 		//断开连接
+// 		ClearSocket(pGamePlayer, Err_PacketError);
+// 		return;
+// 	}
+// 	int nSrcType = tmHead.srcfe();
+// 	int nSrcId = tmHead.srcfe();
+// 	int nDesType = tmHead.dstfe();
+// 	int nDesId = tmHead.dstid();
+// 
+// 	int iTmRet = SendToGame((char*)m_CacheData, tmMessage.GetCachedSize());
+// 	if (iTmRet != 0)
+// 	{
+// 		CACHE_LOG(TCP_ERROR, "CNetManager::DealClientData to game error, error code {}", iTmRet);
+// 		ClearSocket(pGamePlayer, Err_SendToMainSvrd);
+// 	}
+// 	else 
+// 	{
+// 		CACHE_LOG(TCP_ERROR, "gate ==>game succeed");
+// 	}
 	return;
 }
 
