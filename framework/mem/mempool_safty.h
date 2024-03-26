@@ -1,6 +1,6 @@
 //
 // Created by DGuco on 17-7-26.
-// 内存池安全操作接口,线程安全
+// �ڴ�ذ�ȫ�����ӿ�,�̰߳�ȫ
 //
 
 #ifndef SERVER_MEMPOOLSAFTY_H

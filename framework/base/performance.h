@@ -10,24 +10,24 @@ public:
 	CPerfInfo();
 	~CPerfInfo();
 
-	/// è¾“å…¥è¿™æ¬¡è°ƒç”¨ç»è¿‡çš„æ—¶é—´ï¼Œè¿”å›è¢«è°ƒç”¨çš„æ¬¡æ•°
+	/// ÊäÈëÕâ´Îµ÷ÓÃ¾­¹ıµÄÊ±¼ä£¬·µ»Ø±»µ÷ÓÃµÄ´ÎÊı
 	int AddCalled(int iElapsed);
 
-	/// é‡ç½®ç»Ÿè®¡æ•°æ®
+	/// ÖØÖÃÍ³¼ÆÊı¾İ
 	void Reset();
 
 public:
 
-	int	mPerfLog;		// æ˜¯å¦ç»Ÿè®¡æœ¬ä¿¡æ¯ã€‚ä¸ºäº†ä»¥åæ§åˆ¶ç»Ÿè®¡é¡¹åˆ¶å®š.é»˜è®¤ç»Ÿè®¡
-	int	mTotalCalled;	// è¢«è°ƒç”¨çš„æ€»æ¬¡æ•°
-	int	mCostTime;		// æ€»å…±èŠ±è´¹çš„æ—¶é—´
-	int mMostCostTime;	// æœ€é•¿æ¶ˆè€—æ—¶é—´
-	int mLestCostTime;	// æœ€çŸ­æ¶ˆè€—æ—¶é—´
+	int	mPerfLog;		// ÊÇ·ñÍ³¼Æ±¾ĞÅÏ¢¡£ÎªÁËÒÔºó¿ØÖÆÍ³¼ÆÏîÖÆ¶¨.Ä¬ÈÏÍ³¼Æ
+	int	mTotalCalled;	// ±»µ÷ÓÃµÄ×Ü´ÎÊı
+	int	mCostTime;		// ×Ü¹²»¨·ÑµÄÊ±¼ä
+	int mMostCostTime;	// ×î³¤ÏûºÄÊ±¼ä
+	int mLestCostTime;	// ×î¶ÌÏûºÄÊ±¼ä
 };
 
 
 
-/// æ€§èƒ½ä¼˜åŒ–ï¼Œä¸ç›´æ¥ä½¿ç”¨stringä½œä¸ºmapçš„key,å°è£…CPerfIndexä½œä¸ºkey
+/// ĞÔÄÜÓÅ»¯£¬²»Ö±½ÓÊ¹ÓÃstring×÷ÎªmapµÄkey,·â×°CPerfIndex×÷Îªkey
 class CPerfIndex
 {
 public:
@@ -35,8 +35,8 @@ public:
 	  mHashCode( uiHashCode ), mName( pszName ) {}
 	~CPerfIndex(){}
 
-	unsigned int	mHashCode;		// ä½œä¸ºä¼˜å…ˆæ¯”è¾ƒå…³é”®å­—
-	std::string		mName;			// perfç»Ÿè®¡çš„ä¿¡æ¯
+	unsigned int	mHashCode;		// ×÷ÎªÓÅÏÈ±È½Ï¹Ø¼ü×Ö
+	std::string		mName;			// perfÍ³¼ÆµÄĞÅÏ¢
 };
 
 
@@ -67,9 +67,9 @@ public:
 	* world on the usenet newsgroup comp.lang.c. It is one of the most efficient
 	* hash functions ever published.
 	*
-	* @param str    éœ€è¦è®¡ç®—hashå€¼çš„å­—ç¬¦ä¸²ï¼Œå¿…é¡»ä»¥ASCII 0ç»“å°¾
+	* @param str    ĞèÒª¼ÆËãhashÖµµÄ×Ö·û´®£¬±ØĞëÒÔASCII 0½áÎ²
 	*
-	* @return å­—ç¬¦ä¸²å¯¹åº”çš„hashå€¼
+	* @return ×Ö·û´®¶ÔÓ¦µÄhashÖµ
 	*/
 	static inline unsigned int DJBHash(const char* str)
 	{
@@ -96,14 +96,14 @@ public:
 		return msPerfMap[perfIndex];
 	}
 
-	// è®°å½•ç»Ÿè®¡ä¿¡æ¯åˆ°æ—¥å¿—æ–‡ä»¶
+	// ¼ÇÂ¼Í³¼ÆĞÅÏ¢µ½ÈÕÖ¾ÎÄ¼ş
 	static void LogPerfInfo();
 
 };
 
 
 
-// ç»Ÿè®¡å‡½æ•°è°ƒç”¨å¼€é”€
+// Í³¼Æº¯Êıµ÷ÓÃ¿ªÏú
 #define PERF_FUNC(funcname, callfunc)								\
 	do																\
 	{																\
@@ -139,7 +139,7 @@ public:
 	} while (0)
 	
 
-// å¯ä»¥è¿”å›æµé€æ—¶é—´çš„ç»Ÿè®¡
+// ¿ÉÒÔ·µ»ØÁ÷ÊÅÊ±¼äµÄÍ³¼Æ
 #define PERF_FUNC_ELAPSED(funcname, callfunc, _elapse )				\
 		CPerfInfo& info = CPerfStat::GetPerfInfo(funcname);			\
 		if (info.mPerfLog)											\
@@ -158,7 +158,7 @@ public:
 
 
 
-// ç»Ÿè®¡æ•°æ®å†™å…¥æ—¥å¿—
+// Í³¼ÆÊı¾İĞ´ÈëÈÕÖ¾
 #define PERF_LOG CPerfStat::LogPerfInfo
 
 #define PERF_BEGIN( funcname )													\

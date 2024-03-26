@@ -1,7 +1,7 @@
 /******************************************************************************
 * https://github.com/DGuco/luabridge
 *
-* Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+* Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
 
 * Copyright 2019, Dmitry Tarakanov
 * Copyright 2012, Vinnie Falco <vinnie.falco@gmail.com>
@@ -396,7 +396,7 @@ struct Stack<char *>
 
     static char *get(lua_State *L, int index, bool luaerror = true)
     {
-        //æŠ›å‡ºc++å¼‚å¸¸
+        //Å×³öc++Òì³£
         LUA_ASSERT_EX(L, LuaHelper::CheckLuaArg_Str(L, index), "CheckLuaArg_Str failed", luaerror);
         if (lua_isnil(L, index)) {
             return const_cast<char *>("");
@@ -421,7 +421,7 @@ struct Stack<BinaryStr>
 
     BinaryStr get(lua_State *L, int index, bool luaerror = true)
     {
-        //æŠ›å‡ºc++å¼‚å¸¸
+        //Å×³öc++Òì³£
         LUA_ASSERT_EX(L, LuaHelper::CheckLuaArg_Str(L, index), "CheckLuaArg_Str failed", luaerror);
         size_t len;
         const char *str = lua_tolstring(L, index, &len);

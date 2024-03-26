@@ -1,8 +1,8 @@
 //
 //  sharemem.h
-//  è°ƒç”¨ç³»ç»Ÿå…±äº«å†…å­˜æ¥å£åˆ›å»ºå…±äº«å†…å­˜
+//  µ÷ÓÃÏµÍ³¹²ÏíÄÚ´æ½Ó¿Ú´´½¨¹²ÏíÄÚ´æ
 //  Created by DGuco on 17/03/23.
-//  Copyright Â© 2016å¹´ DGuco. All rights reserved.
+//  Copyright ? 2016Äê DGuco. All rights reserved.
 //
 #ifndef __SHARE_MEM_H__
 #define __SHARE_MEM_H__
@@ -16,7 +16,7 @@ namespace ShareMemAPI
 	// FullName:  ShareMemAPI::MakeKey
 	// Access:    public 
 	// Returns:   SMKey
-	// Qualifier: ç”Ÿæˆå…±äº«å†…å­˜å—å”¯ä¸€id
+	// Qualifier: Éú³É¹²ÏíÄÚ´æ¿éÎ¨Ò»id
 	// Parameter: const char * pFile
 	// Parameter: int vId
 	//************************************
@@ -26,7 +26,7 @@ namespace ShareMemAPI
 	// FullName:  ShareMemAPI::CreateShareMem
 	// Access:    public 
 	// Returns:   SMKey
-	// Qualifier: åˆ›å»ºå…±äº«å†…å­˜å—
+	// Qualifier: ´´½¨¹²ÏíÄÚ´æ¿é
 	// Parameter: SMKey iKey
 	// Parameter: int vSize
 	//************************************
@@ -36,7 +36,7 @@ namespace ShareMemAPI
 	// FullName:  ShareMemAPI::OpenShareMem
 	// Access:    public 
 	// Returns:   SMKey
-	// Qualifier: /æ‰“å¼€å…±äº«å†…å­˜
+	// Qualifier: /´ò¿ª¹²ÏíÄÚ´æ
 	// Parameter: SMKey iKey
 	// Parameter: int vSize
 	//************************************
@@ -46,7 +46,7 @@ namespace ShareMemAPI
 	// FullName:  ShareMemAPI::AttachShareMem
 	// Access:    public 
 	// Returns:   BYTE*
-	// Qualifier: attach åˆ°å…±äº«å†…å­˜å—ä¸­
+	// Qualifier: attach µ½¹²ÏíÄÚ´æ¿éÖĞ
 	// Parameter: SMKey iKey
 	//************************************
 	BYTE* AttachShareMem(sm_handler iKey);
@@ -55,7 +55,7 @@ namespace ShareMemAPI
 	// FullName:  ShareMemAPI::DetachShareMem
 	// Access:    public 
 	// Returns:   bool
-	// Qualifier: Detach å…±äº«å†…å­˜å—
+	// Qualifier: Detach ¹²ÏíÄÚ´æ¿é
 	// Parameter: BYTE * pAddr
 	//************************************
 	bool DetachShareMem(BYTE* pAddr);
@@ -64,7 +64,7 @@ namespace ShareMemAPI
 	// FullName:  ShareMemAPI::DestroyShareMem
 	// Access:    public 
 	// Returns:   int
-	// Qualifier: é”€æ¯å…±äº«å†…å­˜å—
+	// Qualifier: Ïú»Ù¹²ÏíÄÚ´æ¿é
 	// Parameter: SMKey iKey
 	//************************************
 	bool DestroyShareMem(sm_handler iKey);

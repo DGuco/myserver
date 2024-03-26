@@ -1,8 +1,8 @@
 //
 // mythread.h
-// çº¿ç¨‹åŸºç±»
+// Ïß³Ì»ùÀà
 // Created by DGuco on 17-10-12.
-// Copyright Â© 2016å¹´ DGuco. All rights reserved.
+// Copyright ? 2016Äê DGuco. All rights reserved.
 //
 
 #ifndef _MY_THREAD_HPP_
@@ -45,7 +45,7 @@ private:
 	std::condition_variable data_cond;
 	std::shared_ptr<std::thread> m_pThread;
 	std::string m_sThreadName;
-	long m_lTimeOut; //é˜»å¡è¶…æ—¶æ—¶é—´(å¾®å¦™)ï¼Œé»˜è®¤æ²¡æœ‰è¶…æ—¶ï¼ˆå¦‚æœä¸wake upæ°¸è¿œé˜»å¡ï¼‰
+	long m_lTimeOut; //×èÈû³¬Ê±Ê±¼ä(Î¢Ãî)£¬Ä¬ÈÏÃ»ÓĞ³¬Ê±£¨Èç¹û²»wake upÓÀÔ¶×èÈû£©
 };
 
 

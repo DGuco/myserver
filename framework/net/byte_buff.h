@@ -1,8 +1,8 @@
 //
 // byte_buff.h
 // Created by DGuco on 18/04/13.
-// Copyright Â© 2018å¹´ DGuco. All rights reserved.
-// ç½‘ç»œå­—èŠ‚æµç®¡ç†ç±»
+// Copyright ? 2018Äê DGuco. All rights reserved.
+// ÍøÂç×Ö½ÚÁ÷¹ÜÀíÀà
 //
 
 #ifndef SERVER_CBYTEBUFF_H
@@ -14,11 +14,11 @@
 using namespace std;
 
 /**
- * æœ€å¤§é•¿åº¦åº”è¯¥å‡å»é¢„ç•™éƒ¨åˆ†é•¿åº¦ï¼Œä¿è¯é¦–å°¾ä¸ä¼šç›¸æ¥,
- * ä»¥æ­¤åŒºåˆ†æ•°æ®åˆ†å¸ƒåœ¨å†…å­˜åŒºçš„ä¸¤ä¾§ï¼Œå’Œæ²¡æœ‰æ•°æ®çš„æƒ…å†µ
+ * ×î´ó³¤¶ÈÓ¦¸Ã¼õÈ¥Ô¤Áô²¿·Ö³¤¶È£¬±£Ö¤Ê×Î²²»»áÏà½Ó,
+ * ÒÔ´ËÇø·ÖÊı¾İ·Ö²¼ÔÚÄÚ´æÇøµÄÁ½²à£¬ºÍÃ»ÓĞÊı¾İµÄÇé¿ö
  */
 #define BUFF_EXTRA_SIZE (8)
- //ä»¥ä¸‹å®šä¹‰æ¥å—/å‘é€é”™è¯¯ç±»å‹
+ //ÒÔÏÂ¶¨Òå½ÓÊÜ/·¢ËÍ´íÎóÀàĞÍ
 enum eRecvErrs
 {
 	ERR_RECV_WOULD_BLOCK		= 1,
@@ -45,16 +45,16 @@ enum eSendErrs
 class CByteBuff
 {
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CByteBuff();
 	CByteBuff(msize_t tmpCap);
-	//æ‹·è´æ„é€ å‡½æ•°
+	//¿½±´¹¹Ôìº¯Êı
 	CByteBuff(const CByteBuff &byteBuff);
-	//ç§»åŠ¨æ„é€ å‡½æ•°
+	//ÒÆ¶¯¹¹Ôìº¯Êı
 	CByteBuff(CByteBuff &&byteBuff);
-	//èµ‹å€¼æ“ä½œç¬¦
+	//¸³Öµ²Ù×÷·û
 	CByteBuff &operator=(CByteBuff &byteBuff);
-	//ç§»åŠ¨èµ‹å€¼æ“ä½œç¬¦
+	//ÒÆ¶¯¸³Öµ²Ù×÷·û
 	CByteBuff &operator=(CByteBuff &&byteBuff);
 	~CByteBuff();
 	void Clear();
@@ -89,35 +89,35 @@ public:
 	void ReadLen(msize_t len);
 	void SetReadIndex(msize_t uiReadIndex);
 	void SetWriteIndex(msize_t uiWriteIndex);
-	//è·å–å¯è¯»æ•°æ®é•¿åº¦
+	//»ñÈ¡¿É¶ÁÊı¾İ³¤¶È
 	msize_t CanReadLen() const;
-	//è·å–å¯å†™æ•°æ®é•¿åº¦
+	//»ñÈ¡¿ÉĞ´Êı¾İ³¤¶È
 	msize_t CanWriteLen() const;
-	//è·å–æ•°æ®æŒ‡é’ˆ
+	//»ñÈ¡Êı¾İÖ¸Õë
 	BYTE* GetData() const;
-	//å‘é€ç¼“å†²åŒºæ•°æ®åˆ°tcp
+	//·¢ËÍ»º³åÇøÊı¾İµ½tcp
 	int Send(CSocket& socket);
-	//æ¥æ”¶æ•°æ®
+	//½ÓÊÕÊı¾İ
 	int Recv(CSocket& socket);
 public:
-	//åˆ¤æ–­æ˜¯å¦æ˜¯å°ç«¯
+	//ÅĞ¶ÏÊÇ·ñÊÇĞ¡¶Ë
 	static bool IsLittleEndian();
 	static void Reverse(BYTE*str, size_t len);
 private:
-	//å¤§å°ç«¯è½¬æ¢
+	//´óĞ¡¶Ë×ª»»
 	BYTE* Flip(BYTE* netStr, size_t len);
-	//åªè¯»å–åŸºæœ¬ç±»å‹
+	//Ö»¶ÁÈ¡»ù±¾ÀàĞÍ
 	template<class T,int len_ = sizeof(T)>
 	T ReadT(bool ispeek);
 	/**
 	 *
 	 * @tparam T
 	 * @param t
-	 * @param pos 	ç›¸å¯¹writeindex çš„åç§»
+	 * @param pos 	Ïà¶Ôwriteindex µÄÆ«ÒÆ
 	 */
-	template<class T, int len_ = sizeof(T)> //åªå†™åŸºæœ¬ç±»å‹
+	template<class T, int len_ = sizeof(T)> //Ö»Ğ´»ù±¾ÀàĞÍ
 	void WriteT(T t, int offset = 0);
-	//ä¸è¦éšä¾¿è°ƒç”¨
+	//²»ÒªËæ±ãµ÷ÓÃ
 	void Copy(const CByteBuff& srcBuff);
 private:
 	static bool m_bIsLittleEndian;

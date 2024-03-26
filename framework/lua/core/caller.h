@@ -2,7 +2,7 @@
 /*
   https://github.com/DGuco/luabridge
 
-  Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+  Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
 
   License: The MIT License (http://www.opensource.org/licenses/mit-license.php)
 
@@ -36,11 +36,11 @@
 namespace luabridge
 {
 
-template<size_t NUM_PARAMS/*å‚æ•°ä¸ªæ•°*/, class ReturnType/*è¿”å›ç±»å‹*/, class... ParamList/*å‚æ•°åˆ—è¡¨*/>
+template<size_t NUM_PARAMS/*²ÎÊı¸öÊı*/, class ReturnType/*·µ»ØÀàĞÍ*/, class... ParamList/*²ÎÊıÁĞ±í*/>
 struct Caller;
 
 /**
- * æ— å‚æ•°
+ * ÎŞ²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -61,7 +61,7 @@ struct Caller<0, ReturnType, ParamList...>
 };
 
 /**
- * 1å‚æ•°
+ * 1²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -82,7 +82,7 @@ struct Caller<1, ReturnType, ParamList...>
 };
 
 /**
- * 2å‚æ•°
+ * 2²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -105,7 +105,7 @@ struct Caller<2, ReturnType, ParamList...>
 };
 
 /**
- * 3å‚æ•°
+ * 3²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -130,7 +130,7 @@ struct Caller<3, ReturnType, ParamList...>
 };
 
 /**
- * 4å‚æ•°
+ * 4²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -157,7 +157,7 @@ struct Caller<4, ReturnType, ParamList...>
 };
 
 /**
- * 5å‚æ•°
+ * 5²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -186,7 +186,7 @@ struct Caller<5, ReturnType, ParamList...>
 };
 
 /**
- * 6å‚æ•°
+ * 6²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -217,7 +217,7 @@ struct Caller<6, ReturnType, ParamList...>
 };
 
 /**
- * 7å‚æ•°
+ * 7²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -250,7 +250,7 @@ struct Caller<7, ReturnType, ParamList...>
 };
 
 /**
- * 8å‚æ•°
+ * 8²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -285,7 +285,7 @@ struct Caller<8, ReturnType, ParamList...>
 };
 
 /**
- * 9å‚æ•°
+ * 9²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -322,7 +322,7 @@ struct Caller<9, ReturnType, ParamList...>
 };
 
 /**
- * 10å‚æ•°
+ * 10²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -361,7 +361,7 @@ struct Caller<10, ReturnType, ParamList...>
 };
 
 /**
- * 11å‚æ•°
+ * 11²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -402,7 +402,7 @@ struct Caller<11, ReturnType, ParamList...>
 };
 
 /**
- * 12å‚æ•°
+ * 12²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -445,7 +445,7 @@ struct Caller<12, ReturnType, ParamList...>
 };
 
 /**
- * 13å‚æ•°
+ * 13²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -490,7 +490,7 @@ struct Caller<13, ReturnType, ParamList...>
 };
 
 /**
- * 14å‚æ•°
+ * 14²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -537,7 +537,7 @@ struct Caller<14, ReturnType, ParamList...>
 };
 
 /**
- * 15å‚æ•°
+ * 15²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -586,7 +586,7 @@ struct Caller<15, ReturnType, ParamList...>
 };
 
 /**
- * 16å‚æ•°
+ * 16²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -637,7 +637,7 @@ struct Caller<16, ReturnType, ParamList...>
 };
 
 /**
- * 17å‚æ•°
+ * 17²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -690,7 +690,7 @@ struct Caller<17, ReturnType, ParamList...>
 };
 
 /**
- * 18å‚æ•°
+ * 18²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -745,7 +745,7 @@ struct Caller<18, ReturnType, ParamList...>
 };
 
 /**
- * 19å‚æ•°
+ * 19²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */
@@ -802,7 +802,7 @@ struct Caller<19, ReturnType, ParamList...>
 };
 
 /**
- * 20å‚æ•°
+ * 20²ÎÊı
  * @tparam ReturnType
  * @tparam ParamList
  */

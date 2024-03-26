@@ -16,11 +16,11 @@ namespace my_std
 {
     /**
      *
-     * @tparam KeyType_   keyçš„ç±»å‹
-     * @tparam ValueType_ valueçš„ç±»å‹
-     * @tparam _Cap      mapçš„å®¹é‡ä¸Šé™
-     * @tparam IndexType_   mapçš„æ•°ç»„ä¸‹æ ‡æ•°æ®ç±»å‹ï¼Œé»˜è®¤ä¸ºunsigned int(_Capçš„å¤§å°å¿…é¡»å°äºIndexType_çš„æœ€å¤§å€¼ï¼Œex:å½“IndexType_ä¸ºunsigned intæ—¶_Capæ”¯æŒçš„æœ€å¤§å€¼ä¸ºUINT_MAX -1)
-     *     ç»™è¿™ä¸ªç±»å‹å‚æ•°ä¸»è¦æ˜¯ä¸ºäº†å½“_Capè¾ƒå°æ—¶å¯ä»¥æœ‰æ•ˆçš„å‡å°‘mapçš„å†…å­˜å ç”¨
+     * @tparam KeyType_   keyµÄÀàĞÍ
+     * @tparam ValueType_ valueµÄÀàĞÍ
+     * @tparam _Cap      mapµÄÈİÁ¿ÉÏÏŞ
+     * @tparam IndexType_   mapµÄÊı×éÏÂ±êÊı¾İÀàĞÍ£¬Ä¬ÈÏÎªunsigned int(_CapµÄ´óĞ¡±ØĞëĞ¡ÓÚIndexType_µÄ×î´óÖµ£¬ex:µ±IndexType_Îªunsigned intÊ±_CapÖ§³ÖµÄ×î´óÖµÎªUINT_MAX -1)
+     *     ¸øÕâ¸öÀàĞÍ²ÎÊıÖ÷ÒªÊÇÎªÁËµ±_Cap½ÏĞ¡Ê±¿ÉÒÔÓĞĞ§µÄ¼õÉÙmapµÄÄÚ´æÕ¼ÓÃ
      */
     template <typename KeyType_, typename ValueType_, std::size_t _Cap, typename IndexType_ = unsigned int>
     class RbtHashMap
@@ -71,10 +71,10 @@ namespace my_std
             std::size_t bucket = hash_func(v.first) % _Cap;
 
             tree_type rb_tree = hash_array_.make_rbtree(buckets_[bucket].root_);
-            //è¯¥bucketæ˜¯ç©ºçš„
+            //¸ÃbucketÊÇ¿ÕµÄ
             if (rb_tree.isEmpty())
             {
-                //ç”³è¯·ä¸€ä¸ªèŠ‚ç‚¹
+                //ÉêÇëÒ»¸ö½Úµã
                 node_type* new_node = hash_array_.allocate_node(v);
                 if (!new_node)
                 {
@@ -82,9 +82,9 @@ namespace my_std
                 }
                 rb_tree.insert(new_node);
                 IndexType_ oldhead = hash_array_.rb_tree_head_bucket();
-                //è®¾ç½®rootä¿¡æ¯
+                //ÉèÖÃrootĞÅÏ¢
                 buckets_[bucket].root_ = rb_tree.root();
-                //æ–°çš„rbtreeæˆä¸ºæ–°çš„æ ‘é“¾å¤´éƒ¨,é‡æ–°è®¾ç½®æ ‘é“¾çš„å‰åæŒ‡é’ˆ
+                //ĞÂµÄrbtree³ÉÎªĞÂµÄÊ÷Á´Í·²¿,ÖØĞÂÉèÖÃÊ÷Á´µÄÇ°ºóÖ¸Õë
                 buckets_[bucket].prebucket_ = 0;
                 buckets_[bucket].nextbucket_ = oldhead;
                 if (oldhead > 0 && oldhead <= _Cap)
@@ -100,13 +100,13 @@ namespace my_std
                 return end();
             }
 
-            //ç”³è¯·ä¸€ä¸ªèŠ‚ç‚¹
+            //ÉêÇëÒ»¸ö½Úµã
             node_type* new_node = hash_array_.allocate_node(v, hash_array_.get_node(buckets_[bucket].root_));
             if (!new_node)
             {
                 return end();
             }
-            //æŠŠæ–°èŠ‚ç‚¹æ’å…¥çº¢é»‘æ ‘
+            //°ÑĞÂ½Úµã²åÈëºìºÚÊ÷
             rb_tree.insert(new_node);
             buckets_[bucket].root_ = rb_tree.root();
             return hash_array_.make_iterator(new_node, buckets_);
@@ -123,7 +123,7 @@ namespace my_std
             std::size_t bucket = hash_func(k) % _Cap;
 
             tree_type rb_tree = hash_array_.make_rbtree(buckets_[bucket].root_);
-            //è¯¥bucketæ˜¯ç©ºçš„
+            //¸ÃbucketÊÇ¿ÕµÄ
             if (rb_tree.isEmpty())
             {
                 return this->end();
@@ -137,7 +137,7 @@ namespace my_std
             std::size_t bucket = hash_func(k) % _Cap;
 
             tree_type rb_tree = hash_array_.make_rbtree(buckets_[bucket].root_);
-            //è¯¥bucketæ˜¯ç©ºçš„
+            //¸ÃbucketÊÇ¿ÕµÄ
             if (rb_tree.isEmpty())
             {
                 return this->end();
@@ -155,7 +155,7 @@ namespace my_std
             hash_function::hash<KeyType_> hash_func;
             std::size_t bucket = hash_func(it->first) % _Cap;
             tree_type rb_tree = hash_array_.make_rbtree(buckets_[bucket].root_);
-            //è¯¥bucketæ˜¯ç©ºçš„
+            //¸ÃbucketÊÇ¿ÕµÄ
             if (rb_tree.isEmpty())
             {
                 return hash_array_.end();
@@ -168,24 +168,24 @@ namespace my_std
             {
                 buckets_[bucket].root_ = rb_tree.root();
             }
-            else//æ ‘åˆ ç©ºäº†
+            else//Ê÷É¾¿ÕÁË
             {
                 //update bucket info
                 buckets_[bucket].root_ = 0;
                 IndexType_ preBucket = buckets_[bucket].prebucket_;
                 IndexType_ nextBucket = buckets_[bucket].nextbucket_;
-                //å‰åä¸¤æ£µæ ‘ä¸ä¸ºç©ºï¼ŒæŠŠå‰æ ‘çš„å°¾éƒ¨æŒ‡å‘åæ ‘ï¼Œåæ ‘çš„å¤´éƒ¨æŒ‡å‘å‰æ ‘
+                //Ç°ºóÁ½¿ÃÊ÷²»Îª¿Õ£¬°ÑÇ°Ê÷µÄÎ²²¿Ö¸ÏòºóÊ÷£¬ºóÊ÷µÄÍ·²¿Ö¸ÏòÇ°Ê÷
                 if ((preBucket > 0 && preBucket <= _Cap) && (nextBucket > 0 && nextBucket <= _Cap))
                 {
                     buckets_[preBucket - 1].nextbucket_ = nextBucket;
                     buckets_[nextBucket - 1].prebucket_ = preBucket;
                 }
-                //å‰æ ‘ä¸ä¸ºç©ºåæ ‘ä¸ºç©º
+                //Ç°Ê÷²»Îª¿ÕºóÊ÷Îª¿Õ
                 else if (preBucket > 0 && preBucket <= _Cap)
                 {
                     buckets_[preBucket - 1].nextbucket_ = 0;
                 }
-                //å‰æ ‘ä¸ºç©ºåæ ‘ä¸ä¸ºç©º,è°ƒæ•´æ ‘é“¾æŒ‡é’ˆï¼Œå¹¶ä¸”åæ ‘æˆä¸ºæ–°çš„æ ‘é“¾çš„å¤´
+                //Ç°Ê÷Îª¿ÕºóÊ÷²»Îª¿Õ,µ÷ÕûÊ÷Á´Ö¸Õë£¬²¢ÇÒºóÊ÷³ÉÎªĞÂµÄÊ÷Á´µÄÍ·
                 else if (nextBucket > 0 && nextBucket <= _Cap)
                 {
                     buckets_[nextBucket - 1].prebucket_ = 0;
@@ -212,7 +212,7 @@ namespace my_std
             hash_function::hash<KeyType_> hash_func;
             std::size_t bucket = hash_func(it->first) % _Cap;
             tree_type rb_tree = hash_array_.make_rbtree(buckets_[bucket].root_);
-            //è¯¥bucketæ˜¯ç©ºçš„
+            //¸ÃbucketÊÇ¿ÕµÄ
             if (rb_tree.isEmpty())
             {
                 return false;
@@ -225,24 +225,24 @@ namespace my_std
             {
                 buckets_[bucket].root_ = rb_tree.root();
             }
-            else//æ ‘åˆ ç©ºäº†
+            else//Ê÷É¾¿ÕÁË
             {
                 //update bucket info
                 buckets_[bucket].root_ = 0;
                 IndexType_ preBucket = buckets_[bucket].prebucket_;
                 IndexType_ nextBucket = buckets_[bucket].nextbucket_;
-                //å‰åä¸¤æ£µæ ‘ä¸ä¸ºç©ºï¼ŒæŠŠå‰æ ‘çš„å°¾éƒ¨æŒ‡å‘åæ ‘ï¼Œåæ ‘çš„å¤´éƒ¨æŒ‡å‘å‰æ ‘
+                //Ç°ºóÁ½¿ÃÊ÷²»Îª¿Õ£¬°ÑÇ°Ê÷µÄÎ²²¿Ö¸ÏòºóÊ÷£¬ºóÊ÷µÄÍ·²¿Ö¸ÏòÇ°Ê÷
                 if ((preBucket > 0 && preBucket <= _Cap) && (nextBucket > 0 && nextBucket <= _Cap))
                 {
                     buckets_[preBucket - 1].nextbucket_ = nextBucket;
                     buckets_[nextBucket - 1].prebucket_ = preBucket;
                 }
-                //å‰æ ‘ä¸ä¸ºç©ºåæ ‘ä¸ºç©º
+                //Ç°Ê÷²»Îª¿ÕºóÊ÷Îª¿Õ
                 else if (preBucket > 0 && preBucket <= _Cap)
                 {
                     buckets_[preBucket - 1].nextbucket_ = 0;
                 }
-                //å‰æ ‘ä¸ºç©ºåæ ‘ä¸ä¸ºç©º,è°ƒæ•´æ ‘é“¾æŒ‡é’ˆï¼Œå¹¶ä¸”åæ ‘æˆä¸ºæ–°çš„æ ‘é“¾çš„å¤´
+                //Ç°Ê÷Îª¿ÕºóÊ÷²»Îª¿Õ,µ÷ÕûÊ÷Á´Ö¸Õë£¬²¢ÇÒºóÊ÷³ÉÎªĞÂµÄÊ÷Á´µÄÍ·
                 else if (nextBucket > 0 && nextBucket <= _Cap)
                 {
                     buckets_[nextBucket - 1].prebucket_ = 0;
@@ -313,7 +313,7 @@ namespace my_std
 
     private:
         bucket_type<IndexType_>		buckets_[_Cap];     //bucket array
-        hash_array	 	            hash_array_;		//å†…å­˜ç®¡ç†å™¨
+        hash_array	 	            hash_array_;		//ÄÚ´æ¹ÜÀíÆ÷
     };
 }
 

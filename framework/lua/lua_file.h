@@ -1,7 +1,7 @@
 /******************************************************************************
 * https://github.com/DGuco/luabridge
 *
-* Copyright (C) 2021 DGuco(ÊùúÂõΩË∂Ö)<1139140929@qq.com>.  All rights reserved.
+* Copyright (C) 2021 DGuco(∂≈π˙≥¨)<1139140929@qq.com>.  All rights reserved.
 * Copyright (C) 2004 Yong Lin.  All rights reserved.
 *
 * License: The MIT License (http://www.opensource.org/licenses/mit-license.php)

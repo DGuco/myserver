@@ -1,6 +1,6 @@
 //
 // Created by DGuco on 17-9-6.
-// ç©å®¶åŸºç¡€ä¿¡æ¯
+// Íæ¼Ò»ù´¡ĞÅÏ¢
 //
 
 #ifndef SERVER_PLAYERBASE_H
@@ -15,13 +15,13 @@
 #include "base.h"
 #include "object.h"
 
-// ç©å®¶é“¾æ¥ä¿¡æ¯
+// Íæ¼ÒÁ´½ÓĞÅÏ¢
 struct STConnectInfo
 {
-    int						m_iSocket;									// socketidå³FD
-    time_t					m_tCreateTime;								// åˆ›å»ºæ—¶é—´
-    time_t					m_tLastActiveTime;							// æœ€åæ´»è·ƒæ—¶é—´
-    time_t					m_tLoginTime;									// ç™»é™†æ—¶é—´
+    int						m_iSocket;									// socketid¼´FD
+    time_t					m_tCreateTime;								// ´´½¨Ê±¼ä
+    time_t					m_tLastActiveTime;							// ×îºó»îÔ¾Ê±¼ä
+    time_t					m_tLoginTime;									// µÇÂ½Ê±¼ä
 
     STConnectInfo()
     {
@@ -59,13 +59,13 @@ class CPlayerBase : public CPlayerData
 public:
     enum ETeamState
     {
-        ETS_INVALID							= 0,	// æ— æ•ˆçš„çŠ¶æ€,ä¹Ÿæ˜¯åˆå§‹çŠ¶æ€
-        ETS_STARTLOGIN						= 1,	// åˆšåˆ›å»º,åˆå§‹åŒ–äº†é“¾æ¥ä¿¡æ¯,å…¶å®ƒä¿¡æ¯ä¸ºç©º
-        ETS_LOADACCOUNT				        = 2,	// åˆšç™»é™†,æ‹‰å–å¸å·ä¿¡æ¯
-        ETS_LOADDATA						= 3,	// æ‹‰å–æˆ˜é˜Ÿæ•°æ®
-        ETS_INGAMECONNECT			        = 4,	// åœ¨æ¸¸æˆä¸­,å¹¶ä¸”æœ‰è¿æ¥
-        ETS_INGAMEDISCONNECT		        = 5,	// åœ¨æ¸¸æˆä¸­,æ— è¿æ¥
-        ETS_EXITSAVE						= 6,	// ç¦»å¼€å­˜å‚¨æ•°æ®
+        ETS_INVALID							= 0,	// ÎŞĞ§µÄ×´Ì¬,Ò²ÊÇ³õÊ¼×´Ì¬
+        ETS_STARTLOGIN						= 1,	// ¸Õ´´½¨,³õÊ¼»¯ÁËÁ´½ÓĞÅÏ¢,ÆäËüĞÅÏ¢Îª¿Õ
+        ETS_LOADACCOUNT				        = 2,	// ¸ÕµÇÂ½,À­È¡ÕÊºÅĞÅÏ¢
+        ETS_LOADDATA						= 3,	// À­È¡Õ½¶ÓÊı¾İ
+        ETS_INGAMECONNECT			        = 4,	// ÔÚÓÎÏ·ÖĞ,²¢ÇÒÓĞÁ¬½Ó
+        ETS_INGAMEDISCONNECT		        = 5,	// ÔÚÓÎÏ·ÖĞ,ÎŞÁ¬½Ó
+        ETS_EXITSAVE						= 6,	// Àë¿ª´æ´¢Êı¾İ
     };
 
     enum ESLF_FLAGS
@@ -76,44 +76,44 @@ public:
 
     enum emFirstLoginFlag
     {
-        emLoginFlag_First				= 0,		// ç¬¬ä¸€æ¬¡ç™»å½•
-        emLoginFlag_notFirst		= 1,		// ä¸æ˜¯åœ°ä¸€æ¬¡ç™»å½•
-        emLoginFlag_haveobj			= 2,		// ç©å®¶å­˜åœ¨å®ä½“
+        emLoginFlag_First				= 0,		// µÚÒ»´ÎµÇÂ¼
+        emLoginFlag_notFirst		= 1,		// ²»ÊÇµØÒ»´ÎµÇÂ¼
+        emLoginFlag_haveobj			= 2,		// Íæ¼Ò´æÔÚÊµÌå
     };
 
-    // ç©å®¶ç¦»çº¿ç±»å‹
-    // < 0 tcpä¸»åŠ¨æ–­è¿æˆ–æ£€æµ‹åˆ°è¿æ¥æ–­å¼€
-    // = 0 æ­£å¸¸æ–­è¿
-    // > 0 æœåŠ¡å™¨ä¸»åŠ¨æ–­è¿
+    // Íæ¼ÒÀëÏßÀàĞÍ
+    // < 0 tcpÖ÷¶¯¶ÏÁ¬»ò¼ì²âµ½Á¬½Ó¶Ï¿ª
+    // = 0 Õı³£¶ÏÁ¬
+    // > 0 ·şÎñÆ÷Ö÷¶¯¶ÏÁ¬
     enum ELeaveType
     {
-        LEAVE_CLIENTCLOSE		= -1,		// TCPæ£€æµ‹åˆ°å®¢æˆ·ç«¯æ–­è¿,ä¸éœ€è¦å›å¤
-        LEAVE_TIMEOUT				= -2,		// TCPæ£€æµ‹åˆ°å®¢æˆ·ç«¯è¶…æ—¶,ä¸éœ€è¦å›å¤
-        LEAVE_ERRPACKAGE			= -3,		// TCPæ£€æµ‹åˆ°åŒ…ä¿¡æ¯éæ³•,ä¸éœ€è¦å›å¤
-        LEAVE_BUFFOVER				= -4,		// TCPç¼“å†²åŒºå·²æ»¡,ä¸éœ€è¦å›å¤
-        LEAVE_PIPEERR					= -5,		// TCPæ•°æ®åŒ…æ”¾å…¥ç®¡é“å¤±è´¥,ä¸éœ€è¦å›å¤
-        LEAVE_SYSTEM					= -6,		// TCPç³»ç»Ÿé”™è¯¯ï¼Œæš‚æ—¶æœªç”¨,ä¸éœ€è¦å›å¤
-        LEAVE_PUSHAGAINST		= -7,		// è¢«æŒ¤ä¸‹å»,ä¸éœ€è¦å›å¤
-        LEAVE_NOCONTRAL			= -8,		// ç©å®¶é•¿æ—¶é—´æœªæ“ä½œ,ä¸éœ€è¦å›å¤
-        LEAVE_NORMAL 				= 0,		// ç©å®¶æ­£å¸¸ä¸‹çº¿,éœ€è¦å›å¤
-        LEAVE_LOGINFAILED		= 1,		// ç©å®¶ç™»é™†å¤±è´¥,éœ€è¦å›å¤
+        LEAVE_CLIENTCLOSE		= -1,		// TCP¼ì²âµ½¿Í»§¶Ë¶ÏÁ¬,²»ĞèÒª»Ø¸´
+        LEAVE_TIMEOUT				= -2,		// TCP¼ì²âµ½¿Í»§¶Ë³¬Ê±,²»ĞèÒª»Ø¸´
+        LEAVE_ERRPACKAGE			= -3,		// TCP¼ì²âµ½°üĞÅÏ¢·Ç·¨,²»ĞèÒª»Ø¸´
+        LEAVE_BUFFOVER				= -4,		// TCP»º³åÇøÒÑÂú,²»ĞèÒª»Ø¸´
+        LEAVE_PIPEERR					= -5,		// TCPÊı¾İ°ü·ÅÈë¹ÜµÀÊ§°Ü,²»ĞèÒª»Ø¸´
+        LEAVE_SYSTEM					= -6,		// TCPÏµÍ³´íÎó£¬ÔİÊ±Î´ÓÃ,²»ĞèÒª»Ø¸´
+        LEAVE_PUSHAGAINST		= -7,		// ±»¼·ÏÂÈ¥,²»ĞèÒª»Ø¸´
+        LEAVE_NOCONTRAL			= -8,		// Íæ¼Ò³¤Ê±¼äÎ´²Ù×÷,²»ĞèÒª»Ø¸´
+        LEAVE_NORMAL 				= 0,		// Íæ¼ÒÕı³£ÏÂÏß,ĞèÒª»Ø¸´
+        LEAVE_LOGINFAILED		= 1,		// Íæ¼ÒµÇÂ½Ê§°Ü,ĞèÒª»Ø¸´
     };
 
 public:
     CPlayerBase(CPlayer* pPlayer);
     virtual ~CPlayerBase();
     virtual int Initialize();
-    // å®ä½“ID
+    // ÊµÌåID
     OBJ_ID GetEntityID() {return GetPlayerId();}
 
 public:
-    // ä¸Šæ¬¡ç™»å½•æ—¶é—´
+    // ÉÏ´ÎµÇÂ¼Ê±¼ä
     void SetLastLoginTime(int v) {m_iLastLoginTime = v;}
     int GetLastLoginTime() {return m_iLastLoginTime;}
-    // ç¦»çº¿æ—¶é—´
+    // ÀëÏßÊ±¼ä
     void SetLeaveTime(int v) {m_iLeaveTime = v;}
     int GetLeaveTime() {return m_iLeaveTime;}
-    // åˆ›å»ºæ—¶é—´
+    // ´´½¨Ê±¼ä
     void SetCreateTime(time_t v) {m_tCreateTime = v;}
     time_t GetCreateTime() {return m_tCreateTime;}
 
@@ -121,25 +121,25 @@ public:
     int GetSocketCreateTime() { return  m_SocketInfo.m_tCreateTime;}
     int GetLastActiveTime() {return m_SocketInfo.m_tLastActiveTime;}
     int GetLoginTime() {return m_SocketInfo.m_tLoginTime;}
-    // å¸å·
+    // ÕÊºÅ
     void SetAccount(const char* p)
     { }
     char* GetAccount() {return &m_acAccount[0];}
-    // è·å–è¿æ¥ä¿¡æ¯
+    // »ñÈ¡Á¬½ÓĞÅÏ¢
     STConnectInfo* GetSocketInfoPtr() {return &m_SocketInfo;}
 
 private:
-    // ä¸Šæ¬¡ç™»å½•æ—¶é—´
+    // ÉÏ´ÎµÇÂ¼Ê±¼ä
     int m_iLastLoginTime;
-    // ç¦»çº¿æ—¶é—´
+    // ÀëÏßÊ±¼ä
     int m_iLeaveTime;
-    // åˆ›å»ºæ—¶é—´
+    // ´´½¨Ê±¼ä
     time_t m_tCreateTime;
-    // å¸å·çŠ¶æ€æ—¶é•¿( ç¦æ­¢ç™»é™† ç¦æ­¢è¯´è¯ ç¦æ­¢...)
+    // ÕÊºÅ×´Ì¬Ê±³¤( ½ûÖ¹µÇÂ½ ½ûÖ¹Ëµ»° ½ûÖ¹...)
     time_t m_tLoginLimitTime;
-    // å¸å·
+    // ÕÊºÅ
     char			m_acAccount[UID_LENGTH];
-    //è¿æ¥ä¿¡æ¯
+    //Á¬½ÓĞÅÏ¢
     STConnectInfo	m_SocketInfo;
 };
 

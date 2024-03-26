@@ -504,12 +504,12 @@ int ParameterConfig::parse()
         }
         else if(key == "RobotLimitPerArea")
         {
-            //æœºå™¨äººé¥±å’Œåº¦
+            //»úÆ÷ÈË±¥ºÍ¶È
             item->_floater = value.GetFloat();
         }
         else if(key == "RobotNum")
         {
-            //åˆå§‹æœºå™¨äººæ•°é‡
+            //³õÊ¼»úÆ÷ÈËÊýÁ¿
             item->_integer = value.GetInt();
         }
         else if (key == "ObstacleNum")

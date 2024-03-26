@@ -2,7 +2,7 @@
 /*
   https://github.com/DGuco/luabridge
 
-  Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+  Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
   Copyright 2019, Dmitry Tarakanov
   Copyright 2012, Vinnie Falco <vinnie.falco@gmail.com>
   Copyright (C) 2004 Yong Lin.  All rights reserved.
@@ -74,81 +74,81 @@ struct CFunc
     */
     static int IndexMetaMethod(lua_State *L)
     {
-        //æ ˆçŠ¶æ€lua_gettop(L) == 2:tu(t)=>field name(k)
-        //checkç¬¬ä¸€ä¸ªå…ƒç´ æ˜¯å¦æ˜¯ä¸€ä¸ªè¡¨æˆ–è€…userdata
+        //Õ»×´Ì¬lua_gettop(L) == 2:tu(t)=>field name(k)
+        //checkµÚÒ»¸öÔªËØÊÇ·ñÊÇÒ»¸ö±í»òÕßuserdata
         LUA_ASSERT(L, lua_istable(L, 1) || lua_isuserdata(L, 1), "lua_istable(L, 1) || lua_isuserdata(L, 1)");
 
-        //å°†å…¶å…ƒè¡¨å‹æ ˆ
+        //½«ÆäÔª±íÑ¹Õ»
         LUA_ASSERT (L, lua_getmetatable(L, 1) == 1, "lua_getmetatable(L, 1) == 1");
-        //mt = tu.__metatable æ ˆçŠ¶æ€lua_gettop(L) == 3:tu=>field name=>mt
+        //mt = tu.__metatable Õ»×´Ì¬lua_gettop(L) == 3:tu=>field name=>mt
         LUA_ASSERT (L, lua_istable(L, -1), "lua_istable(L, 1)");
 
         for (;;) {
-            lua_pushvalue(L, 2); // æ ˆçŠ¶æ€lua_gettop(L)==4:tu=>field name =>mt =>field name
-            lua_rawget(L, -2);  //func = mt[field name] æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>mt=>func
+            lua_pushvalue(L, 2); // Õ»×´Ì¬lua_gettop(L)==4:tu=>field name =>mt =>field name
+            lua_rawget(L, -2);  //func = mt[field name] Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>mt=>func
 
-            //æ‰¾åˆ°äº†nameå¯¹åº”çš„å‡½æ•°,return 1
-            if (lua_iscfunction(L, -1)) //æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>mt=>func
+            //ÕÒµ½ÁËname¶ÔÓ¦µÄº¯Êı,return 1
+            if (lua_iscfunction(L, -1)) //Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>mt=>func
             {
-                lua_remove(L, -2);  //æ ˆçŠ¶æ€lua_gettop(L) == 3:tu=>field name=>func
+                lua_remove(L, -2);  //Õ»×´Ì¬lua_gettop(L) == 3:tu=>field name=>func
                 return 1;
             }
 
-            //æ²¡æœ‰æ‰¾åˆ°äº†nameå¯¹åº”çš„å‡½æ•°
-            // æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>mt=>nil
+            //Ã»ÓĞÕÒµ½ÁËname¶ÔÓ¦µÄº¯Êı
+            // Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>mt=>nil
             LUA_ASSERT (L, lua_isnil(L, -1), "lua_istable(L, 1)");
-            lua_pop (L, 1); // æ ˆçŠ¶æ€lua_gettop(L) == 3:tu=>field name=>mt
+            lua_pop (L, 1); // Õ»×´Ì¬lua_gettop(L) == 3:tu=>field name=>mt
 
-            lua_rawgetp(L, -1, GetPropgetKey()); //pg=mg['getkey']  æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>mt=>pg
+            lua_rawgetp(L, -1, GetPropgetKey()); //pg=mg['getkey']  Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>mt=>pg
             LUA_ASSERT (L, lua_istable(L, -1), "lua_istable(L, 1)");
 
-            lua_pushvalue(L, 2); //æ ˆçŠ¶æ€lua_gettop(L) == 5:tu=>field name=>mt=>pg=>field name
-            lua_rawget(L, -2);  //getter = pg[field name]æ ˆçŠ¶æ€lua_gettop(L) == 5:tu=>field name=>mt=>pg=>getter|nil
-            lua_remove(L, -2); // æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>mt=>getter|nil
+            lua_pushvalue(L, 2); //Õ»×´Ì¬lua_gettop(L) == 5:tu=>field name=>mt=>pg=>field name
+            lua_rawget(L, -2);  //getter = pg[field name]Õ»×´Ì¬lua_gettop(L) == 5:tu=>field name=>mt=>pg=>getter|nil
+            lua_remove(L, -2); // Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>mt=>getter|nil
 
-            //æ‰¾åˆ°äº†nameå¯¹åº”getterçš„å‡½æ•°
-            if (lua_iscfunction(L, -1)) // æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>mt=>getter
+            //ÕÒµ½ÁËname¶ÔÓ¦getterµÄº¯Êı
+            if (lua_iscfunction(L, -1)) // Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>mt=>getter
             {
-                lua_remove(L, -2);  //æ ˆçŠ¶æ€lua_gettop(L) == 3:tu=>field name=>getter
-                lua_pushvalue(L, 1); //æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>getter=>tu
+                lua_remove(L, -2);  //Õ»×´Ì¬lua_gettop(L) == 3:tu=>field name=>getter
+                lua_pushvalue(L, 1); //Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>getter=>tu
                 /**
                  *lua_call
-                 *è°ƒç”¨ä¸€ä¸ªå‡½æ•°ã€‚è¦è°ƒç”¨ä¸€ä¸ªå‡½æ•°è¯·éµå¾ªä»¥ä¸‹åè®®ï¼š é¦–å…ˆï¼Œè¦è°ƒç”¨çš„å‡½æ•°åº”è¯¥è¢«å‹å…¥æ ˆï¼› æ¥ç€ï¼ŒæŠŠéœ€è¦ä¼ é€’ç»™è¿™ä¸ªå‡½æ•°çš„å‚æ•°æŒ‰æ­£åºå‹æ ˆï¼› è¿™æ˜¯æŒ‡ç¬¬ä¸€ä¸ªå‚æ•°é¦–å…ˆå‹æ ˆã€‚
-                 *æœ€åè°ƒç”¨ä¸€ä¸‹ lua_callï¼› nargs æ˜¯ä½ å‹å…¥æ ˆçš„å‚æ•°ä¸ªæ•°ã€‚ å½“å‡½æ•°è°ƒç”¨å®Œæ¯•åï¼Œæ‰€æœ‰çš„å‚æ•°ä»¥åŠå‡½æ•°æœ¬èº«éƒ½ä¼šå‡ºæ ˆã€‚ è€Œå‡½æ•°çš„è¿”å›å€¼è¿™æ—¶åˆ™è¢«å‹æ ˆã€‚ è¿”å›å€¼çš„ä¸ª
-                 *æ•°å°†è¢«è°ƒæ•´ä¸º nresults ä¸ªï¼Œ é™¤é nresults è¢«è®¾ç½®æˆ LUA_MULTRETã€‚ åœ¨è¿™ç§æƒ…å†µä¸‹ï¼Œæ‰€æœ‰çš„è¿”å›å€¼éƒ½è¢«å‹å…¥å †æ ˆä¸­ã€‚ Lua ä¼šä¿è¯è¿”å›å€¼éƒ½æ”¾å…¥æ ˆç©ºé—´ä¸­ã€‚
-                 *å‡½æ•°è¿”å›å€¼å°†æŒ‰æ­£åºå‹æ ˆï¼ˆç¬¬ä¸€ä¸ªè¿”å›å€¼é¦–å…ˆå‹æ ˆï¼‰ï¼Œ å› æ­¤åœ¨è°ƒç”¨ç»“æŸåï¼Œæœ€åä¸€ä¸ªè¿”å›å€¼å°†è¢«æ”¾åœ¨æ ˆé¡¶ã€‚
+                 *µ÷ÓÃÒ»¸öº¯Êı¡£Òªµ÷ÓÃÒ»¸öº¯ÊıÇë×ñÑ­ÒÔÏÂĞ­Òé£º Ê×ÏÈ£¬Òªµ÷ÓÃµÄº¯ÊıÓ¦¸Ã±»Ñ¹ÈëÕ»£» ½Ó×Å£¬°ÑĞèÒª´«µİ¸øÕâ¸öº¯ÊıµÄ²ÎÊı°´ÕıĞòÑ¹Õ»£» ÕâÊÇÖ¸µÚÒ»¸ö²ÎÊıÊ×ÏÈÑ¹Õ»¡£
+                 *×îºóµ÷ÓÃÒ»ÏÂ lua_call£» nargs ÊÇÄãÑ¹ÈëÕ»µÄ²ÎÊı¸öÊı¡£ µ±º¯Êıµ÷ÓÃÍê±Ïºó£¬ËùÓĞµÄ²ÎÊıÒÔ¼°º¯Êı±¾Éí¶¼»á³öÕ»¡£ ¶øº¯ÊıµÄ·µ»ØÖµÕâÊ±Ôò±»Ñ¹Õ»¡£ ·µ»ØÖµµÄ¸ö
+                 *Êı½«±»µ÷ÕûÎª nresults ¸ö£¬ ³ı·Ç nresults ±»ÉèÖÃ³É LUA_MULTRET¡£ ÔÚÕâÖÖÇé¿öÏÂ£¬ËùÓĞµÄ·µ»ØÖµ¶¼±»Ñ¹Èë¶ÑÕ»ÖĞ¡£ Lua »á±£Ö¤·µ»ØÖµ¶¼·ÅÈëÕ»¿Õ¼äÖĞ¡£
+                 *º¯Êı·µ»ØÖµ½«°´ÕıĞòÑ¹Õ»£¨µÚÒ»¸ö·µ»ØÖµÊ×ÏÈÑ¹Õ»£©£¬ Òò´ËÔÚµ÷ÓÃ½áÊøºó£¬×îºóÒ»¸ö·µ»ØÖµ½«±»·ÅÔÚÕ»¶¥¡£
                  */
-                lua_call(L, 1, 1); // æ ˆçŠ¶æ€lua_gettop(L) == 3:tu=>field name=>value
+                lua_call(L, 1, 1); // Õ»×´Ì¬lua_gettop(L) == 3:tu=>field name=>value
                 return 1;
             }
 
-            //æ²¡æœ‰æ‰¾åˆ°äº†nameå¯¹åº”getterçš„å‡½æ•°
-            // æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>mt=>nil
+            //Ã»ÓĞÕÒµ½ÁËname¶ÔÓ¦getterµÄº¯Êı
+            // Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>mt=>nil
             LUA_ASSERT (L, lua_isnil(L, -1), "lua_isnil(L, -1)");
-            lua_pop (L, 1);            // æ ˆçŠ¶æ€lua_gettop(L) == 3:tu=>field name=>mt
+            lua_pop (L, 1);            // Õ»×´Ì¬lua_gettop(L) == 3:tu=>field name=>mt
 
             // It may mean that the field may be in const table and it's constness violation.
             // Don't check that, just return nil
 
             // Repeat the lookup in the parent metafield,
             // or return nil if the field doesn't exist.
-            //å°è¯•è·å–çˆ¶ç±»çš„metatable
+            //³¢ÊÔ»ñÈ¡¸¸ÀàµÄmetatable
             lua_rawgetp(L,
                         -1,
-                        GetParentKey()); //pmt = mt['parentkey'] æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>mt=>pmt|nil
+                        GetParentKey()); //pmt = mt['parentkey'] Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>mt=>pmt|nil
 
-            //æ²¡æœ‰æ‰¾åˆ°çˆ¶ç±»çš„metatable
-            if (lua_isnil (L, -1)) // æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>mt=>nil
+            //Ã»ÓĞÕÒµ½¸¸ÀàµÄmetatable
+            if (lua_isnil (L, -1)) // Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>mt=>nil
             {
-                lua_remove(L, -2); // æ ˆçŠ¶æ€lua_gettop(L) == 3:tu=>field name=>nil
-                return 1; //è¿”å›nil
+                lua_remove(L, -2); // Õ»×´Ì¬lua_gettop(L) == 3:tu=>field name=>nil
+                return 1; //·µ»Ønil
             }
 
-            //æ‰¾åˆ°çˆ¶ç±»çš„metatable æ ˆçŠ¶æ€lua_gettop(L) == 4:tu=>field name=>mt=>pmt
+            //ÕÒµ½¸¸ÀàµÄmetatable Õ»×´Ì¬lua_gettop(L) == 4:tu=>field name=>mt=>pmt
             // Removethe  metatable and repeat the search in the parent one.
             LUA_ASSERT (L, lua_istable(L, -1), "lua_istable(L, -1)");
             lua_remove(L, -2);
-            //now æ ˆçŠ¶æ€lua_gettop(L) == 3:tu=>field name=>pmt å›åˆ°å¼€å¤´åœ¨çˆ¶ç±»çš„metatableå†æ‰¾ä¸€é
+            //now Õ»×´Ì¬lua_gettop(L) == 3:tu=>field name=>pmt »Øµ½¿ªÍ·ÔÚ¸¸ÀàµÄmetatableÔÙÕÒÒ»±é
         }
     }
 

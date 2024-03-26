@@ -1,8 +1,8 @@
 //
 //  gameserver.h
-//  gameserver å¤´æ–‡ä»¶
+//  gameserver Í·ÎÄ¼ş
 //  Created by DGuco on 17-3-1.
-//  Copyright Â© 2017å¹´ DGuco. All rights reserved.
+//  Copyright ? 2017Äê DGuco. All rights reserved.
 //
 
 #ifndef SERVER_GAMESERVER_H
@@ -21,66 +21,66 @@ class CGameServer: public CTCPServer,public CSingleton<CGameServer>
 public:
 	enum EServerState
 	{
-		ESS_CONNECTPROXY = 0x0001,    // é“¾æ¥proxyl
-		ESS_LOADDATA = 0x0002,    // åŠ è½½æ•°æ®
-		ESS_PROCESSINGDATA = 0x0004,    // å¤„ç†æ•°æ®
-		ESS_SAVEDATA = 0x0008,    // åœæœå­˜å‚¨æ•°æ®
+		ESS_CONNECTPROXY = 0x0001,    // Á´½Óproxyl
+		ESS_LOADDATA = 0x0002,    // ¼ÓÔØÊı¾İ
+		ESS_PROCESSINGDATA = 0x0004,    // ´¦ÀíÊı¾İ
+		ESS_SAVEDATA = 0x0008,    // Í£·ş´æ´¢Êı¾İ
 
-		ESS_NORMAL = (ESS_CONNECTPROXY | ESS_LOADDATA | ESS_PROCESSINGDATA),        // æ­£å¸¸
-		ESS_PROCESSINGCLIENTMSG = (ESS_LOADDATA | ESS_PROCESSINGDATA)    // å¯ä»¥æ­£å¸¸å¤„ç†å®¢æˆ·ç«¯ä¸Šè¡Œçš„æ¶ˆæ¯
+		ESS_NORMAL = (ESS_CONNECTPROXY | ESS_LOADDATA | ESS_PROCESSINGDATA),        // Õı³£
+		ESS_PROCESSINGCLIENTMSG = (ESS_LOADDATA | ESS_PROCESSINGDATA)    // ¿ÉÒÔÕı³£´¦Àí¿Í»§¶ËÉÏĞĞµÄÏûÏ¢
 	};
 
 public:
 	CGameServer();
 	~CGameServer();
-	// è¿è¡Œå‡†å¤‡
+	// ÔËĞĞ×¼±¸
 	bool PrepareToRun();
-	// é€€å‡º
+	// ÍË³ö
 	void Exit();
-	//å¤„ç†å®¢æˆ·ç«¯ä¸Šè¡Œæ•°æ®
+	//´¦Àí¿Í»§¶ËÉÏĞĞÊı¾İ
 	void ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer);
-	//å¤„ç†è¯»å–æœåŠ¡å™¨æ•°æ®
+	//´¦Àí¶ÁÈ¡·şÎñÆ÷Êı¾İ
 	void ProcessServerMessage(CSafePtr<CServerClient> pServerPlayer);
 	//
 	void ClearSocket(CSafePtr<CGamePlayer> pGamePlayer, short iError);
 	//
 	void DisConnect(CSafePtr<CGamePlayer> pGamePlayer, short iError);
 public:
-	//æ–°é“¾æ¥å›è°ƒ
+	//ĞÂÁ´½Ó»Øµ÷
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);
 	//
 	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket tmSocket);
 public:
-	// è®¾ç½®æœåŠ¡å™¨çŠ¶æ€
+	// ÉèÖÃ·şÎñÆ÷×´Ì¬
 	void SetServerState(int iState)
 	{ m_iServerState = (m_iServerState | iState); }
-	// æ¸…é™¤æœåŠ¡å™¨çŠ¶æ€
+	// Çå³ı·şÎñÆ÷×´Ì¬
 	void EraseServerState(int iState)
 	{ m_iServerState = (m_iServerState & (~iState)); }
-	// åˆ¤æ–­æœåŠ¡å™¨çŠ¶æ€
+	// ÅĞ¶Ï·şÎñÆ÷×´Ì¬
 	bool IsOk(int iState)
 	{ return ((m_iServerState & iState) == iState); }
-	// æœåŠ¡å™¨æ˜¯å¦æ­£å¸¸
+	// ·şÎñÆ÷ÊÇ·ñÕı³£
 	bool IsNormal()
 	{ return m_iServerState == ESS_NORMAL; }
 
-	// æœåŠ¡å™¨æ‹‰å–æ•°æ®å®Œæˆ
+	// ·şÎñÆ÷À­È¡Êı¾İÍê³É
 	void LoadDataFinish();
-	// æœåŠ¡å™¨å¼€å§‹å¤„ç†åˆå§‹æ•°æ®
+	// ·şÎñÆ÷¿ªÊ¼´¦Àí³õÊ¼Êı¾İ
 	void StartProcessingInitData();
 
-	// æ˜¯å¦èƒ½æ­£å¸¸å¤„ç†å®¢æˆ·ç«¯ä¸Šè¡Œæ¶ˆæ¯
+	// ÊÇ·ñÄÜÕı³£´¦Àí¿Í»§¶ËÉÏĞĞÏûÏ¢
 	bool CanProcessingClientMsg()
 	{ return (m_iServerState & ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG; }
 
-	// ç»™DB Serverå‘æ¶ˆæ¯
+	// ¸øDB Server·¢ÏûÏ¢
 	//bool SendMessageToDB(CSafePtr <CProxyMessage> pMsg);
-	// é€šè¿‡æ¶ˆæ¯IDè·å–æ¨¡å—ç±»å‹
+	// Í¨¹ıÏûÏ¢ID»ñÈ¡Ä£¿éÀàĞÍ
 	int GetModuleClass(int iMsgID);
 private:
 
-	CRunFlag	m_oRunFlag;                         // æœåŠ¡å™¨è¿è¡ŒçŠ¶æ€
-	int			m_iServerState;    // æœåŠ¡å™¨çŠ¶æ€
+	CRunFlag	m_oRunFlag;                         // ·şÎñÆ÷ÔËĞĞ×´Ì¬
+	int			m_iServerState;    // ·şÎñÆ÷×´Ì¬
 	BYTE		m_CacheData[GAMEPLAYER_RECV_BUFF_LEN];
 };
 #endif //SERVER_GAMESERVER_H

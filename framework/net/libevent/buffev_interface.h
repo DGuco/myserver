@@ -1,7 +1,7 @@
 //
 //  buffer_event.h
 //  Created by DGuco on 18/01/27.
-//  Copyright Â© 2018å¹´ DGuco. All rights reserved.
+//  Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 #ifndef SERVER_CBUFFEREVENT_H
@@ -14,61 +14,61 @@
 class IBufferEvent: public IReactorHandler
 {
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	IBufferEvent(IEventReactor* pReactor,
 				 int socket,
 				 FuncBufferEventOnDataSend funcOnDataSend,
 				 FuncBufferEventOnDataRecv funcOnDataRecv,
 				 FuncBufferEventOnDisconnected funcDisconnected);
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	virtual ~IBufferEvent();
-	//å‘é€æ•°æ®
+	//·¢ËÍÊı¾İ
 	int Send(const void *pData, unsigned int uSize);
-	//é€šè¿‡socketå‘é€
+	//Í¨¹ısocket·¢ËÍ
 	int SendBySocket(const void *pData, unsigned int uSize);
-	//è·å–æ•°æ®(è¿”å›è¯»å–æ•°æ®é•¿åº¦)
+	//»ñÈ¡Êı¾İ(·µ»Ø¶ÁÈ¡Êı¾İ³¤¶È)
 	unsigned int RecvData(void *data, unsigned int size);
-	//è¯»å–è¯»ç¼“å†²åŒºå½“å‰æ•°æ®åŒ…çš„æ€»é•¿åº¦
+	//¶ÁÈ¡¶Á»º³åÇøµ±Ç°Êı¾İ°üµÄ×Ü³¤¶È
 	unsigned short ReadRecvPackLen();
-	//è·å–è¯»ç¼“å†²åŒºæ•°æ®é•¿åº¦
+	//»ñÈ¡¶Á»º³åÇøÊı¾İ³¤¶È
 	unsigned int GetRecvDataSize();
-	//è·å–å†™ç¼“å†²åŒºæ•°æ®é•¿åº¦
+	//»ñÈ¡Ğ´»º³åÇøÊı¾İ³¤¶È
 	unsigned int GetSendDataSize();
-	//è®¾ç½®å‘é€ç¼“å†²åŒºæœ€å¤§å€¼
+	//ÉèÖÃ·¢ËÍ»º³åÇø×î´óÖµ
 	void SetMaxSendBufSize(unsigned int uSize);
-	//è·å–å‘é€ç¼“å†²åŒºæœ€å¤§å€¼
+	//»ñÈ¡·¢ËÍ»º³åÇø×î´óÖµ
 	unsigned int GetMaxSendBufSize();
-	//è®¾ç½®æ¥æ”¶ç¼“å†²åŒºæœ€å¤§å€¼
+	//ÉèÖÃ½ÓÊÕ»º³åÇø×î´óÖµ
 	void SetMaxRecvBufSize(unsigned int uSize);
-	//è·å–æ¥æ”¶ç¼“å†²åŒºæœ€å¤§å€¼
+	//»ñÈ¡½ÓÊÕ»º³åÇø×î´óÖµ
 	unsigned int GetMaxRecvBufSize();
-	//æ£€æµ‹event_baseæ˜¯å¦æœ‰æ•ˆ
+	//¼ì²âevent_baseÊÇ·ñÓĞĞ§
 	bool IsEventBuffAvailable();
-	//è·å–å½“å‰æ•°æ®åŒ…çš„æ€»é•¿åº¦
+	//»ñÈ¡µ±Ç°Êı¾İ°üµÄ×Ü³¤¶È
 	unsigned short GetRecvPackLen() const;
-	//å½“å‰æ•°æ®åŒ…å·²è¯»å–
+	//µ±Ç°Êı¾İ°üÒÑ¶ÁÈ¡
 	void CurrentPackRecved();
-	//è·å–socket
+	//»ñÈ¡socket
 	const CSocket &GetSocket() const;
-	//æ•°æ®æ˜¯å¦å®Œæ•´
+	//Êı¾İÊÇ·ñÍêÕû
 	bool IsPackageComplete();
 protected:
-	//è¯»å›è°ƒ
+	//¶Á»Øµ÷
 	static void lcb_OnRead(struct bufferevent *bev, void *arg);
-	//å†™å›è°ƒ
+	//Ğ´»Øµ÷
 	static void lcb_OnWrite(bufferevent *bev, void *arg);
-	//é”™è¯¯å›è°ƒ
+	//´íÎó»Øµ÷
 	static void lcb_OnEvent(bufferevent *bev, int16 nWhat, void *arg);
-public:    //è·å–event base
+public:    //»ñÈ¡event base
 	IEventReactor * GetReactor() override;
-	//æ³¨å†Œevent
+	//×¢²áevent
 	bool RegisterToReactor() override;
 private:
-	//äº‹ä»¶å›è°ƒ
+	//ÊÂ¼ş»Øµ÷
 	virtual void OnEvent(int16 nWhat) = 0;
-	//bufferEvent æ— æ•ˆå¤„ç†
+	//bufferEvent ÎŞĞ§´¦Àí
 	virtual void BuffEventUnavailableCall() = 0;
-	//event buffer åˆ›å»ºæˆåŠŸåå¤„ç†
+	//event buffer ´´½¨³É¹¦ºó´¦Àí
 	virtual void AfterBuffEventCreated() = 0;
 protected:
 	IEventReactor* m_pReactor;

@@ -19,7 +19,7 @@ namespace rbt_hash
 template<typename IndexType_>
 struct bucket_type
 {
-    IndexType_ root_;  			    //ç›¸åŒbucket rbtreeæ ¹èŠ‚ç‚¹ç´¢å¼•
+    IndexType_ root_;  			    //ÏàÍ¬bucket rbtree¸ù½ÚµãË÷Òı
     IndexType_ prebucket_;  		//pre  bucket
     IndexType_ nextbucket_;  		//next bucket
 };
@@ -62,7 +62,7 @@ struct MapValueType
 };
 
 /**
- *è¿­ä»£å™¨class
+ *µü´úÆ÷class
 * */
 template<typename KeyType_,typename ValueType_,typename IndexType_,std::size_t Cap_ >
 class node_list_iterator;
@@ -208,13 +208,13 @@ public:
 private:
     void look_rbtree()
     {
-        //æ²¡æœ‰å¯éå†çš„èŠ‚ç‚¹äº†
+        //Ã»ÓĞ¿É±éÀúµÄ½ÚµãÁË
         if(bucket_ <= 0 || bucket_ > Cap_)
         {
             curnode_ = NULL;
             return;
         }
-        //å¯»æ‰¾ç¬¬ä¸€ä¸ªèŠ‚ç‚¹,ä»æ ‘çš„æœ€å°èŠ‚ç‚¹å¼€å§‹éå†æ¯ä¸€ä¸ªæ ‘çš„æ‰€æœ‰èŠ‚ç‚¹
+        //Ñ°ÕÒµÚÒ»¸ö½Úµã,´ÓÊ÷µÄ×îĞ¡½Úµã¿ªÊ¼±éÀúÃ¿Ò»¸öÊ÷µÄËùÓĞ½Úµã
         if(curnode_ == NULL)
         {
             bucket_type<IndexType_> bucket = bucket_array_[bucket_ - 1];
@@ -225,10 +225,10 @@ private:
             bucket_type<IndexType_> bucket = bucket_array_[bucket_ - 1];
             tree_type rbtree(node_array_, bucket.root_);
             curnode_ = rbtree.successor(curnode_);
-            //å½“å‰çš„æ ‘éå†å®Œäº†
+            //µ±Ç°µÄÊ÷±éÀúÍêÁË
             if(curnode_ == NULL)
             {
-                //éå†ä¸‹ä¸€ä¸ªæ ‘
+                //±éÀúÏÂÒ»¸öÊ÷
                 bucket_ = bucket_array_[bucket_ - 1].nextbucket_;
                 if(bucket_ > 0 && bucket_ <= Cap_)
                 {
@@ -246,12 +246,12 @@ private:
         }
     }
 public:
-    IndexType_                      bucket_;                //çº¢é»‘æ ‘çš„æ ¹èŠ‚ç‚¹
-    node_type*                      node_array_;          //èŠ‚ç‚¹æ‰€å±çš„æ•°ç»„
-    ValueNode<KeyType_,ValueType_>* data_array_;          //æ•°æ®æ•°ç»„æŒ‡é’ˆ
-    bucket_type<IndexType_>*        bucket_array_;        //hashæ•°æ®æ•°ç»„æŒ‡é’ˆ
-    std::pair<KeyType_,ValueType_*> iteator_;             //å½“å‰èŠ‚ç‚¹
-    node_type                       *curnode_;            //èŠ‚ç‚¹
+    IndexType_                      bucket_;                //ºìºÚÊ÷µÄ¸ù½Úµã
+    node_type*                      node_array_;          //½ÚµãËùÊôµÄÊı×é
+    ValueNode<KeyType_,ValueType_>* data_array_;          //Êı¾İÊı×éÖ¸Õë
+    bucket_type<IndexType_>*        bucket_array_;        //hashÊı¾İÊı×éÖ¸Õë
+    std::pair<KeyType_,ValueType_*> iteator_;             //µ±Ç°½Úµã
+    node_type                       *curnode_;            //½Úµã
 };
 
 template<typename KeyType_,typename ValueType_,typename IndexType_,std::size_t Cap_ = 0>
@@ -378,13 +378,13 @@ public:
 private:
     void look_rbtree()
     {
-        //æ²¡æœ‰å¯éå†çš„èŠ‚ç‚¹äº†
+        //Ã»ÓĞ¿É±éÀúµÄ½ÚµãÁË
         if(bucket_ <= 0 || bucket_ > Cap_)
         {
             curnode_ = NULL;
             return;
         }
-        //å¯»æ‰¾ç¬¬ä¸€ä¸ªèŠ‚ç‚¹,ä»æ ‘çš„æœ€å°èŠ‚ç‚¹å¼€å§‹éå†æ¯ä¸€ä¸ªæ ‘çš„æ‰€æœ‰èŠ‚ç‚¹
+        //Ñ°ÕÒµÚÒ»¸ö½Úµã,´ÓÊ÷µÄ×îĞ¡½Úµã¿ªÊ¼±éÀúÃ¿Ò»¸öÊ÷µÄËùÓĞ½Úµã
         if(curnode_ == NULL)
         {
             bucket_type<IndexType_> bucket = bucket_array_[bucket_ - 1];
@@ -395,10 +395,10 @@ private:
             bucket_type<IndexType_> bucket = bucket_array_[bucket_ - 1];
             tree_type rbtree(node_array_, bucket.root_);
             curnode_ = rbtree.successor(curnode_);
-            //å½“å‰çš„æ ‘éå†å®Œäº†
+            //µ±Ç°µÄÊ÷±éÀúÍêÁË
             if(curnode_ == NULL)
             {
-                //éå†ä¸‹ä¸€ä¸ªæ ‘
+                //±éÀúÏÂÒ»¸öÊ÷
                 bucket_ = bucket_array_[bucket_ - 1].nextbucket_;
                 if(bucket_ > 0 && bucket_ <= Cap_)
                 {
@@ -416,16 +416,16 @@ private:
         }
     }
 private:
-    IndexType_                      bucket_;                //çº¢é»‘æ ‘çš„æ ¹èŠ‚ç‚¹
-    node_type*                      node_array_;          //èŠ‚ç‚¹æ‰€å±çš„æ•°ç»„
-    ValueNode<KeyType_,ValueType_>* data_array_;          //æ•°æ®æ•°ç»„æŒ‡é’ˆ
-    bucket_type<IndexType_>*        bucket_array_;        //hashæ•°æ®æ•°ç»„æŒ‡é’ˆ
-    std::pair<KeyType_,ValueType_*> iteator_;             //å½“å‰èŠ‚ç‚¹
-    node_type                       *curnode_;            //èŠ‚ç‚¹
+    IndexType_                      bucket_;                //ºìºÚÊ÷µÄ¸ù½Úµã
+    node_type*                      node_array_;          //½ÚµãËùÊôµÄÊı×é
+    ValueNode<KeyType_,ValueType_>* data_array_;          //Êı¾İÊı×éÖ¸Õë
+    bucket_type<IndexType_>*        bucket_array_;        //hashÊı¾İÊı×éÖ¸Õë
+    std::pair<KeyType_,ValueType_*> iteator_;             //µ±Ç°½Úµã
+    node_type                       *curnode_;            //½Úµã
 };
 
 /**
- * å†…å­˜ç®¡ç†å™¨
+ * ÄÚ´æ¹ÜÀíÆ÷
  */
 template<typename KeyType_, typename ValueType_,typename IndexType_,std::size_t Cap_ = 0>
 class node_pool
@@ -441,58 +441,58 @@ public:
     typedef class_type &reference;
     typedef const class_type &const_reference;
 
-    //æ„é€ å‡½æ•°
+    //¹¹Ôìº¯Êı
     node_pool()
     {
         size_ = 0;
     }
 
-    //ææ„å‡½æ•°
+    //Îö¹¹º¯Êı
     ~node_pool()
     {
 
     }
 
-    //æ¸…ç†
+    //ÇåÀí
     void clear()
     {
         for(int index = 0;index < size_;index++)
         {
             data_array_[index].value().~ValueType_();
         }
-        //æ„é€ ç©ºé—²é“¾è¡¨ä¿¡æ¯
+        //¹¹Ôì¿ÕÏĞÁ´±íĞÅÏ¢
         node_array_[0].clear();
-        //è®¾ç½®å‰å‘èŠ‚ç‚¹ä¸ºç©º
+        //ÉèÖÃÇ°Ïò½ÚµãÎª¿Õ
         node_array_[0].set_prev(0);
         node_array_[0].set_data(1);
         for (IndexType_ i = 1; i < Cap_; i++) {
-            node_array_[i - 1].set_next(i + 1/*çœŸæ­£çš„ç´¢å¼•+1*/);
+            node_array_[i - 1].set_next(i + 1/*ÕæÕıµÄË÷Òı+1*/);
             node_array_[i].clear();
             node_array_[i].set_data(i + 1);
-            node_array_[i].set_prev(i - 1 + 1/*çœŸæ­£çš„ç´¢å¼•+1*/);
+            node_array_[i].set_prev(i - 1 + 1/*ÕæÕıµÄË÷Òı+1*/);
         }
         size_ = 0;
-        //è®¾ç½®åå‘èŠ‚ç‚¹ä¸ºç©º
+        //ÉèÖÃºóÏò½ÚµãÎª¿Õ
         node_array_[Cap_ - 1].set_next(0);
-        //å·²ç”¨çš„èŠ‚ç‚¹é“¾è¡¨å¤´èŠ‚ç‚¹çš„ç´¢å¼•
+        //ÒÑÓÃµÄ½ÚµãÁ´±íÍ·½ÚµãµÄË÷Òı
         rb_tree_head_bucket_ = 0;
-        //é»˜è®¤æ•°ç»„é¦–ä¸ªå…ƒç´ å³å¯ç”¨èŠ‚ç‚¹é“¾è¡¨çš„å¤´ç»“ç‚¹
+        //Ä¬ÈÏÊı×éÊ×¸öÔªËØ¼´¿ÉÓÃ½ÚµãÁ´±íµÄÍ·½áµã
         free_node_head_ = 1;
     }
 
-    //å†…å­˜æ± å½“å‰å¤§å°
+    //ÄÚ´æ³Øµ±Ç°´óĞ¡
     std::size_t size() const
     {
         return size_;
     }
 
-    //å†…å­˜æ± å½“å‰å®¹é‡
+    //ÄÚ´æ³Øµ±Ç°ÈİÁ¿
     std::size_t cap() const
     {
         return Cap_;
     }
 
-    //ç”³è¯·ä¸€ä¸ªå¯ç”¨èŠ‚ç‚¹
+    //ÉêÇëÒ»¸ö¿ÉÓÃ½Úµã
     node_type *allocate_node(const class_type &v)
     {
         node_type *p = allocate(v);
@@ -503,7 +503,7 @@ public:
         return 0;
     }
 
-    //ç”³è¯·ä¸€ä¸ªå¯ç”¨èŠ‚ç‚¹
+    //ÉêÇëÒ»¸ö¿ÉÓÃ½Úµã
     node_type *allocate_node(const class_type &v, node_type *next_node)
     {
         node_type *p = allocate(v);
@@ -515,7 +515,7 @@ public:
 
     void deallocate_node(node_type *node_)
     {
-        //å›æ”¶å†…å­˜ç©ºé—´
+        //»ØÊÕÄÚ´æ¿Õ¼ä
         deallocate(node_);
     }
 
@@ -538,7 +538,7 @@ public:
         IndexType_ index = node->get_data();
         if(index > 0 && index <= Cap_)
         {
-            //è°ƒç”¨ææ„å‡½æ•°
+            //µ÷ÓÃÎö¹¹º¯Êı
             data_array_[index - 1].value() = value;
         }
     }
@@ -577,7 +577,7 @@ public:
     {
         return rb_tree_head_bucket_;
     }
-    // ä¸‹é¢ä¸ºè®¿é—®å·²ç»åˆ†é…å¯¹è±¡çš„iterator
+    // ÏÂÃæÎª·ÃÎÊÒÑ¾­·ÖÅä¶ÔÏóµÄiterator
     iterator begin(bucket_type<IndexType_>* pbucket)
     {
         if (rb_tree_head_bucket_ != 0) {
@@ -618,7 +618,7 @@ public:
         return  data_array_;
     }
 private:
-    //ç”³è¯·ç©ºé—´
+    //ÉêÇë¿Õ¼ä
     node_type *allocate(const class_type &v)
     {
         if (size_ >= Cap_)
@@ -630,7 +630,7 @@ private:
         {
             size_++;
             //call c++ placement new
-            //æŠŠç©ºé—²å¤´ç»“ç‚¹æŒ‡å‘å½“å‰ç©ºé—²å¤´ç»“ç‚¹çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+            //°Ñ¿ÕÏĞÍ·½áµãÖ¸Ïòµ±Ç°¿ÕÏĞÍ·½áµãµÄÏÂÒ»¸ö½Úµã
             free_node_head_ = p->get_next();
             node_type *newhead = get_node(free_node_head_);
             if(newhead != NULL)
@@ -661,16 +661,16 @@ private:
         IndexType_ index = node_->get_data();
         if(index > 0 && index <= Cap_)
         {
-            //è°ƒç”¨ææ„å‡½æ•°
+            //µ÷ÓÃÎö¹¹º¯Êı
             data_array_[index - 1].value().~ValueType_();
         }
-        //æ’å…¥ç©ºé—²é“¾è¡¨å¤´éƒ¨
+        //²åÈë¿ÕÏĞÁ´±íÍ·²¿
         insert_node(get_node(free_node_head_), node_);
         size_--;
         free_node_head_ = get_cur(node_);
     }
 
-    //æ’å…¥ä¸€ä¸ªèŠ‚ç‚¹åˆ°æŒ‡å®šèŠ‚ç‚¹å‰
+    //²åÈëÒ»¸ö½Úµãµ½Ö¸¶¨½ÚµãÇ°
     void insert_node(node_type *tar_node, node_type *new_head)
     {
         if (new_head == NULL)
@@ -681,17 +681,17 @@ private:
         {
             int tar_prev = tar_node->get_prev();
             node_type *tar_prev_node = get_node(tar_prev);
-            //æœ‰å‰èŠ‚ç‚¹
+            //ÓĞÇ°½Úµã
             if (tar_prev_node)
             {
-                //ç›®æ ‡èŠ‚ç‚¹å‰æŒ‡é’ˆæŒ‡å‘è¦æ’å…¥çš„èŠ‚ç‚¹
+                //Ä¿±ê½ÚµãÇ°Ö¸ÕëÖ¸ÏòÒª²åÈëµÄ½Úµã
                 tar_prev_node->set_next(get_cur(new_head));
-                //è¦æ’å…¥çš„èŠ‚ç‚¹å‰æŒ‡é’ˆæŒ‡å‘tar_prev_node
+                //Òª²åÈëµÄ½ÚµãÇ°Ö¸ÕëÖ¸Ïòtar_prev_node
                 new_head->set_prev(get_cur(tar_prev_node));
             }
             else
             {
-                //è¦æ’å…¥çš„èŠ‚ç‚¹å‰æŒ‡é’ˆç½®ä¸º0
+                //Òª²åÈëµÄ½ÚµãÇ°Ö¸ÕëÖÃÎª0
                 new_head->set_prev(0);
             }
             tar_node->set_prev(get_cur(new_head));
@@ -702,11 +702,11 @@ private:
         }
     }
 private:
-    IndexType_                  size_;                            //å†…å­˜æ± å·²ç”¨æ•°é‡
-    IndexType_                  rb_tree_head_bucket_;             //çº¢é»‘æ ‘é“¾çš„å¤´çš„æ ¹èŠ‚ç‚¹ç´¢å¼•
-    IndexType_                  free_node_head_;                  //ç©ºé—²çš„èŠ‚ç‚¹é“¾è¡¨å¤´èŠ‚ç‚¹çš„ç´¢å¼•
-    //è¿™é‡Œä¸ºäº†åºåˆ—åŒ–mapçš„æ—¶å€™èƒ½å¤Ÿå¿«é€Ÿçš„åºåˆ—åŒ–æ•´ä¸ªæ•°æ®çš„å†…å­˜å—ï¼ŒæŠŠçœŸæ­£çš„æ•°æ®å’Œçº¢é»‘æ ‘èŠ‚ç‚¹ä¿¡æ¯åˆ†æˆä¸¤ä¸ªæ•°ç»„
-    //å¯ä»¥ç›¸äº’é€šè¿‡åŒä¸€ä¸ªç´¢å¼•å¿«é€Ÿå–åˆ°å¯¹åº”çš„ä¿¡æ¯
+    IndexType_                  size_;                            //ÄÚ´æ³ØÒÑÓÃÊıÁ¿
+    IndexType_                  rb_tree_head_bucket_;             //ºìºÚÊ÷Á´µÄÍ·µÄ¸ù½ÚµãË÷Òı
+    IndexType_                  free_node_head_;                  //¿ÕÏĞµÄ½ÚµãÁ´±íÍ·½ÚµãµÄË÷Òı
+    //ÕâÀïÎªÁËĞòÁĞ»¯mapµÄÊ±ºòÄÜ¹»¿ìËÙµÄĞòÁĞ»¯Õû¸öÊı¾İµÄÄÚ´æ¿é£¬°ÑÕæÕıµÄÊı¾İºÍºìºÚÊ÷½ÚµãĞÅÏ¢·Ö³ÉÁ½¸öÊı×é
+    //¿ÉÒÔÏà»¥Í¨¹ıÍ¬Ò»¸öË÷Òı¿ìËÙÈ¡µ½¶ÔÓ¦µÄĞÅÏ¢
     node_type                   node_array_[Cap_];
     ValueNode<KeyType_,ValueType_>       data_array_[Cap_];
 };

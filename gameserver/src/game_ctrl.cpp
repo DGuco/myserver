@@ -25,7 +25,6 @@ CGameCtrl::~CGameCtrl()
 bool CGameCtrl::PrepareToRun()
 {
 	int a = 0;
-	//¶ÁÈ¡ÅäÖÃÎÄ¼ş
 	if (!ReadConfig())
 	{
 		return false;

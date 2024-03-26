@@ -1,7 +1,7 @@
 //
 //  connector.h
 //  Created by DGuco on 18/01/20.
-//  Copyright Â© 2018å¹´ DGuco. All rights reserved.
+//  Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 #ifndef _CONNECTOR_H_
@@ -24,47 +24,47 @@ public:
 		eCS_Connected,
 	};
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CConnector(IEventReactor* pReactor,
 			   FuncBufferEventOnDataSend funcOnDataSend,
 			   FuncBufferEventOnDataRecv funcOnDataRecv,
 			   FuncBufferEventOnDisconnected funcDisconnected,
 			   int iTargetId,
 			   int iPingTick);
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	virtual ~CConnector(void);
-	//è·å–è¿æ¥ip
+	//»ñÈ¡Á¬½Óip
 	void GetRemoteIpAddress(char *szBuf, uint32 uBufSize);
-	//è¿æ¥
+	//Á¬½Ó
 	bool Connect(const CNetAddr &addr);
-	//é‡æ–°è¿æ¥
+	//ÖØĞÂÁ¬½Ó
 	bool ReConnect();
-	//è®¾ç½®ç›¸å…³å›è°ƒ
+	//ÉèÖÃÏà¹Ø»Øµ÷
 	void SetCallbackFunc(FuncConnectorOnConnectFailed pOnConnectFailed,
 						 FuncConnectorOnConnectted pOnConnected,
 						 FuncConnectorOnPingServer pOnPingServer);
-	//å…³é—­è¿æ¥
+	//¹Ø±ÕÁ¬½Ó
 	void ShutDown();
-	//æ˜¯å¦è¿æ¥æˆåŠŸ
+	//ÊÇ·ñÁ¬½Ó³É¹¦
 	bool IsConnected();
-	//æ˜¯å¦æ­£åœ¨è¿æ¥
+	//ÊÇ·ñÕıÔÚÁ¬½Ó
 	bool IsConnecting();
-	//æ˜¯å¦æ–­å¼€è¿æ¥
+	//ÊÇ·ñ¶Ï¿ªÁ¬½Ó
 	bool IsDisconnected();
 	int GetTargetId() const;
-	//è®¾ç½®å½“å‰çŠ¶æ€
+	//ÉèÖÃµ±Ç°×´Ì¬
 	void SetState(eConnectorState eState);
-	//å½“å‰è¿æ¥çŠ¶æ€
+	//µ±Ç°Á¬½Ó×´Ì¬
 	eConnectorState GetState();
 private:
-	//bufferEvent æ— æ•ˆå¤„ç†
+	//bufferEvent ÎŞĞ§´¦Àí
 	void BuffEventUnavailableCall() override;
-	//event buffer åˆ›å»ºæˆåŠŸåå¤„ç†
+	//event buffer ´´½¨³É¹¦ºó´¦Àí
 	void AfterBuffEventCreated() override;
-	//äº‹ä»¶å›è°ƒ
+	//ÊÂ¼ş»Øµ÷
 	void OnEvent(int16 nWhat) override;
 private:
-	//è¿æ¥æˆåŠŸ
+	//Á¬½Ó³É¹¦
 	void OnConnectted();
 private:
 	static void lcb_OnPingServer(int fd, short event, void *param);
@@ -76,7 +76,7 @@ private:
 	eConnectorState m_eState;
 	event m_oConnectEvent;
 	int m_iTargetId;
-	int m_iPingTick; //å•ä½ç§’
+	int m_iPingTick; //µ¥Î»Ãë
 	CTimerEvent *m_pKeepLiveEvent;
 	FuncConnectorOnConnectFailed m_pFuncOnConnectFailed;
 	FuncConnectorOnConnectted m_pFuncOnConnectted;

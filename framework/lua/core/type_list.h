@@ -2,7 +2,7 @@
 /*
   https://github.com/DGuco/luabridge
 
-  Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+  Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
   Copyright 2012, Vinnie Falco <vinnie.falco@gmail.com>
   Copyright 2007, Nathan Reed
 
@@ -187,7 +187,7 @@ typedef void None;
 ////==============================================================================
 ///**
 //  *Subclass of a TypeListValues constructable from the Lua stack.
-//  *cfunction ä»lua stackè·å–å‚æ•°åˆ—è¡¨
+//  *cfunction ´Ólua stack»ñÈ¡²ÎÊıÁĞ±í
 //*/
 //
 //template<typename List, int Start = 1>
@@ -214,17 +214,17 @@ typedef void None;
 //    }
 //};
 
-//æ¯ä¸ªå‚æ•°çš„ç±»å‹
+//Ã¿¸ö²ÎÊıµÄÀàĞÍ
 template<class... ParamList>
 struct ArgTypeList
 {
     enum
     {
-        //å‚æ•°ä¸ªæ•°
+        //²ÎÊı¸öÊı
         arity = sizeof...(ParamList)
     };
     using ParamTypeElement = typename std::tuple<ParamList...>;
-    //æ¯ä¸ªå‚æ•°çš„ç±»å‹
+    //Ã¿¸ö²ÎÊıµÄÀàĞÍ
     template<size_t I>
     struct args
     {
@@ -233,7 +233,7 @@ struct ArgTypeList
     };
 };
 
-//è·å–æŒ‡å®šå‡½æ•°å‚æ•°æŒ‡å®šä½ç½®çš„å‚æ•°ç±»å‹
+//»ñÈ¡Ö¸¶¨º¯Êı²ÎÊıÖ¸¶¨Î»ÖÃµÄ²ÎÊıÀàĞÍ
 #define  LUA_PARAM_TYPE(n) typename ArgTypeList<ParamList...>::template args<n>::type
 
 } // namespace luabridge

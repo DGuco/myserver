@@ -2,7 +2,7 @@
 /*
   https://github.com/DGuco/luabridge
 
-  Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+  Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
   Copyright 2012, Vinnie Falco <vinnie.falco@gmail.com>
   Copyright 2008, Nigel Atkinson <suprapilot+LuaCode@gmail.com>
 

@@ -17,10 +17,10 @@
 struct stMemTrunk
 {
     /**
-     * 0) å•çº¿ç¨‹è¯»å•çº¿ç¨‹å†™æ¨¡å‹ã€€https://blog.csdn.net/D_Guco/article/details/100066985
-     * 1) è¿™é‡Œè¯»å†™ç´¢å¼•ç”¨intç±»å‹,cpuå¯ä»¥ä¿è¯å¯¹float,doubleå’Œlongé™¤å¤–çš„åŸºæœ¬ç±»å‹çš„è¯»å†™æ˜¯åŸå­çš„,ä¿è¯ä¸€ä¸ªçº¿ç¨‹ä¸ä¼šè¯»åˆ°å¦å¤–ä¸€ä¸ªçº¿ç¨‹å†™åˆ°ä¸€åŠçš„å€¼
-     * 2) åœ¨å˜é‡ä¹‹é—´æ’å…¥ä¸€ä¸ª64å­—èŠ‚(cache lineçš„é•¿åº¦)çš„å˜é‡(æ²¡æœ‰å®é™…çš„è®¡ç®—æ„ä¹‰),ä½†æ˜¯å¯ä»¥ä¿è¯ä¸¤ä¸ªå˜é‡ä¸ä¼šåŒæ—¶åœ¨ä¸€ä¸ªcache lineé‡Œ,é˜²æ­¢ä¸åŒçš„
-     *    è¿›ç¨‹æˆ–è€…çº¿ç¨‹åŒæ—¶è®¿é—®åœ¨ä¸€ä¸ªcache lineé‡Œä¸åŒçš„å˜é‡äº§ç”Ÿfalse sharing,
+     * 0) µ¥Ïß³Ì¶Áµ¥Ïß³ÌĞ´Ä£ĞÍ¡¡https://blog.csdn.net/D_Guco/article/details/100066985
+     * 1) ÕâÀï¶ÁĞ´Ë÷ÒıÓÃintÀàĞÍ,cpu¿ÉÒÔ±£Ö¤¶Ôfloat,doubleºÍlong³ıÍâµÄ»ù±¾ÀàĞÍµÄ¶ÁĞ´ÊÇÔ­×ÓµÄ,±£Ö¤Ò»¸öÏß³Ì²»»á¶Áµ½ÁíÍâÒ»¸öÏß³ÌĞ´µ½Ò»°ëµÄÖµ
+     * 2) ÔÚ±äÁ¿Ö®¼ä²åÈëÒ»¸ö64×Ö½Ú(cache lineµÄ³¤¶È)µÄ±äÁ¿(Ã»ÓĞÊµ¼ÊµÄ¼ÆËãÒâÒå),µ«ÊÇ¿ÉÒÔ±£Ö¤Á½¸ö±äÁ¿²»»áÍ¬Ê±ÔÚÒ»¸öcache lineÀï,·ÀÖ¹²»Í¬µÄ
+     *    ½ø³Ì»òÕßÏß³ÌÍ¬Ê±·ÃÎÊÔÚÒ»¸öcache lineÀï²»Í¬µÄ±äÁ¿²úÉúfalse sharing,
      */
     volatile unsigned int m_iBegin;
     char __cache_padding1__[CACHE_LINE_SIZE];
@@ -46,58 +46,58 @@ public:
 public:
     bool Init(sm_key shmKey,size_t size);
     /**
-     * æ·»åŠ æ¶ˆæ¯ å¯¹äºmes queueæ¥è¯´æ˜¯å†™æ“ä½œï¼Œå› ä¸ºåœ¨é˜Ÿåˆ—ä¸­æ·»åŠ äº†ä¸€ä¸ªæ¶ˆæ¯åŒ…,ä»…ä¿®æ”¹m_iEnd
-     * å†™å–å…±äº«å†…å­˜ç®¡é“ï¼ˆæ”¹å˜è¯»å†™ç´¢å¼•ï¼‰,ï¼Œè¯»å…±äº«å†…å­˜ä»…æ”¹å˜m_iEndï¼Œä¿è¯è¯»å•è¿›ç¨‹è¯»å’Œå†™è¿›ç¨‹ä¸ä¼šå‘ç”Ÿç«äº‰ï¼Œå†™ä¸ä¼šé€ æˆæ•°æ®ä¸ä¸€è‡´
+     * Ìí¼ÓÏûÏ¢ ¶ÔÓÚmes queueÀ´ËµÊÇĞ´²Ù×÷£¬ÒòÎªÔÚ¶ÓÁĞÖĞÌí¼ÓÁËÒ»¸öÏûÏ¢°ü,½öĞŞ¸Äm_iEnd
+     * Ğ´È¡¹²ÏíÄÚ´æ¹ÜµÀ£¨¸Ä±ä¶ÁĞ´Ë÷Òı£©,£¬¶Á¹²ÏíÄÚ´æ½ö¸Ä±äm_iEnd£¬±£Ö¤¶Áµ¥½ø³Ì¶ÁºÍĞ´½ø³Ì²»»á·¢Éú¾ºÕù£¬Ğ´²»»áÔì³ÉÊı¾İ²»Ò»ÖÂ
      * @param message
      * @param length
      * @return
      */
     int SendMessage(BYTE* message, msize_t length);
     /**
-     * è·å–æ¶ˆæ¯ å¯¹äºmes queueæ¥è¯´æ˜¯è¯»æ“ä½œï¼Œå› ä¸ºä»é˜Ÿåˆ—ä¸­æ‹¿èµ°äº†ä¸€ä¸ªæ¶ˆæ¯åŒ… ä»…ä¿®æ”¹m_iBegin
-     * è¯»å–å…±äº«å†…å­˜ç®¡é“ï¼ˆæ”¹å˜è¯»å†™ç´¢å¼•ï¼‰,ï¼Œè¯»å…±äº«å†…å­˜ä»…æ”¹å˜m_iBeginï¼Œä¿è¯è¯»å•è¿›ç¨‹è¯»å’Œå†™è¿›ç¨‹ä¸ä¼šå‘ç”Ÿç«äº‰ï¼Œå†™ä¸ä¼šé€ æˆæ•°æ®ä¸ä¸€è‡´
+     * »ñÈ¡ÏûÏ¢ ¶ÔÓÚmes queueÀ´ËµÊÇ¶Á²Ù×÷£¬ÒòÎª´Ó¶ÓÁĞÖĞÄÃ×ßÁËÒ»¸öÏûÏ¢°ü ½öĞŞ¸Äm_iBegin
+     * ¶ÁÈ¡¹²ÏíÄÚ´æ¹ÜµÀ£¨¸Ä±ä¶ÁĞ´Ë÷Òı£©,£¬¶Á¹²ÏíÄÚ´æ½ö¸Ä±äm_iBegin£¬±£Ö¤¶Áµ¥½ø³Ì¶ÁºÍĞ´½ø³Ì²»»á·¢Éú¾ºÕù£¬Ğ´²»»áÔì³ÉÊı¾İ²»Ò»ÖÂ
      * @param pOutCode
      * @return message  > 0 data len ,or < 0 error code
      * */
     int GetMessage(BYTE* pOutCode);
     /**
-     * ä»mess queue å¤´éƒ¨è¯»å–ä¸€ä¸ªæ¶ˆæ¯ï¼Œä»é˜Ÿåˆ—ä¸­copyèµ°äº†ä¸€ä¸ªæ¶ˆæ¯åŒ…æ²¡æœ‰æ”¹å˜mess queue
+     * ´Ómess queue Í·²¿¶ÁÈ¡Ò»¸öÏûÏ¢£¬´Ó¶ÓÁĞÖĞcopy×ßÁËÒ»¸öÏûÏ¢°üÃ»ÓĞ¸Ä±ämess queue
      * @param pOutCode
      * @param pOutLength
      * @return message  > 0 data len ,or < 0 error code
      * */
     int ReadHeadMessage(BYTE* pOutCode);
     /**
-     * ä»mess queueåˆ é™¤å¤´éƒ¨åˆ é™¤ä¸€ä¸ªæ¶ˆæ¯ï¼Œä»…ä¿®æ”¹m_iBegin
+     * ´Ómess queueÉ¾³ıÍ·²¿É¾³ıÒ»¸öÏûÏ¢£¬½öĞŞ¸Äm_iBegin
      * @param iCodeOffset
      * @param pOutCode
      * @return
      * */
     int DeleteHeadMessage();
     /**
-     * æ‰“å°é˜Ÿåˆ—ä¿¡æ¯
+     * ´òÓ¡¶ÓÁĞĞÅÏ¢
      **/
     void DebugTrunk();
-    //è·å–ç©ºé—²åŒºå¤§å°
+    //»ñÈ¡¿ÕÏĞÇø´óĞ¡
     unsigned int GetFreeSize();
-    //è·å–æ•°æ®é•¿åº¦
+    //»ñÈ¡Êı¾İ³¤¶È
     unsigned int GetDataSize();
-    //è·å–å­˜å‚¨æ•°æ®çš„å†…å­˜å–é•¿åº¦ï¼ˆç©ºé—²çš„å’Œå ç”¨çš„ï¼‰
+    //»ñÈ¡´æ´¢Êı¾İµÄÄÚ´æÈ¡³¤¶È£¨¿ÕÏĞµÄºÍÕ¼ÓÃµÄ£©
     unsigned int GetQueueLength();
-    //æ˜¯å¦æ•°æ®ä¸ºç©º
+    //ÊÇ·ñÊı¾İÎª¿Õ
     bool IsEmpty();
 public:
-    //æ˜¯å¦æ˜¯2çš„æ¬¡æ–¹
+    //ÊÇ·ñÊÇ2µÄ´Î·½
     static bool IsPowerOfTwo(size_t size);
-    //æ±‚æœ€æ¥è¿‘çš„æœ€å¤§2çš„æŒ‡æ•°æ¬¡å¹‚
+    //Çó×î½Ó½üµÄ×î´ó2µÄÖ¸Êı´ÎÃİ
     static int Fls(size_t size);
     static size_t RoundupPowofTwo(size_t size);
-    //åˆ›å»ºCMssageQueueå¯¹è±¡
+    //´´½¨CMssageQueue¶ÔÏó
     /**
      *
      * @param shmkey
-     * @param queuesize å¦‚æœä¼ å…¥çš„size != 2^n,size ä¼šåˆå§‹åŒ–ä¸º>sizeçš„æœ€å°çš„2^nçš„æ•°,ä¾‹å¦‚2^n-1 < size < 2^n,
-     *                  åˆ™MessageQueueè¢«åˆå§‹åŒ–ä¸º2^n
+     * @param queuesize Èç¹û´«ÈëµÄsize != 2^n,size »á³õÊ¼»¯Îª>sizeµÄ×îĞ¡µÄ2^nµÄÊı,ÀıÈç2^n-1 < size < 2^n,
+     *                  ÔòMessageQueue±»³õÊ¼»¯Îª2^n
      * @return
      */
     static CShmMessQueue* CreateInstance(int shmkey,size_t queuesize);

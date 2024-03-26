@@ -97,7 +97,7 @@ int CDBCtrl::SendMessageTo(CProxyMessage *pMsg)
 	return 0;
 }
 
-// æ‰§è¡Œç›¸åº”çš„æŒ‡ä»¤
+// Ö´ĞĞÏàÓ¦µÄÖ¸Áî
 int CDBCtrl::Event(CProxyMessage *pMsg)
 {
 	if (pMsg == NULL) {
@@ -114,7 +114,7 @@ int CDBCtrl::Event(CProxyMessage *pMsg)
 			  ((CGooMess *) pMsg->msgpara())->ShortDebugString().c_str());
 
 	switch (pMsg->msghead().messageid()) {
-	case CMsgExecuteSqlRequest::MsgID:  // æœåŠ¡å™¨æ‰§è¡ŒSQLè¯·æ±‚
+	case CMsgExecuteSqlRequest::MsgID:  // ·şÎñÆ÷Ö´ĞĞSQLÇëÇó
 	{
 		ProcessExecuteSqlRequest(pMsg);
 		break;
@@ -127,7 +127,7 @@ int CDBCtrl::Event(CProxyMessage *pMsg)
 	return 0;
 }
 
-// æ‰§è¡Œç›¸åº”çš„æŒ‡ä»¤
+// Ö´ĞĞÏàÓ¦µÄÖ¸Áî
 int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 {
 	if (pMsg == NULL) {
@@ -155,11 +155,11 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 
 	string sqlStr = "";
 	if (pReqMsg->hasblob() == HASBLOB) {
-		// æœ‰blobå­—æ®µçš„å¤„ç†
+		// ÓĞblob×Ö¶ÎµÄ´¦Àí
 		sqlStr += pReqMsg->sql();
 		if (pReqMsg->bufsize() > 0) {
 			if (pReqMsg->bufsize() >= MAX_PACKAGE_LEN) {
-				// blobå­—æ®µè¶…å‡ºé•¿åº¦
+				// blob×Ö¶Î³¬³ö³¤¶È
 				LOG_ERROR("default", "Error: [{}][{}][{}], exec sql {} faild. sql_len:{} > MAX_PACKAGE_LEN\n",
 						  __MY_FILE__,
 						  __LINE__,
@@ -184,14 +184,14 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 		sqlStr += pReqMsg->sqlwhere();
 	}
 	else {
-		// æ²¡æœ‰blobå­—æ®µçš„å¤„ç†
+		// Ã»ÓĞblob×Ö¶ÎµÄ´¦Àí
 		sqlStr += pReqMsg->sql();
 	}
 
-	// éœ€è¦å›æ‰§
+	// ĞèÒª»ØÖ´
 	if (MUSTCALLBACK == pReqMsg->callback()) {
-		CProxyMessage tMsg;  // è¯¥æ¶ˆæ¯ä¸ºå›æ‰§
-		CMsgExecuteSqlResponse tSqlResMsg;  // tSqlResMsg ä¸ºæ¶ˆæ¯ä½“
+		CProxyMessage tMsg;  // ¸ÃÏûÏ¢Îª»ØÖ´
+		CMsgExecuteSqlResponse tSqlResMsg;  // tSqlResMsg ÎªÏûÏ¢Ìå
 		tMsg.Clear();
 		tSqlResMsg.Clear();
 
@@ -200,7 +200,7 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 		tSqlResMsg.set_timestamp(pReqMsg->timestamp());
 		tSqlResMsg.set_teamid(pReqMsg->teamid());
 
-		LOG_ERROR("default", "Execute SQL: {}", sqlStr.c_str());    // ç”¨äºåœ¨æ—¥å¿—ä¸­æŸ¥çœ‹SQLæŸ¥è¯¢è¯­å¥
+		LOG_ERROR("default", "Execute SQL: {}", sqlStr.c_str());    // ÓÃÓÚÔÚÈÕÖ¾ÖĞ²é¿´SQL²éÑ¯Óï¾ä
 
 		CProxyHead *pTmpHead = tMsg.mutable_msghead();
 		pTmpHead->set_messageid(CMsgExecuteSqlResponse::MsgID);
@@ -221,20 +221,20 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 			else {
 				res = m_pDatabase->QueryForprocedure(sqlStr.c_str(), sqlStr.length(), pReqMsg->outnumber());
 			}
-			if (res == NULL)  // æ— è¿”å›ç»“æœ
+			if (res == NULL)  // ÎŞ·µ»Ø½á¹û
 			{
 				LOG_ERROR("default", "sql {} exec, but no resultset returned", sqlStr.c_str());
 				tSqlResMsg.set_resultcode(0);
 			}
-			else  // æœ‰è¿”å›ç»“æœ
+			else  // ÓĞ·µ»Ø½á¹û
 			{
 				tSqlResMsg.set_resultcode(1);
-				tSqlResMsg.set_rowcount(res->GetRowCount());  // è¡Œ
-				tSqlResMsg.set_colcount(res->GetFieldCount());  // åˆ—
+				tSqlResMsg.set_rowcount(res->GetRowCount());  // ĞĞ
+				tSqlResMsg.set_colcount(res->GetFieldCount());  // ÁĞ
 
-				//TODO: åˆ—å + åˆ—ç±»å‹ æš‚æ—¶ä¸èµ‹å€¼
+				//TODO: ÁĞÃû + ÁĞÀàĞÍ ÔİÊ±²»¸³Öµ
 				if (res->GetRowCount() > 0) {
-					// åˆ—å€¼ å’Œ å€¼é•¿åº¦
+					// ÁĞÖµ ºÍ Öµ³¤¶È
 					do {
 						Field *pField = res->Fetch();
 						if (pField == NULL) {
@@ -242,7 +242,7 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 									  sqlStr.c_str(),
 									  res->GetRowCount(),
 									  res->GetFieldCount());
-							//TODO: å‡ºé”™è®¾ä¸º0
+							//TODO: ³ö´íÉèÎª0
 							tSqlResMsg.set_rowcount(0);
 							break;
 						}
@@ -257,20 +257,20 @@ int CDBCtrl::ProcessExecuteSqlRequest(CProxyMessage *pMsg)
 				}
 			}
 
-			// å®‰å…¨é‡Šæ”¾ç»“æœé›†
+			// °²È«ÊÍ·Å½á¹û¼¯
 			ReleaseResult(res);
 		}
-		else  // éselectæ“ä½œ
+		else  // ·Çselect²Ù×÷
 		{
-			bool bExecResult = m_pDatabase->RealDirectExecute(sqlStr.c_str(), sqlStr.length());  // æ‰§è¡Œæ“ä½œ
+			bool bExecResult = m_pDatabase->RealDirectExecute(sqlStr.c_str(), sqlStr.length());  // Ö´ĞĞ²Ù×÷
 			tSqlResMsg.set_resultcode(bExecResult ? 1 : 0);
 		}
 
-		// å›å¤å®¢æˆ·ç«¯
+		// »Ø¸´¿Í»§¶Ë
 		SendMessageTo(&tMsg);
 	}
 	else {
-		// åŒæ­¥æ‰§è¡Œ
+		// Í¬²½Ö´ĞĞ
 		if (m_pDatabase->RealDirectExecute(sqlStr.c_str(), sqlStr.length()) != true) {
 			LOG_ERROR("default", "Error: [{}][{}][{}], direct exec sql {} faild.\n",
 					  __MY_FILE__,
@@ -286,7 +286,7 @@ int CDBCtrl::ConnectToProxyServer()
 {
 	int i = 0;
 
-	//å¦‚æœä¸ºnull è®©ç¨‹åºå´©æºƒ
+	//Èç¹ûÎªnull ÈÃ³ÌĞò±ÀÀ£
 	ServerInfo *proxyInfo = m_pServerConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 	if (!m_pNetWork->Connect(proxyInfo->m_sHost.c_str(),
 							 proxyInfo->m_iPort,
@@ -314,10 +314,10 @@ int CDBCtrl::ConnectToProxyServer()
 
 /********************************************************
 Function:     RegisterToProxyServer
-Description:  å‘proxyå‘é€æ³¨å†Œæ¶ˆæ¯
-Input:        nIndex:  è¿æ¥ä¸‹æ ‡
+Description:  Ïòproxy·¢ËÍ×¢²áÏûÏ¢
+Input:        nIndex:  Á¬½ÓÏÂ±ê
 Output:      
-Return:       0 :   æˆåŠŸ ï¼Œå…¶ä»–å¤±è´¥
+Return:       0 :   ³É¹¦ £¬ÆäËûÊ§°Ü
 Others:		
  ********************************************************/
 int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
@@ -325,7 +325,7 @@ int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
 	CProxyMessage message;
 	CByteBuff tmBuff;
 	unsigned short tTotalLen = tmBuff.GetCapaticy();
-	//å¦‚æœä¸ºnull è®©ç¨‹åºå´©æºƒ
+	//Èç¹ûÎªnull ÈÃ³ÌĞò±ÀÀ£
 	ServerInfo *dbInfo = m_pServerConfig->GetServerInfo(enServerType::FE_DBSERVER);
 	ServerInfo *proxyInfo = m_pServerConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 	pbmsg_setproxy(message.mutable_msghead(),
@@ -349,16 +349,16 @@ int CDBCtrl::RegisterToProxyServer(CConnector *pConnector)
 	}
 
 	LOG_INFO("default", "Regist to Proxy now.");
-	m_tLastSendKeepAlive = GetMSTime();    // è®°å½•è¿™ä¸€æ¬¡çš„æ³¨å†Œçš„æ—¶é—´
+	m_tLastSendKeepAlive = GetMSTime();    // ¼ÇÂ¼ÕâÒ»´ÎµÄ×¢²áµÄÊ±¼ä
 	return 0;
 }
 
 /********************************************************
 Function:     SendkeepAliveToProxy
-Description:  å‘proxyå‘é€å¿ƒè·³æ¶ˆæ¯
-Input:        nIndex    è¿æ¥æŒ‡é’ˆ
+Description:  Ïòproxy·¢ËÍĞÄÌøÏûÏ¢
+Input:        nIndex    Á¬½ÓÖ¸Õë
 Output:      
-Return:       0 :   æˆåŠŸ ï¼Œå…¶ä»–å¤±è´¥
+Return:       0 :   ³É¹¦ £¬ÆäËûÊ§°Ü
 Others:		
  ********************************************************/
 int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
@@ -389,14 +389,14 @@ int CDBCtrl::SendkeepAliveToProxy(CConnector *pConnector)
 		return -1;
 	}
 
-	m_tLastSendKeepAlive = GetMSTime(); // ä¿å­˜è¿™ä¸€æ¬¡çš„å‘é€çš„æ—¶é—´
+	m_tLastSendKeepAlive = GetMSTime(); // ±£´æÕâÒ»´ÎµÄ·¢ËÍµÄÊ±¼ä
 	LOG_INFO("default", "SendkeepAlive to Proxy now.");
 	return 0;
 }
 
 // ***************************************************************
 //  Function: 	DisPatchOneCode   
-//  Description:åˆ†æ´¾ä¸€ä¸ªæ¶ˆæ¯
+//  Description:·ÖÅÉÒ»¸öÏûÏ¢
 //
 // ***************************************************************
 int CDBCtrl::DispatchOneCode(int nCodeLength, CByteBuff *pbyCode)
@@ -404,7 +404,7 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, CByteBuff *pbyCode)
 	int iTempRet = 0;
 
 	CProxyMessage stTempMsg;
-	//å°†è§£æå‡ºçš„æ¶ˆæ¯å¤´å’Œæ¶ˆæ¯ä½“åˆ†åˆ«å­˜æ”¾åœ¨ m_stCurrentProxyHead stTempMsg
+	//½«½âÎö³öµÄÏûÏ¢Í·ºÍÏûÏ¢Ìå·Ö±ğ´æ·ÅÔÚ m_stCurrentProxyHead stTempMsg
 	int tRet = CServerCommEngine::ConvertStreamToMsg(pbyCode,
 													 &stTempMsg,
 													 m_pMsgFactory.get());
@@ -415,20 +415,20 @@ int CDBCtrl::DispatchOneCode(int nCodeLength, CByteBuff *pbyCode)
 
 	CProxyHead tmpProxyHead = stTempMsg.msghead();
 
-	// åŠ å…¥ proxy å‘½ä»¤å¤„ç†å¤„ç†å¿ƒè·³æ¶ˆæ¯
+	// ¼ÓÈë proxy ÃüÁî´¦Àí´¦ÀíĞÄÌøÏûÏ¢
 	if (enServerType::FE_PROXYSERVER == tmpProxyHead.srcfe()
 		&& enMessageCmd::MESS_KEEPALIVE == tmpProxyHead.opflag()) {
-		m_tLastRecvKeepAlive = GetMSTime(); // ä¿å­˜è¿™ä¸€æ¬¡çš„æ³¨å†Œçš„æ—¶é—´
+		m_tLastRecvKeepAlive = GetMSTime(); // ±£´æÕâÒ»´ÎµÄ×¢²áµÄÊ±¼ä
 		LOG_DEBUG("default", "Recv proxyServer keepalive");
 		return 0;
 	}
 
-	iTempRet = Event(&stTempMsg);  // æœåŠ¡å™¨æ‰§è¡Œç›¸åº”çš„ Msg ï¼Œå…¶å®å°±æ˜¯æ‰§è¡Œ SQL
+	iTempRet = Event(&stTempMsg);  // ·şÎñÆ÷Ö´ĞĞÏàÓ¦µÄ Msg £¬ÆäÊµ¾ÍÊÇÖ´ĞĞ SQL
 
 	if (iTempRet) {
 		LOG_ERROR("default", "Handle event returns {}.\n", iTempRet);
 	}
-	// æ¶ˆæ¯å›æ”¶
+	// ÏûÏ¢»ØÊÕ
 	CGooMess *pMessagePara = (CGooMess *) (stTempMsg.msgpara());
 	if (pMessagePara) {
 		pMessagePara->~Message();
@@ -461,10 +461,10 @@ time_t CDBCtrl::GetLastRecvKeepAlive() const
 int CDBCtrl::PrepareToRun()
 {
 #ifdef _DEBUG_
-	// åˆå§‹åŒ–æ—¥å¿—
+	// ³õÊ¼»¯ÈÕÖ¾
 	INIT_ROATING_LOG("default", "../log/dbserver.log", level_enum::trace);
 #else
-	// åˆå§‹åŒ–æ—¥å¿—
+	// ³õÊ¼»¯ÈÕÖ¾
 	INIT_ROATING_LOG("default", "../log/dbserver.log", level_enum::info);
 #endif
 	const string filepath = "../config/serverinfo.json";
@@ -473,7 +473,7 @@ int CDBCtrl::PrepareToRun()
 		return -1;
 	}
 
-	if (ConnectToProxyServer() < 0)  // è¿æ¥åˆ°proxyæœåŠ¡å™¨
+	if (ConnectToProxyServer() < 0)  // Á¬½Óµ½proxy·şÎñÆ÷
 	{
 		LOG_ERROR("default", "Error: in CDBCtrl::PrepareToRun connect proxy  server  failed!\n");
 		return -1;
@@ -504,7 +504,7 @@ void CDBCtrl::lcb_OnConnected(IBufferEvent *pBufferEvent)
 void CDBCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL && typeid(*pBufferEvent) == typeid(CConnector), return);
-	// æ–­å¼€è¿æ¥é‡æ–°è¿æ¥åˆ°proxyæœåŠ¡å™¨
+	// ¶Ï¿ªÁ¬½ÓÖØĞÂÁ¬½Óµ½proxy·şÎñÆ÷
 	if (((CConnector *) pBufferEvent)->ReConnect() < 0) {
 		LOG_ERROR("default", "Reconnect to proxyServer failed!");
 		return;
@@ -515,14 +515,14 @@ void CDBCtrl::lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent)
 void CDBCtrl::lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent)
 {
 	MY_ASSERT(pBufferEvent != NULL, return);
-	//æ•°æ®ä¸å®Œæ•´
+	//Êı¾İ²»ÍêÕû
 	if (!pBufferEvent->IsPackageComplete()) {
 		return;
 	}
     m_acRecvBuff.Clear();
     m_acRecvBuff.WriteUnShort(pBufferEvent->GetRecvPackLen());
 	unsigned short iTmpLen = pBufferEvent->GetRecvPackLen() - sizeof(unsigned short);
-	//è¯»å–æ•°æ®
+	//¶ÁÈ¡Êı¾İ
 	pBufferEvent->RecvData(m_acRecvBuff.CanWriteData(), iTmpLen);
 	pBufferEvent->CurrentPackRecved();
 	CDBCtrl::GetSingletonPtr()->DispatchOneCode(iTmpLen,&m_acRecvBuff);
@@ -553,9 +553,9 @@ void CDBCtrl::lcb_OnPingServer(int fd, short event, CConnector *pConnector)
 		}
 	}
 	else {
-		//æ–­å¼€è¿æ¥
+		//¶Ï¿ªÁ¬½Ó
 		pConnector->SetState(CConnector::eCS_Disconnected);
-		// æ–­å¼€è¿æ¥é‡æ–°è¿æ¥åˆ°proxyæœåŠ¡å™¨
+		// ¶Ï¿ªÁ¬½ÓÖØĞÂÁ¬½Óµ½proxy·şÎñÆ÷
 		if (pConnector->ReConnect() == 0) {
 			LOG_ERROR("default", "Reconnect to proxyServer failed!\n");
 			return;

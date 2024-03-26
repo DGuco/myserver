@@ -1,8 +1,8 @@
 //
 //  base.h
-//  æ¸¸æˆå·¥å…·
+//  ÓÎÏ·¹¤¾ß
 //  Created by DGuco on 16/12/19.
-//  Copyright Â© 2016å¹´ DGuco. All rights reserved.
+//  Copyright ? 2016Äê DGuco. All rights reserved.
 //
 
 #ifndef __BASE_H__
@@ -19,21 +19,21 @@
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 #define STR(x)			#x
 
-#define UID_LENGTH			 (64)    // å¸å·é•¿åº¦
-#define NAME_LENGTH          (32)    // åå­—é•¿åº¦
-#define PATH_LENGTH			 (256)    // æ–‡ä»¶è·¯å¾„å­—ç¬¦é•¿åº¦
-#define ADDR_LENGTH          (32)    // IPå’ŒPORTçš„é•¿åº¦
+#define UID_LENGTH			 (64)    // ÕÊºÅ³¤¶È
+#define NAME_LENGTH          (32)    // Ãû×Ö³¤¶È
+#define PATH_LENGTH			 (256)    // ÎÄ¼şÂ·¾¶×Ö·û³¤¶È
+#define ADDR_LENGTH          (32)    // IPºÍPORTµÄ³¤¶È
 #define GUIDE_MAX            (100)
-#define MAX_BROADCAST_NUM    (1000)            // å•è¯æœ€å¤§å¹¿æ’­æ•°é‡
+#define MAX_BROADCAST_NUM    (1000)            // µ¥´Ê×î´ó¹ã²¥ÊıÁ¿
 
 #define	TCP_BACK_LOG		 (1024)
-#define RECVBUFLENGTH        (1024*1024*6)        // æ¥æ”¶ç¼“å†²åŒºå¤§å°
-#define POSTBUFLENGTH        (1024*1024*6)        // å‘é€ç¼“å†²åŒºå¤§å°
-#define RECV_BUF_LEN         (8 * 1024)   // æ¥æ”¶å®¢æˆ·ç«¯ä¿¡æ¯çš„ç¼“å†²åŒº
-#define SECOND_ABOVE_CONVERSION_UNIT    60                // ç§’ä»¥ä¸Šæ¢ç®—å•ä½
-#define SECOND_UNDER_CONVERSION_UNIT    1000            // ç§’ä»¥ä¸‹æ¢ç®—å•ä½
-#define MSG_HEAD_LEN 8  // æ¥æ”¶æˆ–å‘é€ç»™å®¢æˆ·ç«¯æ¶ˆæ¯çš„æ¶ˆæ¯å¤´å­—èŠ‚æ•°
-#define MSG_MAX_LEN                10*1024            // æ¥æ”¶æˆ–å‘é€ç»™å®¢æˆ·ç«¯æ¶ˆæ¯çš„æœ€å¤§å­—èŠ‚æ•°
+#define RECVBUFLENGTH        (1024*1024*6)        // ½ÓÊÕ»º³åÇø´óĞ¡
+#define POSTBUFLENGTH        (1024*1024*6)        // ·¢ËÍ»º³åÇø´óĞ¡
+#define RECV_BUF_LEN         (8 * 1024)   // ½ÓÊÕ¿Í»§¶ËĞÅÏ¢µÄ»º³åÇø
+#define SECOND_ABOVE_CONVERSION_UNIT    60                // ÃëÒÔÉÏ»»Ëãµ¥Î»
+#define SECOND_UNDER_CONVERSION_UNIT    1000            // ÃëÒÔÏÂ»»Ëãµ¥Î»
+#define MSG_HEAD_LEN 8  // ½ÓÊÕ»ò·¢ËÍ¸ø¿Í»§¶ËÏûÏ¢µÄÏûÏ¢Í·×Ö½ÚÊı
+#define MSG_MAX_LEN                10*1024            // ½ÓÊÕ»ò·¢ËÍ¸ø¿Í»§¶ËÏûÏ¢µÄ×î´ó×Ö½ÚÊı
 
 
 #define DELETE(ptr) \
@@ -91,22 +91,22 @@ Tokens StrSplit(const std::string &src, const std::string &sep);
 
 void ignore_pipe();
 
-// åˆ†å‰²å­—ç¬¦ä¸²ï¼Œè·å–å•è¯
+// ·Ö¸î×Ö·û´®£¬»ñÈ¡µ¥´Ê
 void TrimStr(char *strInput);
 
-//// å°†sockaddr_inä¸­çš„ipå’Œportè½¬æ¢æˆstring
+//// ½«sockaddr_inÖĞµÄipºÍport×ª»»³Éstring
 //int SockAddrToString(sockaddr_in *pstSockAddr, char *szResult);
-//// å°†ipå’Œportè½¬åŒ–æˆstring
+//// ½«ipºÍport×ª»¯³Éstring
 //int SockAddrToString(unsigned int ip, unsigned short port, char *szResult);
 
-//// è·å–ä¸¤æ®µæ—¶é—´çš„é—´éš”
+//// »ñÈ¡Á½¶ÎÊ±¼äµÄ¼ä¸ô
 //int TimeValMinus(timeval &tvA, timeval &tvB, timeval &tvResult);
 
-// å¹¿æ’­åˆ—è¡¨ï¼Œä¸ºäº†é€Ÿåº¦è€ƒè™‘ï¼Œç”¨æ•°ç»„å®ç°
+// ¹ã²¥ÁĞ±í£¬ÎªÁËËÙ¶È¿¼ÂÇ£¬ÓÃÊı×éÊµÏÖ
 struct stPointList
 {
-	void *mPointList[MAX_BROADCAST_NUM];    // ä¿å­˜éœ€è¦å¹¿æ’­çš„ç©å®¶çš„FD
-	int mPointNum;                            // å¹¿æ’­æ•°é‡
+	void *mPointList[MAX_BROADCAST_NUM];    // ±£´æĞèÒª¹ã²¥µÄÍæ¼ÒµÄFD
+	int mPointNum;                            // ¹ã²¥ÊıÁ¿
 
 	void Clear()
 	{

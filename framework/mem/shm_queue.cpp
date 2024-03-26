@@ -41,14 +41,14 @@ int CShmMessQueue::SendMessage(BYTE* message, msize_t length)
         return (int)eQueueErrorCode::QUEUE_PARAM_ERROR;
     }
 
-    // é¦–å…ˆåˆ¤æ–­æ˜¯å¦é˜Ÿåˆ—å·²æ»¡
+    // Ê×ÏÈÅĞ¶ÏÊÇ·ñ¶ÓÁĞÒÑÂú
     int size = GetFreeSize();
     if (size <= 0) 
     {
         return (int)eQueueErrorCode::QUEUE_NO_SPACE;
     }
 
-    //ç©ºé—´ä¸è¶³
+    //¿Õ¼ä²»×ã
     if ((length + sizeof(msize_t)) > size) 
     {
         return (int)eQueueErrorCode::QUEUE_NO_SPACE;
@@ -58,12 +58,12 @@ int CShmMessQueue::SendMessage(BYTE* message, msize_t length)
     BYTE* pTempDst = m_pQueueAddr;
     BYTE* pTempSrc = (BYTE*)(&usInLength);
 
-    //å†™å…¥çš„æ—¶å€™æˆ‘ä»¬åœ¨æ•°æ®å¤´æ’ä¸Šæ•°æ®çš„é•¿åº¦ï¼Œæ–¹ä¾¿å‡†ç¡®å–æ•°æ®,æ¯æ¬¡å†™å…¥ä¸€ä¸ªå­—èŠ‚å¯èƒ½ä¼šåˆ†æ•£åœ¨é˜Ÿåˆ—çš„å¤´å’Œå°¾
+    //Ğ´ÈëµÄÊ±ºòÎÒÃÇÔÚÊı¾İÍ·²åÉÏÊı¾İµÄ³¤¶È£¬·½±ã×¼È·È¡Êı¾İ,Ã¿´ÎĞ´ÈëÒ»¸ö×Ö½Ú¿ÉÄÜ»á·ÖÉ¢ÔÚ¶ÓÁĞµÄÍ·ºÍÎ²
     unsigned int tmpEnd = m_stMemTrunk->m_iEnd;
     for (msize_t i = 0; i < sizeof(usInLength); i++) 
     {
-        pTempDst[tmpEnd] = pTempSrc[i];  // æ‹·è´ Code çš„é•¿åº¦
-        tmpEnd = (tmpEnd + 1) & (m_stMemTrunk->m_iSize - 1);  // % ç”¨äºé˜²æ­¢ Code ç»“å°¾çš„ idx è¶…å‡º codequeue
+        pTempDst[tmpEnd] = pTempSrc[i];  // ¿½±´ Code µÄ³¤¶È
+        tmpEnd = (tmpEnd + 1) & (m_stMemTrunk->m_iSize - 1);  // % ÓÃÓÚ·ÀÖ¹ Code ½áÎ²µÄ idx ³¬³ö codequeue
     }
 
     unsigned int tmpLen = MIN(usInLength, m_stMemTrunk->m_iSize - tmpEnd);
@@ -78,7 +78,7 @@ int CShmMessQueue::SendMessage(BYTE* message, msize_t length)
     /*
     * Ensure that we add the bytes to the kfifo -before-
     * we update the fifo->in index.
-    * æ•°æ®å†™å…¥å®Œæˆä¿®æ”¹m_iEndï¼Œä¿è¯è¯»ç«¯ä¸ä¼šè¯»åˆ°å†™å…¥ä¸€åŠçš„æ•°æ®
+    * Êı¾İĞ´ÈëÍê³ÉĞŞ¸Äm_iEnd£¬±£Ö¤¶Á¶Ë²»»á¶Áµ½Ğ´ÈëÒ»°ëµÄÊı¾İ
     */
     __WRITE_BARRIER__;
     m_stMemTrunk->m_iEnd = (tmpEnd + usInLength) & (m_stMemTrunk->m_iSize - 1);
@@ -98,7 +98,7 @@ int CShmMessQueue::GetMessage(BYTE* pOutCode)
     }
 
     BYTE* pTempSrc = m_pQueueAddr;
-    // å¦‚æœæ•°æ®çš„æœ€å¤§é•¿åº¦ä¸åˆ°sizeof(MESS_SIZE_TYPE)ï¼ˆå­˜å…¥æ•°æ®æ—¶åœ¨æ•°æ®å¤´æ’å…¥äº†æ•°æ®çš„é•¿åº¦,é•¿åº¦æœ¬èº«ï¼‰
+    // Èç¹ûÊı¾İµÄ×î´ó³¤¶È²»µ½sizeof(MESS_SIZE_TYPE)£¨´æÈëÊı¾İÊ±ÔÚÊı¾İÍ·²åÈëÁËÊı¾İµÄ³¤¶È,³¤¶È±¾Éí£©
     if (nTempMaxLength <= (int)sizeof(msize_t))
     {
         DISK_LOG(SHM_ERROR,"ReadHeadMessage data len illegal,nTempMaxLength {}", nTempMaxLength);
@@ -108,17 +108,17 @@ int CShmMessQueue::GetMessage(BYTE* pOutCode)
     }
 
     msize_t usOutLength;
-    BYTE* pTempDst = (BYTE*)&usOutLength;   // æ•°æ®æ‹·è´çš„ç›®çš„åœ°å€
+    BYTE* pTempDst = (BYTE*)&usOutLength;   // Êı¾İ¿½±´µÄÄ¿µÄµØÖ·
     unsigned int tmpBegin = m_stMemTrunk->m_iBegin;
-    //å–å‡ºæ•°æ®çš„é•¿åº¦
+    //È¡³öÊı¾İµÄ³¤¶È
     for (msize_t i = 0; i < sizeof(msize_t); i++) 
     {
         pTempDst[i] = pTempSrc[tmpBegin];
         tmpBegin = (tmpBegin + 1) & (m_stMemTrunk->m_iSize - 1);
     }
 
-    // å°†æ•°æ®é•¿åº¦å›ä¼ 
-    //å–å‡ºçš„æ•°æ®çš„é•¿åº¦å®é™…æœ‰çš„æ•°æ®é•¿åº¦ï¼Œéæ³•
+    // ½«Êı¾İ³¤¶È»Ø´«
+    //È¡³öµÄÊı¾İµÄ³¤¶ÈÊµ¼ÊÓĞµÄÊı¾İ³¤¶È£¬·Ç·¨
     if (usOutLength > (int) (nTempMaxLength - sizeof(msize_t)) || usOutLength < 0) 
     {
         DISK_LOG(SHM_ERROR,"ReadHeadMessage usOutLength illegal,usOutLength: %d,nTempMaxLength {}\n",usOutLength, nTempMaxLength);
@@ -127,7 +127,7 @@ int CShmMessQueue::GetMessage(BYTE* pOutCode)
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
     }
 
-    pTempDst = &pOutCode[0];  // è®¾ç½®æ¥æ”¶ Code çš„åœ°å€
+    pTempDst = &pOutCode[0];  // ÉèÖÃ½ÓÊÕ Code µÄµØÖ·
     unsigned int tmpLen = MIN(usOutLength, m_stMemTrunk->m_iSize - tmpBegin);
     memcpy(&pTempDst[0], &pTempSrc[tmpBegin], tmpLen);
     unsigned int tmpLast = usOutLength - tmpLen;
@@ -142,8 +142,8 @@ int CShmMessQueue::GetMessage(BYTE* pOutCode)
 }
 
 /**
-    *å‡½æ•°å          : PeekHeadCode
-    *åŠŸèƒ½æè¿°        : æŸ¥çœ‹å…±äº«å†…å­˜ç®¡é“ï¼ˆä¸æ”¹å˜è¯»å†™ç´¢å¼•ï¼‰
+    *º¯ÊıÃû          : PeekHeadCode
+    *¹¦ÄÜÃèÊö        : ²é¿´¹²ÏíÄÚ´æ¹ÜµÀ£¨²»¸Ä±ä¶ÁĞ´Ë÷Òı£©
     * Error code: -1 invalid para; -2 not enough; -3 data crashed
 **/
 int CShmMessQueue::ReadHeadMessage(BYTE* pOutCode)
@@ -160,7 +160,7 @@ int CShmMessQueue::ReadHeadMessage(BYTE* pOutCode)
     }
 
     BYTE* pTempSrc = m_pQueueAddr;
-    // å¦‚æœæ•°æ®çš„æœ€å¤§é•¿åº¦ä¸åˆ°sizeof(MESS_SIZE_TYPE)ï¼ˆå­˜å…¥æ•°æ®æ—¶åœ¨æ•°æ®å¤´æ’å…¥äº†æ•°æ®çš„é•¿åº¦,é•¿åº¦æœ¬èº«ï¼‰
+    // Èç¹ûÊı¾İµÄ×î´ó³¤¶È²»µ½sizeof(MESS_SIZE_TYPE)£¨´æÈëÊı¾İÊ±ÔÚÊı¾İÍ·²åÈëÁËÊı¾İµÄ³¤¶È,³¤¶È±¾Éí£©
     if (nTempMaxLength <= (int)sizeof(msize_t)) 
     {
         DISK_LOG(SHM_ERROR,"ReadHeadMessage data len illegal, nTempMaxLength{}",nTempMaxLength);
@@ -169,17 +169,17 @@ int CShmMessQueue::ReadHeadMessage(BYTE* pOutCode)
     }
 
     msize_t usOutLength;
-    BYTE* pTempDst = (BYTE*)&usOutLength;   // æ•°æ®æ‹·è´çš„ç›®çš„åœ°å€
+    BYTE* pTempDst = (BYTE*)&usOutLength;   // Êı¾İ¿½±´µÄÄ¿µÄµØÖ·
     unsigned int tmpBegin = m_stMemTrunk->m_iBegin;
-    //å–å‡ºæ•°æ®çš„é•¿åº¦
+    //È¡³öÊı¾İµÄ³¤¶È
     for (msize_t i = 0; i < sizeof(msize_t); i++) 
     {
         pTempDst[i] = pTempSrc[tmpBegin];
         tmpBegin = (tmpBegin + 1) & (m_stMemTrunk->m_iSize - 1);
     }
 
-    // å°†æ•°æ®é•¿åº¦å›ä¼ 
-    //å–å‡ºçš„æ•°æ®çš„é•¿åº¦å®é™…æœ‰çš„æ•°æ®é•¿åº¦ï¼Œéæ³•
+    // ½«Êı¾İ³¤¶È»Ø´«
+    //È¡³öµÄÊı¾İµÄ³¤¶ÈÊµ¼ÊÓĞµÄÊı¾İ³¤¶È£¬·Ç·¨
     if (usOutLength > (int) (nTempMaxLength - sizeof(msize_t)) || usOutLength < 0) 
     {
         DISK_LOG(SHM_ERROR, "ReadHeadMessage usOutLength illegal, usOutLength: {}, nTempMaxLength{} ",usOutLength, nTempMaxLength);
@@ -187,7 +187,7 @@ int CShmMessQueue::ReadHeadMessage(BYTE* pOutCode)
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
     }
 
-    pTempDst = &pOutCode[0];  // è®¾ç½®æ¥æ”¶ Code çš„åœ°å€
+    pTempDst = &pOutCode[0];  // ÉèÖÃ½ÓÊÕ Code µÄµØÖ·
     unsigned int tmpIndex = tmpBegin & (m_stMemTrunk->m_iSize - 1);
     unsigned int tmpLen = MIN(usOutLength, m_stMemTrunk->m_iSize - tmpIndex);
     memcpy(pTempDst, pTempSrc + tmpBegin, tmpLen);
@@ -200,8 +200,8 @@ int CShmMessQueue::ReadHeadMessage(BYTE* pOutCode)
 }
 
 /**
-    *å‡½æ•°å          : GetOneCode
-    *åŠŸèƒ½æè¿°        : ä»æŒ‡å®šä½ç½®iCodeOffsetè·å–æŒ‡å®šé•¿åº¦nCodeLengthæ•°æ®
+    *º¯ÊıÃû          : GetOneCode
+    *¹¦ÄÜÃèÊö        : ´ÓÖ¸¶¨Î»ÖÃiCodeOffset»ñÈ¡Ö¸¶¨³¤¶ÈnCodeLengthÊı¾İ
     * */
 int CShmMessQueue::DeleteHeadMessage()
 {
@@ -212,7 +212,7 @@ int CShmMessQueue::DeleteHeadMessage()
     }
 
     BYTE* pTempSrc = m_pQueueAddr;
-    // å¦‚æœæ•°æ®çš„æœ€å¤§é•¿åº¦ä¸åˆ°sizeof(MESS_SIZE_TYPE)ï¼ˆå­˜å…¥æ•°æ®æ—¶åœ¨æ•°æ®å¤´æ’å…¥äº†æ•°æ®çš„é•¿åº¦,é•¿åº¦æœ¬èº«ï¼‰
+    // Èç¹ûÊı¾İµÄ×î´ó³¤¶È²»µ½sizeof(MESS_SIZE_TYPE)£¨´æÈëÊı¾İÊ±ÔÚÊı¾İÍ·²åÈëÁËÊı¾İµÄ³¤¶È,³¤¶È±¾Éí£©
     if (nTempMaxLength <= (int)sizeof(msize_t)) 
     {
 		DISK_LOG(SHM_ERROR, "ReadHeadMessage data len illegal,nTempMaxLength {}", nTempMaxLength);
@@ -222,17 +222,17 @@ int CShmMessQueue::DeleteHeadMessage()
     }
 
     msize_t usOutLength;
-    BYTE* pTempDst = (BYTE*)&usOutLength;   // æ•°æ®æ‹·è´çš„ç›®çš„åœ°å€
+    BYTE* pTempDst = (BYTE*)&usOutLength;   // Êı¾İ¿½±´µÄÄ¿µÄµØÖ·
     unsigned int tmpBegin = m_stMemTrunk->m_iBegin;
-    //å–å‡ºæ•°æ®çš„é•¿åº¦
+    //È¡³öÊı¾İµÄ³¤¶È
     for (msize_t i = 0; i < sizeof(msize_t); i++) 
     {
         pTempDst[i] = pTempSrc[tmpBegin];
         tmpBegin = (tmpBegin + 1) & (m_stMemTrunk->m_iSize - 1);
     }
 
-    // å°†æ•°æ®é•¿åº¦å›ä¼ 
-    //å–å‡ºçš„æ•°æ®çš„é•¿åº¦å®é™…æœ‰çš„æ•°æ®é•¿åº¦ï¼Œéæ³•
+    // ½«Êı¾İ³¤¶È»Ø´«
+    //È¡³öµÄÊı¾İµÄ³¤¶ÈÊµ¼ÊÓĞµÄÊı¾İ³¤¶È£¬·Ç·¨
     if (usOutLength > (int) (nTempMaxLength - sizeof(msize_t)) || usOutLength < 0) 
     {
         DISK_LOG(SHM_ERROR,"ReadHeadMessage usOutLength illegal,usOutLength: {},nTempMaxLength {}",usOutLength, nTempMaxLength);
@@ -256,28 +256,28 @@ void CShmMessQueue::DebugTrunk()
         m_stMemTrunk->m_iEnd);
 }
 
-//è·å–ç©ºé—²åŒºå¤§å°
+//»ñÈ¡¿ÕÏĞÇø´óĞ¡
 unsigned int CShmMessQueue::GetFreeSize()
 {
-    //é•¿åº¦åº”è¯¥å‡å»é¢„ç•™éƒ¨åˆ†é•¿åº¦8ï¼Œä¿è¯é¦–å°¾ä¸ä¼šç›¸æ¥
+    //³¤¶ÈÓ¦¸Ã¼õÈ¥Ô¤Áô²¿·Ö³¤¶È8£¬±£Ö¤Ê×Î²²»»áÏà½Ó
     return GetQueueLength() - GetDataSize() - EXTRA_BYTE;
 }
 
-//è·å–æ•°æ®é•¿åº¦
+//»ñÈ¡Êı¾İ³¤¶È
 unsigned int CShmMessQueue::GetDataSize()
 {
-    //ç¬¬ä¸€æ¬¡å†™æ•°æ®å‰
+    //µÚÒ»´ÎĞ´Êı¾İÇ°
     if (m_stMemTrunk->m_iBegin == m_stMemTrunk->m_iEnd) 
     {
         return 0;
     }
-    //æ•°æ®åœ¨ä¸¤å¤´
+    //Êı¾İÔÚÁ½Í·
     else if (m_stMemTrunk->m_iBegin > m_stMemTrunk->m_iEnd) 
     {
 
         return  (unsigned int)(m_stMemTrunk->m_iEnd + m_stMemTrunk->m_iSize - m_stMemTrunk->m_iBegin);
     }
-    else   //æ•°æ®åœ¨ä¸­é—´
+    else   //Êı¾İÔÚÖĞ¼ä
     {
         return m_stMemTrunk->m_iEnd - m_stMemTrunk->m_iBegin;
     }
@@ -289,7 +289,7 @@ unsigned int CShmMessQueue::GetQueueLength()
 }
 
 
-//æ˜¯å¦æ•°æ®ä¸ºç©º
+//ÊÇ·ñÊı¾İÎª¿Õ
 bool  CShmMessQueue::IsEmpty()
 {
     return GetDataSize() <= 0;
@@ -299,7 +299,7 @@ bool CShmMessQueue::IsPowerOfTwo(size_t size)
 {
     if (size < 1)
     {
-        return false;//2çš„æ¬¡å¹‚ä¸€å®šå¤§äº0
+        return false;//2µÄ´ÎÃİÒ»¶¨´óÓÚ0
     }
     return ((size & (size - 1)) == 0);
 }

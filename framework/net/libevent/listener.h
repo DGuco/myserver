@@ -1,7 +1,7 @@
 //
 //  CListener.h
 //  Created by DGuco on 18/01/20.
-//  Copyright Â© 2018å¹´ DGuco. All rights reserved.
+//  Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 #ifndef _LISTENER_H
@@ -23,34 +23,34 @@ enum eListenerState
 class CListener: public IReactorHandler
 {
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CListener(IEventReactor *pReactor, int listenQueue);
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	virtual ~CListener(void);
-	//ç›‘å¬
+	//¼àÌı
 	bool Listen(CNetAddr &addr, FuncListenerOnAccept pFunc);
-	//è·å–event_base
+	//»ñÈ¡event_base
 	IEventReactor *GetReactor();
-	//å…³é—­
+	//¹Ø±Õ
 	void ShutDown();
-	//æ˜¯å¦ç›‘å¬ä¸­
+	//ÊÇ·ñ¼àÌıÖĞ
 	bool IsListened();
 
 private:
-	//è®¾ç½®çŠ¶æ€
+	//ÉèÖÃ×´Ì¬
 	void SetState(eListenerState eState);
-	//æ³¨å†Œ
+	//×¢²á
 	bool RegisterToReactor();
-	//å¸è½½
+	//Ğ¶ÔØ
 	bool UnRegisterFromReactor();
-	//ç›‘å¬å›è°ƒ
+	//¼àÌı»Øµ÷
 	static void lcb_Listen(struct evconnlistener *listener,
 						   evutil_socket_t fd,
 						   struct sockaddr *sa,
 						   int socklen, void *arg);
-	//ç›‘å¬å‡ºé”™
+	//¼àÌı³ö´í
 	static void lcb_AcceptError(struct evconnlistener *listener, void *ctx);
-	//å¤„ç†ç›‘å¬
+	//´¦Àí¼àÌı
 	void HandleInput(int Socket, struct sockaddr *sa);
 private:
 	CNetAddr m_ListenAddress;

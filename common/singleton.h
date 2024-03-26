@@ -44,8 +44,8 @@ public:
 class CWTimer
 {
 protected:
-	time_t mNextTimeout;    // 下一次超时时间（毫秒）
-	time_t mDuration;        // 单次超时间隔（毫秒）
+	time_t mNextTimeout;    // ��һ�γ�ʱʱ�䣨���룩
+	time_t mDuration;        // ���γ�ʱ��������룩
 public:
 	CWTimer()
 	{
@@ -60,7 +60,7 @@ public:
 	}
 
 public:
-	// 传入当前时间（毫秒）返回是否超时，如果超时将计算下一次超时时间，并补偿
+	// ���뵱ǰʱ�䣨���룩�����Ƿ�ʱ�������ʱ��������һ�γ�ʱʱ�䣬������
 	inline bool IsTimeout(time_t tNow)
 	{
 		if (mDuration <= 0) {
@@ -81,7 +81,7 @@ public:
 		return false;
 	}
 
-	// 重置timer超时时间
+	// ����timer��ʱʱ��
 	void ResetTimeout(time_t tNow)
 	{
 		mNextTimeout = (tNow + mDuration);

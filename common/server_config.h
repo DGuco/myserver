@@ -1,8 +1,8 @@
 //
 //  config.h
-//  è¯»å–é…ç½®æ–‡ä»¶
+//  ¶ÁÈ¡ÅäÖÃÎÄ¼ş
 //  Created by dguco on 17-2-16.
-//  Copyright Â© 2016å¹´ DGuco. All rights reserved.
+//  Copyright ? 2016Äê DGuco. All rights reserved.
 //
 
 #ifndef SERVER_CONFIG_H_H
@@ -61,7 +61,7 @@ private:
 	int m_iDbLogLevel;
 	int m_iRwTimeOut;
 
-	//å¿ƒè·³
+	//ĞÄÌø
 	int m_iTcpKeepAlive;
 	int m_iServerTick;
 	int m_iChecktimeOutGap;

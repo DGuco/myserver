@@ -17,30 +17,30 @@
 class CProxyServer : public CTCPServer,public CSingleton<CProxyServer>
 {
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CProxyServer();
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	virtual ~CProxyServer();
 public:
-	//å‡†å¤‡run
+	//×¼±¸run
 	bool PrepareToRun();
-	//æ¸…é™¤socket
+	//Çå³ısocket
 	void ClearSocket(CSafePtr<CProxyPlayer> pGamePlayer, short iError);
-	//é€šçŸ¥gameserver client æ–­å¼€è¿æ¥
+	//Í¨Öªgameserver client ¶Ï¿ªÁ¬½Ó
 	void DisConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError);
-	//æ¥å—å®¢æˆ·ç«¯æ•°æ®
+	//½ÓÊÜ¿Í»§¶ËÊı¾İ
 	void RecvClientData(CSafePtr<CProxyPlayer> pGamePlayer);
-	//å‘é€æ¶ˆæ¯ç»™client
+	//·¢ËÍÏûÏ¢¸øclient
 	void RecvGameData();
-	//å‘game å‘é€æ¶ˆæ¯
+	//Ïògame ·¢ËÍÏûÏ¢
 	int SendToGame(char* data, int iTmpLen);
-	//å‘clientä¸‹è¡Œæ•°æ®åŒ…
+	//ÏòclientÏÂĞĞÊı¾İ°ü
 	//int SendToClient(CMessG2G& tmpMes);
 private:
-	//ç»™ç‰¹å®šclientå‘é€æ•°æ®
+	//¸øÌØ¶¨client·¢ËÍÊı¾İ
 	//void SendToClient(const CSocketInfo& socketInfo, const char* data, unsigned int len);
 public:
-	//æ–°é“¾æ¥å›è°ƒ
+	//ĞÂÁ´½Ó»Øµ÷
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);
 	//
 	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket tmSocket);

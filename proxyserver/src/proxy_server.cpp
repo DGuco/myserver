@@ -56,7 +56,7 @@ bool CProxyServer::PrepareToRun()
 void CProxyServer::ClearSocket(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
-	//égameserver ä¸»åŠ¨è¯·æ±‚å…³é—­
+	//·Çgameserver Ö÷¶¯ÇëÇó¹Ø±Õ
 	if (Client_Succeed != iError) 
 	{
 		DisConnect(pGamePlayer, iError);
@@ -78,7 +78,7 @@ void CProxyServer::RecvClientData(CSafePtr<CProxyPlayer> pGamePlayer)
 // 	int packLen = pRecvBuff->ReadUnInt();
 // 	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
 // 	{
-// 		//æ–­å¼€è¿æ¥
+// 		//¶Ï¿ªÁ¬½Ó
 // 		ClearSocket(pGamePlayer, Err_PacketError);
 // 		return;
 // 	}
@@ -87,7 +87,7 @@ void CProxyServer::RecvClientData(CSafePtr<CProxyPlayer> pGamePlayer)
 // 	int nSeq = pRecvBuff->ReadInt();
 // 	if (pRecvBuff->ReadBytes(m_CacheData, packLen) != 0)
 // 	{
-// 		//æ–­å¼€è¿æ¥
+// 		//¶Ï¿ªÁ¬½Ó
 // 		ClearSocket(pGamePlayer, Err_PacketError);
 // 		return;
 // 	}
@@ -96,14 +96,14 @@ void CProxyServer::RecvClientData(CSafePtr<CProxyPlayer> pGamePlayer)
 // 	CProxyMessage tmMessage;
 // 	if (!tmMessage.ParseFromArray(m_CacheData, packLen))
 // 	{
-// 		//æ–­å¼€è¿æ¥
+// 		//¶Ï¿ªÁ¬½Ó
 // 		ClearSocket(pGamePlayer, Err_PacketError);
 // 		return;
 // 	}
 // 	const CProxyHead& tmHead = tmMessage.msghead();
 // 	if (!tmMessage.SerializeToArray(m_CacheData, GAMEPLAYER_RECV_BUFF_LEN))
 // 	{
-// 		//æ–­å¼€è¿æ¥
+// 		//¶Ï¿ªÁ¬½Ó
 // 		ClearSocket(pGamePlayer, Err_PacketError);
 // 		return;
 // 	}
@@ -144,10 +144,10 @@ void CProxyServer::RecvGameData()
 	{
 		m_pRecvBuff->Clear();
 		int iTmpLen = 0;
-		//è·å–æˆåŠŸ
+		//»ñÈ¡³É¹¦
 		int iRet = 0;
 
-		//æ²¡æœ‰æ•°æ®å¯è¯»
+		//Ã»ÓĞÊı¾İ¿É¶Á
 		if (m_S2CCodeQueue->IsEmpty())
 		{
 			return;
@@ -217,9 +217,9 @@ CSafePtr<CTCPConn> CProxyServer::CreateTcpConn(CSocket tmSocket)
 // 	}
 // 
 // 	/*
-// 	 * æ—¶é—´ä¸ä¸€æ ·ï¼Œè¯´æ˜è¿™ä¸ªsocketæ˜¯ä¸ªæ–°çš„è¿æ¥ï¼ŒåŸæ¥çš„è¿æ¥å·²ç»å…³é—­,æ³¨(åŸæ¥çš„
-// 	 * çš„è¿æ¥æ–­å¼€åï¼Œæ–°çš„å®¢æˆ·ç«¯ç”¨äº†åŸæ¥çš„socket fd ï¼Œå› æ­¤æ•°æ®ä¸æ˜¯ç°åœ¨è¿™ä¸ªè¿
-// 	 * æ¥çš„æ•°æ®ï¼ŒåŸæ¥è¿æ¥çš„æ•°æ®,ä¸­æ–­å‘é€l
+// 	 * Ê±¼ä²»Ò»Ñù£¬ËµÃ÷Õâ¸ösocketÊÇ¸öĞÂµÄÁ¬½Ó£¬Ô­À´µÄÁ¬½ÓÒÑ¾­¹Ø±Õ,×¢(Ô­À´µÄ
+// 	 * µÄÁ¬½Ó¶Ï¿ªºó£¬ĞÂµÄ¿Í»§¶ËÓÃÁËÔ­À´µÄsocket fd £¬Òò´ËÊı¾İ²»ÊÇÏÖÔÚÕâ¸öÁ¬
+// 	 * ½ÓµÄÊı¾İ£¬Ô­À´Á¬½ÓµÄÊı¾İ,ÖĞ¶Ï·¢ËÍl
 // 	*/
 // 	if (pGamePlayer->GetCreateTime() != socketInfo.createtime())
 // 	{
@@ -234,7 +234,7 @@ CSafePtr<CTCPConn> CProxyServer::CreateTcpConn(CSocket tmSocket)
 // 	int iRet = pGamePlayer->Write((BYTE*)data, len);
 // 	if (iRet != 0)
 // 	{
-// 		//å‘é€å¤±è´¥
+// 		//·¢ËÍÊ§°Ü
 // 		ClearSocket(pGamePlayer, Err_ClientClose);
 // 		CACHE_LOG(TCP_ERROR,
 // 			"send to client {} Failed due to error {}",
@@ -243,7 +243,7 @@ CSafePtr<CTCPConn> CProxyServer::CreateTcpConn(CSocket tmSocket)
 // 		return;
 // 	}
 // 
-// 	//gameserver ä¸»åŠ¨å…³é—­
+// 	//gameserver Ö÷¶¯¹Ø±Õ
 // 	if (iTmpCloseFlag < 0)
 // 	{
 // 		ClearSocket(pGamePlayer, Client_Succeed);

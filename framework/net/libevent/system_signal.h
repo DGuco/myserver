@@ -1,7 +1,7 @@
 //
 //  timer_signal.h
 //  Created by DGuco on 18-1-7.
-//  ä¿¡å·å’Œtimerç®¡ç†
+//  ĞÅºÅºÍtimer¹ÜÀí
 //
 
 #ifndef _PPE_SIGNAL_H_
@@ -14,20 +14,20 @@
 class CSystemSignal: public IReactorHandler
 {
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	explicit CSystemSignal(IEventReactor *pReactor,uint32 uSignal, FuncOnSignal pFunc, void *pContext);
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	~CSystemSignal() override;
-	//è®¾ç½®ä¿¡å·å›è°ƒ
+	//ÉèÖÃĞÅºÅ»Øµ÷
 	void RegisterSignal();
 private:
-	//æ³¨å†Œ
+	//×¢²á
 	bool RegisterToReactor() override;
-	//è·å–event_base
+	//»ñÈ¡event_base
 	IEventReactor *GetReactor() override;
-	//æ”¶åˆ°ä¿¡å·
+	//ÊÕµ½ĞÅºÅ
 	void OnSignalReceive();
-	//ä¿¡å·å›è°ƒ
+	//ĞÅºÅ»Øµ÷
 	static void lcb_OnSignal(int fd, short event, void *arg);
 private:
 	FuncOnSignal m_pFuncOnSignal;

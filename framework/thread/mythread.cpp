@@ -1,8 +1,8 @@
 //
 // mythread.cpp
-// çº¿ç¨‹åŸºç±»
+// Ïß³Ì»ùÀà
 // Created by DGuco on 17-10-12.
-// Copyright Â© 2016å¹´ DGuco. All rights reserved.
+// Copyright ? 2016Äê DGuco. All rights reserved.
 //
 
 #include "base.h"
@@ -25,7 +25,7 @@ CMyThread::~CMyThread()
 int CMyThread::Run()
 {
 	m_iRunStatus = rt_running;
-	//åˆ›å»ºçº¿ç¨‹
+	//´´½¨Ïß³Ì
 	if (m_pThread != NULL) 
 	{
 		m_pThread = std::make_shared<thread>(mem_fn(&CMyThread::ThreadFunc), this);
@@ -38,9 +38,9 @@ void CMyThread::ThreadFunc()
 	while (true) 
 	{
 		std::unique_lock<std::mutex> lk(m_condMut);
-		// è¯¥è¿‡ç¨‹éœ€è¦åœ¨çº¿ç¨‹é”å†…å®Œæˆ
+		// ¸Ã¹ı³ÌĞèÒªÔÚÏß³ÌËøÄÚÍê³É
 		m_iRunStatus = rt_blocked;
-		//è¶…æ—¶
+		//³¬Ê±
 		if (m_lTimeOut > 0) 
 		{
 			data_cond.wait_for(lk, std::chrono::microseconds(m_lTimeOut),
@@ -57,20 +57,20 @@ void CMyThread::ThreadFunc()
 				return (m_iRunStatus == rt_stopped || !IsToBeBlocked());
 			});
 		}
-		// å¦‚æœçº¿ç¨‹éœ€è¦åœæ­¢åˆ™ç»ˆæ­¢çº¿ç¨‹
+		// Èç¹ûÏß³ÌĞèÒªÍ£Ö¹ÔòÖÕÖ¹Ïß³Ì
 		if (m_iRunStatus == rt_stopped)
 		{
-			//é€€å‡ºçº¿ç¨‹
+			//ÍË³öÏß³Ì
 			DISK_LOG(DEBUG_DISK, "Thread [{}] exit.", m_sThreadName);
 			//pthread_exit((void *) 0);
 		}
 
-		//æ„å¤–å”¤é†’çº¿ç¨‹,ç»§ç»­é˜»å¡
+		//ÒâÍâ»½ĞÑÏß³Ì,¼ÌĞø×èÈû
 		if (IsToBeBlocked()) 
 		{
 			continue;
 		}
-		// çº¿ç¨‹çŠ¶æ€å˜ä¸ºrt_running
+		// Ïß³Ì×´Ì¬±äÎªrt_running
 		m_iRunStatus = rt_running;
 		lk.unlock();
 		RunFunc();
@@ -83,7 +83,7 @@ int CMyThread::WakeUp()
 	if (!IsToBeBlocked() && m_iRunStatus == rt_blocked) 
 	{
 		std::lock_guard<std::mutex> guard(m_condMut);
-		// å‘çº¿ç¨‹å‘å‡ºä¿¡å·ä»¥å”¤é†’
+		// ÏòÏß³Ì·¢³öĞÅºÅÒÔ»½ĞÑ
 		data_cond.notify_one();
 	}
 
@@ -95,7 +95,7 @@ int CMyThread::StopThread()
 	std::lock_guard<std::mutex> guard(m_condMut);
 	m_iRunStatus = rt_stopped;
 	data_cond.notify_one();
-	// ç­‰å¾…è¯¥çº¿ç¨‹ç»ˆæ­¢
+	// µÈ´ı¸ÃÏß³ÌÖÕÖ¹
 	Join();
 	DISK_LOG(DEBUG_DISK, "Thread [{}] stopped.", m_sThreadName);
 	return 0;
@@ -104,7 +104,7 @@ int CMyThread::StopThread()
 void CMyThread::StopForce()
 {
 	std::lock_guard<std::mutex> guard(m_condMut);
-	//é€€å‡ºçº¿ç¨‹
+	//ÍË³öÏß³Ì
 	DISK_LOG(DEBUG_DISK, "Thread [{}] exit.", m_sThreadName);
 	//pthread_exit((void *) 0);
 }

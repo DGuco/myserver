@@ -28,9 +28,9 @@ CTimerEvent::~CTimerEvent()
 void CTimerEvent::LaterCall(int sec, int usec)
 {
 	struct timeval tv;
-	tv.tv_sec = sec;    // ç§’
-	tv.tv_usec = usec;  // å¾®ç§’
-	//timer äº‹ä»¶
+	tv.tv_sec = sec;    // Ãë
+	tv.tv_usec = usec;  // Î¢Ãë
+	//timer ÊÂ¼þ
 	evtimer_assign(&m_event, GetReactor()->GetEventBase(), &lcb_TimeOut, (void *) this);
 	evtimer_add(&m_event, &tv);
 }

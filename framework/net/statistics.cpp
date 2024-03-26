@@ -20,42 +20,42 @@ void CProcessMsgDelay::CountMsg(long tmDelay)
 	m_nTotalMsgNum++;
 	if (tmDelay <= 1)
 	{
-		// å°äºŽ1ç§’
+		// Ð¡ÓÚ1Ãë
 		m_aryStatistics[ETimeGrade_Lv1]++;
 	} 
 	else if (tmDelay <= 2)
 	{
-		// 1ç§’ ~ 2ç§’
+		// 1Ãë ~ 2Ãë
 		m_aryStatistics[ETimeGrade_Lv2]++;
 	}
 	else if (tmDelay <= 3)
 	{
-		// 2ç§’ ~ 3ç§’
+		// 2Ãë ~ 3Ãë
 		m_aryStatistics[ETimeGrade_Lv3]++;
 	}
 	else if (tmDelay <= 5)
 	{
-		// 3ç§’ ~ 5ç§’
+		// 3Ãë ~ 5Ãë
 		m_aryStatistics[ETimeGrade_Lv4]++;
 	}
 	else if (tmDelay <= 10)
 	{
-		// 5ç§’ ~ 10ç§’
+		// 5Ãë ~ 10Ãë
 		m_aryStatistics[ETimeGrade_Lv5]++;
 	}
 	else if (tmDelay <= 30)
 	{
-		// 10ç§’ ~ 30ç§’
+		// 10Ãë ~ 30Ãë
 		m_aryStatistics[ETimeGrade_Lv6]++;
 	}
 	else if (tmDelay <= 60)
 	{
-		// 30ç§’ ~ 60ç§’
+		// 30Ãë ~ 60Ãë
 		m_aryStatistics[ETimeGrade_Lv7]++;
 	}
 	else
 	{
-		// å¤§äºŽ60ç§’
+		// ´óÓÚ60Ãë
 		m_aryStatistics[ETimeGrade_Lv8]++;
 	}
 }

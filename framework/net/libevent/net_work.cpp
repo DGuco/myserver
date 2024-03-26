@@ -1,7 +1,7 @@
 //
 //  net_work.cpp
 //  Created by DGuco on 18/01/20.
-//  Copyright Â© 2018å¹´ DGuco. All rights reserved.
+//  Copyright ? 2018Äê DGuco. All rights reserved.
 //
 #include "net_addr.h"
 #include "network_interface.h"
@@ -68,7 +68,7 @@ bool CNetWork::BeginListen(const char *szNetAddr,
 	m_pCheckTimerOut = new CTimerEvent(GetEventReactor(),
 									   funcAcceptorTimeOut,
 									   this,
-									   uCheckPingTickTime,  //æ¯«ç§’è½¬æ¢ä¸ºç§’
+									   uCheckPingTickTime,  //ºÁÃë×ª»»ÎªÃë
 									   0,
 									   -1);
 	m_iPingCheckTime = uCheckPingTickTime;
@@ -94,7 +94,7 @@ void CNetWork::NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa)
 {
 	sockaddr_in sin;
 	memcpy(&sin, sa, sizeof(sin));
-	//  å–å¾—ipå’Œç«¯å£å·
+	//  È¡µÃipºÍ¶Ë¿ÚºÅ
 	char ip[16];
 	sprintf(ip, inet_ntoa(sin.sin_addr));
 	CAcceptor *pAcceptor = new CAcceptor(socket,

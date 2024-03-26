@@ -1,11 +1,11 @@
 /******************************************************************************
 * Name: LuaBridge for C++
 *
-* Author: DGuco(æœå›½è¶…)
+* Author: DGuco(¶Å¹ú³¬)
 * Date: 2019-12-07 17:15
 * E-Mail: 1139140929@qq.com
 *
-* Copyright (C) 2019 DGuco(æœå›½è¶…).  All rights reserved.
+* Copyright (C) 2019 DGuco(¶Å¹ú³¬).  All rights reserved.
 *
 * License: The MIT License (http://www.opensource.org/licenses/mit-license.php)
 *
@@ -68,10 +68,10 @@ public:
 
     /**
      * Call Lua function
-     * @tparam R    è¿”å›ç±»å‹
-     * @tparam Args å‡½æ•°å‚æ•°åˆ—è¡¨
-     * @param func  å‡½æ•°å
-     * @param args  å‡½æ•°å‚æ•°åˆ—è¡¨
+     * @tparam R    ·µ»ØÀàĞÍ
+     * @tparam Args º¯Êı²ÎÊıÁĞ±í
+     * @param func  º¯ÊıÃû
+     * @param args  º¯Êı²ÎÊıÁĞ±í
      * @return R    Return type. (void, float, double, int, long, bool, const char*, std::string)
      * Sample:	double f = lua.Call<double>("test0", 1.0, 3, "param");
      */
@@ -79,19 +79,19 @@ public:
     R CallLuaFunc(const char *func, const Args... args);
     /**
      *
-     * @param func å‡½æ•°å
-     * @param sig  å‡½æ•°ç­¾å
-     * æ ¼å¼å¦‚p*[:r*]æˆ–p*[>r*], å†’å·æˆ–è€…å¤§äºå·å‰é¢ä¸ºå‚æ•°ï¼Œåé¢ä¸ºè¿”å›å€¼ï¼Œæ¯ä¸ªå­—æ¯ä¸ºæ¯ä¸€ä¸ªå‚æ•°çš„ç±»å‹
-     * ç±»å‹è¡¨ç¤ºä¸º f æˆ– e è¡¨ç¤ºfloatï¼› i æˆ– n æˆ– d è¡¨ç¤ºæ•´æ•°ï¼› b è¡¨ç¤ºboolï¼› s è¡¨ç¤ºå­—å…ƒä¸²S è¡¨ç¤ºchar* æ•°ç»„ï¼Œå‰é¢æ˜¯é•¿åº¦ï¼Œåé¢æ˜¯char*æŒ‡é’ˆ
+     * @param func º¯ÊıÃû
+     * @param sig  º¯ÊıÇ©Ãû
+     * ¸ñÊ½Èçp*[:r*]»òp*[>r*], Ã°ºÅ»òÕß´óÓÚºÅÇ°ÃæÎª²ÎÊı£¬ºóÃæÎª·µ»ØÖµ£¬Ã¿¸ö×ÖÄ¸ÎªÃ¿Ò»¸ö²ÎÊıµÄÀàĞÍ
+     * ÀàĞÍ±íÊ¾Îª f »ò e ±íÊ¾float£» i »ò n »ò d ±íÊ¾ÕûÊı£» b ±íÊ¾bool£» s ±íÊ¾×ÖÔª´®S ±íÊ¾char* Êı×é£¬Ç°ÃæÊÇ³¤¶È£¬ºóÃæÊÇchar*Ö¸Õë
      * @param ...
-     * @return  è¿”å› è¿”å›å€¼å¦‚æœä¸º NULLï¼Œ è¡¨ç¤ºè°ƒç”¨æˆåŠŸã€‚å¦åˆ™è¿”å›é”™è¯¯ä¿¡æ¯
+     * @return  ·µ»Ø ·µ»ØÖµÈç¹ûÎª NULL£¬ ±íÊ¾µ÷ÓÃ³É¹¦¡£·ñÔò·µ»Ø´íÎóĞÅÏ¢
      */
-    // ä¾‹1ï¸° double f; const char* error_msg = lua.CallLuaFunc(const char* scriptName, "test01", "nnnn:f", 1,2,3,4,&f);
-    // ä¾‹2ï¸° const char* s; int len; const char* error_msg = lua.CallLuaFunc(const char* scriptName, "test01", "S:S", 11, "Hello\0World", &len, &s);
+    // Àı1©U double f; const char* error_msg = lua.CallLuaFunc(const char* scriptName, "test01", "nnnn:f", 1,2,3,4,&f);
+    // Àı2©U const char* s; int len; const char* error_msg = lua.CallLuaFunc(const char* scriptName, "test01", "S:S", 11, "Hello\0World", &len, &s);
     const char *Call(const char *func, const char *sig, ...);
 
     /**
-     * æŠŠc++ä¸­çš„å¯¹è±¡æ”¾å…¥luaæ ˆä¸­
+     * °Ñc++ÖĞµÄ¶ÔÏó·ÅÈëluaÕ»ÖĞ
      * @tparam T
      * @param L
      * @param ptr
@@ -129,7 +129,7 @@ private:
     //InitLuaLibrary
     void InitLuaLibrary();
 
-    //æŠŠå‚æ•°å‹æ ˆ
+    //°Ñ²ÎÊıÑ¹Õ»
     int PushToLua();
 
     template<typename T>
@@ -243,7 +243,7 @@ int LuaBridge::PushToLua(const First &first, const Rest &...rest)
 void LuaBridge::SafeBeginCall(const char *func)
 {
     lua_State *L = m_pLuaVm->LuaState();
-    //è®°å½•è°ƒç”¨å‰çš„å †æ ˆç´¢å¼•
+    //¼ÇÂ¼µ÷ÓÃÇ°µÄ¶ÑÕ»Ë÷Òı
     m_iTopIndex = lua_gettop(L);
     lua_getglobal(L, func);
 }
@@ -254,19 +254,19 @@ R LuaBridge::SafeEndCall(const char *func, int nArg)
     lua_State *L = m_pLuaVm->LuaState();
     if (lua_pcall(L, nArg, 1, 0) != LUA_OK) {
         LuaHelper::DebugCallFuncErrorStack(L, func, lua_tostring(L, -1));
-        //æ¢å¤è°ƒç”¨å‰çš„å †æ ˆç´¢å¼•
+        //»Ö¸´µ÷ÓÃÇ°µÄ¶ÑÕ»Ë÷Òı
         lua_settop(L, m_iTopIndex);
         return 0;
     }
     else {
         try {
             R r = Stack<R>::get(L, -1, false);
-            //æ¢å¤è°ƒç”¨å‰çš„å †æ ˆç´¢å¼•
+            //»Ö¸´µ÷ÓÃÇ°µÄ¶ÑÕ»Ë÷Òı
             lua_settop(L, m_iTopIndex);
             return r;
         }
         catch (std::exception &e) {
-            //æ¢å¤è°ƒç”¨å‰çš„å †æ ˆç´¢å¼•
+            //»Ö¸´µ÷ÓÃÇ°µÄ¶ÑÕ»Ë÷Òı
             lua_settop(L, m_iTopIndex);
             LuaHelper::DebugCallFuncErrorStack(L, func, e.what());
             return 0;
@@ -300,30 +300,30 @@ const char *LuaBridge::Call(const char *func, const char *sig, ...)
 
     lua_getglobal(L, func);
 
-    /* å£“å…¥èª¿ç”¨åƒæ•¸ */
+    /* ‰ºÈëÕ{ÓÃ…¢”µ */
     int narg = 0;
     while (*sig) {  /* push arguments */
         switch (*sig++) {
-        case 'f':    /* æµ®é»æ•¸ */
-        case 'e':    /* æµ®é»æ•¸ */
+        case 'f':    /* ¸¡üc”µ */
+        case 'e':    /* ¸¡üc”µ */
             lua_pushnumber(L, va_arg(vl, double));
             break;
 
-        case 'i':    /* æ•´æ•¸ */
-        case 'n':    /* æ•´æ•¸ */
-        case 'd':    /* æ•´æ•¸ */
+        case 'i':    /* Õû”µ */
+        case 'n':    /* Õû”µ */
+        case 'd':    /* Õû”µ */
             lua_pushnumber(L, va_arg(vl, int));
             break;
 
-        case 'b':    /* å¸ƒçˆ¾å€¼ */
+        case 'b':    /* ²¼ –Öµ */
             lua_pushboolean(L, va_arg(vl, int));
             break;
 
-        case 's':    /* å­—å…ƒä¸² */
+        case 's':    /* ×ÖÔª´® */
             lua_pushstring(L, va_arg(vl, char *));
             break;
 
-        case 'S':    /* å­—å…ƒä¸² */
+        case 'S':    /* ×ÖÔª´® */
         {
             int len = va_arg(vl, int);
             lua_pushlstring(L, va_arg(vl, char *), len);
@@ -350,18 +350,18 @@ const char *LuaBridge::Call(const char *func, const char *sig, ...)
         nres = 1;
     }
     else {
-        // å–å¾—è¿”å›å€¼
+        // È¡µÃ·µ»ØÖµ
         int index = -nres;
         while (*sig) {
             switch (*sig++) {
-            case 'f':    /* æµ®ç‚¹æ•° float*/
-            case 'e':    /* æµ®ç‚¹æ•° float*/
+            case 'f':    /* ¸¡µãÊı float*/
+            case 'e':    /* ¸¡µãÊı float*/
                 *va_arg(vl, double *) = lua_tonumber(L, index);
                 break;
 
-            case 'i':    /* æ•´æ•° */
-            case 'n':    /* æ•´æ•° */
-            case 'd':    /* æ•´æ•° */
+            case 'i':    /* ÕûÊı */
+            case 'n':    /* ÕûÊı */
+            case 'd':    /* ÕûÊı */
                 *va_arg(vl, int *) = static_cast<int>(lua_tonumber(L, index));
                 break;
 
@@ -464,15 +464,15 @@ Namespace &LuaBridge::CurNameSpace()
         }
 
 /*
- * é€šè¿‡BEGIN_CLASSæ³¨å†Œçš„classåªèƒ½åœ¨luaé‡Œåˆ›å»ºç±»çš„å¯¹è±¡obj,å¹¶ä¸”è¯¥objåªèƒ½åœ¨luaé‡Œè®¿é—®,ä¸èƒ½åœ¨c++ä¸­è®¿é—®
- * (æ³¨å†Œåœ¨luaä¸­çš„c++å‡½æ•°é™¤å¤–),å› ä¸ºéšæ—¶æœ‰å¯èƒ½è¢«luaè™šæ‹Ÿæœºgcæ‰
+ * Í¨¹ıBEGIN_CLASS×¢²áµÄclassÖ»ÄÜÔÚluaÀï´´½¨ÀàµÄ¶ÔÏóobj,²¢ÇÒ¸ÃobjÖ»ÄÜÔÚluaÀï·ÃÎÊ,²»ÄÜÔÚc++ÖĞ·ÃÎÊ
+ * (×¢²áÔÚluaÖĞµÄc++º¯Êı³ıÍâ),ÒòÎªËæÊ±ÓĞ¿ÉÄÜ±»luaĞéÄâ»úgcµô
  * */
 #define BEGIN_CLASS(luabridge, ClassT) BEGIN_CLASS_SHARED_OR_NOT(luabridge, ClassT,false)
 
 /*
- * é€šè¿‡BEGIN_SHARED_CLASSæ³¨å†Œçš„classå¯ä»¥åœ¨c++ä¸­åˆ›å»ºå¯¹è±¡objç„¶åè°ƒç”¨PushSharedObjToLuaä¼ å…¥luaä¸­,
- * è¯¥objåœ¨c++(æ³¨å†Œåœ¨luaä¸­çš„c++å‡½æ•°é™¤å¤–)å’Œluaä¸­å…±äº«,æ— éœ€æ‹…å¿ƒobjä¼šè¢«luaè™šæ‹Ÿæœºgcæ‰,ä¹Ÿå¯ä»¥åœ¨luaä¸­åˆ›å»º
- * objï¼Œæ³¨æ„åœ¨luaä¸­åˆ›å»ºçš„objåªåœ¨luaä¸­è®¿é—®
+ * Í¨¹ıBEGIN_SHARED_CLASS×¢²áµÄclass¿ÉÒÔÔÚc++ÖĞ´´½¨¶ÔÏóobjÈ»ºóµ÷ÓÃPushSharedObjToLua´«ÈëluaÖĞ,
+ * ¸ÃobjÔÚc++(×¢²áÔÚluaÖĞµÄc++º¯Êı³ıÍâ)ºÍluaÖĞ¹²Ïí,ÎŞĞèµ£ĞÄobj»á±»luaĞéÄâ»úgcµô,Ò²¿ÉÒÔÔÚluaÖĞ´´½¨
+ * obj£¬×¢ÒâÔÚluaÖĞ´´½¨µÄobjÖ»ÔÚluaÖĞ·ÃÎÊ
  * */
 #define BEGIN_SHARED_CLASS(luabridge, ClassT) BEGIN_CLASS_SHARED_OR_NOT(luabridge, ClassT,true)
 

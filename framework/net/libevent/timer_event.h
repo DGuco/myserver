@@ -1,6 +1,6 @@
 //
 // Created by dguco on 18-2-8.
-// åŸºäºlibevetçš„timeräº‹ä»¶
+// »ùÓÚlibevetµÄtimerÊÂ¼ş
 //
 
 #ifndef SERVER_SYS_EVENT_H
@@ -14,36 +14,36 @@
 class CTimerEvent: public IReactorHandler
 {
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CTimerEvent(IEventReactor *pReactor,
 				FuncOnTimeOut m_pFuncOnTimerOut,
 				void *param,
 				int sec,
 				int usec,
-				int loopTimes/*-1 æ°¸ä¹… > 0 æ¬¡æ•°*/);
-	//ææ„å‡½æ•°
+				int loopTimes/*-1 ÓÀ¾Ã > 0 ´ÎÊı*/);
+	//Îö¹¹º¯Êı
 	~CTimerEvent();
-	//è¶…æ—¶å¤„ç†
+	//³¬Ê±´¦Àí
 	void OnTimerOut(int fd, short event);
 	void LaterCall(int sec, int usec);
 	void ReCall(int sec, int usec);
-	//åœæ­¢
+	//Í£Ö¹
 	void Cancel();
 private:
-	//æ³¨å†Œ
+	//×¢²á
 	bool RegisterToReactor();
-	//è·å–event_base
+	//»ñÈ¡event_base
 	IEventReactor *GetReactor();
 private:
-	//è¶…æ—¶å›è°ƒ
+	//³¬Ê±»Øµ÷
 	static void lcb_TimeOut(int fd, short event, void *arg);
 private:
 	IEventReactor *m_pReactor;
 	FuncOnTimeOut m_pFuncOnTimerOut;
-	void *m_pParam; //è¶…æ—¶å›è°ƒå‚æ•°l
-	int m_iSec;  //ç§’
-	int m_iUsec; //å¾®å¦™
-	int m_iLoopTimes; //å¾ªç¯æ¬¡æ•°
+	void *m_pParam; //³¬Ê±»Øµ÷²ÎÊıl
+	int m_iSec;  //Ãë
+	int m_iUsec; //Î¢Ãî
+	int m_iLoopTimes; //Ñ­»·´ÎÊı
 	event m_event;
 };
 

@@ -26,8 +26,8 @@ public:
     CPlayerCity* GetPlayerCity() {return m_spPlayerCity;}
     const OBJ_ID GetPlayerId() {return get_id();}
 private:
-    CPlayerBase* m_spPlayerBase;    //鐜╁鍩虹淇℃伅
-    CPlayerCity* m_spPlayerCity;    //鐜╁鍩庢睜淇℃伅
+    CPlayerBase* m_spPlayerBase;    //玩家基础信息
+    CPlayerCity* m_spPlayerCity;    //玩家城池信息
 };
 
 #endif //SERVER_PLAYER_H_H

@@ -2,7 +2,7 @@
 /*
   https://github.com/DGuco/luabridge
 
-  Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+  Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
 
   License: The MIT License (http://www.opensource.org/licenses/mit-license.php)
 
@@ -66,42 +66,42 @@ protected:
         lua_State *L = m_pLuaVm->LuaState();
         std::string type_name = std::string(trueConst ? "const_" : "") + name;
 
-        // Stack: namespace table (ns) //æ ˆçŠ¶æ€lua_gettop(L) == n + 1:æ ˆçŠ¶æ€:ns
-        lua_newtable(L); // Stack: ns, const table (co)   æ ˆçŠ¶æ€lua_gettop(L) == n + 2:ns=>co
-        lua_pushvalue(L, -1); // Stack: ns, co, co æ ˆçŠ¶æ€lua_gettop(L) == n + 3:ns=>co=>co
-        lua_setmetatable(L, -2); // co.__metatable = co. æ ˆçŠ¶æ€lua_gettop(L) == n + 2:ns=>co
-        lua_pushstring(L, type_name.c_str()); // const table name æ ˆçŠ¶æ€lua_gettop(L)== n + 3:ns=>co=>type_name
-        lua_rawsetp(L, -2, GetTypeKey()); // co [typeKey] = type_name. æ ˆçŠ¶æ€lua_gettop(L)== n + 2:ns=>co
+        // Stack: namespace table (ns) //Õ»×´Ì¬lua_gettop(L) == n + 1:Õ»×´Ì¬:ns
+        lua_newtable(L); // Stack: ns, const table (co)   Õ»×´Ì¬lua_gettop(L) == n + 2:ns=>co
+        lua_pushvalue(L, -1); // Stack: ns, co, co Õ»×´Ì¬lua_gettop(L) == n + 3:ns=>co=>co
+        lua_setmetatable(L, -2); // co.__metatable = co. Õ»×´Ì¬lua_gettop(L) == n + 2:ns=>co
+        lua_pushstring(L, type_name.c_str()); // const table name Õ»×´Ì¬lua_gettop(L)== n + 3:ns=>co=>type_name
+        lua_rawsetp(L, -2, GetTypeKey()); // co [typeKey] = type_name. Õ»×´Ì¬lua_gettop(L)== n + 2:ns=>co
 
         /**
          *https://zilongshanren.com/post/bind-a-simple-cpp-class-in-lua/
          *https://blog.csdn.net/qiuwen_521/article/details/107855867
-         *ç”¨Luaé‡Œé¢çš„é¢å‘å¯¹è±¡çš„æ–¹å¼æ¥è®¿é—®ã€‚
+         *ÓÃLuaÀïÃæµÄÃæÏò¶ÔÏóµÄ·½Ê½À´·ÃÎÊ¡£
          *local s = cc.create()
          *s:setName("zilongshanren")
          *s:setAge(20)
          *s:print()
-         *s:setName(xx)å°±ç­‰ä»·äºs.setName(s,xx)ï¼Œæ­¤æ—¶æˆ‘ä»¬åªéœ€è¦ç»™sæä¾›ä¸€ä¸ªmetatable,å¹¶ä¸”ç»™è¿™ä¸ªmetatableè®¾ç½®ä¸€ä¸ªkeyä¸º"__index"ï¼Œ
-         *valueç­‰äºå®ƒæœ¬èº«çš„metatableã€‚æœ€åï¼Œåªéœ€è¦æŠŠä¹‹å‰Studentç±»çš„ä¸€äº›æ–¹æ³•æ·»åŠ åˆ°è¿™ä¸ªmetatableé‡Œé¢å°±å¯ä»¥äº†,æˆ–è€…keyä¸º"__index"ï¼Œ
-         *valueä½ä¸€ä¸ªfunction(t,k)ç±»å‹çš„å‡½æ•°ï¼Œå‡½æ•°ä¸­å¯ä»¥æ ¹æ®kè·å–å¯¹åº”çš„ç±»çš„æ–¹æ³•,è¿™é‡Œçš„å®ç°æ˜¯åè€…
+         *s:setName(xx)¾ÍµÈ¼ÛÓÚs.setName(s,xx)£¬´ËÊ±ÎÒÃÇÖ»ĞèÒª¸øsÌá¹©Ò»¸ömetatable,²¢ÇÒ¸øÕâ¸ömetatableÉèÖÃÒ»¸ökeyÎª"__index"£¬
+         *valueµÈÓÚËü±¾ÉíµÄmetatable¡£×îºó£¬Ö»ĞèÒª°ÑÖ®Ç°StudentÀàµÄÒ»Ğ©·½·¨Ìí¼Óµ½Õâ¸ömetatableÀïÃæ¾Í¿ÉÒÔÁË,»òÕßkeyÎª"__index"£¬
+         *valueÎ»Ò»¸öfunction(t,k)ÀàĞÍµÄº¯Êı£¬º¯ÊıÖĞ¿ÉÒÔ¸ù¾İk»ñÈ¡¶ÔÓ¦µÄÀàµÄ·½·¨,ÕâÀïµÄÊµÏÖÊÇºóÕß
         **/
-        lua_pushcfunction(L, &CFunc::IndexMetaMethod); //æ ˆçŠ¶æ€lua_gettop(L)== n + 3:ns=>co=>IndexMetaMethod
-        //co.__index = &CFunc::IndexMetaMethod æ ˆçŠ¶æ€lua_gettop(L)== n + 2:ns=>co
+        lua_pushcfunction(L, &CFunc::IndexMetaMethod); //Õ»×´Ì¬lua_gettop(L)== n + 3:ns=>co=>IndexMetaMethod
+        //co.__index = &CFunc::IndexMetaMethod Õ»×´Ì¬lua_gettop(L)== n + 2:ns=>co
         LuaHelper::RawSetField(L, -2, "__index");
 
         lua_pushcfunction(L,
-                          &CFunc::NewindexObjectMetaMethod); //æ ˆçŠ¶æ€lua_gettop(L)== n + 3:ns=>co=>NewindexObjectMetaMethod
-        //co.__newindex = &CFunc::NewindexObjectMetaMethod æ ˆçŠ¶æ€lua_gettop(L)== n + 2:ns=>co
+                          &CFunc::NewindexObjectMetaMethod); //Õ»×´Ì¬lua_gettop(L)== n + 3:ns=>co=>NewindexObjectMetaMethod
+        //co.__newindex = &CFunc::NewindexObjectMetaMethod Õ»×´Ì¬lua_gettop(L)== n + 2:ns=>co
         LuaHelper::RawSetField(L, -2, "__newindex");
 
-        lua_newtable(L); //propget table(gt) æ ˆçŠ¶æ€lua_gettop(L)== n + 3:ns=>co=>gt
-        lua_rawsetp(L, -2, GetPropgetKey());//co[progetkey] = gt æ ˆçŠ¶æ€lua_gettop(L)== n + 2:ns=>co
+        lua_newtable(L); //propget table(gt) Õ»×´Ì¬lua_gettop(L)== n + 3:ns=>co=>gt
+        lua_rawsetp(L, -2, GetPropgetKey());//co[progetkey] = gt Õ»×´Ì¬lua_gettop(L)== n + 2:ns=>co
 
         if (Security::hideMetatables()) {
-            lua_pushnil(L);  //æ ˆçŠ¶æ€lua_gettop(L)== n + 3:ns=>co=>nil
-            LuaHelper::RawSetField(L, -2, "__metatable"); //co.__metatable = nil æ ˆçŠ¶æ€lua_gettop(L)== n + 2:ns=>co
+            lua_pushnil(L);  //Õ»×´Ì¬lua_gettop(L)== n + 3:ns=>co=>nil
+            LuaHelper::RawSetField(L, -2, "__metatable"); //co.__metatable = nil Õ»×´Ì¬lua_gettop(L)== n + 2:ns=>co
         }
-        //now æ ˆçŠ¶æ€lua_gettop(L)== n + 2:ns=>co
+        //now Õ»×´Ì¬lua_gettop(L)== n + 2:ns=>co
     }
 
     //--------------------------------------------------------------------------
@@ -114,20 +114,20 @@ protected:
     {
         lua_State *L = m_pLuaVm->LuaState();
         // Stack: namespace table (ns), const table (co)
-        // Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 2:ns=>co
+        // Stack Õ»×´Ì¬lua_gettop(L) == n + 2:ns=>co
 
         // Class table is the same as const table except the propset table
-        CreateConstTable(name, false); // Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 3:ns=>co=>cl
+        CreateConstTable(name, false); // Stack Õ»×´Ì¬lua_gettop(L) == n + 3:ns=>co=>cl
 
-        lua_newtable(L); // propset table (ps)  Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>ps
-        lua_rawsetp(L, -2, GetPropsetKey()); // cl [propsetKey] = ps. Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 3:ns=>co=>cl
+        lua_newtable(L); // propset table (ps)  Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>ps
+        lua_rawsetp(L, -2, GetPropsetKey()); // cl [propsetKey] = ps. Stack Õ»×´Ì¬lua_gettop(L) == n + 3:ns=>co=>cl
 
-        lua_pushvalue(L, -2); // Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 3:ns=>co=>cl=>co
-        lua_rawsetp(L, -2, GetConstKey()); // cl [constKey] = co. Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 3:ns=>co=>cl=>co
+        lua_pushvalue(L, -2); // Stack Õ»×´Ì¬lua_gettop(L) == n + 3:ns=>co=>cl=>co
+        lua_rawsetp(L, -2, GetConstKey()); // cl [constKey] = co. Stack Õ»×´Ì¬lua_gettop(L) == n + 3:ns=>co=>cl=>co
 
-        lua_pushvalue(L, -1); // Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>cl
-        lua_rawsetp(L, -3, GetClassKey()); // co [classKey] = cl.Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 3:ns=>co=>cl
-        //now æ ˆçŠ¶æ€lua_gettop(L)== n + 3:ns=>co=>cl
+        lua_pushvalue(L, -1); // Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>cl
+        lua_rawsetp(L, -3, GetClassKey()); // co [classKey] = cl.Stack Õ»×´Ì¬lua_gettop(L) == n + 3:ns=>co=>cl
+        //now Õ»×´Ì¬lua_gettop(L)== n + 3:ns=>co=>cl
     }
 
     //--------------------------------------------------------------------------
@@ -138,35 +138,35 @@ protected:
     {
         lua_State *L = m_pLuaVm->LuaState();
         // Stack: namespace table (ns), const table (co), class table (cl)
-        // Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 3:ns=>co=>cl
-        lua_newtable(L); //visible static table (vst) Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+        // Stack Õ»×´Ì¬lua_gettop(L) == n + 3:ns=>co=>cl
+        lua_newtable(L); //visible static table (vst) Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
         std::string type_name = std::string("static_") + name;
-        lua_pushstring(L, type_name.c_str()); //Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>type_name
-        lua_rawsetp(L, -2, GetTypeKey()); //st.typekey = type_name Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+        lua_pushstring(L, type_name.c_str()); //Stack Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>type_name
+        lua_rawsetp(L, -2, GetTypeKey()); //st.typekey = type_name Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
 
-        lua_pushcfunction(L, &CFunc::IndexMetaMethod); //Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>IndexMetaMethod
-        //st.__index = IndexMetaMethod,Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+        lua_pushcfunction(L, &CFunc::IndexMetaMethod); //Stack Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>IndexMetaMethod
+        //st.__index = IndexMetaMethod,Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
         LuaHelper::RawSetField(L, -2, "__index");
 
         lua_pushcfunction(L,
-                          &CFunc::NewindexStaticMetaMethod); //Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>NewindexStaticMetaMethod
-        //st.__newindex = NewindexStaticMetaMethod,Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+                          &CFunc::NewindexStaticMetaMethod); //Stack Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>NewindexStaticMetaMethod
+        //st.__newindex = NewindexStaticMetaMethod,Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
         LuaHelper::RawSetField(L, -2, "__newindex");
 
-        lua_newtable(L); // proget table (pg) Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>pg
-        lua_rawsetp(L, -2, GetPropgetKey()); // st [propgetKey] = pg. Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+        lua_newtable(L); // proget table (pg) Stack Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>pg
+        lua_rawsetp(L, -2, GetPropgetKey()); // st [propgetKey] = pg. Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
 
-        lua_newtable(L); // Stack: ns, co, cl, st, propset table (ps) Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>ps
-        lua_rawsetp(L, -2, GetPropsetKey()); // st [propsetKey] = pg. Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+        lua_newtable(L); // Stack: ns, co, cl, st, propset table (ps) Stack Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>ps
+        lua_rawsetp(L, -2, GetPropsetKey()); // st [propsetKey] = pg. Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
 
-        lua_pushvalue(L, -2); //Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>cl
-        lua_rawsetp(L, -2, GetClassKey()); // st [classKey] = cl.  Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+        lua_pushvalue(L, -2); //Stack Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>cl
+        lua_rawsetp(L, -2, GetClassKey()); // st [classKey] = cl.  Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
 
         if (Security::hideMetatables()) {
-            lua_pushnil(L); // Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>nil
+            lua_pushnil(L); // Stack Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>nil
             LuaHelper::RawSetField(L,
                                    -2,
-                                   "__metatable"); //st.__metatable = nil   Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+                                   "__metatable"); //st.__metatable = nil   Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
         }
     }
 
@@ -196,7 +196,7 @@ protected:
         return 1;
     }
 
-    //æ³¨å†Œç±»çš„æˆå‘˜å‰æ£€æŸ¥luaæ ˆä¸Šçš„tableæ˜¯å¦åˆæ³•
+    //×¢²áÀàµÄ³ÉÔ±Ç°¼ì²éluaÕ»ÉÏµÄtableÊÇ·ñºÏ·¨
     void AssertStackState(bool luaerror = false) const
     {
         lua_State *L = m_pLuaVm->LuaState();
@@ -264,7 +264,7 @@ public:
     //==========================================================================
     /**
       Register a new class or add to an existing class registration.
-      æ„é€ å‡½æ•°å®Œæˆå
+      ¹¹Ôìº¯ÊıÍê³Éºó
       vst(visible static table) = {
           __metatable = st,
       }
@@ -274,10 +274,10 @@ public:
           __index = &CFunc::IndexMetaMethod,
           __newindex = &CFunc::NewindexStaticMetaMethod,
           __gc = &CFunc::GCMetaMethod<T>,
-          propgetKey = {table}(é€šè¿‡addPropertyæ³¨å†Œæ™®é€šæˆå‘˜å˜é‡çš„getæ–¹æ³•ä¼šæ³¨å†Œåœ¨è¿™é‡Œ),
+          propgetKey = {table}(Í¨¹ıaddProperty×¢²áÆÕÍ¨³ÉÔ±±äÁ¿µÄget·½·¨»á×¢²áÔÚÕâÀï),
           classKey = cl,
-          func1_name = func1,(æ™®é€šæˆå‘˜å‡½æ•°1 ä¼šè¢«æ³¨å†Œåœ¨è¿™ä¸ªè¡¨é‡Œ),
-          func2_name = func12,(æ™®é€šæˆå‘˜å‡½æ•°2 ä¼šè¢«æ³¨å†Œåœ¨è¿™ä¸ªè¡¨é‡Œ),
+          func1_name = func1,(ÆÕÍ¨³ÉÔ±º¯Êı1 »á±»×¢²áÔÚÕâ¸ö±íÀï),
+          func2_name = func12,(ÆÕÍ¨³ÉÔ±º¯Êı2 »á±»×¢²áÔÚÕâ¸ö±íÀï),
       }
 
       cl(class table) = {
@@ -286,22 +286,22 @@ public:
           __index = &CFunc::IndexMetaMethod,
           __newindex = &CFunc::NewindexStaticMetaMethod,
           __gc = &CFunc::GCMetaMethod<T>,
-          propgetKey = {}(table)(é€šè¿‡addPropertyæ³¨å†Œæ™®é€šæˆå‘˜å˜é‡çš„getæ–¹æ³•ä¹Ÿä¼šæ³¨å†Œåœ¨è¿™é‡Œ),
-          propsetKey = {}(table)(é€šè¿‡addPropertyæ³¨å†Œæ™®é€šæˆå‘˜å˜é‡çš„setæ–¹æ³•ä¹Ÿä¼šæ³¨å†Œåœ¨è¿™é‡Œ),,
+          propgetKey = {}(table)(Í¨¹ıaddProperty×¢²áÆÕÍ¨³ÉÔ±±äÁ¿µÄget·½·¨Ò²»á×¢²áÔÚÕâÀï),
+          propsetKey = {}(table)(Í¨¹ıaddProperty×¢²áÆÕÍ¨³ÉÔ±±äÁ¿µÄset·½·¨Ò²»á×¢²áÔÚÕâÀï),,
           constKey = co,
-          func1_name = func1,(æ™®é€šæˆå‘˜å‡½æ•°1 ä¹Ÿä¼šè¢«æ³¨å†Œåœ¨è¿™ä¸ªè¡¨é‡Œ),
-          func2_name = func12,(æ™®é€šæˆå‘˜å‡½æ•°2 ä¹Ÿä¼šè¢«æ³¨å†Œåœ¨è¿™ä¸ªè¡¨é‡Œ),
+          func1_name = func1,(ÆÕÍ¨³ÉÔ±º¯Êı1 Ò²»á±»×¢²áÔÚÕâ¸ö±íÀï),
+          func2_name = func12,(ÆÕÍ¨³ÉÔ±º¯Êı2 Ò²»á±»×¢²áÔÚÕâ¸ö±íÀï),
       }
 
       st(static table) = {
           __index = &CFunc::IndexMetaMethod,
           __newindex = &CFunc::NewindexStaticMetaMethod,
-          __call = class Constructor(class Constructor ä¼šè¢«æ³¨å†Œåœ¨è¿™ä¸ªè¡¨é‡Œ),
-          propgetKey = {}(table)(é€šè¿‡addStaticPropertyæ³¨å†Œé™æ€æˆå‘˜å˜é‡çš„getæ–¹æ³•ä¼šæ³¨å†Œåœ¨è¿™é‡Œ),
-          propsetKey = {}(table)(é€šè¿‡addStaticPropertyæ³¨å†Œé™æ€æˆå‘˜å˜é‡çš„setæ–¹æ³•ä¼šæ³¨å†Œåœ¨è¿™é‡Œ),
+          __call = class Constructor(class Constructor »á±»×¢²áÔÚÕâ¸ö±íÀï),
+          propgetKey = {}(table)(Í¨¹ıaddStaticProperty×¢²á¾²Ì¬³ÉÔ±±äÁ¿µÄget·½·¨»á×¢²áÔÚÕâÀï),
+          propsetKey = {}(table)(Í¨¹ıaddStaticProperty×¢²á¾²Ì¬³ÉÔ±±äÁ¿µÄset·½·¨»á×¢²áÔÚÕâÀï),
           classKey = cl,
-          static_func1_name = func1,(staticæˆå‘˜å‡½æ•°1 ä¹Ÿä¼šè¢«æ³¨å†Œåœ¨è¿™ä¸ªè¡¨é‡Œ),
-          static_func2_name = func12,(staticæˆå‘˜å‡½æ•°2 ä¹Ÿä¼šè¢«æ³¨å†Œåœ¨è¿™ä¸ªè¡¨é‡Œ),
+          static_func1_name = func1,(static³ÉÔ±º¯Êı1 Ò²»á±»×¢²áÔÚÕâ¸ö±íÀï),
+          static_func2_name = func12,(static³ÉÔ±º¯Êı2 Ò²»á±»×¢²áÔÚÕâ¸ö±íÀï),
       }
 
       _G = {
@@ -318,73 +318,73 @@ public:
         : ClassBase(name, luaVm, shared)
     {
         lua_State *L = m_pLuaVm->LuaState();
-        //æ ˆé¡¶æ˜¯å¦æ˜¯è¡¨(_G)
-        LUA_ASSERT_EX(L, lua_istable(L, -1), "lua_istable(L, -1)", false); //æ ˆçŠ¶æ€lua_gettop(L)== n + 1:ns
-        //å°è¯•findç±»çš„metadataè¡¨_G[name]
-        LuaHelper::RawGetField(L, -1, name); // st = _G[name] æ ˆçŠ¶æ€lua_gettop(L)== n + 2:ns=>st|nil
+        //Õ»¶¥ÊÇ·ñÊÇ±í(_G)
+        LUA_ASSERT_EX(L, lua_istable(L, -1), "lua_istable(L, -1)", false); //Õ»×´Ì¬lua_gettop(L)== n + 1:ns
+        //³¢ÊÔfindÀàµÄmetadata±í_G[name]
+        LuaHelper::RawGetField(L, -1, name); // st = _G[name] Õ»×´Ì¬lua_gettop(L)== n + 2:ns=>st|nil
 
-        //è¡¨ä¸å­˜åœ¨create it
-        if (lua_isnil(L, -1)) // Stack: ns, nil æ ˆçŠ¶æ€:ns=>nil
+        //±í²»´æÔÚcreate it
+        if (lua_isnil(L, -1)) // Stack: ns, nil Õ»×´Ì¬:ns=>nil
         {
-            //å¼¹å‡ºnilå€¼
-            lua_pop(L, 1); // Stack: ns æ ˆçŠ¶æ€ua_gettop(L)== n + 1:ns
-            //createç±»çš„const metadataè¡¨(co),and set co.__metatable = co
+            //µ¯³önilÖµ
+            lua_pop(L, 1); // Stack: ns Õ»×´Ì¬ua_gettop(L)== n + 1:ns
+            //createÀàµÄconst metadata±í(co),and set co.__metatable = co
             CreateConstTable(name);
-            //now æ ˆçŠ¶æ€lua_gettop(L)== n + 2:ns=>co
-            //æ³¨å†Œgcå…ƒæ–¹æ³•
-            lua_pushcfunction(L, &CFunc::GCMetaMethod<T>); // æ ˆçŠ¶æ€lua_gettop(L)== n + 3:ns=>co=>gcfun
-            //co.__gc = gcfun å³co.__metatable.__gc = gcfun æ ˆçŠ¶æ€lua_gettop(L)== n + 2:ns=>co
+            //now Õ»×´Ì¬lua_gettop(L)== n + 2:ns=>co
+            //×¢²ágcÔª·½·¨
+            lua_pushcfunction(L, &CFunc::GCMetaMethod<T>); // Õ»×´Ì¬lua_gettop(L)== n + 3:ns=>co=>gcfun
+            //co.__gc = gcfun ¼´co.__metatable.__gc = gcfun Õ»×´Ì¬lua_gettop(L)== n + 2:ns=>co
             LuaHelper::RawSetField(L, -2, "__gc");
             m_pLuaVm->AddStackSize(1);
 
-            //createç±»çš„éconst metadataè¡¨ and set cl.__metatable = cl
-            CreateClassTable(name); //class table (cl) stackæ ˆçŠ¶æ€lua_gettop(L)== n + 3:ns=>co=>cl
-            //now æ ˆçŠ¶æ€lua_gettop(L) == n + 3:ns=>co=>cl
-            //æ³¨å†Œgcå…ƒæ–¹æ³•
-            lua_pushcfunction(L, &CFunc::GCMetaMethod<T>); //gcfun stackæ ˆçŠ¶æ€lua_gettop(L)== n + 4:ns=>co=>cl=>gcfun
-            //cl.__gc = gcfun å³ cl.__metatable.__gc = gcfun stackæ ˆçŠ¶æ€lua_gettop(L)== n + 3:ns=>co=>cl
+            //createÀàµÄ·Çconst metadata±í and set cl.__metatable = cl
+            CreateClassTable(name); //class table (cl) stackÕ»×´Ì¬lua_gettop(L)== n + 3:ns=>co=>cl
+            //now Õ»×´Ì¬lua_gettop(L) == n + 3:ns=>co=>cl
+            //×¢²ágcÔª·½·¨
+            lua_pushcfunction(L, &CFunc::GCMetaMethod<T>); //gcfun stackÕ»×´Ì¬lua_gettop(L)== n + 4:ns=>co=>cl=>gcfun
+            //cl.__gc = gcfun ¼´ cl.__metatable.__gc = gcfun stackÕ»×´Ì¬lua_gettop(L)== n + 3:ns=>co=>cl
             LuaHelper::RawSetField(L, -2, "__gc");
             m_pLuaVm->AddStackSize(1);
 
-            //createç±»çš„static metadataè¡¨ and set st.__metatable = st
-            CreateStaticTable(name); // Stack: ns, co, cl, st æ ˆçŠ¶æ€:ns=>co=>cl=>st
-            //now æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+            //createÀàµÄstatic metadata±í and set st.__metatable = st
+            CreateStaticTable(name); // Stack: ns, co, cl, st Õ»×´Ì¬:ns=>co=>cl=>st
+            //now Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
             m_pLuaVm->AddStackSize(1);
 
             //Map T back to its tables.
-            //æŠŠstå…ƒè¡¨ä½œä¸€ä¸ªå‰¯æœ¬å‹æ ˆã€‚
-            lua_pushvalue(L, -1); // æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>st
-            //æŠŠstatic metadataè¡¨æ’å…¥registryè¡¨
+            //°ÑstÔª±í×÷Ò»¸ö¸±±¾Ñ¹Õ»¡£
+            lua_pushvalue(L, -1); // Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>st
+            //°Ñstatic metadata±í²åÈëregistry±í
             lua_rawsetp(L,
                         LUA_REGISTRYINDEX,
-                        ClassInfo<T>::GetStaticKey()); //stackæ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+                        ClassInfo<T>::GetStaticKey()); //stackÕ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
 
-            //æŠŠclå…ƒè¡¨ä½œä¸€ä¸ªå‰¯æœ¬å‹æ ˆã€‚
-            lua_pushvalue(L, -2); // stack æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>cl
-            //æŠŠmetadataè¡¨æ’å…¥registryè¡¨
+            //°ÑclÔª±í×÷Ò»¸ö¸±±¾Ñ¹Õ»¡£
+            lua_pushvalue(L, -2); // stack Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>cl
+            //°Ñmetadata±í²åÈëregistry±í
             lua_rawsetp(L,
                         LUA_REGISTRYINDEX,
-                        ClassInfo<T>::GetClassKey()); //stackæ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+                        ClassInfo<T>::GetClassKey()); //stackÕ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
 
-            //æŠŠcoå…ƒè¡¨ä½œä¸€ä¸ªå‰¯æœ¬å‹æ ˆã€‚
-            lua_pushvalue(L, -3); // æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>co
-            //æŠŠconst metadataè¡¨æ’å…¥registryè¡¨
+            //°ÑcoÔª±í×÷Ò»¸ö¸±±¾Ñ¹Õ»¡£
+            lua_pushvalue(L, -3); // Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>co
+            //°Ñconst metadata±í²åÈëregistry±í
             lua_rawsetp(L,
                         LUA_REGISTRYINDEX,
-                        ClassInfo<T>::GetConstKey()); //stackæ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+                        ClassInfo<T>::GetConstKey()); //stackÕ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
 
-            lua_newtable(L);             //Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>vst
-            lua_pushstring(L, name);      //Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst=>name
+            lua_newtable(L);             //Stack Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>vst
+            lua_pushstring(L, name);      //Stack Õ»×´Ì¬lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst=>name
             LuaHelper::RawSetField(L,
                                    -2,
-                                   "classname"); // vst [classname] = name Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst
-            lua_pushvalue(L, -2); // æ ˆçŠ¶æ€lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst=>st
-            lua_setmetatable(L, -2);  // vst.__metatable = st. æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>vst
-            LuaHelper::RawSetField(L, -5, name); // ns [name] = vst. Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
-            //now stackæ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+                                   "classname"); // vst [classname] = name Stack Õ»×´Ì¬lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst
+            lua_pushvalue(L, -2); // Õ»×´Ì¬lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst=>st
+            lua_setmetatable(L, -2);  // vst.__metatable = st. Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>vst
+            LuaHelper::RawSetField(L, -5, name); // ns [name] = vst. Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
+            //now stackÕ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
         }
         else {
-            //è¡¨å­˜åœ¨Stack: ns æ ˆçŠ¶æ€ua_gettop(L)== n + 2:ns=>vst
+            //±í´æÔÚStack: ns Õ»×´Ì¬ua_gettop(L)== n + 2:ns=>vst
             LUA_ASSERT_EX (L, lua_istable(L, -1), "lua_istable(L, -1)", false);
             LuaHelper::RawGetField(L, -1, "classname");
             LUA_ASSERT_EX (L, lua_isstring(L, -1), "lua_isstring(L, -1)", false);
@@ -394,7 +394,7 @@ public:
                           (std::string("class wrong,rightclass = ") + name + std::string(",curname = ") + classname)
                               .c_str(),
                           false);
-            lua_pop(L, 1); //nameå‡ºæ ˆ  Stack: ns æ ˆçŠ¶æ€ua_gettop(L)== n + 2:ns=>vst
+            lua_pop(L, 1); //name³öÕ»  Stack: ns Õ»×´Ì¬ua_gettop(L)== n + 2:ns=>vst
 //                printf("========================metatable==========================\n");
 //                int top = lua_gettop(L);
 //                if(lua_getmetatable(L,-1))
@@ -404,29 +404,29 @@ public:
 //                    top = lua_gettop(L);
 //                }
 //                printf("========================metatable==========================\n");
-//                lua_pop(L, 1); // Stack: ns æ ˆçŠ¶æ€ua_gettop(L)== n + 1:ns
-//                lua_pop(L, 1); // Stack: ns æ ˆçŠ¶æ€ua_gettop(L)== n + 1:ns
+//                lua_pop(L, 1); // Stack: ns Õ»×´Ì¬ua_gettop(L)== n + 1:ns
+//                lua_pop(L, 1); // Stack: ns Õ»×´Ì¬ua_gettop(L)== n + 1:ns
 //                top = lua_gettop(L);
 
-            lua_pop(L, 1); //vstå‡ºæ ˆ  Stack: ns æ ˆçŠ¶æ€ua_gettop(L)== n + 1:ns
+            lua_pop(L, 1); //vst³öÕ»  Stack: ns Õ»×´Ì¬ua_gettop(L)== n + 1:ns
 
-            lua_rawgetp(L, LUA_REGISTRYINDEX, ClassInfo<T>::GetStaticKey()); // Stack æ ˆçŠ¶æ€ua_gettop(L)== n + 3:ns=>st
+            lua_rawgetp(L, LUA_REGISTRYINDEX, ClassInfo<T>::GetStaticKey()); // Stack Õ»×´Ì¬ua_gettop(L)== n + 3:ns=>st
             m_pLuaVm->AddStackSize(1);
 
             // Map T back from its stored tables
-            lua_rawgetp(L, LUA_REGISTRYINDEX, ClassInfo<T>::GetConstKey()); // Stack æ ˆçŠ¶æ€ua_gettop(L)== n + 3:ns=>st=>co
-            //è°ƒæ•´coçš„ä½ç½®
-            lua_insert(L, -2); // Stack æ ˆçŠ¶æ€ua_gettop(L)== n + 3:ns=>co=>st
+            lua_rawgetp(L, LUA_REGISTRYINDEX, ClassInfo<T>::GetConstKey()); // Stack Õ»×´Ì¬ua_gettop(L)== n + 3:ns=>st=>co
+            //µ÷ÕûcoµÄÎ»ÖÃ
+            lua_insert(L, -2); // Stack Õ»×´Ì¬ua_gettop(L)== n + 3:ns=>co=>st
             m_pLuaVm->AddStackSize(1);
 
             lua_rawgetp(L,
                         LUA_REGISTRYINDEX,
-                        ClassInfo<T>::GetClassKey()); // Stack æ ˆçŠ¶æ€ua_gettop(L)== n + 4:ns=>co=>st=>cl
-            //æŠŠæ ˆé¡¶å…ƒç´ ç§»åŠ¨åˆ°æŒ‡å®šçš„æœ‰æ•ˆç´¢å¼•å¤„ï¼Œ ä¾æ¬¡ç§»åŠ¨è¿™ä¸ªç´¢å¼•ä¹‹ä¸Šçš„å…ƒç´ ,è°ƒæ•´clçš„ä½ç½®
-            lua_insert(L, -2); // Stack æ ˆçŠ¶æ€ua_gettop(L)== n + 4:ns=>co=>cl=>st
+                        ClassInfo<T>::GetClassKey()); // Stack Õ»×´Ì¬ua_gettop(L)== n + 4:ns=>co=>st=>cl
+            //°ÑÕ»¶¥ÔªËØÒÆ¶¯µ½Ö¸¶¨µÄÓĞĞ§Ë÷Òı´¦£¬ ÒÀ´ÎÒÆ¶¯Õâ¸öË÷ÒıÖ®ÉÏµÄÔªËØ,µ÷ÕûclµÄÎ»ÖÃ
+            lua_insert(L, -2); // Stack Õ»×´Ì¬ua_gettop(L)== n + 4:ns=>co=>cl=>st
             m_pLuaVm->AddStackSize(1);
 
-            //now stackæ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+            //now stackÕ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
         }
     }
 
@@ -481,15 +481,15 @@ public:
         lua_pushvalue(L, -3); // Stack: ns, co, cl, st, co
         lua_rawsetp(L, LUA_REGISTRYINDEX, ClassInfo<T>::GetConstKey()); // Stack: ns, co, cl, st
 
-        lua_newtable(L);             //Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>vst
-        lua_pushstring(L, name);      //Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst=>name
+        lua_newtable(L);             //Stack Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>vst
+        lua_pushstring(L, name);      //Stack Õ»×´Ì¬lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst=>name
         LuaHelper::RawSetField(L,
                                -2,
-                               "classname"); // vst [classname] = name Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst
-        lua_pushvalue(L, -2); // æ ˆçŠ¶æ€lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst=>st
-        lua_setmetatable(L, -2);  // vst.__metatable = st. æ ˆçŠ¶æ€lua_gettop(L) == n + 5:ns=>co=>cl=>st=>vst
-        LuaHelper::RawSetField(L, -5, name); // ns [name] = vst. Stack æ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
-        //now stackæ ˆçŠ¶æ€lua_gettop(L) == n + 4:ns=>co=>cl=>st
+                               "classname"); // vst [classname] = name Stack Õ»×´Ì¬lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst
+        lua_pushvalue(L, -2); // Õ»×´Ì¬lua_gettop(L) == n + 6:ns=>co=>cl=>st=>vst=>st
+        lua_setmetatable(L, -2);  // vst.__metatable = st. Õ»×´Ì¬lua_gettop(L) == n + 5:ns=>co=>cl=>st=>vst
+        LuaHelper::RawSetField(L, -5, name); // ns [name] = vst. Stack Õ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
+        //now stackÕ»×´Ì¬lua_gettop(L) == n + 4:ns=>co=>cl=>st
     }
 
     //--------------------------------------------------------------------------

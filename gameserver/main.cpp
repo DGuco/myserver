@@ -2,7 +2,7 @@
 //  main.cpp
 //  gameserver
 //  Created by DGuco on 17-3-1.
-//  Copyright Â© 2017å¹´ DGuco. All rights reserved.
+//  Copyright ? 2017Äê DGuco. All rights reserved.
 //
 
 #include <signal.h>
@@ -12,7 +12,7 @@
 
 int main(int argc, char *argv[])
 {
-	//ä¿¡å·å¤„ç†æ³¨å†Œ
+	//ÐÅºÅ´¦Àí×¢²á
 	CSignalHandler::GetSingletonPtr()->RegisterHandler("gameserver");
 	
 	if (!INIT_LOG("gameserver"))

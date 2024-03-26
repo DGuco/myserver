@@ -67,7 +67,7 @@ public:
 	CLog();
 	~CLog();
 	bool Init(const char* modulename);
-	//å…³é—­æ‰€æœ‰æ—¥å¿—
+	//¹Ø±ÕËùÓĞÈÕÖ¾
 	int ShutDownAll();
 	template<typename... Args>
 	int DiskLog(enDiskLog log_type, const char* vFmt, const Args &... args);
@@ -76,32 +76,32 @@ public:
 private:
 	stLogInfo* GetLogInfo(int log_type);
 	/**
-	 * vLogName æ—¥å¿—ç±»å‹çš„åç§°(å…³é”®å­—,ç”±æ­¤å®šä½åˆ°æ—¥å¿—æ–‡ä»¶)
-	 * vLogDir æ–‡ä»¶åç§°(è·¯å¾„)
-	 * level æ—¥å¿—ç­‰çº§
+	 * vLogName ÈÕÖ¾ÀàĞÍµÄÃû³Æ(¹Ø¼ü×Ö,ÓÉ´Ë¶¨Î»µ½ÈÕÖ¾ÎÄ¼ş)
+	 * vLogDir ÎÄ¼şÃû³Æ(Â·¾¶)
+	 * level ÈÕÖ¾µÈ¼¶
 	 */
 	int InitHourLog(const char* vLogName, const char* vLogDir, level_enum level,bool async = false);
 	/**
-	 * vLogName æ—¥å¿—ç±»å‹çš„åç§°(å…³é”®å­—,ç”±æ­¤å®šä½åˆ°æ—¥å¿—æ–‡ä»¶)
-	 * vLogDir æ–‡ä»¶åç§°(è·¯å¾„)
-	 * level æ—¥å¿—ç­‰çº§
-	 * vAppend æ˜¯å¦æˆªæ–­(é»˜è®¤å³å¯)
+	 * vLogName ÈÕÖ¾ÀàĞÍµÄÃû³Æ(¹Ø¼ü×Ö,ÓÉ´Ë¶¨Î»µ½ÈÕÖ¾ÎÄ¼ş)
+	 * vLogDir ÎÄ¼şÃû³Æ(Â·¾¶)
+	 * level ÈÕÖ¾µÈ¼¶
+	 * vAppend ÊÇ·ñ½Ø¶Ï(Ä¬ÈÏ¼´¿É)
 	 */
 	int InitBaseLog(const char* vLogName,const char* vLogDir,level_enum level,bool vAppend = true, bool async = false);
 	/**
-	 * vLogName æ—¥å¿—ç±»å‹çš„åç§°(å…³é”®å­—,ç”±æ­¤å®šä½åˆ°æ—¥å¿—æ–‡ä»¶)
-	 * vLogDir æ–‡ä»¶åç§°(è·¯å¾„)
-	 * level æ—¥å¿—ç­‰çº§
-	 * vMaxFileSize å›å·æ–‡ä»¶æœ€å¤§é•¿åº¦
-	 * vMaxFileSize å›å·æ–‡ä»¶ä¸ªæ•°
+	 * vLogName ÈÕÖ¾ÀàĞÍµÄÃû³Æ(¹Ø¼ü×Ö,ÓÉ´Ë¶¨Î»µ½ÈÕÖ¾ÎÄ¼ş)
+	 * vLogDir ÎÄ¼şÃû³Æ(Â·¾¶)
+	 * level ÈÕÖ¾µÈ¼¶
+	 * vMaxFileSize »Ø¾íÎÄ¼ş×î´ó³¤¶È
+	 * vMaxFileSize »Ø¾íÎÄ¼ş¸öÊı
 	 */
 	int Init_Roating_Log(const char* vLogName,const char* vLogDir,level_enum level,int vMaxFileSize,int vMaxBackupIndex, bool async = false);
 	/**
-	 * vLogName æ—¥å¿—ç±»å‹çš„åç§°(å…³é”®å­—,ç”±æ­¤å®šä½åˆ°æ—¥å¿—æ–‡ä»¶)
-	 * vLogDir æ–‡ä»¶åç§°(è·¯å¾„)
-	 * level æ—¥å¿—ç­‰çº§
-	 * vMaxFileSize å›å·æ–‡ä»¶æœ€å¤§é•¿åº¦
-	 * vMaxFileSize å›å·æ–‡ä»¶ä¸ªæ•°
+	 * vLogName ÈÕÖ¾ÀàĞÍµÄÃû³Æ(¹Ø¼ü×Ö,ÓÉ´Ë¶¨Î»µ½ÈÕÖ¾ÎÄ¼ş)
+	 * vLogDir ÎÄ¼şÃû³Æ(Â·¾¶)
+	 * level ÈÕÖ¾µÈ¼¶
+	 * vMaxFileSize »Ø¾íÎÄ¼ş×î´ó³¤¶È
+	 * vMaxFileSize »Ø¾íÎÄ¼ş¸öÊı
 	 */
 	int Init_Daily_Log(const char* vLogName, const char* vLogDir,level_enum level,int hour = 0,int minute = 0, bool async = false);
 };

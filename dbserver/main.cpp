@@ -19,7 +19,7 @@ void sigpipe_handle(int sig)
 int main(int argc, char **argv)
 {
 	CDBCtrl *tpDBCtrl = new CDBCtrl;
-	if (tpDBCtrl->PrepareToRun() < 0)  // åˆ›å»ºå¤„ç†çº¿ç¨‹
+	if (tpDBCtrl->PrepareToRun() < 0)  // ´´½¨´¦ÀíÏß³Ì
 	{
 		exit(-1);
 	}
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 		tpDBCtrl = NULL;
 	}
 
-	// å…³é—­æ‰€æœ‰æ—¥å¿—
+	// ¹Ø±ÕËùÓÐÈÕÖ¾
 	LOG_SHUTDOWN_ALL;
 
 	return 0;

@@ -1,8 +1,8 @@
 //
 //  gatedef.h
-//  tcpserver å®å®šä¹‰
+//  tcpserver ºê¶¨Òå
 //  Created by DGuco on 16/12/1.
-//  Copyright Â© 2016å¹´ DGuco. All rights reserved.
+//  Copyright ? 2016Äê DGuco. All rights reserved.
 //
 
 #ifndef __PROXY_DEF_H__
@@ -11,41 +11,41 @@
 #include <time.h>
 #include <string.h>
 
-#define TCP_BUFFER_LEN             300000               //TCPæ¥æ”¶ç¼“å†²åŒºå¤§å°
-#define RECV_QUEUQ_MAX             1024                 //æ¥æ”¶é˜Ÿåˆ—å¤§å°
-#define MESSAGE_EXTRA_LEN          10                   //æ¶ˆæ¯é¢å¤–é•¿åº¦å¢åŠ ç ´è¯‘éš¾åº¦
+#define TCP_BUFFER_LEN             300000               //TCP½ÓÊÕ»º³åÇø´óĞ¡
+#define RECV_QUEUQ_MAX             1024                 //½ÓÊÕ¶ÓÁĞ´óĞ¡
+#define MESSAGE_EXTRA_LEN          10                   //ÏûÏ¢¶îÍâ³¤¶ÈÔö¼ÓÆÆÒëÄÑ¶È
 
-#define MAX_PORT_NUM                3                    // æœ€å¤§ç«¯å£æ•°
-#define LISTEN_SOCKET                1                    // ç›‘å¬socket
-#define CONNECT_SOCKET                2                    // è¿æ¥socket
+#define MAX_PORT_NUM                3                    // ×î´ó¶Ë¿ÚÊı
+#define LISTEN_SOCKET                1                    // ¼àÌısocket
+#define CONNECT_SOCKET                2                    // Á¬½Ósocket
 
-#define RECV_DATA                    1                    // æ ‡å¿—socketè¦æ¥æ”¶æ•°æ®
-#define SEND_DATA                    2                    // æ ‡å¿—socketè¦å‘é€æ•°æ®
+#define RECV_DATA                    1                    // ±êÖ¾socketÒª½ÓÊÕÊı¾İ
+#define SEND_DATA                    2                    // ±êÖ¾socketÒª·¢ËÍÊı¾İ
 
-#define IP_LENGTH                    20                    // IPåœ°å€é•¿åº¦
+#define IP_LENGTH                    20                    // IPµØÖ·³¤¶È
 
-#define sMAX_SEND_PKGS_ONCE            100                // ä¸€æ¬¡ä»å†…å­˜ç®¡é“ä¸­å–çš„æœ€å¤§çš„æ•°æ®åŒ…
+#define sMAX_SEND_PKGS_ONCE            100                // Ò»´Î´ÓÄÚ´æ¹ÜµÀÖĞÈ¡µÄ×î´óµÄÊı¾İ°ü
 
 
-#define MAIN_HAVE_SEND_DATA            1                    // åç«¯ä¸»æœåŠ¡å™¨å‘é€è¿‡æ•°æ®ç»™æŸSocket
+#define MAIN_HAVE_SEND_DATA            1                    // ºó¶ËÖ÷·şÎñÆ÷·¢ËÍ¹ıÊı¾İ¸øÄ³Socket
 
 
 //enum ENSocketCloseSrcEn
 //{
-//	CLOSESOCKET_PLAYER			=	1,					// å®¢æˆ·ç«¯ä¸»åŠ¨å‘èµ·æ–­è¿
-//	CLOSESOCKET_MAINSERVER		=	2,					// åå°ä¸»æœåŠ¡å™¨å‘èµ·æ–­è¿
+//	CLOSESOCKET_PLAYER			=	1,					// ¿Í»§¶ËÖ÷¶¯·¢Æğ¶ÏÁ¬
+//	CLOSESOCKET_MAINSERVER		=	2,					// ºóÌ¨Ö÷·şÎñÆ÷·¢Æğ¶ÏÁ¬
 //};
 
 
 #define CONFIG_FILE                    "../config/tcpsvrd.cfg"
 #define LOG_FILE                    "../log/tcpsvrd"
-#define MAX_PATH                    260                       // æ–‡ä»¶çš„æœ€å¤§è·¯å¾„å
-#define CloseSocket                 close                     // å…³é—­socket
+#define MAX_PATH                    260                       // ÎÄ¼şµÄ×î´óÂ·¾¶Ãû
+#define CloseSocket                 close                     // ¹Ø±Õsocket
 
 #define ERRPACKETLENGTH                -2
 
-#define RcMutex                     pthread_mutex_t           // çº¿ç¨‹é”
-#define ThreadType                  void*                     // çº¿ç¨‹ç±»å‹
+#define RcMutex                     pthread_mutex_t           // Ïß³ÌËø
+#define ThreadType                  void*                     // Ïß³ÌÀàĞÍ
 
 typedef enum _EnRunFlag
 {
@@ -53,7 +53,7 @@ typedef enum _EnRunFlag
 	tcpexit
 } EnRunFlag;
 
-// å½“å‰æ—¶é—´
+// µ±Ç°Ê±¼ä
 typedef struct _TTime
 {
 	unsigned int ulYear;    // 0000-9999
@@ -64,20 +64,20 @@ typedef struct _TTime
 	unsigned int ulSecond;    // 00-59
 } TTime;
 
-// ç¨‹åºçš„é…ç½®ä¿¡æ¯
+// ³ÌĞòµÄÅäÖÃĞÅÏ¢
 typedef struct _TConfig
 {
-	int m_iSocketTimeOut;                        // socketçš„è¶…æ—¶æ—¶é—´
-	int m_iConnTimeOut;                        // socketçš„è¶…æ—¶æ—¶é—´
+	int m_iSocketTimeOut;                        // socketµÄ³¬Ê±Ê±¼ä
+	int m_iConnTimeOut;                        // socketµÄ³¬Ê±Ê±¼ä
 	int m_iCheckTimeGap;
-	int m_iListenPortNum;                        // ä¿å­˜ç«¯å£ä¿¡æ¯
-	int m_iListenPorts[MAX_PORT_NUM];            // ä¿å­˜ç«¯å£ä¿¡æ¯
-	int m_iTcpBufLen;                            // tcpå‘é€ç¼“å†²åŒºå¤§å°
+	int m_iListenPortNum;                        // ±£´æ¶Ë¿ÚĞÅÏ¢
+	int m_iListenPorts[MAX_PORT_NUM];            // ±£´æ¶Ë¿ÚĞÅÏ¢
+	int m_iTcpBufLen;                            // tcp·¢ËÍ»º³åÇø´óĞ¡
 	int m_iMaxLogCount;
-	int m_iWriteStatGap;                        // logæœåŠ¡å™¨çŠ¶æ€çš„é—´éš”
-	int m_iShmMax;                                // å…±äº«å†…å­˜æœ€å¤§æ•°(size)
-	int m_iOpenFileMax;                        // æ–‡ä»¶å¥æŸ„æœ€å¤§æ•°
-	int m_iCoreFileSize;                        // coreæ–‡ä»¶å¤§å°
+	int m_iWriteStatGap;                        // log·şÎñÆ÷×´Ì¬µÄ¼ä¸ô
+	int m_iShmMax;                                // ¹²ÏíÄÚ´æ×î´óÊı(size)
+	int m_iOpenFileMax;                        // ÎÄ¼ş¾ä±ú×î´óÊı
+	int m_iCoreFileSize;                        // coreÎÄ¼ş´óĞ¡
 } TConfig;
 
 typedef struct

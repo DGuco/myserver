@@ -1,8 +1,8 @@
 //
 //  shm.h
-//  å…±äº«å†…å­˜å—ç®¡ç†ç±»
+//  ¹²ÏíÄÚ´æ¿é¹ÜÀíÀà
 //  Created by DGuco on 17/03/23.
-//  Copyright Â© 2016å¹´ DGuco. All rights reserved.
+//  Copyright ? 2016Äê DGuco. All rights reserved.
 //
 
 #ifndef _SHM_H_
@@ -16,11 +16,11 @@
 
 struct SSmHead
 {
-	//å…±äº«å†…å­˜key
+	//¹²ÏíÄÚ´ækey
 	unsigned int	m_nShmKey;
-	//å…±äº«å†…å­˜å¤§å°
+	//¹²ÏíÄÚ´æ´óĞ¡
 	size_t			m_nShmSize;
-	//èµ·å§‹åœ°å€
+	//ÆğÊ¼µØÖ·
 	BYTE*			m_pSegment;
 	sm_handler      m_Handler;
 };
@@ -28,20 +28,20 @@ struct SSmHead
 class CSharedMem
 {
 public:
-    //æ„é€ å‡½æ•°
+    //¹¹Ôìº¯Êı
 	CSharedMem();
 public:
-    //ææ„å‡½æ•°
+    //Îö¹¹º¯Êı
     ~CSharedMem();
-//     //new æ“ä½œç¬¦é‡è½½å°†ç±»å¯¹è±¡å®šä¹‰åˆ°å…±äº«å†…å­˜åŒºåœ°å€
+//     //new ²Ù×÷·ûÖØÔØ½«Àà¶ÔÏó¶¨Òåµ½¹²ÏíÄÚ´æÇøµØÖ·
 // 	void* operator new( size_t nSize);
-//     //delete æ“ä½œç¬¦é‡è½½
+//     //delete ²Ù×÷·ûÖØÔØ
 // 	void  operator delete(void* pMem);
-	//åˆå§‹åŒ–
+	//³õÊ¼»¯
 	bool Init(eShmModule module,sm_key nSmKey, size_t nSize);
-	//è·å–å¯¹è±¡åˆ›å»ºç±»å‹
+	//»ñÈ¡¶ÔÏó´´½¨ÀàĞÍ
 	eShmModule GetInitMode();
-    //è®¾ç½®å¯¹è±¡åˆ›å»ºç±»å‹
+    //ÉèÖÃ¶ÔÏó´´½¨ÀàĞÍ
 	bool CreateSegment(sm_key nSmKey,size_t nSize);
 	//attach
 	bool AttachSegment(sm_key nSmKey, size_t nSize);
@@ -52,13 +52,13 @@ public:
 	//
 	BYTE* GetSegment();
 private:
-	//å…±äº«å†…å­˜å—ä¿¡æ¯
+	//¹²ÏíÄÚ´æ¿éĞÅÏ¢
 	SSmHead*				m_pHead;
-	//å½“å‰å¯ç”¨ç©ºé—²å†…å­˜å»çš„èµ·å§‹åœ°å€
+	//µ±Ç°¿ÉÓÃ¿ÕÏĞÄÚ´æÈ¥µÄÆğÊ¼µØÖ·
 	BYTE*					m_pCurrentSegMent;
-	//å¯ç”¨å†…å­˜çš„å¤§å°
+	//¿ÉÓÃÄÚ´æµÄ´óĞ¡
 	size_t					m_nSize;
-    //å¯¹è±¡åˆå§‹åŒ–ç±»å‹
+    //¶ÔÏó³õÊ¼»¯ÀàĞÍ
 	eShmModule				m_InitMode;
 };
 

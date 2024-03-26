@@ -2,7 +2,7 @@
 /*
   https://github.com/DGuco/luabridge
 
-  Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+  Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
   Copyright 2012, Vinnie Falco <vinnie.falco@gmail.com>
   Copyright 2007, Nathan Reed
 
@@ -59,16 +59,16 @@ class LuaHelper
 {
 public:
     /**
-     * æ£€æµ‹lua å †æ ˆä¸­çš„å‚æ•°ç±»å‹
+     * ¼ì²âlua ¶ÑÕ»ÖĞµÄ²ÎÊıÀàĞÍ
      * @param Index
-     * @param isLuaError å¦‚æœç±»å‹é”™è¯¯æ˜¯å¦æŠ›å‡ºluaå¼‚å¸¸
+     * @param isLuaError Èç¹ûÀàĞÍ´íÎóÊÇ·ñÅ×³öluaÒì³£
      * @return
      */
     static bool CheckLuaArg_Num(lua_State *L, int Index);
     static bool CheckLuaArg_Integer(lua_State *L, int Index);
     static bool CheckLuaArg_Str(lua_State *L, int Index);
     /**
-     * print lua stack info æ‰“å°lua å †æ ˆä¿¡æ¯
+     * print lua stack info ´òÓ¡lua ¶ÑÕ»ĞÅÏ¢
      * @param L
      */
     static void LuaStackInfo(lua_State *L);
@@ -77,9 +77,9 @@ public:
      * @param condition
      * @param argindex
      * @param err_msg
-     * @param luaerror å½“åœ¨æ— ä¿æŠ¤ç¯å¢ƒä¸‹å‘ç”Ÿé”™è¯¯å¹¶ä¸”æ²¡æœ‰è°ƒç”¨lua_atpanic(L, ThrowAtPanic)è®¾ç½®ç›¸åº”çš„å¼‚å¸¸å›è°ƒluaä¼šè°ƒç”¨aborté€€å‡º,
-     * luaerroræ˜¯å¦ä¸ºtrueå–å†³äºè°ƒç”¨ä»£ç æ˜¯å¦åœ¨ä¿æŠ¤ç¯å¢ƒä¸‹è¿è¡Œ(åœ¨lua_pcallæ‰§è¡Œé€»è¾‘ä¸­),å¦‚æœä½ æ²¡æœ‰è°ƒç”¨lua_atpanicæ‹¦æˆªluaerrorå¹¶ä¸”
-     * åœ¨éä¿æŠ¤ç¯å¢ƒä¸‹æŠ›å‡ºluaerrorç¨‹åºä¼šä¸»åŠ¨é€€å‡º
+     * @param luaerror µ±ÔÚÎŞ±£»¤»·¾³ÏÂ·¢Éú´íÎó²¢ÇÒÃ»ÓĞµ÷ÓÃlua_atpanic(L, ThrowAtPanic)ÉèÖÃÏàÓ¦µÄÒì³£»Øµ÷lua»áµ÷ÓÃabortÍË³ö,
+     * luaerrorÊÇ·ñÎªtrueÈ¡¾öÓÚµ÷ÓÃ´úÂëÊÇ·ñÔÚ±£»¤»·¾³ÏÂÔËĞĞ(ÔÚlua_pcallÖ´ĞĞÂß¼­ÖĞ),Èç¹ûÄãÃ»ÓĞµ÷ÓÃlua_atpanicÀ¹½Øluaerror²¢ÇÒ
+     * ÔÚ·Ç±£»¤»·¾³ÏÂÅ×³öluaerror³ÌĞò»áÖ÷¶¯ÍË³ö
      * @return never return when assert failed
      */
     static int
@@ -91,7 +91,7 @@ public:
      */
     static int GetParamCount(lua_State *L);
     /**
-     * dbug lua error info æ‰“å°lua é”™è¯¯æ—¥å¿—message
+     * dbug lua error info ´òÓ¡lua ´íÎóÈÕÖ¾message
      * @param FunName
      * @param Msg
      */
@@ -123,7 +123,7 @@ public:
     */
     static void Pcall(lua_State *L, int nargs = 0, int nresults = 0, int msgh = 0);
     /**
-     * è¾“å‡ºlua table å†…å®¹
+     * Êä³ölua table ÄÚÈİ
      * @param L
      * @param index
      * @param stream
@@ -257,17 +257,17 @@ int LuaHelper::LuaAssert(lua_State *L, bool condition, const char *file, int lin
         /*
          * https://blog.csdn.net/weixin_33682719/article/details/92861195
          *@param check:
-         * lua_toxxxå’ŒluaL_checkxxxçš„åŒºåˆ«ï¼Œè¿™ä¸¤ä¸ªå‡½æ•°éƒ½æ˜¯ä»luaæ ˆä¸Šè·å–ä¸€ä¸ªå€¼ï¼Œä½†æ˜¯åœ¨æ£€æŸ¥åˆ°ç±»å‹ä¸ç¬¦æ—¶å€™ï¼Œlua_toxxxåªæ˜¯è¿”å›nullæˆ–è€…é»˜è®¤å€¼ï¼›
-         * è€ŒluaL_checkåˆ™æ˜¯ä¼šæŠ›å‡ºä¸€ä¸ªå¼‚å¸¸ï¼Œä¸‹é¢çš„ä»£ç ä¸ä¼šå†ç»§ç»­æ‰§è¡Œï¼›è¿™é‡Œå°±éœ€è¦æ³¨æ„äº†ï¼Œluaé‡Œé¢ä½¿ç”¨çš„å¼‚å¸¸å¹¶ä¸æ˜¯c++çš„å¼‚å¸¸ï¼Œåªæ˜¯ä½¿ç”¨äº†cçš„setjumpå’Œlongjumpæ¥å®ç°åˆ°æ¢å¤ç‚¹çš„è·³è½¬ï¼Œ
-         * æ‰€ä»¥å¹¶ä¸ä¼šæœ‰C++æ‰€æœŸæœ›çš„æ ˆçš„å±•å¼€æ“ä½œï¼Œæ‰€ä»¥åœ¨C++é‡Œé¢çœ‹æ¥æ˜¯å¼‚å¸¸å®‰å…¨çš„ä»£ç ï¼Œæ­¤æ—¶ä¹Ÿæ˜¯â€œä¸å®‰å…¨â€çš„ï¼Œä¹Ÿä¸èƒ½ä¿è¯å¼‚å¸¸å®‰å…¨ï¼Œæ¯”å¦‚
+         * lua_toxxxºÍluaL_checkxxxµÄÇø±ğ£¬ÕâÁ½¸öº¯Êı¶¼ÊÇ´ÓluaÕ»ÉÏ»ñÈ¡Ò»¸öÖµ£¬µ«ÊÇÔÚ¼ì²éµ½ÀàĞÍ²»·ûÊ±ºò£¬lua_toxxxÖ»ÊÇ·µ»Ønull»òÕßÄ¬ÈÏÖµ£»
+         * ¶øluaL_checkÔòÊÇ»áÅ×³öÒ»¸öÒì³££¬ÏÂÃæµÄ´úÂë²»»áÔÙ¼ÌĞøÖ´ĞĞ£»ÕâÀï¾ÍĞèÒª×¢ÒâÁË£¬luaÀïÃæÊ¹ÓÃµÄÒì³£²¢²»ÊÇc++µÄÒì³££¬Ö»ÊÇÊ¹ÓÃÁËcµÄsetjumpºÍlongjumpÀ´ÊµÏÖµ½»Ö¸´µãµÄÌø×ª£¬
+         * ËùÒÔ²¢²»»áÓĞC++ËùÆÚÍûµÄÕ»µÄÕ¹¿ª²Ù×÷£¬ËùÒÔÔÚC++ÀïÃæ¿´À´ÊÇÒì³£°²È«µÄ´úÂë£¬´ËÊ±Ò²ÊÇ¡°²»°²È«¡±µÄ£¬Ò²²»ÄÜ±£Ö¤Òì³£°²È«£¬±ÈÈç
          * Function1(lua_state state)
          * {
              TestClass tmp();
              luaL_checkstring(state,1);
          * }
-         * å½“ä¸Šé¢çš„luaL_checkstringå‡ºç°å¼‚å¸¸æ—¶å€™ï¼ŒTestClassçš„ææ„å‡½æ•°å¹¶ä¸ä¼šè¢«è°ƒç”¨ï¼Œå‡å¦‚ä½ éœ€è¦åœ¨ææ„å‡½æ•°é‡Œé¢é‡Šæ”¾ä¸€äº›èµ„æºï¼Œå¯èƒ½ä¼šå¯¼è‡´èµ„æºæ³„éœ²ã€é”å¿˜è®°é‡Šæ”¾ç­‰é—®é¢˜ã€‚
-         * æ‰€ä»¥åœ¨ä½¿ç”¨luaL_checkxxxæ—¶å€™ï¼Œéœ€è¦å¾ˆå°å¿ƒï¼Œåœ¨luaL_checkxxxä¹‹å‰å°½é‡ä¸è¦ç”³è¯·ä¸€äº›éœ€è¦ä¹‹åé‡Šæ”¾çš„èµ„æºï¼Œå°¤å…¶æ˜¯åŠ é”å‡½æ•°,æ™ºèƒ½æŒ‡é’ˆå’Œautoé”ä¹Ÿä¸èƒ½æ­£å¸¸å·¥ä½œã€‚
-         * å¦‚æœç”¨g++é‡æ–°ç¼–è¯‘luaæºç ä¸ä¼šæœ‰é—®é¢˜
+         * µ±ÉÏÃæµÄluaL_checkstring³öÏÖÒì³£Ê±ºò£¬TestClassµÄÎö¹¹º¯Êı²¢²»»á±»µ÷ÓÃ£¬¼ÙÈçÄãĞèÒªÔÚÎö¹¹º¯ÊıÀïÃæÊÍ·ÅÒ»Ğ©×ÊÔ´£¬¿ÉÄÜ»áµ¼ÖÂ×ÊÔ´Ğ¹Â¶¡¢ËøÍü¼ÇÊÍ·ÅµÈÎÊÌâ¡£
+         * ËùÒÔÔÚÊ¹ÓÃluaL_checkxxxÊ±ºò£¬ĞèÒªºÜĞ¡ĞÄ£¬ÔÚluaL_checkxxxÖ®Ç°¾¡Á¿²»ÒªÉêÇëÒ»Ğ©ĞèÒªÖ®ºóÊÍ·ÅµÄ×ÊÔ´£¬ÓÈÆäÊÇ¼ÓËøº¯Êı,ÖÇÄÜÖ¸ÕëºÍautoËøÒ²²»ÄÜÕı³£¹¤×÷¡£
+         * Èç¹ûÓÃg++ÖØĞÂ±àÒëluaÔ´Âë²»»áÓĞÎÊÌâ
          **/
 #ifdef COMPILE_LUA_WITH_CXX
         if (luaerror) {

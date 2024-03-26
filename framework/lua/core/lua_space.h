@@ -2,7 +2,7 @@
 /*
   https://github.com/DGuco/luabridge
 
-  Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+  Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
   Copyright 2019, Dmitry Tarakanov
   Copyright 2012, Vinnie Falco <vinnie.falco@gmail.com>
   Copyright 2007, Nathan Reed
@@ -44,7 +44,7 @@ namespace luabridge
 
     This class is not instantiated directly, call `getGlobalNamespace` to start
     the registration process.d
-    lua å‘½åç©ºé—´ï¼Œå¯¹åº”luaä¸­çš„ä¸€ä¸ªtable
+    lua ÃüÃû¿Õ¼ä£¬¶ÔÓ¦luaÖĞµÄÒ»¸ötable
 */
 class Namespace
 {
@@ -75,7 +75,7 @@ public:
 
     /**
      * Open the global namespace for registrations.
-     * é»˜è®¤å‘½åç©ºé—´ï¼Œlua _Gè¡¨ï¼Œå¦‚æœæ²¡æœ‰æŒ‡å®šå‘½åç©ºé—´åˆ™æ‰€æœ‰çš„æ“ä½œåœ¨_Gè¡¨ä¸­
+     * Ä¬ÈÏÃüÃû¿Õ¼ä£¬lua _G±í£¬Èç¹ûÃ»ÓĞÖ¸¶¨ÃüÃû¿Õ¼äÔòËùÓĞµÄ²Ù×÷ÔÚ_G±íÖĞ
      * @param luaVm
      */
     explicit Namespace(LuaVm *luaVm)
@@ -90,7 +90,7 @@ public:
      * Open a namespace for registrations.
      * The namespace is created if it doesn't already exist.
      * The parent namespace is at the top of the Lua stack.
-     * æ‰“å¼€æ–°çš„å‘½åç©ºé—´ï¼Œå¦‚æœä¸å­˜åœ¨åˆ™åˆ›å»º
+     * ´ò¿ªĞÂµÄÃüÃû¿Õ¼ä£¬Èç¹û²»´æÔÚÔò´´½¨
      * @param name
      * @param luaVm
      */
@@ -99,19 +99,19 @@ public:
     {
         lua_State *L = m_pLuaVm->LuaState();
 
-        LUA_ASSERT_EX(L, lua_istable(L, -1), "lua_istable(L,-1)", false); // Stack: parent namespace (pns) ä¸€èˆ¬æƒ…å†µä¸‹æ˜¯_Gè¡¨
+        LUA_ASSERT_EX(L, lua_istable(L, -1), "lua_istable(L,-1)", false); // Stack: parent namespace (pns) Ò»°ãÇé¿öÏÂÊÇ_G±í
 
         LuaHelper::RawGetField(L, -1, name); // Stack: pns, namespace (ns) | nil
 
-        //å¦‚æœçˆ¶å‘½åç©ºé—´ä¸­æ²¡æœ‰æ‰¾åˆ°è¯¥è¡¨åˆ™åˆ›å»º
+        //Èç¹û¸¸ÃüÃû¿Õ¼äÖĞÃ»ÓĞÕÒµ½¸Ã±íÔò´´½¨
         if (lua_isnil(L, -1)) // Stack: pns, nil
         {
-            //æŠŠnil å€¼å¼¹å‡ºæ ˆé¡¶
+            //°Ñnil Öµµ¯³öÕ»¶¥
             lua_pop(L, 1); // Stack: pns
 
-            //åˆ›å»ºä¸€ä¸ªæ–°çš„table
+            //´´½¨Ò»¸öĞÂµÄtable
             lua_newtable(L); // Stack: pns, ns
-            //copy åˆ›å»ºçš„table åˆ°æ ˆé¡¶
+            //copy ´´½¨µÄtable µ½Õ»¶¥
             lua_pushvalue(L, -1); // Stack: pns, ns, ns
 
             // ns.__metatable = ns
@@ -132,14 +132,14 @@ public:
             lua_rawsetp(L, -2, GetPropsetKey()); // ns[propsetKey] = ps. Stack: pns, ns
 
             lua_pushvalue(L, -1); // Stack: pns, ns, ns
-            // pns [name] = ns,é€šå¸¸æƒ…å†µä¸‹å³_G[name] = ns
+            // pns [name] = ns,Í¨³£Çé¿öÏÂ¼´_G[name] = ns
             LuaHelper::RawSetField(L, -3, name); // Stack: pns, ns
         }
         m_pLuaVm->AddStackSize(1);
     }
 
     /**
-     * æ‰“å¼€æ–°çš„å‘½åç©ºé—´ï¼Œå¦‚æœä¸å­˜åœ¨åˆ™åˆ›å»º
+     * ´ò¿ªĞÂµÄÃüÃû¿Õ¼ä£¬Èç¹û²»´æÔÚÔò´´½¨
      * @param name
      * @return
      */
@@ -150,11 +150,11 @@ public:
     }
 
     /**
-     *  Add or replace a variable.åœ¨å‘½åç©ºé—´ä¸­æ·»åŠ ä¸€ä¸ªå…¨å±€å˜é‡
+     *  Add or replace a variable.ÔÚÃüÃû¿Õ¼äÖĞÌí¼ÓÒ»¸öÈ«¾Ö±äÁ¿
      * @tparam T  variable type
      * @param name
-     * @param pt   å˜é‡çš„åœ°å€
-     * @param isWritable  æ˜¯å¦å¯å†™
+     * @param pt   ±äÁ¿µÄµØÖ·
+     * @param isWritable  ÊÇ·ñ¿ÉĞ´
      */
     template<class T>
     void AddProperty(char const *name, T *pt, bool isWritable = true)
@@ -166,19 +166,19 @@ public:
 
         LUA_ASSERT_EX (L, lua_istable(L, -1), "lua_istable(L, -1)", false); // Stack: namespace table (ns)
 
-        //æ³¨å†Œgetteræ–¹æ³•
+        //×¢²ágetter·½·¨
         lua_pushlightuserdata(L, pt); // Stack: ns, pointer
         lua_pushcclosure(L, &CFunc::GetVariable<T>, 1); // Stack: ns, getter
         CFunc::AddGetter(L, name, -2); // Stack: ns
 
-        //æ³¨å†Œsetteræ–¹æ³•
+        //×¢²ásetter·½·¨
         if (isWritable) {
-            //isWritable is true  æ³¨å†Œsetteræ–¹æ³•
+            //isWritable is true  ×¢²ásetter·½·¨
             lua_pushlightuserdata(L, pt); // Stack: ns, pointer
             lua_pushcclosure(L, &CFunc::SetVariable<T>, 1); // Stack: ns, setter
         }
         else {
-            //isWritable is false  è°ƒç”¨setter æ–¹æ³•æ—¶æŠ›å‡ºlua error
+            //isWritable is false  µ÷ÓÃsetter ·½·¨Ê±Å×³ölua error
             lua_pushstring(L, name); // Stack: ns, ps, namedd
             lua_pushcclosure(L, &CFunc::ReadOnlyError, 1); // Stack: ns, error_fn
         }
@@ -186,7 +186,7 @@ public:
     }
 
     /**
-     * Add or replace a variable.åœ¨å‘½åç©ºé—´ä¸­æ·»åŠ ä¸€ä¸ªå…¨å±€å˜é‡
+     * Add or replace a variable.ÔÚÃüÃû¿Õ¼äÖĞÌí¼ÓÒ»¸öÈ«¾Ö±äÁ¿
      * @tparam TG  variable type
      * @tparam TS  variable type
      * @param name
@@ -220,7 +220,7 @@ public:
     }
 
     /**
-     * Add or replace a variable.åœ¨å‘½åç©ºé—´ä¸­æ·»åŠ ä¸€ä¸ªå…¨å±€å˜é‡
+     * Add or replace a variable.ÔÚÃüÃû¿Õ¼äÖĞÌí¼ÓÒ»¸öÈ«¾Ö±äÁ¿
      * @param name
      * @param get   get func
      * @param set   set func
@@ -249,7 +249,7 @@ public:
 
     /**
      * register cfunction
-     * @param func func name å‡½æ•°å
+     * @param func func name º¯ÊıÃû
      * @param f
      **/
     void AddCFunction(const char *func, lua_CFunction fp)
@@ -266,7 +266,7 @@ public:
      * register cfunction
      * @param L  lua_State
      * @tparam   Func func type
-     * @param fp func name å‡½æ•°å
+     * @param fp func name º¯ÊıÃû
      * @param f
      **/
     template<class Func>
@@ -278,7 +278,7 @@ public:
     /**
      * register cfunction
      * @param L    lua_State
-     * @param func func name å‡½æ•°å
+     * @param func func name º¯ÊıÃû
      * @param f
      **/
     static void AddGlobalCFunc(lua_State *L, const char *func, lua_CFunction f)
@@ -290,7 +290,7 @@ public:
      * register cfunction
      * @param L  lua_State
      * @tparam   Func func type
-     * @param fp func name å‡½æ•°å
+     * @param fp func name º¯ÊıÃû
      * @param f
      **/
     template<class Func>

@@ -1,7 +1,7 @@
 //
 //  acceptor.h
 //  Created by DGuco on 18/01/20.
-//  Copyright Â© 2018å¹´ DGuco. All rights reserved.
+//  Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 #ifndef _ACCEPTOR_H_
@@ -25,38 +25,38 @@ class CAcceptor: public IBufferEvent
 	};
 
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CAcceptor(SOCKET socket,
 			  IEventReactor *pReactor,
 			  CNetAddr *netAddr,
 			  FuncBufferEventOnDataSend funcOnDataSend,
 			  FuncBufferEventOnDataRecv funcOnDataRecv,
 			  FuncBufferEventOnDisconnected funcDisconnected);
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	virtual ~CAcceptor();
-	//è·å–è¯¥è¿æ¥çš„ip
+	//»ñÈ¡¸ÃÁ¬½ÓµÄip
 	void GetRemoteIpAddress(char *szBuf, unsigned int uBufSize);
-	//å…³é—­è¿æ¥
+	//¹Ø±ÕÁ¬½Ó
 	void ShutDown();
-	//å½“å‰æ˜¯å¦è¿æ¥
+	//µ±Ç°ÊÇ·ñÁ¬½Ó
 	bool IsConnected();
-	//è·å–åˆ›å»ºæ—¶é—´
+	//»ñÈ¡´´½¨Ê±¼ä
 	time_t GetCreateTime();
-	//è·å–ä¸Šæ¬¡æ´»è·ƒæ—¶é—´
+	//»ñÈ¡ÉÏ´Î»îÔ¾Ê±¼ä
 	time_t GetLastKeepAlive();
-	//æ›´æ–°ä¸Šæ¬¡æ´»è·ƒæ—¶é—´
+	//¸üĞÂÉÏ´Î»îÔ¾Ê±¼ä
 	void SetLastKeepAlive(time_t tmpLastKeepAlive);
 private:
-	//bufferEvent æ— æ•ˆå¤„ç†
+	//bufferEvent ÎŞĞ§´¦Àí
 	void BuffEventUnavailableCall() override;
-	//event buffer åˆ›å»ºæˆåŠŸåå¤„ç†
+	//event buffer ´´½¨³É¹¦ºó´¦Àí
 	void AfterBuffEventCreated() override;
 private:
-	//è·å–è¿æ¥çŠ¶æ€
+	//»ñÈ¡Á¬½Ó×´Ì¬
 	eAcceptorState GetState();
-	//è®¾ç½®è¿æ¥çŠ¶æ€
+	//ÉèÖÃÁ¬½Ó×´Ì¬
 	void SetState(eAcceptorState eState);
-	//äº‹ä»¶å›è°ƒ
+	//ÊÂ¼ş»Øµ÷
 	void OnEvent(int16 nWhat) override;
 private:
 	CNetAddr* m_pNetAddr;

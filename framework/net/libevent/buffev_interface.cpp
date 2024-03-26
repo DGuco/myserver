@@ -72,7 +72,7 @@ unsigned int IBufferEvent::RecvData(void *data, unsigned int size)
 
 unsigned short IBufferEvent::ReadRecvPackLen()
 {
-	//åŒ…å¤´å‰ä¸¤ä¸ªå­—èŠ‚ä¸ºæ•°æ®æ€»é•¿åº¦ï¼Œå¦‚æœæ•°æ®é•¿åº¦å°äºä¸¤ä¸ªå­—èŠ‚è¿”å›0
+	//°üÍ·Ç°Á½¸ö×Ö½ÚÎªÊı¾İ×Ü³¤¶È£¬Èç¹ûÊı¾İ³¤¶ÈĞ¡ÓÚÁ½¸ö×Ö½Ú·µ»Ø0
 	if (GetRecvDataSize() < sizeof(unsigned short)) {
 		return 0;
 	}
@@ -144,18 +144,18 @@ const CSocket &IBufferEvent::GetSocket() const
 bool IBufferEvent::IsPackageComplete()
 {
 	unsigned short tmpPackLen = GetRecvPackLen();
-	//å¦‚æœå½“å‰åŒ…é•¿åº¦ä¸º0ï¼Œåˆ™ä¸ºæ–°çš„æ•°æ®åŒ…ï¼Œé‡æ–°è¯»å–æ•°æ®åŒ…æ€»é•¿åº¦ä¿å­˜
+	//Èç¹ûµ±Ç°°ü³¤¶ÈÎª0£¬ÔòÎªĞÂµÄÊı¾İ°ü£¬ÖØĞÂ¶ÁÈ¡Êı¾İ°ü×Ü³¤¶È±£´æ
 	if (tmpPackLen <= 0) {
 		tmpPackLen = ReadRecvPackLen();
 	}
 	if (tmpPackLen <= 0) {
-		//æ•°æ®åŒ…ä¸å®Œæ•´ç»§ç»­ç­‰å…¶ä»–æ•°æ®åˆ°æ¥
+		//Êı¾İ°ü²»ÍêÕû¼ÌĞøµÈÆäËûÊı¾İµ½À´
 		return false;
 	}
 
 	unsigned short tmpLastLen = tmpPackLen - sizeof(unsigned short);
 	unsigned int tmpDataLen = GetRecvDataSize();
-	//æ•°æ®åŒ…ä¸å®Œæ•´ç»§ç»­æ¥æ”¶
+	//Êı¾İ°ü²»ÍêÕû¼ÌĞø½ÓÊÕ
 	return tmpDataLen >= tmpLastLen;
 }
 

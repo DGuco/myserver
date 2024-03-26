@@ -1,8 +1,8 @@
 //
 //  gatectrl.h
-//  å®¢æˆ·ç«¯tcpç®¡ç†ç±»å¤´æ–‡ä»¶
+//  ¿Í»§¶Ëtcp¹ÜÀíÀàÍ·ÎÄ¼ş
 //  Created by DGuco on 16/12/6.
-//  Copyright Â© 2016å¹´ DGuco. All rights reserved.
+//  Copyright ? 2016Äê DGuco. All rights reserved.
 //
 
 #ifndef __PROXY_CTRL_H__
@@ -17,16 +17,16 @@
 class CProxyCtrl: public CSingleton<CProxyCtrl>
 {
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CProxyCtrl();
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	~CProxyCtrl();
-	//å‡†å¤‡run
+	//×¼±¸run
 	bool PrepareToRun();
 	//run
 	int Run();
 private:
-	//è¯»å–é…ç½®æ–‡ä»¶
+	//¶ÁÈ¡ÅäÖÃÎÄ¼ş
 	bool ReadConfig();
 };
 

@@ -16,7 +16,7 @@ CPerfInfo::~CPerfInfo()
 {
 }
 
-/// 杈撳叆杩欐璋冪敤缁忚繃鐨勬椂闂达紝杩斿洖琚皟鐢ㄧ殑娆℃暟
+/// 输入这次调用经过的时间，返回被调用的次数
 int CPerfInfo::AddCalled(int iElapsed)
 {
 
@@ -32,7 +32,7 @@ int CPerfInfo::AddCalled(int iElapsed)
 	return mTotalCalled;
 }
 
-/// 閲嶇疆缁熻鏁版嵁
+/// 重置统计数据
 void CPerfInfo::Reset()
 {
 	mTotalCalled = 0;

@@ -1,7 +1,7 @@
 //
 // filed.h
 // Created by DGuco on 17-7-13.
-// Copyright Â© 2018å¹´ DGuco. All rights reserved.
+// Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 

@@ -1,7 +1,7 @@
 //
 //  net_work.h
 //  Created by DGuco on 18/01/20.
-//  Copyright Â© 2018å¹´ DGuco. All rights reserved.
+//  Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 
@@ -32,12 +32,12 @@ public:
 
 	typedef std::queue<CSystemSignal *> Queue_TimerOrSignals;
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CNetWork();
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	virtual ~CNetWork();
 
-	//å¼€å§‹ç›‘å¬
+	//¿ªÊ¼¼àÌı
 	bool BeginListen(const char *szNetAddr,
 					 unsigned int uPort,
 					 FuncAcceptorOnNew pOnNew,
@@ -47,9 +47,9 @@ public:
 					 FuncOnTimeOut funcAcceptorTimeOut,
 					 int listenQueue,
 					 unsigned int uCheckPingTickTime);
-	//ç»“æŸç›‘å¬
+	//½áÊø¼àÌı
 	void EndListen();
-	//è¿æ¥
+	//Á¬½Ó
 	bool Connect(const char *szNetAddr,
 				 uint16 uPort,
 				 int targetId,
@@ -60,39 +60,39 @@ public:
 				 FuncConnectorOnConnectted funcOnConnectted,
 				 FuncConnectorOnPingServer funcOnPingServer,
 				 unsigned int uPingTick);
-	//ç›‘å¬æ–‡ä»¶å˜åŒ–
+	//¼àÌıÎÄ¼ş±ä»¯
 // 	bool ListenFile(string filePath,
 // 					FuncFileListenerOnEvent funcFileListenerOnEvent,
 // 					int flags);
-	//å…³é—­acceptor
+	//¹Ø±Õacceptor
 	bool ShutDownAcceptor(unsigned int uId);
-	//è®¾ç½®ä¿¡å·å›è°ƒ
+	//ÉèÖÃĞÅºÅ»Øµ÷
 	void RegisterSignalHandler(unsigned int uSignal, FuncOnSignal pFunc, void *pContext);
-	//å…³é—­connector
+	//¹Ø±Õconnector
 	bool ShutDownConnectorEx(unsigned int uId);
-	//å¯åŠ¨
+	//Æô¶¯
 	void DispatchEvents();
-	//æŸ¥æ‰¾connector
+	//²éÕÒconnector
 	CConnector *FindConnector(unsigned int uId);
-	//æŸ¥æ‰¾acceptor
+	//²éÕÒacceptor
 	CAcceptor *FindAcceptor(unsigned int uId);
-	//æ·»åŠ æ–°çš„acceptor
+	//Ìí¼ÓĞÂµÄacceptor
 	void InsertNewAcceptor(unsigned int uid, CAcceptor *pAcceptor);
-	//æ·»åŠ æ–°çš„connector
+	//Ìí¼ÓĞÂµÄconnector
 	void InsertNewConnector(unsigned int uid, CConnector *pConnector);
-	//æ·»åŠ æ–°çš„fileListener
+	//Ìí¼ÓĞÂµÄfileListener
 	void InsertNewFileListener(unsigned int uid, CFileListener *pFileListener);
-	//è·å–event
+	//»ñÈ¡event
 	IEventReactor *GetEventReactor();
-	//è·å–è¿æ¥map
+	//»ñÈ¡Á¬½Ómap
 	MAP_ACCEPTOR &GetAcceptorMap();
-	//è·å–æ–‡ä»¶ç›‘å¬map
+	//»ñÈ¡ÎÄ¼ş¼àÌımap
 	MAP_FILELISTENER &GetFileListenerMap();
 private:
-	//æ–°çš„è¿æ¥ acceptå›è°ƒ
+	//ĞÂµÄÁ¬½Ó accept»Øµ÷
 	static void lcb_OnAccept(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
 private:
-	//åˆ›å»ºacceptor
+	//´´½¨acceptor
 	void NewAcceptor(IEventReactor *pReactor, SOCKET socket, sockaddr *sa);
 private:
 	IEventReactor *m_pEventReactor;
@@ -104,7 +104,7 @@ private:
 	Queue_TimerOrSignals m_qTimerOrSignals;
 	CListener *m_pListener;
 	CTimerEvent *m_pCheckTimerOut;
-	int m_iPingCheckTime;  //å•ä½æ¯«ç§’
+	int m_iPingCheckTime;  //µ¥Î»ºÁÃë
 
 	FuncAcceptorOnNew m_pOnNew;
 	FuncBufferEventOnDataSend m_pFuncAcceptorOnDataSend;

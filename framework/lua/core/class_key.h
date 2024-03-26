@@ -2,7 +2,7 @@
 /*
   https://github.com/DGuco/luabridge
 
-  Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+  Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
   Copyright 2012, Vinnie Falco <vinnie.falco@gmail.com>
 
   License: The MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -129,7 +129,7 @@ inline const void *GetParentKey()
     Each registered class inserts three keys into the registry, whose
     values are the corresponding static, class, and const metatables. This
     allows a quick and reliable lookup for a metatable from a template type.
-    åˆ©ç”¨é™æ€å‡½æ•°ï¼Œé™æ€å±€éƒ¨å˜é‡çš„ç‰¹æ€§ï¼Œå–æ¯ä¸ªç±»çš„æ¨¡æ¿ç±»ClassInfo<T>çš„ä¸‰ä¸ªå‡½æ•°çš„å±€éƒ¨å˜é‡çš„åœ°å€ç»™æ¯ä¸ªç±»çš„ä¸åŒçš„ä¸‰ä¸ªtableç”Ÿæˆå”¯ä¸€çš„keyï¼Œå…¨å±€å”¯ä¸€
+    ÀûÓÃ¾²Ì¬º¯Êı£¬¾²Ì¬¾Ö²¿±äÁ¿µÄÌØĞÔ£¬È¡Ã¿¸öÀàµÄÄ£°åÀàClassInfo<T>µÄÈı¸öº¯ÊıµÄ¾Ö²¿±äÁ¿µÄµØÖ·¸øÃ¿¸öÀàµÄ²»Í¬µÄÈı¸ötableÉú³ÉÎ¨Ò»µÄkey£¬È«¾ÖÎ¨Ò»
 */
 template<class T>
 class ClassInfo

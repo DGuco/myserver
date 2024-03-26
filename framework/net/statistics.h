@@ -6,16 +6,16 @@ class CProcessMsgDelay
 public:
 	enum ETimeGrade
 	{
-		ETimeGrade_Lv1	= 0,	// Â∞è‰∫é1ÁßíÈíü
-		ETimeGrade_Lv2,			// 1Áßí ~ 2Áßí
-		ETimeGrade_Lv3,			// 2Áßí ~ 3Áßí
-		ETimeGrade_Lv4,			// 3Áßí ~ 5Áßí
-		ETimeGrade_Lv5,			// 5Áßí ~ 10Áßí
-		ETimeGrade_Lv6,			// 10Áßí ~ 30Áßí
-		ETimeGrade_Lv7,			// 30Áßí ~ 60Áßí
-		ETimeGrade_Lv8,			// Â§ß‰∫é60Áßí
+		ETimeGrade_Lv1	= 0,	// –°”⁄1√Î÷”
+		ETimeGrade_Lv2,			// 1√Î ~ 2√Î
+		ETimeGrade_Lv3,			// 2√Î ~ 3√Î
+		ETimeGrade_Lv4,			// 3√Î ~ 5√Î
+		ETimeGrade_Lv5,			// 5√Î ~ 10√Î
+		ETimeGrade_Lv6,			// 10√Î ~ 30√Î
+		ETimeGrade_Lv7,			// 30√Î ~ 60√Î
+		ETimeGrade_Lv8,			// ¥Û”⁄60√Î
 
-		ETimeGrade_Num			// ÊÄªÊ°£Êï∞
+		ETimeGrade_Num			// ◊‹µµ ˝
 	};
 
 public:

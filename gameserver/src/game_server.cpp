@@ -20,7 +20,7 @@ CGameServer::~CGameServer()
 }
 
 
-// è¿è¡Œå‡†å¤‡
+// ÔËĞĞ×¼±¸
 bool CGameServer::PrepareToRun()
 {
 	CSafePtr<CServerConfig> pConfig = CServerConfig::GetSingletonPtr();
@@ -61,20 +61,20 @@ CSafePtr<CTCPConn> CGameServer::CreateTcpConn(CSocket tmSocket)
 	return pConn.DynamicCastTo<CTCPConn>();
 }
 
-// é€€å‡º
+// ÍË³ö
 void CGameServer::Exit()
 {
 	exit(0);
 }
 
-//è¯»å–å®¢æˆ·ç«¯ä¸Šè¡Œæ•°æ®
+//¶ÁÈ¡¿Í»§¶ËÉÏĞĞÊı¾İ
 void CGameServer::ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer)
 {
 	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
 	int packLen = pRecvBuff->ReadUnInt();
 	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
 	{
-		//æ–­å¼€è¿æ¥
+		//¶Ï¿ªÁ¬½Ó
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
@@ -82,7 +82,7 @@ void CGameServer::ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer)
 	int nSeq = pRecvBuff->ReadInt();
 	if (pRecvBuff->ReadBytes(m_CacheData, packLen) != 0)
 	{
-		//æ–­å¼€è¿æ¥
+		//¶Ï¿ªÁ¬½Ó
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
@@ -91,7 +91,7 @@ void CGameServer::ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer)
 	CSafePtr<CMessageFactory> pFactory = CMessageFactoryManager::GetSingletonPtr()->GetFactory(nCmd);
 	if (pFactory == NULL)
 	{
-		//æ–­å¼€è¿æ¥
+		//¶Ï¿ªÁ¬½Ó
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
@@ -100,7 +100,7 @@ void CGameServer::ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer)
 	ASSERT(pMessage != NULL);
 	if (!pMessage->ParseFromArray(m_CacheData, packLen))
 	{
-		//æ–­å¼€è¿æ¥
+		//¶Ï¿ªÁ¬½Ó
 		ClearSocket(pGamePlayer, Err_PacketError);
 		return;
 	}
@@ -117,20 +117,20 @@ void CGameServer::ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer)
 	return;
 }
 
-//å¤„ç†è¯»å–æœåŠ¡å™¨æ•°æ®
+//´¦Àí¶ÁÈ¡·şÎñÆ÷Êı¾İ
 void CGameServer::ProcessServerMessage(CSafePtr<CServerClient> pServerPlayer)
 {
 	CSafePtr<CByteBuff> pRecvBuff = pServerPlayer->GetReadBuff();
 	int packLen = pRecvBuff->ReadUnInt();
 	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
 	{
-		//æ–­å¼€è¿æ¥
+		//¶Ï¿ªÁ¬½Ó
 		return;
 	}
 	int nCmd = pRecvBuff->ReadInt();
 	if (nCmd != ProxyMessage::Msg::ProxyMessage_Msg_MsgID)
 	{
-		//æ–­å¼€è¿æ¥
+		//¶Ï¿ªÁ¬½Ó
 		return;
 	}
 	int nSeq = pRecvBuff->ReadInt();
@@ -141,7 +141,7 @@ void CGameServer::ProcessServerMessage(CSafePtr<CServerClient> pServerPlayer)
 	CSafePtr<CMessageFactory> pFactory = CMessageFactoryManager::GetSingletonPtr()->GetFactory(nCmd);
 	if (pFactory == NULL)
 	{
-		//æ–­å¼€è¿æ¥
+		//¶Ï¿ªÁ¬½Ó
 		return;
 	}
 
@@ -149,7 +149,7 @@ void CGameServer::ProcessServerMessage(CSafePtr<CServerClient> pServerPlayer)
 	ASSERT(pMessage != NULL);
 	if (!pMessage->ParseFromArray(m_CacheData, packLen))
 	{
-		//æ–­å¼€è¿æ¥
+		//¶Ï¿ªÁ¬½Ó
 		return;
 	}
 
@@ -167,7 +167,7 @@ void CGameServer::ProcessServerMessage(CSafePtr<CServerClient> pServerPlayer)
 void CGameServer::ClearSocket(CSafePtr<CGamePlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
-	//égameserver ä¸»åŠ¨è¯·æ±‚å…³é—­
+	//·Çgameserver Ö÷¶¯ÇëÇó¹Ø±Õ
 	if (Client_Succeed != iError)
 	{
 		DisConnect(pGamePlayer, iError);
@@ -186,7 +186,7 @@ void CGameServer::DisConnect(CSafePtr<CGamePlayer> pGamePlayer, short iError)
 //     return true;
 // }
 
-// é€šè¿‡æ¶ˆæ¯IDè·å–æ¨¡å—ç±»å‹
+// Í¨¹ıÏûÏ¢ID»ñÈ¡Ä£¿éÀàĞÍ
 int CGameServer::GetModuleClass(int iMsgID)
 {
 //    return ((iMsgID >> 16) & 0xFF);

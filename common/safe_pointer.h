@@ -14,7 +14,7 @@
 #define SPO_FLAG_H          (0XFFFFFFFFFFFFFFFF & SPO_MAGIC_NUM_L)
 #define SPO_FLAG_L          (0XFFFFFFFFFFFFFFFF & SPO_MAGIC_NUM_H)
 #define SPO_DATA_TYPE       unsigned long long
-#define SPO_ERROR_MSG       "SafePointer<Tp> Is not valid,FLAGH = 0X%lx,FLAGL = 0X%lx,pointer = 0X%lx\n"
+#define SPO_ERROR_MSG       "SafePointer<Tp> Is not valid,FLAGH = 0X%lx,FLAGL = 0X%lx,pointer = %p\n"
 #elif defined(__i386__) || defined(_WIN32)
 #define SPO_MAGIC_NUM       0X80000000
 #define SPO_MAGIC_NUM_H     0X55555555
@@ -22,7 +22,7 @@
 #define SPO_FLAG_H          (0XFFFFFFFF & SPO_MAGIC_NUM_L)
 #define SPO_FLAG_L          (0XFFFFFFFF & SPO_MAGIC_NUM_H)
 #define SPO_DATA_TYPE       unsigned long long
-#define SPO_ERROR_MSG       "SafePointer<Tp> Is not valid,FLAGH = 0X%llx,FLAGL = 0X%llx,pointer = 0X%llx\n"
+#define SPO_ERROR_MSG       "SafePointer<Tp> Is not valid,FLAGH = 0X%llx,FLAGL = 0X%llx,pointer = %p\n"
 
 #endif
 
@@ -155,14 +155,14 @@ private:
 		if (GetFlagH() != SPO_FLAG_H || GetFlagL() != SPO_FLAG_L)
 		{
 			char eMsg[256] = { 0 };
-			sprintf(eMsg, SPO_ERROR_MSG, static_cast<unsigned long>(GetFlagH()), GetFlagL(), (void*)pPoint);
+			sprintf_s(eMsg,256,SPO_ERROR_MSG, (unsigned long)(GetFlagH()), (unsigned long)GetFlagL(), (void*)pPoint);
 			throw std::runtime_error(eMsg);
 		}
 
 		if (pPoint == NULL)
 		{
 			char eMsg[256] = { 0 };
-			sprintf(eMsg, SPO_ERROR_MSG, GetFlagH(), GetFlagL(), (void*)pPoint);
+			sprintf_s(eMsg,256, SPO_ERROR_MSG, (unsigned long)GetFlagH(), (unsigned long)GetFlagL(), (void*)pPoint);
 			throw std::runtime_error(eMsg);
 		}
 		return pPoint;

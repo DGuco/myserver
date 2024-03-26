@@ -2,7 +2,7 @@
 //  main.cpp
 //  gateserver
 //  Created by DGuco on 16/12/8.
-//  Copyright Â© 2016å¹´ DGuco. All rights reserved.
+//  Copyright ? 2016Äê DGuco. All rights reserved.
 //
 
 #include <memory>
@@ -180,7 +180,7 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	TestLua();
-	//ä¿¡å·å¤„ç†æ³¨å†Œ
+	//ÐÅºÅ´¦Àí×¢²á
 	CSignalHandler::GetSingletonPtr()->RegisterHandler("proxyserver");
 	
 	if (!INIT_LOG("proxyserver"))
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 	}
 
 	CProxyCtrl::GetSingletonPtr()->Run();
-	// å…³é—­æ—¥å¿—
+	// ¹Ø±ÕÈÕÖ¾
 	SHUTDOWN_ALL_LOG();
 }
 

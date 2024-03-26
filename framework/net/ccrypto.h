@@ -1,7 +1,7 @@
 //
 //  ccrypto.h
 //  Created by DGuco on 18/01/20.
-//  Copyright Â© 2018å¹´ DGuco. All rights reserved.
+//  Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 #ifndef __CCRYPTO_H__
@@ -12,17 +12,17 @@
 class CAes
 {
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CAes();
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	~CAes();
-	//åˆå§‹åŒ–
+	//³õÊ¼»¯
 	int init(const unsigned char *userKey, int len);
-	//åŠ å¯†
+	//¼ÓÃÜ
 	char *encrypt(const char *input, int inputlen, int &outputlen);
-	//è§£å¯†
+	//½âÃÜ
 	char *decrypt(const char *input, int inputlen, int &outputlen);
-	//é‡ç½®ç¼“å†²åŒºå¤§å°
+	//ÖØÖÃ»º³åÇø´óĞ¡
 	void resize(int size);
 public:
 	AES_KEY _enKey;

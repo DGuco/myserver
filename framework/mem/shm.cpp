@@ -4,11 +4,11 @@
 
 using namespace ShareMemAPI;
 // /**
-//   *å‡½æ•°å          : CSharedMem
-//   *åŠŸèƒ½æè¿°        : æ”¹å˜CSharedMemçš„newæ“ä½œï¼Œåœ¨å…±äº«å†…å­˜ç©ºé—´ä¸Šç”Ÿæˆå¯¹è±¡ç”¨æ¥è¿›ç¨‹é—´é€šä¿¡ï¼Œ
-//   *   				pbCurrentShmæŒ‡å‘å…±äº«å†…å­˜å—åœ°å€ï¼Œå¤§å°é€šå¸¸ä¸ºsizeof(CSharedMem)
-//   *   				+ sizeof(CCodeQueue) + PIPE_SIZEï¼ˆå¯å˜ï¼‰
-//   *å‚æ•°           ï¼š sizeofï¼ˆCSharedMemï¼‰
+//   *º¯ÊýÃû          : CSharedMem
+//   *¹¦ÄÜÃèÊö        : ¸Ä±äCSharedMemµÄnew²Ù×÷£¬ÔÚ¹²ÏíÄÚ´æ¿Õ¼äÉÏÉú³É¶ÔÏóÓÃÀ´½ø³Ì¼äÍ¨ÐÅ£¬
+//   *   				pbCurrentShmÖ¸Ïò¹²ÏíÄÚ´æ¿éµØÖ·£¬´óÐ¡Í¨³£Îªsizeof(CSharedMem)
+//   *   				+ sizeof(CCodeQueue) + PIPE_SIZE£¨¿É±ä£©
+//   *²ÎÊý           £º sizeof£¨CSharedMem£©
 // **/
 // void *CSharedMem::operator new(size_t nSize)
 // {
@@ -137,7 +137,7 @@ bool CSharedMem::CloseSegment()
 	bool ret = 0;
 	if (m_pHead != NULL)
 	{
-		//å…ˆdetach å†…å­˜æ˜ å°„
+		//ÏÈdetach ÄÚ´æÓ³Éä
 		if (!ShareMemAPI::DetachShareMem(m_pHead->m_pSegment))
 		{
 			DISK_LOG(SHM_ERROR, "CloseSegment DetachShareMem failed nSmKey = {} error : {} errormsg : {}", m_pHead->m_nShmKey, errno, strerror(errno));

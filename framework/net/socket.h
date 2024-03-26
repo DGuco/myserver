@@ -1,7 +1,7 @@
 //
 //  socket.h
 //  Created by DGuco on 18/01/20.
-//  Copyright Â© 2018å¹´ DGuco. All rights reserved.
+//  Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 #ifndef _SOCKET_H_
@@ -22,13 +22,13 @@ struct CNetAddr
 class CSocket
 {
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CSocket();
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	~CSocket();
-	//æ‰“å¼€
+	//´ò¿ª
 	bool Open(int nProtocolFamily = AF_INET, int nType = SOCK_STREAM, int nProtocol = 0);
-	//å…³é—­
+	//¹Ø±Õ
 	void Close();
 	//shutdown
 	void Shutdown();
@@ -36,57 +36,57 @@ public:
 	void ShutdownRead();
 	//shutdown write
 	void ShutdownWrite();
-	//ç»‘å®šç«¯å£
+	//°ó¶¨¶Ë¿Ú
 	bool Bind(int port);
-	//ç»‘å®šç«¯å£
+	//°ó¶¨¶Ë¿Ú
 	bool Bind(const char* ipaddr,int port);
 	//conn
 	int Conn(const char* ipaddr, int port,bool block);
-	//ç›‘å¬
+	//¼àÌı
 	bool Listen();
 	//accept
 	CSocket Accept();
-	//è¯»å–
+	//¶ÁÈ¡
 	int  Read(char* data,int len);
-	//å†™å…¥
+	//Ğ´Èë
 	int  Write(char* data, int len);
-	//è·å–è¿œç¨‹ip
+	//»ñÈ¡Ô¶³Ìip
 	bool GetRemoteAddress(CNetAddr & addr) const;
-	//è®¾ç½®å‘é€ç¼“å†²åŒºå¤§å°
+	//ÉèÖÃ·¢ËÍ»º³åÇø´óĞ¡
 	bool SetSendBufSize(int size);
-	//è·å–å‘é€ç¼“å†²åŒºå¤§å°
+	//»ñÈ¡·¢ËÍ»º³åÇø´óĞ¡
 	int GetSendBuffSize();
-	//è®¾ç½®æ¥æ”¶ç¼“å†²åŒºå¤§å°
+	//ÉèÖÃ½ÓÊÕ»º³åÇø´óĞ¡
 	bool SetRecvBufSize(int size);
-	//è·å–æ¥æ”¶ç¼“å†²åŒºå¤§å°
+	//»ñÈ¡½ÓÊÕ»º³åÇø´óĞ¡
 	int GetRecvBuffSize();
-	//è·å–socket fd
+	//»ñÈ¡socket fd
 	SOCKET GetSocket() const;
 	//set opt
 	int SetSocketOpt(int sol, int type,const void* value, int size);
 	//get opt
 	int GetSocketOpt(int sol, int type,void* value, int* size);
-	//è®¾ç½®éé˜»å¡
+	//ÉèÖÃ·Ç×èÈû
 	bool SetSocketNoBlock();
-	//socket é‡ç”¨
+	//socket ÖØÓÃ
 	bool SetReuseAddr();
-	//æ˜¯å¦é‡ç”¨
+	//ÊÇ·ñÖØÓÃ
 	bool IsReuseAddr();
 	//set Linger
 	bool SetLinger(int lingertime);
 	//get Linger
 	int GetLinger();
-	//tcp å¿ƒè·³
+	//tcp ĞÄÌø
 	bool SetKeepAlive();
-	///tcp å¿ƒè·³
+	///tcp ĞÄÌø
 	bool IsKeepAlive();
 	//tcp NoDelay
 	bool SetTcpNoDelay();
 	//tcp NoDelay
 	bool IsTcpNoDelay();
-	//æ˜¯å¦æœ‰æ•ˆ
+	//ÊÇ·ñÓĞĞ§
 	bool IsValid();
-	//socket æ˜¯å¦å‡ºé”™
+	//socket ÊÇ·ñ³ö´í
 	bool IsSocketError();
 	// host 
 	const CString<ADDR_LENGTH>& GetHost() const;

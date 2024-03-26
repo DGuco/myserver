@@ -1,7 +1,7 @@
 //
 //  event_reactor.h
 //  Created by DGuco on 18/01/20.
-//  Copyright Â© 2018å¹´ DGuco. All rights reserved.
+//  Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 
@@ -18,19 +18,19 @@ using namespace std;
 class CEventReactor: public IEventReactor
 {
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CEventReactor();
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	virtual ~CEventReactor();
-	//åˆå§‹åŒ–event_base
+	//³õÊ¼»¯event_base
 	void Init();
-	//æ³¨å†Œå¤„ç†
+	//×¢²á´¦Àí
 	bool Register(IReactorHandler *pHandler);
-	//è·å–libevent event_base
+	//»ñÈ¡libevent event_base
 	event_base *GetEventBase();
-	//eventç›‘å¬åˆ†å‘äº‹ä»¶
+	//event¼àÌı·Ö·¢ÊÂ¼ş
 	void DispatchEvents();
-	//é‡Šæ”¾èµ„æº
+	//ÊÍ·Å×ÊÔ´
 	void Release();
 private:
 	event_base *m_pEventBase;

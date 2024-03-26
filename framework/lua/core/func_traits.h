@@ -2,7 +2,7 @@
 /*
   https://github.com/DGuco/luabridge
 
-  Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+  Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
 
   License: The MIT License (http://www.opensource.org/licenses/mit-license.php)
 
@@ -59,7 +59,7 @@ struct FuncTraits
 
 
 /**
- * æ™®é€šcå‡½æ•°R(...)
+ * ÆÕÍ¨cº¯ÊıR(...)
  * @tparam R
  * @tparam ParamList
  */
@@ -191,7 +191,7 @@ struct Invoke
     template<class T, class MemFn>
     static int run(lua_State *L, T *object, const MemFn &fn)
     {
-        //å‚æ•°ä¸ªæ•°:å¯¹è±¡æŒ‡é’ˆ+æˆå‘˜å‡½æ•°å‚æ•°ä¸ª
+        //²ÎÊı¸öÊı:¶ÔÏóÖ¸Õë+³ÉÔ±º¯Êı²ÎÊı¸ö
         if (LuaHelper::GetParamCount(L) != FuncTraits<MemFn>::arity + 1) {
             char Msg[128] = {0};
             snprintf(Msg,
@@ -238,7 +238,7 @@ struct Invoke<void,startParam>
     template<class T, class MemFn>
     static int run(lua_State *L, T *object, const MemFn &fn)
     {
-        //å‚æ•°ä¸ªæ•°:å¯¹è±¡æŒ‡é’ˆ+æˆå‘˜å‡½æ•°å‚æ•°ä¸ª
+        //²ÎÊı¸öÊı:¶ÔÏóÖ¸Õë+³ÉÔ±º¯Êı²ÎÊı¸ö
         if (LuaHelper::GetParamCount(L) != (FuncTraits<MemFn>::arity + 1)) {
             char Msg[128] = {0};
             snprintf(Msg,

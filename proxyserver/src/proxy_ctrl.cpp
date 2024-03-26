@@ -1,8 +1,8 @@
 //
 //  tcpctrl.cpp
-//  å®¢æˆ·ç«¯tcpç®¡ç†ç±»æºæ–‡ä»¶
+//  ¿Í»§¶Ëtcp¹ÜÀíÀàÔ´ÎÄ¼ş
 //  Created by DGuco on 16/12/6.
-//  Copyright Â© 2016å¹´ DGuco. All rights reserved.
+//  Copyright ? 2016Äê DGuco. All rights reserved.
 //
 
 #include "my_assert.h"
@@ -30,7 +30,7 @@ CProxyCtrl::~CProxyCtrl()
 bool CProxyCtrl::PrepareToRun()
 {
 	int a = 0;
-	//è¯»å–é…ç½®æ–‡ä»¶
+	//¶ÁÈ¡ÅäÖÃÎÄ¼ş
 	if (!ReadConfig())
 	{
 		return false;

@@ -6,7 +6,7 @@
 #define SERVER_DBLOGINTYPE_H
 
 
-// è¡Œæ•°
+// ĞĞÊı
 enum emRowNumber
 {
     emRow1	= 1,
@@ -62,7 +62,7 @@ enum emRowNumber
 
 };
 
-// åˆ—æ•°
+// ÁĞÊı
 enum emColNumber
 {
     emCol1	= 1,
@@ -118,37 +118,37 @@ enum emColNumber
 };
 
 
-// ä»Dbserverå–æ•°æ®ï¼Œ è¿”å›åˆ°gameserverä»¥åæ ¹æ®ä¸åŒç±»å‹è§£æ
+// ´ÓDbserverÈ¡Êı¾İ£¬ ·µ»Øµ½gameserverÒÔºó¸ù¾İ²»Í¬ÀàĞÍ½âÎö
 enum emDBLogicType
 {
-    emDBTypeFindOrCreateUser					= 0,		// æŸ¥è¯¢åˆ›å»ºç©å®¶å¸å·
-//    emDBTypeLoadRoleData						= 1,		// æ‹‰å–è§’è‰²æ•°æ®
-//    emDBTypeLoadRechargeOrder					= 2,		// è·å–å……å€¼æ•°æ®
-//    emDBTypeSelectSession						= 3,		// sessionéªŒè¯
-//    emDBTypeSelectRename						= 4,		// ç©å®¶ä¿®æ”¹åå­—
-//    emDBTypeLoadServerInfo						= 5, 		// æ‹‰å–ServerInfoæ•°æ®
-//    emDBTypeLoadOrderGold						= 6,		// æ‹‰å–é‡‘å¸æ’è¡Œæ¦œ
-//    emDBTypeSaveRoleData						= 20000,		// å­˜å‚¨è§’è‰²ä¿¡æ¯
-//    emDBTypeSaveSlotsPool						= 20001,		// å­˜å‚¨æœåŠ¡å™¨ä¿¡æ¯
-//    emDBTypeSaveOrderGold						= 20002,		// å­˜å‚¨é‡‘å¸æ’è¡Œæ¦œ
+    emDBTypeFindOrCreateUser					= 0,		// ²éÑ¯´´½¨Íæ¼ÒÕÊºÅ
+//    emDBTypeLoadRoleData						= 1,		// À­È¡½ÇÉ«Êı¾İ
+//    emDBTypeLoadRechargeOrder					= 2,		// »ñÈ¡³äÖµÊı¾İ
+//    emDBTypeSelectSession						= 3,		// sessionÑéÖ¤
+//    emDBTypeSelectRename						= 4,		// Íæ¼ÒĞŞ¸ÄÃû×Ö
+//    emDBTypeLoadServerInfo						= 5, 		// À­È¡ServerInfoÊı¾İ
+//    emDBTypeLoadOrderGold						= 6,		// À­È¡½ğ±ÒÅÅĞĞ°ñ
+//    emDBTypeSaveRoleData						= 20000,		// ´æ´¢½ÇÉ«ĞÅÏ¢
+//    emDBTypeSaveSlotsPool						= 20001,		// ´æ´¢·şÎñÆ÷ĞÅÏ¢
+//    emDBTypeSaveOrderGold						= 20002,		// ´æ´¢½ğ±ÒÅÅĞĞ°ñ
 };
 
-// ç©å®¶ä¸Šçº¿ä»æ•°æ®åº“åˆ†æ‰¹Loadç©å®¶æ•°æ®, ä»¥åŠåˆ†æ‰¹saveæ•°æ®
+// Íæ¼ÒÉÏÏß´ÓÊı¾İ¿â·ÖÅúLoadÍæ¼ÒÊı¾İ, ÒÔ¼°·ÖÅúsaveÊı¾İ
 enum ELoadSaveFlag
 {
-//    ELSF_ACCOUNTDATA		    	= 0x00000001,		// loadæˆ–saveå¸å·ä¿¡æ¯						0000 0000 0000 0000 0000 0000 0000 0001
-//    ELSF_BASICDATA					= 0x00000002,		// loadæˆ–saveåŸºç¡€æ•°æ®						0000 0000 0000 0000 0000 0000 0000 0010
-//    ELSF_HERODATA					= 0x00000004,		// loadæˆ–saveè‹±é›„æ•°æ®						0000 0000 0000 0000 0000 0000 0000 0100
-//    ELSF_PACKAGEDATA				= 0x00000008,		// loadæˆ–saveèƒŒåŒ…æ•°æ®						0000 0000 0000 0000 0000 0000 0000 1000
-//    ELSF_SCENESDATA		 			= 0x00000010,		// loadæˆ–saveå…³å¡æ•°æ®						0000 0000 0000 0000 0000 0000 0001 0000
-//    ELSF_SHOPDATA					= 0x00000020,		// loadæˆ–saveå•†åŸæ•°æ®						0000 0000 0000 0000 0000 0000 0010 0000
-//    ELSF_MAILDATA					= 0x00000040,		// loadæˆ–saveé‚®ä»¶æ•°æ®						0000 0000 0000 0000 0000 0000 0100 0000
-//    ELSF_TASKDATA					= 0x00000080,		// loadæˆ–saveä»»åŠ¡æ•°æ®						0000 0000 0000 0000 0000 0000 1000 0000
-//    ELSF_SIGNDATA					= 0x00000100,		// loadæˆ–saveä»»åŠ¡æ•°æ®						0000 0000 0000 0000 0000 0001 0000 0000
-//    ELSF_EVENTDATA					= 0x00000200,		// loadæˆ–saveäº‹ä»¶æ•°æ®						0000 0000 0000 0000 0000 0010 0000 0000
-//    ELSF_ARENAOFFLINEDATA		    = 0x00000400,		// loadæˆ–saveé’é“œç«æŠ€åœºç¦»çº¿æ•°æ®	0000 0000 0000 0000 0000 0100 0000 0000
-//    ELSF_ARENAOFFLINEDATAII		    = 0x00000800,		// loadæˆ–saveç™½é“¶ç«æŠ€åœºç¦»çº¿æ•°æ®	0000 0000 0000 0000 0000 1000 0000 0000
-//    ELSF_ARENAOFFLINEDATAIII	    = 0x00001000,		// loadæˆ–saveé»„é‡‘ç«æŠ€åœºç¦»çº¿æ•°æ®	0000 0000 0000 0000 0001 0000 0000 0000
+//    ELSF_ACCOUNTDATA		    	= 0x00000001,		// load»òsaveÕÊºÅĞÅÏ¢						0000 0000 0000 0000 0000 0000 0000 0001
+//    ELSF_BASICDATA					= 0x00000002,		// load»òsave»ù´¡Êı¾İ						0000 0000 0000 0000 0000 0000 0000 0010
+//    ELSF_HERODATA					= 0x00000004,		// load»òsaveÓ¢ĞÛÊı¾İ						0000 0000 0000 0000 0000 0000 0000 0100
+//    ELSF_PACKAGEDATA				= 0x00000008,		// load»òsave±³°üÊı¾İ						0000 0000 0000 0000 0000 0000 0000 1000
+//    ELSF_SCENESDATA		 			= 0x00000010,		// load»òsave¹Ø¿¨Êı¾İ						0000 0000 0000 0000 0000 0000 0001 0000
+//    ELSF_SHOPDATA					= 0x00000020,		// load»òsaveÉÌ³ÇÊı¾İ						0000 0000 0000 0000 0000 0000 0010 0000
+//    ELSF_MAILDATA					= 0x00000040,		// load»òsaveÓÊ¼şÊı¾İ						0000 0000 0000 0000 0000 0000 0100 0000
+//    ELSF_TASKDATA					= 0x00000080,		// load»òsaveÈÎÎñÊı¾İ						0000 0000 0000 0000 0000 0000 1000 0000
+//    ELSF_SIGNDATA					= 0x00000100,		// load»òsaveÈÎÎñÊı¾İ						0000 0000 0000 0000 0000 0001 0000 0000
+//    ELSF_EVENTDATA					= 0x00000200,		// load»òsaveÊÂ¼şÊı¾İ						0000 0000 0000 0000 0000 0010 0000 0000
+//    ELSF_ARENAOFFLINEDATA		    = 0x00000400,		// load»òsaveÇàÍ­¾º¼¼³¡ÀëÏßÊı¾İ	0000 0000 0000 0000 0000 0100 0000 0000
+//    ELSF_ARENAOFFLINEDATAII		    = 0x00000800,		// load»òsave°×Òø¾º¼¼³¡ÀëÏßÊı¾İ	0000 0000 0000 0000 0000 1000 0000 0000
+//    ELSF_ARENAOFFLINEDATAIII	    = 0x00001000,		// load»òsave»Æ½ğ¾º¼¼³¡ÀëÏßÊı¾İ	0000 0000 0000 0000 0001 0000 0000 0000
 };
 
 #endif //SERVER_DBLOGINTYPE_H

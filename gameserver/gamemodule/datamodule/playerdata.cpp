@@ -10,8 +10,8 @@ CPlayerData::CPlayerData(CPlayer* pPlayer) : m_pPlayer(pPlayer)
 }
 
 CPlayerData::~CPlayerData() {
-    //è¿™é‡Œä¸é‡Šæ”¾æŒ‡é’ˆæŒ‡å‘çš„ç©ºé—´ï¼Œä¸ºäº†æ–¹ä¾¿æ‹¿åˆ°å…¶ä»–æ¨¡å—çš„æ•°æ®è¿™é‡Œä¿å­˜äº†ä¸€ä¸ªæŒ‡å‘çŽ©å®¶æ•°æ®çš„
-    //æŒ‡é’ˆï¼Œåœ¨çœŸæ­£é”€æ¯çŽ©å®¶æ•°æ®çš„æ—¶å€™é‡Šæ”¾=>CSceneObjManager::DestroyPlayer
+    //ÕâÀï²»ÊÍ·ÅÖ¸ÕëÖ¸ÏòµÄ¿Õ¼ä£¬ÎªÁË·½±ãÄÃµ½ÆäËûÄ£¿éµÄÊý¾ÝÕâÀï±£´æÁËÒ»¸öÖ¸ÏòÍæ¼ÒÊý¾ÝµÄ
+    //Ö¸Õë£¬ÔÚÕæÕýÏú»ÙÍæ¼ÒÊý¾ÝµÄÊ±ºòÊÍ·Å=>CSceneObjManager::DestroyPlayer
     m_pPlayer = NULL;
 }
 

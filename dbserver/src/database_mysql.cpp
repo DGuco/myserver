@@ -28,7 +28,7 @@ DatabaseMysql::DatabaseMysql() : Database(), mMysql(0)
         // Mysql Library Init
         mysql_library_init(-1, NULL, NULL);
 
-         //å¦‚æœæ˜¯æ¯ä¸ªçº¿ç¨‹ç‹¬äº«ä¸€ä¸ªmysqlé“¾æ¥ï¼Œé‚£ä¹ˆå°±ä¸éœ€è¦mysqlçš„çº¿ç¨‹å®‰å…¨æ€§
+         //Èç¹ûÊÇÃ¿¸öÏß³Ì¶ÀÏíÒ»¸ömysqlÁ´½Ó£¬ÄÇÃ´¾Í²»ĞèÒªmysqlµÄÏß³Ì°²È«ĞÔ
          if (!mysql_thread_safe())
          {
             LOG_ERROR( m_logsName.c_str(), "FATAL ERROR: Used MySQL library isn't thread-safe.");
@@ -266,7 +266,7 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
         }
         else
         {
-            // åŠ å…¥ç»Ÿè®¡è¯¥sqlè¯­å¥æ‰§è¡Œå¤šä¹…
+            // ¼ÓÈëÍ³¼Æ¸ÃsqlÓï¾äÖ´ĞĞ¶à¾Ã
         }
 
         result = mysql_store_result(mMysql);
@@ -429,14 +429,14 @@ bool DatabaseMysql::DirectExecute(const char* sql )
                 mysql_close(mMysql);
 
             // reconnect mysql
-            if ( Reconnect() == true )  // é‡å¯mysqlï¼Œå†æ¬¡æŸ¥è¯¢
+            if ( Reconnect() == true )  // ÖØÆômysql£¬ÔÙ´Î²éÑ¯
             {
                 LOG_DEBUG(m_logsName.c_str(), "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
                 // re querey  sql statment
                 ret =  mysql_query(mMysql, sql);
             }
 
-            if( ret )  // ä¸¤æ¬¡å‡ºé”™å°±æŠ¥å‘Šå–æ•°æ®å¤±è´¥
+            if( ret )  // Á½´Î³ö´í¾Í±¨¸æÈ¡Êı¾İÊ§°Ü
             {
                 LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
                 LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
@@ -452,7 +452,7 @@ bool DatabaseMysql::DirectExecute(const char* sql )
     }
     else
     {
-        // TODO: åŠ å…¥ç»Ÿè®¡è¯¥sqlè¯­å¥æ‰§è¡Œå¤šé•¿æ—¶é—´
+        // TODO: ¼ÓÈëÍ³¼Æ¸ÃsqlÓï¾äÖ´ĞĞ¶à³¤Ê±¼ä
     }
     // end guarded block
 
@@ -480,14 +480,14 @@ bool DatabaseMysql::RealDirectExecute(const char* sql, unsigned long len)
                 mysql_close(mMysql);
 
             // reconnect mysql
-            if ( Reconnect() == true )  // é‡å¯mysqlï¼Œå†æ¬¡æŸ¥è¯¢
+            if ( Reconnect() == true )  // ÖØÆômysql£¬ÔÙ´Î²éÑ¯
             {
                 LOG_DEBUG(m_logsName.c_str(), "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
                 // re querey  sql statment
                 ret =  mysql_real_query(mMysql, sql, len);
             }
 
-            if( ret )  // ä¸¤æ¬¡å‡ºé”™å°±æŠ¥å‘Šå–æ•°æ®å¤±è´¥
+            if( ret )  // Á½´Î³ö´í¾Í±¨¸æÈ¡Êı¾İÊ§°Ü
             {
                 LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
                 LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
@@ -503,7 +503,7 @@ bool DatabaseMysql::RealDirectExecute(const char* sql, unsigned long len)
     }
     else
     {
-        // TODO: åŠ å…¥ç»Ÿè®¡è¯¥sqlè¯­å¥æ‰§è¡Œå¤šé•¿æ—¶é—´
+        // TODO: ¼ÓÈëÍ³¼Æ¸ÃsqlÓï¾äÖ´ĞĞ¶à³¤Ê±¼ä
     }
     // end guarded block
 

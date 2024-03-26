@@ -2,7 +2,7 @@
 /*
   https://github.com/DGuco/luabridge
 
-  Copyright (C) 2021 DGuco(æœå›½è¶…)<1139140929@qq.com>.  All rights reserved.
+  Copyright (C) 2021 DGuco(¶Å¹ú³¬)<1139140929@qq.com>.  All rights reserved.
   Copyright (C) 2012, Vinnie Falco <vinnie.falco@gmail.com>
 
   License: The MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -33,13 +33,13 @@
 #ifndef __LUA_LIBRARY_H_
 #define __LUA_LIBRARY_H_
 
-//lua libæºç åº“æ˜¯å¦ç”¨g++ç¼–è¯‘
+//lua libÔ´Âë¿âÊÇ·ñÓÃg++±àÒë
 #ifdef  COMPILE_LUA_WITH_CXX
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 #else
-//lua libæºç åº“ç”¨gccç¼–è¯‘
+//lua libÔ´Âë¿âÓÃgcc±àÒë
 extern "C"
 {
 #include "lua.h"

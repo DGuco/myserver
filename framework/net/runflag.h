@@ -2,15 +2,15 @@
 #define RUNFLAG_H_
 
 
-// æœåŠ¡å™¨çŠ¶æ€
+// ·þÎñÆ÷×´Ì¬
 enum ERunFlag
 {
-	ERF_RUNTIME = 0,	// è¿è¡Œä¸­
-	ERF_QUIT,			// é€€å‡º
-	ERF_RELOAD,			// é‡æ–°åŠ è½½é…ç½®
+	ERF_RUNTIME = 0,	// ÔËÐÐÖÐ
+	ERF_QUIT,			// ÍË³ö
+	ERF_RELOAD,			// ÖØÐÂ¼ÓÔØÅäÖÃ
 };
 
-// æŽ§åˆ¶æœåŠ¡å™¨è¿è¡ŒçŠ¶æ€çš„ç±»
+// ¿ØÖÆ·þÎñÆ÷ÔËÐÐ×´Ì¬µÄÀà
 class CRunFlag
 {
 public:

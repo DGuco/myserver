@@ -1,6 +1,6 @@
 //
 // Created by DGuco on 17-7-26.
-// ç»“åˆæ•°ç»„å’ŒåŒå‘é“¾è¡¨å®ç°å¯¹è±¡å†…å­˜æ± ï¼ˆæ³¨:ä½¿ç”¨è¯¥å†…å­˜çš„ç±»å¿…é¡»æœ‰æ— å‚çš„æ„é€ å‡½æ•°ï¼‰
+// ½áºÏÊı×éºÍË«ÏòÁ´±íÊµÏÖ¶ÔÏóÄÚ´æ³Ø£¨×¢:Ê¹ÓÃ¸ÃÄÚ´æµÄÀà±ØĞëÓĞÎŞ²ÎµÄ¹¹Ôìº¯Êı£©
 //
 
 #ifndef SERVER_MEMPOOL_H
@@ -18,7 +18,7 @@ public:
 	virtual ~CMemoryPool(void)
 	{}
 private:
-	//èŠ‚ç‚¹æ•°æ®ç»“æ„
+	//½ÚµãÊı¾İ½á¹¹
 	struct TagElement
 	{
 		Type Element;
@@ -27,28 +27,28 @@ private:
 		bool bAlloc;
 	};
 
-	//å¯¹è±¡é“¾è¡¨
+	//¶ÔÏóÁ´±í
 	struct TagElementsSet
 	{
-		//å¯¹è±¡æ•°ç»„
+		//¶ÔÏóÊı×é
 		TagElement *aElementsSet;
-		//å¦‚æœåˆå§‹åŒ–å¤§å°ä½¿ç”¨å®Œï¼Œå¼€è¾Ÿå¦å¤–ä¸€ä¸ªåŒç­‰å¤§å°çš„é“¾è¡¨ï¼Œå¹¶æŒ‡å‘è¯¥é“¾è¡¨
+		//Èç¹û³õÊ¼»¯´óĞ¡Ê¹ÓÃÍê£¬¿ª±ÙÁíÍâÒ»¸öÍ¬µÈ´óĞ¡µÄÁ´±í£¬²¢Ö¸Ïò¸ÃÁ´±í
 		TagElementsSet *pNext;
 	};
 
-	//å¯¹è±¡æ± é“¾è¡¨
+	//¶ÔÏó³ØÁ´±í
 	TagElementsSet *m_pElementsSetList;
-	//ä½¿ç”¨æ•°é‡
+	//Ê¹ÓÃÊıÁ¿
 	int m_nNumOfAlloc;
-	//å½“å‰å¯ç”¨çš„èŠ‚ç‚¹
+	//µ±Ç°¿ÉÓÃµÄ½Úµã
 	TagElement *m_pUnusedElementsList;
-	//ä¸€ä¸ªé“¾è¡¨çš„æœ€å¤§å¯¹è±¡æ•°é‡
+	//Ò»¸öÁ´±íµÄ×î´ó¶ÔÏóÊıÁ¿
 	int m_nNumOfElements;
-	//é“¾è¡¨æ•°é‡
+	//Á´±íÊıÁ¿
 	int m_nNumOfElementsSet;
 
 public:
-	//å¼€è¾ŸæŒ‡å®šæ•°é‡çš„å†…å­˜æ± 
+	//¿ª±ÙÖ¸¶¨ÊıÁ¿µÄÄÚ´æ³Ø
 	virtual bool Create(uint nNumOfElements)
 	{
 		m_nNumOfElements = nNumOfElements;
@@ -73,7 +73,7 @@ public:
 		return TRUE;
 	}
 
-	//å›æ”¶å†…å­˜
+	//»ØÊÕÄÚ´æ
 	virtual void Destroy()
 	{
 		while (m_pElementsSetList) {
@@ -91,7 +91,7 @@ public:
 	virtual Type *Alloc()
 	{
 		bool bTestAlloc = FALSE;
-		//å¦‚æœå½“å‰çš„é“¾è¡¨ä½¿ç”¨å®Œï¼Œå¼€è¾Ÿæ–°çš„ä¸€æ¡åŒç­‰å¤§å°çš„é“¾è¡¨
+		//Èç¹ûµ±Ç°µÄÁ´±íÊ¹ÓÃÍê£¬¿ª±ÙĞÂµÄÒ»ÌõÍ¬µÈ´óĞ¡µÄÁ´±í
 		if (m_pUnusedElementsList == NULL) {
 			bTestAlloc = TRUE;
 			TagElementsSet *pSet = new TagElementsSet;

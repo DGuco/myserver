@@ -1,7 +1,7 @@
 //
 //  net_work_interface.h
 //  Created by DGuco on 18/01/20.
-//  Copyright Â© 2018å¹´ DGuco. All rights reserved.
+//  Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 #ifndef _NETWORK_INTERFACE_H_

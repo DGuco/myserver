@@ -1,7 +1,7 @@
 //
 // dbctrl.h
 // Created by DGuco on 17-7-13.
-// Copyright Â© 2018å¹´ DGuco. All rights reserved.
+// Copyright ? 2018Äê DGuco. All rights reserved.
 //
 
 #ifndef _DBCTRL_HPP_
@@ -24,15 +24,15 @@ using namespace std;
 #include "asqlexe.h"
 #endif
 
-#define MAXPROXYNUMBER                2                    // æœ€å¤§proxy server æ•°ç›®
+#define MAXPROXYNUMBER                2                    // ×î´óproxy server ÊıÄ¿
 
 #define MAXHANDLENUMBER                2
 
 #define SECSOFONEHOUR                3600
 
-#define CHECKINTERVAL                10                    // æ£€æŸ¥æ—¶é—´é—´éš”ï¼Œå•ä½ï¼šç§’
-#define PROXYKEEPALIVESECONDS        (3*CHECKINTERVAL)    // ä¸proxyçš„å¿ƒè·³è¶…æ—¶æ—¶é—´
-#define MAXPROXYCODELEN                1024                // å‘proxyå‘é€çº¯å‘½ä»¤çš„æœ€å¤§å—é•¿åº¦
+#define CHECKINTERVAL                10                    // ¼ì²éÊ±¼ä¼ä¸ô£¬µ¥Î»£ºÃë
+#define PROXYKEEPALIVESECONDS        (3*CHECKINTERVAL)    // ÓëproxyµÄĞÄÌø³¬Ê±Ê±¼ä
+#define MAXPROXYCODELEN                1024                // Ïòproxy·¢ËÍ´¿ÃüÁîµÄ×î´ó¿é³¤¶È
 #define STATISTICSLEN                1024
 #define MAXNUMBERLEN                10
 #define SAVEINTERVAL                300
@@ -43,7 +43,7 @@ class CSharedMem;
 class CDBCtrl: public CSingleton<CDBCtrl>
 {
 public:
-	// è¿è¡Œæ ‡å¿—
+	// ÔËĞĞ±êÖ¾
 	enum ERunFlag
 	{
 		EFLG_CTRL_NO = 0,
@@ -52,27 +52,27 @@ public:
 		EFLG_CTRL_RELOAD = 3
 	};
 public:
-	//æ„é€ å‡½æ•°
+	//¹¹Ôìº¯Êı
 	CDBCtrl();
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	~CDBCtrl();
-	//å‡†å¤‡å¯åŠ¨
+	//×¼±¸Æô¶¯
 	int PrepareToRun();
-	//å¯åŠ¨
+	//Æô¶¯
 	int Run();
-	//è®¾ç½®è¿è¡Œæ ‡å¿—
+	//ÉèÖÃÔËĞĞ±êÖ¾
 	void SetRunFlag(int iFlag);
-	//æ¸…é™¤è¿è¡Œæ ‡å¿—
+	//Çå³ıÔËĞĞ±êÖ¾
 	void ClearRunFlag(int iFlag);
-	//è¿è¡Œæ ‡å¿—æ˜¯å¦è®¾ç½®
+	//ÔËĞĞ±êÖ¾ÊÇ·ñÉèÖÃ
 	bool IsRunFlagSet(int iFlag);
-	//è½¬å‘ç¬‘å‚²æ
+	//×ª·¢Ğ¦°ÁÎö
 	int SendMessageTo(CProxyMessage *pMsg);
-	//å¤„ç†æ•°æ®
+	//´¦ÀíÊı¾İ
 	int Event(CProxyMessage *pMsg);
-	//å¤„ç†sql
+	//´¦Àísql
 	int ProcessExecuteSqlRequest(CProxyMessage *pMsg);
-	//é‡Šæ”¾ç»“æœ
+	//ÊÍ·Å½á¹û
 	void ReleaseResult(QueryResult *res)
 	{
 		if (res != NULL) {
@@ -81,34 +81,34 @@ public:
 		}
 	}
 private:
-	//è¿æ¥proxy
+	//Á¬½Óproxy
 	int ConnectToProxyServer();
-	//å‘proxyæ³¨å†Œ
+	//Ïòproxy×¢²á
 	int RegisterToProxyServer(CConnector *pConnector);
-	//å‘proxyå‘é€å¿ƒè·³æ¶ˆæ¯
+	//Ïòproxy·¢ËÍĞÄÌøÏûÏ¢
 	int SendkeepAliveToProxy(CConnector *pConnector);
-	//åˆ†å‘æ¶ˆæ¯
+	//·Ö·¢ÏûÏ¢
 	int DispatchOneCode(int nCodeLength, CByteBuff *pbyCode);
-	//è·å–æ”¶åˆ°å¿ƒè·³çš„æ—¶é—´
+	//»ñÈ¡ÊÕµ½ĞÄÌøµÄÊ±¼ä
 	time_t GetLastSendKeepAlive() const;
-	//è·å–ä¸Šæ¬¡å‘é€å¿ƒè·³çš„æ—¶é—´
+	//»ñÈ¡ÉÏ´Î·¢ËÍĞÄÌøµÄÊ±¼ä
 	time_t GetLastRecvKeepAlive() const;
-	//è®¾ç½®ä¸Šæ¬¡å‘é€å¿ƒè·³çš„æ—¶é—´
+	//ÉèÖÃÉÏ´Î·¢ËÍĞÄÌøµÄÊ±¼ä
 	void SetLastSendKeepAlive(time_t tLastSendKeepAlive);
-	//è®¾ç½®ä¸Šæ¬¡æ”¶åˆ°å¿ƒè·³çš„æ—¶é—´
+	//ÉèÖÃÉÏ´ÎÊÕµ½ĞÄÌøµÄÊ±¼ä
 	void SetLastRecvKeepAlive(time_t tLastRecvKeepAlive);
 private:
-	//è¿æ¥æˆåŠŸå›è°ƒ
+	//Á¬½Ó³É¹¦»Øµ÷
 	static void lcb_OnConnected(IBufferEvent *pBufferEvent);
-	//æ–­å¼€è¿æ¥å›è°ƒ
+	//¶Ï¿ªÁ¬½Ó»Øµ÷
 	static void lcb_OnCnsDisconnected(IBufferEvent *pBufferEvent);
-	//å®¢æˆ·ç«¯ä¸Šè¡Œæ•°æ®å›è°ƒ
+	//¿Í»§¶ËÉÏĞĞÊı¾İ»Øµ÷
 	static void lcb_OnCnsSomeDataRecv(IBufferEvent *pBufferEvent);
-	//è¿æ¥å¤±è´¥å›è°ƒ(æ— ç”¨)
+	//Á¬½ÓÊ§°Ü»Øµ÷(ÎŞÓÃ)
 	static void lcb_OnConnectFailed(IBufferEvent *pBufferEvent);
-	//å‘é€æ•°æ®å›è°ƒ(æ— ç”¨)
+	//·¢ËÍÊı¾İ»Øµ÷(ÎŞÓÃ)
 	static void lcb_OnCnsSomeDataSend(IBufferEvent *pBufferEvent);
-	//å‘é€å¿ƒè·³å€’è®¡æ—¶å›è°ƒ
+	//·¢ËÍĞÄÌøµ¹¼ÆÊ±»Øµ÷
 	static void lcb_OnPingServer(int fd, short event, CConnector *pConnector);
     static void lcb_OnSigPipe(uint,void*);
 
@@ -116,12 +116,12 @@ public:
 	static CByteBuff m_acRecvBuff;
 	static int m_iProxyId;
 private:
-	int m_iRunFlag;    // è¿è¡Œæ ‡å¿—
-	time_t m_tLastSendKeepAlive;        // æœ€åå‘é€proxyå¿ƒè·³æ¶ˆæ¯æ—¶é—´
-	time_t m_tLastRecvKeepAlive;        // æœ€åæ¥æ”¶proxyå¿ƒè·³æ¶ˆæ¯æ—¶é—´
+	int m_iRunFlag;    // ÔËĞĞ±êÖ¾
+	time_t m_tLastSendKeepAlive;        // ×îºó·¢ËÍproxyĞÄÌøÏûÏ¢Ê±¼ä
+	time_t m_tLastRecvKeepAlive;        // ×îºó½ÓÊÕproxyĞÄÌøÏûÏ¢Ê±¼ä
 	shared_ptr<Database> m_pDatabase;
     shared_ptr<CMessageFactory> m_pMsgFactory;
-//	CProxyHead m_stCurrentProxyHead;    //å½“å‰å¤„ç†è¯·æ±‚çš„Proxyå¤´éƒ¨
+//	CProxyHead m_stCurrentProxyHead;    //µ±Ç°´¦ÀíÇëÇóµÄProxyÍ·²¿
     shared_ptr<CNetWork>  m_pNetWork;
     shared_ptr<CServerConfig> m_pServerConfig;
 };

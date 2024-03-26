@@ -1,5 +1,5 @@
 //
-// * C++ è¯­è¨€: çº¢é»‘æ ‘
+// * C++ ÓïÑÔ: ºìºÚÊ÷
 // Created by dguco on 2022/4/13.
 // https://www.cnblogs.com/skywang12345/p/3245399.html
 // https://www.cnblogs.com/skywang12345/p/3603935.html
@@ -13,7 +13,7 @@
 #define RB_TREE_JAVA 1
 #define DEBUG_RB_TREE 0
 #define NodeType_ RBTNode<KeyType_,INDEX_TYPE>
-#define ARRAY_OFFSET(array,node) (node - array + 1)   //è¿™é‡Œå–çœŸå®çš„ç´¢å¼•+1ä½œä¸ºæ•°ç»„ç´¢å¼•[1,Cap_]
+#define ARRAY_OFFSET(array,node) (node - array + 1)   //ÕâÀïÈ¡ÕæÊµµÄË÷Òı+1×÷ÎªÊı×éË÷Òı[1,Cap_]
 
 using namespace std;
 namespace my_std
@@ -44,7 +44,7 @@ namespace my_std
     };
 
     /**
-     *å•ä¸ªèŠ‚ç‚¹ç±»
+     *µ¥¸ö½ÚµãÀà
     * */
     template<typename KeyType_,typename INDEX_TYPE = unsigned int>
     struct RBTNode
@@ -122,12 +122,12 @@ namespace my_std
             : key_(value),color_(c), parent_(p), left_(l), right_(r),data_(data)
         {}
     private:
-        KeyType_                            key_;                          //èŠ‚ç‚¹å¯¹è±¡ä¿¡æ¯
-        INDEX_TYPE                          parent_;                       //çˆ¶äº²èŠ‚ç‚¹åœ¨æ•°ç»„ä¸­çš„ç´¢å¼•ä½ç½®+1
-        INDEX_TYPE                          left_;                         //å·¦å­èŠ‚ç‚¹åœ¨æ•°ç»„ä¸­çš„ç´¢å¼•ä½ç½®+1
-        INDEX_TYPE                          right_;                        //å³å­èŠ‚ç‚¹åœ¨æ•°ç»„ä¸­çš„ç´¢å¼•ä½ç½®+1
-        INDEX_TYPE                          data_;                         //dataåœ¨æ•°ç»„ä¸­çš„ç´¢å¼•ä½ç½®+1
-        unsigned  char                      color_;                        //èŠ‚ç‚¹color
+        KeyType_                            key_;                          //½Úµã¶ÔÏóĞÅÏ¢
+        INDEX_TYPE                          parent_;                       //¸¸Ç×½ÚµãÔÚÊı×éÖĞµÄË÷ÒıÎ»ÖÃ+1
+        INDEX_TYPE                          left_;                         //×ó×Ó½ÚµãÔÚÊı×éÖĞµÄË÷ÒıÎ»ÖÃ+1
+        INDEX_TYPE                          right_;                        //ÓÒ×Ó½ÚµãÔÚÊı×éÖĞµÄË÷ÒıÎ»ÖÃ+1
+        INDEX_TYPE                          data_;                         //dataÔÚÊı×éÖĞµÄË÷ÒıÎ»ÖÃ+1
+        unsigned  char                      color_;                        //½Úµãcolor
     };
 
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE = unsigned int,std::size_t Cap_ = 0>
@@ -137,60 +137,60 @@ namespace my_std
         RBTree(NodeType_ *pool,INDEX_TYPE root = 0);
         ~RBTree();
         bool isRBTree();
-        // å‰åºéå†"çº¢é»‘æ ‘"
+        // Ç°Ğò±éÀú"ºìºÚÊ÷"
         void preOrder(std::list<NodeType_*>& resList);
-        // ä¸­åºéå†"çº¢é»‘æ ‘"
+        // ÖĞĞò±éÀú"ºìºÚÊ÷"
         void inOrder(std::list<NodeType_*>& resList);
-        // ååºéå†"çº¢é»‘æ ‘"
+        // ºóĞò±éÀú"ºìºÚÊ÷"
         void postOrder(std::list<NodeType_*>& resList);
-        // (é€’å½’å®ç°)æŸ¥æ‰¾"çº¢é»‘æ ‘"ä¸­é”®å€¼ä¸ºkeyçš„èŠ‚ç‚¹
+        // (µİ¹éÊµÏÖ)²éÕÒ"ºìºÚÊ÷"ÖĞ¼üÖµÎªkeyµÄ½Úµã
         NodeType_ *search(KeyType_ key);
-        // (éé€’å½’å®ç°)æŸ¥æ‰¾"çº¢é»‘æ ‘"ä¸­é”®å€¼ä¸ºkeyçš„èŠ‚ç‚¹
+        // (·Çµİ¹éÊµÏÖ)²éÕÒ"ºìºÚÊ÷"ÖĞ¼üÖµÎªkeyµÄ½Úµã
         NodeType_ *iterativeSearch(KeyType_ key);
-        // æŸ¥æ‰¾æœ€å°ç»“ç‚¹ï¼šè¿”å›æœ€å°ç»“ç‚¹çš„é”®å€¼ã€‚
+        // ²éÕÒ×îĞ¡½áµã£º·µ»Ø×îĞ¡½áµãµÄ¼üÖµ¡£
         NodeType_ * minimum();
-        // æŸ¥æ‰¾æœ€å¤§ç»“ç‚¹ï¼šè¿”å›æœ€å¤§ç»“ç‚¹çš„é”®å€¼ã€‚
+        // ²éÕÒ×î´ó½áµã£º·µ»Ø×î´ó½áµãµÄ¼üÖµ¡£
         NodeType_ * maximum();
-        // æ‰¾ç»“ç‚¹(x)çš„åç»§ç»“ç‚¹ã€‚å³ï¼ŒæŸ¥æ‰¾"çº¢é»‘æ ‘ä¸­æ•°æ®å€¼å¤§äºè¯¥ç»“ç‚¹"çš„"æœ€å°ç»“ç‚¹"ã€‚
+        // ÕÒ½áµã(x)µÄºó¼Ì½áµã¡£¼´£¬²éÕÒ"ºìºÚÊ÷ÖĞÊı¾İÖµ´óÓÚ¸Ã½áµã"µÄ"×îĞ¡½áµã"¡£
         NodeType_ *successor(NodeType_ *x);
-        // æ‰¾ç»“ç‚¹(x)çš„å‰é©±ç»“ç‚¹ã€‚å³ï¼ŒæŸ¥æ‰¾"çº¢é»‘æ ‘ä¸­æ•°æ®å€¼å°äºè¯¥ç»“ç‚¹"çš„"æœ€å¤§ç»“ç‚¹"ã€‚
+        // ÕÒ½áµã(x)µÄÇ°Çı½áµã¡£¼´£¬²éÕÒ"ºìºÚÊ÷ÖĞÊı¾İÖµĞ¡ÓÚ¸Ã½áµã"µÄ"×î´ó½áµã"¡£
         NodeType_ *predecessor(NodeType_ *x);
-        // æ’å…¥å‡½æ•°
+        // ²åÈëº¯Êı
         void insert(NodeType_ *node);
-        // åˆ é™¤ç»“ç‚¹(keyä¸ºèŠ‚ç‚¹é”®å€¼)
+        // É¾³ı½áµã(keyÎª½Úµã¼üÖµ)
         NodeType_* remove(KeyType_ key);
-        // åˆ é™¤å‡½æ•°
+        // É¾³ıº¯Êı
         NodeType_* remove(NodeType_ *node);
-        // æ‰“å°çº¢é»‘æ ‘
+        // ´òÓ¡ºìºÚÊ÷
         void print();
         bool isEmpty();
         INDEX_TYPE root();
     private:
         bool isRBTree(NodeType_* root, int blacknum, int count);
-        // å‰åºéå†"çº¢é»‘æ ‘"
+        // Ç°Ğò±éÀú"ºìºÚÊ÷"
         void preOrder(NodeType_ *tree, std::list<NodeType_*>& resList) ;
-        // ä¸­åºéå†"çº¢é»‘æ ‘"
+        // ÖĞĞò±éÀú"ºìºÚÊ÷"
         void inOrder(NodeType_ *tree, std::list<NodeType_*>& resList) ;
-        // ååºéå†"çº¢é»‘æ ‘"
+        // ºóĞò±éÀú"ºìºÚÊ÷"
         void postOrder(NodeType_ *tree, std::list<NodeType_*>& resList) ;
-        // (é€’å½’å®ç°)æŸ¥æ‰¾"çº¢é»‘æ ‘x"ä¸­é”®å€¼ä¸ºkeyçš„èŠ‚ç‚¹
+        // (µİ¹éÊµÏÖ)²éÕÒ"ºìºÚÊ÷x"ÖĞ¼üÖµÎªkeyµÄ½Úµã
         NodeType_ *search(NodeType_ *x, KeyType_ key);
-        // (éé€’å½’å®ç°)æŸ¥æ‰¾"çº¢é»‘æ ‘x"ä¸­é”®å€¼ä¸ºkeyçš„èŠ‚ç‚¹
+        // (·Çµİ¹éÊµÏÖ)²éÕÒ"ºìºÚÊ÷x"ÖĞ¼üÖµÎªkeyµÄ½Úµã
         NodeType_ *iterativeSearch(NodeType_ *x, KeyType_ key);
-        // æŸ¥æ‰¾æœ€å°ç»“ç‚¹ï¼šè¿”å›treeä¸ºæ ¹ç»“ç‚¹çš„çº¢é»‘æ ‘çš„æœ€å°ç»“ç‚¹ã€‚
+        // ²éÕÒ×îĞ¡½áµã£º·µ»ØtreeÎª¸ù½áµãµÄºìºÚÊ÷µÄ×îĞ¡½áµã¡£
         NodeType_ *minimum(NodeType_ *tree);
-        // æŸ¥æ‰¾æœ€å¤§ç»“ç‚¹ï¼šè¿”å›treeä¸ºæ ¹ç»“ç‚¹çš„çº¢é»‘æ ‘çš„æœ€å¤§ç»“ç‚¹ã€‚
+        // ²éÕÒ×î´ó½áµã£º·µ»ØtreeÎª¸ù½áµãµÄºìºÚÊ÷µÄ×î´ó½áµã¡£
         NodeType_ *maximum(NodeType_ *tree);
-        // å·¦æ—‹
+        // ×óĞı
         void leftRotate(NodeType_ *x);
-        // å³æ—‹
+        // ÓÒĞı
         void rightRotate(NodeType_ *y);
-        // æ’å…¥ä¿®æ­£å‡½æ•°
+        // ²åÈëĞŞÕıº¯Êı
         void insertFixUp(NodeType_ *node);
-        // åˆ é™¤ä¿®æ­£å‡½æ•°
+        // É¾³ıĞŞÕıº¯Êı
         void removeFixUp(NodeType_ *node);
         void removeFixUp(NodeType_ *node, NodeType_ *parent);
-        // æ‰“å°çº¢é»‘æ ‘
+        // ´òÓ¡ºìºÚÊ÷
         void print(NodeType_ *tree, KeyType_ key, int direction);
     public:
         inline NodeType_* getNode(INDEX_TYPE index);
@@ -213,7 +213,7 @@ namespace my_std
     };
 
     /*
-     * æ„é€ å‡½æ•°
+     * ¹¹Ôìº¯Êı
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::RBTree(NodeType_  *pool,INDEX_TYPE root)
@@ -222,7 +222,7 @@ namespace my_std
     }
 
     /*
-     * ææ„å‡½æ•°
+     * Îö¹¹º¯Êı
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::~RBTree()
@@ -232,19 +232,19 @@ namespace my_std
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     bool RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::isRBTree()
     {
-        //ç©ºæ ‘
+        //¿ÕÊ÷
         if (getNode(m_Root) == nullptr)
         {
             return true;
         }
-        //æ ¹èŠ‚ç‚¹ä¸ºé»‘è‰²
+        //¸ù½ÚµãÎªºÚÉ«
         if (isRed(getNode(m_Root)))
         {
-            cout << "æ ¹èŠ‚ç‚¹ä¸ºçº¢è‰²" << endl;
+            cout << "¸ù½ÚµãÎªºìÉ«" << endl;
             return false;
         }
-        //é»‘è‰²ç»“ç‚¹æ•°é‡å„è·¯å¾„ä¸Šç›¸åŒ
-        //å…ˆèµ°ä¸€æ¡å¾—åˆ°åŸºå‡†å€¼
+        //ºÚÉ«½áµãÊıÁ¿¸÷Â·¾¶ÉÏÏàÍ¬
+        //ÏÈ×ßÒ»ÌõµÃµ½»ù×¼Öµ
         int Blacknum = 0;
         NodeType_* cur = getNode(m_Root);
         while (cur)
@@ -253,7 +253,7 @@ namespace my_std
                 Blacknum++;
             cur = leftOf(cur);
         }
-        //æ£€æŸ¥å­æ ‘
+        //¼ì²é×ÓÊ÷
         int i = 0;
         return isRBTree(getNode(m_Root), Blacknum, i);
     }
@@ -261,29 +261,29 @@ namespace my_std
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     bool RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::isRBTree(NodeType_* root, int blacknum, int count)
     {
-        //é€’å½’åˆ°ç©ºèŠ‚ç‚¹
+        //µİ¹éµ½¿Õ½Úµã
         if (root == nullptr)
         {
             if (blacknum == count)
                 return true;
-            cout << "å„è·¯å¾„ä¸Šé»‘è‰²èŠ‚ç‚¹ä¸ªæ•°ä¸åŒ" << endl;
+            cout << "¸÷Â·¾¶ÉÏºÚÉ«½Úµã¸öÊı²»Í¬" << endl;
             return false;
         }
-        //å­èŠ‚ç‚¹ä¸ºçº¢åˆ™æ£€æŸ¥çˆ¶èŠ‚ç‚¹æ˜¯å¦ä¸ºçº¢ï¼ˆé€šè¿‡çˆ¶èŠ‚ç‚¹æ£€æŸ¥å­èŠ‚ç‚¹ä¼šé‡åˆ°ç©ºèŠ‚ç‚¹ï¼‰
+        //×Ó½ÚµãÎªºìÔò¼ì²é¸¸½ÚµãÊÇ·ñÎªºì£¨Í¨¹ı¸¸½Úµã¼ì²é×Ó½Úµã»áÓöµ½¿Õ½Úµã£©
         if (isRed(root) && isRed(parentOf(root)))
         {
-            cout << "å­˜åœ¨è¿ç»­çº¢è‰²èŠ‚ç‚¹" << endl;
+            cout << "´æÔÚÁ¬ĞøºìÉ«½Úµã" << endl;
             return false;
         }
-        //è®¡æ•°é»‘ç»“ç‚¹
+        //¼ÆÊıºÚ½áµã
         if (isBlack(root))
             count++;
-        //é€’å½’å·¦å³å­æ ‘
+        //µİ¹é×óÓÒ×ÓÊ÷
         return isRBTree(leftOf(root), blacknum, count) && isRBTree(rightOf(root), blacknum, count);
     }
 
     /*
-     * å‰åºéå†"çº¢é»‘æ ‘"
+     * Ç°Ğò±éÀú"ºìºÚÊ÷"
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::preOrder(NodeType_ *tree, std::list<NodeType_*>& resList)
@@ -306,7 +306,7 @@ namespace my_std
     }
 
     /*
-     * ä¸­åºéå†"çº¢é»‘æ ‘"
+     * ÖĞĞò±éÀú"ºìºÚÊ÷"
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::inOrder(NodeType_ *tree, std::list<NodeType_*>& resList)
@@ -329,7 +329,7 @@ namespace my_std
     }
 
     /*
-     * ååºéå†"çº¢é»‘æ ‘"
+     * ºóĞò±éÀú"ºìºÚÊ÷"
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::postOrder(NodeType_ *tree, std::list<NodeType_*>& resList)
@@ -353,7 +353,7 @@ namespace my_std
     }
 
     /*
-     * (é€’å½’å®ç°)æŸ¥æ‰¾"çº¢é»‘æ ‘x"ä¸­é”®å€¼ä¸ºkeyçš„èŠ‚ç‚¹
+     * (µİ¹éÊµÏÖ)²éÕÒ"ºìºÚÊ÷x"ÖĞ¼üÖµÎªkeyµÄ½Úµã
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     NodeType_ *RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::search(NodeType_ *x, KeyType_ key)
@@ -374,7 +374,7 @@ namespace my_std
     }
 
     /*
-     * (éé€’å½’å®ç°)æŸ¥æ‰¾"çº¢é»‘æ ‘x"ä¸­é”®å€¼ä¸ºkeyçš„èŠ‚ç‚¹
+     * (·Çµİ¹éÊµÏÖ)²éÕÒ"ºìºÚÊ÷x"ÖĞ¼üÖµÎªkeyµÄ½Úµã
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     NodeType_ *RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::iterativeSearch(NodeType_ *x, KeyType_ key)
@@ -396,7 +396,7 @@ namespace my_std
     }
 
     /*
-     * æŸ¥æ‰¾æœ€å°ç»“ç‚¹ï¼šè¿”å›treeä¸ºæ ¹ç»“ç‚¹çš„çº¢é»‘æ ‘çš„æœ€å°ç»“ç‚¹ã€‚
+     * ²éÕÒ×îĞ¡½áµã£º·µ»ØtreeÎª¸ù½áµãµÄºìºÚÊ÷µÄ×îĞ¡½áµã¡£
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     NodeType_ *RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::minimum(NodeType_ *tree)
@@ -420,7 +420,7 @@ namespace my_std
     }
 
     /*
-     * æŸ¥æ‰¾æœ€å¤§ç»“ç‚¹ï¼šè¿”å›treeä¸ºæ ¹ç»“ç‚¹çš„çº¢é»‘æ ‘çš„æœ€å¤§ç»“ç‚¹ã€‚
+     * ²éÕÒ×î´ó½áµã£º·µ»ØtreeÎª¸ù½áµãµÄºìºÚÊ÷µÄ×î´ó½áµã¡£
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     NodeType_ *RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::maximum(NodeType_ *tree)
@@ -443,7 +443,7 @@ namespace my_std
     }
 
     /*
-     * æ‰¾ç»“ç‚¹(x)çš„åç»§ç»“ç‚¹ã€‚å³ï¼ŒæŸ¥æ‰¾"çº¢é»‘æ ‘ä¸­æ•°æ®å€¼å¤§äºè¯¥ç»“ç‚¹"çš„"æœ€å°ç»“ç‚¹"ã€‚
+     * ÕÒ½áµã(x)µÄºó¼Ì½áµã¡£¼´£¬²éÕÒ"ºìºÚÊ÷ÖĞÊı¾İÖµ´óÓÚ¸Ã½áµã"µÄ"×îĞ¡½áµã"¡£
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     NodeType_ *RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::successor(NodeType_ *x)
@@ -453,13 +453,13 @@ namespace my_std
             return NULL;
         }
 
-        // å¦‚æœxå­˜åœ¨å³å­©å­ï¼Œåˆ™"xçš„åç»§ç»“ç‚¹"ä¸º "ä»¥å…¶å³å­©å­ä¸ºæ ¹çš„å­æ ‘çš„æœ€å°ç»“ç‚¹"ã€‚
+        // Èç¹ûx´æÔÚÓÒº¢×Ó£¬Ôò"xµÄºó¼Ì½áµã"Îª "ÒÔÆäÓÒº¢×ÓÎª¸ùµÄ×ÓÊ÷µÄ×îĞ¡½áµã"¡£
         if (rightOf(x) != NULL)
             return minimum(rightOf(x));
 
-        // å¦‚æœxæ²¡æœ‰å³å­©å­ã€‚åˆ™xæœ‰ä»¥ä¸‹ä¸¤ç§å¯èƒ½ï¼š
-        // (01) xæ˜¯"ä¸€ä¸ªå·¦å­©å­"ï¼Œåˆ™"xçš„åç»§ç»“ç‚¹"ä¸º "å®ƒçš„çˆ¶ç»“ç‚¹"ã€‚
-        // (02) xæ˜¯"ä¸€ä¸ªå³å­©å­"ï¼Œåˆ™æŸ¥æ‰¾"xçš„æœ€ä½çš„çˆ¶ç»“ç‚¹ï¼Œå¹¶ä¸”è¯¥çˆ¶ç»“ç‚¹è¦å…·æœ‰å·¦å­©å­"ï¼Œæ‰¾åˆ°çš„è¿™ä¸ª"æœ€ä½çš„çˆ¶ç»“ç‚¹"å°±æ˜¯"xçš„åç»§ç»“ç‚¹"ã€‚
+        // Èç¹ûxÃ»ÓĞÓÒº¢×Ó¡£ÔòxÓĞÒÔÏÂÁ½ÖÖ¿ÉÄÜ£º
+        // (01) xÊÇ"Ò»¸ö×óº¢×Ó"£¬Ôò"xµÄºó¼Ì½áµã"Îª "ËüµÄ¸¸½áµã"¡£
+        // (02) xÊÇ"Ò»¸öÓÒº¢×Ó"£¬Ôò²éÕÒ"xµÄ×îµÍµÄ¸¸½áµã£¬²¢ÇÒ¸Ã¸¸½áµãÒª¾ßÓĞ×óº¢×Ó"£¬ÕÒµ½µÄÕâ¸ö"×îµÍµÄ¸¸½áµã"¾ÍÊÇ"xµÄºó¼Ì½áµã"¡£
         NodeType_ *y = parentOf(x);
         while ((y != NULL) && (x == rightOf(y)))
         {
@@ -470,18 +470,18 @@ namespace my_std
     }
 
     /*
-     * æ‰¾ç»“ç‚¹(x)çš„å‰é©±ç»“ç‚¹ã€‚å³ï¼ŒæŸ¥æ‰¾"çº¢é»‘æ ‘ä¸­æ•°æ®å€¼å°äºè¯¥ç»“ç‚¹"çš„"æœ€å¤§ç»“ç‚¹"ã€‚
+     * ÕÒ½áµã(x)µÄÇ°Çı½áµã¡£¼´£¬²éÕÒ"ºìºÚÊ÷ÖĞÊı¾İÖµĞ¡ÓÚ¸Ã½áµã"µÄ"×î´ó½áµã"¡£
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     NodeType_ *RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::predecessor(NodeType_ *x)
     {
-        // å¦‚æœxå­˜åœ¨å·¦å­©å­ï¼Œåˆ™"xçš„å‰é©±ç»“ç‚¹"ä¸º "ä»¥å…¶å·¦å­©å­ä¸ºæ ¹çš„å­æ ‘çš„æœ€å¤§ç»“ç‚¹"ã€‚
+        // Èç¹ûx´æÔÚ×óº¢×Ó£¬Ôò"xµÄÇ°Çı½áµã"Îª "ÒÔÆä×óº¢×ÓÎª¸ùµÄ×ÓÊ÷µÄ×î´ó½áµã"¡£
         if (x->left != NULL)
             return maximum(x->left);
 
-        // å¦‚æœxæ²¡æœ‰å·¦å­©å­ã€‚åˆ™xæœ‰ä»¥ä¸‹ä¸¤ç§å¯èƒ½ï¼š
-        // (01) xæ˜¯"ä¸€ä¸ªå³å­©å­"ï¼Œåˆ™"xçš„å‰é©±ç»“ç‚¹"ä¸º "å®ƒçš„çˆ¶ç»“ç‚¹"ã€‚
-        // (01) xæ˜¯"ä¸€ä¸ªå·¦å­©å­"ï¼Œåˆ™æŸ¥æ‰¾"xçš„æœ€ä½çš„çˆ¶ç»“ç‚¹ï¼Œå¹¶ä¸”è¯¥çˆ¶ç»“ç‚¹è¦å…·æœ‰å³å­©å­"ï¼Œæ‰¾åˆ°çš„è¿™ä¸ª"æœ€ä½çš„çˆ¶ç»“ç‚¹"å°±æ˜¯"xçš„å‰é©±ç»“ç‚¹"ã€‚
+        // Èç¹ûxÃ»ÓĞ×óº¢×Ó¡£ÔòxÓĞÒÔÏÂÁ½ÖÖ¿ÉÄÜ£º
+        // (01) xÊÇ"Ò»¸öÓÒº¢×Ó"£¬Ôò"xµÄÇ°Çı½áµã"Îª "ËüµÄ¸¸½áµã"¡£
+        // (01) xÊÇ"Ò»¸ö×óº¢×Ó"£¬Ôò²éÕÒ"xµÄ×îµÍµÄ¸¸½áµã£¬²¢ÇÒ¸Ã¸¸½áµãÒª¾ßÓĞÓÒº¢×Ó"£¬ÕÒµ½µÄÕâ¸ö"×îµÍµÄ¸¸½áµã"¾ÍÊÇ"xµÄÇ°Çı½áµã"¡£
         NodeType_ *y = x->parent;
         while ((y != NULL) && (x == y->left)) {
             x = y;
@@ -492,12 +492,12 @@ namespace my_std
     }
 
     /*
-     * å¯¹çº¢é»‘æ ‘çš„èŠ‚ç‚¹(x)è¿›è¡Œå·¦æ—‹è½¬
-     * å·¦æ—‹ç¤ºæ„å›¾(å¯¹èŠ‚ç‚¹xè¿›è¡Œå·¦æ—‹)ï¼š
+     * ¶ÔºìºÚÊ÷µÄ½Úµã(x)½øĞĞ×óĞı×ª
+     * ×óĞıÊ¾ÒâÍ¼(¶Ô½Úµãx½øĞĞ×óĞı)£º
      *      px                              px
      *     /                               /
      *    x                               y
-     *   /  \      --(å·¦æ—‹)-->           / \                #
+     *   /  \      --(×óĞı)-->           / \                #
      *  lx   y                          x  ry
      *     /   \                       /  \
      *    ly   ry                     lx  ly
@@ -505,41 +505,41 @@ namespace my_std
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::leftRotate(NodeType_ *x)
     {
-        // è®¾ç½®xçš„å³å­©å­ä¸ºy
+        // ÉèÖÃxµÄÓÒº¢×ÓÎªy
         NodeType_ *y = rightOf(x);
 
-        // å°† â€œyçš„å·¦å­©å­â€ è®¾ä¸º â€œxçš„å³å­©å­â€ï¼›
-        // å¦‚æœyçš„å·¦å­©å­éç©ºï¼Œå°† â€œxâ€ è®¾ä¸º â€œyçš„å·¦å­©å­çš„çˆ¶äº²â€
+        // ½« ¡°yµÄ×óº¢×Ó¡± ÉèÎª ¡°xµÄÓÒº¢×Ó¡±£»
+        // Èç¹ûyµÄ×óº¢×Ó·Ç¿Õ£¬½« ¡°x¡± ÉèÎª ¡°yµÄ×óº¢×ÓµÄ¸¸Ç×¡±
         setRight(x, leftOf(y));
         if (leftOf(y) != NULL)
             setParent(leftOf(y),x);
 
-        // å°† â€œxçš„çˆ¶äº²â€ è®¾ä¸º â€œyçš„çˆ¶äº²â€
+        // ½« ¡°xµÄ¸¸Ç×¡± ÉèÎª ¡°yµÄ¸¸Ç×¡±
         setParent(y, parentOf(x));
 
         if (parentOf(x) == NULL) {
-            m_Root = curOf(y);            // å¦‚æœ â€œxçš„çˆ¶äº²â€ æ˜¯ç©ºèŠ‚ç‚¹ï¼Œåˆ™å°†yè®¾ä¸ºæ ¹èŠ‚ç‚¹
+            m_Root = curOf(y);            // Èç¹û ¡°xµÄ¸¸Ç×¡± ÊÇ¿Õ½Úµã£¬Ôò½«yÉèÎª¸ù½Úµã
         }
         else {
             if (leftOf(parentOf(x)) == x)
-                setLeft(parentOf(x),y); //å¦‚æœ xæ˜¯å®ƒçˆ¶èŠ‚ç‚¹çš„å·¦å­©å­ï¼Œåˆ™å°†yè®¾ä¸ºâ€œxçš„çˆ¶èŠ‚ç‚¹çš„å·¦å­©å­â€
+                setLeft(parentOf(x),y); //Èç¹û xÊÇËü¸¸½ÚµãµÄ×óº¢×Ó£¬Ôò½«yÉèÎª¡°xµÄ¸¸½ÚµãµÄ×óº¢×Ó¡±
             else
-                setRight(parentOf(x),y); // å¦‚æœ xæ˜¯å®ƒçˆ¶èŠ‚ç‚¹çš„å³å­©å­ï¼Œåˆ™å°†yè®¾ä¸ºâ€œxçš„çˆ¶èŠ‚ç‚¹çš„å³å­©å­â€
+                setRight(parentOf(x),y); // Èç¹û xÊÇËü¸¸½ÚµãµÄÓÒº¢×Ó£¬Ôò½«yÉèÎª¡°xµÄ¸¸½ÚµãµÄÓÒº¢×Ó¡±
         }
 
-        // å°† â€œxâ€ è®¾ä¸º â€œyçš„å·¦å­©å­â€
+        // ½« ¡°x¡± ÉèÎª ¡°yµÄ×óº¢×Ó¡±
         setLeft(y,x);
-        // å°† â€œxçš„çˆ¶èŠ‚ç‚¹â€ è®¾ä¸º â€œyâ€
+        // ½« ¡°xµÄ¸¸½Úµã¡± ÉèÎª ¡°y¡±
         setParent(x,y);
     }
 
     /*
-     * å¯¹çº¢é»‘æ ‘çš„èŠ‚ç‚¹(y)è¿›è¡Œå³æ—‹è½¬
-     * å³æ—‹ç¤ºæ„å›¾(å¯¹èŠ‚ç‚¹yè¿›è¡Œå·¦æ—‹)ï¼š
+     * ¶ÔºìºÚÊ÷µÄ½Úµã(y)½øĞĞÓÒĞı×ª
+     * ÓÒĞıÊ¾ÒâÍ¼(¶Ô½Úµãy½øĞĞ×óĞı)£º
      *            py                               py
      *           /                                /
      *          y                                x
-     *         /  \      --(å³æ—‹)-->            /  \                     #
+     *         /  \      --(ÓÒĞı)-->            /  \                     #
      *        x   ry                           lx   y
      *       / \                                   / \                   #
      *      lx  rx                                rx  ry
@@ -547,89 +547,89 @@ namespace my_std
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::rightRotate(NodeType_ *y)
     {
-        // è®¾ç½®xæ˜¯å½“å‰èŠ‚ç‚¹çš„å·¦å­©å­ã€‚
+        // ÉèÖÃxÊÇµ±Ç°½ÚµãµÄ×óº¢×Ó¡£
         NodeType_ *x = leftOf(y);
 
-        // å°† â€œxçš„å³å­©å­â€ è®¾ä¸º â€œyçš„å·¦å­©å­â€ï¼›
-        // å¦‚æœ"xçš„å³å­©å­"ä¸ä¸ºç©ºçš„è¯ï¼Œå°† â€œyâ€ è®¾ä¸º â€œxçš„å³å­©å­çš„çˆ¶äº²â€
+        // ½« ¡°xµÄÓÒº¢×Ó¡± ÉèÎª ¡°yµÄ×óº¢×Ó¡±£»
+        // Èç¹û"xµÄÓÒº¢×Ó"²»Îª¿ÕµÄ»°£¬½« ¡°y¡± ÉèÎª ¡°xµÄÓÒº¢×ÓµÄ¸¸Ç×¡±
         setLeft(y, rightOf(x));
         if (rightOf(x) != NULL)
             setParent(rightOf(x),y);
 
-        // å°† â€œyçš„çˆ¶äº²â€ è®¾ä¸º â€œxçš„çˆ¶äº²â€
+        // ½« ¡°yµÄ¸¸Ç×¡± ÉèÎª ¡°xµÄ¸¸Ç×¡±
         setParent(x, parentOf(y));
 
         if (parentOf(y) == NULL) {
-            m_Root = curOf(x);            // å¦‚æœ â€œyçš„çˆ¶äº²â€ æ˜¯ç©ºèŠ‚ç‚¹ï¼Œåˆ™å°†xè®¾ä¸ºæ ¹èŠ‚ç‚¹
+            m_Root = curOf(x);            // Èç¹û ¡°yµÄ¸¸Ç×¡± ÊÇ¿Õ½Úµã£¬Ôò½«xÉèÎª¸ù½Úµã
         }
         else {
             if (y == rightOf(parentOf(y)))
-                setRight(parentOf(y),x);// å¦‚æœ yæ˜¯å®ƒçˆ¶èŠ‚ç‚¹çš„å³å­©å­ï¼Œåˆ™å°†xè®¾ä¸ºâ€œyçš„çˆ¶èŠ‚ç‚¹çš„å³å­©å­â€
+                setRight(parentOf(y),x);// Èç¹û yÊÇËü¸¸½ÚµãµÄÓÒº¢×Ó£¬Ôò½«xÉèÎª¡°yµÄ¸¸½ÚµãµÄÓÒº¢×Ó¡±
             else
-                setLeft(parentOf(y),x); // (yæ˜¯å®ƒçˆ¶èŠ‚ç‚¹çš„å·¦å­©å­) å°†xè®¾ä¸ºâ€œxçš„çˆ¶èŠ‚ç‚¹çš„å·¦å­©å­â€
+                setLeft(parentOf(y),x); // (yÊÇËü¸¸½ÚµãµÄ×óº¢×Ó) ½«xÉèÎª¡°xµÄ¸¸½ÚµãµÄ×óº¢×Ó¡±
         }
 
-        // å°† â€œyâ€ è®¾ä¸º â€œxçš„å³å­©å­â€
+        // ½« ¡°y¡± ÉèÎª ¡°xµÄÓÒº¢×Ó¡±
         setRight(x,y);
-        // å°† â€œyçš„çˆ¶èŠ‚ç‚¹â€ è®¾ä¸º â€œxâ€
+        // ½« ¡°yµÄ¸¸½Úµã¡± ÉèÎª ¡°x¡±
         setParent(y,x);
     }
 
     /*
-     * çº¢é»‘æ ‘æ’å…¥ä¿®æ­£å‡½æ•°
+     * ºìºÚÊ÷²åÈëĞŞÕıº¯Êı
      *
-     * åœ¨å‘çº¢é»‘æ ‘ä¸­æ’å…¥èŠ‚ç‚¹ä¹‹å(å¤±å»å¹³è¡¡)ï¼Œå†è°ƒç”¨è¯¥å‡½æ•°ï¼›
-     * ç›®çš„æ˜¯å°†å®ƒé‡æ–°å¡‘é€ æˆä¸€é¢—çº¢é»‘æ ‘ã€‚
+     * ÔÚÏòºìºÚÊ÷ÖĞ²åÈë½ÚµãÖ®ºó(Ê§È¥Æ½ºâ)£¬ÔÙµ÷ÓÃ¸Ãº¯Êı£»
+     * Ä¿µÄÊÇ½«ËüÖØĞÂËÜÔì³ÉÒ»¿ÅºìºÚÊ÷¡£
      *
-     * å‚æ•°è¯´æ˜ï¼š
-     *     root çº¢é»‘æ ‘çš„æ ¹
-     *     node æ’å…¥çš„ç»“ç‚¹    å¯¹åº”ã€Šç®—æ³•å¯¼è®ºã€‹ä¸­çš„z
+     * ²ÎÊıËµÃ÷£º
+     *     root ºìºÚÊ÷µÄ¸ù
+     *     node ²åÈëµÄ½áµã    ¶ÔÓ¦¡¶Ëã·¨µ¼ÂÛ¡·ÖĞµÄz
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::insertFixUp(NodeType_ *node)
     {
         NodeType_ *parent, *gparent;
 
-        // è‹¥çˆ¶èŠ‚ç‚¹å­˜åœ¨ï¼Œå¹¶ä¸”çˆ¶èŠ‚ç‚¹çš„é¢œè‰²æ˜¯çº¢è‰²,æ ¹èŠ‚ç‚¹æ˜¯é»‘è‰²(è¢«æ’å…¥èŠ‚ç‚¹æ˜¯ä¸€å®šå­˜åœ¨éç©ºç¥–çˆ¶èŠ‚ç‚¹)
+        // Èô¸¸½Úµã´æÔÚ£¬²¢ÇÒ¸¸½ÚµãµÄÑÕÉ«ÊÇºìÉ«,¸ù½ÚµãÊÇºÚÉ«(±»²åÈë½ÚµãÊÇÒ»¶¨´æÔÚ·Ç¿Õ×æ¸¸½Úµã)
         parent = parentOf(node);
         while (parent && isRed(parent))
         {
             gparent = parentOf(parent);
-            //è‹¥çˆ¶èŠ‚ç‚¹æ˜¯ç¥–çˆ¶èŠ‚ç‚¹çš„å·¦å­©å­
+            //Èô¸¸½ÚµãÊÇ×æ¸¸½ÚµãµÄ×óº¢×Ó
             if (parent == leftOf(gparent))
             {
-                // Case 1ï¼šå”å”èŠ‚ç‚¹æ˜¯çº¢è‰²
+                // Case 1£ºÊåÊå½ÚµãÊÇºìÉ«
                 NodeType_ *uncle = rightOf(gparent);
                 if (isRed(uncle))
                 {
-                    setBlack(parent);//  (01) å°†â€œçˆ¶èŠ‚ç‚¹â€è®¾ä¸ºé»‘è‰²ã€‚
-                    setBlack(uncle); //  (02) å°†â€œå”å”èŠ‚ç‚¹â€è®¾ä¸ºé»‘è‰²ã€‚
-                    setRed(gparent); //  (03) å°†â€œç¥–çˆ¶èŠ‚ç‚¹â€è®¾ä¸ºâ€œçº¢è‰²â€ã€‚
-                    node = gparent;      //  (04) å°†â€œç¥–çˆ¶èŠ‚ç‚¹â€è®¾ä¸ºâ€œå½“å‰èŠ‚ç‚¹â€(çº¢è‰²èŠ‚ç‚¹)
-                }else  //çº¢é»‘æ ‘ç‰¹æ€§,ç©ºèŠ‚ç‚¹æˆ–è€…é»‘è‰²çš„éç©ºèŠ‚ç‚¹éƒ½ä¸ºé»‘è‰²èŠ‚ç‚¹(å”å”æ˜¯é»‘è‰²)
+                    setBlack(parent);//  (01) ½«¡°¸¸½Úµã¡±ÉèÎªºÚÉ«¡£
+                    setBlack(uncle); //  (02) ½«¡°ÊåÊå½Úµã¡±ÉèÎªºÚÉ«¡£
+                    setRed(gparent); //  (03) ½«¡°×æ¸¸½Úµã¡±ÉèÎª¡°ºìÉ«¡±¡£
+                    node = gparent;      //  (04) ½«¡°×æ¸¸½Úµã¡±ÉèÎª¡°µ±Ç°½Úµã¡±(ºìÉ«½Úµã)
+                }else  //ºìºÚÊ÷ÌØĞÔ,¿Õ½Úµã»òÕßºÚÉ«µÄ·Ç¿Õ½Úµã¶¼ÎªºÚÉ«½Úµã(ÊåÊåÊÇºÚÉ«)
                 {
                     if (rightOf(parent) == node)
                     {
                         node = parent;
                         leftRotate(node);
                     }
-                    //å¦‚æ„å¦‚æœparent->right == nodeï¼Œè¿™é‡Œçš„rb_parent(node)æ˜¯å¯¹å·¦æ—‹ä¹‹åçš„æ ‘è¿›è¡Œæ“ä½œï¼Œæœ€ç»ˆçš„ç»“æœå’Œæ–¹æ³•1æ˜¯ä¸€æ ·çš„
+                    //ÈçÒâÈç¹ûparent->right == node£¬ÕâÀïµÄrb_parent(node)ÊÇ¶Ô×óĞıÖ®ºóµÄÊ÷½øĞĞ²Ù×÷£¬×îÖÕµÄ½á¹ûºÍ·½·¨1ÊÇÒ»ÑùµÄ
                     setBlack(parentOf(node));
                     setRed(parentOf(parentOf(node)));
                     rightRotate(parentOf(parentOf(node)));
                 }
             }
-            else//è‹¥çˆ¶èŠ‚ç‚¹æ˜¯ç¥–çˆ¶èŠ‚ç‚¹çš„å³å­©å­,å°†ä¸Šé¢çš„æ“ä½œä¸­â€œrightRotateâ€å’Œâ€œleftRotateâ€äº¤æ¢ä½ç½®ï¼Œç„¶åä¾æ¬¡æ‰§è¡Œã€‚
+            else//Èô¸¸½ÚµãÊÇ×æ¸¸½ÚµãµÄÓÒº¢×Ó,½«ÉÏÃæµÄ²Ù×÷ÖĞ¡°rightRotate¡±ºÍ¡°leftRotate¡±½»»»Î»ÖÃ£¬È»ºóÒÀ´ÎÖ´ĞĞ¡£
             {
-                // Case 1æ¡ä»¶ï¼šå”å”èŠ‚ç‚¹æ˜¯çº¢è‰²
+                // Case 1Ìõ¼ş£ºÊåÊå½ÚµãÊÇºìÉ«
                 NodeType_ *uncle = leftOf(gparent);
                 if (isRed(uncle))
                 {
-                    setBlack(parent); //  (01) å°†â€œçˆ¶èŠ‚ç‚¹â€è®¾ä¸ºé»‘è‰²ã€‚
-                    setBlack(uncle);  //  (02) å°†â€œå”å”èŠ‚ç‚¹â€è®¾ä¸ºé»‘è‰²ã€‚
-                    setRed(gparent);  //  (03) å°†â€œç¥–çˆ¶èŠ‚ç‚¹â€è®¾ä¸ºâ€œçº¢è‰²â€ã€‚
-                    node = gparent;       //  (04) å°†â€œç¥–çˆ¶èŠ‚ç‚¹â€è®¾ä¸ºâ€œå½“å‰èŠ‚ç‚¹â€(çº¢è‰²èŠ‚ç‚¹)
-                }else //çº¢é»‘æ ‘ç‰¹æ€§,ç©ºèŠ‚ç‚¹æˆ–è€…é»‘è‰²çš„éç©ºèŠ‚ç‚¹éƒ½ä¸ºé»‘è‰²èŠ‚ç‚¹(å”å”æ˜¯é»‘è‰²)
+                    setBlack(parent); //  (01) ½«¡°¸¸½Úµã¡±ÉèÎªºÚÉ«¡£
+                    setBlack(uncle);  //  (02) ½«¡°ÊåÊå½Úµã¡±ÉèÎªºÚÉ«¡£
+                    setRed(gparent);  //  (03) ½«¡°×æ¸¸½Úµã¡±ÉèÎª¡°ºìÉ«¡±¡£
+                    node = gparent;       //  (04) ½«¡°×æ¸¸½Úµã¡±ÉèÎª¡°µ±Ç°½Úµã¡±(ºìÉ«½Úµã)
+                }else //ºìºÚÊ÷ÌØĞÔ,¿Õ½Úµã»òÕßºÚÉ«µÄ·Ç¿Õ½Úµã¶¼ÎªºÚÉ«½Úµã(ÊåÊåÊÇºÚÉ«)
                 {
                     if (leftOf(parent) == node)
                     {
@@ -644,16 +644,16 @@ namespace my_std
             parent = parentOf(node);
         }
 
-        // å°†æ ¹èŠ‚ç‚¹è®¾ä¸ºé»‘è‰²
+        // ½«¸ù½ÚµãÉèÎªºÚÉ«
         setBlack(getNode(m_Root));
     }
 
     /*
-     * å°†ç»“ç‚¹æ’å…¥åˆ°çº¢é»‘æ ‘ä¸­
+     * ½«½áµã²åÈëµ½ºìºÚÊ÷ÖĞ
      *
-     * å‚æ•°è¯´æ˜ï¼š
-     *     root çº¢é»‘æ ‘çš„æ ¹ç»“ç‚¹
-     *     node æ’å…¥çš„ç»“ç‚¹        // å¯¹åº”ã€Šç®—æ³•å¯¼è®ºã€‹ä¸­çš„node
+     * ²ÎÊıËµÃ÷£º
+     *     root ºìºÚÊ÷µÄ¸ù½áµã
+     *     node ²åÈëµÄ½áµã        // ¶ÔÓ¦¡¶Ëã·¨µ¼ÂÛ¡·ÖĞµÄnode
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::insert(NodeType_ *node)
@@ -661,49 +661,49 @@ namespace my_std
         NodeType_ *parent_node = NULL;
         NodeType_ *tmp_node = getNode(m_Root);
 
-        //å°†çº¢é»‘æ ‘å½“ä½œä¸€é¢—äºŒå‰æŸ¥æ‰¾æ ‘ï¼Œå°†èŠ‚ç‚¹æ·»åŠ åˆ°äºŒå‰æŸ¥æ‰¾æ ‘ä¸­ã€‚
+        //½«ºìºÚÊ÷µ±×÷Ò»¿Å¶ş²æ²éÕÒÊ÷£¬½«½ÚµãÌí¼Óµ½¶ş²æ²éÕÒÊ÷ÖĞ¡£
         {
-            //å­˜åœ¨rootèŠ‚ç‚¹,å…ˆæ‰¾æ–°èŠ‚ç‚¹çš„çˆ¶äº²èŠ‚ç‚¹åœ¨å“ª
+            //´æÔÚroot½Úµã,ÏÈÕÒĞÂ½ÚµãµÄ¸¸Ç×½ÚµãÔÚÄÄ
             while (tmp_node != NULL)
             {
                 parent_node = tmp_node;
-                //æ–°èŠ‚ç‚¹æ¯”å½“å‰èŠ‚ç‚¹keyå°ï¼Œå¾€å·¦å­æ ‘å¼€å§‹æ‰¾
+                //ĞÂ½Úµã±Èµ±Ç°½ÚµãkeyĞ¡£¬Íù×ó×ÓÊ÷¿ªÊ¼ÕÒ
                 if (node->get_key() < tmp_node->get_key())
                     tmp_node = leftOf(tmp_node);
-                else //æ–°èŠ‚ç‚¹æ¯”å½“å‰èŠ‚ç‚¹keyå¤§ï¼Œå¾€å³å­æ ‘å¼€å§‹æ‰¾
+                else //ĞÂ½Úµã±Èµ±Ç°½Úµãkey´ó£¬ÍùÓÒ×ÓÊ÷¿ªÊ¼ÕÒ
                     tmp_node = rightOf(tmp_node);
             }
 
-            //æŠŠæ–°èŠ‚ç‚¹çˆ¶äº²èŠ‚ç‚¹æŒ‡å‘æ‰¾åˆ°çš„èŠ‚ç‚¹
+            //°ÑĞÂ½Úµã¸¸Ç×½ÚµãÖ¸ÏòÕÒµ½µÄ½Úµã
             setParent(node,parent_node);
-            //å¦‚æœæœ‰æ ¹èŠ‚ç‚¹
+            //Èç¹ûÓĞ¸ù½Úµã
             if (parent_node != NULL)
             {
-                //æ–°èŠ‚ç‚¹æ¯”å½“å‰èŠ‚ç‚¹keyå°ï¼Œæ’å…¥çˆ¶äº²èŠ‚ç‚¹çš„å·¦è¾¹
+                //ĞÂ½Úµã±Èµ±Ç°½ÚµãkeyĞ¡£¬²åÈë¸¸Ç×½ÚµãµÄ×ó±ß
                 if (node->get_key() < parent_node->get_key())
                     setLeft(parent_node,node);
-                else //æ–°èŠ‚ç‚¹æ¯”å½“å‰èŠ‚ç‚¹keyå¤§ï¼Œæ’å…¥çˆ¶äº²èŠ‚ç‚¹çš„å³è¾¹
+                else //ĞÂ½Úµã±Èµ±Ç°½Úµãkey´ó£¬²åÈë¸¸Ç×½ÚµãµÄÓÒ±ß
                     setRight(parent_node,node);
             }
             else
                 m_Root = curOf(node);
         }
 
-        //è®¾ç½®èŠ‚ç‚¹çš„é¢œè‰²ä¸ºçº¢è‰²
+        //ÉèÖÃ½ÚµãµÄÑÕÉ«ÎªºìÉ«
         setRed(node);
-        //å°†å®ƒé‡æ–°ä¿®æ­£ä¸ºä¸€é¢—äºŒå‰æŸ¥æ‰¾æ ‘
+        //½«ËüÖØĞÂĞŞÕıÎªÒ»¿Å¶ş²æ²éÕÒÊ÷
         insertFixUp(node);
     }
 
     /*
-     * çº¢é»‘æ ‘åˆ é™¤ä¿®æ­£å‡½æ•°
+     * ºìºÚÊ÷É¾³ıĞŞÕıº¯Êı
      *
-     * åœ¨ä»çº¢é»‘æ ‘ä¸­åˆ é™¤æ’å…¥èŠ‚ç‚¹ä¹‹å(çº¢é»‘æ ‘å¤±å»å¹³è¡¡)ï¼Œå†è°ƒç”¨è¯¥å‡½æ•°ï¼›
-     * ç›®çš„æ˜¯å°†å®ƒé‡æ–°å¡‘é€ æˆä¸€é¢—çº¢é»‘æ ‘ã€‚
+     * ÔÚ´ÓºìºÚÊ÷ÖĞÉ¾³ı²åÈë½ÚµãÖ®ºó(ºìºÚÊ÷Ê§È¥Æ½ºâ)£¬ÔÙµ÷ÓÃ¸Ãº¯Êı£»
+     * Ä¿µÄÊÇ½«ËüÖØĞÂËÜÔì³ÉÒ»¿ÅºìºÚÊ÷¡£
      *
-     * å‚æ•°è¯´æ˜ï¼š
-     *     root çº¢é»‘æ ‘çš„æ ¹
-     *     node å¾…ä¿®æ­£çš„èŠ‚ç‚¹
+     * ²ÎÊıËµÃ÷£º
+     *     root ºìºÚÊ÷µÄ¸ù
+     *     node ´ıĞŞÕıµÄ½Úµã
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::removeFixUp(NodeType_ *node)
@@ -712,47 +712,47 @@ namespace my_std
 
         while (node != getNode(m_Root) && isBlack(node))
         {
-            //è‹¥nodeæ˜¯â€œå®ƒçˆ¶èŠ‚ç‚¹çš„å·¦å­©å­â€ï¼Œåˆ™è®¾ç½® â€œotherâ€ä¸ºâ€œxçš„å”å”â€(å³xä¸ºå®ƒçˆ¶èŠ‚ç‚¹çš„å³å­©å­)
+            //ÈônodeÊÇ¡°Ëü¸¸½ÚµãµÄ×óº¢×Ó¡±£¬ÔòÉèÖÃ ¡°other¡±Îª¡°xµÄÊåÊå¡±(¼´xÎªËü¸¸½ÚµãµÄÓÒº¢×Ó)
             if (leftOf(parentOf(node)) == node)
             {
                 other = rightOf(parentOf(node));
-                //Case 1: xæ˜¯â€œé»‘+é»‘â€èŠ‚ç‚¹ï¼Œxçš„å…„å¼ŸèŠ‚ç‚¹æ˜¯çº¢è‰²ã€‚(æ­¤æ—¶xçš„çˆ¶èŠ‚ç‚¹å’Œxçš„å…„å¼ŸèŠ‚ç‚¹çš„å­èŠ‚ç‚¹éƒ½æ˜¯é»‘èŠ‚ç‚¹)ã€‚
+                //Case 1: xÊÇ¡°ºÚ+ºÚ¡±½Úµã£¬xµÄĞÖµÜ½ÚµãÊÇºìÉ«¡£(´ËÊ±xµÄ¸¸½ÚµãºÍxµÄĞÖµÜ½ÚµãµÄ×Ó½Úµã¶¼ÊÇºÚ½Úµã)¡£
                 if (isRed(other))
                 {
-                    setBlack(other);              //  (01) å°†xçš„å…„å¼ŸèŠ‚ç‚¹è®¾ä¸ºâ€œé»‘è‰²â€ã€‚
-                    setRed(parentOf(node)); //   (02) å°†xçš„çˆ¶èŠ‚ç‚¹è®¾ä¸ºâ€œçº¢è‰²â€ã€‚
-                    leftRotate(parentOf(node));//   (03) å¯¹xçš„çˆ¶èŠ‚ç‚¹è¿›è¡Œå·¦æ—‹ã€‚
-                    other = rightOf(parentOf(node));// (04) å·¦æ—‹åï¼Œé‡æ–°è®¾ç½®xçš„å…„å¼ŸèŠ‚ç‚¹ã€‚
+                    setBlack(other);              //  (01) ½«xµÄĞÖµÜ½ÚµãÉèÎª¡°ºÚÉ«¡±¡£
+                    setRed(parentOf(node)); //   (02) ½«xµÄ¸¸½ÚµãÉèÎª¡°ºìÉ«¡±¡£
+                    leftRotate(parentOf(node));//   (03) ¶ÔxµÄ¸¸½Úµã½øĞĞ×óĞı¡£
+                    other = rightOf(parentOf(node));// (04) ×óĞıºó£¬ÖØĞÂÉèÖÃxµÄĞÖµÜ½Úµã¡£
                 }
-                // Case 2: xæ˜¯â€œé»‘+é»‘â€èŠ‚ç‚¹ï¼Œxçš„å…„å¼ŸèŠ‚ç‚¹æ˜¯é»‘è‰²ï¼Œxçš„å…„å¼ŸèŠ‚ç‚¹çš„ä¸¤ä¸ªå­©å­éƒ½æ˜¯é»‘è‰²ã€‚
+                // Case 2: xÊÇ¡°ºÚ+ºÚ¡±½Úµã£¬xµÄĞÖµÜ½ÚµãÊÇºÚÉ«£¬xµÄĞÖµÜ½ÚµãµÄÁ½¸öº¢×Ó¶¼ÊÇºÚÉ«¡£
                 if (isBlack(leftOf(other)) && isBlack(rightOf(other)))
                 {
-                    setRed(other);          //   (01) å°†xçš„å…„å¼ŸèŠ‚ç‚¹è®¾ä¸ºâ€œçº¢è‰²â€ã€‚
-                    node = parentOf(node);  //   (02) è®¾ç½®â€œxçš„çˆ¶èŠ‚ç‚¹â€ä¸ºâ€œæ–°çš„xèŠ‚ç‚¹â€ã€‚
+                    setRed(other);          //   (01) ½«xµÄĞÖµÜ½ÚµãÉèÎª¡°ºìÉ«¡±¡£
+                    node = parentOf(node);  //   (02) ÉèÖÃ¡°xµÄ¸¸½Úµã¡±Îª¡°ĞÂµÄx½Úµã¡±¡£
                 }
                 else {
-                    // Case 3: xæ˜¯â€œé»‘+é»‘â€èŠ‚ç‚¹ï¼Œxçš„å…„å¼ŸèŠ‚ç‚¹æ˜¯é»‘è‰²ï¼›xçš„å…„å¼ŸèŠ‚ç‚¹çš„å·¦å­©å­æ˜¯çº¢è‰²ï¼Œå³å­©å­æ˜¯é»‘è‰²çš„ã€‚
+                    // Case 3: xÊÇ¡°ºÚ+ºÚ¡±½Úµã£¬xµÄĞÖµÜ½ÚµãÊÇºÚÉ«£»xµÄĞÖµÜ½ÚµãµÄ×óº¢×ÓÊÇºìÉ«£¬ÓÒº¢×ÓÊÇºÚÉ«µÄ¡£
                     if (isBlack(rightOf(other)))
                     {
-                        setBlack(leftOf(other));              //   (01) å°†xå…„å¼ŸèŠ‚ç‚¹çš„å·¦å­©å­è®¾ä¸ºâ€œé»‘è‰²â€ã€‚
-                        setRed(other);                              //   (02) å°†xå…„å¼ŸèŠ‚ç‚¹è®¾ä¸ºâ€œçº¢è‰²â€ã€‚
-                        rightRotate(other);                         //   (03) å¯¹xçš„å…„å¼ŸèŠ‚ç‚¹è¿›è¡Œå³æ—‹ã€‚
-                        other = rightOf(parentOf(node));      //   (04) å³æ—‹åï¼Œé‡æ–°è®¾ç½®xçš„å…„å¼ŸèŠ‚ç‚¹ã€‚
+                        setBlack(leftOf(other));              //   (01) ½«xĞÖµÜ½ÚµãµÄ×óº¢×ÓÉèÎª¡°ºÚÉ«¡±¡£
+                        setRed(other);                              //   (02) ½«xĞÖµÜ½ÚµãÉèÎª¡°ºìÉ«¡±¡£
+                        rightRotate(other);                         //   (03) ¶ÔxµÄĞÖµÜ½Úµã½øĞĞÓÒĞı¡£
+                        other = rightOf(parentOf(node));      //   (04) ÓÒĞıºó£¬ÖØĞÂÉèÖÃxµÄĞÖµÜ½Úµã¡£
                     }
-                    // Case 4: xæ˜¯â€œé»‘+é»‘â€èŠ‚ç‚¹ï¼Œxçš„å…„å¼ŸèŠ‚ç‚¹æ˜¯é»‘è‰²ï¼›xçš„å…„å¼ŸèŠ‚ç‚¹çš„å³å­©å­æ˜¯çº¢è‰²çš„ã€‚
-                    setRbColor(other, rbColorOf(parentOf(node)));// (01) å°†xçˆ¶èŠ‚ç‚¹é¢œè‰² èµ‹å€¼ç»™ xçš„å…„å¼ŸèŠ‚ç‚¹ã€‚
-                    setBlack(parentOf(node));//   (02) å°†xçˆ¶èŠ‚ç‚¹è®¾ä¸ºâ€œé»‘è‰²â€ã€‚
-                    setBlack(rightOf(other));//   (03) å°†xå…„å¼ŸèŠ‚ç‚¹çš„å³å­èŠ‚è®¾ä¸ºâ€œé»‘è‰²â€ã€‚
-                    leftRotate(parentOf(node)); //   (04) å¯¹xçš„çˆ¶èŠ‚ç‚¹è¿›è¡Œå·¦æ—‹ã€‚
-                    node = getNode(m_Root);        //   (05) è®¾ç½®â€œxâ€ä¸ºâ€œæ ¹èŠ‚ç‚¹â€ã€‚
+                    // Case 4: xÊÇ¡°ºÚ+ºÚ¡±½Úµã£¬xµÄĞÖµÜ½ÚµãÊÇºÚÉ«£»xµÄĞÖµÜ½ÚµãµÄÓÒº¢×ÓÊÇºìÉ«µÄ¡£
+                    setRbColor(other, rbColorOf(parentOf(node)));// (01) ½«x¸¸½ÚµãÑÕÉ« ¸³Öµ¸ø xµÄĞÖµÜ½Úµã¡£
+                    setBlack(parentOf(node));//   (02) ½«x¸¸½ÚµãÉèÎª¡°ºÚÉ«¡±¡£
+                    setBlack(rightOf(other));//   (03) ½«xĞÖµÜ½ÚµãµÄÓÒ×Ó½ÚÉèÎª¡°ºÚÉ«¡±¡£
+                    leftRotate(parentOf(node)); //   (04) ¶ÔxµÄ¸¸½Úµã½øĞĞ×óĞı¡£
+                    node = getNode(m_Root);        //   (05) ÉèÖÃ¡°x¡±Îª¡°¸ù½Úµã¡±¡£
                 }
             }
             else {
-                // è‹¥ â€œxâ€æ˜¯â€œå®ƒçˆ¶èŠ‚ç‚¹çš„å³å­©å­â€ï¼Œå°†ä¸Šé¢çš„æ“ä½œä¸­â€œrightâ€å’Œâ€œleftâ€äº¤æ¢ä½ç½®ï¼Œç„¶åä¾æ¬¡æ‰§è¡Œã€‚
+                // Èô ¡°x¡±ÊÇ¡°Ëü¸¸½ÚµãµÄÓÒº¢×Ó¡±£¬½«ÉÏÃæµÄ²Ù×÷ÖĞ¡°right¡±ºÍ¡°left¡±½»»»Î»ÖÃ£¬È»ºóÒÀ´ÎÖ´ĞĞ¡£
                 other = leftOf(parentOf(node));
                 if (isRed(other))
                 {
-                    // Case 1: xçš„å…„å¼Ÿwæ˜¯çº¢è‰²çš„
+                    // Case 1: xµÄĞÖµÜwÊÇºìÉ«µÄ
                     setBlack(other);
                     setRed(parentOf(node));
                     rightRotate(parentOf(node));
@@ -760,20 +760,20 @@ namespace my_std
                 }
                 if (isBlack(leftOf(other)) && isBlack(rightOf(other)))
                 {
-                    // Case 2: xçš„å…„å¼Ÿwæ˜¯é»‘è‰²ï¼Œä¸”wçš„ä¿©ä¸ªå­©å­ä¹Ÿéƒ½æ˜¯é»‘è‰²çš„
+                    // Case 2: xµÄĞÖµÜwÊÇºÚÉ«£¬ÇÒwµÄÁ©¸öº¢×ÓÒ²¶¼ÊÇºÚÉ«µÄ
                     setRed(other);
                     node = parentOf(node);
                 }
                 else {
                     if (isBlack(leftOf(other)))
                     {
-                        // Case 3: xçš„å…„å¼Ÿwæ˜¯é»‘è‰²çš„ï¼Œå¹¶ä¸”wçš„å·¦å­©å­æ˜¯çº¢è‰²ï¼Œå³å­©å­ä¸ºé»‘è‰²ã€‚
+                        // Case 3: xµÄĞÖµÜwÊÇºÚÉ«µÄ£¬²¢ÇÒwµÄ×óº¢×ÓÊÇºìÉ«£¬ÓÒº¢×ÓÎªºÚÉ«¡£
                         setBlack(rightOf(other));
                         setRed(other);
                         leftRotate(other);
                         other = leftOf(parentOf(node));
                     }
-                    // Case 4: xçš„å…„å¼Ÿwæ˜¯é»‘è‰²çš„ï¼›å¹¶ä¸”wçš„å³å­©å­æ˜¯çº¢è‰²çš„ï¼Œå·¦å­©å­ä»»æ„é¢œè‰²ã€‚
+                    // Case 4: xµÄĞÖµÜwÊÇºÚÉ«µÄ£»²¢ÇÒwµÄÓÒº¢×ÓÊÇºìÉ«µÄ£¬×óº¢×ÓÈÎÒâÑÕÉ«¡£
                     setRbColor(other, rbColorOf(parentOf(node)));
                     setBlack(parentOf(node));
                     setBlack(leftOf(other));
@@ -787,14 +787,14 @@ namespace my_std
     }
 
     /*
-     * çº¢é»‘æ ‘åˆ é™¤ä¿®æ­£å‡½æ•°
+     * ºìºÚÊ÷É¾³ıĞŞÕıº¯Êı
      *
-     * åœ¨ä»çº¢é»‘æ ‘ä¸­åˆ é™¤æ’å…¥èŠ‚ç‚¹ä¹‹å(çº¢é»‘æ ‘å¤±å»å¹³è¡¡)ï¼Œå†è°ƒç”¨è¯¥å‡½æ•°ï¼›
-     * ç›®çš„æ˜¯å°†å®ƒé‡æ–°å¡‘é€ æˆä¸€é¢—çº¢é»‘æ ‘ã€‚
+     * ÔÚ´ÓºìºÚÊ÷ÖĞÉ¾³ı²åÈë½ÚµãÖ®ºó(ºìºÚÊ÷Ê§È¥Æ½ºâ)£¬ÔÙµ÷ÓÃ¸Ãº¯Êı£»
+     * Ä¿µÄÊÇ½«ËüÖØĞÂËÜÔì³ÉÒ»¿ÅºìºÚÊ÷¡£
      *
-     * å‚æ•°è¯´æ˜ï¼š
-     *     root çº¢é»‘æ ‘çš„æ ¹
-     *     node å¾…ä¿®æ­£çš„èŠ‚ç‚¹
+     * ²ÎÊıËµÃ÷£º
+     *     root ºìºÚÊ÷µÄ¸ù
+     *     node ´ıĞŞÕıµÄ½Úµã
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::removeFixUp(NodeType_ *node, NodeType_ *parent)
@@ -807,7 +807,7 @@ namespace my_std
                 other = rightOf(parent);
                 if (isRed(other))
                 {
-                    // Case 1: xçš„å…„å¼Ÿwæ˜¯çº¢è‰²çš„
+                    // Case 1: xµÄĞÖµÜwÊÇºìÉ«µÄ
                     setBlack(other);
                     setRed(parent);
                     leftRotate(parent);
@@ -815,7 +815,7 @@ namespace my_std
                 }
                 if (isBlack(leftOf(other)) && isBlack(rightOf(other)))
                 {
-                    // Case 2: xçš„å…„å¼Ÿwæ˜¯é»‘è‰²ï¼Œä¸”wçš„ä¿©ä¸ªå­©å­ä¹Ÿéƒ½æ˜¯é»‘è‰²çš„
+                    // Case 2: xµÄĞÖµÜwÊÇºÚÉ«£¬ÇÒwµÄÁ©¸öº¢×ÓÒ²¶¼ÊÇºÚÉ«µÄ
                     setRed(other);
                     node = parent;
                     parent = parentOf(node);
@@ -824,13 +824,13 @@ namespace my_std
                 {
                     if (isBlack(rightOf(other)))
                     {
-                        // Case 3: xçš„å…„å¼Ÿwæ˜¯é»‘è‰²çš„ï¼Œå¹¶ä¸”wçš„å·¦å­©å­æ˜¯çº¢è‰²ï¼Œå³å­©å­ä¸ºé»‘è‰²ã€‚
+                        // Case 3: xµÄĞÖµÜwÊÇºÚÉ«µÄ£¬²¢ÇÒwµÄ×óº¢×ÓÊÇºìÉ«£¬ÓÒº¢×ÓÎªºÚÉ«¡£
                         setBlack(leftOf(other));
                         setRed(other);
                         rightRotate(other);
                         other = rightOf(parent);
                     }
-                    // Case 4: xçš„å…„å¼Ÿwæ˜¯é»‘è‰²çš„ï¼›å¹¶ä¸”wçš„å³å­©å­æ˜¯çº¢è‰²çš„ï¼Œå·¦å­©å­ä»»æ„é¢œè‰²ã€‚
+                    // Case 4: xµÄĞÖµÜwÊÇºÚÉ«µÄ£»²¢ÇÒwµÄÓÒº¢×ÓÊÇºìÉ«µÄ£¬×óº¢×ÓÈÎÒâÑÕÉ«¡£
                     setRbColor(other, rbColorOf(parent));
                     setBlack(parent);
                     setBlack(rightOf(other));
@@ -844,7 +844,7 @@ namespace my_std
                 other = leftOf(parent);
                 if (isRed(other))
                 {
-                    // Case 1: xçš„å…„å¼Ÿwæ˜¯çº¢è‰²çš„
+                    // Case 1: xµÄĞÖµÜwÊÇºìÉ«µÄ
                     setBlack(other);
                     setRed(parent);
                     rightRotate(parent);
@@ -852,7 +852,7 @@ namespace my_std
                 }
                 if (isBlack(leftOf(other)) && isBlack(rightOf(other)))
                 {
-                    // Case 2: xçš„å…„å¼Ÿwæ˜¯é»‘è‰²ï¼Œä¸”wçš„ä¿©ä¸ªå­©å­ä¹Ÿéƒ½æ˜¯é»‘è‰²çš„
+                    // Case 2: xµÄĞÖµÜwÊÇºÚÉ«£¬ÇÒwµÄÁ©¸öº¢×ÓÒ²¶¼ÊÇºÚÉ«µÄ
                     setRed(other);
                     node = parent;
                     parent = parentOf(node);
@@ -861,13 +861,13 @@ namespace my_std
                 {
                     if (isBlack(leftOf(other)))
                     {
-                        // Case 3: xçš„å…„å¼Ÿwæ˜¯é»‘è‰²çš„ï¼Œå¹¶ä¸”wçš„å·¦å­©å­æ˜¯çº¢è‰²ï¼Œå³å­©å­ä¸ºé»‘è‰²ã€‚
+                        // Case 3: xµÄĞÖµÜwÊÇºÚÉ«µÄ£¬²¢ÇÒwµÄ×óº¢×ÓÊÇºìÉ«£¬ÓÒº¢×ÓÎªºÚÉ«¡£
                         setBlack(rightOf(other));
                         setRed(other);
                         leftRotate(other);
                         other = leftOf(parent);
                     }
-                    // Case 4: xçš„å…„å¼Ÿwæ˜¯é»‘è‰²çš„ï¼›å¹¶ä¸”wçš„å³å­©å­æ˜¯çº¢è‰²çš„ï¼Œå·¦å­©å­ä»»æ„é¢œè‰²ã€‚
+                    // Case 4: xµÄĞÖµÜwÊÇºÚÉ«µÄ£»²¢ÇÒwµÄÓÒº¢×ÓÊÇºìÉ«µÄ£¬×óº¢×ÓÈÎÒâÑÕÉ«¡£
                     setRbColor(other, rbColorOf(parent));
                     setBlack(parent);
                     setBlack(leftOf(other));
@@ -881,31 +881,31 @@ namespace my_std
             setBlack(node);
     }
     /*
-     * åˆ é™¤ç»“ç‚¹(node)ï¼Œå¹¶è¿”å›è¢«åˆ é™¤çš„ç»“ç‚¹
+     * É¾³ı½áµã(node)£¬²¢·µ»Ø±»É¾³ıµÄ½áµã
      *
-     * å‚æ•°è¯´æ˜ï¼š
-     *     root çº¢é»‘æ ‘çš„æ ¹ç»“ç‚¹
-     *     node åˆ é™¤çš„ç»“ç‚¹
+     * ²ÎÊıËµÃ÷£º
+     *     root ºìºÚÊ÷µÄ¸ù½áµã
+     *     node É¾³ıµÄ½áµã
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     NodeType_* RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::remove(NodeType_ *node)
     {
         /**
-         * ä¸¤ä¸ªåˆ é™¤é€»è¾‘æœ€é‡è¦çš„åŒºåˆ«ï¼Œjavaçš„å®ç°ä¸­ï¼Œå‡å¦‚ä½ è¦åˆ é™¤aèŠ‚ç‚¹ï¼Œå®é™…ä¸Šæœ‰å¯èƒ½åˆ é™¤çš„ä¸æ˜¯aèŠ‚ç‚¹ï¼Œè€Œæ˜¯bèŠ‚ç‚¹ï¼Œåªä¸è¿‡åœ¨åˆ é™¤ä¹‹å‰ä¼šæŠŠbèŠ‚ç‚¹çš„å†…å®¹å¤åˆ¶ç»™aï¼Œä¿ç•™açš„é¢œè‰²ï¼Œ
-         * ä½†æ˜¯ç¬¬äºŒç§å®ç°åˆ é™¤açš„è¿‡ç¨‹æ˜¯é€šè¿‡è°ƒæ•´çˆ¶å­èŠ‚ç‚¹å…³ç³»æ¥å®ç°ä¸ä¼šæœ‰èŠ‚ç‚¹çš„å†…å®¹å¤åˆ¶è¿‡ç¨‹ï¼Œæ³¨æ„è¿™ä¸ªå¾ˆå…³é”®ï¼Œå¦‚æœé€‰ç”¨javaçš„å®ç°åˆ é™¤çš„æ—¶å€™ä¸å…‰å½±å“çº¢é»‘æ ‘æœ¬èº«çš„èŠ‚ç‚¹å…³ç³»ï¼Œ
-         * è¿˜ä¼šæ‰“ä¹±èŠ‚ç‚¹å†…éƒ¨å¯¹åº”çš„æ•°æ®å¼•ç”¨å…³ç³»(ä¸Šå±‚hashmapä¸­èŠ‚ç‚¹aä¸­ä¿å­˜çš„æ•°æ®å¼•ç”¨æœ¬èº«æ˜¯aåˆ é™¤åçº¢é»‘æ ‘èŠ‚ç‚¹aå¯¹åº”çš„æ•°æ®å¼•ç”¨æœ‰å¯èƒ½ä¸å†æ˜¯aè€Œæ˜¯b)
+         * Á½¸öÉ¾³ıÂß¼­×îÖØÒªµÄÇø±ğ£¬javaµÄÊµÏÖÖĞ£¬¼ÙÈçÄãÒªÉ¾³ıa½Úµã£¬Êµ¼ÊÉÏÓĞ¿ÉÄÜÉ¾³ıµÄ²»ÊÇa½Úµã£¬¶øÊÇb½Úµã£¬Ö»²»¹ıÔÚÉ¾³ıÖ®Ç°»á°Ñb½ÚµãµÄÄÚÈİ¸´ÖÆ¸øa£¬±£ÁôaµÄÑÕÉ«£¬
+         * µ«ÊÇµÚ¶şÖÖÊµÏÖÉ¾³ıaµÄ¹ı³ÌÊÇÍ¨¹ıµ÷Õû¸¸×Ó½Úµã¹ØÏµÀ´ÊµÏÖ²»»áÓĞ½ÚµãµÄÄÚÈİ¸´ÖÆ¹ı³Ì£¬×¢ÒâÕâ¸öºÜ¹Ø¼ü£¬Èç¹ûÑ¡ÓÃjavaµÄÊµÏÖÉ¾³ıµÄÊ±ºò²»¹âÓ°ÏìºìºÚÊ÷±¾ÉíµÄ½Úµã¹ØÏµ£¬
+         * »¹»á´òÂÒ½ÚµãÄÚ²¿¶ÔÓ¦µÄÊı¾İÒıÓÃ¹ØÏµ(ÉÏ²ãhashmapÖĞ½ÚµãaÖĞ±£´æµÄÊı¾İÒıÓÃ±¾ÉíÊÇaÉ¾³ıºóºìºÚÊ÷½Úµãa¶ÔÓ¦µÄÊı¾İÒıÓÃÓĞ¿ÉÄÜ²»ÔÙÊÇa¶øÊÇb)
          */
         if(RB_TREE_JAVA)
         {
-            // è¢«åˆ é™¤èŠ‚ç‚¹çš„"å·¦å³å­©å­éƒ½ä¸ä¸ºç©º"çš„æƒ…å†µ
+            // ±»É¾³ı½ÚµãµÄ"×óÓÒº¢×Ó¶¼²»Îª¿Õ"µÄÇé¿ö
             if ((leftOf(node) != NULL) && (rightOf(node) != NULL))
             {
-                //å¯»æ‰¾åˆ é™¤èŠ‚ç‚¹çš„åç»§èŠ‚ç‚¹,å³æŸ¥æ‰¾"çº¢é»‘æ ‘ä¸­æ•°æ®å€¼å¤§äºè¯¥ç»“ç‚¹"çš„"æœ€å°ç»“ç‚¹"ã€‚
+                //Ñ°ÕÒÉ¾³ı½ÚµãµÄºó¼Ì½Úµã,¼´²éÕÒ"ºìºÚÊ÷ÖĞÊı¾İÖµ´óÓÚ¸Ã½áµã"µÄ"×îĞ¡½áµã"¡£
                 NodeType_* succNode = successor(node);
                 /**
-                 * é€šè¿‡æŠŠåç»§èŠ‚ç‚¹çš„å†…å®¹å¤åˆ¶ç»™è¦åˆ é™¤çš„èŠ‚ç‚¹,è®©åç»§èŠ‚ç‚¹å¤„äºè¢«åˆ é™¤nodeçš„ä½ç½®ï¼Œä¸”ä¿ç•™nodeçš„color(æ ¹æ®åç»§èŠ‚ç‚¹çš„ç‰¹æ€§å¯ä»¥çŸ¥é“ï¼ŒæŠŠåç»§
-                 * èŠ‚ç‚¹çš„å†…å®¹å¤åˆ¶åˆ°åˆ é™¤èŠ‚ç‚¹çš„ä½ç½®ä¸Šå¹¶ä¸ç ´åçº¢é»‘æ ‘äºŒå‰æœç´¢æ ‘çš„ç‰¹æ€§)ï¼Œä½†æ˜¯æœ‰å¯èƒ½ç ´åçº¢é»‘æ ‘çš„å¹³è¡¡ç‰¹æ€§,ä¸‹é¢åªè¦åˆ é™¤åç»§èŠ‚ç‚¹ç„¶åè°ƒæ•´
-                 * çº¢é»‘æ ‘çš„å¹³è¡¡å°±å¯ä»¥äº†
+                 * Í¨¹ı°Ñºó¼Ì½ÚµãµÄÄÚÈİ¸´ÖÆ¸øÒªÉ¾³ıµÄ½Úµã,ÈÃºó¼Ì½Úµã´¦ÓÚ±»É¾³ınodeµÄÎ»ÖÃ£¬ÇÒ±£ÁônodeµÄcolor(¸ù¾İºó¼Ì½ÚµãµÄÌØĞÔ¿ÉÒÔÖªµÀ£¬°Ñºó¼Ì
+                 * ½ÚµãµÄÄÚÈİ¸´ÖÆµ½É¾³ı½ÚµãµÄÎ»ÖÃÉÏ²¢²»ÆÆ»µºìºÚÊ÷¶ş²æËÑË÷Ê÷µÄÌØĞÔ)£¬µ«ÊÇÓĞ¿ÉÄÜÆÆ»µºìºÚÊ÷µÄÆ½ºâÌØĞÔ,ÏÂÃæÖ»ÒªÉ¾³ıºó¼Ì½ÚµãÈ»ºóµ÷Õû
+                 * ºìºÚÊ÷µÄÆ½ºâ¾Í¿ÉÒÔÁË
                  */
                 KeyType_    key = node->get_key();
                 INDEX_TYPE  data = node->get_data();
@@ -913,21 +913,21 @@ namespace my_std
                 node->set_data(succNode->get_data());
                 succNode->set_key(key);
                 succNode->set_data(data);
-                //æŠŠè¦åˆ é™¤çš„èŠ‚ç‚¹æ¢ä½åç»§èŠ‚ç‚¹,å‡†å¤‡åˆ é™¤åç»§èŠ‚ç‚¹
+                //°ÑÒªÉ¾³ıµÄ½Úµã»»Î»ºó¼Ì½Úµã,×¼±¸É¾³ıºó¼Ì½Úµã
                 node = succNode;
             }
 
-            //è¿™é‡Œä¸å¯èƒ½å·¦å³éƒ½ä¸ä¸ºç©ºï¼Œå› ä¸ºå¦‚æœå·¦å³éƒ½ä¸ä¸ºç©ºåˆ é™¤çš„èŠ‚ç‚¹åœ¨å‰é¢ä¼šè½¬ä¸ºèŠ‚ç‚¹çš„åç»§èŠ‚ç‚¹ï¼ˆè¯¥èŠ‚ç‚¹çš„å·¦èŠ‚ç‚¹è‚¯å®šä¸ºç©ºï¼‰
+            //ÕâÀï²»¿ÉÄÜ×óÓÒ¶¼²»Îª¿Õ£¬ÒòÎªÈç¹û×óÓÒ¶¼²»Îª¿ÕÉ¾³ıµÄ½ÚµãÔÚÇ°Ãæ»á×ªÎª½ÚµãµÄºó¼Ì½Úµã£¨¸Ã½ÚµãµÄ×ó½Úµã¿Ï¶¨Îª¿Õ£©
             NodeType_* replacement = (leftOf(node) != NULL) ? leftOf(node) : rightOf(node);
-            //å¦‚æœåˆ é™¤çš„èŠ‚ç‚¹æœ‰å­èŠ‚ç‚¹
+            //Èç¹ûÉ¾³ıµÄ½ÚµãÓĞ×Ó½Úµã
             if(replacement != NULL)
             {
-                //é‡ç½®åˆ é™¤åçš„çˆ¶å­èŠ‚ç‚¹å…³ç³»
+                //ÖØÖÃÉ¾³ıºóµÄ¸¸×Ó½Úµã¹ØÏµ
                 setParent(replacement, parentOf(node));
                 if (parentOf(node) == NULL)
-                    m_Root = curOf(replacement); //å¦‚æœè¦åˆ é™¤çš„èŠ‚ç‚¹æ²¡æœ‰çˆ¶èŠ‚ç‚¹ï¼Œåˆ™ä»–çš„å­èŠ‚ç‚¹æˆä¸ºæ–°çš„æ ¹èŠ‚ç‚¹
+                    m_Root = curOf(replacement); //Èç¹ûÒªÉ¾³ıµÄ½ÚµãÃ»ÓĞ¸¸½Úµã£¬ÔòËûµÄ×Ó½Úµã³ÉÎªĞÂµÄ¸ù½Úµã
                 else if (node == leftOf(parentOf(node)))
-                    setLeft(parentOf(node), replacement); //æ˜¯çˆ¶èŠ‚ç‚¹çš„å·¦å­æ ‘
+                    setLeft(parentOf(node), replacement); //ÊÇ¸¸½ÚµãµÄ×ó×ÓÊ÷
                 else
                     setRight(parentOf(node), replacement);
 
@@ -936,7 +936,7 @@ namespace my_std
                 if (isBlack(node))
                     removeFixUp(replacement);
 
-            }else if(parentOf(node) == NULL)//å¦‚æœè¦åˆ é™¤çš„èŠ‚ç‚¹æ²¡æœ‰çˆ¶èŠ‚ç‚¹ï¼Œåˆ™åˆ é™¤çš„èŠ‚ç‚¹æ˜¯æ ¹èŠ‚ç‚¹,ç›´æ¥æŠŠæ ¹èŠ‚ç‚¹æ¸…æ‰è¿”å›
+            }else if(parentOf(node) == NULL)//Èç¹ûÒªÉ¾³ıµÄ½ÚµãÃ»ÓĞ¸¸½Úµã£¬ÔòÉ¾³ıµÄ½ÚµãÊÇ¸ù½Úµã,Ö±½Ó°Ñ¸ù½ÚµãÇåµô·µ»Ø
             {
                 m_Root = 0;
             }else //No children. Use self as phantom replacement and unlink.
@@ -964,18 +964,18 @@ namespace my_std
         {
             NodeType_ *child, *parent;
             RBTColor color;
-            // è¢«åˆ é™¤èŠ‚ç‚¹çš„"å·¦å³å­©å­éƒ½ä¸ä¸ºç©º"çš„æƒ…å†µã€‚
+            // ±»É¾³ı½ÚµãµÄ"×óÓÒº¢×Ó¶¼²»Îª¿Õ"µÄÇé¿ö¡£
             if ((leftOf(node) != NULL) && (rightOf(node) != NULL))
             {
-                // è¢«åˆ èŠ‚ç‚¹çš„åç»§èŠ‚ç‚¹ã€‚(ç§°ä¸º"å–ä»£èŠ‚ç‚¹")
-                // ç”¨å®ƒæ¥å–ä»£"è¢«åˆ èŠ‚ç‚¹"çš„ä½ç½®ï¼Œç„¶åå†å°†"è¢«åˆ èŠ‚ç‚¹"å»æ‰ã€‚
+                // ±»É¾½ÚµãµÄºó¼Ì½Úµã¡£(³ÆÎª"È¡´ú½Úµã")
+                // ÓÃËüÀ´È¡´ú"±»É¾½Úµã"µÄÎ»ÖÃ£¬È»ºóÔÙ½«"±»É¾½Úµã"È¥µô¡£
                 NodeType_ *replace = node;
-                // è·å–åç»§èŠ‚ç‚¹
+                // »ñÈ¡ºó¼Ì½Úµã
                 replace = rightOf(replace);
                 while (leftOf(replace) != NULL)
                     replace = leftOf(replace);
 
-                // "nodeèŠ‚ç‚¹"ä¸æ˜¯æ ¹èŠ‚ç‚¹(åªæœ‰æ ¹èŠ‚ç‚¹ä¸å­˜åœ¨çˆ¶èŠ‚ç‚¹)
+                // "node½Úµã"²»ÊÇ¸ù½Úµã(Ö»ÓĞ¸ù½Úµã²»´æÔÚ¸¸½Úµã)
                 if (parentOf(node))
                 {
                     if (leftOf(parentOf(node)) == node)
@@ -984,24 +984,24 @@ namespace my_std
                         setRight(parentOf(node),replace);
                 }
                 else
-                    // "nodeèŠ‚ç‚¹"æ˜¯æ ¹èŠ‚ç‚¹ï¼Œæ›´æ–°æ ¹èŠ‚ç‚¹ã€‚
+                    // "node½Úµã"ÊÇ¸ù½Úµã£¬¸üĞÂ¸ù½Úµã¡£
                     m_Root = curOf(replace);
 
-                // childæ˜¯"å–ä»£èŠ‚ç‚¹"çš„å³å­©å­ï¼Œä¹Ÿæ˜¯éœ€è¦"è°ƒæ•´çš„èŠ‚ç‚¹"ã€‚
-                // "å–ä»£èŠ‚ç‚¹"è‚¯å®šä¸å­˜åœ¨å·¦å­©å­ï¼å› ä¸ºå®ƒæ˜¯ä¸€ä¸ªåç»§èŠ‚ç‚¹ã€‚
+                // childÊÇ"È¡´ú½Úµã"µÄÓÒº¢×Ó£¬Ò²ÊÇĞèÒª"µ÷ÕûµÄ½Úµã"¡£
+                // "È¡´ú½Úµã"¿Ï¶¨²»´æÔÚ×óº¢×Ó£¡ÒòÎªËüÊÇÒ»¸öºó¼Ì½Úµã¡£
                 child = rightOf(replace);
                 parent = parentOf(replace);
-                // ä¿å­˜"å–ä»£èŠ‚ç‚¹"çš„é¢œè‰²
+                // ±£´æ"È¡´ú½Úµã"µÄÑÕÉ«
                 color = rbColorOf(replace);
 
-                // "è¢«åˆ é™¤èŠ‚ç‚¹"æ˜¯"å®ƒçš„åç»§èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹"
+                // "±»É¾³ı½Úµã"ÊÇ"ËüµÄºó¼Ì½ÚµãµÄ¸¸½Úµã"
                 if (parent == node)
                 {
                     parent = replace;
                 }
                 else
                 {
-                    // childä¸ä¸ºç©º
+                    // child²»Îª¿Õ
                     if (child)
                         setParent(child,parent);
                     setLeft(parent,child);
@@ -1027,13 +1027,13 @@ namespace my_std
                 child = rightOf(node);
 
             parent = parentOf(node);
-            // ä¿å­˜"å–ä»£èŠ‚ç‚¹"çš„é¢œè‰²
+            // ±£´æ"È¡´ú½Úµã"µÄÑÕÉ«
             color = rbColorOf(node);
 
             if (child)
                 setParent(child,parent);
 
-            // "nodeèŠ‚ç‚¹"ä¸æ˜¯æ ¹èŠ‚ç‚¹
+            // "node½Úµã"²»ÊÇ¸ù½Úµã
             if (parent)
             {
                 if (leftOf(parent) == node)
@@ -1052,23 +1052,23 @@ namespace my_std
     }
 
     /*
-     * åˆ é™¤çº¢é»‘æ ‘ä¸­é”®å€¼ä¸ºkeyçš„èŠ‚ç‚¹
+     * É¾³ıºìºÚÊ÷ÖĞ¼üÖµÎªkeyµÄ½Úµã
      *
-     * å‚æ•°è¯´æ˜ï¼š
-     *     tree çº¢é»‘æ ‘çš„æ ¹ç»“ç‚¹
+     * ²ÎÊıËµÃ÷£º
+     *     tree ºìºÚÊ÷µÄ¸ù½áµã
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     NodeType_* RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::remove(KeyType_ key)
     {
         NodeType_ *node = NULL;
-        // æŸ¥æ‰¾keyå¯¹åº”çš„èŠ‚ç‚¹(node)ï¼Œæ‰¾åˆ°çš„è¯å°±åˆ é™¤è¯¥èŠ‚ç‚¹
+        // ²éÕÒkey¶ÔÓ¦µÄ½Úµã(node)£¬ÕÒµ½µÄ»°¾ÍÉ¾³ı¸Ã½Úµã
         if ((node = search(getNode(m_Root), key)) != NULL)
            return remove(node);
         return  NULL;
     }
 
     /*
-     * é”€æ¯çº¢é»‘æ ‘
+     * Ïú»ÙºìºÚÊ÷
      */
     //template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     //void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::destroy(NODE_TYPE *&tree)
@@ -1092,20 +1092,20 @@ namespace my_std
     //}
 
     /*
-     * æ‰“å°"äºŒå‰æŸ¥æ‰¾æ ‘"
+     * ´òÓ¡"¶ş²æ²éÕÒÊ÷"
      *
-     * key        -- èŠ‚ç‚¹çš„é”®å€¼
-     * direction  --  0ï¼Œè¡¨ç¤ºè¯¥èŠ‚ç‚¹æ˜¯æ ¹èŠ‚ç‚¹;
-     *               -1ï¼Œè¡¨ç¤ºè¯¥èŠ‚ç‚¹æ˜¯å®ƒçš„çˆ¶ç»“ç‚¹çš„å·¦å­©å­;
-     *                1ï¼Œè¡¨ç¤ºè¯¥èŠ‚ç‚¹æ˜¯å®ƒçš„çˆ¶ç»“ç‚¹çš„å³å­©å­ã€‚
+     * key        -- ½ÚµãµÄ¼üÖµ
+     * direction  --  0£¬±íÊ¾¸Ã½ÚµãÊÇ¸ù½Úµã;
+     *               -1£¬±íÊ¾¸Ã½ÚµãÊÇËüµÄ¸¸½áµãµÄ×óº¢×Ó;
+     *                1£¬±íÊ¾¸Ã½ÚµãÊÇËüµÄ¸¸½áµãµÄÓÒº¢×Ó¡£
      */
     template<typename KeyType_,typename ValueType_,typename INDEX_TYPE,std::size_t Cap_>
     void RBTree<KeyType_,ValueType_,INDEX_TYPE,Cap_>::print(NodeType_ *tree, KeyType_ key, int direction)
     {
         if (tree != NULL) {
-            if (direction == 0)    // treeæ˜¯æ ¹èŠ‚ç‚¹
+            if (direction == 0)    // treeÊÇ¸ù½Úµã
                 cout << setw(2) << tree->get_key() << "(B) is root" << endl;
-            else                // treeæ˜¯åˆ†æ”¯èŠ‚ç‚¹
+            else                // treeÊÇ·ÖÖ§½Úµã
                 cout << setw(2) << tree->get_key() << ( isRed(tree) ? "(R)" : "(B)") << " is " << setw(2) << key << "'s "
                      << setw(12) << (direction == 1 ? "right child" : "left child") << endl;
 
@@ -1184,7 +1184,7 @@ namespace my_std
     {
         if(node)
         {
-            //å¦‚æœèŠ‚ç‚¹é¢œè‰²å˜åŒ–ï¼Œåˆ™è¯´æ˜æ ‘å‘ç”Ÿäº†è°ƒæ•´ï¼Œç›´æ¥æ¸…é™¤èº«ä¸Šçš„æœ€å¤§èŠ‚ç‚¹å’Œæœ€å°èŠ‚ç‚¹æ ‡è®°
+            //Èç¹û½ÚµãÑÕÉ«±ä»¯£¬ÔòËµÃ÷Ê÷·¢ÉúÁËµ÷Õû£¬Ö±½ÓÇå³ıÉíÉÏµÄ×î´ó½ÚµãºÍ×îĞ¡½Úµã±ê¼Ç
             node->set_color(RB_RED);
         }
     }
@@ -1194,7 +1194,7 @@ namespace my_std
     {
         if(node)
         {
-            //å¦‚æœèŠ‚ç‚¹é¢œè‰²å˜åŒ–ï¼Œåˆ™è¯´æ˜æ ‘å‘ç”Ÿäº†è°ƒæ•´ï¼Œç›´æ¥æ¸…é™¤èº«ä¸Šçš„æœ€å¤§èŠ‚ç‚¹å’Œæœ€å°èŠ‚ç‚¹æ ‡è®°
+            //Èç¹û½ÚµãÑÕÉ«±ä»¯£¬ÔòËµÃ÷Ê÷·¢ÉúÁËµ÷Õû£¬Ö±½ÓÇå³ıÉíÉÏµÄ×î´ó½ÚµãºÍ×îĞ¡½Úµã±ê¼Ç
             node->set_color(RB_BLACK);
         }
     }
