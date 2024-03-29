@@ -285,7 +285,7 @@ class ProxyHead final :
     kDstFEFieldNumber = 3,
     kDstIDFieldNumber = 4,
     kTimeStampFieldNumber = 5,
-    kOpFlagFieldNumber = 6,
+    kOptypeFieldNumber = 6,
   };
   // required uint32 srcFE = 1;
   bool has_srcfe() const;
@@ -352,17 +352,17 @@ class ProxyHead final :
   void _internal_set_timestamp(uint64_t value);
   public:
 
-  // optional .enMessageCmd opFlag = 6;
-  bool has_opflag() const;
+  // required .enMessageCmd optype = 6;
+  bool has_optype() const;
   private:
-  bool _internal_has_opflag() const;
+  bool _internal_has_optype() const;
   public:
-  void clear_opflag();
-  ::enMessageCmd opflag() const;
-  void set_opflag(::enMessageCmd value);
+  void clear_optype();
+  ::enMessageCmd optype() const;
+  void set_optype(::enMessageCmd value);
   private:
-  ::enMessageCmd _internal_opflag() const;
-  void _internal_set_opflag(::enMessageCmd value);
+  ::enMessageCmd _internal_optype() const;
+  void _internal_set_optype(::enMessageCmd value);
   public:
 
   // @@protoc_insertion_point(class_scope:ProxyHead)
@@ -382,7 +382,7 @@ class ProxyHead final :
   uint32_t dstfe_;
   uint32_t dstid_;
   uint64_t timestamp_;
-  int opflag_;
+  int optype_;
   friend struct ::TableStruct_message_2eproto;
 };
 // -------------------------------------------------------------------
@@ -1008,33 +1008,33 @@ inline void ProxyHead::set_timestamp(uint64_t value) {
   // @@protoc_insertion_point(field_set:ProxyHead.timeStamp)
 }
 
-// optional .enMessageCmd opFlag = 6;
-inline bool ProxyHead::_internal_has_opflag() const {
+// required .enMessageCmd optype = 6;
+inline bool ProxyHead::_internal_has_optype() const {
   bool value = (_has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
-inline bool ProxyHead::has_opflag() const {
-  return _internal_has_opflag();
+inline bool ProxyHead::has_optype() const {
+  return _internal_has_optype();
 }
-inline void ProxyHead::clear_opflag() {
-  opflag_ = 0;
+inline void ProxyHead::clear_optype() {
+  optype_ = 0;
   _has_bits_[0] &= ~0x00000020u;
 }
-inline ::enMessageCmd ProxyHead::_internal_opflag() const {
-  return static_cast< ::enMessageCmd >(opflag_);
+inline ::enMessageCmd ProxyHead::_internal_optype() const {
+  return static_cast< ::enMessageCmd >(optype_);
 }
-inline ::enMessageCmd ProxyHead::opflag() const {
-  // @@protoc_insertion_point(field_get:ProxyHead.opFlag)
-  return _internal_opflag();
+inline ::enMessageCmd ProxyHead::optype() const {
+  // @@protoc_insertion_point(field_get:ProxyHead.optype)
+  return _internal_optype();
 }
-inline void ProxyHead::_internal_set_opflag(::enMessageCmd value) {
+inline void ProxyHead::_internal_set_optype(::enMessageCmd value) {
   assert(::enMessageCmd_IsValid(value));
   _has_bits_[0] |= 0x00000020u;
-  opflag_ = value;
+  optype_ = value;
 }
-inline void ProxyHead::set_opflag(::enMessageCmd value) {
-  _internal_set_opflag(value);
-  // @@protoc_insertion_point(field_set:ProxyHead.opFlag)
+inline void ProxyHead::set_optype(::enMessageCmd value) {
+  _internal_set_optype(value);
+  // @@protoc_insertion_point(field_set:ProxyHead.optype)
 }
 
 // -------------------------------------------------------------------

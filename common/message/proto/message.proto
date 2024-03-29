@@ -25,7 +25,7 @@ message ProxyHead
 	required	uint32			dstFE			= 3;							// 目标服务器类型
 	required	uint32			dstID			= 4;							// 目标服务器ID
 	required	uint64			timeStamp		= 5;							// 时间戳(毫秒)
-	optional	enMessageCmd	opFlag			= 6;							// 指令类型
+	required	enMessageCmd	optype			= 6;							// 指令类型
 };
 
 // 单个消息

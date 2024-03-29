@@ -2,8 +2,8 @@
 #include "common_def.h"
 #include "game_server.h"
 
-CGamePlayer::CGamePlayer()
-	:CTCPConn(GAMEPLAYER_RECV_BUFF_LEN, GAMEPLAYER_SEND_BUFF_LEN)
+CGamePlayer::CGamePlayer(CSocket socket)
+	:CTCPConn(socket,GAMEPLAYER_RECV_BUFF_LEN, GAMEPLAYER_SEND_BUFF_LEN)
 {
 
 }
@@ -36,4 +36,9 @@ int CGamePlayer::DoWriteLogic()
 int CGamePlayer::DoErrorLogic(int errcode)
 {
 	return 0;
+}
+
+void CGamePlayer::DoTick(time_t now)
+{
+
 }

@@ -10,8 +10,41 @@
 #include "inc/game_server.h"
 #include "game_ctrl.h"
 
+namespace AAA
+{
+	struct Test
+	{
+		Test()
+		{
+			int a = 1;
+		}
+	};
+
+	struct Dog
+	{
+		Test test;
+	};
+}
+
+namespace BBB
+{
+	struct Test
+	{
+		Test()
+		{
+			int a = 1;
+		}
+	};
+
+	struct Dog
+	{
+		Test test;
+	};
+}
 int main(int argc, char *argv[])
 {
+	AAA::Test test_a;
+	BBB::Test test_b;
 	//ĞÅºÅ´¦Àí×¢²á
 	CSignalHandler::GetSingletonPtr()->RegisterHandler("gameserver");
 	

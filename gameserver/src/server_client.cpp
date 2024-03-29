@@ -7,6 +7,9 @@ CServerClient::CServerClient()
 	:CTCPClient(GAMEPLAYER_RECV_BUFF_LEN, GAMEPLAYER_SEND_BUFF_LEN)
 {}
 
+CServerClient::~CServerClient()
+{}
+
 int CServerClient::DoRecvLogic()
 {
 	msize_t tmCurPacketLen = m_pReadBuff->CanReadLen();
@@ -35,4 +38,29 @@ int CServerClient::DoWriteLogic()
 int CServerClient::DoErrorLogic(int errcode)
 {
 	return 0;
+}
+
+void CServerClient::DoTick(time_t nNow)
+{
+	return;
+}
+
+void CServerClient::SetLastRecvKeepLive(time_t nKeepAliveTime)
+{
+	m_nLastRecvKeepLiveAnswer = nKeepAliveTime;
+}
+
+time_t CServerClient::GetLastRecvKeepLive()
+{
+	return m_nLastRecvKeepLiveAnswer;
+}
+
+void CServerClient::SetLastSendKeepLive(time_t nKeepAliveTime)
+{
+	m_nLastSendKeepLive = nKeepAliveTime;
+}
+
+time_t CServerClient::GetLastSendKeepLive()
+{
+	return m_nLastSendKeepLive;
 }

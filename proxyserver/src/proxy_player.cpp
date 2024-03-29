@@ -3,8 +3,13 @@
 #include "common_def.h"
 #include "proxy_server.h"
 
-CProxyPlayer::CProxyPlayer() 
-	:CTCPConn(GAMEPLAYER_RECV_BUFF_LEN, GAMEPLAYER_SEND_BUFF_LEN)
+CProxyPlayer::CProxyPlayer(CSocket socket)
+	:CTCPConn(socket,GAMEPLAYER_RECV_BUFF_LEN, GAMEPLAYER_SEND_BUFF_LEN)
+{
+
+}
+
+CProxyPlayer::~CProxyPlayer()
 {
 
 }
@@ -26,6 +31,7 @@ int CProxyPlayer::DoRecvLogic()
 	}
 	//有完整的数据包，读取处理
 	CProxyServer::GetSingletonPtr()->RecvClientData(this);
+	return 0;
 }
 
 int CProxyPlayer::DoWriteLogic()
@@ -37,4 +43,9 @@ int CProxyPlayer::DoErrorLogic(int errcode)
 {
 	CProxyServer::GetSingletonPtr()->DisConnect(this, errcode);
 	return 0;
+}
+
+void CProxyPlayer::DoTick(time_t now)
+{
+
 }

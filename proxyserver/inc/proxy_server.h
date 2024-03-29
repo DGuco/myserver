@@ -43,7 +43,7 @@ public:
 	//新链接回调
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);
 	//
-	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket tmSocket);
+	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket socket);
 private:
 	//gateserver ==> gameserver
 	CSafePtr<CShmMessQueue>	m_C2SCodeQueue;

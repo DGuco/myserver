@@ -37,55 +37,5 @@ public:
 		return &intance;
 	}
 };
-
-// ********************************************************************** //
-// CWTimer
-// ********************************************************************** //
-class CWTimer
-{
-protected:
-	time_t mNextTimeout;    // 下一次超时时间（毫秒）
-	time_t mDuration;        // 单次超时间隔（毫秒）
-public:
-	CWTimer()
-	{
-		mDuration = 0;
-		mNextTimeout = 0;
-	}
-
-	void Initialize(time_t vDuration)
-	{
-		mDuration = vDuration;
-		mNextTimeout = (time(NULL) + mDuration);
-	}
-
-public:
-	// 传入当前时间（毫秒）返回是否超时，如果超时将计算下一次超时时间，并补偿
-	inline bool IsTimeout(time_t tNow)
-	{
-		if (mDuration <= 0) {
-			return false;
-		}
-
-		if (tNow >= mNextTimeout) {
-			if (mNextTimeout == 0) {
-				mNextTimeout = (time(NULL) + mDuration);
-			}
-			else {
-				mNextTimeout += mDuration;
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	// 重置timer超时时间
-	void ResetTimeout(time_t tNow)
-	{
-		mNextTimeout = (tNow + mDuration);
-	}
-};
 #endif // __SERVER_TOOL_H__
 

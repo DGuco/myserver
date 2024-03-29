@@ -27,7 +27,7 @@ PROTOBUF_CONSTEXPR ProxyHead::ProxyHead(
   , dstfe_(0u)
   , dstid_(0u)
   , timestamp_(uint64_t{0u})
-  , opflag_(0)
+  , optype_(0)
 {}
 struct ProxyHeadDefaultTypeInternal {
   PROTOBUF_CONSTEXPR ProxyHeadDefaultTypeInternal()
@@ -83,7 +83,7 @@ const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   PROTOBUF_FIELD_OFFSET(::ProxyHead, dstfe_),
   PROTOBUF_FIELD_OFFSET(::ProxyHead, dstid_),
   PROTOBUF_FIELD_OFFSET(::ProxyHead, timestamp_),
-  PROTOBUF_FIELD_OFFSET(::ProxyHead, opflag_),
+  PROTOBUF_FIELD_OFFSET(::ProxyHead, optype_),
   0,
   1,
   2,
@@ -132,8 +132,8 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\rmessage.proto\"y\n\tProxyHead\022\r\n\005srcFE\030\001 "
   "\002(\r\022\r\n\005srcID\030\002 \002(\r\022\r\n\005dstFE\030\003 \002(\r\022\r\n\005dst"
-  "ID\030\004 \002(\r\022\021\n\ttimeStamp\030\005 \002(\004\022\035\n\006opFlag\030\006 "
-  "\001(\0162\r.enMessageCmd\"\\\n\014ProxyMessage\022\033\n\007ms"
+  "ID\030\004 \002(\r\022\021\n\ttimeStamp\030\005 \002(\004\022\035\n\006optype\030\006 "
+  "\002(\0162\r.enMessageCmd\"\\\n\014ProxyMessage\022\033\n\007ms"
   "gHead\030\001 \002(\0132\n.ProxyHead\022\016\n\006msgcmd\030\002 \002(\r\022"
   "\014\n\004buff\030\003 \001(\014\"\021\n\003Msg\022\n\n\005MsgID\020\220N\"`\n\010CGon"
   "nReq\022\017\n\007Account\030\001 \002(\t\022\020\n\010Password\030\002 \001(\t\022"
@@ -247,11 +247,11 @@ class ProxyHead::_Internal {
   static void set_has_timestamp(HasBits* has_bits) {
     (*has_bits)[0] |= 16u;
   }
-  static void set_has_opflag(HasBits* has_bits) {
+  static void set_has_optype(HasBits* has_bits) {
     (*has_bits)[0] |= 32u;
   }
   static bool MissingRequiredFields(const HasBits& has_bits) {
-    return ((has_bits[0] & 0x0000001f) ^ 0x0000001f) != 0;
+    return ((has_bits[0] & 0x0000003f) ^ 0x0000003f) != 0;
   }
 };
 
@@ -266,16 +266,16 @@ ProxyHead::ProxyHead(const ProxyHead& from)
       _has_bits_(from._has_bits_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&srcfe_, &from.srcfe_,
-    static_cast<size_t>(reinterpret_cast<char*>(&opflag_) -
-    reinterpret_cast<char*>(&srcfe_)) + sizeof(opflag_));
+    static_cast<size_t>(reinterpret_cast<char*>(&optype_) -
+    reinterpret_cast<char*>(&srcfe_)) + sizeof(optype_));
   // @@protoc_insertion_point(copy_constructor:ProxyHead)
 }
 
 inline void ProxyHead::SharedCtor() {
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&srcfe_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&opflag_) -
-    reinterpret_cast<char*>(&srcfe_)) + sizeof(opflag_));
+    0, static_cast<size_t>(reinterpret_cast<char*>(&optype_) -
+    reinterpret_cast<char*>(&srcfe_)) + sizeof(optype_));
 }
 
 ProxyHead::~ProxyHead() {
@@ -304,8 +304,8 @@ void ProxyHead::Clear() {
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x0000003fu) {
     ::memset(&srcfe_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&opflag_) -
-        reinterpret_cast<char*>(&srcfe_)) + sizeof(opflag_));
+        reinterpret_cast<char*>(&optype_) -
+        reinterpret_cast<char*>(&srcfe_)) + sizeof(optype_));
   }
   _has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -363,13 +363,13 @@ const char* ProxyHead::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         } else
           goto handle_unusual;
         continue;
-      // optional .enMessageCmd opFlag = 6;
+      // required .enMessageCmd optype = 6;
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           if (PROTOBUF_PREDICT_TRUE(::enMessageCmd_IsValid(val))) {
-            _internal_set_opflag(static_cast<::enMessageCmd>(val));
+            _internal_set_optype(static_cast<::enMessageCmd>(val));
           } else {
             ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(6, val, mutable_unknown_fields());
           }
@@ -437,11 +437,11 @@ uint8_t* ProxyHead::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(5, this->_internal_timestamp(), target);
   }
 
-  // optional .enMessageCmd opFlag = 6;
+  // required .enMessageCmd optype = 6;
   if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      6, this->_internal_opflag(), target);
+      6, this->_internal_optype(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -481,13 +481,19 @@ size_t ProxyHead::RequiredFieldsByteSizeFallback() const {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_timestamp());
   }
 
+  if (_internal_has_optype()) {
+    // required .enMessageCmd optype = 6;
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_optype());
+  }
+
   return total_size;
 }
 size_t ProxyHead::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:ProxyHead)
   size_t total_size = 0;
 
-  if (((_has_bits_[0] & 0x0000001f) ^ 0x0000001f) == 0) {  // All required fields are present.
+  if (((_has_bits_[0] & 0x0000003f) ^ 0x0000003f) == 0) {  // All required fields are present.
     // required uint32 srcFE = 1;
     total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_srcfe());
 
@@ -503,19 +509,16 @@ size_t ProxyHead::ByteSizeLong() const {
     // required uint64 timeStamp = 5;
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_timestamp());
 
+    // required .enMessageCmd optype = 6;
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_optype());
+
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
-
-  // optional .enMessageCmd opFlag = 6;
-  cached_has_bits = _has_bits_[0];
-  if (cached_has_bits & 0x00000020u) {
-    total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_opflag());
-  }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
@@ -557,7 +560,7 @@ void ProxyHead::MergeFrom(const ProxyHead& from) {
       timestamp_ = from.timestamp_;
     }
     if (cached_has_bits & 0x00000020u) {
-      opflag_ = from.opflag_;
+      optype_ = from.optype_;
     }
     _has_bits_[0] |= cached_has_bits;
   }
@@ -581,8 +584,8 @@ void ProxyHead::InternalSwap(ProxyHead* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ProxyHead, opflag_)
-      + sizeof(ProxyHead::opflag_)
+      PROTOBUF_FIELD_OFFSET(ProxyHead, optype_)
+      + sizeof(ProxyHead::optype_)
       - PROTOBUF_FIELD_OFFSET(ProxyHead, srcfe_)>(
           reinterpret_cast<char*>(&srcfe_),
           reinterpret_cast<char*>(&other->srcfe_));

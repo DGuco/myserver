@@ -43,6 +43,8 @@ bool CGameServer::PrepareToRun()
 	{
 		pConn.Free();
 	}
+
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
 	return true;
 }
 
@@ -55,9 +57,9 @@ void CGameServer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
 }
 
 //
-CSafePtr<CTCPConn> CGameServer::CreateTcpConn(CSocket tmSocket)
+CSafePtr<CTCPConn> CGameServer::CreateTcpConn(CSocket socket)
 {
-	CSafePtr<CGamePlayer> pConn = new CGamePlayer();
+	CSafePtr<CGamePlayer> pConn = new CGamePlayer(socket);
 	return pConn.DynamicCastTo<CTCPConn>();
 }
 
@@ -87,7 +89,6 @@ void CGameServer::ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer)
 		return;
 	}
 	time_t tNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
-	pGamePlayer->SetLastRecvKeepLive(tNow);
 	CSafePtr<CMessageFactory> pFactory = CMessageFactoryManager::GetSingletonPtr()->GetFactory(nCmd);
 	if (pFactory == NULL)
 	{

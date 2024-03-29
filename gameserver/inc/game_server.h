@@ -15,21 +15,10 @@
 #include "tcp_server.h"
 #include "game_player.h"
 #include "server_client.h"
+#include "time_helper.h"
 
 class CGameServer: public CTCPServer,public CSingleton<CGameServer>
 {
-public:
-	enum EServerState
-	{
-		ESS_CONNECTPROXY = 0x0001,    // 链接proxyl
-		ESS_LOADDATA = 0x0002,    // 加载数据
-		ESS_PROCESSINGDATA = 0x0004,    // 处理数据
-		ESS_SAVEDATA = 0x0008,    // 停服存储数据
-
-		ESS_NORMAL = (ESS_CONNECTPROXY | ESS_LOADDATA | ESS_PROCESSINGDATA),        // 正常
-		ESS_PROCESSINGCLIENTMSG = (ESS_LOADDATA | ESS_PROCESSINGDATA)    // 可以正常处理客户端上行的消息
-	};
-
 public:
 	CGameServer();
 	~CGameServer();
@@ -49,7 +38,7 @@ public:
 	//新链接回调
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);
 	//
-	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket tmSocket);
+	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket socket);
 public:
 	// 设置服务器状态
 	void SetServerState(int iState)
@@ -60,25 +49,15 @@ public:
 	// 判断服务器状态
 	bool IsOk(int iState)
 	{ return ((m_iServerState & iState) == iState); }
-	// 服务器是否正常
-	bool IsNormal()
-	{ return m_iServerState == ESS_NORMAL; }
-
 	// 服务器拉取数据完成
 	void LoadDataFinish();
 	// 服务器开始处理初始数据
 	void StartProcessingInitData();
-
-	// 是否能正常处理客户端上行消息
-	bool CanProcessingClientMsg()
-	{ return (m_iServerState & ESS_PROCESSINGCLIENTMSG) == ESS_PROCESSINGCLIENTMSG; }
-
 	// 给DB Server发消息
 	//bool SendMessageToDB(CSafePtr <CProxyMessage> pMsg);
 	// 通过消息ID获取模块类型
 	int GetModuleClass(int iMsgID);
 private:
-
 	CRunFlag	m_oRunFlag;                         // 服务器运行状态
 	int			m_iServerState;    // 服务器状态
 	BYTE		m_CacheData[GAMEPLAYER_RECV_BUFF_LEN];

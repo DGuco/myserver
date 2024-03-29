@@ -40,5 +40,62 @@ private:
 	tm m_TM;
 };
 
+
+class CMyTimer
+{
+protected:
+	time_t mNextTimeout;    // 下一次超时时间（毫秒）
+	time_t mDuration;        // 单次超时间隔（毫秒）
+public:
+	CMyTimer()
+	{
+		mDuration = 0;
+		mNextTimeout = 0;
+	}
+
+	void BeginTimer(time_t uNow,time_t vDuration)
+	{
+		mNextTimeout = uNow + mDuration;
+		mDuration = vDuration;
+	}
+
+public:
+	// 传入当前时间（毫秒）返回是否超时，如果超时将计算下一次超时时间，并补偿
+	inline bool IsTimeout(time_t tNow)
+	{
+		if (mDuration <= 0) 
+		{
+			return false;
+		}
+
+		if (tNow >= mNextTimeout) 
+		{
+			if (mNextTimeout == 0)
+			{
+				mNextTimeout = (tNow + mDuration);
+			}
+			else 
+			{
+				mNextTimeout += mDuration;
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	// 重置timer超时时间
+	void ResetTimeout(time_t tNow)
+	{
+		mNextTimeout = (tNow + mDuration);
+	}
+
+	// 重置timer超时时间
+	bool IsBeginTimer()
+	{
+		return mNextTimeout > 0;
+	}
+};
+
 #endif //__TIME_HELPER_H__
 

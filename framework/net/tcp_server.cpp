@@ -220,7 +220,6 @@ int CTCPServer::SelectTick()
 			CSafePtr<CTCPConn> pConn = CreateTcpConn(newSocket);
 			if (pConn != NULL)
 			{
-				pConn->SetCreateTime(CTimeHelper::GetSingletonPtr()->GetANSITime());
 				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
 				CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
 				OnNewConnect(pConn);

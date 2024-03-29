@@ -12,10 +12,11 @@
 class CGamePlayer : public CTCPConn
 {
 public:
-	CGamePlayer();
-	virtual int DoRecvLogic();
-	virtual int DoWriteLogic();
-	virtual int DoErrorLogic(int errcode);
+	CGamePlayer(CSocket socket);
+	virtual int		DoRecvLogic();
+	virtual int		DoWriteLogic();
+	virtual int		DoErrorLogic(int errcode);
+	virtual void	DoTick(time_t now);
 private:
 };
 

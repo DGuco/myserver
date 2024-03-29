@@ -12,10 +12,12 @@
 class CProxyPlayer : public CTCPConn
 {
 public:
-	CProxyPlayer();
-	virtual int DoRecvLogic();
-	virtual int DoWriteLogic();
-	virtual int DoErrorLogic(int errcode);
+	CProxyPlayer(CSocket socket);
+	virtual ~CProxyPlayer();
+	virtual int		DoRecvLogic();
+	virtual int		DoWriteLogic();
+	virtual int		DoErrorLogic(int errcode);
+	virtual void	DoTick(time_t now);
 private:
 };
 

@@ -7,12 +7,15 @@
 #ifndef __COMMON_DEF_H__
 #define __COMMON_DEF_H__
 
-#define MAX_PACKAGE_LEN				(1024*60)        // 单个包的最大长度
-#define PIPE_SIZE					(0x1000000)    // 共享内存管道大小 16M
-#define C2S_SHM_KEY					(20000000)
-#define S2C_SHM_KEY					(20000001)
-#define  GAMEPLAYER_RECV_BUFF_LEN	(1024 * 1024 * 2)  //2mb
-#define  GAMEPLAYER_SEND_BUFF_LEN	(1024 * 1024 * 2)  //2mb
+#define		MAX_PACKAGE_LEN				(1024*60)        // 单个包的最大长度
+#define		PIPE_SIZE					(0x1000000)    // 共享内存管道大小 16M
+#define		C2S_SHM_KEY					(20000000)
+#define		S2C_SHM_KEY					(20000001)
+#define		GAMEPLAYER_RECV_BUFF_LEN	(1024 * 1024 * 2)  //2mb
+#define		GAMEPLAYER_SEND_BUFF_LEN	(1024 * 1024 * 2)  //2mb
+#define		KEEP_ALIVE_TIME				(2 * 60 * 1000)   //发送
+#define		KICK_TIME_OUT_TIME			(4 * 60 * 1000)   //
+#define		CHECK_TIME_OUT_TIME			(2 * 60 * 1000)   //
 
 // Socket 连接错误码
 typedef enum _EnSocketStatus

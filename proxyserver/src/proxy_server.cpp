@@ -201,9 +201,9 @@ void CProxyServer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
 }
 
 //
-CSafePtr<CTCPConn> CProxyServer::CreateTcpConn(CSocket tmSocket)
+CSafePtr<CTCPConn> CProxyServer::CreateTcpConn(CSocket socket)
 {
-	CSafePtr<CProxyPlayer> pConn = new CProxyPlayer();
+	CSafePtr<CProxyPlayer> pConn = new CProxyPlayer(socket);
 	return pConn.DynamicCastTo<CTCPConn>();
 }
 
