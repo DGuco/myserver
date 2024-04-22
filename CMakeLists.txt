@@ -11,8 +11,8 @@ endif()
 
 add_subdirectory(lua-5.3.6)
 add_subdirectory(framework)
-add_subdirectory(proxyserver)
 add_subdirectory(gameserver)
+add_subdirectory(proxyserver)
 #add_subdirectory(dbserver)
 
 

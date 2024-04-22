@@ -8,10 +8,10 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     add_compile_options(-Wall -fPIC -ggdb -pipe -std=c++11)
     
     set(CMAKE_CXX_STANDARD 11)
-    add_definitions(-D__LINUX__ -DSPDLOG_NO_NAME -DLUABRIDGE_CXX11 -DCOMPILE_LUA_WITH_CXX)
+    add_definitions(-D__LINUX__ -DSPDLOG_NO_NAME -DCOMPILE_LUA_WITH_CXX)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     set(CMAKE_CXX_STANDARD 11)
-    add_definitions(-D__WINDOWS__ -DSPDLOG_NO_NAME -DLUABRIDGE_CXX11 -DCOMPILE_LUA_WITH_CXX)
+    add_definitions(-D__WINDOWS__ -DSPDLOG_NO_NAME -DCOMPILE_LUA_WITH_CXX)
 endif()
 
 # 仅对 Visual Studio 编译器生效
@@ -43,8 +43,10 @@ set(LUA_BRIDGE_HEADER_FILES
 
 set(FRAMEWORK
         "../common/base.h"
+        "../common/dblogin_type.h"
+        "../common/platform_def.h" 
+        "../common/platform_def.cpp" 
         "base/my_assert.h"
-         
         "base/object.h"
         "base/performance.cpp"
         "base/performance.h"
@@ -61,10 +63,6 @@ set(FRAMEWORK
         "base/signal_handler.h"
         "base/signal_handler.cpp"
         "base/message_factory.h"
-        "../common/dblogin_type.h"
-        "const/err_code.h"
-        "../common/platform_def.h" 
-        "../common/platform_def.cpp" 
         "mem/shm_queue.cpp" 
         "mem/shm_queue.h"
         "mem/mempool_safty.h" 
@@ -99,7 +97,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
         ${CMAKE_SOURCE_DIR}/common
         ${CMAKE_SOURCE_DIR}/common/message
-        ${CMAKE_SOURCE_DIR}/lua-5.3.6/
+        ${CMAKE_SOURCE_DIR}/lua-5.3.6
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const
         ${CMAKE_SOURCE_DIR}/framework/json
@@ -126,9 +124,9 @@ endif()
 add_library(framework ${LUA_BRIDGE_HEADER_FILES} ${FRAMEWORK})
 
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-    target_link_libraries(framework pthread spdlog crypto)
+    target_link_libraries(framework pthread spdlog protobuf lua)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(framework ws2_32 spdlogd crypto)
+    target_link_libraries(framework ws2_32 spdlogd protobufd lua)
 endif()
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
