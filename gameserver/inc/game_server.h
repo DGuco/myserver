@@ -16,6 +16,7 @@
 #include "game_player.h"
 #include "server_client.h"
 #include "time_helper.h"
+#include "shm_queue.h"
 
 class CGameServer: public CTCPServer,public CSingleton<CGameServer>
 {
@@ -34,6 +35,10 @@ public:
 	void ClearSocket(CSafePtr<CGamePlayer> pGamePlayer, short iError);
 	//
 	void DisConnect(CSafePtr<CGamePlayer> pGamePlayer, short iError);
+	//
+	void RecvDBMessage();
+	//
+	int  SendMessageToDB(char* data, int iTmpLen);
 public:
 	//新链接回调
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);
@@ -58,8 +63,13 @@ public:
 	// 通过消息ID获取模块类型
 	int GetModuleClass(int iMsgID);
 private:
-	CRunFlag	m_oRunFlag;                         // 服务器运行状态
-	int			m_iServerState;    // 服务器状态
-	BYTE		m_CacheData[GAMEPLAYER_RECV_BUFF_LEN];
+	CSafePtr<CByteBuff>		m_pRecvBuff;
+	//gateserver ==> gameserver
+	CSafePtr<CShmMessQueue>	m_DB2SCodeQueue;
+	//gameserver ==> gateserver
+	CSafePtr<CShmMessQueue>	m_S2DBCodeQueue;
+	CRunFlag				m_oRunFlag;                         // 服务器运行状态
+	int						m_iServerState;    // 服务器状态
+	BYTE					m_CacheData[GAMEPLAYER_RECV_BUFF_LEN];
 };
 #endif //SERVER_GAMESERVER_H

@@ -23,6 +23,9 @@ public:
 	virtual int		DoWriteLogic() = 0;
 	virtual int		DoErrorLogic(int errcode) = 0;
 	virtual void	DoTick(time_t now) = 0;
+	virtual int	    ClientKey();
+	uint64			MapKey();
+	static uint64   MapKey(int socket, int clientKey);
 public:
 };
 #endif //__TCP_CLIENT_H__

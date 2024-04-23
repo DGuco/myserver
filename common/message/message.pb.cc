@@ -20,29 +20,17 @@ PROTOBUF_PRAGMA_INIT_SEG
 namespace _pb = ::PROTOBUF_NAMESPACE_ID;
 namespace _pbi = _pb::internal;
 
-PROTOBUF_CONSTEXPR ProxyHead::ProxyHead(
+PROTOBUF_CONSTEXPR ProxyMessage::ProxyMessage(
     ::_pbi::ConstantInitialized)
-  : srcfe_(0u)
+  : buff_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
+  , srcfe_(0u)
   , srcid_(0u)
   , dstfe_(0u)
   , dstid_(0u)
   , timestamp_(uint64_t{0u})
-  , optype_(0)
+  , packetid_(0u)
+  , cmd_(0)
 {}
-struct ProxyHeadDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR ProxyHeadDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~ProxyHeadDefaultTypeInternal() {}
-  union {
-    ProxyHead _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ProxyHeadDefaultTypeInternal _ProxyHead_default_instance_;
-PROTOBUF_CONSTEXPR ProxyMessage::ProxyMessage(
-    ::_pbi::ConstantInitialized)
-  : buff_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
-  , msghead_(nullptr)
-  , msgcmd_(0u){}
 struct ProxyMessageDefaultTypeInternal {
   PROTOBUF_CONSTEXPR ProxyMessageDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -67,40 +55,32 @@ struct CGonnReqDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CGonnReqDefaultTypeInternal _CGonnReq_default_instance_;
-static ::_pb::Metadata file_level_metadata_message_2eproto[3];
+static ::_pb::Metadata file_level_metadata_message_2eproto[2];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_message_2eproto[4];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_message_2eproto = nullptr;
 
 const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  PROTOBUF_FIELD_OFFSET(::ProxyHead, _has_bits_),
-  PROTOBUF_FIELD_OFFSET(::ProxyHead, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::ProxyHead, srcfe_),
-  PROTOBUF_FIELD_OFFSET(::ProxyHead, srcid_),
-  PROTOBUF_FIELD_OFFSET(::ProxyHead, dstfe_),
-  PROTOBUF_FIELD_OFFSET(::ProxyHead, dstid_),
-  PROTOBUF_FIELD_OFFSET(::ProxyHead, timestamp_),
-  PROTOBUF_FIELD_OFFSET(::ProxyHead, optype_),
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
   PROTOBUF_FIELD_OFFSET(::ProxyMessage, _has_bits_),
   PROTOBUF_FIELD_OFFSET(::ProxyMessage, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::ProxyMessage, msghead_),
-  PROTOBUF_FIELD_OFFSET(::ProxyMessage, msgcmd_),
+  PROTOBUF_FIELD_OFFSET(::ProxyMessage, srcfe_),
+  PROTOBUF_FIELD_OFFSET(::ProxyMessage, srcid_),
+  PROTOBUF_FIELD_OFFSET(::ProxyMessage, dstfe_),
+  PROTOBUF_FIELD_OFFSET(::ProxyMessage, dstid_),
+  PROTOBUF_FIELD_OFFSET(::ProxyMessage, packetid_),
+  PROTOBUF_FIELD_OFFSET(::ProxyMessage, timestamp_),
+  PROTOBUF_FIELD_OFFSET(::ProxyMessage, cmd_),
   PROTOBUF_FIELD_OFFSET(::ProxyMessage, buff_),
   1,
   2,
+  3,
+  4,
+  6,
+  5,
+  7,
   0,
   PROTOBUF_FIELD_OFFSET(::CGonnReq, _has_bits_),
   PROTOBUF_FIELD_OFFSET(::CGonnReq, _internal_metadata_),
@@ -118,36 +98,34 @@ const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   2,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, 12, -1, sizeof(::ProxyHead)},
-  { 18, 27, -1, sizeof(::ProxyMessage)},
-  { 30, 40, -1, sizeof(::CGonnReq)},
+  { 0, 14, -1, sizeof(::ProxyMessage)},
+  { 22, 32, -1, sizeof(::CGonnReq)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
-  &::_ProxyHead_default_instance_._instance,
   &::_ProxyMessage_default_instance_._instance,
   &::_CGonnReq_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\rmessage.proto\"y\n\tProxyHead\022\r\n\005srcFE\030\001 "
-  "\002(\r\022\r\n\005srcID\030\002 \002(\r\022\r\n\005dstFE\030\003 \002(\r\022\r\n\005dst"
-  "ID\030\004 \002(\r\022\021\n\ttimeStamp\030\005 \002(\004\022\035\n\006optype\030\006 "
-  "\002(\0162\r.enMessageCmd\"\\\n\014ProxyMessage\022\033\n\007ms"
-  "gHead\030\001 \002(\0132\n.ProxyHead\022\016\n\006msgcmd\030\002 \002(\r\022"
-  "\014\n\004buff\030\003 \001(\014\"\021\n\003Msg\022\n\n\005MsgID\020\220N\"`\n\010CGon"
-  "nReq\022\017\n\007Account\030\001 \002(\t\022\020\n\010Password\030\002 \001(\t\022"
-  "\r\n\005PFrom\030\003 \001(\005\022\017\n\007Session\030\004 \002(\t\"\021\n\003Msg\022\n"
-  "\n\005MsgID\020\221N*G\n\014enServerType\022\021\n\rFE_GAMESER"
-  "VER\020\000\022\022\n\016FE_PROXYSERVER\020\001\022\020\n\014FE_WEBSERVE"
-  "R\020\002*E\n\014enMessageCmd\022\016\n\nMESS_LOGIC\020\000\022\021\n\rM"
-  "ESS_REGISTER\020\001\022\022\n\016MESS_KEEPALIVE\020\002B\002H\001"
+  "\n\rmessage.proto\"\254\001\n\014ProxyMessage\022\r\n\005srcF"
+  "E\030\001 \002(\r\022\r\n\005srcID\030\002 \002(\r\022\r\n\005dstFE\030\003 \002(\r\022\r\n"
+  "\005dstID\030\004 \002(\r\022\020\n\010packetid\030\005 \002(\r\022\021\n\ttimeSt"
+  "amp\030\006 \002(\004\022\032\n\003cmd\030\007 \002(\0162\r.enMessageCmd\022\014\n"
+  "\004buff\030\010 \001(\014\"\021\n\003Msg\022\n\n\005MsgID\020\220N\"`\n\010CGonnR"
+  "eq\022\017\n\007Account\030\001 \002(\t\022\020\n\010Password\030\002 \001(\t\022\r\n"
+  "\005PFrom\030\003 \001(\005\022\017\n\007Session\030\004 \002(\t\"\021\n\003Msg\022\n\n\005"
+  "MsgID\020\221N*W\n\014enServerType\022\016\n\nFE_INVALID\020\000"
+  "\022\021\n\rFE_GAMESERVER\020\001\022\022\n\016FE_PROXYSERVER\020\002\022"
+  "\020\n\014FE_WEBSERVER\020\003*E\n\014enMessageCmd\022\016\n\nMES"
+  "S_LOGIC\020\000\022\021\n\rMESS_REGISTER\020\001\022\022\n\016MESS_KEE"
+  "PALIVE\020\002B\002H\001"
   ;
 static ::_pbi::once_flag descriptor_table_message_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_message_2eproto = {
-    false, false, 478, descriptor_table_protodef_message_2eproto,
+    false, false, 452, descriptor_table_protodef_message_2eproto,
     "message.proto",
-    &descriptor_table_message_2eproto_once, nullptr, 0, 3,
+    &descriptor_table_message_2eproto_once, nullptr, 0, 2,
     schemas, file_default_instances, TableStruct_message_2eproto::offsets,
     file_level_metadata_message_2eproto, file_level_enum_descriptors_message_2eproto,
     file_level_service_descriptors_message_2eproto,
@@ -205,6 +183,7 @@ bool enServerType_IsValid(int value) {
     case 0:
     case 1:
     case 2:
+    case 3:
       return true;
     default:
       return false;
@@ -229,57 +208,75 @@ bool enMessageCmd_IsValid(int value) {
 
 // ===================================================================
 
-class ProxyHead::_Internal {
+class ProxyMessage::_Internal {
  public:
-  using HasBits = decltype(std::declval<ProxyHead>()._has_bits_);
+  using HasBits = decltype(std::declval<ProxyMessage>()._has_bits_);
   static void set_has_srcfe(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-  static void set_has_srcid(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
   }
-  static void set_has_dstfe(HasBits* has_bits) {
+  static void set_has_srcid(HasBits* has_bits) {
     (*has_bits)[0] |= 4u;
   }
-  static void set_has_dstid(HasBits* has_bits) {
+  static void set_has_dstfe(HasBits* has_bits) {
     (*has_bits)[0] |= 8u;
   }
-  static void set_has_timestamp(HasBits* has_bits) {
+  static void set_has_dstid(HasBits* has_bits) {
     (*has_bits)[0] |= 16u;
   }
-  static void set_has_optype(HasBits* has_bits) {
+  static void set_has_packetid(HasBits* has_bits) {
+    (*has_bits)[0] |= 64u;
+  }
+  static void set_has_timestamp(HasBits* has_bits) {
     (*has_bits)[0] |= 32u;
   }
+  static void set_has_cmd(HasBits* has_bits) {
+    (*has_bits)[0] |= 128u;
+  }
+  static void set_has_buff(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
   static bool MissingRequiredFields(const HasBits& has_bits) {
-    return ((has_bits[0] & 0x0000003f) ^ 0x0000003f) != 0;
+    return ((has_bits[0] & 0x000000fe) ^ 0x000000fe) != 0;
   }
 };
 
-ProxyHead::ProxyHead(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+ProxyMessage::ProxyMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  // @@protoc_insertion_point(arena_constructor:ProxyHead)
+  // @@protoc_insertion_point(arena_constructor:ProxyMessage)
 }
-ProxyHead::ProxyHead(const ProxyHead& from)
+ProxyMessage::ProxyMessage(const ProxyMessage& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       _has_bits_(from._has_bits_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  buff_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    buff_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_buff()) {
+    buff_.Set(from._internal_buff(), 
+      GetArenaForAllocation());
+  }
   ::memcpy(&srcfe_, &from.srcfe_,
-    static_cast<size_t>(reinterpret_cast<char*>(&optype_) -
-    reinterpret_cast<char*>(&srcfe_)) + sizeof(optype_));
-  // @@protoc_insertion_point(copy_constructor:ProxyHead)
+    static_cast<size_t>(reinterpret_cast<char*>(&cmd_) -
+    reinterpret_cast<char*>(&srcfe_)) + sizeof(cmd_));
+  // @@protoc_insertion_point(copy_constructor:ProxyMessage)
 }
 
-inline void ProxyHead::SharedCtor() {
+inline void ProxyMessage::SharedCtor() {
+buff_.InitDefault();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  buff_.Set("", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&srcfe_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&optype_) -
-    reinterpret_cast<char*>(&srcfe_)) + sizeof(optype_));
+    0, static_cast<size_t>(reinterpret_cast<char*>(&cmd_) -
+    reinterpret_cast<char*>(&srcfe_)) + sizeof(cmd_));
 }
 
-ProxyHead::~ProxyHead() {
-  // @@protoc_insertion_point(destructor:ProxyHead)
+ProxyMessage::~ProxyMessage() {
+  // @@protoc_insertion_point(destructor:ProxyMessage)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -287,31 +284,35 @@ ProxyHead::~ProxyHead() {
   SharedDtor();
 }
 
-inline void ProxyHead::SharedDtor() {
+inline void ProxyMessage::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  buff_.Destroy();
 }
 
-void ProxyHead::SetCachedSize(int size) const {
+void ProxyMessage::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
 
-void ProxyHead::Clear() {
-// @@protoc_insertion_point(message_clear_start:ProxyHead)
+void ProxyMessage::Clear() {
+// @@protoc_insertion_point(message_clear_start:ProxyMessage)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
+  if (cached_has_bits & 0x00000001u) {
+    buff_.ClearNonDefaultToEmpty();
+  }
+  if (cached_has_bits & 0x000000feu) {
     ::memset(&srcfe_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&optype_) -
-        reinterpret_cast<char*>(&srcfe_)) + sizeof(optype_));
+        reinterpret_cast<char*>(&cmd_) -
+        reinterpret_cast<char*>(&srcfe_)) + sizeof(cmd_));
   }
   _has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* ProxyHead::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* ProxyMessage::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
@@ -354,378 +355,40 @@ const char* ProxyHead::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         } else
           goto handle_unusual;
         continue;
-      // required uint64 timeStamp = 5;
+      // required uint32 packetid = 5;
       case 5:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          _Internal::set_has_packetid(&has_bits);
+          packetid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // required uint64 timeStamp = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
           _Internal::set_has_timestamp(&has_bits);
           timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // required .enMessageCmd optype = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+      // required .enMessageCmd cmd = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           if (PROTOBUF_PREDICT_TRUE(::enMessageCmd_IsValid(val))) {
-            _internal_set_optype(static_cast<::enMessageCmd>(val));
+            _internal_set_cmd(static_cast<::enMessageCmd>(val));
           } else {
-            ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(6, val, mutable_unknown_fields());
+            ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(7, val, mutable_unknown_fields());
           }
         } else
           goto handle_unusual;
         continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  _has_bits_.Or(has_bits);
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* ProxyHead::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ProxyHead)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  // required uint32 srcFE = 1;
-  if (cached_has_bits & 0x00000001u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_srcfe(), target);
-  }
-
-  // required uint32 srcID = 2;
-  if (cached_has_bits & 0x00000002u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_srcid(), target);
-  }
-
-  // required uint32 dstFE = 3;
-  if (cached_has_bits & 0x00000004u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_dstfe(), target);
-  }
-
-  // required uint32 dstID = 4;
-  if (cached_has_bits & 0x00000008u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_dstid(), target);
-  }
-
-  // required uint64 timeStamp = 5;
-  if (cached_has_bits & 0x00000010u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(5, this->_internal_timestamp(), target);
-  }
-
-  // required .enMessageCmd optype = 6;
-  if (cached_has_bits & 0x00000020u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      6, this->_internal_optype(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:ProxyHead)
-  return target;
-}
-
-size_t ProxyHead::RequiredFieldsByteSizeFallback() const {
-// @@protoc_insertion_point(required_fields_byte_size_fallback_start:ProxyHead)
-  size_t total_size = 0;
-
-  if (_internal_has_srcfe()) {
-    // required uint32 srcFE = 1;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_srcfe());
-  }
-
-  if (_internal_has_srcid()) {
-    // required uint32 srcID = 2;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_srcid());
-  }
-
-  if (_internal_has_dstfe()) {
-    // required uint32 dstFE = 3;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_dstfe());
-  }
-
-  if (_internal_has_dstid()) {
-    // required uint32 dstID = 4;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_dstid());
-  }
-
-  if (_internal_has_timestamp()) {
-    // required uint64 timeStamp = 5;
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_timestamp());
-  }
-
-  if (_internal_has_optype()) {
-    // required .enMessageCmd optype = 6;
-    total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_optype());
-  }
-
-  return total_size;
-}
-size_t ProxyHead::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ProxyHead)
-  size_t total_size = 0;
-
-  if (((_has_bits_[0] & 0x0000003f) ^ 0x0000003f) == 0) {  // All required fields are present.
-    // required uint32 srcFE = 1;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_srcfe());
-
-    // required uint32 srcID = 2;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_srcid());
-
-    // required uint32 dstFE = 3;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_dstfe());
-
-    // required uint32 dstID = 4;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_dstid());
-
-    // required uint64 timeStamp = 5;
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_timestamp());
-
-    // required .enMessageCmd optype = 6;
-    total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_optype());
-
-  } else {
-    total_size += RequiredFieldsByteSizeFallback();
-  }
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ProxyHead::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
-    ProxyHead::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ProxyHead::GetClassData() const { return &_class_data_; }
-
-void ProxyHead::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<ProxyHead *>(to)->MergeFrom(
-      static_cast<const ProxyHead &>(from));
-}
-
-
-void ProxyHead::MergeFrom(const ProxyHead& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ProxyHead)
-  GOOGLE_DCHECK_NE(&from, this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = from._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
-    if (cached_has_bits & 0x00000001u) {
-      srcfe_ = from.srcfe_;
-    }
-    if (cached_has_bits & 0x00000002u) {
-      srcid_ = from.srcid_;
-    }
-    if (cached_has_bits & 0x00000004u) {
-      dstfe_ = from.dstfe_;
-    }
-    if (cached_has_bits & 0x00000008u) {
-      dstid_ = from.dstid_;
-    }
-    if (cached_has_bits & 0x00000010u) {
-      timestamp_ = from.timestamp_;
-    }
-    if (cached_has_bits & 0x00000020u) {
-      optype_ = from.optype_;
-    }
-    _has_bits_[0] |= cached_has_bits;
-  }
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void ProxyHead::CopyFrom(const ProxyHead& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ProxyHead)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool ProxyHead::IsInitialized() const {
-  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
-  return true;
-}
-
-void ProxyHead::InternalSwap(ProxyHead* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_has_bits_[0], other->_has_bits_[0]);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ProxyHead, optype_)
-      + sizeof(ProxyHead::optype_)
-      - PROTOBUF_FIELD_OFFSET(ProxyHead, srcfe_)>(
-          reinterpret_cast<char*>(&srcfe_),
-          reinterpret_cast<char*>(&other->srcfe_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata ProxyHead::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
-      file_level_metadata_message_2eproto[0]);
-}
-
-// ===================================================================
-
-class ProxyMessage::_Internal {
- public:
-  using HasBits = decltype(std::declval<ProxyMessage>()._has_bits_);
-  static const ::ProxyHead& msghead(const ProxyMessage* msg);
-  static void set_has_msghead(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
-  static void set_has_msgcmd(HasBits* has_bits) {
-    (*has_bits)[0] |= 4u;
-  }
-  static void set_has_buff(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-  static bool MissingRequiredFields(const HasBits& has_bits) {
-    return ((has_bits[0] & 0x00000006) ^ 0x00000006) != 0;
-  }
-};
-
-const ::ProxyHead&
-ProxyMessage::_Internal::msghead(const ProxyMessage* msg) {
-  return *msg->msghead_;
-}
-ProxyMessage::ProxyMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor();
-  // @@protoc_insertion_point(arena_constructor:ProxyMessage)
-}
-ProxyMessage::ProxyMessage(const ProxyMessage& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _has_bits_(from._has_bits_) {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  buff_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    buff_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_buff()) {
-    buff_.Set(from._internal_buff(), 
-      GetArenaForAllocation());
-  }
-  if (from._internal_has_msghead()) {
-    msghead_ = new ::ProxyHead(*from.msghead_);
-  } else {
-    msghead_ = nullptr;
-  }
-  msgcmd_ = from.msgcmd_;
-  // @@protoc_insertion_point(copy_constructor:ProxyMessage)
-}
-
-inline void ProxyMessage::SharedCtor() {
-buff_.InitDefault();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  buff_.Set("", GetArenaForAllocation());
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&msghead_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&msgcmd_) -
-    reinterpret_cast<char*>(&msghead_)) + sizeof(msgcmd_));
-}
-
-ProxyMessage::~ProxyMessage() {
-  // @@protoc_insertion_point(destructor:ProxyMessage)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void ProxyMessage::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  buff_.Destroy();
-  if (this != internal_default_instance()) delete msghead_;
-}
-
-void ProxyMessage::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-
-void ProxyMessage::Clear() {
-// @@protoc_insertion_point(message_clear_start:ProxyMessage)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    if (cached_has_bits & 0x00000001u) {
-      buff_.ClearNonDefaultToEmpty();
-    }
-    if (cached_has_bits & 0x00000002u) {
-      GOOGLE_DCHECK(msghead_ != nullptr);
-      msghead_->Clear();
-    }
-  }
-  msgcmd_ = 0u;
-  _has_bits_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* ProxyMessage::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // required .ProxyHead msgHead = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_msghead(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // required uint32 msgcmd = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _Internal::set_has_msgcmd(&has_bits);
-          msgcmd_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bytes buff = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+      // optional bytes buff = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
           auto str = _internal_mutable_buff();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
@@ -763,23 +426,53 @@ uint8_t* ProxyMessage::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
-  // required .ProxyHead msgHead = 1;
+  // required uint32 srcFE = 1;
   if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::msghead(this),
-        _Internal::msghead(this).GetCachedSize(), target, stream);
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_srcfe(), target);
   }
 
-  // required uint32 msgcmd = 2;
+  // required uint32 srcID = 2;
   if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_msgcmd(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_srcid(), target);
   }
 
-  // optional bytes buff = 3;
+  // required uint32 dstFE = 3;
+  if (cached_has_bits & 0x00000008u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_dstfe(), target);
+  }
+
+  // required uint32 dstID = 4;
+  if (cached_has_bits & 0x00000010u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_dstid(), target);
+  }
+
+  // required uint32 packetid = 5;
+  if (cached_has_bits & 0x00000040u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(5, this->_internal_packetid(), target);
+  }
+
+  // required uint64 timeStamp = 6;
+  if (cached_has_bits & 0x00000020u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(6, this->_internal_timestamp(), target);
+  }
+
+  // required .enMessageCmd cmd = 7;
+  if (cached_has_bits & 0x00000080u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      7, this->_internal_cmd(), target);
+  }
+
+  // optional bytes buff = 8;
   if (cached_has_bits & 0x00000001u) {
     target = stream->WriteBytesMaybeAliased(
-        3, this->_internal_buff(), target);
+        8, this->_internal_buff(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -794,16 +487,40 @@ size_t ProxyMessage::RequiredFieldsByteSizeFallback() const {
 // @@protoc_insertion_point(required_fields_byte_size_fallback_start:ProxyMessage)
   size_t total_size = 0;
 
-  if (_internal_has_msghead()) {
-    // required .ProxyHead msgHead = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *msghead_);
+  if (_internal_has_srcfe()) {
+    // required uint32 srcFE = 1;
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_srcfe());
   }
 
-  if (_internal_has_msgcmd()) {
-    // required uint32 msgcmd = 2;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_msgcmd());
+  if (_internal_has_srcid()) {
+    // required uint32 srcID = 2;
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_srcid());
+  }
+
+  if (_internal_has_dstfe()) {
+    // required uint32 dstFE = 3;
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_dstfe());
+  }
+
+  if (_internal_has_dstid()) {
+    // required uint32 dstID = 4;
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_dstid());
+  }
+
+  if (_internal_has_timestamp()) {
+    // required uint64 timeStamp = 6;
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_timestamp());
+  }
+
+  if (_internal_has_packetid()) {
+    // required uint32 packetid = 5;
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_packetid());
+  }
+
+  if (_internal_has_cmd()) {
+    // required .enMessageCmd cmd = 7;
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_cmd());
   }
 
   return total_size;
@@ -812,14 +529,28 @@ size_t ProxyMessage::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:ProxyMessage)
   size_t total_size = 0;
 
-  if (((_has_bits_[0] & 0x00000006) ^ 0x00000006) == 0) {  // All required fields are present.
-    // required .ProxyHead msgHead = 1;
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *msghead_);
+  if (((_has_bits_[0] & 0x000000fe) ^ 0x000000fe) == 0) {  // All required fields are present.
+    // required uint32 srcFE = 1;
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_srcfe());
 
-    // required uint32 msgcmd = 2;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_msgcmd());
+    // required uint32 srcID = 2;
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_srcid());
+
+    // required uint32 dstFE = 3;
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_dstfe());
+
+    // required uint32 dstID = 4;
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_dstid());
+
+    // required uint64 timeStamp = 6;
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_timestamp());
+
+    // required uint32 packetid = 5;
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_packetid());
+
+    // required .enMessageCmd cmd = 7;
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_cmd());
 
   } else {
     total_size += RequiredFieldsByteSizeFallback();
@@ -828,7 +559,7 @@ size_t ProxyMessage::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // optional bytes buff = 3;
+  // optional bytes buff = 8;
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
     total_size += 1 +
@@ -859,15 +590,30 @@ void ProxyMessage::MergeFrom(const ProxyMessage& from) {
   (void) cached_has_bits;
 
   cached_has_bits = from._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
+  if (cached_has_bits & 0x000000ffu) {
     if (cached_has_bits & 0x00000001u) {
       _internal_set_buff(from._internal_buff());
     }
     if (cached_has_bits & 0x00000002u) {
-      _internal_mutable_msghead()->::ProxyHead::MergeFrom(from._internal_msghead());
+      srcfe_ = from.srcfe_;
     }
     if (cached_has_bits & 0x00000004u) {
-      msgcmd_ = from.msgcmd_;
+      srcid_ = from.srcid_;
+    }
+    if (cached_has_bits & 0x00000008u) {
+      dstfe_ = from.dstfe_;
+    }
+    if (cached_has_bits & 0x00000010u) {
+      dstid_ = from.dstid_;
+    }
+    if (cached_has_bits & 0x00000020u) {
+      timestamp_ = from.timestamp_;
+    }
+    if (cached_has_bits & 0x00000040u) {
+      packetid_ = from.packetid_;
+    }
+    if (cached_has_bits & 0x00000080u) {
+      cmd_ = from.cmd_;
     }
     _has_bits_[0] |= cached_has_bits;
   }
@@ -883,9 +629,6 @@ void ProxyMessage::CopyFrom(const ProxyMessage& from) {
 
 bool ProxyMessage::IsInitialized() const {
   if (_Internal::MissingRequiredFields(_has_bits_)) return false;
-  if (_internal_has_msghead()) {
-    if (!msghead_->IsInitialized()) return false;
-  }
   return true;
 }
 
@@ -900,17 +643,17 @@ void ProxyMessage::InternalSwap(ProxyMessage* other) {
       &other->buff_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ProxyMessage, msgcmd_)
-      + sizeof(ProxyMessage::msgcmd_)
-      - PROTOBUF_FIELD_OFFSET(ProxyMessage, msghead_)>(
-          reinterpret_cast<char*>(&msghead_),
-          reinterpret_cast<char*>(&other->msghead_));
+      PROTOBUF_FIELD_OFFSET(ProxyMessage, cmd_)
+      + sizeof(ProxyMessage::cmd_)
+      - PROTOBUF_FIELD_OFFSET(ProxyMessage, srcfe_)>(
+          reinterpret_cast<char*>(&srcfe_),
+          reinterpret_cast<char*>(&other->srcfe_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ProxyMessage::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
-      file_level_metadata_message_2eproto[1]);
+      file_level_metadata_message_2eproto[0]);
 }
 
 // ===================================================================
@@ -1291,15 +1034,11 @@ void CGonnReq::InternalSwap(CGonnReq* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CGonnReq::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
-      file_level_metadata_message_2eproto[2]);
+      file_level_metadata_message_2eproto[1]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
-template<> PROTOBUF_NOINLINE ::ProxyHead*
-Arena::CreateMaybeMessage< ::ProxyHead >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::ProxyHead >(arena);
-}
 template<> PROTOBUF_NOINLINE ::ProxyMessage*
 Arena::CreateMaybeMessage< ::ProxyMessage >(Arena* arena) {
   return Arena::CreateMessageInternal< ::ProxyMessage >(arena);

@@ -4,9 +4,10 @@ option optimize_for = SPEED;
 // 服务器类型
 enum enServerType
 {
-	FE_GAMESERVER			= 0;		// 代理服务器
-	FE_PROXYSERVER			= 1;		// 代理服务器
-	FE_WEBSERVER			= 2;		// http服务器
+	FE_INVALID				= 0;		// 无效
+	FE_GAMESERVER			= 1;		// 代理服务器
+	FE_PROXYSERVER			= 2;		// 代理服务器
+	FE_WEBSERVER			= 3;		// http服务器
 };
 
 enum enMessageCmd
@@ -17,17 +18,6 @@ enum enMessageCmd
 }
 
 /////////////////////////////////(dbserver,gameserver等等) <==> ProxyServer/////////////////////
-//发送给proxyserver的消息头
-message ProxyHead
-{
-	required	uint32			srcFE			= 1;							// 源服务器类型
-	required	uint32			srcID			= 2;							// 源服务器ID
-	required	uint32			dstFE			= 3;							// 目标服务器类型
-	required	uint32			dstID			= 4;							// 目标服务器ID
-	required	uint64			timeStamp		= 5;							// 时间戳(毫秒)
-	required	enMessageCmd	optype			= 6;							// 指令类型
-};
-
 // 单个消息
 message ProxyMessage
 {
@@ -35,9 +25,14 @@ message ProxyMessage
 	{
 	    MsgID	= 10000;
 	}
-	required	ProxyHead		msgHead			= 1;							// 消息头+
-	required	uint32			msgcmd			= 2;							// 消息包id
-	optional	bytes			buff			= 3; 							// 字节流
+	required	uint32			srcFE			= 1;							// 源服务器类型
+	required	uint32			srcID			= 2;							// 源服务器ID
+	required	uint32			dstFE			= 3;							// 目标服务器类型
+	required	uint32			dstID			= 4;							// 目标服务器ID
+	required	uint32			packetid		= 5;							// 转发的消息号
+	required	uint64			timeStamp		= 6;							// 时间戳(毫秒)
+	required	enMessageCmd	cmd				= 7;							// 指令类型
+	optional	bytes			buff			= 8; 							// 字节流
 };
 
 message CGonnReq

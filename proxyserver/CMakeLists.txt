@@ -18,6 +18,7 @@ if(MSVC)
 endif()
 
 set(SOURCE_FILES
+    "main.cpp" 
     "../common/message/message.pb.cc" 
     "../common/message/message.pb.h"
     "../common/common_def.h"
@@ -30,8 +31,9 @@ set(SOURCE_FILES
     "src/proxy_server.cpp"
     "inc/proxy_player.h"
     "src/proxy_player.cpp"
-    "main.cpp" 
-    )
+    "inc/mfactory_manager.h" 
+    "src/mfactory_manager.cpp"
+    "inc/proxy_message.h")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty

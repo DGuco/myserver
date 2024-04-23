@@ -6,6 +6,7 @@
 ******************************************************************/
 #ifndef __TCP_CONN_H__
 #define __TCP_CONN_H__
+#include "base.h"
 #include "tcp_socket.h"
 
 /**

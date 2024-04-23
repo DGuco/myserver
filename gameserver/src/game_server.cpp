@@ -13,10 +13,25 @@
 
 CGameServer::CGameServer()
 {
+	m_DB2SCodeQueue.Reset();
+	m_S2DBCodeQueue.Reset();
+	m_pRecvBuff.Reset();
 }
 
 CGameServer::~CGameServer()
 {
+	if (m_S2DBCodeQueue != NULL)
+	{
+		m_S2DBCodeQueue.Free();
+	}
+	if (m_S2DBCodeQueue != NULL)
+	{
+		m_S2DBCodeQueue.Free();
+	}
+	if (m_pRecvBuff != NULL)
+	{
+		m_pRecvBuff.Free();
+	}
 }
 
 
@@ -35,6 +50,24 @@ bool CGameServer::PrepareToRun()
 	{
 		DISK_LOG(DEBUG_DISK, "CGameServer PrepareToRun at {} : {} failed,failed reason {]", pGameInfo->m_sHost.c_str(),
 			pGameInfo->m_iPort, strerror(errno));
+		return false;
+	}
+
+	m_DB2SCodeQueue = CShmMessQueue::CreateInstance(DB2S_SHM_KEY, PIPE_SIZE);
+	if (m_DB2SCodeQueue == NULL)
+	{
+		return false;
+	}
+
+	m_S2DBCodeQueue = CShmMessQueue::CreateInstance(S2DB_SHM_KEY, PIPE_SIZE);
+	if (m_S2DBCodeQueue == NULL)
+	{
+		return false;
+	}
+
+	m_pRecvBuff = new CByteBuff(MAX_PACKAGE_LEN);
+	if (m_pRecvBuff == NULL)
+	{
 		return false;
 	}
 	CSafePtr<ServerInfo> pRroxyInfo = pConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
@@ -192,4 +225,57 @@ int CGameServer::GetModuleClass(int iMsgID)
 {
 //    return ((iMsgID >> 16) & 0xFF);
 	return iMsgID / 100;
+}
+
+void CGameServer::RecvDBMessage()
+{
+	while (!m_S2DBCodeQueue->IsEmpty())
+	{
+		m_pRecvBuff->Clear();
+		int iTmpLen = 0;
+		//获取成功
+		int iRet = 0;
+
+		//没有数据可读
+		if (m_S2DBCodeQueue->IsEmpty())
+		{
+			return;
+		}
+		if ((iTmpLen = m_S2DBCodeQueue->ReadHeadMessage((BYTE*)(m_pRecvBuff->GetData()))) > 0)
+		{
+			m_pRecvBuff->WriteLen(iTmpLen);
+		}
+		else
+		{
+			CACHE_LOG(TCP_ERROR, "CProxyServer::m_S2CCodeQueue->GetHeadCode failed,error code {}", iRet);
+			return;
+		}
+
+		if (iTmpLen > GAMEPLAYER_RECV_BUFF_LEN)
+		{
+			CACHE_LOG(TCP_ERROR, "CProxyServer::m_S2CCodeQueue->GetHeadCode len illegal,len {}", iTmpLen);
+			return;
+		}
+		int iTmpRet = 0;
+		iTmpRet = m_pRecvBuff->ReadBytes(m_CacheData, iTmpLen);
+		if (iTmpLen != 0)
+		{
+			CACHE_LOG(TCP_ERROR, "CProxyServer::m_pRecvBuff->ReadBytes failed,iTmpRet {}", iTmpRet);
+			return;
+		}
+
+		// 		CMessG2G msgG2g;
+		// 		iTmpRet = msgG2g.ParseFromArray(m_CacheData, iTmpLen);
+		// 		if (iTmpLen == false)
+		// 		{
+		// 			CACHE_LOG(TCP_ERROR, "CProxyServer::msgG2g.ParseFromArray failed,iTmpRet {}", iTmpRet);
+		// 			return;
+		// 		}
+		// 		SendToClient(msgG2g);
+	}
+}
+
+int CGameServer::SendMessageToDB(char* data, int iTmpLen)
+{
+	return m_DB2SCodeQueue->SendMessage((BYTE*)data, iTmpLen);
 }

@@ -35,7 +35,7 @@ bool CTCPServer::ConnectTo(CSafePtr<CTCPClient> pClient,const char* szLocalAddr,
 		return false;
 	}
 
-	if (pClient->GetSocket().IsValid())
+	if (pClient->IsValid())
 	{
 		m_ClientMap.erase(pClient->GetSocketFD());
 		pClient->Close();
@@ -57,6 +57,7 @@ bool CTCPServer::ConnectTo(CSafePtr<CTCPClient> pClient,const char* szLocalAddr,
 	}
 #else
 #endif
+	ASSERT(pClient->IsValid());
 	m_ClientMap.insert(std::make_pair(pClient->GetSocketFD(), pClient));
 	return true;
 }
@@ -218,7 +219,7 @@ int CTCPServer::SelectTick()
 		if (newSocket.IsValid())
 		{
 			CSafePtr<CTCPConn> pConn = CreateTcpConn(newSocket);
-			if (pConn != NULL)
+			if (pConn != NULL && pConn->IsValid())
 			{
 				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
 				CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
@@ -341,7 +342,7 @@ void CTCPServer::FreeClosedSocket()
 {
 	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end();)
 	{
-		if (!it->second->GetSocket().IsValid())
+		if (!it->second->IsValid())
 		{
 			it->second.Free();
 			it = m_ConnMap.erase(it);
@@ -354,7 +355,7 @@ void CTCPServer::FreeClosedSocket()
 
 	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end();)
 	{
-		if (!it->second->GetSocket().IsValid())
+		if (!it->second->IsValid())
 		{
 			it->second.Free();
 			it = m_ClientMap.erase(it);
@@ -387,7 +388,6 @@ int CTCPServer::InitEpoll(const char* ip, int port)
 		if ((m_nEpollFd = epoll_create(MAX_SOCKET_NUM)) < 0)
 		{
 			CACHE_LOG(TCP_ERROR, "epoll_create Error : {}", strerror(errno));
-			CACHE_LOG(TCP_ERROR, "epoll_create error!");
 			return -1;
 		}
 
@@ -515,7 +515,7 @@ int CTCPServer::EpollTick()
 			}
 
 			CSafePtr<CTCPConn> pConn = CreateTcpConn(tmConnSocket);
-			if (pConn != NULL)
+			if (pConn != NULL && pConn->IsValid())
 			{
 				if (EpollAddSocket(iNewSocket) != 0)
 				{

@@ -10,3 +10,22 @@ CTCPClient::~CTCPClient()
 {
 
 }
+
+int	CTCPClient::ClientKey()
+{
+	return GetSocketFD();
+}
+
+uint64 CTCPClient::MapKey()
+{
+	uint64 nSocket = GetSocketFD();
+	uint64 nKey = ClientKey();
+	return nSocket << 32 + nKey;
+}
+
+uint64 CTCPClient::MapKey(int socket, int clientKey)
+{
+	uint64 nSocket = socket;
+	uint64 nKey = clientKey;
+	return nSocket << 32 + nKey;
+}

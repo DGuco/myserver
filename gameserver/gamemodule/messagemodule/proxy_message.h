@@ -37,29 +37,29 @@ int	CProxyMessageFactory::MessId()
 
 int CProxyMessageFactory::Execute(CSafePtr<CTCPSocket> pSocket)
 {
-	CSafePtr<CServerClient> pServerPlayer = pSocket.DynamicCastTo<CServerClient>();
-	ASSERT(pServerPlayer != NULL && m_pMessage != NULL);
-	const ProxyHead& mesHead = m_pMessage->msghead();
-	int nFromT = mesHead.srcfe();
-	int nFromId = mesHead.srcid();
-	int nDestT = mesHead.dstfe();
-	int nDestId = mesHead.dstid();
-	int nCmdId = m_pMessage->msgcmd();
-
-	CSafePtr<CMessageFactory> pFactory = CMessageFactoryManager::GetSingletonPtr()->GetFactory(nCmdId);
-	if (pFactory == NULL)
-	{
-		return 0;
-	}
-
-	shared_ptr<ProtoMess> pServerMes = pFactory->CreateMessage();
-	ASSERT(pServerMes != NULL);
-	if (!pServerMes->ParseFromString(m_pMessage->buff()))
-	{
-		return 0;
-	}
-	pFactory->Execute(pSocket.DynamicCastTo<CTCPSocket>());
-	return 0;
+// 	CSafePtr<CServerClient> pServerPlayer = pSocket.DynamicCastTo<CServerClient>();
+// 	ASSERT(pServerPlayer != NULL && m_pMessage != NULL);
+// 	const ProxyHead& mesHead = m_pMessage->msghead();
+// 	int nFromT = mesHead.srcfe();
+// 	int nFromId = mesHead.srcid();
+// 	int nDestT = mesHead.dstfe();
+// 	int nDestId = mesHead.dstid();
+// 	int nCmdId = m_pMessage->msgcmd();
+// 
+// 	CSafePtr<CMessageFactory> pFactory = CMessageFactoryManager::GetSingletonPtr()->GetFactory(nCmdId);
+// 	if (pFactory == NULL)
+// 	{
+// 		return 0;
+// 	}
+// 
+// 	shared_ptr<ProtoMess> pServerMes = pFactory->CreateMessage();
+// 	ASSERT(pServerMes != NULL);
+// 	if (!pServerMes->ParseFromString(m_pMessage->buff()))
+// 	{
+// 		return 0;
+// 	}
+// 	pFactory->Execute(pSocket.DynamicCastTo<CTCPSocket>());
+ 	return 0;
 }
 
 #endif //__PROXY_MESSAGE_H__

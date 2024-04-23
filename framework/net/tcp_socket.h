@@ -43,7 +43,7 @@ public:
 	int Recv();
 	//把数据写到缓冲区准备发送
 	//sendnow 是否立刻发送到网络中，1 立刻发送 2 不发送只暂存到缓冲区中等tcp发送缓冲区可写是再一起发出去
-	int Write(BYTE* pCode, msize_t nCodeLength,bool sendnow = false);
+	int Write(BYTE* pCode, msize_t nCodeLength);
 	//把缓冲区数据发送
 	int Flush();
 	//添加socket到fdset
@@ -52,6 +52,8 @@ public:
 	bool IsFDSetted(fd_set& pCheckSet);
 	//关闭
 	int Close();
+	//
+	bool IsValid();
 	//
 	CSafePtr<CByteBuff> GetReadBuff();
 	//

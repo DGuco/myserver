@@ -8,6 +8,7 @@
 #include "my_assert.h"
 #include "proxy_ctrl.h"
 #include "proxy_server.h"
+#include "mfactory_manager.h"
 
 CProxyCtrl::CProxyCtrl()
 {
@@ -16,7 +17,7 @@ CProxyCtrl::CProxyCtrl()
 	WSADATA wsaData;
 	int err;
 	wVersionRequested = MAKEWORD(2, 2);
-	err = WSAStartup(wVersionRequested, &wsaData);
+	WSAStartup(wVersionRequested, &wsaData);
 #endif
 }
 
@@ -40,6 +41,9 @@ bool CProxyCtrl::PrepareToRun()
 	{
 		return false;
 	}
+
+	//消息工厂注册
+	CMessageFactoryManager::GetSingletonPtr()->Init();
 	return true;
 }
 
@@ -55,15 +59,6 @@ int CProxyCtrl::Run()
 		catch (const std::exception& e)
 		{
 			CACHE_LOG(ERROR_CACHE,"CProxyServer TcpTick  cache execption msg {]", e.what());
-		}
-
-		try
-		{
-			CProxyServer::GetSingletonPtr()->RecvGameData();
-		}
-		catch (const std::exception& e)
-		{
-			CACHE_LOG(ERROR_CACHE, "CProxyServer RecvGameData  cache execption msg {]", e.what());
 		}
 
 		nTick++;
