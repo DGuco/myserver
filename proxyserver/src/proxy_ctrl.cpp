@@ -56,7 +56,7 @@ int CProxyCtrl::Run()
 	{
 		try
 		{
-			CProxyServer::GetSingletonPtr()->TcpTick();
+			CProxyServer::GetSingletonPtr()->TcpTick(nNow);
 		}
 		catch (const std::exception& e)
 		{

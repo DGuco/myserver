@@ -40,11 +40,12 @@ bool CGameCtrl::PrepareToRun()
 int CGameCtrl::Run()
 {
 	long long nTick = 0;
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
 	while (true)
 	{
 		try
 		{
-			CGameServer::GetSingletonPtr()->TcpTick();
+			CGameServer::GetSingletonPtr()->TcpTick(nNow);
 		}
 		catch (const std::exception& e)
 		{
