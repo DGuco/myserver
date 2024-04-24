@@ -15,7 +15,7 @@ public:
 	CGamePlayer(CSocket socket);
 	virtual int		DoRecvLogic();
 	virtual int		DoWriteLogic();
-	virtual int		DoErrorLogic(int errcode);
+	virtual int		DoClosingLogic(int errcode);
 	virtual void	DoTick(time_t now);
 private:
 };

@@ -33,7 +33,7 @@ int CGamePlayer::DoWriteLogic()
 	return ERR_SEND_OK;
 }
 
-int CGamePlayer::DoErrorLogic(int errcode)
+int CGamePlayer::DoClosingLogic(int errcode)
 {
 	return 0;
 }

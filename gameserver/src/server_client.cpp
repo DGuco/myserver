@@ -35,7 +35,7 @@ int CServerClient::DoWriteLogic()
 	return ERR_SEND_OK;
 }
 
-int CServerClient::DoErrorLogic(int errcode)
+int CServerClient::DoClosingLogic(int errcode)
 {
 	return 0;
 }

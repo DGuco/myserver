@@ -25,7 +25,7 @@ public:
 	virtual ~CProxyPlayer();
 	virtual int		DoRecvLogic();
 	virtual int		DoWriteLogic();
-	virtual int		DoErrorLogic(int errcode);
+	virtual int		DoClosingLogic(int errcode);
 	virtual void	DoTick(time_t now);
 	void			SetProxyState(short state);
 	void			SetServerId(int serverid);

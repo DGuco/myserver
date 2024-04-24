@@ -85,8 +85,7 @@ void CGameServer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
 {
 	CSafePtr<CGamePlayer> pConn = pConnn.DynamicCastTo<CGamePlayer>();
 	if (pConnn != NULL)
-	{
-	}
+	{}
 }
 
 //

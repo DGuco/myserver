@@ -5,7 +5,7 @@
 #include "log.h"
 
 CTCPServer::CTCPServer()
-	: m_nRunModule(eTcpSelect)
+	: m_nRunModule(eTcpEpoll)
 {
 #ifdef __LINUX__
 	m_pEpollEventList = NULL;
@@ -83,20 +83,35 @@ int CTCPServer::PrepareToRun()
 #endif
 }
 
-bool CTCPServer::TcpTick()
+void CTCPServer::TcpTick()
 {
+	try
+	{
 #ifdef __LINUX__
-	if (m_nRunModule == eTcpSelect)
-	{
-		return SelectTick();
-	}
-	else
-	{
-		return EpollTick();
-	}
+		if (m_nRunModule == eTcpSelect)
+		{
+			SelectTick();
+		}
+		else
+		{
+			EpollTick();
+		}
 #else
-	return SelectTick();
+		SelectTick();
 #endif
+	}
+	catch (const std::exception& e)
+	{
+		CACHE_LOG(TCP_ERROR, "TcpTick catch execption msg : {}", e.what());
+	}
+	//回收已关闭或者出错的连接
+	FreeClosingSocket();
+	return;
+}
+
+void CTCPServer::KickIllegalConn()
+{
+
 }
 
 //
@@ -130,7 +145,7 @@ int CTCPServer::InitSelect(const char* ip, int port)
 	return 0;
 }
 
-int CTCPServer::SelectTick()
+void CTCPServer::SelectTick()
 {
 	FD_ZERO(&m_fdsRead);  // 清除端口集
 	FD_ZERO(&m_fdsWrite);  // 清除端口集
@@ -150,7 +165,7 @@ int CTCPServer::SelectTick()
 
 	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end(); it++)
 	{
-		if (it->second->GetSocket().IsValid())
+		if (it->second->GetSocket().IsValid() && it->second->GetStatus() != eSocketClosing)
 		{
 			SOCKET tmFd = it->second->GetSocketFD();
 			FD_SET(tmFd, &m_fdsRead);  // 将listen端口加入端口集
@@ -164,7 +179,7 @@ int CTCPServer::SelectTick()
 
 	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end(); it++)
 	{
-		if (it->second->GetSocket().IsValid())
+		if (it->second->GetSocket().IsValid() && it->second->GetStatus() != eSocketClosing)
 		{
 			SOCKET tmFd = it->second->GetSocketFD();
 			FD_SET(tmFd, &m_fdsRead);  // 将listen端口加入端口集
@@ -186,7 +201,7 @@ int CTCPServer::SelectTick()
 		{
 			CACHE_LOG(TCP_ERROR, "Select error, {}.", strerror(errno));
 		}
-		return -1;
+		return;
 	}
 
 	//如果进行了监听，检查时候有新链接
@@ -204,8 +219,8 @@ int CTCPServer::SelectTick()
 				if (pConn != NULL && pConn->IsValid())
 				{
 					m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
-					CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
 					OnNewConnect(pConn);
+					CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
 				}
 				else
 				{
@@ -222,7 +237,7 @@ int CTCPServer::SelectTick()
 
 	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end(); it++)
 	{
-		if (it->second->GetSocket().IsValid())
+		if (it->second->GetSocket().IsValid() && it->second->GetStatus() != eSocketClosing)
 		{
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsRead))
 			{
@@ -230,16 +245,16 @@ int CTCPServer::SelectTick()
 				int nRet = it->second->Recv();
 				if (nRet != ERR_RECV_OK)
 				{
-					it->second->DoErrorLogic(nRet);
-					it->second->Close();
+					it->second->DoClosingLogic(nRet);
+					it->second->Close(false);
 					continue;
 				}
 				//处理数据
 				nRet = it->second->DoRecvLogic();
 				if (nRet != ERR_RECV_OK)
 				{
-					it->second->DoErrorLogic(nRet);
-					it->second->Close();
+					it->second->DoClosingLogic(nRet);
+					it->second->Close(false);
 					continue;
 				}
 				continue;
@@ -251,16 +266,16 @@ int CTCPServer::SelectTick()
 				int nRet =  it->second->Flush();
 				if (nRet != ERR_SEND_OK)
 				{
-					it->second->DoErrorLogic(nRet);
-					it->second->Close();
+					it->second->DoClosingLogic(nRet);
+					it->second->Close(false);
 					continue;
 				}
 				//发送完成后逻辑
 				nRet = it->second->DoWriteLogic();
 				if (nRet != ERR_RECV_OK)
 				{
-					it->second->DoErrorLogic(nRet);
-					it->second->Close();
+					it->second->DoClosingLogic(nRet);
+					it->second->Close(false);
 					continue;
 				}
 				continue;
@@ -270,7 +285,7 @@ int CTCPServer::SelectTick()
 
 	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end(); it++)
 	{
-		if (it->second->GetSocket().IsValid())
+		if (it->second->GetSocket().IsValid() && it->second->GetStatus() != eSocketClosing)
 		{
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsRead))
 			{
@@ -278,16 +293,16 @@ int CTCPServer::SelectTick()
 				int nRet = it->second->Recv();
 				if (nRet != ERR_RECV_OK)
 				{
-					it->second->DoErrorLogic(nRet);
-					it->second->Close();
+					it->second->DoClosingLogic(nRet);
+					it->second->Close(false);
 					continue;
 				}
 				//处理数据
 				nRet = it->second->DoRecvLogic();
 				if (nRet != ERR_RECV_OK)
 				{
-					it->second->DoErrorLogic(nRet);
-					it->second->Close();
+					it->second->DoClosingLogic(nRet);
+					it->second->Close(false);
 					continue;
 				}
 				continue;
@@ -299,34 +314,35 @@ int CTCPServer::SelectTick()
 				int nRet = it->second->Flush();
 				if (nRet != ERR_SEND_OK)
 				{
-					it->second->DoErrorLogic(nRet);
-					it->second->Close();
+					it->second->DoClosingLogic(nRet);
+					it->second->Close(false);
 					continue;
 				}
 				//发送完成后逻辑
 				nRet = it->second->DoWriteLogic();
 				if (nRet != ERR_RECV_OK)
 				{
-					it->second->DoErrorLogic(nRet);
-					it->second->Close();
+					it->second->DoClosingLogic(nRet);
+					it->second->Close(false);
 					continue;
 				}
 				continue;
 			}
 		}
 	}
-
-	//回收已关闭或者出错的连接
-	FreeClosedSocket();
-	return 0;
+	return;
 }
 
-void CTCPServer::FreeClosedSocket()
+void CTCPServer::FreeClosingSocket()
 {
 	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end();)
 	{
-		if (!it->second->IsValid())
+		CSocket tmSocket = it->second->GetSocket();
+		if (it->second->GetStatus() == eSocketClosing)
 		{
+			CACHE_LOG(TCP_DEBUG, "FreeClosingSocket tcpconn socket fd = {} ,host = {},port = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort());
+			it->second->Close();
+			//回收内存
 			it->second.Free();
 			it = m_ConnMap.erase(it);
 		}
@@ -338,8 +354,11 @@ void CTCPServer::FreeClosedSocket()
 
 	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end();)
 	{
-		if (!it->second->IsValid())
+		CSocket tmSocket = it->second->GetSocket();
+		if (it->second->GetStatus() == eSocketClosing)
 		{
+			CACHE_LOG(TCP_DEBUG, "FreeClosingSocket tcp client socket fd = {} ,host = {},port = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort());
+			it->second->Close();
 			it->second.Free();
 			it = m_ClientMap.erase(it);
 		}
@@ -349,7 +368,6 @@ void CTCPServer::FreeClosedSocket()
 		}
 	}
 }
-
 
 bool CTCPServer::BeginListen(std::string addrress, int port)
 {
@@ -489,13 +507,13 @@ int CTCPServer::EpollTick()
 				continue;
 			}
 
-			SOCKET iNewSocket = tmConnSocket.GetSocket();
-			if (MAX_SOCKET_NUM <= iNewSocket)
-			{
-				CACHE_LOG(TCP_ERROR, "error: socket id is so big {}", iNewSocket);
-				close(iNewSocket);
-				continue;
-			}
+// 			SOCKET iNewSocket = tmConnSocket.GetSocket();
+// 			if (MAX_SOCKET_NUM <= iNewSocket)
+// 			{
+// 				CACHE_LOG(TCP_ERROR, "error: socket id is so big {}", iNewSocket);
+//			tmConnSocket.Close();
+// 				continue;
+// 			}
 			if (!tmConnSocket.SetSocketNoBlock())
 			{
 				CACHE_LOG(TCP_ERROR, "error: socket set noblock failed ,fd = {}", iNewSocket);
@@ -532,18 +550,18 @@ int CTCPServer::EpollTick()
 				int retCode = it->second->RecvData();
 				if (retCode != ERR_RECV_OK)
 				{
-					itcleint->second->DoErrorLogic(retCode);
+					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close();
+					itcleint->second->Close(false);
 					continue;
 				}
 				//处理数据
 				retCode = it->second->DoRecvLogic();
 				if (nRet != ERR_RECV_OK)
 				{
-					itcleint->second->DoErrorLogic(retCode);
+					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close();
+					itcleint->second->Close(false);
 					continue;
 				}
 				continue;
@@ -555,18 +573,18 @@ int CTCPServer::EpollTick()
 				int retCode = it->second->RecvData();
 				if (retCode != ERR_RECV_OK)
 				{
-					itcleint->second->DoErrorLogic(retCode);
+					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close();
+					itcleint->second->Close(false);
 					continue;
 				}
 				//处理数据
 				retCode = itcleint->second->DoRecvLogic();
 				if (nRet != ERR_RECV_OK)
 				{
-					itcleint->second->DoErrorLogic(retCode);
+					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close();
+					itcleint->second->Close(false);
 					continue;
 				}
 				continue;
@@ -582,18 +600,18 @@ int CTCPServer::EpollTick()
 				int retCode = itcleint->second->Flush();
 				if (retCode != ERR_SEND_OK)
 				{
-					itcleint->second->DoErrorLogic(retCode);
+					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close();
+					itcleint->second->Close(false);
 					continue;
 				}
 				//发送完成后逻辑
 				retCode = itcleint->second->DoWriteLogic();
 				if (nRet != ERR_SEND_OK)
 				{
-					itcleint->second->DoErrorLogic(retCode);
+					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close();
+					itcleint->second->Close(false);
 					continue;
 				}
 				continue;
@@ -605,27 +623,25 @@ int CTCPServer::EpollTick()
 				int retCode = itcleint->second->Flush();
 				if (retCode != ERR_SEND_OK)
 				{
-					itcleint->second->DoErrorLogic(retCode);
+					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close();
+					itcleint->second->Close(false);
 					continue;
 				}
 				//发送完成后逻辑
 				retCode = itcleint->second->DoWriteLogic();
 				if (nRet != ERR_SEND_OK)
 				{
-					itcleint->second->DoErrorLogic(retCode);
+					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close();
+					itcleint->second->Close(false);
 					continue;
 				}
 				continue;
 			}
 		}
 	}
-	//回收已关闭或者出错的连接
-	FreeClosedSocket();
-	return 0;
+	return;
 }
 
 int CTCPServer::EpollDelSocket(SOCKET socket)

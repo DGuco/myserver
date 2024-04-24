@@ -6,6 +6,7 @@
 #include "server_config.h"
 #include "my_assert.h"
 #include "time_helper.h"
+#include "mfactory_manager.h"
 
 CProxyServer::CProxyServer() : CTCPServer()
 {
@@ -36,9 +37,57 @@ bool CProxyServer::PrepareToRun()
 	return true;
 }
 
-void CProxyServer::RecvMessage(CSafePtr<CProxyPlayer> pGamePlayer)
+void CProxyServer::ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer)
 {
+	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
+	int packLen = pRecvBuff->ReadUnInt();
+	if (packLen > MAX_PACKAGE_LEN)
+	{
+		//断开连接
+		ClearSocket(pGamePlayer, Err_PacketError);
+		return;
+	}
+	int nPacketId = pRecvBuff->ReadInt();
+	int nSeq = pRecvBuff->ReadInt();
+	if (nPacketId != ProxyMessage::Msg::ProxyMessage_Msg_MsgID)
+	{
+		//连接踢掉
+		pGamePlayer->SetProxyState(eProKicking);
+		return;
+	}
+	if (pRecvBuff->ReadBytes(m_CacheData, packLen) != 0)
+	{
+		//连接踢掉
+		pGamePlayer->SetProxyState(eProKicking);
+		return;
+	}
+	time_t tNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+	CSafePtr<CMessageFactory> pFactory = CMessageFactoryManager::GetSingletonPtr()->GetFactory(nPacketId);
+	if (pFactory == NULL)
+	{
+		//连接踢掉
+		pGamePlayer->SetProxyState(eProKicking);
+		return;
+	}
 
+	shared_ptr<ProtoMess> pMessage = pFactory->CreateMessage();
+	ASSERT(pMessage != NULL);
+	if (!pMessage->ParseFromArray(m_CacheData, packLen))
+	{
+		//连接踢掉
+		pGamePlayer->SetProxyState(eProKicking);
+		return;
+	}
+
+	try
+	{
+		pFactory->Execute(pGamePlayer.DynamicCastTo<CTCPSocket>());
+	}
+	catch (const std::exception& e)
+	{
+		CACHE_LOG(ERROR_CACHE, "Message execute failed,msg = {},msgid = {}", e.what(), pFactory->MessId());
+	}
+	return;
 }
 
 void CProxyServer::RegisterNewConn(CSafePtr<CProxyPlayer> pGamePlayer)
@@ -88,6 +137,21 @@ void CProxyServer::TransferMessage(CSafePtr<CProxyPlayer> pGamePlayer,int server
 		return;
 	}
 	pDestPlayer->Write(m_CacheData, pMessage->GetCachedSize());
+}
+
+void CProxyServer::CheckKickConn()
+{
+	ConnMap::iterator it = m_ConnMap.begin();
+	for (; it != m_ConnMap.end();)
+	{
+		if (it->second->GetProxyState() == eProKicking)
+		{
+			it->second->Close(false);
+			it = m_ConnMap.erase(it);
+			continue;
+		}
+		it++;
+	}
 }
 
 void CProxyServer::ClearSocket(CSafePtr<CProxyPlayer> pGamePlayer, short iError)

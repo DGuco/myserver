@@ -21,7 +21,7 @@ public:
 public:
 	virtual int		DoRecvLogic() = 0;
 	virtual int		DoWriteLogic() = 0;
-	virtual int		DoErrorLogic(int errcode) = 0;
+	virtual int		DoClosingLogic(int errcode) = 0;
 	virtual void	DoTick(time_t now) = 0;
 	virtual int	    ClientKey();
 	uint64			MapKey();

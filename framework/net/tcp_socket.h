@@ -10,14 +10,13 @@
 #include "byte_buff.h"
 #include "socket.h"
 
-enum eTcpStatus
+enum eSocketStatus
 {
-	eTcpClosed = 0,
-	eTcpCreated = 1,
-	eTcpConnecting = 2,
-	eTcpConnected = 3,
-	eTcpRegisting = 4,
-	eTcpRegistered = 5,
+	eSocketClosed = 0,
+	eSocketOpen,
+	eSocketConnecting,
+	eSocketConnected,
+	eSocketClosing,
 };
 
 class CTCPSocket
@@ -34,7 +33,7 @@ public:
 	//socket 
 	CSocket& GetSocket();
 	//获取连接状态
-	eTcpStatus GetStatus();
+	u_short GetStatus();
 	//连接
 	int ConnectTo(const char* szIPAddr, u_short unPort,bool block = true);
 	//检查非阻塞连接是否连接成功
@@ -51,7 +50,7 @@ public:
 	//是否添加到fdset中
 	bool IsFDSetted(fd_set& pCheckSet);
 	//关闭
-	int Close();
+	int Close(bool now = true);
 	//
 	bool IsValid();
 	//
@@ -60,7 +59,7 @@ public:
 	CSafePtr<CByteBuff> GetSendBuff();
 protected:
 	CSocket					m_Socket;	     //Socket 描述符
-	int						m_nStatus;	     //连接状态
+	u_short					m_nStatus;	     //连接状态
 	int						m_nRecvBuffLen;  //接受缓冲区大小
 	int						m_nSendBuffLen;  //发送缓冲区大小
 	CSafePtr<CByteBuff>	m_pReadBuff;     //读缓冲

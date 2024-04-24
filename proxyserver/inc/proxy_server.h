@@ -29,13 +29,15 @@ public:
 	//通知gameserver client 断开连接
 	void DisConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError);
 	//
-	void RecvMessage(CSafePtr<CProxyPlayer> pGamePlayer);
+	void ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer);
 	//
 	void RegisterNewConn(CSafePtr<CProxyPlayer> pGamePlayer);
 	//
 	CSafePtr<CProxyPlayer> FindProxyPlayer(int servertype, int serverid);
 	//
 	void TransferMessage(CSafePtr<CProxyPlayer> pGamePlayer,int servertype, int serverid, shared_ptr<ProxyMessage> pMessage);
+	//
+	void CheckKickConn();
 public:
 	//新链接回调
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);

@@ -26,7 +26,6 @@ public:
 
 shared_ptr<ProtoMess> CCGConnReqFacory::CreateMessage()
 {
-	m_pMessage.reset();
 	m_pMessage = std::make_shared<CGonnReq>();
 	return std::dynamic_pointer_cast<ProtoMess>(m_pMessage);
 }

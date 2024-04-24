@@ -22,7 +22,7 @@ public:
 public:
 	virtual int		DoRecvLogic();
 	virtual int		DoWriteLogic();
-	virtual int		DoErrorLogic(int errcode);
+	virtual int		DoClosingLogic(int errcode);
 	virtual void	DoTick(time_t nNow);
 private:
 	CMyTimer m_SendKeepAliveTimer;	//发送心跳包定时器

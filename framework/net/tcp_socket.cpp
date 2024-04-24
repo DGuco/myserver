@@ -4,7 +4,7 @@
 
 CTCPSocket::CTCPSocket(unsigned int RecvBufLen_, unsigned int SendBufLen_)
 {
-	m_nStatus = eTcpClosed;
+	m_nStatus = eSocketClosed;
 	m_nRecvBuffLen = RecvBufLen_;
 	m_nSendBuffLen = SendBufLen_;
 	m_pReadBuff = new CByteBuff(RecvBufLen_);
@@ -16,11 +16,11 @@ CTCPSocket::CTCPSocket(CSocket socket,unsigned int RecvBufLen_, unsigned int Sen
 	m_Socket = socket;
 	if (m_Socket.IsValid())
 	{
-		m_nStatus = eTcpCreated;
+		m_nStatus = eSocketOpen;
 	}
 	else
 	{
-		m_nStatus = eTcpClosed;
+		m_nStatus = eSocketClosed;
 	}
 	m_nRecvBuffLen = RecvBufLen_;
 	m_nSendBuffLen = SendBufLen_;
@@ -44,7 +44,7 @@ int CTCPSocket::ConnectTo(const char* szIPAddr, u_short unPort, bool block)
 			return -1;
 		}
 	}
-	m_nStatus = eTcpCreated;
+	m_nStatus = eSocketOpen;
 	if (!m_Socket.SetRecvBufSize(m_nRecvBuffLen))
 	{
 		Close();
@@ -70,7 +70,7 @@ int CTCPSocket::ConnectTo(const char* szIPAddr, u_short unPort, bool block)
 	}
 	else if (nConRet == 1)
 	{
-		m_nStatus = eTcpConnecting;
+		m_nStatus = eSocketConnecting;
 		//非阻塞连接中，检查是否连接成功
 		CheckConnectedOk();
 	}
@@ -78,7 +78,7 @@ int CTCPSocket::ConnectTo(const char* szIPAddr, u_short unPort, bool block)
 	if (block)
 	{
 		m_Socket.SetSocketNoBlock();
-		m_nStatus = eTcpConnected;
+		m_nStatus = eSocketConnected;
 	}
 	return 0;
 }
@@ -126,14 +126,21 @@ int CTCPSocket::CheckConnectedOk()
 		Close();
 		return -4;
 	}
-	m_nStatus = eTcpConnected;
+	m_nStatus = eSocketConnected;
 	return 0;
 }
 
-int CTCPSocket::Close()
+int CTCPSocket::Close(bool now)
 {
-	m_Socket.Close();
-	m_nStatus = eTcpClosed;
+	if (now)
+	{
+		m_Socket.Close();
+		m_nStatus = eSocketClosed;
+	}
+	else
+	{
+		m_nStatus = eSocketClosing;
+	}
 	return 0;
 }
 
@@ -152,9 +159,9 @@ CSocket& CTCPSocket::GetSocket()
 	return m_Socket;
 }
 
-eTcpStatus CTCPSocket::GetStatus()
+u_short CTCPSocket::GetStatus()
 {
-	return (eTcpStatus)m_nStatus;
+	return (u_short)m_nStatus;
 }
 
 int CTCPSocket::Recv()
@@ -214,7 +221,7 @@ int CTCPSocket::Flush()
 bool CTCPSocket::AddToFDSet(fd_set& tmFdSet)
 {
 	SOCKET nSocket = m_Socket.GetSocket();
-	if (nSocket > 0 && m_nStatus == eTcpConnected)
+	if (m_Socket.IsValid())
 	{
 		FD_SET(nSocket, &tmFdSet);
 		return true;
@@ -230,7 +237,7 @@ bool CTCPSocket::AddToFDSet(fd_set& tmFdSet)
 bool CTCPSocket::IsFDSetted(fd_set& tmFdSet)
 {
 	SOCKET nSocket = m_Socket.GetSocket();
-	if (nSocket > 0 && m_nStatus == eTcpConnected)
+	if (m_Socket.IsValid())
 	{
 		return FD_ISSET(nSocket, &tmFdSet);
 	}

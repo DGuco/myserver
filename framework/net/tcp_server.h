@@ -34,7 +34,9 @@ public:
 	//
 	bool ConnectTo(CSafePtr<CTCPClient> pClient,const char* szLocalAddr,int port,bool bblock);
 	//
-	bool TcpTick();
+	void TcpTick();
+	//
+	void KickIllegalConn();
 	//
 	CSafePtr<CTCPConn>     FindTcpConn(SOCKET socket);
 	//
@@ -50,16 +52,16 @@ private:
 	//
 	int InitSelect(const char* ip, int port);
 	//
-	int SelectTick();
+	void SelectTick();
 	//
-	void FreeClosedSocket();
+	void FreeClosingSocket();
 	//
 	bool BeginListen(std::string addrress, int port);
 #ifdef __LINUX__
 	//
 	int InitEpoll(const char* ip, int port);
 	//
-	int EpollTick();
+	void EpollTick();
 	//
 	int EpollDelSocket(SOCKET socket);
 	//

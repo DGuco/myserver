@@ -32,7 +32,7 @@ int CProxyPlayer::DoRecvLogic()
 		return ERR_RECV_OK;
 	}
 	//有完整的数据包，读取处理
-	CProxyServer::GetSingletonPtr()->RecvMessage(this);
+	CProxyServer::GetSingletonPtr()->ProcessServerMessage(this);
 	return 0;
 }
 
@@ -41,7 +41,7 @@ int CProxyPlayer::DoWriteLogic()
 	return ERR_SEND_OK;
 }
 
-int CProxyPlayer::DoErrorLogic(int errcode)
+int CProxyPlayer::DoClosingLogic(int errcode)
 {
 	CProxyServer::GetSingletonPtr()->DisConnect(this, errcode);
 	return 0;

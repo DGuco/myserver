@@ -61,6 +61,7 @@ int CProxyCtrl::Run()
 			CACHE_LOG(ERROR_CACHE,"CProxyServer TcpTick  cache execption msg {]", e.what());
 		}
 
+		CProxyServer::GetSingletonPtr()->CheckKickConn();
 		nTick++;
 		CACHE_LOG(DEBUG_CACHE, "CProxyServer::Run tick {}", nTick);
 		SLEEP(1000);
