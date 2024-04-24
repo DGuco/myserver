@@ -43,7 +43,7 @@ bool CGameServer::PrepareToRun()
 	int nRet = InitTcpServer(eTcpEpoll, pGameInfo->m_sHost.c_str(), pGameInfo->m_iPort);
 	if (nRet == 0)
 	{
-		DISK_LOG(DEBUG_DISK, "CGameServer PrepareToRun success at {} : {}", pGameInfo->m_sHost.c_str(), pGameInfo->m_iPort);
+		DISK_LOG(DEBUG_DISK, "CGameServer InitTcpServer success at {} : {}", pGameInfo->m_sHost.c_str(), pGameInfo->m_iPort);
 		return true;
 	}
 	else

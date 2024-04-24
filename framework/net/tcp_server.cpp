@@ -123,34 +123,10 @@ CSafePtr<CTCPClient>   CTCPServer::FindTcpClient(SOCKET socket)
 
 int CTCPServer::InitSelect(const char* ip, int port)
 {
-	if (!m_ListenSocket.IsValid())
+	if (!BeginListen(ip, port))
 	{
-		if (!m_ListenSocket.Open())
-		{
-			return 0;
-		}
+		return -1;
 	}
-
-	//允许套接口和一个已在使用中的地址捆绑
-	if (!m_ListenSocket.SetReuseAddr())  return -1;
-
-	bool bRet = 0;
-	if (ip != NULL)
-	{
-		bRet = m_ListenSocket.Bind(port);
-	}
-	else
-	{
-		bRet = m_ListenSocket.Bind(ip, port);
-	}
-
-	if (!bRet) return -1;
-
-	if (!m_ListenSocket.Listen()) return -1;
-
-	m_ListenSocket.SetSocketNoBlock();
-
-	CACHE_LOG(TCP_DEBUG, "CTCPServer::InitSelect listen {} : {},fdsize = {}.", ip,port,FD_SETSIZE);
 	return 0;
 }
 
@@ -163,12 +139,14 @@ int CTCPServer::SelectTick()
 	timeval tvListen;
 	tvListen.tv_sec = 0;
 	tvListen.tv_usec = 100000;
+	int iMaxSocketFD = -1;
 
-	int nListenFD = m_ListenSocket.GetSocket();
-	FD_SET(nListenFD, &m_fdsRead);  // 将listen端口加入端口集
-	int iMaxSocketFD = nListenFD;
-	struct sockaddr_in stConnAddr;
-	int iAddrLength = sizeof(stConnAddr);
+	//tcpserver 如果进行了socket监听
+	if (m_ListenSocket.IsValid())
+	{
+		int nListenFD = m_ListenSocket.GetSocket();
+		FD_SET(nListenFD, &m_fdsRead);  // 将listen端口加入端口集
+	}
 
 	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end(); it++)
 	{
@@ -211,29 +189,34 @@ int CTCPServer::SelectTick()
 		return -1;
 	}
 
-	// 如果iListenSocketFD在fds_read中
-	if (FD_ISSET(nListenFD, &m_fdsRead))
+	//如果进行了监听，检查时候有新链接
+	if (m_ListenSocket.IsValid())
 	{
-		//新的连接
-		CSocket newSocket = m_ListenSocket.Accept();
-		if (newSocket.IsValid())
+		int nListenFD = m_ListenSocket.GetSocket();
+		// 如果iListenSocketFD在fds_read中
+		if (FD_ISSET(nListenFD, &m_fdsRead))
 		{
-			CSafePtr<CTCPConn> pConn = CreateTcpConn(newSocket);
-			if (pConn != NULL && pConn->IsValid())
+			//新的连接
+			CSocket newSocket = m_ListenSocket.Accept();
+			if (newSocket.IsValid())
 			{
-				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
-				CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
-				OnNewConnect(pConn);
+				CSafePtr<CTCPConn> pConn = CreateTcpConn(newSocket);
+				if (pConn != NULL && pConn->IsValid())
+				{
+					m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
+					CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+					OnNewConnect(pConn);
+				}
+				else
+				{
+					CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+					newSocket.Close();
+				}
 			}
 			else
 			{
-				CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
-				newSocket.Close();
+				CACHE_LOG(TCP_ERROR, "Accept new socket error,listenfd = {},erromsg =  %s.", strerror(errno));
 			}
-		}
-		else
-		{
-			CACHE_LOG(TCP_ERROR, "Accept new socket error,listenfd = {},erromsg =  %s.", strerror(errno));
 		}
 	}
 
@@ -367,6 +350,48 @@ void CTCPServer::FreeClosedSocket()
 	}
 }
 
+
+bool CTCPServer::BeginListen(std::string addrress, int port)
+{
+	//不进行监听
+	if (port <= 0)
+	{
+		return true;
+	}
+
+	if (!m_ListenSocket.IsValid())
+	{
+		if (!m_ListenSocket.Open())
+		{
+			return false;
+		}
+	}
+	if(!m_ListenSocket.SetSocketNoBlock())return false;
+	if(!m_ListenSocket.SetKeepAlive()) return false;
+	if(!m_ListenSocket.SetLinger(0)) return false;
+	if(!m_ListenSocket.SetTcpNoDelay()) return false;
+	if(!m_ListenSocket.SetReuseAddr())  return false;
+	if(!m_ListenSocket.SetSendBufSize(1024 * 1024)) return false;
+	if(!m_ListenSocket.SetRecvBufSize(1024 * 1024)) return false;
+
+	bool bRet = 0;
+	if (addrress != "")
+	{
+		bRet = m_ListenSocket.Bind(port);
+	}
+	else
+	{
+		bRet = m_ListenSocket.Bind(addrress.c_str(), port);
+	}
+
+	if (!bRet) return false;
+
+	if (!m_ListenSocket.Listen()) return false;
+
+	CACHE_LOG(TCP_DEBUG, "CTCPServer::BeginListen listen {} : {},fdsize = {}.", addrress, port, FD_SETSIZE);
+	return true;
+}
+
 #ifdef __LINUX__
 int CTCPServer::InitEpoll(const char* ip, int port)
 {
@@ -394,56 +419,20 @@ int CTCPServer::InitEpoll(const char* ip, int port)
 		return 0;
 	}
 
-	m_ListenSocket.Open();
-	if (!m_ListenSocket.IsValid())
+	if (!BeginListen(ip, port))
 	{
 		ClearEpoll();
 		return -2;
 	}
-	m_ListenSocket.SetSocketNoBlock();
-	m_ListenSocket.SetReuseAddr();
-	m_ListenSocket.SetKeepAlive();
-	m_ListenSocket.SetLinger(0);
-	m_ListenSocket.SetTcpNoDelay();
 
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(port);
-	addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	bool bRet = 0;
-	if (ip != NULL)
+	if (m_ListenSocket.IsValid())
 	{
-		bRet = m_ListenSocket.Bind(port);
-	}
-	else
-	{
-		bRet = m_ListenSocket.Bind(ip, port);
-	}
-
-	if (!bRet)
-	{
-		ClearEpoll();
-		m_ListenSocket.Close();
-		return -5;
-	}
-
-	m_ListenSocket.SetSendBufSize(1024 * 1024);
-	m_ListenSocket.SetRecvBufSize(1024 * 1024);
-
-	// 设置接收队列大小*/
-	bRet = m_ListenSocket.Listen();
-	if (!bRet)
-	{
-		ClearEpoll();
-		m_ListenSocket.Close();
-		CACHE_LOG(TCP_ERROR, "listen fd = {} connection error!", mEpollSocket);
-		return -6;
-	}
-
-	if (epoll_ctl(m_ListenSocket.GetSocket(), EPOLL_CTL_ADD, sfd, &m_stEpollEvent) < 0)
-	{
-		ClearEpoll();
-		m_ListenSocket.Close();
-		return -7;
+		if (epoll_ctl(m_ListenSocket.GetSocket(), EPOLL_CTL_ADD, sfd, &m_stEpollEvent) < 0)
+		{
+			ClearEpoll();
+			m_ListenSocket.Close();
+			return -3;
+		}
 	}
 	return 0;
 }
@@ -489,7 +478,7 @@ int CTCPServer::EpollTick()
 // 		}
 
 		//监听描述符
-		if (nTmFd == m_ListenSocket.GetSocket())
+		if (m_ListenSocket.IsValid() && nTmFd == m_ListenSocket.GetSocket())
 		{
 			CSocket tmConnSocket = m_ListenSocket.Accept();
 			if (!tmConnSocket.IsValid())

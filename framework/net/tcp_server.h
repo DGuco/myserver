@@ -53,6 +53,8 @@ private:
 	int SelectTick();
 	//
 	void FreeClosedSocket();
+	//
+	bool BeginListen(std::string addrress, int port);
 #ifdef __LINUX__
 	//
 	int InitEpoll(const char* ip, int port);
