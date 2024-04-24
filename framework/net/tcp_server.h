@@ -34,7 +34,7 @@ public:
 	//
 	bool ConnectTo(CSafePtr<CTCPClient> pClient,const char* szLocalAddr,int port,bool bblock);
 	//
-	void TcpTick();
+	void TcpTick(time_t now);
 	//
 	void KickIllegalConn();
 	//

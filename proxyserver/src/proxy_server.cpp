@@ -43,20 +43,23 @@ void CProxyServer::ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer)
 	int packLen = pRecvBuff->ReadUnInt();
 	if (packLen > MAX_PACKAGE_LEN)
 	{
-		//断开连接
-		ClearSocket(pGamePlayer, Err_PacketError);
+		CACHE_LOG(TCP_ERROR, "Packet len illegal from {}:{} packetlen = {} ",pGamePlayer->GetServerType(), pGamePlayer->GetServerId(), packLen);
+		//连接踢掉
+		pGamePlayer->SetProxyState(eProKicking);
 		return;
 	}
 	int nPacketId = pRecvBuff->ReadInt();
 	int nSeq = pRecvBuff->ReadInt();
 	if (nPacketId != ProxyMessage::Msg::ProxyMessage_Msg_MsgID)
 	{
+		CACHE_LOG(TCP_ERROR, "packetId illegal from {}:{} packetId = {} ", pGamePlayer->GetServerType(), pGamePlayer->GetServerId(), nPacketId);
 		//连接踢掉
 		pGamePlayer->SetProxyState(eProKicking);
 		return;
 	}
 	if (pRecvBuff->ReadBytes(m_CacheData, packLen) != 0)
 	{
+		CACHE_LOG(TCP_ERROR, "ReadBytes failed from {}:{} packetId = {} ", pGamePlayer->GetServerType(), pGamePlayer->GetServerId());
 		//连接踢掉
 		pGamePlayer->SetProxyState(eProKicking);
 		return;
@@ -65,6 +68,7 @@ void CProxyServer::ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer)
 	CSafePtr<CMessageFactory> pFactory = CMessageFactoryManager::GetSingletonPtr()->GetFactory(nPacketId);
 	if (pFactory == NULL)
 	{
+		CACHE_LOG(TCP_ERROR, "GetFactory failed from {}:{} packetId = {} ", pGamePlayer->GetServerType(), pGamePlayer->GetServerId());
 		//连接踢掉
 		pGamePlayer->SetProxyState(eProKicking);
 		return;
@@ -74,6 +78,7 @@ void CProxyServer::ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer)
 	ASSERT(pMessage != NULL);
 	if (!pMessage->ParseFromArray(m_CacheData, packLen))
 	{
+		CACHE_LOG(TCP_ERROR, "ParseFromArray failed from {}:{} packetId = {} ", pGamePlayer->GetServerType(), pGamePlayer->GetServerId());
 		//连接踢掉
 		pGamePlayer->SetProxyState(eProKicking);
 		return;
@@ -139,13 +144,21 @@ void CProxyServer::TransferMessage(CSafePtr<CProxyPlayer> pGamePlayer,int server
 	pDestPlayer->Write(m_CacheData, pMessage->GetCachedSize());
 }
 
-void CProxyServer::CheckKickConn()
+void CProxyServer::CheckKickConn(time_t now)
 {
 	ConnMap::iterator it = m_ConnMap.begin();
 	for (; it != m_ConnMap.end();)
 	{
 		if (it->second->GetProxyState() == eProKicking)
 		{
+			CACHE_LOG(TCP_DEBUG, "Kick tcp conn {}:{} to {}:{}", it->second->GetServerType(), it->second->GetServerId());
+			it->second->Close(false);
+			it = m_ConnMap.erase(it);
+			continue;
+		}
+		if (now - it->second->GetLastRecvKeepAlive() > TCP_CONN_TIME_OUT)
+		{
+			CACHE_LOG(TCP_DEBUG, "Kick tcp timeount conn {}:{} to {}:{}", it->second->GetServerType(), it->second->GetServerId());
 			it->second->Close(false);
 			it = m_ConnMap.erase(it);
 			continue;
@@ -154,22 +167,14 @@ void CProxyServer::CheckKickConn()
 	}
 }
 
-void CProxyServer::ClearSocket(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
+void CProxyServer::RemoveConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
-	//非gameserver 主动请求关闭
-	if (Client_Succeed != iError) 
+	ConnMap::iterator it = m_ConnMap.find(pGamePlayer->ConnKey());
+	if (it != m_ConnMap.end())
 	{
-		DisConnect(pGamePlayer, iError);
+		m_ConnMap.erase(it);
 	}
-}
-
-void CProxyServer::DisConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
-{
-	ASSERT(pGamePlayer != NULL);
-// 	static ProxyMessage tmpMessage;
-// 	tmpMessage.Clear( );
-// 	ProxyMessage* tmpHead = tmpMessage.mutable_msghead( );
 	return;
 }
 
@@ -177,9 +182,7 @@ void CProxyServer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
 {
 	CSafePtr<CProxyPlayer> pConn = pConnn.DynamicCastTo<CProxyPlayer>();
 	if (pConnn != NULL)
-	{
-
-	}
+	{}
 }
 
 //

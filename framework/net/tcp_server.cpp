@@ -83,7 +83,7 @@ int CTCPServer::PrepareToRun()
 #endif
 }
 
-void CTCPServer::TcpTick()
+void CTCPServer::TcpTick(time_t now)
 {
 	try
 	{

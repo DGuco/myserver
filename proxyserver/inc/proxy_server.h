@@ -24,10 +24,8 @@ public:
 public:
 	//准备run
 	bool PrepareToRun();
-	//清除socket
-	void ClearSocket(CSafePtr<CProxyPlayer> pGamePlayer, short iError);
 	//通知gameserver client 断开连接
-	void DisConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError);
+	void RemoveConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError);
 	//
 	void ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer);
 	//
@@ -37,7 +35,7 @@ public:
 	//
 	void TransferMessage(CSafePtr<CProxyPlayer> pGamePlayer,int servertype, int serverid, shared_ptr<ProxyMessage> pMessage);
 	//
-	void CheckKickConn();
+	void CheckKickConn(time_t now);
 public:
 	//新链接回调
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);

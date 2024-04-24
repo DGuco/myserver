@@ -9,6 +9,7 @@
 #include "proxy_ctrl.h"
 #include "proxy_server.h"
 #include "mfactory_manager.h"
+#include "time_helper.h"
 
 CProxyCtrl::CProxyCtrl()
 {
@@ -50,6 +51,7 @@ bool CProxyCtrl::PrepareToRun()
 int CProxyCtrl::Run()
 {
 	long long nTick = 0;
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
 	while (true)
 	{
 		try
@@ -61,7 +63,7 @@ int CProxyCtrl::Run()
 			CACHE_LOG(ERROR_CACHE,"CProxyServer TcpTick  cache execption msg {]", e.what());
 		}
 
-		CProxyServer::GetSingletonPtr()->CheckKickConn();
+		CProxyServer::GetSingletonPtr()->CheckKickConn(nNow);
 		nTick++;
 		CACHE_LOG(DEBUG_CACHE, "CProxyServer::Run tick {}", nTick);
 		SLEEP(1000);

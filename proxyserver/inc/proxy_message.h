@@ -46,9 +46,9 @@ int CProxyMessageFactory::Execute(CSafePtr<CTCPSocket> pSocket)
 	int nFromId = m_pMessage->srcid();
 	int nDestT = m_pMessage->dstfe();
 	int nDestId = m_pMessage->dstid();
+	int nPacketId = m_pMessage->packetid();
 	int nCmdId = m_pMessage->cmd();
 	time_t sendtime = m_pMessage->timestamp();
-	int nPacketId = m_pMessage->packetid();
 
 	if (pProxyPlayer->GetProxyState() == eProConnected)
 	{
@@ -73,14 +73,13 @@ int CProxyMessageFactory::Execute(CSafePtr<CTCPSocket> pSocket)
 		return 0;
 	}
 
+	pProxyPlayer->SetLastRecvKeepAlive(CTimeHelper::GetSingletonPtr()->GetANSITime());
 	//ÐÄÌø
 	if (nCmdId == enMessageCmd::MESS_KEEPALIVE)
 	{
-		pProxyPlayer->SetLastRecvKeepAlive(CTimeHelper::GetSingletonPtr()->GetANSITime());
 		CACHE_LOG(TCP_DEBUG, "Recv keepalive from {}:{} to {}:{}", nFromT, nFromId, nDestT, nDestId);
 		return 0;
 	}
-
 	CProxyServer::GetSingletonPtr()->TransferMessage(pProxyPlayer,nDestT, nDestId, m_pMessage);
 	return 0;
 }

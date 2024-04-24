@@ -43,7 +43,7 @@ int CProxyPlayer::DoWriteLogic()
 
 int CProxyPlayer::DoClosingLogic(int errcode)
 {
-	CProxyServer::GetSingletonPtr()->DisConnect(this, errcode);
+	CProxyServer::GetSingletonPtr()->RemoveConnect(this, errcode);
 	return 0;
 }
 

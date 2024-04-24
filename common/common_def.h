@@ -16,6 +16,7 @@
 #define		KEEP_ALIVE_TIME				(2 * 60 * 1000)   //发送
 #define		KICK_TIME_OUT_TIME			(4 * 60 * 1000)   //
 #define		CHECK_TIME_OUT_TIME			(2 * 60 * 1000)   //
+#define		TCP_CONN_TIME_OUT			(2 * 60)  //TCP超时时间2分钟
 
 // Socket 连接错误码
 typedef enum _EnSocketStatus
