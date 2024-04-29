@@ -37,15 +37,15 @@ int	CProxyMessageFactory::MessId()
 
 int CProxyMessageFactory::Execute(CSafePtr<CTCPSocket> pSocket)
 {
-// 	CSafePtr<CServerClient> pServerPlayer = pSocket.DynamicCastTo<CServerClient>();
-// 	ASSERT(pServerPlayer != NULL && m_pMessage != NULL);
-// 	const ProxyHead& mesHead = m_pMessage->msghead();
-// 	int nFromT = mesHead.srcfe();
-// 	int nFromId = mesHead.srcid();
-// 	int nDestT = mesHead.dstfe();
-// 	int nDestId = mesHead.dstid();
-// 	int nCmdId = m_pMessage->msgcmd();
-// 
+	CSafePtr<CServerClient> pServerPlayer = pSocket.DynamicCastTo<CServerClient>();
+	ASSERT(pServerPlayer != NULL && m_pMessage != NULL);
+	int nFromT = m_pMessage->srcfe();
+	int nFromId = m_pMessage->srcid();
+	int nDestT = m_pMessage->dstfe();
+	int nDestId = m_pMessage->dstid();
+	int nPacketId = m_pMessage->packetid();
+	int nCmdId = m_pMessage->cmd();
+
 // 	CSafePtr<CMessageFactory> pFactory = CMessageFactoryManager::GetSingletonPtr()->GetFactory(nCmdId);
 // 	if (pFactory == NULL)
 // 	{

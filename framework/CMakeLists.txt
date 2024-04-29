@@ -90,7 +90,7 @@ set(FRAMEWORK
         "net/tcp_conn.h" 
         "net/tcp_conn.cpp"
         "net/tcp_client.h"
-        "net/tcp_client.cpp")
+        "net/tcp_client.cpp" "base/message_factory.cpp")
 
 
 include_directories(

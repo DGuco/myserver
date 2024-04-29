@@ -42,6 +42,10 @@ public:
 	//
 	CSafePtr<CTCPClient>   FindTcpClient(SOCKET socket);
 private:
+	//socket tick
+	void SocketTick(time_t now);
+	//socket tick
+	void CheckSocketResize();
 	//
 	int PrepareToRun();
 	//

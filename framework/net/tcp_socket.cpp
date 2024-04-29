@@ -1,12 +1,11 @@
 #include "tcp_socket.h"
+#include "common_def.h"
 #include "base.h"
 #include "log.h"
 
 CTCPSocket::CTCPSocket(unsigned int RecvBufLen_, unsigned int SendBufLen_)
 {
 	m_nStatus = eSocketClosed;
-	m_nRecvBuffLen = RecvBufLen_;
-	m_nSendBuffLen = SendBufLen_;
 	m_pReadBuff = new CByteBuff(RecvBufLen_);
 	m_pWriteBuff = new CByteBuff(SendBufLen_);
 }
@@ -22,8 +21,6 @@ CTCPSocket::CTCPSocket(CSocket socket,unsigned int RecvBufLen_, unsigned int Sen
 	{
 		m_nStatus = eSocketClosed;
 	}
-	m_nRecvBuffLen = RecvBufLen_;
-	m_nSendBuffLen = SendBufLen_;
 	m_pReadBuff = new CByteBuff(RecvBufLen_);
 	m_pWriteBuff = new CByteBuff(SendBufLen_);
 }
@@ -45,13 +42,13 @@ int CTCPSocket::ConnectTo(const char* szIPAddr, u_short unPort, bool block)
 		}
 	}
 	m_nStatus = eSocketOpen;
-	if (!m_Socket.SetRecvBufSize(m_nRecvBuffLen))
+	if (!m_Socket.SetRecvBufSize(TCP_SERVER_RECV_BUFF_LEN))
 	{
 		Close();
 		return -1;
 	}
 
-	if (!m_Socket.SetSendBufSize(m_nSendBuffLen))
+	if (!m_Socket.SetSendBufSize(TCP_SERVER_SEND_BUFF_LEN))
 	{
 		Close();
 		return -1;

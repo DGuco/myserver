@@ -26,22 +26,37 @@ CByteBuff::CByteBuff()
 	m_nReadIndex(0),
 	m_nWriteIndex(0)
 {
-	m_aData = new BYTE[m_nCapacity + BUFF_EXTRA_SIZE]( );
-	m_nCapacity = MAX_PACKAGE_LEN + BUFF_EXTRA_SIZE;
+	m_nCapacity = 0;
+	m_aData = new BYTE[m_nCapacity];
+	m_nMinSize = 0;
+	m_nMaxSize = 0;
+	m_fBuffUseRate = 0.0f;
+	m_bAutoChangeSize = false;
 }
 
-CByteBuff::CByteBuff(msize_t tmpCap)
+CByteBuff::CByteBuff(int minsize, bool autolarge, int maxsize)
 	:
 	m_nReadIndex(0),
 	m_nWriteIndex(0)
 {
-	m_aData = new BYTE[tmpCap + BUFF_EXTRA_SIZE]( );
-	m_nCapacity = tmpCap + BUFF_EXTRA_SIZE;
+	m_nCapacity = minsize;
+	m_nMinSize = minsize;
+	m_bAutoChangeSize = autolarge;
+	m_fBuffUseRate = 0.0f;
+	if (m_bAutoChangeSize)
+	{
+		m_nMaxSize = maxsize;
+	}
+	else
+	{
+		m_bAutoChangeSize = minsize;
+	}
+	m_aData = new BYTE[m_nCapacity];
 }
 
 CByteBuff::CByteBuff(const CByteBuff &byteBuff)
 {
-	m_aData = new BYTE[m_nCapacity]( );
+	m_aData = new BYTE[m_nCapacity];
 	Copy(byteBuff);
 }
 
@@ -79,6 +94,11 @@ CByteBuff &CByteBuff::operator=(CByteBuff &&byteBuff)
 CByteBuff::~CByteBuff()
 {
 	DELETE_ARR(m_aData);
+	m_nCapacity = 0;
+	m_nMinSize = 0;
+	m_nMaxSize = 0;
+	m_nReadIndex = 0;
+	m_nWriteIndex = 0;
 }
 
 void CByteBuff::Clear()
@@ -137,7 +157,7 @@ double CByteBuff::ReadDouble(bool ispeek)
 	return ReadT<double>(ispeek);
 }
 
-int CByteBuff::ReadBytes(BYTE* pOutCode, msize_t tmLen, bool ispeek)
+int CByteBuff::ReadBytes(BYTE* pOutCode, int tmLen, bool ispeek)
 {
 	int nCanReadSpace = CanReadLen();
 	if (nCanReadSpace <= 0 || tmLen > nCanReadSpace)
@@ -145,12 +165,12 @@ int CByteBuff::ReadBytes(BYTE* pOutCode, msize_t tmLen, bool ispeek)
 		return -1;
 	}
 
-	msize_t usOutLength = tmLen;
+	int usOutLength = tmLen;
 	BYTE* pTempSrc = m_aData;
 	BYTE* pTempDst = pOutCode;  // 设置接收 Code 的地址
-	msize_t nReadLen = MIN(usOutLength, m_nCapacity - m_nReadIndex);
+	int nReadLen = MIN(usOutLength, m_nCapacity - m_nReadIndex);
 	memcpy((void*)pTempDst, (const void*)(pTempSrc + m_nReadIndex), nReadLen);
-	msize_t tmpLast = usOutLength - nReadLen;
+	int tmpLast = usOutLength - nReadLen;
 	if (tmpLast > 0)
 	{
 		memcpy((void*)(pTempDst + nReadLen), (const void*)pTempSrc, tmpLast);
@@ -218,19 +238,37 @@ BYTE* CByteBuff::GetData() const
 	return m_aData;
 }
 
-int CByteBuff::WriteBytes(BYTE* pInCode, msize_t tmLen)
+int CByteBuff::WriteBytes(BYTE* pInCode, int tmLen)
 {
-	msize_t nCanWriteSpace = CanWriteLen();
-	//剩余空间不足
+	int nCanWriteSpace = CanWriteLen();
 	if (tmLen > nCanWriteSpace)
 	{
-		return -1;
+		if (m_nCapacity < m_nMaxSize)
+		{
+			int nNewCapacity = m_nCapacity >> 2;
+			nNewCapacity = (nNewCapacity > m_nMaxSize) ? m_nMaxSize : nNewCapacity;
+			BYTE* pNewData = new BYTE[nNewCapacity];
+			memcpy(pNewData, m_aData, m_nCapacity);
+			DELETE_ARR(m_aData);
+			m_aData = pNewData;
+			m_nCapacity = nNewCapacity;
+			m_fBuffUseRate = CaclUseRate();
+			nCanWriteSpace = CanWriteLen();
+			if (tmLen > nCanWriteSpace)//剩余空间不足
+			{
+				return -1;
+			}
+		}
+		else //剩余空间不足
+		{
+			return -1;
+		}
 	}
-	msize_t usInLength = tmLen;
+	int usInLength = tmLen;
 	BYTE* pTempDst = m_aData;
-	msize_t nWriteLen = MIN(usInLength, m_nCapacity - m_nWriteIndex);
+	int nWriteLen = MIN(usInLength, m_nCapacity - m_nWriteIndex);
 	memcpy((void*)(pTempDst + m_nWriteIndex), (const void*)pInCode, (size_t)nWriteLen);
-	size_t tmpLastLen = nCanWriteSpace - nWriteLen;
+	int tmpLastLen = nCanWriteSpace - nWriteLen;
 	//如果有剩余，说明空闲部分在内存的两头，在头部继续放
 	if (tmpLastLen > 0)
 	{
@@ -281,23 +319,37 @@ void CByteBuff::WriteT(T t, int offset)
 
 void CByteBuff::Copy(const CByteBuff& srcBuff)
 {
+	m_nCapacity = srcBuff.m_nCapacity;
+	m_nMinSize = srcBuff.m_nMinSize;
+	m_nMaxSize = srcBuff.m_nMaxSize;
 	m_nReadIndex = srcBuff.m_nReadIndex;
 	m_nWriteIndex = srcBuff.m_nWriteIndex;
-	m_nCapacity = srcBuff.m_nCapacity;
+	m_bAutoChangeSize = srcBuff.m_bAutoChangeSize;
+	m_fBuffUseRate = srcBuff.m_fBuffUseRate;
+	m_ResizeTimer = srcBuff.m_ResizeTimer;
 	memcpy((void*)m_aData, (const void*)srcBuff.m_aData, m_nCapacity);
 }
+//计算利用率
+float CByteBuff::CaclUseRate()
+{
+	//统计利用率
+	float nCap = m_nCapacity;
+	float nDataLen = CanReadLen();
+	float fUseRate = nDataLen / nCap;
+	return fUseRate;
+}
 
-msize_t CByteBuff::GetReadIndex() const
+int CByteBuff::GetReadIndex() const
 {
 	return m_nReadIndex;
 }
 
-msize_t CByteBuff::GetWriteIndex() const
+int CByteBuff::GetWriteIndex() const
 {
 	return m_nWriteIndex;
 }
 
-msize_t CByteBuff::GetCapaticy() const
+int CByteBuff::GetCapaticy() const
 {
 	return m_nCapacity;
 }
@@ -312,29 +364,29 @@ void CByteBuff::ResetWriteIndex()
 	m_nWriteIndex = 0;
 }
 
-void CByteBuff::WriteLen(msize_t len)
+void CByteBuff::WriteLen(int len)
 {
-	//m_nWriteIndex = (m_nWriteIndex + len) % m_nCapacity;
-	m_nWriteIndex = (m_nWriteIndex + len) & (m_nCapacity - 1);
+	m_nWriteIndex = (m_nWriteIndex + len) % m_nCapacity;
+	//m_nWriteIndex = (m_nWriteIndex + len) & (m_nCapacity - 1);
 }
 
-void CByteBuff::ReadLen(msize_t len)
+void CByteBuff::ReadLen(int len)
 {
 	m_nReadIndex = (m_nReadIndex + len) % m_nCapacity;
 	//m_nReadIndex = (m_nReadIndex + len) & (m_nCapacity - 1);
 }
 
-void CByteBuff::SetReadIndex(msize_t uiReadIndex)
+void CByteBuff::SetReadIndex(int uiReadIndex)
 {
 	m_nReadIndex = uiReadIndex;
 }
 
-void CByteBuff::SetWriteIndex(msize_t uiWriteIndex)
+void CByteBuff::SetWriteIndex(int uiWriteIndex)
 {
 	m_nWriteIndex = uiWriteIndex;
 }
 
-msize_t CByteBuff::CanReadLen() const
+int CByteBuff::CanReadLen() const
 {
 	if (m_nReadIndex == m_nWriteIndex) 
 	{
@@ -351,9 +403,9 @@ msize_t CByteBuff::CanReadLen() const
 	}
 }
 
-msize_t CByteBuff::CanWriteLen() const
+int CByteBuff::CanWriteLen() const
 {
-	msize_t nCanWriteSpace = 0;
+	int nCanWriteSpace = 0;
 	//获得剩余空间大小
 	if (m_nReadIndex == m_nWriteIndex) 
 	{
@@ -406,7 +458,7 @@ int CByteBuff::Send(CSocket& socket)
 	{
 		return ERR_SEND_NOSOCK;
 	}
-	msize_t nCanReadSpace = CanReadLen();
+	int nCanReadSpace = CanReadLen();
 	//没有数据
 	if (nCanReadSpace <= 0)
 	{
@@ -414,7 +466,7 @@ int CByteBuff::Send(CSocket& socket)
 	}
 	
 	SOCKET fd = socket.GetSocket();
-	msize_t nByteLeft = MIN(nCanReadSpace, m_nCapacity - m_nReadIndex);
+	int nByteLeft = MIN(nCanReadSpace, m_nCapacity - m_nReadIndex);
 	BYTE* pByteSend = m_aData + m_nReadIndex;
 	int nByteSent = 0;
 	while (nByteLeft > 0)
@@ -480,7 +532,7 @@ int CByteBuff::Recv(CSocket& socket)
 		return ERR_RECV_NOSOCK;
 	}
 
-	msize_t nCanReadSpace = CanReadLen();
+	int nCanReadSpace = CanReadLen();
 	//没有数据
 	if (nCanReadSpace <= 0)
 	{
@@ -494,7 +546,7 @@ int CByteBuff::Recv(CSocket& socket)
 		m_nWriteIndex = 0;
 	}
 
-	msize_t nCanReadLen = MIN(nCanReadSpace, m_nCapacity - m_nWriteIndex);
+	int nCanReadLen = MIN(nCanReadSpace, m_nCapacity - m_nWriteIndex);
 	int nByteRecved = 0;
 	BYTE* pTempSrc = m_aData + m_nWriteIndex;
 	int nReadLen = 0;
@@ -529,7 +581,7 @@ int CByteBuff::Recv(CSocket& socket)
 		}
 	} while (nReadLen > 0);
 
-	msize_t nLastBytes = nCanReadSpace - nByteRecved;
+	int nLastBytes = nCanReadSpace - nByteRecved;
 	if (nLastBytes > 0)
 	{
 		nByteRecved = 0;
@@ -567,4 +619,48 @@ int CByteBuff::Recv(CSocket& socket)
 		} while (nReadLen > 0);
 	}
 	return ERR_RECV_OK;
+}
+
+//检查是否可缩小缓冲区
+bool CByteBuff::CheckResizeBuff(time_t mstimestamp)
+{
+	if (!m_bAutoChangeSize)
+	{
+		return false;
+	}
+	if (!m_ResizeTimer.IsBeginTimer())
+	{
+		m_ResizeTimer.BeginTimer(mstimestamp, TCP_CHECK_BUFF_RESIZE * 1000);
+	}
+
+	//统计利用率
+	float fUseRate = CaclUseRate();
+	if (m_fBuffUseRate < fUseRate)
+	{
+		m_fBuffUseRate = fUseRate;
+	}
+
+	//一定时间内利用率低于50%
+	if (m_ResizeTimer.IsTimeout(mstimestamp))
+	{
+		if (m_fBuffUseRate < 0.5f)
+		{
+			int nCanReadLen = CanReadLen();
+			int nNewCap = m_nCapacity * (2.0F / 3.0F);  //大小缩为2/3
+			nNewCap = MAX(nCanReadLen, nNewCap);
+			BYTE* pNewData = new BYTE[nNewCap];
+			if (nCanReadLen > 0)
+			{
+				ReadBytes(pNewData, nCanReadLen, true);
+			}
+			m_nReadIndex = 0;
+			m_nWriteIndex = nCanReadLen;
+			DELETE_ARR(m_aData);
+			m_aData = pNewData;
+			m_nCapacity = nNewCap;
+			m_fBuffUseRate = CaclUseRate();
+			return true;
+		}
+	}
+	return false;
 }

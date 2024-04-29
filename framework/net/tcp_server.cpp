@@ -62,6 +62,65 @@ bool CTCPServer::ConnectTo(CSafePtr<CTCPClient> pClient,const char* szLocalAddr,
 	return true;
 }
 
+//socket tick
+void CTCPServer::SocketTick(time_t now)
+{
+	//要在缓冲区的数据发出去前检查利用率
+	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end(); it++)
+	{
+		it->second->DoTick(now);
+	}
+
+	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end(); it++)
+	{
+		it->second->DoTick(now);
+	}
+}
+
+//socket tick
+void CTCPServer::CheckSocketResize()
+{
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
+	//要在缓冲区的数据发出去前检查利用率
+	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end(); it++)
+	{
+		int nOldCap = it->second->GetReadBuff()->GetCapaticy();
+		if (it->second->GetReadBuff()->CheckResizeBuff(nNow))
+		{
+			CSocket tmSocket = it->second->GetSocket();
+			CACHE_LOG(TCP_DEBUG, "Resize conn readbuff socket fd = {} ,host = {},port = {},oldcap = {},newcap = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(), 
+				tmSocket.GetPort(),nOldCap,it->second->GetReadBuff()->GetCapaticy());
+		}
+
+		nOldCap = it->second->GetSendBuff()->GetCapaticy();
+		if (it->second->GetSendBuff()->CheckResizeBuff(nNow))
+		{
+			CSocket tmSocket = it->second->GetSocket();
+			CACHE_LOG(TCP_DEBUG, "Resize conn sendbuff socket fd = {} ,host = {},port = {},oldcap = {},newcap = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(),
+				tmSocket.GetPort(), nOldCap, it->second->GetSendBuff()->GetCapaticy());
+		}
+	}
+
+	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end(); it++)
+	{
+		int nOldCap = it->second->GetReadBuff()->GetCapaticy();
+		if (it->second->GetReadBuff()->CheckResizeBuff(nNow))
+		{
+			CSocket tmSocket = it->second->GetSocket();
+			CACHE_LOG(TCP_DEBUG, "Resize client readbuff socket fd = {} ,host = {},port = {},oldcap = {},newcap = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(),
+				tmSocket.GetPort(), nOldCap, it->second->GetReadBuff()->GetCapaticy());
+		}
+
+		nOldCap = it->second->GetSendBuff()->GetCapaticy();
+		if (it->second->GetSendBuff()->CheckResizeBuff(nNow))
+		{
+			CSocket tmSocket = it->second->GetSocket();
+			CACHE_LOG(TCP_DEBUG, "Resize client sendbuff socket fd = {} ,host = {},port = {},oldcap = {},newcap = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(),
+				tmSocket.GetPort(), nOldCap, it->second->GetSendBuff()->GetCapaticy());
+		}
+	}
+}
+
 int CTCPServer::PrepareToRun()
 {
 #ifdef __LINUX__
@@ -85,6 +144,8 @@ int CTCPServer::PrepareToRun()
 
 void CTCPServer::TcpTick(time_t now)
 {
+	//在缓冲区数据发送出去之前，检查缓冲区利用率
+	CheckSocketResize();
 	try
 	{
 #ifdef __LINUX__
@@ -104,8 +165,10 @@ void CTCPServer::TcpTick(time_t now)
 	{
 		CACHE_LOG(TCP_ERROR, "TcpTick catch execption msg : {}", e.what());
 	}
+
 	//回收已关闭或者出错的连接
 	FreeClosingSocket();
+	SocketTick(now);
 	return;
 }
 

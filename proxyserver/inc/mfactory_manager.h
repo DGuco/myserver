@@ -22,7 +22,7 @@ public:
 	void RegisterFactory(int messId, CSafePtr<CMessageFactory> pFactory);
 	CSafePtr<CMessageFactory> GetFactory(int messId);
 private:
-	std::unordered_map<int, CSafePtr<CMessageFactory>> m_FatoryMap;
+	std::unordered_map<int, CSafePtr<CMessageFactory>>	m_FatoryMap;
 };
 
 #endif //__MFACTORY_MANAGER_H__

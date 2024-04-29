@@ -9,6 +9,22 @@
 #include "proxy_ctrl.h"
 #include "signal_handler.h"
 
+class AAA
+{
+public:
+	AAA(int a_)
+	{
+		a = a_;
+	}
+
+	~AAA()
+	{
+		int b = a;
+	}
+private:
+	int a;
+};
+
 using namespace std;
 int main(int argc, char **argv)
 {

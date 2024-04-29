@@ -10,6 +10,7 @@
 
 #include <base.h>
 #include <string>
+#include "time_helper.h"
 #include "socket.h"
 using namespace std;
 
@@ -47,7 +48,7 @@ class CByteBuff
 public:
 	//构造函数
 	CByteBuff();
-	CByteBuff(msize_t tmpCap);
+	CByteBuff(int minsize,bool autolarge = false,int maxsize = 0);
 	//拷贝构造函数
 	CByteBuff(const CByteBuff &byteBuff);
 	//移动构造函数
@@ -68,7 +69,7 @@ public:
 	unsigned long long ReadUnLongLong(bool ispeek = false);
 	float ReadFloat(bool ispeek = false);
 	double ReadDouble(bool ispeek = false);
-	int  ReadBytes(BYTE* pOutCode, msize_t tmLen, bool ispeek = false);
+	int  ReadBytes(BYTE* pOutCode, int tmLen, bool ispeek = false);
 	void WriteShort(short value, int offset = 0);
 	void WriteInt(int value, int offset = 0);
 	void WriteLong(long value, int offset = 0);
@@ -79,26 +80,28 @@ public:
 	void WriteUnLongLong(unsigned long long value, int offset = 0);
 	void WriteFloat(float value, int offset = 0);
 	void WriteDouble(double value, int offset = 0);
-	int  WriteBytes(BYTE* pInCode, msize_t tmLen);
-	msize_t GetReadIndex() const;
-	msize_t GetWriteIndex() const;
-	msize_t GetCapaticy() const;
+	int  WriteBytes(BYTE* pInCode, int tmLen);
+	int GetReadIndex() const;
+	int GetWriteIndex() const;
+	int GetCapaticy() const;
 	void ResetReadIndex();
 	void ResetWriteIndex();
-	void WriteLen(msize_t len);
-	void ReadLen(msize_t len);
-	void SetReadIndex(msize_t uiReadIndex);
-	void SetWriteIndex(msize_t uiWriteIndex);
+	void WriteLen(int len);
+	void ReadLen(int len);
+	void SetReadIndex(int uiReadIndex);
+	void SetWriteIndex(int uiWriteIndex);
 	//获取可读数据长度
-	msize_t CanReadLen() const;
+	int CanReadLen() const;
 	//获取可写数据长度
-	msize_t CanWriteLen() const;
+	int CanWriteLen() const;
 	//获取数据指针
 	BYTE* GetData() const;
 	//发送缓冲区数据到tcp
 	int Send(CSocket& socket);
 	//接收数据
 	int Recv(CSocket& socket);
+	//检查是否可缩小缓冲区
+	bool CheckResizeBuff(time_t mstimestamp);
 public:
 	//判断是否是小端
 	static bool IsLittleEndian();
@@ -119,13 +122,20 @@ private:
 	void WriteT(T t, int offset = 0);
 	//不要随便调用
 	void Copy(const CByteBuff& srcBuff);
+	//计算利用率
+	float CaclUseRate();
 private:
 	static bool m_bIsLittleEndian;
 private:
-	msize_t m_nReadIndex;
-	msize_t m_nWriteIndex;
-	msize_t m_nCapacity;
-	BYTE*	m_aData;
+	int			m_nReadIndex;
+	int			m_nWriteIndex;
+	int			m_nCapacity;
+	int			m_nMinSize;
+	int			m_nMaxSize;
+	bool		m_bAutoChangeSize;
+	CMyTimer	m_ResizeTimer;   //缓冲区回收timer
+	float		m_fBuffUseRate;  //缓冲区利用率
+	BYTE*		m_aData;
 };
 
 
