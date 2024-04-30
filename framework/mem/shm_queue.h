@@ -52,7 +52,7 @@ public:
      * @param length
      * @return
      */
-    int SendMessage(BYTE* message, msize_t length);
+    int SendMessage(BYTE* message, int length);
     /**
      * 获取消息 对于mes queue来说是读操作，因为从队列中拿走了一个消息包 仅修改m_iBegin
      * 读取共享内存管道（改变读写索引）,，读共享内存仅改变m_iBegin，保证读单进程读和写进程不会发生竞争，写不会造成数据不一致

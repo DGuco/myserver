@@ -50,7 +50,7 @@ public:
 	//读取数据
 	int Recv();
 	//把数据写到缓冲区准备发送
-	int Write(BYTE* pCode, msize_t nCodeLength);
+	int Write(BYTE* pCode, int nCodeLength);
 	//把缓冲区数据发送
 	int Flush();
 	//添加socket到fdset

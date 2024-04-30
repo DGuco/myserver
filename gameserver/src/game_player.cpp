@@ -11,14 +11,14 @@ CGamePlayer::CGamePlayer(CSocket socket)
 
 int CGamePlayer::DoRecvLogic()
 {
-	msize_t tmCurPacketLen = m_pReadBuff->CanReadLen();
+	int tmCurPacketLen = m_pReadBuff->CanReadLen();
 	//包头前两个字节为数据总长度，如果数据长度小于两个字节返回0
-	if (tmCurPacketLen < sizeof(msize_t))
+	if (tmCurPacketLen < sizeof(mshead_size))
 	{
 		return ERR_RECV_OK;
 	}
-	msize_t tmPacketLen = m_pReadBuff->ReadUnInt(true);
-	msize_t tmFullPacketLen = tmPacketLen + sizeof(msize_t);
+	mshead_size tmPacketLen = m_pReadBuff->ReadT<mshead_size>(true);
+	int tmFullPacketLen = tmPacketLen + sizeof(mshead_size);
 	//数据不完整
 	if (tmFullPacketLen > tmCurPacketLen)
 	{

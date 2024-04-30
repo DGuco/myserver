@@ -7,7 +7,7 @@
 #ifndef __TCP_DEF_H__
 #define __TCP_DEF_H__
 
-#define		MAX_PACKAGE_LEN				(1024 * 120)   // 单个包的最大长度
+#define		MAX_PACKAGE_LEN				(1024 * 64)   // 单个包的最大长度
 #define		PIPE_SIZE					(0x1000000)    // 共享内存管道大小 16M
 #define		DB2S_SHM_KEY				(20000000)
 #define		S2DB_SHM_KEY				(20000001)
@@ -28,6 +28,9 @@
 #define		PROXY_SERVER_SEND_BUFF		(1024 * 1024 * 16)  //tcp socket 发送缓冲区2mb
 #define		PROXY_SERVER_RECV_BUFF_MAX	(1024 * 1024 * 64)  //tcp socket 接收缓冲区2mb
 #define		PROXY_SERVER_SEND_BUFF_MAX	(1024 * 1024 * 64)  //tcp socket 发送缓冲区2mb
+
+typedef unsigned short mshead_size;
+
 // Socket 连接错误码
 typedef enum _EnSocketStatus
 {

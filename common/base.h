@@ -58,7 +58,6 @@
 	}\
 	while(0);\
 
-typedef unsigned int msize_t;
 typedef unsigned char BYTE;
 typedef int int32;
 typedef short int16;

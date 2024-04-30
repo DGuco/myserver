@@ -177,7 +177,7 @@ int CTCPSocket::Recv()
 	return nRetCode;
 }
 
-int CTCPSocket::Write(BYTE* pCode, msize_t nCodeLength)
+int CTCPSocket::Write(BYTE* pCode, int nCodeLength)
 {
 	//没有数据了，索引都归0吧
 	if (m_pWriteBuff->CanReadLen() == 0)

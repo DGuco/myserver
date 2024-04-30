@@ -35,7 +35,7 @@ bool CShmMessQueue::Init(sm_key shmKey,size_t size)
     return true;
 }
 
-int CShmMessQueue::SendMessage(BYTE* message, msize_t length)
+int CShmMessQueue::SendMessage(BYTE* message, int length)
 {
     if (!message || length <= 0) {
         return (int)eQueueErrorCode::QUEUE_PARAM_ERROR;
@@ -49,18 +49,18 @@ int CShmMessQueue::SendMessage(BYTE* message, msize_t length)
     }
 
     //空间不足
-    if ((length + sizeof(msize_t)) > size) 
+    if ((length + sizeof(int)) > size)
     {
         return (int)eQueueErrorCode::QUEUE_NO_SPACE;
     }
 
-    msize_t usInLength = length;
+    int usInLength = length;
     BYTE* pTempDst = m_pQueueAddr;
     BYTE* pTempSrc = (BYTE*)(&usInLength);
 
     //写入的时候我们在数据头插上数据的长度，方便准确取数据,每次写入一个字节可能会分散在队列的头和尾
     unsigned int tmpEnd = m_stMemTrunk->m_iEnd;
-    for (msize_t i = 0; i < sizeof(usInLength); i++) 
+    for (int i = 0; i < sizeof(usInLength); i++)
     {
         pTempDst[tmpEnd] = pTempSrc[i];  // 拷贝 Code 的长度
         tmpEnd = (tmpEnd + 1) & (m_stMemTrunk->m_iSize - 1);  // % 用于防止 Code 结尾的 idx 超出 codequeue
@@ -99,7 +99,7 @@ int CShmMessQueue::GetMessage(BYTE* pOutCode)
 
     BYTE* pTempSrc = m_pQueueAddr;
     // 如果数据的最大长度不到sizeof(MESS_SIZE_TYPE)（存入数据时在数据头插入了数据的长度,长度本身）
-    if (nTempMaxLength <= (int)sizeof(msize_t))
+    if (nTempMaxLength <= (int)sizeof(int))
     {
         DISK_LOG(SHM_ERROR,"ReadHeadMessage data len illegal,nTempMaxLength {}", nTempMaxLength);
         DebugTrunk();
@@ -107,11 +107,11 @@ int CShmMessQueue::GetMessage(BYTE* pOutCode)
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
     }
 
-    msize_t usOutLength;
+    int usOutLength;
     BYTE* pTempDst = (BYTE*)&usOutLength;   // 数据拷贝的目的地址
     unsigned int tmpBegin = m_stMemTrunk->m_iBegin;
     //取出数据的长度
-    for (msize_t i = 0; i < sizeof(msize_t); i++) 
+    for (int i = 0; i < sizeof(int); i++)
     {
         pTempDst[i] = pTempSrc[tmpBegin];
         tmpBegin = (tmpBegin + 1) & (m_stMemTrunk->m_iSize - 1);
@@ -119,7 +119,7 @@ int CShmMessQueue::GetMessage(BYTE* pOutCode)
 
     // 将数据长度回传
     //取出的数据的长度实际有的数据长度，非法
-    if (usOutLength > (int) (nTempMaxLength - sizeof(msize_t)) || usOutLength < 0) 
+    if (usOutLength > (int) (nTempMaxLength - sizeof(int)) || usOutLength < 0)
     {
         DISK_LOG(SHM_ERROR,"ReadHeadMessage usOutLength illegal,usOutLength: %d,nTempMaxLength {}\n",usOutLength, nTempMaxLength);
         DebugTrunk();
@@ -161,18 +161,18 @@ int CShmMessQueue::ReadHeadMessage(BYTE* pOutCode)
 
     BYTE* pTempSrc = m_pQueueAddr;
     // 如果数据的最大长度不到sizeof(MESS_SIZE_TYPE)（存入数据时在数据头插入了数据的长度,长度本身）
-    if (nTempMaxLength <= (int)sizeof(msize_t)) 
+    if (nTempMaxLength <= (int)sizeof(int))
     {
         DISK_LOG(SHM_ERROR,"ReadHeadMessage data len illegal, nTempMaxLength{}",nTempMaxLength);
         DebugTrunk();
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
     }
 
-    msize_t usOutLength;
+    int usOutLength;
     BYTE* pTempDst = (BYTE*)&usOutLength;   // 数据拷贝的目的地址
     unsigned int tmpBegin = m_stMemTrunk->m_iBegin;
     //取出数据的长度
-    for (msize_t i = 0; i < sizeof(msize_t); i++) 
+    for (int i = 0; i < sizeof(int); i++)
     {
         pTempDst[i] = pTempSrc[tmpBegin];
         tmpBegin = (tmpBegin + 1) & (m_stMemTrunk->m_iSize - 1);
@@ -180,7 +180,7 @@ int CShmMessQueue::ReadHeadMessage(BYTE* pOutCode)
 
     // 将数据长度回传
     //取出的数据的长度实际有的数据长度，非法
-    if (usOutLength > (int) (nTempMaxLength - sizeof(msize_t)) || usOutLength < 0) 
+    if (usOutLength > (int) (nTempMaxLength - sizeof(int)) || usOutLength < 0)
     {
         DISK_LOG(SHM_ERROR, "ReadHeadMessage usOutLength illegal, usOutLength: {}, nTempMaxLength{} ",usOutLength, nTempMaxLength);
         DebugTrunk();
@@ -213,7 +213,7 @@ int CShmMessQueue::DeleteHeadMessage()
 
     BYTE* pTempSrc = m_pQueueAddr;
     // 如果数据的最大长度不到sizeof(MESS_SIZE_TYPE)（存入数据时在数据头插入了数据的长度,长度本身）
-    if (nTempMaxLength <= (int)sizeof(msize_t)) 
+    if (nTempMaxLength <= (int)sizeof(int))
     {
 		DISK_LOG(SHM_ERROR, "ReadHeadMessage data len illegal,nTempMaxLength {}", nTempMaxLength);
         DebugTrunk();
@@ -221,11 +221,11 @@ int CShmMessQueue::DeleteHeadMessage()
         return (int)eQueueErrorCode::QUEUE_DATA_SEQUENCE_ERROR;
     }
 
-    msize_t usOutLength;
+    int usOutLength;
     BYTE* pTempDst = (BYTE*)&usOutLength;   // 数据拷贝的目的地址
     unsigned int tmpBegin = m_stMemTrunk->m_iBegin;
     //取出数据的长度
-    for (msize_t i = 0; i < sizeof(msize_t); i++) 
+    for (int i = 0; i < sizeof(int); i++)
     {
         pTempDst[i] = pTempSrc[tmpBegin];
         tmpBegin = (tmpBegin + 1) & (m_stMemTrunk->m_iSize - 1);
@@ -233,7 +233,7 @@ int CShmMessQueue::DeleteHeadMessage()
 
     // 将数据长度回传
     //取出的数据的长度实际有的数据长度，非法
-    if (usOutLength > (int) (nTempMaxLength - sizeof(msize_t)) || usOutLength < 0) 
+    if (usOutLength > (int) (nTempMaxLength - sizeof(int)) || usOutLength < 0)
     {
         DISK_LOG(SHM_ERROR,"ReadHeadMessage usOutLength illegal,usOutLength: {},nTempMaxLength {}",usOutLength, nTempMaxLength);
         DebugTrunk();

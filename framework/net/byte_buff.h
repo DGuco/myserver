@@ -99,6 +99,9 @@ public:
 	int Recv(CSocket& socket);
 	//检查是否可缩小缓冲区
 	bool CheckResizeBuff(time_t mstimestamp);
+	//只读取基本类型
+	template<class T, int len_ = sizeof(T)>
+	T ReadT(bool ispeek);
 public:
 	//判断是否是小端
 	static bool IsLittleEndian();
@@ -106,9 +109,6 @@ public:
 private:
 	//大小端转换
 	BYTE* Flip(BYTE* netStr, size_t len);
-	//只读取基本类型
-	template<class T,int len_ = sizeof(T)>
-	T ReadT(bool ispeek);
 	/**
 	 *
 	 * @tparam T
