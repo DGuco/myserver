@@ -10,7 +10,7 @@
 #include <memory>
 #include <google/protobuf/message.h>
 #include "safe_pointer.h"
-#include "common_def.h"
+#include "tcp_def.h"
 #include "base.h"
 
 class CTCPSocket;

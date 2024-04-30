@@ -15,7 +15,11 @@
 class CTCPConn : public CTCPSocket
 {
 public:
-	CTCPConn(CSocket socket,unsigned int RecvBufLen_, unsigned int SendBufLen_);
+	CTCPConn(CSocket socket,
+			int RecvBufLen_,
+			int SendBufLen_,
+			int MaxRecvBufLen_,
+			int MaxSendBufLen_);
 	virtual ~CTCPConn();
 public:
 	virtual int		DoRecvLogic() = 0;

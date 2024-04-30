@@ -10,7 +10,7 @@
 #include "base.h"
 #include "singleton.h"
 #include "runflag.h"
-#include "common_def.h"
+#include "tcp_def.h"
 #include "safe_pointer.h"
 #include "tcp_server.h"
 #include "game_player.h"
@@ -70,6 +70,6 @@ private:
 	CSafePtr<CShmMessQueue>	m_S2DBCodeQueue;
 	CRunFlag				m_oRunFlag;                         // 服务器运行状态
 	int						m_iServerState;    // 服务器状态
-	BYTE					m_CacheData[GAMEPLAYER_RECV_BUFF_LEN];
+	BYTE					m_CacheData[MAX_PACKAGE_LEN];
 };
 #endif //SERVER_GAMESERVER_H

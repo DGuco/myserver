@@ -168,6 +168,7 @@ void CTCPServer::TcpTick(time_t now)
 
 	//回收已关闭或者出错的连接
 	FreeClosingSocket();
+	//tcp tick
 	SocketTick(now);
 	return;
 }

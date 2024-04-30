@@ -48,15 +48,12 @@ class CByteBuff
 public:
 	//构造函数
 	CByteBuff();
-	CByteBuff(int minsize,bool autolarge = false,int maxsize = 0);
+	CByteBuff(int minsize,int maxsize = 0);
 	//拷贝构造函数
 	CByteBuff(const CByteBuff &byteBuff);
-	//移动构造函数
-	CByteBuff(CByteBuff &&byteBuff);
 	//赋值操作符
 	CByteBuff &operator=(CByteBuff &byteBuff);
-	//移动赋值操作符
-	CByteBuff &operator=(CByteBuff &&byteBuff);
+	//析构函数
 	~CByteBuff();
 	void Clear();
 	short ReadShort(bool ispeek = false);
@@ -132,7 +129,6 @@ private:
 	int			m_nCapacity;
 	int			m_nMinSize;
 	int			m_nMaxSize;
-	bool		m_bAutoChangeSize;
 	CMyTimer	m_ResizeTimer;   //缓冲区回收timer
 	float		m_fBuffUseRate;  //缓冲区利用率
 	BYTE*		m_aData;

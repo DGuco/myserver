@@ -15,7 +15,7 @@ class CTCPClient : public CTCPSocket
 {	
 public:
 	//
-	CTCPClient(unsigned int RecvBufLen_, unsigned int SendBufLen_);
+	CTCPClient(int RecvBufLen_,int SendBufLen_, int MaxRecvBufLen_, int MaxSendBufLen_);
 	//
 	virtual ~CTCPClient();
 public:

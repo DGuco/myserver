@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "tcp_def.h"
 
 
 CAes::CAes()

@@ -11,7 +11,7 @@
 #include <map>
 #include "singleton.h"
 #include "json_reader.h"
-#include "common_def.h"
+#include "tcp_def.h"
 #include "./message/message.pb.h"
 
 struct ServerInfo

@@ -11,7 +11,6 @@
 #include "singleton.h"
 #include "message.pb.h"
 #include "proxy_player.h"
-#include "common_def.h"
 #include "shm_queue.h"
 
 class CProxyServer : public CTCPServer,public CSingleton<CProxyServer>

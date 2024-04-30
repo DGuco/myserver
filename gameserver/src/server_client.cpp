@@ -1,10 +1,12 @@
 #include "server_client.h"
-#include "common_def.h"
 #include "game_server.h"
 
 
 CServerClient::CServerClient()
-	:CTCPClient(GAMEPLAYER_RECV_BUFF_LEN, GAMEPLAYER_SEND_BUFF_LEN)
+	:CTCPClient(SERVER_CLIENT_RECV_BUFF,
+				SERVER_CLIENT_SEND_BUFF,
+				SERVER_CLIENT_RECV_BUFF_MAX,
+				SERVER_CLIENT_SEND_BUFF_MAX)
 {}
 
 CServerClient::~CServerClient()

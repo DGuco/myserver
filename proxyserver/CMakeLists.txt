@@ -21,7 +21,7 @@ set(SOURCE_FILES
     "main.cpp" 
     "../common/message/message.pb.cc" 
     "../common/message/message.pb.h"
-    "../common/common_def.h"
+    "../common/tcp_def.h"
     "../common/server_config.h"
     "../common/server_config.cpp"
     "inc/proxy_ctrl.h" 

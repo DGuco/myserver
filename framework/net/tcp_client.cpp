@@ -1,7 +1,10 @@
 #include "tcp_client.h"
 
-CTCPClient::CTCPClient(unsigned int RecvBufLen_, unsigned int SendBufLen_)
-	: CTCPSocket(RecvBufLen_, SendBufLen_)
+CTCPClient::CTCPClient(int RecvBufLen_,
+					int SendBufLen_,
+					int MaxRecvBufLen_,
+					int MaxSendBufLen_)
+	: CTCPSocket(RecvBufLen_, SendBufLen_, MaxRecvBufLen_, MaxSendBufLen_)
 {
 
 }

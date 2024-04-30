@@ -2,7 +2,6 @@
 // Created by DGuco on 17-3-1.
 //
 #include "my_assert.h"
-#include "common_def.h"
 #include "server_config.h"
 #include "game_player.h"
 #include "game_server.h"

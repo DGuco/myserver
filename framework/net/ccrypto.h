@@ -7,7 +7,6 @@
 #ifndef __CCRYPTO_H__
 #define __CCRYPTO_H__
 #include <openssl/aes.h>
-#include "common_def.h"
 
 class CAes
 {

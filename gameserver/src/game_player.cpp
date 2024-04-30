@@ -1,12 +1,13 @@
 #include "game_player.h"
-#include "common_def.h"
 #include "game_server.h"
 
 CGamePlayer::CGamePlayer(CSocket socket)
-	:CTCPConn(socket,GAMEPLAYER_RECV_BUFF_LEN, GAMEPLAYER_SEND_BUFF_LEN)
-{
-
-}
+	:CTCPConn(socket,
+		GAMEPLAYER_RECV_BUFF_LEN, 
+		GAMEPLAYER_SEND_BUFF_LEN,
+		GAMEPLAYER_RECV_BUFF_LEN, 
+		GAMEPLAYER_SEND_BUFF_LEN)
+{}
 
 int CGamePlayer::DoRecvLogic()
 {

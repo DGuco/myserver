@@ -5,7 +5,7 @@
 #include <string>
 #include <stdio.h>
 #include "byte_buff.h"
-#include "common_def.h"
+#include "tcp_def.h"
 
 bool IsSystemLittleEndian()
 {
@@ -31,26 +31,17 @@ CByteBuff::CByteBuff()
 	m_nMinSize = 0;
 	m_nMaxSize = 0;
 	m_fBuffUseRate = 0.0f;
-	m_bAutoChangeSize = false;
 }
 
-CByteBuff::CByteBuff(int minsize, bool autolarge, int maxsize)
+CByteBuff::CByteBuff(int minsize,int maxsize)
 	:
 	m_nReadIndex(0),
 	m_nWriteIndex(0)
 {
 	m_nCapacity = minsize;
 	m_nMinSize = minsize;
-	m_bAutoChangeSize = autolarge;
 	m_fBuffUseRate = 0.0f;
-	if (m_bAutoChangeSize)
-	{
-		m_nMaxSize = maxsize;
-	}
-	else
-	{
-		m_bAutoChangeSize = minsize;
-	}
+	m_nMaxSize = MAX(maxsize,minsize);
 	m_aData = new BYTE[m_nCapacity];
 }
 
@@ -60,34 +51,12 @@ CByteBuff::CByteBuff(const CByteBuff &byteBuff)
 	Copy(byteBuff);
 }
 
-CByteBuff::CByteBuff(CByteBuff &&byteBuff)
-	:
-	m_nReadIndex(std::move(byteBuff.m_nReadIndex)),
-	m_nWriteIndex(std::move(byteBuff.m_nWriteIndex)),
-	m_nCapacity(std::move(byteBuff.m_nCapacity)),
-	m_aData(std::move(byteBuff.m_aData))
-{
-	byteBuff.m_aData = NULL;
-}
-
 CByteBuff &CByteBuff::operator=(CByteBuff &byteBuff)
 {
 	if (this == &(byteBuff)) {
 		return *this;
 	}
 	Copy(byteBuff);
-	return *this;
-}
-
-CByteBuff &CByteBuff::operator=(CByteBuff &&byteBuff)
-{
-	if (this == &(byteBuff)) {
-		return *this;
-	}
-	m_nReadIndex = std::move(byteBuff.m_nReadIndex);
-	m_nWriteIndex = std::move(byteBuff.m_nWriteIndex);
-	m_nCapacity = std::move(byteBuff.m_nCapacity);
-	m_aData = std::move(byteBuff.m_aData);
 	return *this;
 }
 
@@ -324,7 +293,6 @@ void CByteBuff::Copy(const CByteBuff& srcBuff)
 	m_nMaxSize = srcBuff.m_nMaxSize;
 	m_nReadIndex = srcBuff.m_nReadIndex;
 	m_nWriteIndex = srcBuff.m_nWriteIndex;
-	m_bAutoChangeSize = srcBuff.m_bAutoChangeSize;
 	m_fBuffUseRate = srcBuff.m_fBuffUseRate;
 	m_ResizeTimer = srcBuff.m_ResizeTimer;
 	memcpy((void*)m_aData, (const void*)srcBuff.m_aData, m_nCapacity);
@@ -624,7 +592,7 @@ int CByteBuff::Recv(CSocket& socket)
 //检查是否可缩小缓冲区
 bool CByteBuff::CheckResizeBuff(time_t mstimestamp)
 {
-	if (!m_bAutoChangeSize)
+	if (m_nMinSize == m_nMaxSize)
 	{
 		return false;
 	}

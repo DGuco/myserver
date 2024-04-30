@@ -10,6 +10,7 @@
 #include "byte_buff.h"
 #include "socket.h"
 #include "time_helper.h"
+#include "tcp_def.h"
 
 enum eSocketStatus
 {
@@ -24,10 +25,17 @@ class CTCPSocket
 {
 public:
 	//
-	CTCPSocket(unsigned int RecvBufLen_, unsigned int SendBufLen_);
+	CTCPSocket(int RecvBufLen_,
+				int SendBufLen_, 
+				int MaxRecvBufLen_,
+				int MaxSendBufLen_);
 	//
-	CTCPSocket(CSocket socket,unsigned int RecvBufLen_, unsigned int SendBufLen_);
-	//
+	CTCPSocket(CSocket socket,
+				int RecvBufLen_,
+				int SendBufLen_,
+				int MaxRecvBufLen_,
+				int MaxSendBufLen_);
+			//
 	virtual ~CTCPSocket();
 	//ªÒ»°socketid
 	SOCKET GetSocketFD();

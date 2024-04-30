@@ -1,16 +1,22 @@
 #include "tcp_socket.h"
-#include "common_def.h"
 #include "base.h"
 #include "log.h"
 
-CTCPSocket::CTCPSocket(unsigned int RecvBufLen_, unsigned int SendBufLen_)
+CTCPSocket::CTCPSocket(int RecvBufLen_,
+						int SendBufLen_,
+						int MaxRecvBufLen_,
+						int MaxSendBufLen_)
 {
 	m_nStatus = eSocketClosed;
-	m_pReadBuff = new CByteBuff(RecvBufLen_);
-	m_pWriteBuff = new CByteBuff(SendBufLen_);
+	m_pReadBuff = new CByteBuff(RecvBufLen_,MaxRecvBufLen_);
+	m_pWriteBuff = new CByteBuff(SendBufLen_,MaxSendBufLen_);
 }
 
-CTCPSocket::CTCPSocket(CSocket socket,unsigned int RecvBufLen_, unsigned int SendBufLen_)
+CTCPSocket::CTCPSocket(CSocket socket,
+						int RecvBufLen_,
+						int SendBufLen_,
+						int MaxRecvBufLen_,
+						int MaxSendBufLen_)
 {
 	m_Socket = socket;
 	if (m_Socket.IsValid())
@@ -21,8 +27,8 @@ CTCPSocket::CTCPSocket(CSocket socket,unsigned int RecvBufLen_, unsigned int Sen
 	{
 		m_nStatus = eSocketClosed;
 	}
-	m_pReadBuff = new CByteBuff(RecvBufLen_);
-	m_pWriteBuff = new CByteBuff(SendBufLen_);
+	m_pReadBuff = new CByteBuff(RecvBufLen_,MaxRecvBufLen_);
+	m_pWriteBuff = new CByteBuff(SendBufLen_,MaxSendBufLen_);
 }
 
 CTCPSocket::~CTCPSocket()

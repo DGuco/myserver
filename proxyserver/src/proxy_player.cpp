@@ -1,10 +1,13 @@
 #include "proxy_player.h"
 #include "singleton.h"
-#include "common_def.h"
 #include "proxy_server.h"
 
 CProxyPlayer::CProxyPlayer(CSocket socket)
-	:CTCPConn(socket,GAMEPLAYER_RECV_BUFF_LEN, GAMEPLAYER_SEND_BUFF_LEN)
+	:CTCPConn(socket,
+				PROXY_SERVER_RECV_BUFF,
+				PROXY_SERVER_SEND_BUFF,
+				PROXY_SERVER_RECV_BUFF_MAX,
+				PROXY_SERVER_SEND_BUFF_MAX)
 {
 	m_nProxyState = eProInvalid;
 	m_nServerType = FE_INVALID;
