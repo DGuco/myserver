@@ -101,7 +101,7 @@ public:
 	bool CheckResizeBuff(time_t mstimestamp);
 	//只读取基本类型
 	template<class T, int len_ = sizeof(T)>
-	T ReadT(bool ispeek);
+	T ReadT(bool ispeek = false);
 public:
 	//判断是否是小端
 	static bool IsLittleEndian();

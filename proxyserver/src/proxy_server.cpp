@@ -40,7 +40,7 @@ bool CProxyServer::PrepareToRun()
 void CProxyServer::ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer)
 {
 	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
-	int packLen = pRecvBuff->ReadUnInt();
+	mshead_size packLen = pRecvBuff->ReadT<mshead_size>();
 	if (packLen > MAX_PACKAGE_LEN)
 	{
 		CACHE_LOG(TCP_ERROR, "Packet len illegal from {}:{} packetlen = {} ",pGamePlayer->GetServerType(), pGamePlayer->GetServerId(), packLen);

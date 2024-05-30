@@ -28,6 +28,9 @@ private:
 using namespace std;
 int main(int argc, char **argv)
 {
+	char arr[10] = "123456";
+	strncpy(arr, "8", 10);
+	bool aaa = (100 >= 140|| 143 <= 145 >= 145);
 	//ÐÅºÅ´¦Àí×¢²á
 	CSignalHandler::GetSingletonPtr()->RegisterHandler("proxyserver");
 	
@@ -35,6 +38,7 @@ int main(int argc, char **argv)
 	{
 		exit(0);
 	}
+
 
 	try
 	{

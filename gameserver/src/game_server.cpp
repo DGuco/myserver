@@ -104,7 +104,7 @@ void CGameServer::Exit()
 void CGameServer::ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer)
 {
 	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
-	int packLen = pRecvBuff->ReadUnInt();
+	mshead_size packLen = pRecvBuff->ReadT<mshead_size>();
 	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
 	{
 		//断开连接
@@ -153,7 +153,7 @@ void CGameServer::ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer)
 void CGameServer::ProcessServerMessage(CSafePtr<CServerClient> pServerPlayer)
 {
 	CSafePtr<CByteBuff> pRecvBuff = pServerPlayer->GetReadBuff();
-	int packLen = pRecvBuff->ReadUnInt();
+	mshead_size packLen = pRecvBuff->ReadT<mshead_size>();
 	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
 	{
 		//断开连接
