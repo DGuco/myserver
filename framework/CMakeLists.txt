@@ -63,6 +63,8 @@ set(FRAMEWORK
         "base/signal_handler.h"
         "base/signal_handler.cpp"
         "base/message_factory.h"
+        "base/message_factory.cpp" 
+        "base/lock_free_queue.h"
         "mem/shm_queue.cpp" 
         "mem/shm_queue.h"
         "mem/mempool_safty.h" 
@@ -90,7 +92,7 @@ set(FRAMEWORK
         "net/tcp_conn.h" 
         "net/tcp_conn.cpp"
         "net/tcp_client.h"
-        "net/tcp_client.cpp" "base/message_factory.cpp")
+        "net/tcp_client.cpp")
 
 
 include_directories(
