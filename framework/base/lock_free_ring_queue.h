@@ -57,6 +57,7 @@ namespace my_std
 			do {
 				write = relaxed(write_);
 				writable = consume(writable_);
+				//满了，无法继续push
 				if (write == writable)
 					return result;
 
@@ -87,6 +88,7 @@ namespace my_std
 			do {
 				read = relaxed(read_);
 				readable = consume(readable_);
+				//空了，没有元素可以pop了
 				if (read == readable)
 					return result;
 

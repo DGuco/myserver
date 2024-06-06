@@ -64,7 +64,7 @@ set(FRAMEWORK
         "base/signal_handler.cpp"
         "base/message_factory.h"
         "base/message_factory.cpp" 
-        "base/lock_free_queue.h"
+        "base/lock_free_ring_queue.h"
         "mem/shm_queue.cpp" 
         "mem/shm_queue.h"
         "mem/mempool_safty.h" 
