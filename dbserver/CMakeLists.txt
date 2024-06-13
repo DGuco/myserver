@@ -13,35 +13,33 @@ endif()
 
 set(SOURCE_FILES
         main.cpp
-        src/dbctrl.cpp
-        inc/dbctrl.h
+        "src/db_server.cpp"
+        "inc/db_server.h"
         inc/basedb.h
         inc/database.h
         inc/database_mysql.h
         inc/field.h
-        inc/message_factory.h
         inc/query_result.h
         inc/query_result_mysql.h
         src/database.cpp
         src/database_mysql.cpp
         src/field.cpp
-        src/message_factory.cpp
-        src/query_result_mysql.cpp)
+        src/query_result_mysql.cpp "inc/db_server.h")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
+        ${CMAKE_SOURCE_DIR}/dbserver/inc
+        ${CMAKE_SOURCE_DIR}/thirdparty
+        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/common/message
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/const
-        ${CMAKE_SOURCE_DIR}/framework/event
-        ${CMAKE_SOURCE_DIR}/framework/include
         ${CMAKE_SOURCE_DIR}/framework/json
-        ${CMAKE_SOURCE_DIR}/framework/log
         ${CMAKE_SOURCE_DIR}/framework/mem
-        ${CMAKE_SOURCE_DIR}/framework/message
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
-        ${CMAKE_SOURCE_DIR}/framework/timer
-        ${CMAKE_SOURCE_DIR}/dbserver/inc
+        ${CMAKE_SOURCE_DIR}/framework/lua/core
+        ${CMAKE_SOURCE_DIR}/framework/lua
 )
 
 link_directories(

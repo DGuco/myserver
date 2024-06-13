@@ -105,7 +105,7 @@ void CGameServer::ProcessClientMessage(CSafePtr<CGamePlayer> pGamePlayer)
 {
 	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
 	mshead_size packLen = pRecvBuff->ReadT<mshead_size>();
-	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
+	if (packLen > MAX_PACKAGE_LEN)
 	{
 		//断开连接
 		ClearSocket(pGamePlayer, Err_PacketError);
@@ -154,7 +154,7 @@ void CGameServer::ProcessServerMessage(CSafePtr<CServerClient> pServerPlayer)
 {
 	CSafePtr<CByteBuff> pRecvBuff = pServerPlayer->GetReadBuff();
 	mshead_size packLen = pRecvBuff->ReadT<mshead_size>();
-	if (packLen > GAMEPLAYER_RECV_BUFF_LEN)
+	if (packLen > MAX_PACKAGE_LEN)
 	{
 		//断开连接
 		return;

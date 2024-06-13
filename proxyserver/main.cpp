@@ -9,28 +9,9 @@
 #include "proxy_ctrl.h"
 #include "signal_handler.h"
 
-class AAA
-{
-public:
-	AAA(int a_)
-	{
-		a = a_;
-	}
-
-	~AAA()
-	{
-		int b = a;
-	}
-private:
-	int a;
-};
-
 using namespace std;
 int main(int argc, char **argv)
 {
-	char arr[10] = "123456";
-	strncpy(arr, "8", 10);
-	bool aaa = (100 >= 140|| 143 <= 145 >= 145);
 	//信号处理注册
 	CSignalHandler::GetSingletonPtr()->RegisterHandler("proxyserver");
 	
@@ -38,7 +19,6 @@ int main(int argc, char **argv)
 	{
 		exit(0);
 	}
-
 
 	try
 	{
@@ -58,5 +38,6 @@ int main(int argc, char **argv)
 	CProxyCtrl::GetSingletonPtr()->Run();
 	// 关闭日志
 	SHUTDOWN_ALL_LOG();
+	return 0;
 }
 

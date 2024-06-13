@@ -64,9 +64,9 @@ public:
 	int GetModuleClass(int iMsgID);
 private:
 	CSafePtr<CByteBuff>		m_pRecvBuff;
-	//gateserver ==> gameserver
+	//dbserver ==> gameserver
 	CSafePtr<CShmMessQueue>	m_DB2SCodeQueue;
-	//gameserver ==> gateserver
+	//gameserver ==> dbserver
 	CSafePtr<CShmMessQueue>	m_S2DBCodeQueue;
 	CRunFlag				m_oRunFlag;                         // 服务器运行状态
 	int						m_iServerState;    // 服务器状态
