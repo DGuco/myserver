@@ -382,25 +382,27 @@ bool CSocket::IsTcpNoDelay()
 	return nNoDelay == 1;
 }
 
-unsigned int CSocket::CanReadLen()
+unsigned int  CSocket::CanReadLen()
 {
 	if (m_nSocket == -1)
 	{
 		return 0;
 	}
-	unsigned int available = 0;
 #ifdef __LINUX__
+	int available = 0;
 	if (ioctl(m_nSocket FIONREAD, &available) < 0)
 	{
 		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
 	}
+	return available;
 #else
+	unsigned long available;
 	if (ioctlsocket(m_nSocket, FIONREAD, &available) == SOCKET_ERROR)
 	{
 		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
 	}
-#endif
 	return available;
+#endif
 }
 
 bool CSocket::IsValid()
