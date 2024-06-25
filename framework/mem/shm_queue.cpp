@@ -66,9 +66,9 @@ int CShmMessQueue::SendMessage(BYTE* message, int length)
         tmpEnd = (tmpEnd + 1) & (m_stMemTrunk->m_iSize - 1);  // % 用于防止 Code 结尾的 idx 超出 codequeue
     }
 
-    unsigned int tmpLen = MIN(usInLength, m_stMemTrunk->m_iSize - tmpEnd);
+    int tmpLen = MIN(usInLength, m_stMemTrunk->m_iSize - tmpEnd);
     memcpy((void*)(&pTempDst[tmpEnd]), (const void*)message, (size_t)tmpLen);
-    size_t tmpLastLen = length - tmpLen;
+    int tmpLastLen = length - tmpLen;
     if (tmpLastLen > 0)
     {
         /* then put the rest (if any) at the beginning of the buffer */

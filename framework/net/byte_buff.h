@@ -14,12 +14,6 @@
 #include "socket.h"
 using namespace std;
 
-/**
- * 最大长度应该减去预留部分长度，保证首尾不会相接,
- * 以此区分数据分布在内存区的两侧，和没有数据的情况
- */
-#define BUFF_EXTRA_SIZE (8)
- //以下定义接受/发送错误类型
 enum eRecvErrs
 {
 	ERR_RECV_WOULD_BLOCK		= 1,

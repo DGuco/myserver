@@ -140,6 +140,7 @@ int CByteBuff::ReadBytes(BYTE* pOutCode, int tmLen, bool ispeek)
 	int nReadLen = MIN(usOutLength, m_nCapacity - m_nReadIndex);
 	memcpy((void*)pTempDst, (const void*)(pTempSrc + m_nReadIndex), nReadLen);
 	int tmpLast = usOutLength - nReadLen;
+	//如果还有数据则去头部继续读取
 	if (tmpLast > 0)
 	{
 		memcpy((void*)(pTempDst + nReadLen), (const void*)pTempSrc, tmpLast);
@@ -210,7 +211,8 @@ BYTE* CByteBuff::GetData() const
 int CByteBuff::WriteBytes(BYTE* pInCode, int tmLen)
 {
 	int nCanWriteSpace = CanWriteLen();
-	if (tmLen > nCanWriteSpace)
+	//剩余空间必须大于写入的数据长度，否则会头尾相连，无法区分缓冲区满了还是缓冲区是空的
+	if (tmLen >= nCanWriteSpace)
 	{
 		if (m_nCapacity < m_nMaxSize)
 		{
@@ -223,7 +225,7 @@ int CByteBuff::WriteBytes(BYTE* pInCode, int tmLen)
 			m_nCapacity = nNewCapacity;
 			m_fBuffUseRate = CaclUseRate();
 			nCanWriteSpace = CanWriteLen();
-			if (tmLen > nCanWriteSpace)//剩余空间不足
+			if (tmLen >= nCanWriteSpace)//剩余空间不足
 			{
 				return -1;
 			}
@@ -237,12 +239,13 @@ int CByteBuff::WriteBytes(BYTE* pInCode, int tmLen)
 	BYTE* pTempDst = m_aData;
 	int nWriteLen = MIN(usInLength, m_nCapacity - m_nWriteIndex);
 	memcpy((void*)(pTempDst + m_nWriteIndex), (const void*)pInCode, (size_t)nWriteLen);
-	int tmpLastLen = nCanWriteSpace - nWriteLen;
+	int tmpLastLen = usInLength - nWriteLen;
 	//如果有剩余，说明空闲部分在内存的两头，在头部继续放
 	if (tmpLastLen > 0)
 	{
 		memcpy((void*)pTempDst, (const void*)(pInCode + nWriteLen), tmpLastLen);
 	}
+	m_nWriteIndex = (m_nWriteIndex + usInLength) % m_nCapacity;
 	return 0;
 }
 
@@ -388,11 +391,6 @@ int CByteBuff::CanWriteLen() const
 		nCanWriteSpace = m_nCapacity - (m_nWriteIndex - m_nReadIndex);
 	}
 
-	/**
-	 * 最大长度应该减去预留部分长度，保证首尾不会相接,
-	 * 以此区分数据头不在共享内存区头部写满数据，和没有数据的情况
-	 */
-	nCanWriteSpace -= BUFF_EXTRA_SIZE;
 	return nCanWriteSpace;
 }
 
@@ -434,9 +432,60 @@ int CByteBuff::Send(CSocket& socket)
 	}
 	
 	SOCKET fd = socket.GetSocket();
+	//数据可能在中间也可能在两边，先发送尾部的数据
 	int nByteLeft = MIN(nCanReadSpace, m_nCapacity - m_nReadIndex);
 	BYTE* pByteSend = m_aData + m_nReadIndex;
 	int nByteSent = 0;
+	while (nByteLeft > 0)
+	{
+		nByteSent = send(fd, (const char*)(pByteSend), nByteLeft, 0);
+		if (nByteSent > 0)
+		{
+			pByteSend += nByteSent;
+			nByteLeft -= nByteSent;
+			m_nReadIndex = (m_nReadIndex + nByteSent) % m_nCapacity;
+		}
+
+		//发送出错
+		if (nByteSent < 0)
+		{
+			if (errno != OPT_WOULD_BLOCK)
+			{
+				return ERR_SEND_SOCKET_ERROR;
+			}
+			else
+			{
+				return ERR_SEND_WOULD_BLOCK;  //下次继续尝试发送
+			}
+		}
+
+		//下次继续尝试发送
+		if (nByteSent == 0)
+		{
+			return ERR_SEND_OK;
+		}
+	}
+
+	nCanReadSpace = CanReadLen();
+	//发送完了
+	if (nCanReadSpace <= 0)
+	{
+		return ERR_SEND_OK;
+	}
+
+	/*如果数据在中间，第一次没有全部发送出去，说明网络阻塞了，无法继续发送，直接返回等待下次发送
+	正常应该不会走到这里，无法继续发送send返回值会返回0或者返回OPT_WOULD_BLOCK，上面会直接返回
+	不会走到这里,如果数据在两边，尾部发送完成后，m_nReadIndex肯定等于0，如果不等于0，说明上面的
+	尾部数据发送逻辑，没有发送完，网络阻塞了，不再继续发送，下次继续尝试发送
+	*/
+	if (m_nReadIndex != 0)
+	{
+		return ERR_SEND_OK;
+	}
+
+	//继续发送缓冲区头部的数据
+	nByteLeft = MIN(nCanReadSpace, m_nCapacity - m_nReadIndex);
+	pByteSend = m_aData;
 	while (nByteLeft > 0)
 	{
 		nByteSent = send(fd, (const char*)(pByteSend), nByteLeft, 0);
@@ -459,35 +508,11 @@ int CByteBuff::Send(CSocket& socket)
 				return ERR_SEND_WOULD_BLOCK;  //下次继续尝试发送
 			}
 		}
-	}
 
-	nByteLeft = nCanReadSpace - nByteSent;
-	//头部还有数据待发送
-	if (nByteLeft > 0)
-	{
-		pByteSend = m_aData;
-		while (nByteLeft > 0)
+		//下次继续尝试发送
+		if (nByteSent == 0)
 		{
-			nByteSent = send(fd, (const char*)(pByteSend), nByteLeft, 0);
-			if (nByteSent > 0)
-			{
-				pByteSend += nByteSent;
-				nByteLeft -= nByteLeft;
-				m_nReadIndex = (m_nReadIndex + nByteSent) % m_nCapacity;
-			}
-
-			//发送出错
-			if (nByteSent < 0)
-			{
-				if (errno != OPT_WOULD_BLOCK)
-				{
-					return ERR_SEND_SOCKET_ERROR;
-				}
-				else
-				{
-					return ERR_SEND_WOULD_BLOCK;  //下次继续尝试发送
-				}
-			}
+			return ERR_SEND_OK;
 		}
 	}
 	return ERR_SEND_OK;
@@ -500,9 +525,9 @@ int CByteBuff::Recv(CSocket& socket)
 		return ERR_RECV_NOSOCK;
 	}
 
-	int nCanReadSpace = CanReadLen();
+	int nCanWriteSpace = CanWriteLen();
 	//没有数据
-	if (nCanReadSpace <= 0)
+	if (nCanWriteSpace <= 0)
 	{
 		return ERR_RECV_NOBUFF;
 	}
@@ -514,20 +539,20 @@ int CByteBuff::Recv(CSocket& socket)
 		m_nWriteIndex = 0;
 	}
 
-	int nCanReadLen = MIN(nCanReadSpace, m_nCapacity - m_nWriteIndex);
+	int nCanRecvLen = MIN(nCanWriteSpace, m_nCapacity - m_nWriteIndex);
 	int nByteRecved = 0;
 	BYTE* pTempSrc = m_aData + m_nWriteIndex;
 	int nReadLen = 0;
 	do
 	{
-		nReadLen = recv(fd, (char*)pTempSrc,nCanReadLen, 0);
+		nReadLen = recv(fd, (char*)pTempSrc, nCanRecvLen, 0);
 		if (nReadLen > 0)
 		{
 			nByteRecved += nReadLen;
 			m_nWriteIndex = (m_nWriteIndex + nReadLen) % m_nCapacity;
 			pTempSrc += nReadLen;
 			//尾部没有空间了，剩下的放到数组头部接收
-			if (nByteRecved >= nCanReadLen)
+			if (nByteRecved >= nCanRecvLen)
 			{
 				break;
 			}
@@ -549,7 +574,7 @@ int CByteBuff::Recv(CSocket& socket)
 		}
 	} while (nReadLen > 0);
 
-	int nLastBytes = nCanReadSpace - nByteRecved;
+	int nLastBytes = nCanWriteSpace - nByteRecved;
 	if (nLastBytes > 0)
 	{
 		nByteRecved = 0;
