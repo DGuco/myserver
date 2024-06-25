@@ -590,6 +590,7 @@ int CByteBuff::Recv(CSocket& socket)
 	}
 
 	nByteRecved = 0;
+	nCanWriteSpace = CanWriteLen();
 	nCanRecvLen = MIN(nCanWriteSpace, m_nCapacity - m_nWriteIndex);
 	pTempSrc = m_aData;
 	do
