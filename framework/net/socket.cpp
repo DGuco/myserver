@@ -276,16 +276,17 @@ int CSocket::GetSocketOpt(int sol, int type,void* value, int* size)
 
 bool CSocket::SetSocketNoBlock()
 {
-#ifdef __LINUX__
-	int flags;
 	if (m_nSocket == -1)
 	{
 		return 0;
 	}
+#ifdef __LINUX__
+	int flags;
 	if (ioctl(m_nSocket FIONBIO, &flags)
 		&& ((flags = fcntl(m_nSocket, F_GETFL, 0)) < 0
 		|| fcntl(m_nSocket, F_SETFL, flags | O_NONBLOCK) < 0))
 	{
+		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
 		return 0;
 	}
 #else
@@ -379,6 +380,27 @@ bool CSocket::IsTcpNoDelay()
 	int nSize = sizeof(nNoDelay);
 	GetSocketOpt(IPPROTO_TCP, TCP_NODELAY, &nNoDelay, &(nSize));
 	return nNoDelay == 1;
+}
+
+unsigned int CSocket::CanReadLen()
+{
+	if (m_nSocket == -1)
+	{
+		return 0;
+	}
+	unsigned int available = 0;
+#ifdef __LINUX__
+	if (ioctl(m_nSocket FIONREAD, &available) < 0)
+	{
+		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+	}
+#else
+	if (ioctlsocket(m_nSocket, FIONREAD, &available) == SOCKET_ERROR)
+	{
+		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+	}
+#endif
+	return available;
 }
 
 bool CSocket::IsValid()

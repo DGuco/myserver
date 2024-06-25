@@ -216,22 +216,18 @@ int CByteBuff::WriteBytes(BYTE* pInCode, int tmLen)
 	{
 		if (m_nCapacity < m_nMaxSize)
 		{
-			int nNewCapacity = m_nCapacity >> 2;
-			nNewCapacity = (nNewCapacity > m_nMaxSize) ? m_nMaxSize : nNewCapacity;
-			BYTE* pNewData = new BYTE[nNewCapacity];
-			memcpy(pNewData, m_aData, m_nCapacity);
-			DELETE_ARR(m_aData);
-			m_aData = pNewData;
-			m_nCapacity = nNewCapacity;
+			GrowBuff(tmLen - nCanWriteSpace);
 			m_fBuffUseRate = CaclUseRate();
 			nCanWriteSpace = CanWriteLen();
 			if (tmLen >= nCanWriteSpace)//剩余空间不足
 			{
+				InitBuff();
 				return -1;
 			}
 		}
 		else //剩余空间不足
 		{
+			InitBuff();
 			return -1;
 		}
 	}
@@ -525,20 +521,25 @@ int CByteBuff::Recv(CSocket& socket)
 		return ERR_RECV_NOSOCK;
 	}
 
-	int nCanWriteSpace = CanWriteLen();
-	//没有数据
-	if (nCanWriteSpace <= 0)
-	{
-		return ERR_RECV_NOBUFF;
-	}
-
 	SOCKET fd = socket.GetSocket();
 	if (m_nReadIndex == m_nWriteIndex)
 	{
 		m_nReadIndex = 0;
 		m_nWriteIndex = 0;
 	}
-
+	int nCanWriteSpace = CanWriteLen();
+	int nDataLen = socket.CanReadLen();
+	//剩余空间必须大于写入的数据长度，否则会头尾相连，无法区分缓冲区满了还是缓冲区是空的
+	if (nDataLen >= nCanWriteSpace)
+	{
+		GrowBuff(nDataLen - nCanWriteSpace);
+	}
+	nCanWriteSpace = CanWriteLen();
+	if (nDataLen >= nCanWriteSpace)
+	{
+		InitBuff();
+		return ERR_RECV_NOBUFF;
+	}
 	int nCanRecvLen = MIN(nCanWriteSpace, m_nCapacity - m_nWriteIndex);
 	int nByteRecved = 0;
 	BYTE* pTempSrc = m_aData + m_nWriteIndex;
@@ -574,48 +575,59 @@ int CByteBuff::Recv(CSocket& socket)
 		}
 	} while (nReadLen > 0);
 
-	int nLastBytes = nCanWriteSpace - nByteRecved;
-	if (nLastBytes > 0)
+	nDataLen = socket.CanReadLen();
+	//没有数据可读了
+	if (nDataLen <= 0)
 	{
-		nByteRecved = 0;
-		pTempSrc = m_aData;
-		nReadLen = 0;
-		do
+		return ERR_RECV_OK;
+	}
+
+	//这里还有数据没有接收完，说明缓冲区的空闲区间在两头，上面写到了缓冲区的尾部，现在从缓冲区头部继续读取
+	if (m_nWriteIndex != 0)
+	{
+		InitBuff();
+		return ERR_RECV_UNKNOW_ERROR;
+	}
+
+	nByteRecved = 0;
+	nCanRecvLen = MIN(nCanWriteSpace, m_nCapacity - m_nWriteIndex);
+	pTempSrc = m_aData;
+	do
+	{
+		nReadLen = recv(fd, (char*)pTempSrc, nCanRecvLen, 0);
+		if (nReadLen > 0)
 		{
-			nReadLen = recv(fd, (char*)pTempSrc, nLastBytes, 0);
-			if (nReadLen > 0)
+			nByteRecved += nReadLen;
+			m_nWriteIndex = (m_nWriteIndex + nReadLen) % m_nCapacity;
+			pTempSrc += nReadLen;
+			//没有空间用了
+			if (nByteRecved >= nCanRecvLen)
 			{
-				nByteRecved += nReadLen;
-				m_nWriteIndex = (m_nWriteIndex + nReadLen) % m_nCapacity;
-				pTempSrc += nReadLen;
-				//没有空间用了
-				if (nByteRecved >= nLastBytes)
-				{
-					return ERR_RECV_NOBUFF;
-				}
+				InitBuff();
+				return ERR_RECV_NOBUFF;
 			}
-			else if (nReadLen == 0)
+		}
+		else if (nReadLen == 0)
+		{
+			return ERR_RECV_REMOTE_CLOSED;
+		}
+		else
+		{
+			if (errno != EAGAIN)
 			{
-				return ERR_RECV_REMOTE_CLOSED;
+				return ERR_RECV_SOCKET_ERROR;
 			}
 			else
 			{
-				if (errno != EAGAIN)
-				{
-					return ERR_RECV_SOCKET_ERROR;
-				}
-				else
-				{
-					return ERR_RECV_WOULD_BLOCK;
-				}
+				return ERR_RECV_WOULD_BLOCK;
 			}
-		} while (nReadLen > 0);
-	}
+		}
+	} while (nReadLen > 0);
 	return ERR_RECV_OK;
 }
 
 //检查是否可缩小缓冲区
-bool CByteBuff::CheckResizeBuff(time_t mstimestamp)
+bool CByteBuff::ShrinkBuff(time_t mstimestamp)
 {
 	if (m_nMinSize == m_nMaxSize)
 	{
@@ -657,3 +669,27 @@ bool CByteBuff::CheckResizeBuff(time_t mstimestamp)
 	}
 	return false;
 }
+
+//扩大缓冲区
+void CByteBuff::GrowBuff(int newsize)
+{
+	int nNewCapacity = m_nCapacity >> 2;
+	nNewCapacity = MAX(MAX(m_nCapacity + newsize + 1, nNewCapacity),m_nMaxSize);
+	BYTE* pNewData = new BYTE[nNewCapacity];
+	memcpy(pNewData, m_aData, m_nCapacity);
+	DELETE_ARR(m_aData);
+	m_aData = pNewData;
+	m_nCapacity = nNewCapacity;
+}
+
+
+void CByteBuff::InitBuff()
+{
+	DELETE_ARR(m_aData);
+	m_nCapacity = m_nMinSize;
+	m_aData = new BYTE[m_nCapacity];
+	m_nReadIndex = 0;
+	m_nWriteIndex = 0;
+	m_fBuffUseRate = 0.0f;
+}
+

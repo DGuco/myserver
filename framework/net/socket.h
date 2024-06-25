@@ -84,6 +84,8 @@ public:
 	bool SetTcpNoDelay();
 	//tcp NoDelay
 	bool IsTcpNoDelay();
+	//文件描述符中有多少数据可以读取
+	unsigned int CanReadLen();
 	//是否有效
 	bool IsValid();
 	//socket 是否出错

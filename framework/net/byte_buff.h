@@ -24,6 +24,7 @@ enum eRecvErrs
 	ERR_RECV_REMOTE_CLOSED		= -4,
 	ERR_RECV_SOCKET_ERROR		= -5,
 	ERR_RECV_PARSE_ERROR		= -6,
+	ERR_RECV_UNKNOW_ERROR		= -7,
 };
 
 enum eSendErrs
@@ -92,7 +93,11 @@ public:
 	//接收数据
 	int Recv(CSocket& socket);
 	//检查是否可缩小缓冲区
-	bool CheckResizeBuff(time_t mstimestamp);
+	bool ShrinkBuff(time_t mstimestamp);
+	//扩大缓冲区
+	void GrowBuff(int newsize);
+	//
+	void InitBuff();
 	//只读取基本类型
 	template<class T, int len_ = sizeof(T)>
 	T ReadT(bool ispeek = false);

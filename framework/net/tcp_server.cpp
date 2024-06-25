@@ -85,7 +85,7 @@ void CTCPServer::CheckSocketResize()
 	for (auto it = m_ConnMap.begin(); it != m_ConnMap.end(); it++)
 	{
 		int nOldCap = it->second->GetReadBuff()->GetCapaticy();
-		if (it->second->GetReadBuff()->CheckResizeBuff(nNow))
+		if (it->second->GetReadBuff()->ShrinkBuff(nNow))
 		{
 			CSocket tmSocket = it->second->GetSocket();
 			CACHE_LOG(TCP_DEBUG, "Resize conn readbuff socket fd = {} ,host = {},port = {},oldcap = {},newcap = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(), 
@@ -93,7 +93,7 @@ void CTCPServer::CheckSocketResize()
 		}
 
 		nOldCap = it->second->GetSendBuff()->GetCapaticy();
-		if (it->second->GetSendBuff()->CheckResizeBuff(nNow))
+		if (it->second->GetSendBuff()->ShrinkBuff(nNow))
 		{
 			CSocket tmSocket = it->second->GetSocket();
 			CACHE_LOG(TCP_DEBUG, "Resize conn sendbuff socket fd = {} ,host = {},port = {},oldcap = {},newcap = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(),
@@ -104,7 +104,7 @@ void CTCPServer::CheckSocketResize()
 	for (auto it = m_ClientMap.begin(); it != m_ClientMap.end(); it++)
 	{
 		int nOldCap = it->second->GetReadBuff()->GetCapaticy();
-		if (it->second->GetReadBuff()->CheckResizeBuff(nNow))
+		if (it->second->GetReadBuff()->ShrinkBuff(nNow))
 		{
 			CSocket tmSocket = it->second->GetSocket();
 			CACHE_LOG(TCP_DEBUG, "Resize client readbuff socket fd = {} ,host = {},port = {},oldcap = {},newcap = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(),
@@ -112,7 +112,7 @@ void CTCPServer::CheckSocketResize()
 		}
 
 		nOldCap = it->second->GetSendBuff()->GetCapaticy();
-		if (it->second->GetSendBuff()->CheckResizeBuff(nNow))
+		if (it->second->GetSendBuff()->ShrinkBuff(nNow))
 		{
 			CSocket tmSocket = it->second->GetSocket();
 			CACHE_LOG(TCP_DEBUG, "Resize client sendbuff socket fd = {} ,host = {},port = {},oldcap = {},newcap = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(),
