@@ -620,20 +620,22 @@ int CTCPServer::EpollTick()
 			{
 				//接受tcp数据
 				int retCode = it->second->RecvData();
-				if (retCode != ERR_RECV_OK)
+				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
 				{
 					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
 					itcleint->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), retCode);
 					continue;
 				}
 				//处理数据
 				retCode = it->second->DoRecvLogic();
-				if (nRet != ERR_RECV_OK)
+				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
 				{
 					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
 					itcleint->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), retCode);
 					continue;
 				}
 				continue;
@@ -643,20 +645,22 @@ int CTCPServer::EpollTick()
 			{
 				//接受tcp数据
 				int retCode = it->second->RecvData();
-				if (retCode != ERR_RECV_OK)
+				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
 				{
 					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
 					itcleint->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), retCode);
 					continue;
 				}
 				//处理数据
 				retCode = itcleint->second->DoRecvLogic();
-				if (nRet != ERR_RECV_OK)
+				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
 				{
 					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
 					itcleint->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), retCode);
 					continue;
 				}
 				continue;
@@ -670,20 +674,22 @@ int CTCPServer::EpollTick()
 			{
 				//把缓冲区数据发送出去
 				int retCode = itcleint->second->Flush();
-				if (retCode != ERR_SEND_OK)
+				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
 				{
 					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
 					itcleint->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				//发送完成后逻辑
 				retCode = itcleint->second->DoWriteLogic();
-				if (nRet != ERR_SEND_OK)
+				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
 				{
 					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
 					itcleint->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				continue;
@@ -693,20 +699,22 @@ int CTCPServer::EpollTick()
 			{
 				//把缓冲区数据发送出去
 				int retCode = itcleint->second->Flush();
-				if (retCode != ERR_SEND_OK)
+				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
 				{
 					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
 					itcleint->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				//发送完成后逻辑
 				retCode = itcleint->second->DoWriteLogic();
-				if (nRet != ERR_SEND_OK)
+				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
 				{
 					itcleint->second->DoClosingLogic(retCode);
 					EpollDelSocket(itcleint->second->GetSocketFD());
 					itcleint->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				continue;
