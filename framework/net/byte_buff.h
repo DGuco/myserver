@@ -14,30 +14,6 @@
 #include "socket.h"
 using namespace std;
 
-enum eRecvErrs
-{
-	ERR_RECV_WOULD_BLOCK		= 1,
-	ERR_RECV_OK					=  0,
-	ERR_RECV_NOT_READY			= -1,
-	ERR_RECV_NOSOCK				= -2,
-	ERR_RECV_NOBUFF				= -3,
-	ERR_RECV_REMOTE_CLOSED		= -4,
-	ERR_RECV_SOCKET_ERROR		= -5,
-	ERR_RECV_PARSE_ERROR		= -6,
-	ERR_RECV_UNKNOW_ERROR		= -7,
-};
-
-enum eSendErrs
-{
-	ERR_SEND_WOULD_BLOCK	= 1,
-	ERR_SEND_OK				= 0,
-	ERR_SEND_NOT_READY		= -1,
-	ERR_SEND_NOSOCK			= -2,
-	ERR_SEND_NOBUFF			= -3,
-	ERR_SEND_NODATA			= -4,
-	ERR_SEND_SOCKET_ERROR	= -5,
-};
-
 class CByteBuff
 {
 public:

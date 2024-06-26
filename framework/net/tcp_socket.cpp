@@ -169,12 +169,7 @@ u_short CTCPSocket::GetStatus()
 
 int CTCPSocket::Recv()
 {
-	int nRetCode = m_pReadBuff->Recv(m_Socket);
-	if (nRetCode == ERR_RECV_WOULD_BLOCK)
-	{
-		nRetCode = ERR_RECV_OK;
-	}
-	return nRetCode;
+	return m_pReadBuff->Recv(m_Socket);
 }
 
 int CTCPSocket::Write(BYTE* pCode, int nCodeLength)
@@ -189,20 +184,20 @@ int CTCPSocket::Write(BYTE* pCode, int nCodeLength)
 	{
 		if (m_pWriteBuff->WriteBytes(pCode, nCodeLength) == -1)
 		{
-			return ERR_SEND_NOBUFF;
+			return ERR_SOCKE_NOBUFF;
 		}
 	}
-	return ERR_SEND_OK;
+	return ERR_SOCKE_OK;
 }
 
 int CTCPSocket::Flush()
 {
 	if (!m_Socket.IsValid())
 	{
-		return ERR_SEND_NOSOCK;
+		return ERR_SOCKE_NOSOCK;
 	}
 
-	int retCode = ERR_SEND_OK;
+	int retCode = ERR_SOCKE_OK;
 	if (m_pWriteBuff->CanReadLen() > 0)
 	{
 		retCode = m_pWriteBuff->Send(m_Socket);
@@ -214,10 +209,6 @@ int CTCPSocket::Flush()
 		m_pWriteBuff->Clear();
 	}
 
-	if (retCode == ERR_RECV_WOULD_BLOCK)
-	{
-		retCode = ERR_RECV_OK;
-	}
 	return retCode;
 }
 

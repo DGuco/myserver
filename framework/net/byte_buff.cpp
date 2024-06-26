@@ -418,13 +418,13 @@ int CByteBuff::Send(CSocket& socket)
 {
 	if (!socket.IsValid())
 	{
-		return ERR_SEND_NOSOCK;
+		return ERR_SOCKE_NOSOCK;
 	}
 	int nCanReadSpace = CanReadLen();
 	//没有数据
 	if (nCanReadSpace <= 0)
 	{
-		return ERR_SEND_OK;
+		return ERR_SOCKE_OK;
 	}
 	
 	SOCKET fd = socket.GetSocket();
@@ -434,31 +434,22 @@ int CByteBuff::Send(CSocket& socket)
 	int nByteSent = 0;
 	while (nByteLeft > 0)
 	{
-		nByteSent = send(fd, (const char*)(pByteSend), nByteLeft, 0);
+		nByteSent = socket.Write((char*)(pByteSend), nByteLeft);
+		//nByteSent = send(fd, (const char*)(pByteSend), nByteLeft, 0);
 		if (nByteSent > 0)
 		{
 			pByteSend += nByteSent;
 			nByteLeft -= nByteSent;
 			m_nReadIndex = (m_nReadIndex + nByteSent) % m_nCapacity;
 		}
-
-		//发送出错
-		if (nByteSent < 0)
+		else if (nByteSent < 0)
 		{
-			if (errno != OPT_WOULD_BLOCK)
-			{
-				return ERR_SEND_SOCKET_ERROR;
-			}
-			else
-			{
-				return ERR_SEND_WOULD_BLOCK;  //下次继续尝试发送
-			}
+			return nByteSent;
 		}
-
 		//下次继续尝试发送
-		if (nByteSent == 0)
+		else if(nByteSent == 0)
 		{
-			return ERR_SEND_OK;
+			return ERR_SOCKE_OK;
 		}
 	}
 
@@ -466,7 +457,7 @@ int CByteBuff::Send(CSocket& socket)
 	//发送完了
 	if (nCanReadSpace <= 0)
 	{
-		return ERR_SEND_OK;
+		return ERR_SOCKE_OK;
 	}
 
 	/*如果数据在中间，第一次没有全部发送出去，说明网络阻塞了，无法继续发送，直接返回等待下次发送
@@ -476,7 +467,7 @@ int CByteBuff::Send(CSocket& socket)
 	*/
 	if (m_nReadIndex != 0)
 	{
-		return ERR_SEND_OK;
+		return ERR_SOCKE_OK;
 	}
 
 	//继续发送缓冲区头部的数据
@@ -484,7 +475,8 @@ int CByteBuff::Send(CSocket& socket)
 	pByteSend = m_aData;
 	while (nByteLeft > 0)
 	{
-		nByteSent = send(fd, (const char*)(pByteSend), nByteLeft, 0);
+		nByteSent = socket.Write((char*)(pByteSend), nByteLeft);
+		//nByteSent = send(fd, (const char*)(pByteSend), nByteLeft, 0);
 		if (nByteSent > 0)
 		{
 			pByteSend += nByteSent;
@@ -495,30 +487,23 @@ int CByteBuff::Send(CSocket& socket)
 		//发送出错
 		if (nByteSent < 0)
 		{
-			if (errno != OPT_WOULD_BLOCK)
-			{
-				return ERR_SEND_SOCKET_ERROR;
-			}
-			else
-			{
-				return ERR_SEND_WOULD_BLOCK;  //下次继续尝试发送
-			}
+			return nByteSent;
 		}
 
 		//下次继续尝试发送
 		if (nByteSent == 0)
 		{
-			return ERR_SEND_OK;
+			return ERR_SOCKE_OK;
 		}
 	}
-	return ERR_SEND_OK;
+	return ERR_SOCKE_OK;
 }
 
 int CByteBuff::Recv(CSocket& socket)
 {
 	if (!socket.IsValid())
 	{
-		return ERR_RECV_NOSOCK;
+		return ERR_SOCKE_NOSOCK;
 	}
 
 	SOCKET fd = socket.GetSocket();
@@ -538,7 +523,7 @@ int CByteBuff::Recv(CSocket& socket)
 	if (nDataLen >= nCanWriteSpace)
 	{
 		InitBuff();
-		return ERR_RECV_NOBUFF;
+		return ERR_SOCKE_NOBUFF;
 	}
 	int nCanRecvLen = MIN(nCanWriteSpace, m_nCapacity - m_nWriteIndex);
 	int nByteRecved = 0;
@@ -546,7 +531,8 @@ int CByteBuff::Recv(CSocket& socket)
 	int nReadLen = 0;
 	do
 	{
-		nReadLen = recv(fd, (char*)pTempSrc, nCanRecvLen, 0);
+		nReadLen = socket.Read((char*)(pTempSrc), nCanRecvLen);
+		//nReadLen = recv(fd, (char*)pTempSrc, nCanRecvLen, 0);
 		if (nReadLen > 0)
 		{
 			nByteRecved += nReadLen;
@@ -558,20 +544,9 @@ int CByteBuff::Recv(CSocket& socket)
 				break;
 			}
 		}
-		else if (nReadLen == 0)
+		else if (nReadLen <= 0)
 		{
-			return ERR_RECV_REMOTE_CLOSED;
-		}
-		else
-		{
-			if (errno != EAGAIN)
-			{
-				return ERR_RECV_SOCKET_ERROR;
-			}
-			else
-			{
-				return ERR_RECV_WOULD_BLOCK;
-			}
+			return nReadLen;
 		}
 	} while (nReadLen > 0);
 
@@ -579,14 +554,14 @@ int CByteBuff::Recv(CSocket& socket)
 	//没有数据可读了
 	if (nDataLen <= 0)
 	{
-		return ERR_RECV_OK;
+		return ERR_SOCKE_OK;
 	}
 
 	//这里还有数据没有接收完，说明缓冲区的空闲区间在两头，上面写到了缓冲区的尾部，现在从缓冲区头部继续读取
 	if (m_nWriteIndex != 0)
 	{
 		InitBuff();
-		return ERR_RECV_UNKNOW_ERROR;
+		return ERR_SOCKE_UNKNOW_ERROR;
 	}
 
 	nByteRecved = 0;
@@ -605,26 +580,16 @@ int CByteBuff::Recv(CSocket& socket)
 			if (nByteRecved >= nCanRecvLen)
 			{
 				InitBuff();
-				return ERR_RECV_NOBUFF;
+				return ERR_SOCKE_NOBUFF;
 			}
-		}
-		else if (nReadLen == 0)
-		{
-			return ERR_RECV_REMOTE_CLOSED;
 		}
 		else
 		{
-			if (errno != EAGAIN)
-			{
-				return ERR_RECV_SOCKET_ERROR;
-			}
-			else
-			{
-				return ERR_RECV_WOULD_BLOCK;
-			}
+			return nReadLen;
 		}
+		
 	} while (nReadLen > 0);
-	return ERR_RECV_OK;
+	return ERR_SOCKE_OK;
 }
 
 //检查是否可缩小缓冲区

@@ -150,9 +150,30 @@ CSocket CSocket::Accept()
 		newSocket.m_nPort = (ntohs(newSocket.m_SocketAddr.sin_port));
 		newSocket.m_Host = (inet_ntoa(newSocket.m_SocketAddr.sin_addr));
 	}
+	return newSocket;
 }
+
 int CSocket::Read(char* data, int len)
 {
+	/**
+	int iRecvBytes;
+	while (1)
+	{
+		iRecvBytes = read(iSocket, pBuf, iLen);
+		if (0 < iRecvBytes)
+		{
+			return iRecvBytes;
+		}
+		else
+		{
+			if (0 > iRecvBytes && errno == EINTR)
+			{
+				continue;
+			}
+			return iRecvBytes;
+		}
+	}
+	 */
 	int iRecvedBytes = recv(m_nSocket,data,len,0);
 	if (iRecvedBytes == 0)
 	{
@@ -160,32 +181,78 @@ int CSocket::Read(char* data, int len)
 		GetRemoteAddress(tmAddr);
 		CACHE_LOG(TCP_ERROR, "Socket recved 0 from {}:{} , fd = {}, errno : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
 			tmAddr.m_uPort, m_nSocket, errno, strerror(errno));
-		Close();
-		return iRecvedBytes;
+		return ERR_SOCKE_REMOTE_CLOSED;
 	}
-	else if (errno != OPT_WOULD_BLOCK)
+	else if (iRecvedBytes < 0)
 	{
-		CNetAddr tmAddr;
-		GetRemoteAddress(tmAddr);
-		CACHE_LOG(TCP_ERROR, "recv error! from {}:{} , fd = {}, errno : {},errormsg :{}.",tmAddr.m_szAddr.c_str(),
-			tmAddr.m_uPort, m_nSocket, errno, strerror(errno));
-		Close();
-		return SOCKET_ERROR;
+		if (errno != OPT_WOULD_BLOCK)
+		{
+			CNetAddr tmAddr;
+			GetRemoteAddress(tmAddr);
+			CACHE_LOG(TCP_ERROR, "recv error! from {}:{} , fd = {}, errno : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
+				tmAddr.m_uPort, m_nSocket, errno, strerror(errno));
+			return ERR_SOCKE_WOULD_BLOCK;
+		}
+		else
+		{
+			return ERR_SOCKE_OTHER_ERROR;
+		}
 	}
 	return iRecvedBytes;
 }
 
 int CSocket::Write(char* data, int len)
 {
-	int iBytesSent = send(m_nSocket, (const char*)data, len, 0);
-	if (iBytesSent < 0 && errno != OPT_WOULD_BLOCK)
+	/*
+	int iRecvBytes;
+	while(1)
 	{
-		CNetAddr tmAddr;
-		GetRemoteAddress(tmAddr);
-		CACHE_LOG(TCP_ERROR, "send error! to {}:{} , fd = {}, errno : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
-			tmAddr.m_uPort, m_nSocket, errno, strerror(errno));
-		Close();
-		return SOCKET_ERROR;
+		iSendBytes = write(iSocket, pBuf, iPackLen);
+		if (iSendBytes == iPackLen)
+		{
+			return iSendBytes;
+		}
+		else
+		{
+			if (0 >= iSendBytes && EINTR == errno)
+			{
+				continue;
+			}
+
+			return iSendBytes;
+		}
+	}
+	在socket编程中，write()和send()都是用来向套接字发送数据的函数，二者最主要的区别在于:
+	1.write()函数只是一个基本的系统调用，不包含任何协议的选项，而send()函数包含了更多的参数和选项，可以通过它来设置TCP协议的
+	些选项，比如MSG MORE，可以告诉TCP协议在发送数据时不要立即发送掉。
+	2.write()函数调用可能会被信号中断(EINTR)，而send()函数则具有更好的可控性，可以通过设置非阻塞模式及使用select/pol来避免被
+	中断的情况。总的来说，send()函数相比较于write()函数在更高级别上提供了更多的控制和选项，使其能够更加灵活地满足各种通信需求。
+	但在一些简单的应用场景下，write()函数也是一种更为简便、高效的选择,
+	3.write函数在写入数据时，如果数据量较大，可能会被分成多次写入，需要多次调用wrte函数。而send函数可以一次性发送所有数据，也
+	可以分多次发送。
+	无论是使用write()函数还是send()函数，都需要根据具体应用场景来进行选择.在Socket编程中，一般使用send()函数进行数据发送，因为
+	它提供了更多的控制方式，并且更适合Socket编程的需求。
+	*/
+#if defined(__WINDOWS__)
+	uint32 flag = MSG_DONTROUTE;
+#elif defined(__LINUX__)
+	uint32 flag = MSG_NOSIGNAL;
+#endif
+	int iBytesSent = send(m_nSocket, (const char*)data, len, flag);
+	if (iBytesSent < 0)
+	{
+		if (errno == OPT_WOULD_BLOCK)
+		{
+			return ERR_SOCKE_WOULD_BLOCK;
+		}
+		else
+		{
+			CNetAddr tmAddr;
+			GetRemoteAddress(tmAddr);
+			CACHE_LOG(TCP_ERROR, "send error! to {}:{} , fd = {}, errno : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
+				tmAddr.m_uPort, m_nSocket, errno, strerror(errno));
+			return ERR_SOCKE_OTHER_ERROR;
+		}
 	}
 	return iBytesSent;
 }

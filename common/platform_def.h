@@ -43,7 +43,6 @@ using namespace std;
     #define SOCKET_CONNECTING  (EINPROGRESS)
     #define SLEEP(miseconds) sleep(miseconds)
 	#define INVALID_SM_HADLER (-1)
-	#define SOCKET_ERROR                -1                        // socket apiµÄ·µ»ØÖµ
 
     typedef int sm_handler;
     typedef int sm_key;

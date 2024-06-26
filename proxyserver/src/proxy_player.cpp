@@ -25,14 +25,14 @@ int CProxyPlayer::DoRecvLogic()
 	//包头前两个字节为数据总长度，如果数据长度小于两个字节返回0
 	if (tmCurPacketLen < sizeof(mshead_size))
 	{
-		return ERR_RECV_OK;
+		return ERR_SOCKE_OK;
 	}
 	mshead_size tmPacketLen = m_pReadBuff->ReadT<mshead_size>(true);
 	int tmFullPacketLen = tmPacketLen + sizeof(mshead_size);
 	//数据不完整
 	if (tmFullPacketLen > tmCurPacketLen)
 	{
-		return ERR_RECV_OK;
+		return ERR_SOCKE_OK;
 	}
 	//有完整的数据包，读取处理
 	CProxyServer::GetSingletonPtr()->ProcessServerMessage(this);
@@ -41,7 +41,7 @@ int CProxyPlayer::DoRecvLogic()
 
 int CProxyPlayer::DoWriteLogic()
 {
-	return ERR_SEND_OK;
+	return ERR_SOCKE_OK;
 }
 
 int CProxyPlayer::DoClosingLogic(int errcode)

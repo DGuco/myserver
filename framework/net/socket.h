@@ -19,6 +19,21 @@ struct CNetAddr
 	unsigned int m_uPort;
 };
 
+enum eSocketErrs
+{
+	ERR_SOCKE_OK = 0,
+	ERR_SOCKE_WOULD_BLOCK = -1,
+	ERR_SOCKE_NOT_READY = -2,
+	ERR_SOCKE_NOSOCK = -3,
+	ERR_SOCKE_REMOTE_CLOSED = -4,
+	ERR_SOCKE_SOCKET_ERROR = -5,
+	ERR_SOCKE_PARSE_ERROR = -6,
+	ERR_SOCKE_OTHER_ERROR = -7,
+	ERR_SOCKE_NODATA = -8,
+	ERR_SOCKE_NOBUFF = -9,
+	ERR_SOCKE_UNKNOW_ERROR = -10,
+};
+
 class CSocket
 {
 public:

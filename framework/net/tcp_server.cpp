@@ -307,18 +307,20 @@ void CTCPServer::SelectTick()
 			{
 				//接受tcp数据
 				int nRet = it->second->Recv();
-				if (nRet != ERR_RECV_OK)
+				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 				{
 					it->second->DoClosingLogic(nRet);
 					it->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(),nRet);
 					continue;
 				}
 				//处理数据
 				nRet = it->second->DoRecvLogic();
-				if (nRet != ERR_RECV_OK)
+				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 				{
 					it->second->DoClosingLogic(nRet);
 					it->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				continue;
@@ -328,18 +330,20 @@ void CTCPServer::SelectTick()
 			{
 				//把缓冲区数据发送出去
 				int nRet =  it->second->Flush();
-				if (nRet != ERR_SEND_OK)
+				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 				{
 					it->second->DoClosingLogic(nRet);
 					it->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				//发送完成后逻辑
 				nRet = it->second->DoWriteLogic();
-				if (nRet != ERR_RECV_OK)
+				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 				{
 					it->second->DoClosingLogic(nRet);
 					it->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				continue;
@@ -355,18 +359,20 @@ void CTCPServer::SelectTick()
 			{
 				//接受tcp数据
 				int nRet = it->second->Recv();
-				if (nRet != ERR_RECV_OK)
+				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 				{
 					it->second->DoClosingLogic(nRet);
 					it->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				//处理数据
 				nRet = it->second->DoRecvLogic();
-				if (nRet != ERR_RECV_OK)
+				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 				{
 					it->second->DoClosingLogic(nRet);
 					it->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				continue;
@@ -376,18 +382,20 @@ void CTCPServer::SelectTick()
 			{
 				//把缓冲区数据发送出去
 				int nRet = it->second->Flush();
-				if (nRet != ERR_SEND_OK)
+				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 				{
 					it->second->DoClosingLogic(nRet);
 					it->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				//发送完成后逻辑
 				nRet = it->second->DoWriteLogic();
-				if (nRet != ERR_RECV_OK)
+				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 				{
 					it->second->DoClosingLogic(nRet);
 					it->second->Close(false);
+					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
 					continue;
 				}
 				continue;
