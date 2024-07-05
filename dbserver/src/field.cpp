@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <cstring>
-#include "../inc/field.h"
+#include "field.h"
 
 Field::Field() : mValue(NULL), mType(DB_TYPE_UNKNOWN)
 {

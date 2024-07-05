@@ -13,14 +13,15 @@ static stLogInfo g_DisLogFile[] =
 
 static stLogInfo g_CacheLogFile[] =
 {
-	{enCacheLog::DEBUG_CACHE,"debug_cache",level_enum::debug},
-	{enCacheLog::ERROR_CACHE,"error_cache",level_enum::err},
-	{enCacheLog::TRACE_CACHE,"trace_cache",level_enum::trace},
-	{enCacheLog::LUA_CACHE,"lua_cache",level_enum::debug},
+	{enCacheLog::DEBUG_CACHE,"debug",level_enum::debug},
+	{enCacheLog::ERROR_CACHE,"error",level_enum::err},
+	{enCacheLog::TRACE_CACHE,"trace",level_enum::trace},
+	{enCacheLog::LUA_CACHE,"lua",level_enum::debug},
 	{enCacheLog::LUA_ERROR,"lua_error",level_enum::err},
-	{enCacheLog::PERF_CACHE,"perf_cache",level_enum::debug},
-	{enCacheLog::TCP_DEBUG,"tcp_debug",level_enum::debug},
+	{enCacheLog::PERF_CACHE,"perf",level_enum::debug},
+	{enCacheLog::TCP_DEBUG,"tcp",level_enum::debug},
 	{enCacheLog::TCP_ERROR,"tcp_error",level_enum::err},
+	{enCacheLog::DB_CACHE,"db",level_enum::debug},
 };
 
 CLog::CLog()

@@ -11,7 +11,7 @@
 #include <map>
 #include <string>
 #include <assert.h>
-#include "../inc/field.h"
+#include "field.h"
 
 typedef std::map<uint32, std::string> FieldNames;
 

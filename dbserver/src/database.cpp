@@ -5,9 +5,9 @@
 #include <ctime>
 #include <iostream>
 #include <fstream>
-#include "../inc/query_result.h"
-#include "../inc/database.h"
-#include "../inc/basedb.h"
+#include "query_result.h"
+#include "database.h"
+#include "basedb.h"
 
 Database::Database()
 {
@@ -76,7 +76,7 @@ bool Database::PExecuteLog(const char *format, ...)
 	va_end(ap);
 
 	if (res == -1) {
-		LOG_ERROR(m_logsName.c_str(), "SQL Query truncated (and not execute) for format: {}", format);
+		DISK_LOG(DB_ERROR, "SQL Query truncated (and not execute) for format: {}", format);
 		return false;
 	}
 
@@ -97,7 +97,7 @@ bool Database::PExecuteLog(const char *format, ...)
 		}
 		else {
 			// The file could not be opened
-			LOG_ERROR(m_logsName.c_str(),
+			DISK_LOG(DB_ERROR,
 					  "SQL-Logging is disabled - Log file for the SQL commands could not be openend: {}",
 					  fName);
 		}
@@ -117,7 +117,7 @@ QueryResult *Database::PQuery(const char *format, ...)
 	va_end(ap);
 
 	if (res == -1) {
-		LOG_ERROR(m_logsName.c_str(), "SQL Query truncated (and not execute) for format: {}", format);
+		DISK_LOG(DB_ERROR, "SQL Query truncated (and not execute) for format: {}", format);
 		return NULL;
 	}
 
@@ -136,7 +136,7 @@ bool Database::PExecute(const char *format, ...)
 	va_end(ap);
 
 	if (res == -1) {
-		LOG_ERROR(m_logsName.c_str(), "SQL Query truncated (and not execute) for format: {}", format);
+		DISK_LOG(DB_ERROR, "SQL Query truncated (and not execute) for format: {}", format);
 		return false;
 	}
 
@@ -155,7 +155,7 @@ bool Database::DirectPExecute(const char *format, ...)
 	va_end(ap);
 
 	if (res == -1) {
-		LOG_ERROR(m_logsName.c_str(), "SQL Query truncated (and not execute) for format: {}", format);
+		DISK_LOG(DB_ERROR, "SQL Query truncated (and not execute) for format: {}", format);
 		return false;
 	}
 

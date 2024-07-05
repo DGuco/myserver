@@ -12,6 +12,7 @@
     {                                                                    \
         DISK_LOG(ASSERT_DISK,"assert","[{} : {} : {}] ASSERT: ({}) == flase.",    \
                 __FILE__,__LINE__,__FUNCTION__,#a);                        \
+        throw std::logic_error("assert false");\
     }
 
 #define ASSERT_EX(a, str, ...)                            \

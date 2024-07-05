@@ -8,8 +8,8 @@
 #define SERVER_DATABASEMYSQL_H
 
 #include "database.h"
-#include <mysql/mysql.h>
-#include <mysql/errmsg.h>
+#include "mysql/mysql.h"
+#include "mysql/errmsg.h"
 
 class QueryResult;
 

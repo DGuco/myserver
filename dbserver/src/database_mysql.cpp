@@ -3,9 +3,9 @@
 //
 
 #include <string>
-#include <unistd.h>
-#include "../inc/database_mysql.h"
-#include "../inc/query_result_mysql.h"
+#include "database_mysql.h"
+#include "query_result_mysql.h"
+
 using namespace std;
 
 void DatabaseMysql::ThreadStart()
@@ -31,7 +31,7 @@ DatabaseMysql::DatabaseMysql() : Database(), mMysql(0)
          //如果是每个线程独享一个mysql链接，那么就不需要mysql的线程安全性
          if (!mysql_thread_safe())
          {
-            LOG_ERROR( m_logsName.c_str(), "FATAL ERROR: Used MySQL library isn't thread-safe.");
+            DISK_LOG( DB_ERROR, "FATAL ERROR: Used MySQL library isn't thread-safe.");
             exit(1);
          }
     }
@@ -99,7 +99,7 @@ bool DatabaseMysql::Reconnect(void)
 {
     for (int i = 0; i < m_loop; i++)
     {
-        sleep(m_sleeptime);
+        SLEEP(m_sleeptime);
 
         if (Connect() == true)
         {
@@ -115,17 +115,15 @@ bool DatabaseMysql::Connect(void)
     MYSQL *mysqlInit = mysql_init(NULL);
     if (!mysqlInit)
     {
-        LOG_ERROR( m_logsName.c_str(), "Could not initialize Mysql connection" );
+        DISK_LOG(DB_ERROR,"Could not initialize Mysql connection" );
         return false;
     }
 
     int port;
     char const* unix_socket;
 
-    mysql_options(mysqlInit,MYSQL_SET_CHARSET_NAME,"utf8");
     mysql_options(mysqlInit,MYSQL_OPT_READ_TIMEOUT, (const void *)&m_rwtimeout);
     mysql_options(mysqlInit,MYSQL_OPT_WRITE_TIMEOUT,(const void *)&m_rwtimeout);
-
     //mysql_options(mysqlInit,MYSQL_SET_CHARSET_NAME,"gbk");
 #ifdef WIN32
     if(m_host==".")                                           // named pipe use option (Windows)
@@ -159,17 +157,17 @@ bool DatabaseMysql::Connect(void)
     //mMysql = mysql_real_connect(mysqlInit, host.c_str(), user.c_str(),
     //   password.c_str(), database.c_str(), port, unix_socket, CLIENT_MULTI_STATEMENTS);
 
-    LOG_INFO( m_logsName.c_str(), "Connected to MySQL database : rwtimeout = {} ; sleeptime = {} ; loop = {}", m_rwtimeout, m_sleeptime, m_loop);
+    CACHE_LOG( DB_CACHE, "Connected to MySQL database : rwtimeout = {} ; sleeptime = {} ; loop = {}", m_rwtimeout, m_sleeptime, m_loop);
 
     mMysql = mysql_real_connect(mysqlInit, m_host.c_str(), m_user.c_str(),
                                 m_password.c_str(), m_database.c_str(), port, unix_socket, 0);
-    LOG_INFO( m_logsName.c_str(), "host : {} ; user = {} ; password = {} ; database = {} ; port = {}", m_host.c_str(), m_user.c_str(), m_password.c_str(), m_database.c_str(), port );
+    CACHE_LOG(DB_CACHE, "host : {} ; user = {} ; password = {} ; database = {} ; port = {}", m_host.c_str(), m_user.c_str(), m_password.c_str(), m_database.c_str(), port );
 
     if (mMysql)
     {
-        LOG_INFO( m_logsName.c_str(), "Connected to MySQL database at {}", m_host.c_str());
-        LOG_INFO( m_logsName.c_str(), "MySQL client library: {}", mysql_get_client_info());
-        LOG_INFO( m_logsName.c_str(), "MySQL server ver: {} ", mysql_get_server_info( mMysql));
+        CACHE_LOG(DB_CACHE, "Connected to MySQL database at {}", m_host.c_str());
+        CACHE_LOG(DB_CACHE, "MySQL client library: {}", mysql_get_client_info());
+        CACHE_LOG(DB_CACHE, "MySQL server ver: {} ", mysql_get_server_info( mMysql));
 
         /*----------SET AUTOCOMMIT ON---------*/
         // It seems mysql 5.0.x have enabled this feature
@@ -180,9 +178,9 @@ bool DatabaseMysql::Connect(void)
         // autocommit is turned of during it.
         // Setting it to on makes atomic updates work
         if (!mysql_autocommit(mMysql, 1))
-            LOG_INFO( m_logsName.c_str(), "AUTOCOMMIT SUCCESSFULLY SET TO 1");
+            CACHE_LOG(DB_CACHE, "AUTOCOMMIT SUCCESSFULLY SET TO 1");
         else
-            LOG_INFO( m_logsName.c_str(), "AUTOCOMMIT NOT SET TO 1");
+            CACHE_LOG(DB_CACHE, "AUTOCOMMIT NOT SET TO 1");
         /*-------------------------------------*/
 
         // set connection properties to UTF8 to properly handle locales for different
@@ -204,7 +202,7 @@ bool DatabaseMysql::Connect(void)
     else
     {
         // int nErrorNo = mysql_errno( mysqlInit );
-        LOG_ERROR( m_logsName.c_str(), "Could not connect to MySQL database at {}: {}\n", m_host.c_str(),mysql_error(mysqlInit));
+        DISK_LOG( DB_ERROR, "Could not connect to MySQL database at {}: {}\n", m_host.c_str(),mysql_error(mysqlInit));
         mysql_close(mysqlInit);
         // m_connflag = 0;
 
@@ -246,7 +244,7 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
                 // reconnect mysql
                 if ( Reconnect() == true )
                 {
-                    LOG_DEBUG( m_logsName.c_str(), "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
+                    CACHE_LOG( DB_CACHE, "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
 
                     // re querey  sql statment
                     //--------------------------------------------------
@@ -258,8 +256,8 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
 
             if( ret )
             {
-                LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
-                LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+                DISK_LOG( DB_ERROR, "SQL: {}", sql );
+                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
                 return NULL;
             }
 
@@ -288,7 +286,7 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
     QueryResultMysql *queryResult = new QueryResultMysql(result, rowCount, fieldCount);
     if( queryResult == NULL )
     {
-        LOG_ERROR( m_logsName.c_str(), "while create qureyresult, run out of memory" );
+        DISK_LOG(DB_ERROR, "while create qureyresult, run out of memory" );
         return NULL;
     }
     queryResult->NextRow();
@@ -324,7 +322,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
                 // reconnect mysql
                 if ( Reconnect() == true )
                 {
-                    LOG_DEBUG( m_logsName.c_str(), "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
+                    CACHE_LOG( DB_CACHE, "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
                     ret = mysql_query(mMysql, sql);
 
                     if ( !ret )
@@ -345,15 +343,15 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
                         }
 
                         mysql_query(mMysql, strProcSql.c_str());
-                        LOG_DEBUG( m_logsName.c_str(), "SQL: {}", strProcSql.c_str() );
+                        CACHE_LOG( DB_CACHE, "SQL: {}", strProcSql.c_str() );
                     }
                 }
             }
 
             if( ret )
             {
-                LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
-                LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+                DISK_LOG(DB_ERROR, "SQL: {}", sql );
+                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
                 return NULL;
             }
 
@@ -376,7 +374,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
             }
 
             mysql_query(mMysql, strProcSql.c_str());
-            LOG_DEBUG( m_logsName.c_str(), "SQL: {}", strProcSql.c_str() );
+            CACHE_LOG( DB_CACHE, "SQL: {}", strProcSql.c_str() );
         }
 
         result = mysql_store_result(mMysql);
@@ -392,7 +390,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
     QueryResultMysql *queryResult = new QueryResultMysql(result, rowCount, fieldCount);
     if( queryResult == NULL )
     {
-        LOG_ERROR( m_logsName.c_str(), "while create qureyresult, run out of memory" );
+        DISK_LOG(DB_ERROR, "while create qureyresult, run out of memory" );
         return NULL;
     }
     queryResult->NextRow();
@@ -431,22 +429,22 @@ bool DatabaseMysql::DirectExecute(const char* sql )
             // reconnect mysql
             if ( Reconnect() == true )  // 重启mysql，再次查询
             {
-                LOG_DEBUG(m_logsName.c_str(), "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
+                CACHE_LOG(DB_CACHE, "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
                 // re querey  sql statment
                 ret =  mysql_query(mMysql, sql);
             }
 
             if( ret )  // 两次出错就报告取数据失败
             {
-                LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
-                LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+                DISK_LOG(DB_ERROR, "SQL: {}", sql );
+                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
                 return false;
             }
         }
         else
         {
-            LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
-            LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+            DISK_LOG(DB_ERROR, "SQL: {}", sql );
+            DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
             return false;
         }
     }
@@ -482,22 +480,22 @@ bool DatabaseMysql::RealDirectExecute(const char* sql, unsigned long len)
             // reconnect mysql
             if ( Reconnect() == true )  // 重启mysql，再次查询
             {
-                LOG_DEBUG(m_logsName.c_str(), "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
+                CACHE_LOG(DB_CACHE, "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
                 // re querey  sql statment
                 ret =  mysql_real_query(mMysql, sql, len);
             }
 
             if( ret )  // 两次出错就报告取数据失败
             {
-                LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
-                LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+                DISK_LOG(DB_ERROR, "SQL: {}", sql );
+                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
                 return false;
             }
         }
         else
         {
-            LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql );
-            LOG_ERROR( m_logsName.c_str(), "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+            DISK_LOG(DB_ERROR, "SQL: {}", sql );
+            DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
             return false;
         }
     }
@@ -514,13 +512,13 @@ bool DatabaseMysql::_TransactionCmd(const char *sql)
 {
     if (mysql_query(mMysql, sql))
     {
-        LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql);
-        LOG_ERROR( m_logsName.c_str(), "SQL ERROR: {}", mysql_error(mMysql));
+        DISK_LOG(DB_ERROR, "SQL: {}", sql);
+        DISK_LOG(DB_ERROR, "SQL ERROR: {}", mysql_error(mMysql));
         return false;
     }
     else
     {
-        LOG_ERROR( m_logsName.c_str(), "SQL: {}", sql);
+        DISK_LOG(DB_ERROR, "SQL: {}", sql);
     }
     return true;
 }

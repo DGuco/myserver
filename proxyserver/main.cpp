@@ -5,7 +5,6 @@
 //  Copyright ? 2016Äê DGuco. All rights reserved.
 //
 
-#include <memory>
 #include "proxy_ctrl.h"
 #include "signal_handler.h"
 

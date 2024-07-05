@@ -6,7 +6,7 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     set(CMAKE_CXX_COMPILER g++)
     add_compile_options(-Wall -ggdb -pipe -std=c++11)
 
-    add_definitions(-D_LINUX_ -D_DEBUG_ -DSPDLOG_NO_NAME -DCOMPILE_LUA_WITH_CXX)
+    add_definitions(-D__LINUX__ -D_DEBUG_ -DSPDLOG_NO_NAME -DCOMPILE_LUA_WITH_CXX)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     add_definitions(-D__WINDOWS__ -D_DEBUG_ -DSPDLOG_NO_NAME -DCOMPILE_LUA_WITH_CXX)
 endif()

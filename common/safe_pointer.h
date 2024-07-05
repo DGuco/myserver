@@ -50,6 +50,19 @@ public:
 			index++;
 		}
 	}
+
+	CSafePtr<Tp>& operator=(const Tp* pOhter)
+	{
+		Reset(pOhter);
+		return *this;
+	}
+
+	CSafePtr<Tp>& operator=(const CSafePtr<Tp> pOhter)
+	{
+		this->nDataH = pOhter->nDataH;
+		this->nDataL = pOhter->nDataL;
+		return *this;
+	}
 	bool IsPointerBad()
 	{
 		char eMsg[256] = { 0 };
@@ -63,7 +76,7 @@ public:
 		nDataL = SPO_FLAG_L;
 	}
 
-	void Reset(Tp* pointer)
+	void Reset(const Tp* pointer)
 	{
 		nDataH = SPO_FLAG_H;
 		nDataL = SPO_FLAG_L;

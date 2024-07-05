@@ -58,6 +58,7 @@ enum enCacheLog
 	PERF_CACHE = 105,
 	TCP_DEBUG = 106,
 	TCP_ERROR = 107,
+	DB_CACHE  = 108,
 	CACHE_LOG_MAX,
 };
 

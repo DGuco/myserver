@@ -57,7 +57,6 @@ bool CTCPServer::ConnectTo(CSafePtr<CTCPClient> pClient,const char* szLocalAddr,
 	}
 #else
 #endif
-	ASSERT(pClient->IsValid());
 	m_ClientMap.insert(std::make_pair(pClient->GetSocketFD(), pClient));
 	return true;
 }

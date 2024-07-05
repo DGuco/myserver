@@ -2,10 +2,8 @@
 // Created by DGuco on 17-7-12.
 //
 
-#include "base.h"
-#include "log.h"
-#include "dbctrl.h"
 #include "signal_handler.h"
+#include "dbctrl.h"
 
 int main(int argc, char **argv)
 {
@@ -21,8 +19,8 @@ int main(int argc, char **argv)
 	{
 		exit(-1);
 	}
-
-	CDBCtrl::GetSingletonPtr()->Run();
+// 
+// 	CDBCtrl::GetSingletonPtr()->Run();
 
 	SHUTDOWN_ALL_LOG();
 	return 0;

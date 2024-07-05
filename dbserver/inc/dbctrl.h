@@ -7,14 +7,9 @@
 #ifndef _DBCTRL_HPP_
 #define _DBCTRL_HPP_
 
-#include <memory>
-#include "byte_buff.h"
-#include "net_work.h"
-#include "thread_pool.h"
+#include "base.h"
 #include "query_result.h"
 #include "database.h"
-#include "message_factory.h"
-#include "config.h"
 #include "safe_pointer.h"
 
 //#include "protoconfig.h"
@@ -43,6 +38,9 @@ class CSharedMem;
 
 class CDBCtrl: public CSingleton<CDBCtrl>
 {
+public:
+	CDBCtrl();
+	int PrepareToRun();
 };
 
 #endif

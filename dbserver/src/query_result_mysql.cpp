@@ -2,8 +2,8 @@
 // Created by DGuco on 17-7-13.
 //
 
-#include "../inc/query_result_mysql.h"
-#include "../../framework/base/my_assert.h"
+#include "query_result_mysql.h"
+#include "my_assert.h"
 
 QueryResultMysql::QueryResultMysql(MYSQL_RES *result,
                                    uint64 rowCount,
@@ -12,7 +12,7 @@ QueryResultMysql::QueryResultMysql(MYSQL_RES *result,
 {
 
     mCurrentRow = new Field[mFieldCount];
-    MY_ASSERT( mCurrentRow != NULL, return );
+    ASSERT( mCurrentRow != NULL);
 
     MYSQL_FIELD *fields = mysql_fetch_fields(mResult);
 

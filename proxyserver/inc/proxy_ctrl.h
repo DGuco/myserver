@@ -8,8 +8,8 @@
 #ifndef __PROXY_CTRL_H__
 #define __PROXY_CTRL_H__
 
-#include "proxy_def.h"
 #include "base.h"
+#include "proxy_def.h"
 #include "tcp_server.h"
 #include "safe_pointer.h"
 #include "server_config.h"
