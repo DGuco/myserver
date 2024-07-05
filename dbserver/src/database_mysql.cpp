@@ -57,6 +57,26 @@ DatabaseMysql::~DatabaseMysql()
     m_loop = 0;
 }
 
+Tokens DatabaseMysql::StrSplit(const std::string& src, const std::string& sep)
+{
+	Tokens r;
+	std::string s;
+	for (std::string::const_iterator i = src.begin(); i != src.end(); i++)
+	{
+		if (sep.find(*i) != std::string::npos)
+		{
+			if (s.length()) r.push_back(s);
+			s = "";
+		}
+		else
+		{
+			s += *i;
+		}
+	}
+	if (s.length()) r.push_back(s);
+	return r;
+}
+
 bool DatabaseMysql::Initialize(const char *infoString, int rw_timeout, int sleep_time, int loop)
 {
     m_hostInfoString = std::string( infoString );

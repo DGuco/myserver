@@ -12,6 +12,7 @@
 #include "mysql/errmsg.h"
 
 class QueryResult;
+typedef std::vector<std::string> Tokens;
 
 class DatabaseMysql: public Database
 {
@@ -24,6 +25,7 @@ public:
 	bool Initialize(const char *infoString, int rw_timeout, int sleep_time, int loop);
 	bool Reconnect(void);
 	bool Connect(void);
+	Tokens StrSplit(const std::string& src, const std::string& sep);
 	QueryResult *Query(const char *sql, unsigned long len);
 	QueryResult *QueryForprocedure(const char *sql, unsigned long len, int number);
 	bool Execute(const char *sql);

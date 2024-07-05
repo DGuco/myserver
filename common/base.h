@@ -83,10 +83,6 @@ typedef unsigned char uint8;
 #define True   1
 #endif
 
-typedef std::vector<std::string> Tokens;
-
-Tokens StrSplit(const std::string &src, const std::string &sep);
-
 void ignore_pipe();
 
 // 分割字符串，获取单词

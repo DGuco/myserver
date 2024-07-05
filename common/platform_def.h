@@ -22,8 +22,7 @@
 #include <sys/shm.h>
 #include <sys/ipc.h>
 #include <string.h>
-#else
-#define WIN32_LEAN_AND_MEAN            
+#else            
 #include <WinSock2.h>
 #include <Windows.h>
 #include <WinBase.h>

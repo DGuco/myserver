@@ -8,7 +8,7 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 
     add_definitions(-D__LINUX__ -D_DEBUG_ -DSPDLOG_NO_NAME -DCOMPILE_LUA_WITH_CXX)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    add_definitions(-D__WINDOWS__ -D_DEBUG_ -DSPDLOG_NO_NAME -DCOMPILE_LUA_WITH_CXX)
+    add_definitions(-D__WINDOWS__ -DWIN32_LEAN_AND_MEAN -D_DEBUG_ -DSPDLOG_NO_NAME -DCOMPILE_LUA_WITH_CXX)
 endif()
 
 # 仅对 Visual Studio 编译器生效
