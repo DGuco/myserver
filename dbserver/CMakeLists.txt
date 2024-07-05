@@ -8,6 +8,8 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 
     add_definitions(-D__LINUX__ -D_DEBUG_ -DSPDLOG_NO_NAME)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+    #DWIN32_LEAN_AND_MEAN error C2375: “WSACleanup”: 重定义；不同的链接等
+    #https://blog.csdn.net/c_base_jin/article/details/93391286
     add_definitions(-D__WINDOWS__ -DWIN32_LEAN_AND_MEAN -D_DEBUG_ -DSPDLOG_NO_NAME)
 endif()
 
