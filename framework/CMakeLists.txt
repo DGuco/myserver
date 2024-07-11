@@ -64,7 +64,7 @@ set(FRAMEWORK
         "base/signal_handler.cpp"
         "base/message_factory.h"
         "base/message_factory.cpp" 
-        "base/lock_free_ring_queue.h"
+        "base/lock_free_limit_queue.h"
         "mem/shm_queue.cpp" 
         "mem/shm_queue.h"
         "mem/mempool_safty.h" 
@@ -73,8 +73,6 @@ set(FRAMEWORK
         "mem/shm_api.h" 
         "mem/shm.cpp"
         "mem/shm.h"
-        "thread/mythread.cpp"
-        "thread/mythread.h" 
         "net/statistics.h" 
         "net/statistics.cpp"
         "net/byte_buff.cpp" 
@@ -92,7 +90,10 @@ set(FRAMEWORK
         "net/tcp_conn.h" 
         "net/tcp_conn.cpp"
         "net/tcp_client.h"
-        "net/tcp_client.cpp"  )
+        "net/tcp_client.cpp"
+        "thread/thread_scheduler.h" 
+        "thread/thread_scheduler.cpp" 
+        "thread/thread_task.h")
 
 
 include_directories(

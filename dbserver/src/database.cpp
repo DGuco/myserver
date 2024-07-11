@@ -80,7 +80,8 @@ bool Database::PExecuteLog(const char *format, ...)
 		return false;
 	}
 
-	if (m_logSQL) {
+	if (m_logSQL) 
+	{
 		time_t curr;
 		tm local;
 		time(&curr);                                        // get current time_t value
@@ -91,7 +92,8 @@ bool Database::PExecuteLog(const char *format, ...)
 		FILE *log_file;
 		std::string logsDir_fname = m_logsDir + fName;
 		log_file = fopen(logsDir_fname.c_str(), "a");
-		if (log_file) {
+		if (log_file) 
+		{
 			fprintf(log_file, "{};\n", szQuery);
 			fclose(log_file);
 		}

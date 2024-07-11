@@ -59,8 +59,8 @@ public:
 
 	CSafePtr<Tp>& operator=(const CSafePtr<Tp> pOhter)
 	{
-		this->nDataH = pOhter->nDataH;
-		this->nDataL = pOhter->nDataL;
+		nDataH = pOhter.nDataH;
+		nDataL = pOhter.nDataL;
 		return *this;
 	}
 	bool IsPointerBad()

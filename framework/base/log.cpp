@@ -1,29 +1,5 @@
 #include "log.h"
 
-
-static stLogInfo g_DisLogFile[] =
-{
-	{enDiskLog::ASSERT_DISK,"assert",level_enum::critical},
-	{enDiskLog::DEBUG_DISK,"debug_disk",level_enum::debug},
-	{enDiskLog::ERROR_DISK,"error_disk",level_enum::err},
-	{enDiskLog::DB_ERROR,"db_error",level_enum::err},
-	{enDiskLog::SHM_DEBUG,"shm_debug",level_enum::debug},
-	{enDiskLog::SHM_ERROR,"shm_error",level_enum::err},
-};
-
-static stLogInfo g_CacheLogFile[] =
-{
-	{enCacheLog::DEBUG_CACHE,"debug",level_enum::debug},
-	{enCacheLog::ERROR_CACHE,"error",level_enum::err},
-	{enCacheLog::TRACE_CACHE,"trace",level_enum::trace},
-	{enCacheLog::LUA_CACHE,"lua",level_enum::debug},
-	{enCacheLog::LUA_ERROR,"lua_error",level_enum::err},
-	{enCacheLog::PERF_CACHE,"perf",level_enum::debug},
-	{enCacheLog::TCP_DEBUG,"tcp",level_enum::debug},
-	{enCacheLog::TCP_ERROR,"tcp_error",level_enum::err},
-	{enCacheLog::DB_CACHE,"db",level_enum::debug},
-};
-
 CLog::CLog()
 {
 }

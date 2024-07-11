@@ -7,20 +7,8 @@
 #ifndef __LOG_H__
 #define __LOG_H__
 
-#include <string>
-#include <stdarg.h>
-#include <spdlog/spdlog.h>
-#include <spdlog/common.h>
-#include <spdlog/async.h>
-#include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/daily_file_sink.h>
-#include <spdlog/sinks/hour_file_sink.h>
-#include <spdlog/sinks/null_sink.h>
-#include <spdlog/sinks/msvc_sink.h>
-#include <spdlog/sinks/ostream_sink.h>
-#include <spdlog/sinks/rotating_file_sink.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include "singleton.h"
+#include "log_def.h"
 
 using namespace std;
 using namespace spdlog;
@@ -29,38 +17,6 @@ using namespace spdlog::level;
 #define  CONSOLE_LOG_NAME "console"
 #define  MAX_SPDLOG_QUEUE_SIZE (102400)
 #define  MAX_SPDLOG_THREAD_POOL (4)
-
-struct stLogInfo
-{
-	int	  log_type;
-	char* logName;
-	level_enum level;
-};
-
-enum enDiskLog
-{
-	ASSERT_DISK = 0,
-	DEBUG_DISK = 1,
-	ERROR_DISK = 2,
-	DB_ERROR = 3,
-	SHM_DEBUG = 4,
-	SHM_ERROR = 5,
-	DIS_LOG_MAX,
-};
-
-enum enCacheLog
-{
-	DEBUG_CACHE = 100,
-	ERROR_CACHE = 101,
-	TRACE_CACHE = 102,
-	LUA_CACHE = 103,
-	LUA_ERROR = 104,
-	PERF_CACHE = 105,
-	TCP_DEBUG = 106,
-	TCP_ERROR = 107,
-	DB_CACHE  = 108,
-	CACHE_LOG_MAX,
-};
 
 class CLog : public CSingleton<CLog>
 {

@@ -1,11 +1,11 @@
 /*****************************************************************
 * FileName:lock_free_queue.h
-* Summary :无锁环形队列
+* Summary :无锁环形队列 固定长度
 * Date	  :2024-6-5
 * Author  :DGuco(1139140909@qq.com)
 ******************************************************************/
-#ifndef __LOCK_FREE_QUEUE_H__
-#define __LOCK_FREE_QUEUE_H__
+#ifndef __LOCK_FREE_LIMIT_QUEUE_H__
+#define __LOCK_FREE_LIMIT_QUEUE_H__
 
 namespace my_std
 {
@@ -17,14 +17,14 @@ namespace my_std
 
 	// 无锁环形队列
 	template <typename T, typename SizeType = size_t>
-	class LockFreeRingQueue
+	class LockFreeLimitQueue
 	{
 	public:
 		typedef SizeType uint_t;
 		typedef std::atomic<uint_t> atomic_t;
 
 		// 多申请一个typename T的空间, 便于判断full和empty.
-		explicit LockFreeRingQueue(uint_t capacity)
+		explicit LockFreeLimitQueue(uint_t capacity)
 			: capacity_(reCapacity(capacity))
 			, readable_{ 0 }
 			, write_{ 0 }
@@ -34,7 +34,7 @@ namespace my_std
 			buffer_ = (T*)malloc(sizeof(T) * capacity_);
 		}
 
-		~LockFreeRingQueue() 
+		~LockFreeLimitQueue() 
 		{
 			// destory elements.
 			uint_t read = consume(read_);
@@ -148,4 +148,4 @@ namespace my_std
 		atomic_t readable_;
 	};
 }
-#endif //__LOCK_FREE_QUEUE_H__
+#endif //__LOCK_FREE_LIMIT_QUEUE_H__
