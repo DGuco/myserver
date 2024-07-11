@@ -9,6 +9,7 @@
 #include <functional>
 #include <string>
 #include <tuple>
+#include <memory>
 #include "log.h"
 
 #define EMPTY_VOID_FUNC = []{}
@@ -299,16 +300,17 @@ public:
 	}
 };
 
-class CThreadTask
+class CThreadTask : public enable_shared_from_this<CThreadTask>
 {
 public:
 	CThreadTask(std::string signature) : m_TaskSignature(signature) {};
 	virtual ~CThreadTask() {};
-	void SetStartTime(time_t time) { m_nExecuteStart = time; }
-	void SetEndTime(time_t time) { m_nExecuteEnd = time; }
-	time_t GetStartTime() { return m_nExecuteStart; }
-	time_t GetEndTime() { return m_nExecuteEnd; }
-	const std::string& GetTaskSignature() { return m_TaskSignature; }
+	void SetStartTime(time_t time)				{ m_nExecuteStart = time; }
+	void SetEndTime(time_t time)				{ m_nExecuteEnd = time; }
+	time_t GetStartTime()						{ return m_nExecuteStart; }
+	time_t GetEndTime()							{ return m_nExecuteEnd; }
+	const std::string& GetSignature()			{ return m_TaskSignature; }
+	std::shared_ptr<CThreadTask> getShared()	{ return shared_from_this(); }
 	virtual void Execute() = 0;
 	virtual void OnFinish() = 0;
 	virtual void OnFailed() = 0;

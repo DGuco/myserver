@@ -93,7 +93,9 @@ set(FRAMEWORK
         "net/tcp_client.cpp"
         "thread/thread_scheduler.h" 
         "thread/thread_scheduler.cpp" 
-        "thread/thread_task.h")
+        "thread/thread_task.h" 
+        "thread/my_thread.h" 
+        "thread/my_thread.cpp")
 
 
 include_directories(

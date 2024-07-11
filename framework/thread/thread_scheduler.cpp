@@ -1,7 +1,32 @@
 #include "thread_scheduler.h"
 #include "time_helper.h"
 
-ThreadPool::ThreadPool(size_t threads) : stop(false)
+CTaskThread::CTaskThread(CSafePtr<CThreadScheduler> scheduler) 
+	: m_pScheduler(scheduler)
+{
+}
+
+
+CTaskThread::~CTaskThread()
+{
+
+}
+
+bool CTaskThread::PrepareToRun()
+{
+	return true;
+}
+
+void CTaskThread::Run()
+{
+	while(!IsStoped())
+	{
+		m_pScheduler->ConsumeTask();
+	}
+}
+
+CThreadScheduler::CThreadScheduler(std::string signature,size_t threads)
+	:m_Signature(signature),stop(false)
 {
 /*
 	for (size_t i = 0; i < threads; ++i)
@@ -36,58 +61,57 @@ ThreadPool::ThreadPool(size_t threads) : stop(false)
 			}
 			);
 */
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+	debug_timer.BeginTimer(nNow, 10 * 1000);
 	for (size_t i = 0; i < threads; ++i)
-		workers.emplace_back(
-			[this]
-			{
-				time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
-				//30ÃëÊä³öÒ»´Î
-				g_thread_data.debug_timer.BeginTimer(nNow, 30 * 1000);
-				for (;;)
-				{
-					this->ConsumeTask();
-					this->DebugTask();
-				}
-			}
-			);
+	{
+		CSafePtr<CTaskThread> pTaskThread = new CTaskThread(this);
+		pTaskThread->CreateThread();
+		m_Workers.emplace_back(pTaskThread);
+	}
 }
 
-inline ThreadPool::~ThreadPool()
+inline CThreadScheduler::~CThreadScheduler()
 {
 }
 
 template<class Func, class... Args>
-void ThreadPool::Schedule(std::string signature,Func&& f, Args&&... args)
+void CThreadScheduler::Schedule(std::string signature,Func&& f, Args&&... args)
 {
-	CSafePtr<CThreadTask> pTask = new CParamTask<Func, Args...>(signature, f, std::make_tuple(args...));
-	std::lock_guard<std::mutex> guard(queue_mutex);
-	tasks.emplace(pTask);
+	std::shared_ptr<CThreadTask> pTask = std::make_shared<CParamTask<Func, Args...>>(signature, f, std::make_tuple(args...));
+	std::lock_guard<std::mutex> guard(m_queue_mutex);
+	m_Tasks.emplace(pTask);
 }
 
-void ThreadPool::ConsumeTask()
+void CThreadScheduler::ConsumeTask()
 {
+	bool bHasTask = false;
 	while (true)
 	{
-		CSafePtr<CThreadTask> pTask;
+		std::shared_ptr<CThreadTask> pTask;
 		{
-			std::lock_guard<std::mutex> guard(queue_mutex);
-			if (tasks.empty())
+			std::lock_guard<std::mutex> guard(m_queue_mutex);
+			if (m_Tasks.empty())
 			{
-				return;
+				break;
 			}
-			pTask = std::move(this->tasks.front());
-			this->tasks.pop();
+			pTask = std::move(this->m_Tasks.front());
+			this->m_Tasks.pop();
 		}
 		if (pTask != NULL)
 		{
+			bHasTask = true;
 			try
 			{
+				{
+					std::lock_guard<std::mutex> guard(g_thread_data.task_mutex);
+					g_thread_data.curren_task = pTask;
+				}
 				pTask->Execute();
 			}
 			catch (std::exception* e)
 			{
 				pTask->OnFailed();
-				pTask.Free();
 				continue;
 			}
 
@@ -97,23 +121,35 @@ void ThreadPool::ConsumeTask()
 			}
 			catch (std::exception* e)
 			{
-				pTask.Free();
+
 			}
-			pTask.Free();
 		}
 	}
 }
 
-void ThreadPool::DebugTask()
+void CThreadScheduler::DebugTask()
 {
 	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
-	if (g_thread_data.debug_timer.IsTimeout(nNow))
+	if (debug_timer.IsTimeout(nNow))
 	{
 		int nSize = 0;
 		{
-			std::lock_guard<std::mutex> guard(queue_mutex);
-			nSize = tasks.size();
+			std::lock_guard<std::mutex> guard(m_queue_mutex);
+			nSize = m_Tasks.size();
 		}
 		CACHE_LOG(THREAD_CACHE, "Thread task queuesize = {}", nSize);
+
+		for (size_t i = 0; i < m_Workers.size(); ++i)
+		{
+			std::lock_guard<std::mutex> guard(g_thread_data.task_mutex);
+			if (m_Workers[i]->GetThreadData() != NULL)
+			{
+				std::shared_ptr<CThreadTask> pTask = m_Workers[i]->GetThreadData()->curren_task;
+				if (pTask != NULL)
+				{
+					CACHE_LOG(THREAD_CACHE, "Thread run task signature = {}", pTask->GetSignature());
+				}
+			}
+		}
 	}
 }

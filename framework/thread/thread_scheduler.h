@@ -9,37 +9,43 @@
 
 #include <vector>
 #include <queue>
-#include <memory>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <future>
 #include <functional>
+#include <safe_pointer.h>
+#include "my_thread.h"
 #include "thread_task.h"
-#include "safe_pointer.h"
 #include "time_helper.h"
 
-struct thread_data
-{
-	CMyTimer	debug_timer;	//发送心跳包定时器
-};
-
-thread_local thread_data g_thread_data;
-
-class ThreadPool 
+class CThreadScheduler;
+class CTaskThread : public CMyThread
 {
 public:
-	ThreadPool(size_t);
+	CTaskThread(CSafePtr<CThreadScheduler> scheduler);
+	virtual ~CTaskThread();
+	virtual bool			PrepareToRun();
+	virtual void			Run();
+private:
+	CSafePtr<CThreadScheduler>	m_pScheduler;
+};
+
+class CThreadScheduler 
+{
+public:
+	CThreadScheduler(std::string signature,size_t);
 	template<class Func, class... Args>
 	void Schedule(std::string signature, Func&& f, Args&&... args);
-	~ThreadPool();
-private:
+	~CThreadScheduler();
 	void ConsumeTask();
 	void DebugTask();
 private:
-	std::vector<std::thread> workers;
-	std::queue<CSafePtr<CThreadTask>> tasks;
-	std::mutex queue_mutex;
+	std::vector<CSafePtr<CTaskThread>> m_Workers;
+	std::queue<std::shared_ptr<CThreadTask>> m_Tasks;
+	std::mutex	m_queue_mutex;
+	std::string m_Signature;	//任务签名
+	CMyTimer	debug_timer;	//线程详情debug timer
 	//std::condition_variable condition;
 	bool stop;
 };
