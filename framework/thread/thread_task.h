@@ -23,7 +23,7 @@ struct TaskCaller<0, return_type,Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func,std::tuple<Args...> args)
+	static return_type invoke(function_type func,std::tuple<Args...>& args)
 	{
 		return func();
 	}
@@ -34,7 +34,7 @@ struct TaskCaller<1, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func,std::tuple<Args...> args)
+	static return_type invoke(function_type func,std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args));
 	}
@@ -45,7 +45,7 @@ struct TaskCaller<2, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 					std::get<1>(args));
@@ -57,7 +57,7 @@ struct TaskCaller<3, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 					std::get<1>(args),
@@ -70,7 +70,7 @@ struct TaskCaller<4, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args), 
 					std::get<1>(args),
@@ -84,7 +84,7 @@ struct TaskCaller<5, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args), 
 					std::get<1>(args), 
@@ -99,7 +99,7 @@ struct TaskCaller<6, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 			        std::get<1>(args),
@@ -115,7 +115,7 @@ struct TaskCaller<7, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 					std::get<1>(args),
@@ -132,7 +132,7 @@ struct TaskCaller<8, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 			std::get<1>(args),
@@ -150,7 +150,7 @@ struct TaskCaller<9, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 			std::get<1>(args),
@@ -169,7 +169,7 @@ struct TaskCaller<10, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 			std::get<1>(args),
@@ -189,7 +189,7 @@ struct TaskCaller<11, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 			std::get<1>(args),
@@ -210,7 +210,7 @@ struct TaskCaller<12, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 			std::get<1>(args),
@@ -232,7 +232,7 @@ struct TaskCaller<13, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 			std::get<1>(args),
@@ -255,7 +255,7 @@ struct TaskCaller<14, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 			std::get<1>(args),
@@ -279,7 +279,7 @@ struct TaskCaller<15, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...> args)
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
 	{
 		return func(std::get<0>(args),
 			std::get<1>(args),
@@ -331,11 +331,11 @@ class CWithReturnTask : public CThreadTask
 	using return_type = typename std::result_of<Func(Args...)>::type;
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	CWithReturnTask(std::string signature,const Func& func,ArgsTubleType& args)
+	CWithReturnTask(std::string signature,const Func& func, Args...args)
 		: CThreadTask(signature)
 	{
 		m_Func = func;
-		m_ArgTuple = std::move(args);
+		m_ArgTuple = std::make_tuple(args...);
 	}
 	virtual ~CWithReturnTask()
 	{}
@@ -365,11 +365,11 @@ class CNoReturnTask : public CThreadTask
 	using ArgsTubleType = typename std::tuple<Args...>;
 	using function_type = typename std::function<void(Args...)>;
 public:
-	CNoReturnTask(std::string signature, const Func& func, ArgsTubleType& args)
+	CNoReturnTask(std::string signature, const Func& func, Args...args)
 		: CThreadTask(signature)
 	{
 		m_Func = func;
-		m_ArgTuple = std::move(args);
+		m_ArgTuple = std::make_tuple(args...);
 	}
 	virtual ~CNoReturnTask()
 	{}
@@ -392,7 +392,7 @@ struct TaskCreater
 {
 	static CSafePtr<CThreadTask> CreateTask(std::string signature,const Func f, Args...args)
 	{
-		return new CWithReturnTask<Func, Args...>(signature, f, std::make_tuple(args...));
+		return new CWithReturnTask<Func, Args...>(signature, f, args...);
 	}
 };
 
@@ -401,7 +401,7 @@ struct TaskCreater<void, Func, Args...>
 {
 	static CSafePtr<CThreadTask> CreateTask(std::string signature,const Func f, Args...args)
 	{
-		return new CNoReturnTask<Func, Args...>(signature, f, std::make_tuple(args...));
+		return new CNoReturnTask<Func, Args...>(signature, f, args...);
 	}
 };
 

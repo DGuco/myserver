@@ -40,10 +40,6 @@ bool CGameCtrl::PrepareToRun()
 	{
 		return false;
 	}
-	if (!CGameServer::GetSingletonPtr()->PrepareToRun())
-	{
-		return false;
-	}
 
 	m_pScheduler->Schedule("InitTcpServer",
 		[]
@@ -76,7 +72,7 @@ int CGameCtrl::Run()
 			}
 			);
 		m_pScheduler->DebugTask();
-		SLEEP(100);
+		SLEEP(1000);
 	}
 }
 
