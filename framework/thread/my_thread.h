@@ -18,7 +18,7 @@ class CThreadTask;
 struct thread_data
 {
 	std::mutex						task_mutex;
-	std::shared_ptr<CThreadTask>	curren_task;
+	CSafePtr<CThreadTask>			curren_task;
 	CSafePtr<CMyThread>				run_thread;
 };
 

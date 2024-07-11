@@ -64,8 +64,7 @@ int CGameCtrl::Run()
 		m_pScheduler->Schedule("GameLogic",
 			[]
 			{
-				long long nTick = 0;
-				time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+				time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
 				try
 				{
 					CGameServer::GetSingletonPtr()->TcpTick(nNow);
@@ -74,12 +73,10 @@ int CGameCtrl::Run()
 				{
 					CACHE_LOG(ERROR_CACHE, "CGameServer TcpTick  cache execption msg {]", e.what());
 				}
-				nTick++;
-				CACHE_LOG(DEBUG_CACHE, "CProxyServer::Run tick {}", nTick);
 			}
 			);
 		m_pScheduler->DebugTask();
-		SLEEP(1000);
+		SLEEP(100);
 	}
 }
 

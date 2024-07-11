@@ -9,7 +9,6 @@
 #include <functional>
 #include <string>
 #include <tuple>
-#include <memory>
 #include "log.h"
 
 #define EMPTY_VOID_FUNC = []{}
@@ -388,31 +387,21 @@ private:
 	std::function<void()>	m_CallBack;
 };
 
-template<class Func, class...Args>
-std::shared_ptr<CThreadTask> CreateTask()
-{
-	std::shared_ptr<CThreadTask> pTask = std::make_shared<CWithReturnTask<Func, Args...>>(signature, f, std::make_tuple(args...));
-	std::lock_guard<std::mutex> guard(m_queue_mutex);
-	m_Tasks.emplace(pTask);
-}
-
 template<typename return_type, class Func, typename... Args>
 struct TaskCreater
 {
-	static std::shared_ptr<CThreadTask> CreateTask(std::string signature,const Func f, Args...args)
+	static CSafePtr<CThreadTask> CreateTask(std::string signature,const Func f, Args...args)
 	{
-		std::shared_ptr<CThreadTask> pTask = std::make_shared<CWithReturnTask<Func, Args...>>(signature, f, std::make_tuple(args...));
-		return pTask;
+		return new CWithReturnTask<Func, Args...>(signature, f, std::make_tuple(args...));
 	}
 };
 
 template<class Func,typename... Args>
 struct TaskCreater<void, Func, Args...>
 {
-	static std::shared_ptr<CThreadTask> CreateTask(std::string signature,const Func f, Args...args)
+	static CSafePtr<CThreadTask> CreateTask(std::string signature,const Func f, Args...args)
 	{
-		std::shared_ptr<CThreadTask> pTask = std::make_shared<CNoReturnTask<Func, Args...>>(signature, f, std::make_tuple(args...));
-		return pTask;
+		return new CNoReturnTask<Func, Args...>(signature, f, std::make_tuple(args...));
 	}
 };
 

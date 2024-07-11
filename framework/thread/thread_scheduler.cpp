@@ -85,7 +85,7 @@ void CThreadScheduler::ConsumeTask()
 	bool bHasTask = false;
 	while (true)
 	{
-		std::shared_ptr<CThreadTask> pTask;
+		CSafePtr<CThreadTask> pTask;
 		{
 			std::lock_guard<std::mutex> guard(m_queue_mutex);
 			if (m_Tasks.empty())
@@ -98,6 +98,7 @@ void CThreadScheduler::ConsumeTask()
 		if (pTask != NULL)
 		{
 			bHasTask = true;
+			bool bFinish = false;
 			try
 			{
 				{
@@ -105,21 +106,29 @@ void CThreadScheduler::ConsumeTask()
 					g_thread_data.curren_task = pTask;
 				}
 				pTask->Execute();
+				bFinish = true;
 			}
 			catch (std::exception* e)
 			{
 				pTask->OnFailed();
-				continue;
 			}
 
-			try
+			if (bFinish)
 			{
-				pTask->OnFinish();
+				try
+				{
+					pTask->OnFinish();
+				}
+				catch (std::exception* e)
+				{
+				}
 			}
-			catch (std::exception* e)
-			{
 
+			{
+				std::lock_guard<std::mutex> guard(g_thread_data.task_mutex);
+				g_thread_data.curren_task = NULL;
 			}
+			pTask.Free();
 		}
 	}
 }
@@ -138,10 +147,10 @@ void CThreadScheduler::DebugTask()
 
 		for (size_t i = 0; i < m_Workers.size(); ++i)
 		{
-			std::lock_guard<std::mutex> guard(g_thread_data.task_mutex);
 			if (m_Workers[i]->GetThreadData() != NULL)
 			{
-				std::shared_ptr<CThreadTask> pTask = m_Workers[i]->GetThreadData()->curren_task;
+				std::lock_guard<std::mutex> guard(m_Workers[i]->GetThreadData()->task_mutex);
+				CSafePtr<CThreadTask> pTask = m_Workers[i]->GetThreadData()->curren_task;
 				if (pTask != NULL)
 				{
 					CACHE_LOG(THREAD_CACHE, "Thread run task signature = {}", pTask->GetSignature());

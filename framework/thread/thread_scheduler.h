@@ -11,8 +11,6 @@
 #include <queue>
 #include <thread>
 #include <mutex>
-#include <condition_variable>
-#include <future>
 #include <functional>
 #include <safe_pointer.h>
 #include "my_thread.h"
@@ -43,7 +41,7 @@ public:
 	void DebugTask();
 private:
 	std::vector<CSafePtr<CTaskThread>> m_Workers;
-	std::queue<std::shared_ptr<CThreadTask>> m_Tasks;
+	std::queue<CSafePtr<CThreadTask>> m_Tasks;
 	std::mutex	m_queue_mutex;
 	std::string m_Signature;	//任务签名
 	CMyTimer	debug_timer;	//线程详情debug timer
@@ -55,7 +53,7 @@ template<class Func, class... Args>
 void CThreadScheduler::Schedule(std::string signature, Func&& f, Args&&... args)
 {
 	using return_type = typename std::result_of<Func(Args...)>::type;
-	std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Func, Args...>::CreateTask(signature,f,args...);
+	CSafePtr<CThreadTask> pTask = TaskCreater<return_type, Func, Args...>::CreateTask(signature,f,args...);
 	std::lock_guard<std::mutex> guard(m_queue_mutex);
 	m_Tasks.emplace(pTask);
 }
