@@ -7,6 +7,7 @@
 #ifndef __GAME_CTRL_H__
 #define __GAME_CTRL_H__
 
+#include "thread_scheduler.h"
 #include "singleton.h"
 
 class CGameCtrl : public CSingleton<CGameCtrl>
@@ -22,6 +23,8 @@ public:
 	int Run();
 	//
 	bool ReadConfig();
+private:
+	CSafePtr<CThreadScheduler> m_pScheduler;
 };
 
 #endif //__GAME_CTRL_H__

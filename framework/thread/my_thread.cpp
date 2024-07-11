@@ -1,4 +1,7 @@
 #include "my_thread.h"
+#include "log.h"
+
+thread_local thread_data g_thread_data;
 
 CMyThread::CMyThread()
 {
@@ -36,7 +39,7 @@ void CMyThread::Stop()
 	m_bStoped.store(true);
 }
 
-int	CMyThread::CreateThread()
+bool CMyThread::CreateThread()
 {
 #if defined(__LINUX__)
 	pthread_attr_init(&m_stAttr);
@@ -48,7 +51,7 @@ int	CMyThread::CreateThread()
 #else
 	m_hThread = ::CreateThread(NULL, 0, ThreadProc, this, 0, &m_TID);
 #endif
-	return 0;
+	return true;
 }
 
 void CMyThread::SetThreadData(CSafePtr<thread_data> pdata)
@@ -93,9 +96,11 @@ DWORD WINAPI ThreadProc(VOID* pvArgs)
 	if (pThread == NULL)
 		return 0;
 
+	pThread->SetThreadData(CSafePtr<thread_data>(&g_thread_data));
 	pThread->SetStatus(CMyThread::RUNNING);
-	if (pThread->PrepareToRun())
+	if (!pThread->PrepareToRun())
 	{
+		DISK_LOG(ERROR_DISK, "Thread PrepareToRun failed");
 		return 0;
 	}
 

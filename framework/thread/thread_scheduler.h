@@ -34,7 +34,8 @@ private:
 class CThreadScheduler 
 {
 public:
-	CThreadScheduler(std::string signature,size_t);
+	CThreadScheduler(std::string signature);
+	bool Init(size_t threads);
 	template<class Func, class... Args>
 	void Schedule(std::string signature, Func&& f, Args&&... args);
 	~CThreadScheduler();
@@ -49,6 +50,15 @@ private:
 	//std::condition_variable condition;
 	bool stop;
 };
+
+template<class Func, class... Args>
+void CThreadScheduler::Schedule(std::string signature, Func&& f, Args&&... args)
+{
+	using return_type = typename std::result_of<Func(Args...)>::type;
+	std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Func, Args...>::CreateTask(signature,f,args...);
+	std::lock_guard<std::mutex> guard(m_queue_mutex);
+	m_Tasks.emplace(pTask);
+}
 
 #endif //__THREAD_SCHEDULER_H__
 

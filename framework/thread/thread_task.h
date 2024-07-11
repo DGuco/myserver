@@ -320,35 +320,8 @@ private:
 	time_t	    m_nExecuteEnd;		//任务执行完成时间
 };
 
-class CVoidTask : public CThreadTask
-{
-public:
-	CVoidTask(std::string signature,
-			  std::function<void()> func,
-			  std::function<void()> callfunc) : CThreadTask(signature)
-	{
-		m_Func = func;
-		m_CallBack = callfunc;
-	}
-	virtual ~CVoidTask()
-	{}
-	virtual void Execute()
-	{
-		m_Func();
-	}
-	virtual void OnFinish()
-	{
-		m_CallBack();
-	}
-	virtual void OnFailed()
-	{}
-private:
-	std::function<void()> m_Func;
-	std::function<void()> m_CallBack;
-};
-
 template<class Func, class...Args>
-class CParamTask : public CThreadTask
+class CWithReturnTask : public CThreadTask
 {
 	enum
 	{
@@ -359,13 +332,13 @@ class CParamTask : public CThreadTask
 	using return_type = typename std::result_of<Func(Args...)>::type;
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	CParamTask(std::string signature,const Func& func,ArgsTubleType& args)
+	CWithReturnTask(std::string signature,const Func& func,ArgsTubleType& args)
 		: CThreadTask(signature)
 	{
 		m_Func = func;
 		m_ArgTuple = std::move(args);
 	}
-	virtual ~CParamTask()
+	virtual ~CWithReturnTask()
 	{}
 	virtual void Execute()
 	{
@@ -381,4 +354,66 @@ private:
 	return_type				m_Res;
 	std::function<void()>	m_CallBack;
 };
+
+template<class Func, class...Args>
+class CNoReturnTask : public CThreadTask
+{
+	enum
+	{
+		//参数个数
+		arity = sizeof...(Args)
+	};
+	using ArgsTubleType = typename std::tuple<Args...>;
+	using function_type = typename std::function<void(Args...)>;
+public:
+	CNoReturnTask(std::string signature, const Func& func, ArgsTubleType& args)
+		: CThreadTask(signature)
+	{
+		m_Func = func;
+		m_ArgTuple = std::move(args);
+	}
+	virtual ~CNoReturnTask()
+	{}
+	virtual void Execute()
+	{
+		TaskCaller<arity, void, Args...>::invoke(m_Func, m_ArgTuple);
+	}
+	virtual void OnFinish()
+	{}
+	virtual void OnFailed()
+	{}
+private:
+	function_type			m_Func;
+	ArgsTubleType			m_ArgTuple;
+	std::function<void()>	m_CallBack;
+};
+
+template<class Func, class...Args>
+std::shared_ptr<CThreadTask> CreateTask()
+{
+	std::shared_ptr<CThreadTask> pTask = std::make_shared<CWithReturnTask<Func, Args...>>(signature, f, std::make_tuple(args...));
+	std::lock_guard<std::mutex> guard(m_queue_mutex);
+	m_Tasks.emplace(pTask);
+}
+
+template<typename return_type, class Func, typename... Args>
+struct TaskCreater
+{
+	static std::shared_ptr<CThreadTask> CreateTask(std::string signature,const Func f, Args...args)
+	{
+		std::shared_ptr<CThreadTask> pTask = std::make_shared<CWithReturnTask<Func, Args...>>(signature, f, std::make_tuple(args...));
+		return pTask;
+	}
+};
+
+template<class Func,typename... Args>
+struct TaskCreater<void, Func, Args...>
+{
+	static std::shared_ptr<CThreadTask> CreateTask(std::string signature,const Func f, Args...args)
+	{
+		std::shared_ptr<CThreadTask> pTask = std::make_shared<CNoReturnTask<Func, Args...>>(signature, f, std::make_tuple(args...));
+		return pTask;
+	}
+};
+
 #endif //__THREAD_TASK_H__

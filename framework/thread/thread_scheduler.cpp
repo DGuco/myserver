@@ -25,8 +25,7 @@ void CTaskThread::Run()
 	}
 }
 
-CThreadScheduler::CThreadScheduler(std::string signature,size_t threads)
-	:m_Signature(signature),stop(false)
+CThreadScheduler::CThreadScheduler(std::string signature) :	m_Signature(signature)
 {
 /*
 	for (size_t i = 0; i < threads; ++i)
@@ -61,7 +60,16 @@ CThreadScheduler::CThreadScheduler(std::string signature,size_t threads)
 			}
 			);
 */
-	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+
+}
+
+inline CThreadScheduler::~CThreadScheduler()
+{
+}
+
+bool CThreadScheduler::Init(size_t threads)
+{
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
 	debug_timer.BeginTimer(nNow, 10 * 1000);
 	for (size_t i = 0; i < threads; ++i)
 	{
@@ -69,18 +77,7 @@ CThreadScheduler::CThreadScheduler(std::string signature,size_t threads)
 		pTaskThread->CreateThread();
 		m_Workers.emplace_back(pTaskThread);
 	}
-}
-
-inline CThreadScheduler::~CThreadScheduler()
-{
-}
-
-template<class Func, class... Args>
-void CThreadScheduler::Schedule(std::string signature,Func&& f, Args&&... args)
-{
-	std::shared_ptr<CThreadTask> pTask = std::make_shared<CParamTask<Func, Args...>>(signature, f, std::make_tuple(args...));
-	std::lock_guard<std::mutex> guard(m_queue_mutex);
-	m_Tasks.emplace(pTask);
+	return true;
 }
 
 void CThreadScheduler::ConsumeTask()
@@ -129,7 +126,7 @@ void CThreadScheduler::ConsumeTask()
 
 void CThreadScheduler::DebugTask()
 {
-	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
 	if (debug_timer.IsTimeout(nNow))
 	{
 		int nSize = 0;

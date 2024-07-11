@@ -13,6 +13,7 @@ CGameCtrl::CGameCtrl()
 	wVersionRequested = MAKEWORD(2, 2);
 	err = WSAStartup(wVersionRequested, &wsaData);
 #endif
+	m_pScheduler = new CThreadScheduler("GameLogicScheduler");
 }
 
 CGameCtrl::~CGameCtrl()
@@ -34,29 +35,52 @@ bool CGameCtrl::PrepareToRun()
 	{
 		return false;
 	}
+
+	if (!m_pScheduler->Init(1))
+	{
+		return false;
+	}
+	if (!CGameServer::GetSingletonPtr()->PrepareToRun())
+	{
+		return false;
+	}
+
+	m_pScheduler->Schedule("InitTcpServer",
+		[]
+		{
+			if (!CGameServer::GetSingletonPtr()->InitTcp())
+			{
+				exit(0);
+			}
+		}
+		);
 	return true;
 }
 
 int CGameCtrl::Run()
 {
-	long long nTick = 0;
-	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
 	while (true)
 	{
-		try
-		{
-			CGameServer::GetSingletonPtr()->TcpTick(nNow);
-		}
-		catch (const std::exception& e)
-		{
-			CACHE_LOG(ERROR_CACHE, "CGameServer TcpTick  cache execption msg {]", e.what());
-		}
-
-		nTick++;
-		CACHE_LOG(DEBUG_CACHE, "CProxyServer::Run tick {}", nTick);
+		m_pScheduler->Schedule("GameLogic",
+			[]
+			{
+				long long nTick = 0;
+				time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+				try
+				{
+					CGameServer::GetSingletonPtr()->TcpTick(nNow);
+				}
+				catch (const std::exception& e)
+				{
+					CACHE_LOG(ERROR_CACHE, "CGameServer TcpTick  cache execption msg {]", e.what());
+				}
+				nTick++;
+				CACHE_LOG(DEBUG_CACHE, "CProxyServer::Run tick {}", nTick);
+			}
+			);
+		m_pScheduler->DebugTask();
 		SLEEP(1000);
 	}
-	return 0;
 }
 
 bool CGameCtrl::ReadConfig()

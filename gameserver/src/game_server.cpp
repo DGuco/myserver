@@ -37,21 +37,6 @@ CGameServer::~CGameServer()
 // 运行准备
 bool CGameServer::PrepareToRun()
 {
-	CSafePtr<CServerConfig> pConfig = CServerConfig::GetSingletonPtr();
-	CSafePtr<ServerInfo> pGameInfo = pConfig->GetServerInfo(enServerType::FE_GAMESERVER);
-	int nRet = InitTcpServer(eTcpEpoll, pGameInfo->m_sHost.c_str(), pGameInfo->m_iPort);
-	if (nRet == 0)
-	{
-		DISK_LOG(DEBUG_DISK, "CGameServer InitTcpServer success at {} : {}", pGameInfo->m_sHost.c_str(), pGameInfo->m_iPort);
-		return true;
-	}
-	else
-	{
-		DISK_LOG(DEBUG_DISK, "CGameServer PrepareToRun at {} : {} failed,failed reason {]", pGameInfo->m_sHost.c_str(),
-			pGameInfo->m_iPort, strerror(errno));
-		return false;
-	}
-
 	m_DB2SCodeQueue = CShmMessQueue::CreateInstance(DB2S_SHM_KEY, PIPE_SIZE);
 	if (m_DB2SCodeQueue == NULL)
 	{
@@ -69,14 +54,32 @@ bool CGameServer::PrepareToRun()
 	{
 		return false;
 	}
+	return true;
+}
+
+bool CGameServer::InitTcp()
+{
+	CSafePtr<CServerConfig> pConfig = CServerConfig::GetSingletonPtr();
+	CSafePtr<ServerInfo> pGameInfo = pConfig->GetServerInfo(enServerType::FE_GAMESERVER);
+	int nRet = InitTcpServer(eTcpEpoll, pGameInfo->m_sHost.c_str(), pGameInfo->m_iPort);
+	if (nRet == 0)
+	{
+		DISK_LOG(DEBUG_DISK, "CGameServer InitTcpServer success at {} : {}", pGameInfo->m_sHost.c_str(), pGameInfo->m_iPort);
+		return true;
+	}
+	else
+	{
+		DISK_LOG(DEBUG_DISK, "CGameServer PrepareToRun at {} : {} failed,failed reason {]", pGameInfo->m_sHost.c_str(),
+			pGameInfo->m_iPort, strerror(errno));
+		return false;
+	}
+
 	CSafePtr<ServerInfo> pRroxyInfo = pConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 	CSafePtr<CServerClient> pConn = new CServerClient();
 	if (!ConnectTo(pConn.DynamicCastTo<CTCPClient>(), pRroxyInfo->m_sHost.c_str(), pRroxyInfo->m_iPort, false))
 	{
 		pConn.Free();
 	}
-
-	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
 	return true;
 }
 

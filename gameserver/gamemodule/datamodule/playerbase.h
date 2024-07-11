@@ -118,9 +118,9 @@ public:
     time_t GetCreateTime() {return m_tCreateTime;}
 
     int GetSocket() {return m_SocketInfo.m_iSocket;}
-    int GetSocketCreateTime() { return  m_SocketInfo.m_tCreateTime;}
-    int GetLastActiveTime() {return m_SocketInfo.m_tLastActiveTime;}
-    int GetLoginTime() {return m_SocketInfo.m_tLoginTime;}
+    time_t GetSocketCreateTime() { return  m_SocketInfo.m_tCreateTime;}
+    time_t GetLastActiveTime() {return m_SocketInfo.m_tLastActiveTime;}
+    time_t GetLoginTime() {return m_SocketInfo.m_tLoginTime;}
     // ’ ∫≈
     void SetAccount(const char* p)
     { }

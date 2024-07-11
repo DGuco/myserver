@@ -25,6 +25,8 @@ public:
 	~CGameServer();
 	// 运行准备
 	bool PrepareToRun();
+	//
+	bool InitTcp();
 	// 退出
 	void Exit();
 	//处理客户端上行数据

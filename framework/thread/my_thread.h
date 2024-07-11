@@ -22,7 +22,7 @@ struct thread_data
 	CSafePtr<CMyThread>				run_thread;
 };
 
-thread_local thread_data g_thread_data;
+extern thread_local thread_data g_thread_data;
 
 class CMyThread
 {
@@ -41,7 +41,7 @@ public:
 	virtual void			Run() = 0;
 	virtual void			Exit();
 	void					Stop();
-	int						CreateThread();
+	bool					CreateThread();
 	void					SetThreadData(CSafePtr<thread_data> pdata);
 	CSafePtr<thread_data>	GetThreadData();
 	bool					IsStoped();
