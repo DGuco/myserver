@@ -11,23 +11,9 @@
 #include <tuple>
 #include "thread_task.h"
 
-template<class Func, class... Args>
-void Call(const Func f, Args...args)
-{
-	CThreadTask* pTask = new CParamTask<Func,Args...>("test task",f,std::make_tuple(args...));
-	pTask->Execute();
-}
-
 using namespace std;
 int main(int argc, char **argv)
 {
-	int a = 2;
-	Call([a](int b,int c,std::string str) 
-		{
-			printf("aaaaaa = %d\n",a + b + c); 
-			printf("str = %s\n", str.c_str());
-			return a + b + c;
-		},3,4,"Hello world");
 	//ÐÅºÅ´¦Àí×¢²á
 	CSignalHandler::GetSingletonPtr()->RegisterHandler("proxyserver");
 

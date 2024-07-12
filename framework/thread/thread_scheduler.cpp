@@ -87,7 +87,7 @@ void CThreadScheduler::ConsumeTask()
 	{
 		CSafePtr<CThreadTask> pTask;
 		{
-			std::lock_guard<std::mutex> guard(m_queue_mutex);
+			CSafeLock guard(m_queue_mutex);
 			if (m_Tasks.empty())
 			{
 				break;
@@ -102,7 +102,7 @@ void CThreadScheduler::ConsumeTask()
 			try
 			{
 				{
-					std::lock_guard<std::mutex> guard(g_thread_data.task_mutex);
+					CSafeLock guard(g_thread_data.task_mutex);
 					g_thread_data.curren_task = pTask;
 				}
 				pTask->Execute();
@@ -125,7 +125,7 @@ void CThreadScheduler::ConsumeTask()
 			}
 
 			{
-				std::lock_guard<std::mutex> guard(g_thread_data.task_mutex);
+				CSafeLock guard(g_thread_data.task_mutex);
 				g_thread_data.curren_task = NULL;
 			}
 			pTask.Free();
@@ -140,7 +140,7 @@ void CThreadScheduler::DebugTask()
 	{
 		int nSize = 0;
 		{
-			std::lock_guard<std::mutex> guard(m_queue_mutex);
+			CSafeLock guard(m_queue_mutex);
 			nSize = m_Tasks.size();
 		}
 		CACHE_LOG(THREAD_CACHE, "Thread task queuesize = {}", nSize);
@@ -149,7 +149,7 @@ void CThreadScheduler::DebugTask()
 		{
 			if (m_Workers[i]->GetThreadData() != NULL)
 			{
-				std::lock_guard<std::mutex> guard(m_Workers[i]->GetThreadData()->task_mutex);
+				CSafeLock guard(m_Workers[i]->GetThreadData()->task_mutex);
 				CSafePtr<CThreadTask> pTask = m_Workers[i]->GetThreadData()->curren_task;
 				if (pTask != NULL)
 				{

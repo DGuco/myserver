@@ -10,6 +10,7 @@
 #include <mutex>
 #include <atomic>
 #include "base.h"
+#include "my_lock.h"
 #include "time_helper.h"
 #include "safe_pointer.h"
 
@@ -17,7 +18,7 @@ class CMyThread;
 class CThreadTask;
 struct thread_data
 {
-	std::mutex						task_mutex;
+	CMyLock							task_mutex;
 	CSafePtr<CThreadTask>			curren_task;
 	CSafePtr<CMyThread>				run_thread;
 };
@@ -63,9 +64,9 @@ private:
 };
 
 #if defined(__LINUX__)
-VOID* ThreadProc(VOID* pvArgs);
+void* ThreadProc(void* pvArgs);
 #else
-DWORD WINAPI ThreadProc(VOID* pvArgs);
+DWORD WINAPI ThreadProc(void* pvArgs);
 #endif
 
 #endif //__THREAD_H__

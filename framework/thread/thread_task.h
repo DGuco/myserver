@@ -22,6 +22,7 @@ template<typename return_type, typename... Args>
 struct TaskCaller<0, return_type,Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
+	//using callback_function_type = typename std::function<void(bool,return_type)>;
 public:
 	static return_type invoke(function_type func,std::tuple<Args...>& args)
 	{
@@ -33,6 +34,7 @@ template<typename return_type, typename... Args>
 struct TaskCaller<1, return_type, Args...>
 {
 	using function_type = typename std::function<return_type(Args...)>;
+	//using callback_function_type = typename std::function<void(bool, return_type)>;
 public:
 	static return_type invoke(function_type func,std::tuple<Args...>& args)
 	{

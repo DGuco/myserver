@@ -95,7 +95,8 @@ set(FRAMEWORK
         "thread/thread_scheduler.cpp" 
         "thread/thread_task.h" 
         "thread/my_thread.h" 
-        "thread/my_thread.cpp")
+        "thread/my_thread.cpp"
+        "thread/my_lock.h")
 
 
 include_directories(

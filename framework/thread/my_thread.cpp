@@ -70,7 +70,7 @@ bool CMyThread::IsStoped()
 }
 
 #if defined(__LINUX__)
-VOID* ThreadProc(VOID* pvArgs)
+void* ThreadProc(void* pvArgs)
 {
 	CMyThread* pThread = (CMyThread*)pvArgs;
 	if (pThread == NULL)
@@ -90,7 +90,7 @@ VOID* ThreadProc(VOID* pvArgs)
 	return NULL;
 }
 #else
-DWORD WINAPI ThreadProc(VOID* pvArgs)
+DWORD WINAPI ThreadProc(void* pvArgs)
 {
 	CMyThread* pThread = (CMyThread*)pvArgs;
 	if (pThread == NULL)

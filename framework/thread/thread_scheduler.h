@@ -10,9 +10,9 @@
 #include <vector>
 #include <queue>
 #include <thread>
-#include <mutex>
 #include <functional>
 #include <safe_pointer.h>
+#include "my_lock.h"
 #include "my_thread.h"
 #include "thread_task.h"
 #include "time_helper.h"
@@ -42,7 +42,7 @@ public:
 private:
 	std::vector<CSafePtr<CTaskThread>> m_Workers;
 	std::queue<CSafePtr<CThreadTask>> m_Tasks;
-	std::mutex	m_queue_mutex;
+	CMyLock		m_queue_mutex;
 	std::string m_Signature;	//任务签名
 	CMyTimer	debug_timer;	//线程详情debug timer
 	//std::condition_variable condition;
