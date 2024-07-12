@@ -64,7 +64,6 @@ set(FRAMEWORK
         "base/signal_handler.cpp"
         "base/message_factory.h"
         "base/message_factory.cpp" 
-        "base/lock_free_limit_queue.h"
         "mem/shm_queue.cpp" 
         "mem/shm_queue.h"
         "mem/mempool_safty.h" 
@@ -96,7 +95,9 @@ set(FRAMEWORK
         "thread/thread_task.h" 
         "thread/my_thread.h" 
         "thread/my_thread.cpp"
-        "thread/my_lock.h")
+        "thread/my_lock.h" 
+        "thread/lock_free_limit_queue.h"
+        )
 
 
 include_directories(
