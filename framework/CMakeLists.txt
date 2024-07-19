@@ -97,7 +97,7 @@ set(FRAMEWORK
         "thread/my_thread.cpp"
         "thread/my_lock.h" 
         "thread/lock_free_limit_queue.h"
-        )
+        "thread/task_helper.h")
 
 
 include_directories(

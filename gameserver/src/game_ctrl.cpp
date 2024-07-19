@@ -49,7 +49,13 @@ bool CGameCtrl::PrepareToRun()
 				exit(0);
 			}
 		}
-		);
+		)
+		.ThenApply(m_pScheduler,"InitTcpServer call",
+			[]
+			{
+				printf("InitTcpServer call\n");
+			}
+			);
 	return true;
 }
 

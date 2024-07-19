@@ -9,6 +9,8 @@
 #include <functional>
 #include <string>
 #include <tuple>
+#include <memory>
+#include <my_thread.h>
 #include "log.h"
 
 #define EMPTY_VOID_FUNC = []{}
@@ -301,24 +303,63 @@ public:
 	}
 };
 
+
+class CThreadScheduler;
+class CThreadTask;
+
+enum class enTaskState : unsigned char
+{
+	eTaskInit = 0,
+	eTaskDoing = 1,
+	eTaskDone = 2,
+	eTaskFailed = 3,
+};
+
 class CThreadTask : public enable_shared_from_this<CThreadTask>
 {
 public:
-	CThreadTask(std::string signature) : m_TaskSignature(signature) {};
+	CThreadTask(CSafePtr<CThreadScheduler> scheduler,
+				std::string signature,
+				TaskPtr parentTask,
+				TaskPtr childTask)
+		:m_pScheduler(scheduler),
+		 m_TaskSignature(signature),
+		 m_pParentTask(parentTask),
+		 m_pChildTask(childTask){};
 	virtual ~CThreadTask() {};
 	void SetStartTime(time_t time)				{ m_nExecuteStart = time; }
 	void SetEndTime(time_t time)				{ m_nExecuteEnd = time; }
 	time_t GetStartTime()						{ return m_nExecuteStart; }
 	time_t GetEndTime()							{ return m_nExecuteEnd; }
 	const std::string& GetSignature()			{ return m_TaskSignature; }
-	std::shared_ptr<CThreadTask> getShared()	{ return shared_from_this(); }
+	TaskPtr GetShared()							{ return shared_from_this(); }
+	CSafePtr<CThreadScheduler>   GetScheduler() { return m_pScheduler; }
+	TaskPtr GetParentTask()						{ return m_pParentTask; }
+	TaskPtr GetChildask()					    { return m_pChildTask.expired() ? m_pChildTask.lock() : NULL;}
+	enTaskState GetState()						{ return m_nState.load(std::memory_order_acquire); }
+	void SetState(enTaskState state)
+	{ 
+		m_nState.store(state, std::memory_order_release);
+	}
 	virtual void Execute() = 0;
-	virtual void OnFinish() = 0;
-	virtual void OnFailed() = 0;
+
+	virtual void OnFinish()
+	{
+		SetState(enTaskState::eTaskDone);
+	}
+	virtual void OnFailed()
+	{
+		SetState(enTaskState::eTaskFailed);
+	}
 private:
-	std::string m_TaskSignature;	//任务签名
-	time_t	    m_nExecuteStart;	//任务开始执行时间
-	time_t	    m_nExecuteEnd;		//任务执行完成时间
+	std::string						m_TaskSignature;	//任务签名
+	time_t							m_nExecuteStart;	//任务开始执行时间
+	time_t							m_nExecuteEnd;		//任务执行完成时间
+	CSafePtr<CThreadScheduler>		m_pScheduler;
+	TaskPtr							m_pParentTask;
+	WeakTaskPtr						m_pChildTask;
+	std::atomic<enTaskState>		m_nState;
+	std::list<TaskPtr>				m_ChildTaskList;
 };
 
 template<class Func, class...Args>
@@ -333,8 +374,13 @@ class CWithReturnTask : public CThreadTask
 	using return_type = typename std::result_of<Func(Args...)>::type;
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	CWithReturnTask(std::string signature,const Func& func, Args...args)
-		: CThreadTask(signature)
+	CWithReturnTask(CSafePtr<CThreadScheduler> scheduler, 
+					std::string signature, 
+					TaskPtr parentTask,
+					TaskPtr childTask,
+					const Func& func, 
+					Args...args)
+		: CThreadTask(scheduler,signature, parentTask,childTask)
 	{
 		m_Func = func;
 		m_ArgTuple = std::make_tuple(args...);
@@ -345,10 +391,6 @@ public:
 	{
 		m_Res = TaskCaller<arity, return_type, Args...>::invoke(m_Func, m_ArgTuple);
 	}
-	virtual void OnFinish()
-	{}
-	virtual void OnFailed()
-	{}
 private:
 	function_type			m_Func;
 	ArgsTubleType			m_ArgTuple;
@@ -367,8 +409,13 @@ class CNoReturnTask : public CThreadTask
 	using ArgsTubleType = typename std::tuple<Args...>;
 	using function_type = typename std::function<void(Args...)>;
 public:
-	CNoReturnTask(std::string signature, const Func& func, Args...args)
-		: CThreadTask(signature)
+	CNoReturnTask(CSafePtr<CThreadScheduler> scheduler,
+					std::string signature,
+					TaskPtr parentTask,
+					TaskPtr childTask,
+					const Func& func,
+					Args...args)
+		: CThreadTask(scheduler, signature, parentTask, childTask)
 	{
 		m_Func = func;
 		m_ArgTuple = std::make_tuple(args...);
@@ -387,24 +434,6 @@ private:
 	function_type			m_Func;
 	ArgsTubleType			m_ArgTuple;
 	std::function<void()>	m_CallBack;
-};
-
-template<typename return_type, class Func, typename... Args>
-struct TaskCreater
-{
-	static CSafePtr<CThreadTask> CreateTask(std::string signature,const Func f, Args...args)
-	{
-		return new CWithReturnTask<Func, Args...>(signature, f, args...);
-	}
-};
-
-template<class Func,typename... Args>
-struct TaskCreater<void, Func, Args...>
-{
-	static CSafePtr<CThreadTask> CreateTask(std::string signature,const Func f, Args...args)
-	{
-		return new CNoReturnTask<Func, Args...>(signature, f, args...);
-	}
 };
 
 #endif //__THREAD_TASK_H__

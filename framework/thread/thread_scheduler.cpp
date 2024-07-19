@@ -22,6 +22,8 @@ void CTaskThread::Run()
 	while(!IsStoped())
 	{
 		m_pScheduler->ConsumeTask();
+		//
+		SLEEP(1);
 	}
 }
 
@@ -85,15 +87,30 @@ void CThreadScheduler::ConsumeTask()
 	bool bHasTask = false;
 	while (true)
 	{
-		CSafePtr<CThreadTask> pTask;
+		TaskPtr pTask;
 		{
 			CSafeLock guard(m_queue_mutex);
 			if (m_Tasks.empty())
 			{
 				break;
 			}
-			pTask = std::move(this->m_Tasks.front());
+			pTask = this->m_Tasks.front();
 			this->m_Tasks.pop();
+			if (pTask->GetParentTask() != NULL)
+			{
+				if (pTask->GetParentTask()->GetState() == enTaskState::eTaskFailed)
+				{
+					pTask->OnFailed();
+					continue;
+				}
+
+				//等待父任务执行完成
+				if (pTask->GetParentTask()->GetState() != enTaskState::eTaskDone)
+				{
+					m_WaitingTasks.push_back(pTask);
+					continue;
+				}
+			}
 		}
 		if (pTask != NULL)
 		{
@@ -128,7 +145,6 @@ void CThreadScheduler::ConsumeTask()
 				CSafeLock guard(g_thread_data.task_mutex);
 				g_thread_data.curren_task = NULL;
 			}
-			pTask.Free();
 		}
 	}
 }
@@ -150,7 +166,7 @@ void CThreadScheduler::DebugTask()
 			if (m_Workers[i]->GetThreadData() != NULL)
 			{
 				CSafeLock guard(m_Workers[i]->GetThreadData()->task_mutex);
-				CSafePtr<CThreadTask> pTask = m_Workers[i]->GetThreadData()->curren_task;
+				TaskPtr pTask = m_Workers[i]->GetThreadData()->curren_task;
 				if (pTask != NULL)
 				{
 					CACHE_LOG(THREAD_CACHE, "Thread run task signature = {}", pTask->GetSignature());
@@ -158,4 +174,10 @@ void CThreadScheduler::DebugTask()
 			}
 		}
 	}
+}
+
+void CThreadScheduler::PushTask(TaskPtr pTask)
+{
+	std::lock_guard<std::mutex> guard(m_queue_mutex);
+	m_Tasks.push(pTask);
 }
