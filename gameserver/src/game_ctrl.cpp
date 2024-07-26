@@ -25,7 +25,6 @@ CGameCtrl::~CGameCtrl()
 
 bool CGameCtrl::PrepareToRun()
 {
-	int a = 0;
 	if (!ReadConfig())
 	{
 		return false;
@@ -41,21 +40,25 @@ bool CGameCtrl::PrepareToRun()
 		return false;
 	}
 
+	int a = 1;
+	int b = 2;
+	int c = 10;
+	int d = 20;
 	m_pScheduler->Schedule("InitTcpServer",
-		[]
+		[a,b]
 		{
 			if (!CGameServer::GetSingletonPtr()->InitTcp())
 			{
 				exit(0);
 			}
+			return a + b;
 		}
 		)
-		.ThenApply(m_pScheduler,"InitTcpServer call",
-			[]
+		.ThenApply(m_pScheduler,
+			[a, b] (int res)
 			{
-				printf("InitTcpServer call\n");
-			}
-			);
+				
+			});
 	return true;
 }
 

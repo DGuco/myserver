@@ -139,17 +139,17 @@ public:
 	{
 	}
 
-	ALWAYS_INLINE void Lock()
+	inline void Lock()
 	{
 		while (flag.test_and_set(std::memory_order_acquire));
 	}
 
-	ALWAYS_INLINE bool TryLock()
+	inline bool TryLock()
 	{
 		return !flag.test_and_set(std::memory_order_acquire);
 	}
 
-	ALWAYS_INLINE void UnLock()
+	inline void UnLock()
 	{
 		flag.clear(std::memory_order_release);
 	}

@@ -15,12 +15,10 @@ struct TaskCreater
 {
 	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
 		std::string signature,
-		TaskPtr parent,
-		TaskPtr child,
 		const Func f,
 		Args...args)
 	{
-		return std::make_shared<CWithReturnTask<Func, Args...>>(scheduler, signature, parent, f, args...);
+		return std::make_shared<CWithReturnTask<Func, Args...>>(scheduler, signature, f, args...);
 	}
 };
 
@@ -29,15 +27,14 @@ struct TaskCreater<void, Func, Args...>
 {
 	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
 		std::string signature,
-		TaskPtr parent,
-		TaskPtr child,
 		const Func f,
 		Args...args)
 	{
-		return std::make_shared<CNoReturnTask<Func, Args...>>(scheduler, signature, parent, f, args...);
+		return std::make_shared<CNoReturnTask<Func, Args...>>(scheduler, signature, f, args...);
 	}
 };
 
+template<typename return_type>
 class CTaskHelper
 {
 public:
@@ -48,24 +45,33 @@ public:
 	~CTaskHelper() 
 	{
 	}
-	template<class Scheduler, class Func, class... Args>
-	CTaskHelper ThenApply(CSafePtr<Scheduler> scheduler,
-							std::string signature,
-							Func&& f,
-							Args&&... args);
+	template<class Scheduler,class Func, class... Args, typename return_type_new = std::result_of<Func(Args...)>::type>
+	CTaskHelper<return_type_new> ThenApply(CSafePtr<Scheduler> scheduler,Func&& func, Args&&... args)
+	{
+		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type_new, Func, Args...>::CreateTask(scheduler, "ChildTask", func, args...);
+		//如果前置任务已完成
+		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone)
+		{
+			using function_type = typename std::function<return_type(Args...)>;
+			//执行scheduler为同一个直接执行
+			if (scheduler == m_pTaskPtr->GetScheduler())
+			{
+				function_type callFunc = func;
+				void* pRes = m_pTaskPtr->GetResult();
+				if (pRes != NULL)
+				{
+					return_type resValue = *(return_type*)pRes;
+					func(resValue);
+				}
+			}
+			else
+			{
+
+			}
+		}
+		return CTaskHelper<return_type_new>(pTask);
+	}
 private:
 	TaskPtr m_pTaskPtr;
 };
-
-template<class Scheduler,class Func, class... Args>
-CTaskHelper CTaskHelper::ThenApply(CSafePtr<Scheduler> scheduler,
-									std::string signature,
-									Func&& f,
-									Args&&... args)
-{
-	using return_type = typename std::result_of<Func(Args...)>::type;
-	std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Func, Args...>::CreateTask(scheduler, signature, m_pTaskPtr, f, args...);
-	scheduler->PushTask(pTask);
-	return CTaskHelper(pTask);
-}
 #endif //__TASK_HELPER_H__

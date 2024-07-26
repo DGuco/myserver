@@ -56,6 +56,7 @@ set(FRAMEWORK
         "base/hash_function.h"
         "base/hash_helper.h"
         "base/rbthash_map.h"
+        "base/lock_free_limit_queue.h"
         "base/time_helper.h"
         "base/time_helper.cpp"
         "base/log.h"
@@ -96,7 +97,6 @@ set(FRAMEWORK
         "thread/my_thread.h" 
         "thread/my_thread.cpp"
         "thread/my_lock.h" 
-        "thread/lock_free_limit_queue.h"
         "thread/task_helper.h")
 
 

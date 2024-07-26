@@ -11,9 +11,12 @@
 #include <tuple>
 #include <memory>
 #include <my_thread.h>
+#include "lock_free_limit_queue.h"
 #include "log.h"
 
 #define EMPTY_VOID_FUNC = []{}
+#define MAX_CHILD_TASK_COUNT (5)
+using namespace my_std;
 
 template<size_t NUM_PARAMS,typename return_type, typename... Args>
 struct TaskCaller
@@ -318,14 +321,12 @@ enum class enTaskState : unsigned char
 class CThreadTask : public enable_shared_from_this<CThreadTask>
 {
 public:
-	CThreadTask(CSafePtr<CThreadScheduler> scheduler,
-				std::string signature,
-				TaskPtr parentTask,
-				TaskPtr childTask)
+	CThreadTask(CSafePtr<CThreadScheduler> scheduler,std::string signature)
 		:m_pScheduler(scheduler),
 		 m_TaskSignature(signature),
-		 m_pParentTask(parentTask),
-		 m_pChildTask(childTask){};
+		 m_childTaskVec(5)
+	{};
+
 	virtual ~CThreadTask() {};
 	void SetStartTime(time_t time)				{ m_nExecuteStart = time; }
 	void SetEndTime(time_t time)				{ m_nExecuteEnd = time; }
@@ -334,32 +335,27 @@ public:
 	const std::string& GetSignature()			{ return m_TaskSignature; }
 	TaskPtr GetShared()							{ return shared_from_this(); }
 	CSafePtr<CThreadScheduler>   GetScheduler() { return m_pScheduler; }
-	TaskPtr GetParentTask()						{ return m_pParentTask; }
-	TaskPtr GetChildask()					    { return m_pChildTask.expired() ? m_pChildTask.lock() : NULL;}
 	enTaskState GetState()						{ return m_nState.load(std::memory_order_acquire); }
-	void SetState(enTaskState state)
-	{ 
-		m_nState.store(state, std::memory_order_release);
-	}
-	virtual void Execute() = 0;
-
-	virtual void OnFinish()
+	void SetState(enTaskState state)			{ m_nState.store(state, std::memory_order_release);}
+	virtual void OnFinish()						{ SetState(enTaskState::eTaskDone); }
+	virtual void OnFailed()						{ SetState(enTaskState::eTaskFailed); }
+	void AddChildTask(TaskPtr pTask)
 	{
-		SetState(enTaskState::eTaskDone);
+		if (!m_childTaskVec.Push(pTask).success)
+		{
+			CACHE_LOG(ERROR_CACHE, "task is full,can not add");
+			throw std::runtime_error("task is full,can not add");
+		}
 	}
-	virtual void OnFailed()
-	{
-		SetState(enTaskState::eTaskFailed);
-	}
+	virtual void  Execute() = 0;
+	virtual void* GetResult() = 0;
 private:
 	std::string						m_TaskSignature;	//任务签名
 	time_t							m_nExecuteStart;	//任务开始执行时间
 	time_t							m_nExecuteEnd;		//任务执行完成时间
 	CSafePtr<CThreadScheduler>		m_pScheduler;
-	TaskPtr							m_pParentTask;
-	WeakTaskPtr						m_pChildTask;
+	LockFreeLimitQueue<TaskPtr>		m_childTaskVec;
 	std::atomic<enTaskState>		m_nState;
-	std::list<TaskPtr>				m_ChildTaskList;
 };
 
 template<class Func, class...Args>
@@ -375,12 +371,10 @@ class CWithReturnTask : public CThreadTask
 	using function_type = typename std::function<return_type(Args...)>;
 public:
 	CWithReturnTask(CSafePtr<CThreadScheduler> scheduler, 
-					std::string signature, 
-					TaskPtr parentTask,
-					TaskPtr childTask,
+					std::string signature,
 					const Func& func, 
 					Args...args)
-		: CThreadTask(scheduler,signature, parentTask,childTask)
+		: CThreadTask(scheduler,signature)
 	{
 		m_Func = func;
 		m_ArgTuple = std::make_tuple(args...);
@@ -390,6 +384,11 @@ public:
 	virtual void Execute()
 	{
 		m_Res = TaskCaller<arity, return_type, Args...>::invoke(m_Func, m_ArgTuple);
+	}
+
+	virtual void* GetResult()
+	{
+		return (void*)&m_Res;
 	}
 private:
 	function_type			m_Func;
@@ -411,11 +410,9 @@ class CNoReturnTask : public CThreadTask
 public:
 	CNoReturnTask(CSafePtr<CThreadScheduler> scheduler,
 					std::string signature,
-					TaskPtr parentTask,
-					TaskPtr childTask,
 					const Func& func,
 					Args...args)
-		: CThreadTask(scheduler, signature, parentTask, childTask)
+		: CThreadTask(scheduler, signature)
 	{
 		m_Func = func;
 		m_ArgTuple = std::make_tuple(args...);
@@ -426,10 +423,10 @@ public:
 	{
 		TaskCaller<arity, void, Args...>::invoke(m_Func, m_ArgTuple);
 	}
-	virtual void OnFinish()
-	{}
-	virtual void OnFailed()
-	{}
+	virtual void* GetResult()
+	{
+		return NULL;
+	}
 private:
 	function_type			m_Func;
 	ArgsTubleType			m_ArgTuple;

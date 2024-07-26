@@ -17,7 +17,6 @@
 class CMyThread;
 class CThreadTask;
 typedef std::shared_ptr<CThreadTask> TaskPtr;
-typedef std::weak_ptr<CThreadTask> WeakTaskPtr;
 struct thread_data
 {
 	CMyLock							task_mutex;

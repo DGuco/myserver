@@ -96,21 +96,6 @@ void CThreadScheduler::ConsumeTask()
 			}
 			pTask = this->m_Tasks.front();
 			this->m_Tasks.pop();
-			if (pTask->GetParentTask() != NULL)
-			{
-				if (pTask->GetParentTask()->GetState() == enTaskState::eTaskFailed)
-				{
-					pTask->OnFailed();
-					continue;
-				}
-
-				//等待父任务执行完成
-				if (pTask->GetParentTask()->GetState() != enTaskState::eTaskDone)
-				{
-					m_WaitingTasks.push_back(pTask);
-					continue;
-				}
-			}
 		}
 		if (pTask != NULL)
 		{
