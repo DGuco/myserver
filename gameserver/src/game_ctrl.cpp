@@ -45,7 +45,7 @@ bool CGameCtrl::PrepareToRun()
 	int c = 10;
 	int d = 20;
 	m_pScheduler->Schedule("InitTcpServer",
-		[a,b]
+		[a, b]
 		{
 			if (!CGameServer::GetSingletonPtr()->InitTcp())
 			{
@@ -53,12 +53,12 @@ bool CGameCtrl::PrepareToRun()
 			}
 			return a + b;
 		}
-		)
-		.ThenApply(m_pScheduler,
-			[a, b] (int res)
-			{
-				
-			});
+		);
+// 		.ThenApply(m_pScheduler,
+// 			[a, b] (int res)
+// 			{
+// 				
+// 			});
 	return true;
 }
 

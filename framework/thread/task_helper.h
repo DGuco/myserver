@@ -34,7 +34,7 @@ struct TaskCreater<void, Func, Args...>
 	}
 };
 
-template<typename return_type>
+template<typename Res>
 class CTaskHelper
 {
 public:
@@ -45,14 +45,14 @@ public:
 	~CTaskHelper() 
 	{
 	}
-	template<class Scheduler,class Func, class... Args, typename return_type_new = std::result_of<Func(Args...)>::type>
-	CTaskHelper<return_type_new> ThenApply(CSafePtr<Scheduler> scheduler,Func&& func, Args&&... args)
+	template<class Scheduler,class Func, class... Args, typename return_type = std::result_of<Func(Args...)>::type>
+	CTaskHelper<return_type> ThenApply(CSafePtr<Scheduler> scheduler,Func&& func, Args&&... args)
 	{
-		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type_new, Func, Args...>::CreateTask(scheduler, "ChildTask", func, args...);
+		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Func, Args...>::CreateTask(scheduler, "ChildTask", func, args...);
 		//如果前置任务已完成
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone)
 		{
-			using function_type = typename std::function<return_type(Args...)>;
+			using function_type = typename std::function<return_type(Res)>;
 			//执行scheduler为同一个直接执行
 			if (scheduler == m_pTaskPtr->GetScheduler())
 			{
@@ -69,7 +69,7 @@ public:
 
 			}
 		}
-		return CTaskHelper<return_type_new>(pTask);
+		return CTaskHelper<return_type>(pTask);
 	}
 private:
 	TaskPtr m_pTaskPtr;

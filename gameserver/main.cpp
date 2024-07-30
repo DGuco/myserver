@@ -177,8 +177,23 @@ void TestLua()
 	return;
 }
 
+
+template<class Func, class... Args>
+void Schedule( Func&& f, Args&&... args)
+{
+	std::function<int(int)> func = f;
+	f(10);
+}
 int main(int argc, char *argv[])
 {
+	int a = 10;
+	int b = 20;
+	Schedule([a, b] (int res)
+		{
+			int ret = res + a + b;
+			printf("ret = %d\n", ret);
+			return ret;
+		});
 	TestLua();
 	//ÐÅºÅ´¦Àí×¢²á
 	CSignalHandler::GetSingletonPtr()->RegisterHandler("gameserver");

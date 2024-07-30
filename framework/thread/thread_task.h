@@ -358,6 +358,16 @@ private:
 	std::atomic<enTaskState>		m_nState;
 };
 
+template<typename ResType>
+struct ReturnHolder
+{
+	ResType value;
+};
+
+template<>
+struct ReturnHolder<void>
+{};
+
 template<class Func, class...Args>
 class CWithReturnTask : public CThreadTask
 {
@@ -391,10 +401,10 @@ public:
 		return (void*)&m_Res;
 	}
 private:
-	function_type			m_Func;
-	ArgsTubleType			m_ArgTuple;
-	return_type				m_Res;
-	std::function<void()>	m_CallBack;
+	function_type				m_Func;
+	ArgsTubleType				m_ArgTuple;
+	return_type					m_Res;
+	std::function<void()>		m_CallBack;
 };
 
 template<class Func, class...Args>
