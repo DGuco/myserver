@@ -10,32 +10,8 @@
 #include "safe_pointer.h"
 #include "thread_task.h"
 
-template<typename return_type, class Func, typename... Args>
-struct TaskCreater
-{
-	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
-		std::string signature,
-		const Func f,
-		Args...args)
-	{
-		return std::make_shared<CWithReturnTask<Func, Args...>>(scheduler, signature, f, args...);
-	}
-};
-
-template<class Func, typename... Args>
-struct TaskCreater<void, Func, Args...>
-{
-	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
-		std::string signature,
-		const Func f,
-		Args...args)
-	{
-		return std::make_shared<CNoReturnTask<Func, Args...>>(scheduler, signature, f, args...);
-	}
-};
-
 template<typename return_type, typename Par, class Func>
-struct ChildTaskCreater
+struct TaskCreater
 {
 	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
 								std::string signature,
@@ -46,13 +22,35 @@ struct ChildTaskCreater
 };
 
 template<typename Par, class Func>
-struct ChildTaskCreater<void, Par, Func>
+struct TaskCreater<void, Par, Func>
 {
 	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
 								std::string signature,
 								const Func f)
 	{
 		return std::make_shared<CNoReturnTask<Func, Par>>(scheduler, signature, f);
+	}
+};
+
+template<typename return_type, class Func>
+struct TaskCreater<return_type, void, Func>
+{
+	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
+								std::string signature,
+								const Func f)
+	{
+		return std::make_shared<CWithReturnTask<Func>>(scheduler, signature, f);
+	}
+};
+
+template<class Func>
+struct TaskCreater<void, void, Func>
+{
+	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
+								std::string signature,
+								const Func f)
+	{
+		return std::make_shared<CNoReturnTask<Func>>(scheduler, signature, f);
 	}
 };
 
@@ -77,7 +75,7 @@ public:
 	template<class Scheduler,class Func,typename return_type = std::result_of<Func(Res)>::type>
 	CTaskHelper<return_type> ThenApply(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
-		std::shared_ptr<CThreadTask> pTask = ChildTaskCreater<return_type, Res,Func>::CreateTask(scheduler, "ChildTask", func);
+		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler, "ChildTask", func);
 		//如果前置任务已完成
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone)
 		{

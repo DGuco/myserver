@@ -37,8 +37,8 @@ public:
 	CThreadScheduler(std::string signature);
 	~CThreadScheduler();
 	bool Init(size_t threads);
-	template<class Func, class... Args,typename return_type = std::result_of<Func(Args...)>::type>
-	CTaskHelper<return_type> Schedule(std::string signature,Func&& f, Args&&... args);
+	template<class Func,typename return_type = std::result_of<Func()>::type>
+	CTaskHelper<return_type> Schedule(std::string signature,Func&& f);
 	void PushTask(TaskPtr pTask);
 	void ConsumeTask();
 	void DebugTask();
@@ -53,10 +53,10 @@ private:
 	bool stop;
 };
 
-template<class Func, class... Args,typename return_type>
-CTaskHelper<return_type> CThreadScheduler::Schedule(std::string signature,Func&& f, Args&&... args)
+template<class Func,typename return_type>
+CTaskHelper<return_type> CThreadScheduler::Schedule(std::string signature,Func&& f)
 {
-	TaskPtr pTask = TaskCreater<return_type, Func, Args...>::CreateTask(this, signature,f, args...);
+	TaskPtr pTask = TaskCreater<return_type,void,Func>::CreateTask(this, signature,f);
 	std::lock_guard<std::mutex> guard(m_queue_mutex);
 	m_Tasks.push(pTask);
 	return CTaskHelper<return_type>(pTask);
