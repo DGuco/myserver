@@ -53,12 +53,12 @@ bool CGameCtrl::PrepareToRun()
 			}
 			return a + b;
 		}
-		);
-// 		.ThenApply(m_pScheduler,
-// 			[a, b] (int res)
-// 			{
-// 				
-// 			});
+		)
+	    .ThenApply(m_pScheduler,
+			[a, b] (int res)
+			{
+				
+			});
 	return true;
 }
 

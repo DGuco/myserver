@@ -108,12 +108,12 @@ public:
 
 	bool operator==(const CSafePtr<Tp> pOhter)
 	{
-		return this->nDataH == pOhter->nDataH && this->nDataL == pOhter->nDataL;
+		return this->nDataH == pOhter.nDataH && this->nDataL == pOhter.nDataL;
 	}
 
 	bool operator != (const CSafePtr<Tp> pOhter)
 	{
-		return this->nDataH != pOhter->nDataH && this->nDataL != pOhter->nDataL;
+		return this->nDataH != pOhter.nDataH && this->nDataL != pOhter.nDataL;
 	}
 
 	Tp* operator()()

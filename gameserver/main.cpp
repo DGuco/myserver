@@ -178,11 +178,12 @@ void TestLua()
 }
 
 
-template<class Func, class... Args>
-void Schedule( Func&& f, Args&&... args)
+template<class Func>
+void Schedule( Func&& f)
 {
+	using return_type =  typename std::result_of<Func(int)>::type;
 	std::function<int(int)> func = f;
-	f(10);
+	return_type res = f(10);
 }
 int main(int argc, char *argv[])
 {

@@ -380,14 +380,12 @@ class CWithReturnTask : public CThreadTask
 	using return_type = typename std::result_of<Func(Args...)>::type;
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	CWithReturnTask(CSafePtr<CThreadScheduler> scheduler, 
+	CWithReturnTask(CSafePtr<CThreadScheduler> scheduler,
 					std::string signature,
-					const Func& func, 
-					Args...args)
-		: CThreadTask(scheduler,signature)
+					const Func& func)
+		: CThreadTask(scheduler, signature)
 	{
 		m_Func = func;
-		m_ArgTuple = std::make_tuple(args...);
 	}
 	virtual ~CWithReturnTask()
 	{}
@@ -420,12 +418,10 @@ class CNoReturnTask : public CThreadTask
 public:
 	CNoReturnTask(CSafePtr<CThreadScheduler> scheduler,
 					std::string signature,
-					const Func& func,
-					Args...args)
-		: CThreadTask(scheduler, signature)
+					const Func& func)
+		:CThreadTask(scheduler, signature)
 	{
 		m_Func = func;
-		m_ArgTuple = std::make_tuple(args...);
 	}
 	virtual ~CNoReturnTask()
 	{}
