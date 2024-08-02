@@ -109,9 +109,7 @@ public:
 	CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signature);
 	virtual ~CThreadTask();
 	void SetStartTime(time_t time)				{ m_nExecuteStart = time; }
-	void SetEndTime(time_t time)				{ m_nExecuteEnd = time; }
 	time_t GetStartTime()						{ return m_nExecuteStart; }
-	time_t GetEndTime()							{ return m_nExecuteEnd; }
 	const std::string& GetSignature()			{ return m_TaskSignature; }
 	TaskPtr GetShared()							{ return shared_from_this(); }
 	CSafePtr<CThreadScheduler>   GetScheduler() { return m_pScheduler; }
@@ -133,7 +131,6 @@ private:
 	std::atomic<enTaskState>		m_nState;
 	std::string						m_TaskSignature;	//任务签名
 	time_t							m_nExecuteStart;	//任务开始执行时间
-	time_t							m_nExecuteEnd;		//任务执行完成时间
 	LockFreeLimitQueue<TaskPtr>		m_childTaskVec;
 protected:
 	CSafePtr<CThreadScheduler>		m_pScheduler;

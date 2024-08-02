@@ -32,7 +32,7 @@ void CThreadTask::OnFinish()
 void CThreadTask::OnFailed() 
 {
 	SetState(enTaskState::eTaskFailed);
-	CACHE_LOG(THREAD_ERROR, "Task execute failed signature : {}", m_TaskSignature);
+	CACHE_LOG(THREAD_ERROR, "Task[{}] execute failed", m_TaskSignature);
 	RunChildTask();
 }
 
@@ -45,13 +45,14 @@ void CThreadTask::Run()
 			CSafeLock guard(g_thread_data.task_mutex);
 			g_thread_data.curren_task = GetShared();
 		}
+		SetStartTime(CTimeHelper::GetSingletonPtr()->GetMSTime());
 		Execute();
 		OnFinish();
 	}
 	catch (std::exception e)
 	{
+		CACHE_LOG(THREAD_ERROR, "Task[{}] caught exception,exception msg:{}",m_TaskSignature,e.what());
 		OnFailed();
-		CACHE_LOG(THREAD_ERROR, "Task caught exception,signature : {},msg: {}",m_TaskSignature,e.what());
 	}
 
 	{

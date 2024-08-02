@@ -58,8 +58,8 @@ void CThreadScheduler::DebugTask()
 			CSafeLock guard(m_queue_mutex);
 			nSize = m_Tasks.size();
 		}
-		CACHE_LOG(THREAD_CACHE, "Thread task queuesize = {}", nSize);
-
+		CACHE_LOG(THREAD_CACHE, "=========================Begin===============================");
+		CACHE_LOG(THREAD_CACHE, "Scheduler[{}] : Thread task queuesize = {}",m_Signature,nSize);
 		for (size_t i = 0; i < m_Workers.size(); ++i)
 		{
 			if (m_Workers[i]->GetThreadData() != NULL)
@@ -68,10 +68,16 @@ void CThreadScheduler::DebugTask()
 				TaskPtr pTask = m_Workers[i]->GetThreadData()->curren_task;
 				if (pTask != NULL)
 				{
-					CACHE_LOG(THREAD_CACHE, "Thread run task signature = {}", pTask->GetSignature());
+					time_t startTime = pTask->GetStartTime();
+					time_t logtime = startTime / 1000;
+					//localtime非线程安全
+					tm* p = localtime(&logtime);
+					CACHE_LOG(THREAD_CACHE, "Thread[{}] running task[{}],task begintime[{}-{}-{} {}:{}:{}.{}] ",i, pTask->GetSignature(),
+						p->tm_year + 1900, p->tm_mon + 1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, startTime % 1000);
 				}
 			}
 		}
+		CACHE_LOG(THREAD_CACHE, "=========================End================================");
 	}
 }
 

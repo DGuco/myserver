@@ -64,6 +64,13 @@ bool CGameCtrl::PrepareToRun()
 			{
 				int finres = c + d + res;
 				printf("finres = %d\n", finres);
+				throw std::runtime_error("run time error");
+			})
+		.ThenApply(m_pScheduler,
+			[c, d]
+			{
+				int finres = c + d;
+				printf("finres = %d\n", finres);
 			});
 	return true;
 }

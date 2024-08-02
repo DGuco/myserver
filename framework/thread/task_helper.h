@@ -84,7 +84,8 @@ public:
 	template<class Scheduler,class Func,typename return_type = std::result_of<Func(Res)>::type>
 	CTaskHelper<return_type> ThenAccept(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
-		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler, "ChildTask", func);
+		std::string signature = m_pTaskPtr->GetSignature() + "_ThenAccept";
+		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler, signature, func);
 		//如果前置任务已完成
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone)
 		{
@@ -99,7 +100,8 @@ public:
 	template<class Scheduler, class Func, typename return_type = std::result_of<Func()>::type>
 	CTaskHelper<return_type> ThenApply(CSafePtr<Scheduler> scheduler, Func&& func)
 	{
-		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, void, Func>::CreateTask(scheduler, "ChildTask", func);
+		std::string signature = m_pTaskPtr->GetSignature() + "_ThenApply";
+		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, void, Func>::CreateTask(scheduler, signature, func);
 		//如果前置任务已完成
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone)
 		{
@@ -109,7 +111,7 @@ public:
 		{
 			m_pTaskPtr->AddChildTask(pChildTask);
 		}
-		return CTaskHelper<return_type>(pTask);
+		return CTaskHelper<return_type>(pChildTask);
 	}
 private:
 	TaskPtr m_pTaskPtr;
