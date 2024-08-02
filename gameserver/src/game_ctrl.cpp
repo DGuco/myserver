@@ -54,7 +54,7 @@ bool CGameCtrl::PrepareToRun()
 			return a + b;
 		}
 		)
-	    .ThenApply(m_pScheduler,
+	    .ThenAccept(m_pScheduler,
 			[a, b] (int res)
 			{
 				

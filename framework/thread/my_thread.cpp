@@ -1,4 +1,5 @@
 #include "my_thread.h"
+#include "thread_scheduler.h"
 #include "log.h"
 
 thread_local thread_data g_thread_data;
@@ -109,5 +110,15 @@ DWORD WINAPI ThreadProc(void* pvArgs)
 	pThread->Stop();
 	pThread->SetStatus(CMyThread::EXIT);
 	return 0;	
+}
+
+void CTaskThread::Run()
+{
+	while (!IsStoped())
+	{
+		m_pScheduler->ConsumeTask();
+		//
+		SLEEP(1);
+	}
 }
 #endif

@@ -18,6 +18,7 @@
 #define MAX_CHILD_TASK_COUNT (5)
 using namespace my_std;
 
+/*
 template<size_t NUM_PARAMS,typename return_type, typename... Args>
 struct TaskCaller
 {
@@ -29,7 +30,7 @@ struct TaskCaller<0, return_type,Args...>
 	using function_type = typename std::function<return_type(Args...)>;
 	//using callback_function_type = typename std::function<void(bool,return_type)>;
 public:
-	static return_type invoke(function_type func,std::tuple<Args...>& args)
+	static return_type invoke(function_type func)
 	{
 		return func();
 	}
@@ -45,271 +46,54 @@ public:
 	{
 		return func(std::get<0>(args));
 	}
-};
+};*/
 
-template<typename return_type, typename... Args>
-struct TaskCaller<2, return_type, Args...>
+template<typename return_type,typename Arg>
+struct ReturnTaskCaller
 {
-	using function_type = typename std::function<return_type(Args...)>;
+	using function_type = typename std::function<return_type(Arg)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	static return_type invoke(function_type func, Arg arg)
 	{
-		return func(std::get<0>(args),
-					std::get<1>(args));
+		return func(arg);
 	}
 };
 
-template<typename return_type, typename... Args>
-struct TaskCaller<3, return_type, Args...>
+template<typename return_type>
+struct ReturnTaskCaller<return_type,void>
 {
-	using function_type = typename std::function<return_type(Args...)>;
+	using function_type = typename std::function<return_type(void)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	static return_type invoke(function_type func)
 	{
-		return func(std::get<0>(args),
-					std::get<1>(args),
-					std::get<2>(args));
+		return func();
 	}
 };
 
-template<typename return_type, typename... Args>
-struct TaskCaller<4, return_type, Args...>
+template<typename Arg>
+struct NoReturnTaskCaller
 {
-	using function_type = typename std::function<return_type(Args...)>;
+	using function_type = typename std::function<void(Arg)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	static void invoke(function_type func, Arg arg)
 	{
-		return func(std::get<0>(args), 
-					std::get<1>(args),
-					std::get<2>(args), 
-					std::get<3>(args));
+		func(arg);
 	}
 };
 
-template<typename return_type, typename... Args>
-struct TaskCaller<5, return_type, Args...>
+template<>
+struct NoReturnTaskCaller<void>
 {
-	using function_type = typename std::function<return_type(Args...)>;
+	using function_type = typename std::function<void(void)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	static void invoke(function_type func)
 	{
-		return func(std::get<0>(args), 
-					std::get<1>(args), 
-					std::get<2>(args),
-					std::get<3>(args), 
-					std::get<4>(args));
+		func();
 	}
 };
-
-template<typename return_type, typename... Args>
-struct TaskCaller<6, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			        std::get<1>(args),
-					std::get<2>(args),
-					std::get<3>(args),
-					std::get<4>(args),
-					std::get<5>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<7, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-					std::get<1>(args),
-					std::get<2>(args),
-					std::get<3>(args),
-					std::get<4>(args),
-					std::get<5>(args),
-					std::get<6>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<8, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<9, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args),
-			std::get<8>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<10, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args),
-			std::get<8>(args),
-			std::get<9>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<11, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args),
-			std::get<8>(args),
-			std::get<9>(args),
-			std::get<10>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<12, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args),
-			std::get<8>(args),
-			std::get<9>(args),
-			std::get<10>(args),
-			std::get<11>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<13, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args),
-			std::get<8>(args),
-			std::get<9>(args),
-			std::get<10>(args),
-			std::get<11>(args),
-			std::get<12>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<14, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args),
-			std::get<8>(args),
-			std::get<9>(args),
-			std::get<10>(args),
-			std::get<11>(args),
-			std::get<12>(args),
-			std::get<13>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<15, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args),
-			std::get<8>(args),
-			std::get<9>(args),
-			std::get<10>(args),
-			std::get<11>(args),
-			std::get<12>(args),
-			std::get<13>(args),
-			std::get<14>(args));
-	}
-};
-
 
 class CThreadScheduler;
 class CThreadTask;
-
 enum class enTaskState : unsigned char
 {
 	eTaskInit = 0,
@@ -321,13 +105,8 @@ enum class enTaskState : unsigned char
 class CThreadTask : public enable_shared_from_this<CThreadTask>
 {
 public:
-	CThreadTask(CSafePtr<CThreadScheduler> scheduler,std::string signature)
-		:m_pScheduler(scheduler),
-		 m_TaskSignature(signature),
-		 m_childTaskVec(5)
-	{};
-
-	virtual ~CThreadTask() {};
+	CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signature);
+	virtual ~CThreadTask();
 	void SetStartTime(time_t time)				{ m_nExecuteStart = time; }
 	void SetEndTime(time_t time)				{ m_nExecuteEnd = time; }
 	time_t GetStartTime()						{ return m_nExecuteStart; }
@@ -337,17 +116,15 @@ public:
 	CSafePtr<CThreadScheduler>   GetScheduler() { return m_pScheduler; }
 	enTaskState GetState()						{ return m_nState.load(std::memory_order_acquire); }
 	void SetState(enTaskState state)			{ m_nState.store(state, std::memory_order_release);}
-	virtual void OnFinish()						{ SetState(enTaskState::eTaskDone); }
-	virtual void OnFailed()						{ SetState(enTaskState::eTaskFailed); }
-	void AddChildTask(TaskPtr pTask)
-	{
-		if (!m_childTaskVec.Push(pTask).success)
-		{
-			CACHE_LOG(ERROR_CACHE, "task is full,can not add");
-			throw std::runtime_error("task is full,can not add");
-		}
-	}
+	void OnFinish()								{ SetState(enTaskState::eTaskDone); }
+	void OnFailed()								{ SetState(enTaskState::eTaskFailed); }
+	void AddChildTask(TaskPtr pTask);
+	void Run();
+	void RunChildTask();
+public:
 	virtual void  Execute() = 0;
+	virtual void  ExecuteChild(TaskPtr pChildTask) = 0;
+	virtual void  ExecuteFromParent(void* pRes) = 0;
 	virtual void* GetResult() = 0;
 private:
 	std::string						m_TaskSignature;	//任务签名
@@ -358,17 +135,8 @@ private:
 	std::atomic<enTaskState>		m_nState;
 };
 
-template<typename ResType>
-struct ReturnHolder
-{
-	ResType value;
-};
-
-template<>
-struct ReturnHolder<void>
-{};
-
-template<class Func, class...Args>
+/*
+template<class Func, size_t ArgCount, class...Args>
 class CWithReturnTask : public CThreadTask
 {
 	enum
@@ -379,6 +147,95 @@ class CWithReturnTask : public CThreadTask
 	using ArgsTubleType = typename std::tuple<Args...>;
 	using return_type = typename std::result_of<Func(Args...)>::type;
 	using function_type = typename std::function<return_type(Args...)>;
+	static_assert(ArgCount == arity, "ArgCount != arity ");
+	//每个参数的类型
+	template<size_t I>
+	struct args
+	{
+		static_assert(I < arity, "index is out of range, index must less than sizeof Args");
+		using type = typename std::tuple_element<I, ArgsTubleType>::type;
+	};
+public:
+	CWithReturnTask(CSafePtr<CThreadScheduler> scheduler,
+		std::string signature,
+		const Func& func)
+		: CThreadTask(scheduler, signature)
+	{
+		m_Func = func;
+	}
+	virtual ~CWithReturnTask()
+	{}
+	virtual void Execute()
+	{
+		m_Res = TaskCaller<arity, return_type, Args...>::invoke(m_Func, m_ArgTuple);
+	}
+	virtual void* GetResult()
+	{
+		return (void*)&m_Res;
+	}
+
+	virtual void ExecuteChild(TaskPtr pChildTask)
+	{}
+
+	virtual void  ExecuteFromParent(void* pRes)
+	{}
+private:
+	function_type				m_Func;
+	ArgsTubleType				m_ArgTuple;
+	return_type					m_Res;
+};*/
+
+template<class Func, typename Par>
+class CWithReturnTask : public CThreadTask
+{
+	using return_type = typename std::result_of<Func(Par)>::type;
+	using function_type = typename std::function<return_type(Par)>;
+public:
+	CWithReturnTask(CSafePtr<CThreadScheduler> scheduler,
+		std::string signature,
+		const Func& func)
+		: CThreadTask(scheduler, signature)
+	{
+		m_Func = func;
+	}
+	virtual ~CWithReturnTask()
+	{}
+	virtual void Execute()
+	{
+		m_Res = ReturnTaskCaller<return_type,Par>::invoke(m_Func, m_Param);
+	}
+	virtual void* GetResult()
+	{
+		return (void*)&m_Res;
+	}
+
+	virtual void ExecuteChild(TaskPtr pChildTask)
+	{
+		pChildTask->ExecuteFromParent((void*)(&m_Res));
+	}
+
+	virtual void  ExecuteFromParent(void* pRes)
+	{
+		if (pRes != NULL)
+		{
+			m_Param = *(Par*)(pRes);
+			Run();
+		}
+		else
+		{
+		}
+	}
+private:
+	function_type				m_Func;
+	return_type					m_Res;
+	Par							m_Param;
+};
+
+template<class Func>
+class CWithReturnTask<Func,void> : public CThreadTask
+{
+	using return_type = typename std::result_of<Func()>::type;
+	using function_type = typename std::function<return_type()>;
 public:
 	CWithReturnTask(CSafePtr<CThreadScheduler> scheduler,
 					std::string signature,
@@ -391,34 +248,41 @@ public:
 	{}
 	virtual void Execute()
 	{
-		m_Res = TaskCaller<arity, return_type, Args...>::invoke(m_Func, m_ArgTuple);
+		m_Res = ReturnTaskCaller<return_type, void>::invoke(m_Func);
 	}
-
 	virtual void* GetResult()
 	{
 		return (void*)&m_Res;
 	}
+
+	virtual void ExecuteChild(TaskPtr pChildTask)
+	{
+		pChildTask->ExecuteFromParent((void*)(&m_Res));
+	}
+
+	virtual void  ExecuteFromParent(void* pRes)
+	{
+		if (pRes != NULL)
+		{
+
+		}
+		else
+		{
+		}
+	}
 private:
 	function_type				m_Func;
-	ArgsTubleType				m_ArgTuple;
 	return_type					m_Res;
-	std::function<void()>		m_CallBack;
 };
 
-template<class Func, class...Args>
+template<class Func, typename Par>
 class CNoReturnTask : public CThreadTask
 {
-	enum
-	{
-		//参数个数
-		arity = sizeof...(Args)
-	};
-	using ArgsTubleType = typename std::tuple<Args...>;
-	using function_type = typename std::function<void(Args...)>;
+	using function_type = typename std::function<void(Par)>;
 public:
 	CNoReturnTask(CSafePtr<CThreadScheduler> scheduler,
-					std::string signature,
-					const Func& func)
+		std::string signature,
+		const Func& func)
 		:CThreadTask(scheduler, signature)
 	{
 		m_Func = func;
@@ -427,16 +291,68 @@ public:
 	{}
 	virtual void Execute()
 	{
-		TaskCaller<arity, void, Args...>::invoke(m_Func, m_ArgTuple);
+		NoReturnTaskCaller<Par>::invoke(m_Func, m_Param);
 	}
 	virtual void* GetResult()
 	{
 		return NULL;
 	}
+
+	virtual void ExecuteChild(TaskPtr pChildTask)
+	{
+		pChildTask->ExecuteFromParent(NULL);
+	}
+
+	virtual void  ExecuteFromParent(void* pRes)
+	{
+		if (pRes != NULL)
+		{
+			m_Param = *(Par*)(pRes);
+			Run();
+		}
+		else
+		{
+		}
+	}
 private:
 	function_type			m_Func;
-	ArgsTubleType			m_ArgTuple;
-	std::function<void()>	m_CallBack;
+	Par						m_Param;
+};
+
+template<class Func>
+class CNoReturnTask<Func,void> : public CThreadTask
+{
+	using function_type = typename std::function<void()>;
+public:
+	CNoReturnTask(CSafePtr<CThreadScheduler> scheduler,
+		std::string signature,
+		const Func& func)
+		:CThreadTask(scheduler, signature)
+	{
+		m_Func = func;
+	}
+	virtual ~CNoReturnTask()
+	{}
+	virtual void Execute()
+	{
+		NoReturnTaskCaller<void>::invoke(m_Func);
+	}
+	virtual void* GetResult()
+	{
+		return NULL;
+	}
+
+	virtual void ExecuteChild(TaskPtr pChildTask)
+	{
+		pChildTask->ExecuteFromParent(NULL);
+	}
+
+	virtual void  ExecuteFromParent(void* pRes)
+	{
+		Run();
+	}
+private:
+	function_type			m_Func;
 };
 
 #endif //__THREAD_TASK_H__

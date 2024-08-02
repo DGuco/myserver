@@ -1,73 +1,11 @@
 #include "thread_scheduler.h"
-#include "time_helper.h"
 
-CTaskThread::CTaskThread(CSafePtr<CThreadScheduler> scheduler) 
-	: m_pScheduler(scheduler)
-{
-}
+CThreadScheduler::CThreadScheduler(std::string signature)
+	:m_Signature(signature)
+{}
 
-
-CTaskThread::~CTaskThread()
-{
-
-}
-
-bool CTaskThread::PrepareToRun()
-{
-	return true;
-}
-
-void CTaskThread::Run()
-{
-	while(!IsStoped())
-	{
-		m_pScheduler->ConsumeTask();
-		//
-		SLEEP(1);
-	}
-}
-
-CThreadScheduler::CThreadScheduler(std::string signature) :	m_Signature(signature)
-{
-/*
-	for (size_t i = 0; i < threads; ++i)
-		workers.emplace_back(
-			[this]
-			{
-				for (;;)
-				{
-					CSafePtr<CThreadTask> pTask;
-					{
-						std::unique_lock<std::mutex> lock(this->queue_mutex);
-						this->condition.wait(lock,
-							[this] { return this->stop || !this->tasks.empty(); });
-						if (this->stop && this->tasks.empty())
-							return;
-						pTask = std::move(this->tasks.front());
-						this->tasks.pop();
-					}
-					if (pTask)
-					{
-						try
-						{
-							pTask->Execute();
-							pTask->OnFinish();
-						}
-						catch (std::exception* e)
-						{
-							pTask->OnFailed();
-						}
-					}
-				}
-			}
-			);
-*/
-
-}
-
-inline CThreadScheduler::~CThreadScheduler()
-{
-}
+CThreadScheduler::~CThreadScheduler()
+{}
 
 bool CThreadScheduler::Init(size_t threads)
 {
@@ -84,14 +22,20 @@ bool CThreadScheduler::Init(size_t threads)
 
 void CThreadScheduler::ConsumeTask()
 {
-	bool bHasTask = false;
+	bool needsleep = false;
 	while (true)
 	{
+		if (needsleep)
+		{
+			needsleep = false;
+			SLEEP(10);
+		}
 		TaskPtr pTask;
 		{
 			CSafeLock guard(m_queue_mutex);
 			if (m_Tasks.empty())
 			{
+				needsleep = true;
 				break;
 			}
 			pTask = this->m_Tasks.front();
@@ -99,37 +43,7 @@ void CThreadScheduler::ConsumeTask()
 		}
 		if (pTask != NULL)
 		{
-			bHasTask = true;
-			bool bFinish = false;
-			try
-			{
-				{
-					CSafeLock guard(g_thread_data.task_mutex);
-					g_thread_data.curren_task = pTask;
-				}
-				pTask->Execute();
-				bFinish = true;
-			}
-			catch (std::exception* e)
-			{
-				pTask->OnFailed();
-			}
-
-			if (bFinish)
-			{
-				try
-				{
-					pTask->OnFinish();
-				}
-				catch (std::exception* e)
-				{
-				}
-			}
-
-			{
-				CSafeLock guard(g_thread_data.task_mutex);
-				g_thread_data.curren_task = NULL;
-			}
+			pTask->Run();
 		}
 	}
 }
@@ -165,4 +79,4 @@ void CThreadScheduler::PushTask(TaskPtr pTask)
 {
 	std::lock_guard<std::mutex> guard(m_queue_mutex);
 	m_Tasks.push(pTask);
-}
+};

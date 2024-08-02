@@ -55,6 +55,7 @@ enum enCacheLog
 	TCP_ERROR = 107,
 	DB_CACHE = 108,
 	THREAD_CACHE = 109,
+	THREAD_ERROR = 110,
 	CACHE_LOG_MAX,
 };
 
@@ -80,5 +81,6 @@ static stLogInfo g_CacheLogFile[] =
 	{enCacheLog::TCP_ERROR,"tcp_error",level_enum::err},
 	{enCacheLog::DB_CACHE,"db",level_enum::debug},
 	{enCacheLog::THREAD_CACHE,"thread_info",level_enum::debug},
+	{enCacheLog::THREAD_CACHE,"thread_error",level_enum::err},
 };
 #endif //__LOG_DEF_H__

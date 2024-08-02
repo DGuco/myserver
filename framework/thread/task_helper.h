@@ -6,9 +6,18 @@
 ******************************************************************/
 #ifndef __TASK_HELPER_H__
 #define __TASK_HELPER_H__
-
 #include "safe_pointer.h"
 #include "thread_task.h"
+
+template<typename ResType>
+struct ReturnHolder
+{
+	ResType value;
+};
+
+template<>
+struct ReturnHolder<void>
+{};
 
 template<typename return_type, typename Par, class Func>
 struct TaskCreater
@@ -17,7 +26,7 @@ struct TaskCreater
 								std::string signature,
 								const Func f)
 	{
-		return std::make_shared<CWithReturnTask<Func, Par>>(scheduler, signature, f);
+		return std::make_shared<CWithReturnTask<Func,Par>>(scheduler, signature, f);
 	}
 };
 
@@ -28,7 +37,7 @@ struct TaskCreater<void, Par, Func>
 								std::string signature,
 								const Func f)
 	{
-		return std::make_shared<CNoReturnTask<Func, Par>>(scheduler, signature, f);
+		return std::make_shared<CNoReturnTask<Func,Par>>(scheduler, signature, f);
 	}
 };
 
@@ -39,7 +48,7 @@ struct TaskCreater<return_type, void, Func>
 								std::string signature,
 								const Func f)
 	{
-		return std::make_shared<CWithReturnTask<Func>>(scheduler, signature, f);
+		return std::make_shared<CWithReturnTask<Func, void>>(scheduler, signature, f);
 	}
 };
 
@@ -50,7 +59,7 @@ struct TaskCreater<void, void, Func>
 								std::string signature,
 								const Func f)
 	{
-		return std::make_shared<CNoReturnTask<Func>>(scheduler, signature, f);
+		return std::make_shared<CNoReturnTask<Func,void>>(scheduler, signature, f);
 	}
 };
 
@@ -73,7 +82,7 @@ public:
 	供参数类型。在使用std::result_of时，需要提供函数的参数类型，如std::result_of<decltype(lambda)(int)>::type，
 	这样std::result_of就能正确推导出有参数的lambda表达式的返回类型了*/
 	template<class Scheduler,class Func,typename return_type = std::result_of<Func(Res)>::type>
-	CTaskHelper<return_type> ThenApply(CSafePtr<Scheduler> scheduler,Func&& func)
+	CTaskHelper<return_type> ThenAccept(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler, "ChildTask", func);
 		//如果前置任务已完成
@@ -85,15 +94,32 @@ public:
 			{
 				function_type callFunc = func;
 				void* pRes = m_pTaskPtr->GetResult();
-				if (pRes != NULL)
-				{
-					Res resValue = *(Res*)pRes;
-					func(resValue);
-				}
+				pTask->ExecuteFromParent(pRes);
 			}
 			else
 			{
+				m_pTaskPtr->AddChildTask(pTask);
+			}
+		}
+		return CTaskHelper<return_type>(pTask);
+	}
 
+	template<class Scheduler, class Func, typename return_type = std::result_of<Func()>::type>
+	CTaskHelper<return_type> ThenApply(CSafePtr<Scheduler> scheduler, Func&& func)
+	{
+		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, void, Func>::CreateTask(scheduler, "ChildTask", func);
+		//如果前置任务已完成
+		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone)
+		{
+			using function_type = typename std::function<return_type(void)>;
+			//执行scheduler为同一个直接执行
+			if (scheduler == m_pTaskPtr->GetScheduler())
+			{
+				pTask->ExecuteFromParent(NULL);
+			}
+			else
+			{
+				m_pTaskPtr->AddChildTask(pTask);
 			}
 		}
 		return CTaskHelper<return_type>(pTask);

@@ -70,4 +70,22 @@ void* ThreadProc(void* pvArgs);
 DWORD WINAPI ThreadProc(void* pvArgs);
 #endif
 
+
+class CThreadScheduler;
+class CTaskThread : public CMyThread
+{
+public:
+	CTaskThread(CSafePtr<CThreadScheduler> scheduler)
+		: m_pScheduler(scheduler)
+	{}
+	virtual ~CTaskThread()
+	{}
+	virtual bool PrepareToRun()
+	{
+		return true;
+	}
+	void Run();
+private:
+	CSafePtr<CThreadScheduler>	m_pScheduler;
+};
 #endif //__THREAD_H__
