@@ -5,7 +5,9 @@ CThreadTask::CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signa
 	:m_pScheduler(scheduler),
 	m_TaskSignature(signature),
 	m_childTaskVec(5)
-{};
+{
+	SetState(enTaskState::eTaskInit);
+};
 
 CThreadTask::~CThreadTask()
 {
@@ -21,6 +23,19 @@ void CThreadTask::AddChildTask(TaskPtr pTask)
 	}
 }
 
+void CThreadTask::OnFinish()
+{
+	SetState(enTaskState::eTaskDone); 
+	RunChildTask();
+}
+
+void CThreadTask::OnFailed() 
+{
+	SetState(enTaskState::eTaskFailed);
+	CACHE_LOG(THREAD_ERROR, "Task execute failed signature : {}", m_TaskSignature);
+	RunChildTask();
+}
+
 void CThreadTask::Run()
 {
 	bool bFinish = false;
@@ -31,22 +46,17 @@ void CThreadTask::Run()
 			g_thread_data.curren_task = GetShared();
 		}
 		Execute();
-		bFinish = true;
+		OnFinish();
 	}
 	catch (std::exception e)
 	{
 		OnFailed();
-		CACHE_LOG(THREAD_ERROR, "Task caught exception,signature : {},msg: {}", e.what());
+		CACHE_LOG(THREAD_ERROR, "Task caught exception,signature : {},msg: {}",m_TaskSignature,e.what());
 	}
 
-	if (bFinish)
 	{
-		OnFinish();
-		RunChildTask();
-		{
-			CSafeLock guard(g_thread_data.task_mutex);
-			g_thread_data.curren_task = NULL;
-		}
+		CSafeLock guard(g_thread_data.task_mutex);
+		g_thread_data.curren_task = NULL;
 	}
 }
 
@@ -63,7 +73,7 @@ void CThreadTask::RunChildTask()
 		}
 		if (pTask != NULL)
 		{
-			ExecuteChild(pTask);
+			ExecuteChildTask(pTask);
 		}
 	}
 }

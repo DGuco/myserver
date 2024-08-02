@@ -84,24 +84,16 @@ public:
 	template<class Scheduler,class Func,typename return_type = std::result_of<Func(Res)>::type>
 	CTaskHelper<return_type> ThenAccept(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
-		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler, "ChildTask", func);
+		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler, "ChildTask", func);
 		//如果前置任务已完成
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone)
 		{
-			using function_type = typename std::function<return_type(Res)>;
-			//执行scheduler为同一个直接执行
-			if (scheduler == m_pTaskPtr->GetScheduler())
-			{
-				function_type callFunc = func;
-				void* pRes = m_pTaskPtr->GetResult();
-				pTask->ExecuteFromParent(pRes);
-			}
-			else
-			{
-				m_pTaskPtr->AddChildTask(pTask);
-			}
+			m_pTaskPtr->ExecuteChildTask(pChildTask);
+		}else
+		{
+			m_pTaskPtr->AddChildTask(pChildTask);
 		}
-		return CTaskHelper<return_type>(pTask);
+		return CTaskHelper<return_type>(pChildTask);
 	}
 
 	template<class Scheduler, class Func, typename return_type = std::result_of<Func()>::type>
@@ -111,16 +103,11 @@ public:
 		//如果前置任务已完成
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone)
 		{
-			using function_type = typename std::function<return_type(void)>;
-			//执行scheduler为同一个直接执行
-			if (scheduler == m_pTaskPtr->GetScheduler())
-			{
-				pTask->ExecuteFromParent(NULL);
-			}
-			else
-			{
-				m_pTaskPtr->AddChildTask(pTask);
-			}
+			m_pTaskPtr->ExecuteChildTask(pChildTask);
+		}
+		else
+		{
+			m_pTaskPtr->AddChildTask(pChildTask);
 		}
 		return CTaskHelper<return_type>(pTask);
 	}

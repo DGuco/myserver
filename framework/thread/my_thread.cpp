@@ -77,13 +77,12 @@ void* ThreadProc(void* pvArgs)
 	if (pThread == NULL)
 		return 0;
 
-	pThread->SetThreadData(CSafePtr<thread_data>(&g_thread_data));
-	pThread->SetStatus(CMyThread::RUNNING);
 	if (pThread->PrepareToRun())
 	{
 		return NULL;
 	}
-
+	pThread->SetThreadData(CSafePtr<thread_data>(&g_thread_data));
+	pThread->SetStatus(CMyThread::RUNNING);
 	pThread->Run();
 	pThread->SetStatus(CMyThread::EXITING);
 	pThread->Stop();

@@ -55,9 +55,10 @@ bool CGameCtrl::PrepareToRun()
 		}
 		)
 	    .ThenAccept(m_pScheduler,
-			[a, b] (int res)
+			[c, d] (int res)
 			{
-				
+				int finres = c + d + res;
+				printf("finres = %d\n", finres);
 			});
 	return true;
 }

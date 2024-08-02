@@ -16,12 +16,13 @@
 
 class CMyThread;
 class CThreadTask;
+class CThreadScheduler;
 typedef std::shared_ptr<CThreadTask> TaskPtr;
 struct thread_data
 {
 	CMyLock							task_mutex;
 	TaskPtr							curren_task;
-	CSafePtr<CMyThread>				run_thread;
+	CSafePtr<CThreadScheduler>		own_scheduler;
 };
 
 extern thread_local thread_data g_thread_data;
@@ -71,7 +72,6 @@ DWORD WINAPI ThreadProc(void* pvArgs);
 #endif
 
 
-class CThreadScheduler;
 class CTaskThread : public CMyThread
 {
 public:
@@ -82,6 +82,7 @@ public:
 	{}
 	virtual bool PrepareToRun()
 	{
+		g_thread_data.own_scheduler = m_pScheduler;
 		return true;
 	}
 	void Run();

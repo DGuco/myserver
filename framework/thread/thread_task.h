@@ -10,7 +10,8 @@
 #include <string>
 #include <tuple>
 #include <memory>
-#include <my_thread.h>
+#include <atomic>
+#include "my_thread.h"
 #include "lock_free_limit_queue.h"
 #include "log.h"
 
@@ -114,25 +115,28 @@ public:
 	const std::string& GetSignature()			{ return m_TaskSignature; }
 	TaskPtr GetShared()							{ return shared_from_this(); }
 	CSafePtr<CThreadScheduler>   GetScheduler() { return m_pScheduler; }
+	//对原子变量y进行了release的store操作，因此y变量之前的store/load操作不能排序到y之后
+	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
 	enTaskState GetState()						{ return m_nState.load(std::memory_order_acquire); }
 	void SetState(enTaskState state)			{ m_nState.store(state, std::memory_order_release);}
-	void OnFinish()								{ SetState(enTaskState::eTaskDone); }
-	void OnFailed()								{ SetState(enTaskState::eTaskFailed); }
+	void OnFinish();
+	void OnFailed();
 	void AddChildTask(TaskPtr pTask);
 	void Run();
 	void RunChildTask();
 public:
 	virtual void  Execute() = 0;
-	virtual void  ExecuteChild(TaskPtr pChildTask) = 0;
-	virtual void  ExecuteFromParent(void* pRes) = 0;
+	virtual void  ExecuteChildTask(TaskPtr pChildTask) = 0;
+	virtual void  ExecuteFromParent(void* pRes,bool sucess = true) = 0;
 	virtual void* GetResult() = 0;
 private:
+	std::atomic<enTaskState>		m_nState;
 	std::string						m_TaskSignature;	//任务签名
 	time_t							m_nExecuteStart;	//任务开始执行时间
 	time_t							m_nExecuteEnd;		//任务执行完成时间
-	CSafePtr<CThreadScheduler>		m_pScheduler;
 	LockFreeLimitQueue<TaskPtr>		m_childTaskVec;
-	std::atomic<enTaskState>		m_nState;
+protected:
+	CSafePtr<CThreadScheduler>		m_pScheduler;
 };
 
 /*
@@ -209,20 +213,36 @@ public:
 		return (void*)&m_Res;
 	}
 
-	virtual void ExecuteChild(TaskPtr pChildTask)
+	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
-		pChildTask->ExecuteFromParent((void*)(&m_Res));
+		if (GetState() == enTaskState::eTaskDone)
+		{
+			pChildTask->ExecuteFromParent((void*)(&m_Res));
+		}else
+		{
+			pChildTask->ExecuteFromParent(NULL,false);
+		}
 	}
 
-	virtual void  ExecuteFromParent(void* pRes)
+	virtual void  ExecuteFromParent(void* pRes,bool sucess = true)
 	{
-		if (pRes != NULL)
+		if (pRes != NULL && sucess)
 		{
 			m_Param = *(Par*)(pRes);
-			Run();
+			//如果就在当前的执行shcheler中，直接执行
+			if (g_thread_data.own_scheduler == m_pScheduler)
+			{
+				Run();
+			}
+			else
+			{
+				//push 到对应scheduler的队列中
+				m_pScheduler->PushTask(GetShared());
+			}
 		}
 		else
 		{
+			OnFailed();
 		}
 	}
 private:
@@ -255,19 +275,36 @@ public:
 		return (void*)&m_Res;
 	}
 
-	virtual void ExecuteChild(TaskPtr pChildTask)
+	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
-		pChildTask->ExecuteFromParent((void*)(&m_Res));
-	}
-
-	virtual void  ExecuteFromParent(void* pRes)
-	{
-		if (pRes != NULL)
+		if (GetState() == enTaskState::eTaskDone)
 		{
-
+			pChildTask->ExecuteFromParent((void*)(&m_Res));
 		}
 		else
 		{
+			pChildTask->ExecuteFromParent(NULL,false);
+		}
+	}
+
+	virtual void  ExecuteFromParent(void* pRes, bool sucess = true)
+	{
+		if (sucess)
+		{
+			//如果就在当前的执行shcheler中，直接执行
+			if (g_thread_data.own_scheduler == m_pScheduler)
+			{
+				Run();
+			}
+			else
+			{
+				//push 到对应scheduler的队列中
+				m_pScheduler->PushTask(GetShared());
+			}
+		}
+		else
+		{
+			OnFailed();
 		}
 	}
 private:
@@ -291,27 +328,44 @@ public:
 	{}
 	virtual void Execute()
 	{
-		NoReturnTaskCaller<Par>::invoke(m_Func, m_Param);
+		NoReturnTaskCaller<Par>::invoke(m_Func,m_Param);
 	}
 	virtual void* GetResult()
 	{
 		return NULL;
 	}
 
-	virtual void ExecuteChild(TaskPtr pChildTask)
+	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
-		pChildTask->ExecuteFromParent(NULL);
-	}
-
-	virtual void  ExecuteFromParent(void* pRes)
-	{
-		if (pRes != NULL)
+		if (GetState() == enTaskState::eTaskDone)
 		{
-			m_Param = *(Par*)(pRes);
-			Run();
+			pChildTask->ExecuteFromParent(NULL);
 		}
 		else
 		{
+			pChildTask->ExecuteFromParent(NULL, false);
+		}
+	}
+
+	virtual void  ExecuteFromParent(void* pRes,bool sucess)
+	{
+		if (pRes != NULL && sucess)
+		{
+			m_Param = *(Par*)(pRes);
+			//如果就在当前的执行shcheler中，直接执行
+			if (g_thread_data.own_scheduler == m_pScheduler)
+			{
+				Run();
+			}
+			else
+			{
+				//push 到对应scheduler的队列中
+				m_pScheduler->PushTask(GetShared());
+			}
+		}
+		else
+		{
+			OnFailed();
 		}
 	}
 private:
@@ -342,14 +396,37 @@ public:
 		return NULL;
 	}
 
-	virtual void ExecuteChild(TaskPtr pChildTask)
+	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
-		pChildTask->ExecuteFromParent(NULL);
+		if (GetState() == enTaskState::eTaskDone)
+		{
+			pChildTask->ExecuteFromParent(NULL);
+		}
+		else
+		{
+			pChildTask->ExecuteFromParent(NULL, false);
+		}
 	}
 
-	virtual void  ExecuteFromParent(void* pRes)
+	virtual void  ExecuteFromParent(void* pRes, bool sucess)
 	{
-		Run();
+		if (sucess)
+		{
+			//如果就在当前的执行shcheler中，直接执行
+			if (g_thread_data.own_scheduler == m_pScheduler)
+			{
+				Run();
+			}
+			else
+			{
+				//push 到对应scheduler的队列中
+				m_pScheduler->PushTask(GetShared());
+			}
+		}
+		else
+		{
+			OnFailed();
+		}
 	}
 private:
 	function_type			m_Func;
