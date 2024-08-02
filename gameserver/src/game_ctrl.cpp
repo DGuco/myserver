@@ -14,6 +14,7 @@ CGameCtrl::CGameCtrl()
 	err = WSAStartup(wVersionRequested, &wsaData);
 #endif
 	m_pScheduler = new CThreadScheduler("GameLogicScheduler");
+	m_pSchedulerDb = new CThreadScheduler("DBLogicScheduler");
 }
 
 CGameCtrl::~CGameCtrl()
@@ -40,6 +41,10 @@ bool CGameCtrl::PrepareToRun()
 		return false;
 	}
 
+	if (!m_pSchedulerDb->Init(1))
+	{
+		return false;
+	}
 	int a = 1;
 	int b = 2;
 	int c = 10;
@@ -54,7 +59,7 @@ bool CGameCtrl::PrepareToRun()
 			return a + b;
 		}
 		)
-	    .ThenAccept(m_pScheduler,
+	    .ThenAccept(m_pSchedulerDb,
 			[c, d] (int res)
 			{
 				int finres = c + d + res;

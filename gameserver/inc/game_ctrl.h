@@ -25,6 +25,7 @@ public:
 	bool ReadConfig();
 private:
 	CSafePtr<CThreadScheduler> m_pScheduler;
+	CSafePtr<CThreadScheduler> m_pSchedulerDb;
 };
 
 #endif //__GAME_CTRL_H__
