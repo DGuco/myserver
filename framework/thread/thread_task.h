@@ -117,6 +117,8 @@ public:
 	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
 	enTaskState GetState()						{ return m_nState.load(std::memory_order_acquire); }
 	void SetState(enTaskState state)			{ m_nState.store(state, std::memory_order_release);}
+	void SetWaitTask(TaskPtr ptr, int value);
+	void AddWaitDone();
 	void OnFinish();
 	void OnFailed();
 	void AddChildTask(TaskPtr pTask);
@@ -132,12 +134,14 @@ private:
 	std::string						m_TaskSignature;	//任务签名
 	time_t							m_nExecuteStart;	//任务开始执行时间
 	LockFreeLimitQueue<TaskPtr>		m_childTaskVec;
+	TaskPtr							m_WaitTask;
+	std::atomic_uchar				m_waitDone;
+	BYTE							m_waitCount;
 protected:
 	CSafePtr<CThreadScheduler>		m_pScheduler;
 };
 
-/*
-template<class Func, size_t ArgCount, class...Args>
+template<class Func, class...Args>
 class CWithReturnTask : public CThreadTask
 {
 	enum
@@ -168,7 +172,7 @@ public:
 	{}
 	virtual void Execute()
 	{
-		m_Res = TaskCaller<arity, return_type, Args...>::invoke(m_Func, m_ArgTuple);
+		//m_Res = TaskCaller<arity, return_type, Args...>::invoke(m_Func, m_ArgTuple);
 	}
 	virtual void* GetResult()
 	{
@@ -184,10 +188,10 @@ private:
 	function_type				m_Func;
 	ArgsTubleType				m_ArgTuple;
 	return_type					m_Res;
-};*/
+};
 
 template<class Func, typename Par>
-class CWithReturnTask : public CThreadTask
+class CWithReturnTask<Func,Par> : public CThreadTask
 {
 	using return_type = typename std::result_of<Func(Par)>::type;
 	using function_type = typename std::function<return_type(Par)>;

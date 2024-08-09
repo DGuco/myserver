@@ -6,18 +6,9 @@
 ******************************************************************/
 #ifndef __TASK_HELPER_H__
 #define __TASK_HELPER_H__
+#include "my_assert.h"
 #include "safe_pointer.h"
 #include "thread_task.h"
-
-template<typename ResType>
-struct ReturnHolder
-{
-	ResType value;
-};
-
-template<>
-struct ReturnHolder<void>
-{};
 
 template<typename return_type, typename Par, class Func>
 struct TaskCreater
@@ -87,7 +78,8 @@ public:
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenAccept";
 		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler, signature, func);
 		//如果前置任务已完成
-		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone)
+		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone 
+			|| m_pTaskPtr->GetState() == enTaskState::eTaskFailed)
 		{
 			m_pTaskPtr->ExecuteChildTask(pChildTask);
 		}else
@@ -103,7 +95,8 @@ public:
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenApply";
 		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, void, Func>::CreateTask(scheduler, signature, func);
 		//如果前置任务已完成
-		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone)
+		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone
+			|| m_pTaskPtr->GetState() == enTaskState::eTaskFailed)
 		{
 			m_pTaskPtr->ExecuteChildTask(pChildTask);
 		}
@@ -113,8 +106,100 @@ public:
 		}
 		return CTaskHelper<return_type>(pChildTask);
 	}
+
+	TaskPtr GetTask()
+	{
+		return m_pTaskPtr;
+	}
 private:
 	TaskPtr m_pTaskPtr;
+};
+
+template<class Func, class ...Args>
+struct ReturnHolder
+{
+};
+
+// Pseudo-void type: it takes up no space but can be moved and copied
+// 伪空类型：它不占用空间，但可以移动和复制
+struct fake_void
+{};
+
+template<typename Par1>
+struct ParmHolder
+{
+	typedef Par1 type;
+};
+
+template<>
+struct ParmHolder<void>
+{
+	typedef fake_void type;
+};
+
+template<class... ParamList>
+class CCombineTaskHelper
+{
+	enum
+	{
+		//参数个数
+		arity = sizeof...(ParamList)
+	};
+	using ParamTypeElement = typename std::tuple<ParamList...>;
+	//每个参数的类型
+	template<size_t I>
+	struct args
+	{
+		static_assert(I < arity, "index is out of range, index must less than sizeof Args");
+		using type = typename std::tuple_element<I, ParamTypeElement>::type;
+	};
+public:
+	CCombineTaskHelper(std::vector<TaskPtr> taskList)
+	{
+		m_TaskList = taskList;
+	}
+
+	~CCombineTaskHelper()
+	{
+	}
+
+	template<class Scheduler, class Func, typename return_type = std::result_of<Func(ParamList...)>::type>
+	CTaskHelper<return_type> AcceptAll(CSafePtr<Scheduler> scheduler, Func&& func)
+	{
+		ASSERT(m_TaskList.size() > 0);
+		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAll";
+		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Res, Func>::CreateTask(scheduler, signature, func);
+		for (auto pChild : m_TaskList)
+		{
+			pChild->SetWaitTask(pTask, m_TaskList.size());
+			if (m_pTaskPtr->GetState() == enTaskState::eTaskDone
+				|| m_pTaskPtr->GetState() == enTaskState::eTaskFailed)
+			{
+				pChild->AddWaitDone(1);
+			}
+		}
+		return CTaskHelper<return_type>(pChildTask);
+	}
+
+	template<class Scheduler, class Func, typename return_type = std::result_of<Func()>::type>
+	CTaskHelper<return_type> ApplyAll(CSafePtr<Scheduler> scheduler, Func&& func)
+	{
+		ASSERT(m_TaskList.size() > 0);
+		std::string signature = m_TaskList[0]->GetSignature() + "ApplyAll";
+		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Res, Func>::CreateTask(scheduler, signature, func);
+		for (auto pChild : m_TaskList)
+		{
+			pChild->SetWaitTask(pTask, m_TaskList.size());
+			if (m_pTaskPtr->GetState() == enTaskState::eTaskDone
+				|| m_pTaskPtr->GetState() == enTaskState::eTaskFailed)
+			{
+				pChild->AddWaitDone(1);
+			}
+		}
+		return CTaskHelper<return_type>(pChildTask);
+	}
+private:
+	std::vector<TaskPtr> m_TaskList;
 };
 
 #endif //__TASK_HELPER_H__

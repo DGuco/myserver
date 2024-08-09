@@ -7,11 +7,29 @@ CThreadTask::CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signa
 	m_childTaskVec(5)
 {
 	SetState(enTaskState::eTaskInit);
+	m_waitCount = 0;
+	m_waitDone = 0;
+	m_WaitTask = NULL;
 };
 
 CThreadTask::~CThreadTask()
 {
 	RunChildTask();
+}
+
+void CThreadTask::SetWaitTask(TaskPtr ptr, int value) 
+{
+	m_WaitTask = ptr; 
+	m_waitCount = value;
+}
+
+void CThreadTask::AddWaitDone()
+{
+	int oldValue = m_waitDone.fetch_add(1);
+	if (m_waitDone == m_waitCount)
+	{
+
+	}
 }
 
 void CThreadTask::AddChildTask(TaskPtr pTask)

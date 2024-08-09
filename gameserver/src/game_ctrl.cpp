@@ -72,29 +72,72 @@ bool CGameCtrl::PrepareToRun()
 				int finres = c + d;
 				printf("finres = %d\n", finres);
 			});
+
+	auto task1 = m_pScheduler->Schedule("InitTcpServer",
+		[a, b]
+		{
+			return a + b;
+		});
+
+	auto task2 = m_pScheduler->Schedule("InitTcpServer",
+		[a, b]
+		{
+			return a * b;
+		});
+
+	auto task3 = m_pScheduler->Schedule("InitTcpServer",
+		[a, b]
+		{
+			return a / b;
+		});
+
+	auto task4 = m_pScheduler->Schedule("InitTcpServer",
+		[a, b]
+		{
+			return a % b;
+		});
+
+// 	CThreadScheduler::Combine(task1, task2, task3, task4)
+// 		.AcceptAll(m_pScheduler, 
+// 				[](int res1, int res2, int res3,int res4)
+// 				{
+// 					return res1 + res2 + res3 + res4;
+// 				});
+// 
+// 	CThreadScheduler::Combine(task1, task2, task3, task4)
+// 		.ApplyAll(m_pScheduler,[]()
+// 			{
+// 
+// 			});
 	return true;
 }
 
 int CGameCtrl::Run()
 {
+	std::atomic_bool bDone = false;
 	while (true)
 	{
-		m_pScheduler->Schedule("GameLogic",
-			[]
-			{
-				time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
-				try
+		if (!bDone.load())
+		{
+			bDone = true;
+			m_pScheduler->Schedule("GameLogic",
+				[&bDone]
 				{
-					CGameServer::GetSingletonPtr()->TcpTick(nNow);
+					time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
+					try
+					{
+						CGameServer::GetSingletonPtr()->TcpTick(nNow);
+					}
+					catch (const std::exception& e)
+					{
+						CACHE_LOG(ERROR_CACHE, "CGameServer TcpTick  cache execption msg {]", e.what());
+					}
+					bDone = false;
 				}
-				catch (const std::exception& e)
-				{
-					CACHE_LOG(ERROR_CACHE, "CGameServer TcpTick  cache execption msg {]", e.what());
-				}
-			}
-			);
+				);
+		}
 		m_pScheduler->DebugTask();
-		SLEEP(1000);
+		SLEEP(10);
 	}
 }
 

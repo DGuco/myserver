@@ -37,6 +37,60 @@ public:
 		m_Tasks.push(pTask);
 		return CTaskHelper<return_type>(pTask);
 	}
+
+	template<typename RT1,typename RT2>
+	static CCombineTaskHelper<RT1, RT2> Combine(CTaskHelper<RT1> task1, 
+											    CTaskHelper<RT2> task2)
+	{
+		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask() };
+		return CCombineTaskHelper<RT1, RT2>(taskList);
+	}
+
+	template<typename RT1, typename RT2, typename RT3>
+	static CCombineTaskHelper<RT1, RT2,RT3> Combine(
+										 CTaskHelper<RT1> task1,
+										 CTaskHelper<RT2> task2,
+										 CTaskHelper<RT3> task3)
+	{
+		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask()};
+		return CCombineTaskHelper<RT1, RT2, RT3>(taskList);
+	}
+
+	template<typename RT1, typename RT2, typename RT3, typename RT4>
+	static CCombineTaskHelper<RT1, RT2, RT3, RT4> Combine(
+										 CTaskHelper<RT1> task1,
+										 CTaskHelper<RT2> task2,
+										 CTaskHelper<RT3> task3,
+										 CTaskHelper<RT4> task4)
+	{
+		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask() };
+		return CCombineTaskHelper<RT1, RT2, RT3, RT4>(taskList);
+	}
+
+	template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5>
+	static CCombineTaskHelper<RT1, RT2, RT3, RT4,RT5> Combine(
+										 CTaskHelper<RT1> task1,
+										 CTaskHelper<RT2> task2,
+										 CTaskHelper<RT3> task3,
+										 CTaskHelper<RT4> task4,
+										 CTaskHelper<RT5> task5)
+	{
+		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask() };
+		return CCombineTaskHelper<RT1, RT2, RT3, RT4, RT5>(taskList);
+	}
+
+	template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5, typename RT6>
+	static CCombineTaskHelper<RT1, RT2, RT3, RT4, RT5, RT6> Combine(
+										 CTaskHelper<RT1> task1,
+										 CTaskHelper<RT2> task2,
+										 CTaskHelper<RT3> task3,
+										 CTaskHelper<RT4> task4,
+										 CTaskHelper<RT5> task5,
+										 CTaskHelper<RT6> task6)
+	{
+		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask(),task6.GetTask() };
+		return CCombineTaskHelper<RT1, RT2, RT3, RT4, RT5, RT6>(taskList);
+	}
 private:
 	std::vector<CSafePtr<CTaskThread>> m_Workers;
 	std::queue<TaskPtr> m_Tasks;
