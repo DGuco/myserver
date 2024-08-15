@@ -14,84 +14,67 @@
 #include "my_thread.h"
 #include "lock_free_limit_queue.h"
 #include "log.h"
+#include "task_helper.h"
 
 #define EMPTY_VOID_FUNC = []{}
 #define MAX_CHILD_TASK_COUNT (5)
 using namespace my_std;
 
-/*
-template<size_t NUM_PARAMS,typename return_type, typename... Args>
-struct TaskCaller
-{
-};
 
-template<typename return_type, typename... Args>
-struct TaskCaller<0, return_type,Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-	//using callback_function_type = typename std::function<void(bool,return_type)>;
-public:
-	static return_type invoke(function_type func)
-	{
-		return func();
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<1, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-	//using callback_function_type = typename std::function<void(bool, return_type)>;
-public:
-	static return_type invoke(function_type func,std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args));
-	}
-};*/
-
-template<typename return_type,typename Arg>
-struct ReturnTaskCaller
-{
-	using function_type = typename std::function<return_type(Arg)>;
-public:
-	static return_type invoke(function_type func, Arg arg)
-	{
-		return func(arg);
-	}
-};
-
-template<typename return_type>
-struct ReturnTaskCaller<return_type,void>
-{
-	using function_type = typename std::function<return_type(void)>;
-public:
-	static return_type invoke(function_type func)
-	{
-		return func();
-	}
-};
-
-template<typename Arg>
-struct NoReturnTaskCaller
-{
-	using function_type = typename std::function<void(Arg)>;
-public:
-	static void invoke(function_type func, Arg arg)
-	{
-		func(arg);
-	}
-};
-
-template<>
-struct NoReturnTaskCaller<void>
-{
-	using function_type = typename std::function<void(void)>;
-public:
-	static void invoke(function_type func)
-	{
-		func();
-	}
-};
+// template<typename return_type, typename... Args>
+// struct ReturnTaskCaller
+// {
+// 	using function_type = typename std::function<return_type(Args...)>;
+// public:
+// 	static return_type invoke(function_type func,std::tuple<Args...>& args)
+// 	{
+// 		return func(arg);
+// 	}
+// };
+// 
+// template<typename return_type,typename Arg>
+// struct ReturnTaskCaller
+// {
+// 	using function_type = typename std::function<return_type(Arg)>;
+// public:
+// 	static return_type invoke(function_type func, Arg arg)
+// 	{
+// 		return func(arg);
+// 	}
+// };
+// 
+// template<typename return_type>
+// struct ReturnTaskCaller<return_type,void>
+// {
+// 	using function_type = typename std::function<return_type(void)>;
+// public:
+// 	static return_type invoke(function_type func)
+// 	{
+// 		return func();
+// 	}
+// };
+// 
+// template<typename Arg>
+// struct NoReturnTaskCaller
+// {
+// 	using function_type = typename std::function<void(Arg)>;
+// public:
+// 	static void invoke(function_type func, Arg arg)
+// 	{
+// 		func(arg);
+// 	}
+// };
+// 
+// template<>
+// struct NoReturnTaskCaller<void>
+// {
+// 	using function_type = typename std::function<void(void)>;
+// public:
+// 	static void invoke(function_type func)
+// 	{
+// 		func();
+// 	}
+// };
 
 class CThreadScheduler;
 class CThreadTask;
@@ -152,7 +135,6 @@ class CWithReturnTask : public CThreadTask
 	using ArgsTubleType = typename std::tuple<Args...>;
 	using return_type = typename std::result_of<Func(Args...)>::type;
 	using function_type = typename std::function<return_type(Args...)>;
-	static_assert(ArgCount == arity, "ArgCount != arity ");
 	//每个参数的类型
 	template<size_t I>
 	struct args
@@ -172,17 +154,26 @@ public:
 	{}
 	virtual void Execute()
 	{
-		//m_Res = TaskCaller<arity, return_type, Args...>::invoke(m_Func, m_ArgTuple);
+		m_Res = TaskCaller<arity, return_type, Args...>::invoke(m_Func, m_ArgTuple);
 	}
 	virtual void* GetResult()
 	{
 		return (void*)&m_Res;
 	}
 
-	virtual void ExecuteChild(TaskPtr pChildTask)
-	{}
+	virtual void ExecuteChildTask(TaskPtr pChildTask)
+	{
+		if (GetState() == enTaskState::eTaskDone)
+		{
+			pChildTask->ExecuteFromParent((void*)(&m_Res));
+		}
+		else
+		{
+			pChildTask->ExecuteFromParent(NULL, false);
+		}
+	}
 
-	virtual void  ExecuteFromParent(void* pRes)
+	virtual void  ExecuteFromParent(void* pRes, bool sucess = true)
 	{}
 private:
 	function_type				m_Func;
@@ -207,7 +198,7 @@ public:
 	{}
 	virtual void Execute()
 	{
-		m_Res = ReturnTaskCaller<return_type,Par>::invoke(m_Func, m_Param);
+		m_Res = TaskCaller<1,return_type,Par>::invoke(m_Func, m_Param);
 	}
 	virtual void* GetResult()
 	{
@@ -269,7 +260,7 @@ public:
 	{}
 	virtual void Execute()
 	{
-		m_Res = ReturnTaskCaller<return_type, void>::invoke(m_Func);
+		m_Res = TaskCaller<0,return_type>::invoke(m_Func);
 	}
 	virtual void* GetResult()
 	{
@@ -313,8 +304,65 @@ private:
 	return_type					m_Res;
 };
 
-template<class Func, typename Par>
+template<class Func, class...Args>
 class CNoReturnTask : public CThreadTask
+{
+	enum
+	{
+		//参数个数
+		arity = sizeof...(Args)
+	};
+	using ArgsTubleType = typename std::tuple<Args...>;
+	using function_type = typename std::function<void(Args...)>;
+	//每个参数的类型
+	template<size_t I>
+	struct args
+	{
+		static_assert(I < arity, "index is out of range, index must less than sizeof Args");
+		using type = typename std::tuple_element<I, ArgsTubleType>::type;
+	};
+public:
+	CNoReturnTask(CSafePtr<CThreadScheduler> scheduler,
+		std::string signature,
+		const Func& func)
+		: CThreadTask(scheduler, signature)
+	{
+		m_Func = func;
+	}
+	virtual ~CNoReturnTask()
+	{}
+	
+	virtual void Execute()
+	{
+		m_Res = TaskCaller<arity, void, Args...>::invoke(m_Func, m_ArgTuple);
+	}
+
+	virtual void* GetResult()
+	{
+		return (void*)&m_Res;
+	}
+
+	virtual void ExecuteChildTask(TaskPtr pChildTask)
+	{
+		if (GetState() == enTaskState::eTaskDone)
+		{
+			pChildTask->ExecuteFromParent(NULL);
+		}
+		else
+		{
+			pChildTask->ExecuteFromParent(NULL, false);
+		}
+	}
+
+	virtual void  ExecuteFromParent(void* pRes, bool sucess = true)
+	{}
+private:
+	function_type				m_Func;
+	ArgsTubleType				m_ArgTuple;
+};
+
+template<class Func, typename Par>
+class CNoReturnTask<Func,Par> : public CThreadTask
 {
 	using function_type = typename std::function<void(Par)>;
 public:
@@ -329,7 +377,7 @@ public:
 	{}
 	virtual void Execute()
 	{
-		NoReturnTaskCaller<Par>::invoke(m_Func,m_Param);
+		TaskCaller<1,void,Par>::invoke(m_Func,m_Param);
 	}
 	virtual void* GetResult()
 	{
@@ -390,7 +438,7 @@ public:
 	{}
 	virtual void Execute()
 	{
-		NoReturnTaskCaller<void>::invoke(m_Func);
+		TaskCaller<0,void>::invoke(m_Func);
 	}
 	virtual void* GetResult()
 	{

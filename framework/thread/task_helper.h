@@ -10,6 +10,200 @@
 #include "safe_pointer.h"
 #include "thread_task.h"
 
+template<size_t NUM_PARAMS, typename return_type, typename... Args>
+struct TaskCaller
+{
+};
+
+template<typename return_type>
+struct TaskCaller<0, return_type>
+{
+	using function_type = typename std::function<return_type()>;
+public:
+	static return_type invoke(function_type func)
+	{
+		return func();
+	}
+};
+
+template<typename return_type, typename Arg>
+struct TaskCaller<1, return_type, Arg>
+{
+	using function_type = typename std::function<return_type(Arg)>;
+public:
+	static return_type invoke(function_type func, Arg arg)
+	{
+		return func(arg);
+	}
+};
+
+template<typename return_type, typename... Args>
+struct TaskCaller<2, return_type, Args...>
+{
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	{
+		return func(std::get<0>(args),
+			std::get<1>(args));
+	}
+};
+
+template<typename return_type, typename... Args>
+struct TaskCaller<3, return_type, Args...>
+{
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	{
+		return func(std::get<0>(args),
+			std::get<1>(args),
+			std::get<2>(args));
+	}
+};
+
+template<typename return_type, typename... Args>
+struct TaskCaller<4, return_type, Args...>
+{
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	{
+		return func(std::get<0>(args),
+			std::get<1>(args),
+			std::get<2>(args),
+			std::get<3>(args));
+	}
+};
+
+template<typename return_type, typename... Args>
+struct TaskCaller<5, return_type, Args...>
+{
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	{
+		return func(std::get<0>(args),
+			std::get<1>(args),
+			std::get<2>(args),
+			std::get<3>(args),
+			std::get<4>(args));
+	}
+};
+
+template<typename return_type, typename... Args>
+struct TaskCaller<6, return_type, Args...>
+{
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	{
+		return func(std::get<0>(args),
+			std::get<1>(args),
+			std::get<2>(args),
+			std::get<3>(args),
+			std::get<4>(args),
+			std::get<5>(args));
+	}
+};
+
+template<typename return_type, typename... Args>
+struct TaskCaller<7, return_type, Args...>
+{
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	{
+		return func(std::get<0>(args),
+			std::get<1>(args),
+			std::get<2>(args),
+			std::get<3>(args),
+			std::get<4>(args),
+			std::get<5>(args),
+			std::get<6>(args));
+	}
+};
+
+template<typename return_type, typename... Args>
+struct TaskCaller<8, return_type, Args...>
+{
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	{
+		return func(std::get<0>(args),
+			std::get<1>(args),
+			std::get<2>(args),
+			std::get<3>(args),
+			std::get<4>(args),
+			std::get<5>(args),
+			std::get<6>(args),
+			std::get<7>(args));
+		return func(arg);
+	}
+};
+
+template<typename return_type, typename... Args>
+struct TaskCaller<9, return_type, Args...>
+{
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	{
+		return func(std::get<0>(args),
+			std::get<1>(args),
+			std::get<2>(args),
+			std::get<3>(args),
+			std::get<4>(args),
+			std::get<5>(args),
+			std::get<6>(args),
+			std::get<7>(args),
+			std::get<8>(args));
+	}
+};
+
+template<typename return_type, typename... Args>
+struct TaskCaller<10, return_type, Args...>
+{
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	static return_type invoke(function_type func, std::tuple<Args...>& args)
+	{
+		return func(std::get<0>(args),
+			std::get<1>(args),
+			std::get<2>(args),
+			std::get<3>(args),
+			std::get<4>(args),
+			std::get<5>(args),
+			std::get<6>(args),
+			std::get<7>(args),
+			std::get<8>(args),
+			std::get<9>(args));
+	}
+};
+
+template<typename return_type, class Func,typename ...Args>
+struct CombineTaskCreater
+{
+	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
+								std::string signature,
+								const Func f)
+	{
+		return std::make_shared<CWithReturnTask<Func, Args...>>(scheduler, signature, f);
+	}
+};
+
+template<class Func, typename ...Args>
+struct CombineTaskCreater<void,Func,Args...>
+{
+	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
+								std::string signature,
+								const Func f)
+	{
+		return std::make_shared<CNoReturnTask<Func, Args...>>(scheduler, signature, f);
+	}
+};
+
 template<typename return_type, typename Par, class Func>
 struct TaskCreater
 {
@@ -168,17 +362,17 @@ public:
 	{
 		ASSERT(m_TaskList.size() > 0);
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAll";
-		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Res, Func>::CreateTask(scheduler, signature, func);
+		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type,Func,ParamList...>::CreateTask(scheduler, signature, func);
 		for (auto pChild : m_TaskList)
 		{
 			pChild->SetWaitTask(pTask, m_TaskList.size());
-			if (m_pTaskPtr->GetState() == enTaskState::eTaskDone
-				|| m_pTaskPtr->GetState() == enTaskState::eTaskFailed)
+			if (pChild->GetState() == enTaskState::eTaskDone
+				|| pChild->GetState() == enTaskState::eTaskFailed)
 			{
-				pChild->AddWaitDone(1);
+				pChild->AddWaitDone();
 			}
 		}
-		return CTaskHelper<return_type>(pChildTask);
+		return CTaskHelper<return_type>(pTask);
 	}
 
 	template<class Scheduler, class Func, typename return_type = std::result_of<Func()>::type>
@@ -186,17 +380,17 @@ public:
 	{
 		ASSERT(m_TaskList.size() > 0);
 		std::string signature = m_TaskList[0]->GetSignature() + "ApplyAll";
-		std::shared_ptr<CThreadTask> pTask = TaskCreater<return_type, Res, Func>::CreateTask(scheduler, signature, func);
+		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type,Func, ParamList...>::CreateTask(scheduler, signature, func);
 		for (auto pChild : m_TaskList)
 		{
 			pChild->SetWaitTask(pTask, m_TaskList.size());
-			if (m_pTaskPtr->GetState() == enTaskState::eTaskDone
-				|| m_pTaskPtr->GetState() == enTaskState::eTaskFailed)
+			if (pChild->GetState() == enTaskState::eTaskDone
+				|| pChild->GetState() == enTaskState::eTaskFailed)
 			{
-				pChild->AddWaitDone(1);
+				pChild->AddWaitDone();
 			}
 		}
-		return CTaskHelper<return_type>(pChildTask);
+		return CTaskHelper<return_type>(pTask);
 	}
 private:
 	std::vector<TaskPtr> m_TaskList;

@@ -97,13 +97,13 @@ bool CGameCtrl::PrepareToRun()
 			return a % b;
 		});
 
-// 	CThreadScheduler::Combine(task1, task2, task3, task4)
-// 		.AcceptAll(m_pScheduler, 
-// 				[](int res1, int res2, int res3,int res4)
-// 				{
-// 					return res1 + res2 + res3 + res4;
-// 				});
-// 
+	CThreadScheduler::Combine(task1, task2, task3, task4)
+		.AcceptAll(m_pScheduler, 
+				[](int res1, int res2, int res3,int res4)
+				{
+					return res1 + res2 + res3 + res4;
+				});
+
 // 	CThreadScheduler::Combine(task1, task2, task3, task4)
 // 		.ApplyAll(m_pScheduler,[]()
 // 			{

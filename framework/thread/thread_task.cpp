@@ -25,7 +25,7 @@ void CThreadTask::SetWaitTask(TaskPtr ptr, int value)
 
 void CThreadTask::AddWaitDone()
 {
-	int oldValue = m_waitDone.fetch_add(1);
+	int oldValue = m_waitDone.fetch_add(1, memory_order_acquire);
 	if (m_waitDone == m_waitCount)
 	{
 
