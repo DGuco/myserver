@@ -379,8 +379,8 @@ public:
 	CTaskHelper<return_type> ApplyAll(CSafePtr<Scheduler> scheduler, Func&& func)
 	{
 		ASSERT(m_TaskList.size() > 0);
-		std::string signature = m_TaskList[0]->GetSignature() + "ApplyAll";
-		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type,Func, ParamList...>::CreateTask(scheduler, signature, func);
+		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAll";
+		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type,Func,void>::CreateTask(scheduler, signature, func);
 		for (auto pChild : m_TaskList)
 		{
 			pChild->SetWaitTask(pTask, m_TaskList.size());

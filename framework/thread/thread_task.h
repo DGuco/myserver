@@ -111,7 +111,6 @@ public:
 	virtual void  Execute() = 0;
 	virtual void  ExecuteChildTask(TaskPtr pChildTask) = 0;
 	virtual void  ExecuteFromParent(void* pRes,bool sucess = true) = 0;
-	virtual void* GetResult() = 0;
 private:
 	std::atomic<enTaskState>		m_nState;
 	std::string						m_TaskSignature;	//ÈÎÎñÇ©Ãû
@@ -156,10 +155,6 @@ public:
 	{
 		m_Res = TaskCaller<arity, return_type, Args...>::invoke(m_Func, m_ArgTuple);
 	}
-	virtual void* GetResult()
-	{
-		return (void*)&m_Res;
-	}
 
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
@@ -199,10 +194,6 @@ public:
 	virtual void Execute()
 	{
 		m_Res = TaskCaller<1,return_type,Par>::invoke(m_Func, m_Param);
-	}
-	virtual void* GetResult()
-	{
-		return (void*)&m_Res;
 	}
 
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
@@ -256,15 +247,13 @@ public:
 	{
 		m_Func = func;
 	}
+
 	virtual ~CWithReturnTask()
 	{}
+	
 	virtual void Execute()
 	{
 		m_Res = TaskCaller<0,return_type>::invoke(m_Func);
-	}
-	virtual void* GetResult()
-	{
-		return (void*)&m_Res;
 	}
 
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
@@ -334,12 +323,7 @@ public:
 	
 	virtual void Execute()
 	{
-		m_Res = TaskCaller<arity, void, Args...>::invoke(m_Func, m_ArgTuple);
-	}
-
-	virtual void* GetResult()
-	{
-		return (void*)&m_Res;
+		TaskCaller<arity, void, Args...>::invoke(m_Func, m_ArgTuple);
 	}
 
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
@@ -375,15 +359,12 @@ public:
 	}
 	virtual ~CNoReturnTask()
 	{}
+
 	virtual void Execute()
 	{
 		TaskCaller<1,void,Par>::invoke(m_Func,m_Param);
 	}
-	virtual void* GetResult()
-	{
-		return NULL;
-	}
-
+	
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
 		if (GetState() == enTaskState::eTaskDone)
@@ -439,10 +420,6 @@ public:
 	virtual void Execute()
 	{
 		TaskCaller<0,void>::invoke(m_Func);
-	}
-	virtual void* GetResult()
-	{
-		return NULL;
 	}
 
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
