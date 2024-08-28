@@ -93,17 +93,17 @@ public:
 	//获取高位fag
 	SPO_DATA_TYPE GetFlagH() const { return nDataH & SPO_MAGIC_NUM_L; }
 	SPO_DATA_TYPE GetFlagL() const { return nDataL & SPO_MAGIC_NUM_H; }
-	inline Tp& operator*() const { return *GetThrow(); }
-	inline Tp* operator->() const { return GetThrow(); }
+	inline Tp& operator*() const { return *GetThrow(true); }
+	inline Tp* operator->() const { return GetThrow(true); }
 	
 	bool operator==(const Tp* pOhter)
 	{
-		return Get() == pOhter;
+		return GetThrow() == pOhter;
 	}
 
 	bool operator!=(const Tp* pOhter)
 	{
-		return Get() != pOhter;
+		return GetThrow() != pOhter;
 	}
 
 	bool operator==(const CSafePtr<Tp> pOhter)
@@ -162,7 +162,7 @@ public:
 		nDataL = SPO_FLAG_L;
 	}
 private:
-	Tp* GetThrow() const
+	Tp* GetThrow(bool nullcheck = false) const
 	{
 		Tp* pPoint = (Tp*)((nDataL & SPO_MAGIC_NUM_L) | (nDataH & SPO_MAGIC_NUM_H));
 		if (GetFlagH() != SPO_FLAG_H || GetFlagL() != SPO_FLAG_L)
@@ -172,7 +172,7 @@ private:
 			throw std::runtime_error(eMsg);
 		}
 
-		if (pPoint == NULL)
+		if (nullcheck && pPoint == NULL)
 		{
 			char eMsg[256] = { 0 };
 			sprintf_s(eMsg,256, SPO_ERROR_MSG, (unsigned long)GetFlagH(), (unsigned long)GetFlagL(), (void*)pPoint);

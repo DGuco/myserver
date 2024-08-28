@@ -378,6 +378,7 @@ public:
 		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAll";
 		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type,Func,void>::CreateTask(scheduler, signature, func);
+		pTask->SetCombineCount(m_TaskList.size());
 		for (auto pChild : m_TaskList)
 		{
 			pChild->SetWaitTask(pTask);

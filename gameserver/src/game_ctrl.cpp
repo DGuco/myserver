@@ -79,10 +79,10 @@ bool CGameCtrl::PrepareToRun()
 			return a + b;
 		});
 
-	auto task2 = m_pScheduler->Schedule("InitTcpServer",
-		[a, b]
+	auto task2 = m_pSchedulerDb->Schedule("InitTcpServer",
+		[]
 		{
-			return a * b;
+			return "Task2 execute done ";
 		});
 
 	auto task3 = m_pScheduler->Schedule("InitTcpServer",
@@ -91,17 +91,18 @@ bool CGameCtrl::PrepareToRun()
 			return a / b;
 		});
 
-	auto task4 = m_pScheduler->Schedule("InitTcpServer",
+	auto task4 = m_pSchedulerDb->Schedule("InitTcpServer",
 		[a, b]
 		{
 			return a % b;
 		});
 
 	CThreadScheduler::Combine(task1, task2, task3, task4)
-		.AcceptAll(m_pScheduler, 
-				[](int res1, int res2, int res3,int res4)
+		.AcceptAll(m_pSchedulerDb, 
+				[](int res1, std::string res2, int res3,int res4)
 				{
-					return res1 + res2 + res3 + res4;
+					int nRes =  res1 + res3 + res4;
+					CACHE_LOG(DEBUG_CACHE, "Task res :{},combineres = {}", res2, nRes);
 				});
 
 // 	CThreadScheduler::Combine(task1, task2, task3, task4)

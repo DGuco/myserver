@@ -10,12 +10,13 @@ CThreadTask::CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signa
 	m_combineCount = 0;
 	m_combineDone = 0;
 	m_WaitTask = NULL;
-	m_pTaskArgs = NULL;
+	m_pCombinedArgs = NULL;
 };
 
 CThreadTask::~CThreadTask()
 {
 	RunChildTask();
+	m_pCombinedArgs.Free();
 }
 
 void CThreadTask::SetWaitTask(TaskPtr ptr)
@@ -24,9 +25,9 @@ void CThreadTask::SetWaitTask(TaskPtr ptr)
 	m_WaitTask = ptr; 
 	if (m_nState == enTaskState::eTaskDone || m_nState == enTaskState::eTaskFailed)
 	{
-		if (m_pTaskArgs != NULL)
+		if (m_pCombinedArgs != NULL)
 		{
-			m_pTaskArgs->FillWaitTaskParm(GetShared(),m_WaitTask);
+			m_pCombinedArgs->FillWaitTaskParm(GetShared(),m_WaitTask);
 		}
 		m_WaitTask->CombineTaskDone();
 	}
@@ -73,9 +74,9 @@ void CThreadTask::OnFinish()
 		CSafeLock guard(m_WaitLock);
 		if (m_WaitTask != NULL)
 		{
-			if (m_pTaskArgs != NULL)
+			if (m_pCombinedArgs != NULL)
 			{
-				m_pTaskArgs->FillWaitTaskParm(GetShared(), m_WaitTask);
+				m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_WaitTask);
 			}
 			m_WaitTask->CombineTaskDone();
 		}

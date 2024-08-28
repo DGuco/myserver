@@ -56,8 +56,13 @@ public:
 	template<BYTE combine_index, class... Args>
 	void SetCombineInfo()
 	{
-		m_pTaskArgs = std::make_shared<CTaskArgsList<combine_index, Args...>>();
+		if (m_pCombinedArgs != NULL)
+		{
+			ASSERT_EX(false, "This Task has combined once");
+		}
+		m_pCombinedArgs = new CTaskArgsList<combine_index, Args...>();
 	}
+
 	void SetWaitTask(TaskPtr ptr);
 	void SetCombineCount(BYTE value);
 	void CombineTaskDone();
@@ -81,7 +86,7 @@ private:
 	CMyLock							m_WaitLock;
 	std::atomic_uchar				m_combineDone;
 	BYTE							m_combineCount;
-	std::shared_ptr<CArgsHolder>	m_pTaskArgs;
+	CSafePtr<CArgsHolder>			m_pCombinedArgs;
 protected:
 	CSafePtr<CThreadScheduler>		m_pScheduler;
 };
