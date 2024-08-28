@@ -104,11 +104,11 @@ bool CGameCtrl::PrepareToRun()
 					return res1 + res2 + res3 + res4;
 				});
 
-	CThreadScheduler::Combine(task1, task2, task3, task4)
-		.ApplyAll(m_pScheduler,[]()
-			{
-
-			});
+// 	CThreadScheduler::Combine(task1, task2, task3, task4)
+// 		.ApplyAll(m_pScheduler, []()
+// 			{
+// 
+// 			});
 	return true;
 }
 

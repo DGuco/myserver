@@ -42,6 +42,8 @@ public:
 	static CCombineTaskHelper<RT1, RT2> Combine(CTaskHelper<RT1> task1, 
 											    CTaskHelper<RT2> task2)
 	{
+		task1.GetTask()->SetCombineInfo<0, RT1, RT2>();
+		task2.GetTask()->SetCombineInfo<1, RT1, RT2>();
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask() };
 		return CCombineTaskHelper<RT1, RT2>(taskList);
 	}
@@ -52,6 +54,9 @@ public:
 										 CTaskHelper<RT2> task2,
 										 CTaskHelper<RT3> task3)
 	{
+		task1.GetTask()->SetCombineInfo<0, RT1, RT2, RT3>();
+		task2.GetTask()->SetCombineInfo<1, RT1, RT2, RT3>();
+		task3.GetTask()->SetCombineInfo<2, RT1, RT2, RT3>();
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask()};
 		return CCombineTaskHelper<RT1, RT2, RT3>(taskList);
 	}
@@ -63,6 +68,10 @@ public:
 										 CTaskHelper<RT3> task3,
 										 CTaskHelper<RT4> task4)
 	{
+		task1.GetTask()->SetCombineInfo<0, RT1, RT2, RT3, RT4>();
+		task2.GetTask()->SetCombineInfo<1, RT1, RT2, RT3, RT4>();
+		task3.GetTask()->SetCombineInfo<2, RT1, RT2, RT3, RT4>();
+		task4.GetTask()->SetCombineInfo<3, RT1, RT2, RT3, RT4>();
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask() };
 		return CCombineTaskHelper<RT1, RT2, RT3, RT4>(taskList);
 	}
@@ -75,6 +84,11 @@ public:
 										 CTaskHelper<RT4> task4,
 										 CTaskHelper<RT5> task5)
 	{
+		task1.GetTask()->SetCombineInfo<0, RT1, RT2, RT3, RT4, RT5>();
+		task2.GetTask()->SetCombineInfo<1, RT1, RT2, RT3, RT4, RT5>();
+		task3.GetTask()->SetCombineInfo<2, RT1, RT2, RT3, RT4, RT5>();
+		task4.GetTask()->SetCombineInfo<3, RT1, RT2, RT3, RT4, RT5>();
+		task5.GetTask()->SetCombineInfo<4, RT1, RT2, RT3, RT4, RT5>();
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask() };
 		return CCombineTaskHelper<RT1, RT2, RT3, RT4, RT5>(taskList);
 	}
@@ -88,6 +102,12 @@ public:
 										 CTaskHelper<RT5> task5,
 										 CTaskHelper<RT6> task6)
 	{
+		task1.GetTask()->SetCombineInfo<0, RT1, RT2, RT3, RT4, RT5, RT6>();
+		task2.GetTask()->SetCombineInfo<1, RT1, RT2, RT3, RT4, RT5, RT6>();
+		task3.GetTask()->SetCombineInfo<2, RT1, RT2, RT3, RT4, RT5, RT6>();
+		task4.GetTask()->SetCombineInfo<3, RT1, RT2, RT3, RT4, RT5, RT6>();
+		task5.GetTask()->SetCombineInfo<4, RT1, RT2, RT3, RT4, RT5, RT6>();
+		task6.GetTask()->SetCombineInfo<5, RT1, RT2, RT3, RT4, RT5, RT6>();
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask(),task6.GetTask() };
 		return CCombineTaskHelper<RT1, RT2, RT3, RT4, RT5, RT6>(taskList);
 	}

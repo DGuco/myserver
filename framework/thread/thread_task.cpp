@@ -7,9 +7,10 @@ CThreadTask::CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signa
 	m_childTaskVec(5)
 {
 	SetState(enTaskState::eTaskInit);
-	m_waitCount = 0;
-	m_waitDone = 0;
+	m_combineCount = 0;
+	m_combineDone = 0;
 	m_WaitTask = NULL;
+	m_pTaskArgs = NULL;
 };
 
 CThreadTask::~CThreadTask()
@@ -17,18 +18,41 @@ CThreadTask::~CThreadTask()
 	RunChildTask();
 }
 
-void CThreadTask::SetWaitTask(TaskPtr ptr, int value) 
-{
+void CThreadTask::SetWaitTask(TaskPtr ptr)
+ {
+	CSafeLock guard(m_WaitLock);
 	m_WaitTask = ptr; 
-	m_waitCount = value;
+	if (m_nState == enTaskState::eTaskDone || m_nState == enTaskState::eTaskFailed)
+	{
+		if (m_pTaskArgs != NULL)
+		{
+			m_pTaskArgs->FillWaitTaskParm(GetShared(),m_WaitTask);
+		}
+		m_WaitTask->CombineTaskDone();
+	}
 }
 
-void CThreadTask::AddWaitDone()
+void CThreadTask::SetCombineCount(BYTE value)
 {
-	int oldValue = m_waitDone.fetch_add(1, memory_order_acquire);
-	if (m_waitDone == m_waitCount)
-	{
+	m_combineCount = value;
+}
 
+void CThreadTask::CombineTaskDone()
+{
+	int oldValue = m_combineDone.fetch_add(1, memory_order_acquire);
+	//最后一个完成
+	if (m_combineDone == m_combineCount && oldValue == m_combineCount - 1)
+	{
+		//如果就在当前的执行shcheler中，直接执行
+		if (g_thread_data.own_scheduler == m_pScheduler)
+		{
+			Run();
+		}
+		else
+		{
+			//push 到对应scheduler的队列中
+			m_pScheduler->PushTask(GetShared());
+		}
 	}
 }
 
@@ -43,8 +67,19 @@ void CThreadTask::AddChildTask(TaskPtr pTask)
 
 void CThreadTask::OnFinish()
 {
-	SetState(enTaskState::eTaskDone); 
+	SetState(enTaskState::eTaskDone);
 	RunChildTask();
+	{
+		CSafeLock guard(m_WaitLock);
+		if (m_WaitTask != NULL)
+		{
+			if (m_pTaskArgs != NULL)
+			{
+				m_pTaskArgs->FillWaitTaskParm(GetShared(), m_WaitTask);
+			}
+			m_WaitTask->CombineTaskDone();
+		}
+	}
 }
 
 void CThreadTask::OnFailed() 

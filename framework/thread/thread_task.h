@@ -20,62 +20,6 @@
 #define MAX_CHILD_TASK_COUNT (5)
 using namespace my_std;
 
-
-// template<typename return_type, typename... Args>
-// struct ReturnTaskCaller
-// {
-// 	using function_type = typename std::function<return_type(Args...)>;
-// public:
-// 	static return_type invoke(function_type func,std::tuple<Args...>& args)
-// 	{
-// 		return func(arg);
-// 	}
-// };
-// 
-// template<typename return_type,typename Arg>
-// struct ReturnTaskCaller
-// {
-// 	using function_type = typename std::function<return_type(Arg)>;
-// public:
-// 	static return_type invoke(function_type func, Arg arg)
-// 	{
-// 		return func(arg);
-// 	}
-// };
-// 
-// template<typename return_type>
-// struct ReturnTaskCaller<return_type,void>
-// {
-// 	using function_type = typename std::function<return_type(void)>;
-// public:
-// 	static return_type invoke(function_type func)
-// 	{
-// 		return func();
-// 	}
-// };
-// 
-// template<typename Arg>
-// struct NoReturnTaskCaller
-// {
-// 	using function_type = typename std::function<void(Arg)>;
-// public:
-// 	static void invoke(function_type func, Arg arg)
-// 	{
-// 		func(arg);
-// 	}
-// };
-// 
-// template<>
-// struct NoReturnTaskCaller<void>
-// {
-// 	using function_type = typename std::function<void(void)>;
-// public:
-// 	static void invoke(function_type func)
-// 	{
-// 		func();
-// 	}
-// };
-
 class CThreadScheduler;
 class CThreadTask;
 enum class enTaskState : unsigned char
@@ -84,6 +28,15 @@ enum class enTaskState : unsigned char
 	eTaskDoing = 1,
 	eTaskDone = 2,
 	eTaskFailed = 3,
+};
+
+class CArgsHolder
+{
+public:
+	CArgsHolder() {};
+	virtual ~CArgsHolder() {};
+public:
+	virtual void  FillWaitTaskParm(TaskPtr pTask,TaskPtr pWaitTask) = 0;
 };
 
 class CThreadTask : public enable_shared_from_this<CThreadTask>
@@ -100,8 +53,14 @@ public:
 	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
 	enTaskState GetState()						{ return m_nState.load(std::memory_order_acquire); }
 	void SetState(enTaskState state)			{ m_nState.store(state, std::memory_order_release);}
-	void SetWaitTask(TaskPtr ptr, int value);
-	void AddWaitDone();
+	template<BYTE combine_index, class... Args>
+	void SetCombineInfo()
+	{
+		m_pTaskArgs = std::make_shared<CTaskArgsList<combine_index, Args...>>();
+	}
+	void SetWaitTask(TaskPtr ptr);
+	void SetCombineCount(BYTE value);
+	void CombineTaskDone();
 	void OnFinish();
 	void OnFailed();
 	void AddChildTask(TaskPtr pTask);
@@ -111,18 +70,49 @@ public:
 	virtual void  Execute() = 0;
 	virtual void  ExecuteChildTask(TaskPtr pChildTask) = 0;
 	virtual void  ExecuteFromParent(void* pRes,bool sucess = true) = 0;
+	virtual void* GetRes() = 0;
+	virtual void* GetArgs() = 0;
 private:
 	std::atomic<enTaskState>		m_nState;
 	std::string						m_TaskSignature;	//任务签名
 	time_t							m_nExecuteStart;	//任务开始执行时间
 	LockFreeLimitQueue<TaskPtr>		m_childTaskVec;
 	TaskPtr							m_WaitTask;
-	std::atomic_uchar				m_waitDone;
-	BYTE							m_waitCount;
+	CMyLock							m_WaitLock;
+	std::atomic_uchar				m_combineDone;
+	BYTE							m_combineCount;
+	std::shared_ptr<CArgsHolder>	m_pTaskArgs;
 protected:
 	CSafePtr<CThreadScheduler>		m_pScheduler;
 };
 
+template<BYTE combineIndex, class... Args>
+class CTaskArgsList : public CArgsHolder
+{
+	enum
+	{
+		//参数个数
+		arity = sizeof...(Args)
+	};
+	using ParamTypeElement = typename std::tuple<Args...>;
+	//每个参数的类型
+	template<size_t I>
+	struct args
+	{
+		static_assert(I < arity, "index is out of range, index must less than sizeof Args");
+		using type = typename std::tuple_element<I, ParamTypeElement>::type;
+	};
+public:
+	virtual void  FillWaitTaskParm(TaskPtr pTask,TaskPtr pWaitTask)
+	{
+		void* pRes = pTask->GetRes();
+		void* pArgs = pWaitTask->GetArgs();
+		ParamTypeElement& tmArgs = *(ParamTypeElement*)(pArgs);
+		using ArgType = args<combineIndex>::type;
+		ArgType& tmRes = *(ArgType*)(pRes);
+		std::get<combineIndex>(tmArgs) = tmRes;
+	}
+};
 template<class Func, class...Args>
 class CWithReturnTask : public CThreadTask
 {
@@ -170,6 +160,15 @@ public:
 
 	virtual void  ExecuteFromParent(void* pRes, bool sucess = true)
 	{}
+
+	virtual void* GetRes()
+	{
+		return (void*)(&m_Res);
+	}
+	virtual void* GetArgs()
+	{
+		return (void*)(&m_ArgTuple);
+	}
 private:
 	function_type				m_Func;
 	ArgsTubleType				m_ArgTuple;
@@ -227,6 +226,16 @@ public:
 		{
 			OnFailed();
 		}
+	}
+
+	virtual void* GetRes()
+	{
+		return (void*)(&m_Res);
+	}
+
+	virtual void* GetArgs()
+	{
+		return NULL;
 	}
 private:
 	function_type				m_Func;
@@ -288,6 +297,16 @@ public:
 			OnFailed();
 		}
 	}
+
+	virtual void* GetRes()
+	{
+		return (void*)(&m_Res);
+	}
+
+	virtual void* GetArgs()
+	{
+		return NULL;
+	}
 private:
 	function_type				m_Func;
 	return_type					m_Res;
@@ -340,6 +359,16 @@ public:
 
 	virtual void  ExecuteFromParent(void* pRes, bool sucess = true)
 	{}
+
+	virtual void* GetRes()
+	{
+		return NULL;
+	}
+
+	virtual void* GetArgs()
+	{
+		return (void*)(&m_ArgTuple);
+	}
 private:
 	function_type				m_Func;
 	ArgsTubleType				m_ArgTuple;
@@ -398,6 +427,16 @@ public:
 			OnFailed();
 		}
 	}
+
+	virtual void* GetRes()
+	{
+		return NULL;
+	}
+
+	virtual void* GetArgs()
+	{
+		return NULL;
+	}
 private:
 	function_type			m_Func;
 	Par						m_Param;
@@ -453,6 +492,15 @@ public:
 		{
 			OnFailed();
 		}
+	}
+	virtual void* GetRes()
+	{
+		return NULL;
+	}
+
+	virtual void* GetArgs()
+	{
+		return NULL;
 	}
 private:
 	function_type			m_Func;

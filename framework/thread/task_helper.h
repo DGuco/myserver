@@ -360,17 +360,14 @@ public:
 	template<class Scheduler, class Func, typename return_type = std::result_of<Func(ParamList...)>::type>
 	CTaskHelper<return_type> AcceptAll(CSafePtr<Scheduler> scheduler, Func&& func)
 	{
-		ASSERT(m_TaskList.size() > 0);
+		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAll";
 		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type,Func,ParamList...>::CreateTask(scheduler, signature, func);
+		BYTE index = 0;
+		pTask->SetCombineCount(m_TaskList.size());
 		for (auto pChild : m_TaskList)
 		{
-			pChild->SetWaitTask(pTask, m_TaskList.size());
-			if (pChild->GetState() == enTaskState::eTaskDone
-				|| pChild->GetState() == enTaskState::eTaskFailed)
-			{
-				pChild->AddWaitDone();
-			}
+			pChild->SetWaitTask(pTask);
 		}
 		return CTaskHelper<return_type>(pTask);
 	}
@@ -378,17 +375,12 @@ public:
 	template<class Scheduler, class Func, typename return_type = std::result_of<Func()>::type>
 	CTaskHelper<return_type> ApplyAll(CSafePtr<Scheduler> scheduler, Func&& func)
 	{
-		ASSERT(m_TaskList.size() > 0);
+		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAll";
 		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type,Func,void>::CreateTask(scheduler, signature, func);
 		for (auto pChild : m_TaskList)
 		{
-			pChild->SetWaitTask(pTask, m_TaskList.size());
-			if (pChild->GetState() == enTaskState::eTaskDone
-				|| pChild->GetState() == enTaskState::eTaskFailed)
-			{
-				pChild->AddWaitDone();
-			}
+			pChild->SetWaitTask(pTask);
 		}
 		return CTaskHelper<return_type>(pTask);
 	}
