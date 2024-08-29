@@ -30,6 +30,13 @@ enum class enTaskState : unsigned char
 	eTaskFailed = 3,
 };
 
+enum class enCombineType : unsigned char
+{
+	eCombineNone = 0,
+	eCombineAccept = 1,
+	eCombineApply = 2,
+};
+
 class CArgsHolder
 {
 public:
@@ -37,6 +44,7 @@ public:
 	virtual ~CArgsHolder() {};
 public:
 	virtual void  FillWaitTaskParm(TaskPtr pTask,TaskPtr pWaitTask) = 0;
+	virtual bool  Empty() = 0;
 };
 
 class CThreadTask : public enable_shared_from_this<CThreadTask>
@@ -53,17 +61,21 @@ public:
 	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
 	enTaskState GetState()						{ return m_nState.load(std::memory_order_acquire); }
 	void SetState(enTaskState state)			{ m_nState.store(state, std::memory_order_release);}
+	enCombineType GetCombineType()				{ return m_combineType.load(std::memory_order_acquire); }
+	void SetCombineType(enCombineType state)	{ m_combineType.store(state, std::memory_order_release); }
 	template<BYTE combine_index, class... Args>
-	void SetCombineInfo()
+	void SetAcceptCombineInfo()
 	{
+		SetCombineType(enCombineType::eCombineAccept);
+		CSafeLock guard(m_combineLock);
 		if (m_pCombinedArgs != NULL)
 		{
 			ASSERT_EX(false, "This Task has combined once");
 		}
 		m_pCombinedArgs = new CTaskArgsList<combine_index, Args...>();
 	}
-
-	void SetWaitTask(TaskPtr ptr);
+	
+	void SetCombineTask(TaskPtr ptr);
 	void SetCombineCount(BYTE value);
 	void CombineTaskDone();
 	void OnFinish();
@@ -78,19 +90,36 @@ public:
 	virtual void* GetRes() = 0;
 	virtual void* GetArgs() = 0;
 private:
-	std::atomic<enTaskState>		m_nState;
-	std::string						m_TaskSignature;	//任务签名
-	time_t							m_nExecuteStart;	//任务开始执行时间
-	LockFreeLimitQueue<TaskPtr>		m_childTaskVec;
-	TaskPtr							m_WaitTask;
-	CMyLock							m_WaitLock;
-	std::atomic_uchar				m_combineDone;
-	BYTE							m_combineCount;
-	CSafePtr<CArgsHolder>			m_pCombinedArgs;
+	std::atomic<enTaskState>			m_nState;
+	std::string							m_TaskSignature;	//任务签名
+	time_t								m_nExecuteStart;	//任务开始执行时间
+	LockFreeLimitQueue<TaskPtr>			m_childTaskVec;
+	//combine info
+	CMyLock								m_combineLock;
+	TaskPtr								m_pCombineTask;
+	std::atomic_uchar					m_combineDone;
+	std::atomic_uchar					m_combineCount;
+	std::atomic<enCombineType>			m_combineType;
+	CSafePtr<CArgsHolder>				m_pCombinedArgs;
 protected:
 	CSafePtr<CThreadScheduler>		m_pScheduler;
 };
 
+class CVoidArgsList : public CArgsHolder
+{
+public:
+	CVoidArgsList() {};
+	virtual ~CVoidArgsList() {};
+	virtual void  FillWaitTaskParm(TaskPtr pTask, TaskPtr pWaitTask)
+	{
+		return;
+	}
+
+	virtual bool  Empty()
+	{
+		return true;
+	}
+};
 template<BYTE combineIndex, class... Args>
 class CTaskArgsList : public CArgsHolder
 {
@@ -112,10 +141,19 @@ public:
 	{
 		void* pRes = pTask->GetRes();
 		void* pArgs = pWaitTask->GetArgs();
+		if (pRes == NULL || pArgs == NULL)
+		{
+			return;
+		}
 		ParamTypeElement& tmArgs = *(ParamTypeElement*)(pArgs);
 		using ArgType = args<combineIndex>::type;
 		ArgType& tmRes = *(ArgType*)(pRes);
 		std::get<combineIndex>(tmArgs) = tmRes;
+	}
+
+	virtual bool Empty()
+	{
+		return false;
 	}
 };
 template<class Func, class...Args>

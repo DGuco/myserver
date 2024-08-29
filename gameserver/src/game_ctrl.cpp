@@ -73,42 +73,42 @@ bool CGameCtrl::PrepareToRun()
 				printf("finres = %d\n", finres);
 			});
 
-	auto task1 = m_pScheduler->Schedule("InitTcpServer",
+	auto task1 = m_pScheduler->Schedule("CombineTask1",
 		[a, b]
 		{
 			return a + b;
 		});
 
-	auto task2 = m_pSchedulerDb->Schedule("InitTcpServer",
+	auto task2 = m_pSchedulerDb->Schedule("CombineTask2",
 		[]
 		{
 			return "Task2 execute done ";
 		});
 
-	auto task3 = m_pScheduler->Schedule("InitTcpServer",
+	auto task3 = m_pScheduler->Schedule("CombineTask3",
 		[a, b]
 		{
 			return a / b;
 		});
 
-	auto task4 = m_pSchedulerDb->Schedule("InitTcpServer",
+	auto task4 = m_pSchedulerDb->Schedule("CombineTask4",
 		[a, b]
 		{
 			return a % b;
 		});
 
-	CThreadScheduler::Combine(task1, task2, task3, task4)
+	CThreadScheduler::AcceptCombine(task1, task2, task3, task4)
 		.AcceptAll(m_pSchedulerDb, 
-				[](int res1, std::string res2, int res3,int res4)
-				{
-					int nRes =  res1 + res3 + res4;
-					CACHE_LOG(DEBUG_CACHE, "Task res :{},combineres = {}", res2, nRes);
-				});
+			[](int res1, std::string res2, int res3, int res4)
+			{
+				int nRes = res1 + res3 + res4;
+				CACHE_LOG(DEBUG_CACHE, "Task res :{},combineres = {}", res2, nRes);
+			});
 
-// 	CThreadScheduler::Combine(task1, task2, task3, task4)
+// 	CThreadScheduler::ApplyCombine(task1, task2, task3, task4)
 // 		.ApplyAll(m_pScheduler, []()
 // 			{
-// 
+// 				CACHE_LOG(DEBUG_CACHE, " ApplyAll ApplyAll ApplyAll ");
 // 			});
 	return true;
 }
