@@ -348,8 +348,9 @@ class CAcceptCombineTaskHelper
 		using type = typename std::tuple_element<I, ParamTypeElement>::type;
 	};
 public:
-	CAcceptCombineTaskHelper(std::vector<TaskPtr> taskList)
+	CAcceptCombineTaskHelper(CSafePtr<CThreadScheduler>	scheduler,std::vector<TaskPtr> taskList)
 	{
+		m_pScheduler = scheduler;
 		m_TaskList = taskList;
 	}
 
@@ -357,8 +358,8 @@ public:
 	{
 	}
 
-	template<class Scheduler, class Func, typename return_type = std::result_of<Func(ParamList...)>::type>
-	CTaskHelper<return_type> AcceptAll(CSafePtr<Scheduler> scheduler, Func&& func)
+	template<class Func, typename return_type = std::result_of<Func(ParamList...)>::type>
+	CTaskHelper<return_type> AcceptAll(Func&& func)
 	{
 		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAll";
@@ -372,27 +373,28 @@ public:
 		return CTaskHelper<return_type>(pTask);
 	}
 private:
-	std::vector<TaskPtr> m_TaskList;
+	CSafePtr<CThreadScheduler>	m_pScheduler;
+	std::vector<TaskPtr>		m_TaskList;
 };
 
 class CApplyCombineTaskHelper
 {
 public:
-	CApplyCombineTaskHelper(std::vector<TaskPtr> taskList)
+	CApplyCombineTaskHelper(CSafePtr<CThreadScheduler>	scheduler, std::vector<TaskPtr> taskList)
 	{
+		m_pScheduler = scheduler;
 		m_TaskList = taskList;
 	}
 
 	~CApplyCombineTaskHelper()
-	{
-	}
+	{}
 
-	template<class Scheduler, class Func, typename return_type = std::result_of<Func()>::type>
-	CTaskHelper<return_type> ApplyAll(CSafePtr<Scheduler> scheduler, Func&& func)
+	template<class Func, typename return_type = std::result_of<Func()>::type>
+	CTaskHelper<return_type> ApplyAll(Func&& func)
 	{
 		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAll";
-		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type, Func, void>::CreateTask(scheduler, signature, func);
+		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type, Func, void>::CreateTask(m_pScheduler, signature, func);
 		pTask->SetCombineCount(m_TaskList.size());
 		for (auto pChild : m_TaskList)
 		{
@@ -401,7 +403,8 @@ public:
 		return CTaskHelper<return_type>(pTask);
 	}
 private:
-	std::vector<TaskPtr> m_TaskList;
+	CSafePtr<CThreadScheduler>	m_pScheduler;
+	std::vector<TaskPtr>		m_TaskList;
 };
 
 #endif //__TASK_HELPER_H__

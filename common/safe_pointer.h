@@ -36,8 +36,13 @@ template<typename Tp>
 class CSafePtr
 {
 public:
-	CSafePtr() : nDataH(SPO_FLAG_H), nDataL(SPO_FLAG_L) {}
-	CSafePtr(Tp* pointer,bool autofree = false)
+	CSafePtr() : nDataH(SPO_FLAG_H), nDataL(SPO_FLAG_L) 
+	{
+#ifdef _DEBUG_
+		m_pPointer = NULL;
+#endif 
+	}
+	CSafePtr(Tp* pointer)
 	{
 		nDataH = SPO_FLAG_H;
 		nDataL = SPO_FLAG_L;
@@ -49,6 +54,9 @@ public:
 			nDataH = nDataH | (pvalue & (SPO_MAGIC_NUM >> index)/*取出要保存的位,其他位置为*/);//保有当前位的值到相应位愿
 			index++;
 		}
+#ifdef _DEBUG_
+		m_pPointer = pointer;
+#endif 
 	}
 
 	CSafePtr<Tp>& operator=(const Tp* pOhter)
@@ -61,8 +69,12 @@ public:
 	{
 		nDataH = pOhter.nDataH;
 		nDataL = pOhter.nDataL;
+#ifdef _DEBUG_
+		m_pPointer = pOhter.m_pPointer;
+#endif 
 		return *this;
 	}
+
 	bool IsPointerBad()
 	{
 		char eMsg[256] = { 0 };
@@ -74,6 +86,9 @@ public:
 	{
 		nDataH = SPO_FLAG_H;
 		nDataL = SPO_FLAG_L;
+#ifdef _DEBUG_
+		m_pPointer = NULL;
+#endif 
 	}
 
 	void Reset(const Tp* pointer)
@@ -88,6 +103,9 @@ public:
 			nDataH = nDataH | (pvalue & (SPO_MAGIC_NUM >> index)/*取出要保存的位,其他位置为*/);//保有当前位的值到相应位愿
 			index++;
 		}
+#ifdef _DEBUG_
+		m_pPointer = const_cast<Tp*>(pointer);
+#endif 
 	}
 
 	//获取高位fag
@@ -160,6 +178,9 @@ public:
 		DELETE(pPointer);
 		nDataH = SPO_FLAG_H;
 		nDataL = SPO_FLAG_L;
+#ifdef _DEBUG_
+		m_pPointer = NULL;
+#endif 
 	}
 private:
 	Tp* GetThrow(bool nullcheck = false) const
@@ -178,12 +199,21 @@ private:
 			sprintf_s(eMsg,256, SPO_ERROR_MSG, (unsigned long)GetFlagH(), (unsigned long)GetFlagL(), (void*)pPoint);
 			throw std::runtime_error(eMsg);
 		}
+#ifdef _DEBUG_
+		if (pPoint != m_pPointer)
+		{
+			throw std::runtime_error("pointer is bad pPoint != m_pPointer");
+		}
+#endif 
 		return pPoint;
 	}
 
 private:
 	SPO_DATA_TYPE nDataH;
 	SPO_DATA_TYPE nDataL;
+#ifdef _DEBUG_
+	Tp*			  m_pPointer;
+#endif 
 };
 
 #endif //__SAFE_POINTER_H__

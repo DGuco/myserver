@@ -33,8 +33,8 @@ enum class enTaskState : unsigned char
 enum class enCombineType : unsigned char
 {
 	eCombineNone = 0,
-	eCombineAccept = 1,
-	eCombineApply = 2,
+	eCombineCombined = 1,
+	eCombineDone = 2,
 };
 
 class CArgsHolder
@@ -61,12 +61,11 @@ public:
 	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
 	enTaskState GetState()						{ return m_nState.load(std::memory_order_acquire); }
 	void SetState(enTaskState state)			{ m_nState.store(state, std::memory_order_release);}
-	enCombineType GetCombineType()				{ return m_combineType.load(std::memory_order_acquire); }
-	void SetCombineType(enCombineType state)	{ m_combineType.store(state, std::memory_order_release); }
+	enCombineType GetCombineType()				{ return m_combineType; }
+	void SetCombineType(enCombineType state)	{ m_combineType = state; }
 	template<BYTE combine_index, class... Args>
 	void SetAcceptCombineInfo()
 	{
-		SetCombineType(enCombineType::eCombineAccept);
 		CSafeLock guard(m_combineLock);
 		if (m_pCombinedArgs != NULL)
 		{
@@ -99,7 +98,7 @@ private:
 	TaskPtr								m_pCombineTask;
 	std::atomic_uchar					m_combineDone;
 	std::atomic_uchar					m_combineCount;
-	std::atomic<enCombineType>			m_combineType;
+	enCombineType						m_combineType;
 	CSafePtr<CArgsHolder>				m_pCombinedArgs;
 protected:
 	CSafePtr<CThreadScheduler>		m_pScheduler;

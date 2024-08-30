@@ -39,18 +39,18 @@ public:
 	}
 
 	template<typename RT1,typename RT2>
-	static CAcceptCombineTaskHelper<RT1, RT2> AcceptCombine(CTaskHelper<RT1> task1, 
+	CAcceptCombineTaskHelper<RT1, RT2> AcceptCombine(CTaskHelper<RT1> task1, 
 															CTaskHelper<RT2> task2)
 	{
 		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2>();
 		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2>();
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask() };
-		return CAcceptCombineTaskHelper<RT1, RT2>(taskList);
+		return CAcceptCombineTaskHelper<RT1, RT2>(this, taskList);
 	}
 
 
 	template<typename RT1, typename RT2, typename RT3>
-	static CAcceptCombineTaskHelper<RT1, RT2,RT3> AcceptCombine(
+	CAcceptCombineTaskHelper<RT1, RT2,RT3> AcceptCombine(
 										 CTaskHelper<RT1> task1,
 										 CTaskHelper<RT2> task2,
 										 CTaskHelper<RT3> task3)
@@ -59,11 +59,11 @@ public:
 		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3>();
 		task3.GetTask()->SetAcceptCombineInfo<2, RT1, RT2, RT3>();
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask()};
-		return CAcceptCombineTaskHelper<RT1, RT2, RT3>(taskList);
+		return CAcceptCombineTaskHelper<RT1, RT2, RT3>(this, taskList);
 	}
 
 	template<typename RT1, typename RT2, typename RT3, typename RT4>
-	static CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4> AcceptCombine(
+	CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4> AcceptCombine(
 										 CTaskHelper<RT1> task1,
 										 CTaskHelper<RT2> task2,
 										 CTaskHelper<RT3> task3,
@@ -74,11 +74,11 @@ public:
 		task3.GetTask()->SetAcceptCombineInfo<2, RT1, RT2, RT3, RT4>();
 		task4.GetTask()->SetAcceptCombineInfo<3, RT1, RT2, RT3, RT4>();
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask() };
-		return CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4>(taskList);
+		return CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4>(this, taskList);
 	}
 
 	template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5>
-	static CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4,RT5> AcceptCombine(
+	CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4,RT5> AcceptCombine(
 										 CTaskHelper<RT1> task1,
 										 CTaskHelper<RT2> task2,
 										 CTaskHelper<RT3> task3,
@@ -89,13 +89,13 @@ public:
 		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3, RT4, RT5>();
 		task3.GetTask()->SetAcceptCombineInfo<2, RT1, RT2, RT3, RT4, RT5>();
 		task4.GetTask()->SetAcceptCombineInfo<3, RT1, RT2, RT3, RT4, RT5>();
-		task5.GetTask()->SetCombineInfo<4, RT1, RT2, RT3, RT4, RT5>();
+		task5.GetTask()->SetAcceptCombineInfo<4, RT1, RT2, RT3, RT4, RT5>();
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask() };
-		return CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5>(taskList);
+		return CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5>(this, taskList);
 	}
 
 	template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5, typename RT6>
-	static CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5, RT6> AcceptCombine(
+	CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5, RT6> AcceptCombine(
 										 CTaskHelper<RT1> task1,
 										 CTaskHelper<RT2> task2,
 										 CTaskHelper<RT3> task3,
@@ -110,14 +110,21 @@ public:
 		task5.GetTask()->SetAcceptCombineInfo<4, RT1, RT2, RT3, RT4, RT5, RT6>();
 		task6.GetTask()->SetAcceptCombineInfo<5, RT1, RT2, RT3, RT4, RT5, RT6>();
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask(),task6.GetTask() };
-		return CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5, RT6>(taskList);
+		return CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5, RT6>(this, taskList);
 	}
 
+	template<typename ...Args>
+	CApplyCombineTaskHelper ApplyCombine(Args... args)
+	{
+		std::vector<TaskPtr> taskList;
+		PushArgs(taskList, args...);
+		return CApplyCombineTaskHelper(this,taskList);
+	}
+
+	/*
 	template<typename RT1, typename RT2>
 	static CApplyCombineTaskHelper ApplyCombine(CTaskHelper<RT1> task1,CTaskHelper<RT2> task2)
 	{
-		task1.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task2.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask() };
 		return CApplyCombineTaskHelper(taskList);
 	}
@@ -127,9 +134,6 @@ public:
 												CTaskHelper<RT2> task2,
 												CTaskHelper<RT3> task3)
 	{
-		task1.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task2.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task3.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask() };
 		return CApplyCombineTaskHelper(taskList);
 	}
@@ -140,10 +144,6 @@ public:
 												 CTaskHelper<RT3> task3,
 												 CTaskHelper<RT4> task4)
 	{
-		task1.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task2.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task3.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task4.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask() };
 		return CApplyCombineTaskHelper(taskList);
 	}
@@ -155,11 +155,6 @@ public:
 												 CTaskHelper<RT4> task4,
 												 CTaskHelper<RT5> task5)
 	{
-		task1.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task2.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task3.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task4.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task5.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask() };
 		return CApplyCombineTaskHelper(taskList);
 	}
@@ -172,14 +167,27 @@ public:
 												  CTaskHelper<RT5> task5,
 												  CTaskHelper<RT6> task6)
 	{
-		task1.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task2.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task3.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task4.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task5.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
-		task6.GetTask()->SetCombineType(enCombineType::eCombineAcpply);
 		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask(),task6.GetTask() };
 		return CApplyCombineTaskHelper (taskList);
+	}*/
+private:
+	//°Ñ²ÎÊýÑ¹Õ»
+	void PushArgs(std::vector<TaskPtr>& taskList)
+	{
+		return;
+	}
+	template<typename T>
+	void PushArgs(std::vector<TaskPtr>& taskList, const T& t)
+	{
+		taskList.push_back(t.GetTask());
+		t.GetTask().
+	}
+
+	template<typename First, typename... Rest>
+	void PushArgs(std::vector<TaskPtr>& taskList, First& first, Rest &...rest)
+	{
+		taskList.push_back(first.GetTask());
+		PushArgs(taskList, rest...);
 	}
 private:
 	std::vector<CSafePtr<CTaskThread>> m_Workers;

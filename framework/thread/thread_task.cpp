@@ -20,52 +20,6 @@ CThreadTask::~CThreadTask()
 	m_pCombinedArgs.Free();
 }
 
-void CThreadTask::SetCombineTask(TaskPtr ptr)
- {
-	enCombineType bType = GetCombineType();
-	if (bType == enCombineType::eCombineAccept)
-	{
-		CSafeLock guard(m_combineLock);
-		m_pCombineTask = ptr;
-		enTaskState bState = GetState();
-		if (bState == enTaskState::eTaskDone || bState == enTaskState::eTaskFailed)
-		{
-			if (bState == enTaskState::eTaskDone)
-			{
-				if (m_pCombinedArgs != NULL)
-				{
-					m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
-				}
-				m_pCombineTask->CombineTaskDone();
-			}
-			else
-			{
-				m_pCombineTask->OnFailed();
-			}
-		}
-	}
-	else if(bType == enCombineType::eCombineApply)
-	{
-		{
-			CSafeLock guard(m_combineLock);
-			m_pCombineTask = ptr;
-		}
-		enTaskState bState = GetState();
-		if (bState == enTaskState::eTaskDone || bState == enTaskState::eTaskFailed)
-		{
-			if (bState == enTaskState::eTaskDone)
-			{
-				m_pCombineTask->CombineTaskDone();
-			}
-			else
-			{
-				m_pCombineTask->OnFailed();
-			}
-		}
-	}
-
-}
-
 void CThreadTask::SetCombineCount(BYTE value)
 {
 	m_combineCount.store(memory_order_release);
@@ -73,33 +27,23 @@ void CThreadTask::SetCombineCount(BYTE value)
 
 void CThreadTask::CombineTaskDone()
 {
-	try
+	int oldValue = m_combineDone.fetch_add(1);
+	//最后一个完成
+	int nTmCombineCount = m_combineCount.load(memory_order_acquire);
+	int nCombineDone = m_combineDone.load(memory_order_acquire);
+	if (nCombineDone == nTmCombineCount && oldValue == nTmCombineCount - 1)
 	{
-
-		CACHE_LOG(THREAD_ERROR, "Task[{}] CombineTaskDone", m_TaskSignature);
-		int oldValue = m_combineDone.fetch_add(1);
-		//最后一个完成
-		int nTmCombineCount = m_combineCount.load(memory_order_acquire);
-		int nCombineDone = m_combineDone.load(memory_order_acquire);
-		if (nCombineDone == nTmCombineCount && oldValue == nTmCombineCount - 1)
+		//如果就在当前的执行shcheler中，直接执行
+		if (g_thread_data.own_scheduler == m_pScheduler)
 		{
-			//如果就在当前的执行shcheler中，直接执行
-			if (g_thread_data.own_scheduler == m_pScheduler)
-			{
-				Run();
-			}
-			else
-			{
-				//push 到对应scheduler的队列中
-				m_pScheduler->PushTask(GetShared());
-			}
+			Run();
+		}
+		else
+		{
+			//push 到对应scheduler的队列中
+			m_pScheduler->PushTask(GetShared());
 		}
 	}
-	catch (std::exception* e)
-	{
-		int a = 1;
-	}
-
 }
 
 void CThreadTask::AddChildTask(TaskPtr pTask)
@@ -111,6 +55,37 @@ void CThreadTask::AddChildTask(TaskPtr pTask)
 	}
 }
 
+void CThreadTask::SetCombineTask(TaskPtr ptr)
+{
+	enCombineType bType = GetCombineType();
+	enTaskState bState = GetState();
+	{
+		CSafeLock guard(m_combineLock);
+		m_pCombineTask = ptr;
+		if (bState == enTaskState::eTaskDone)
+		{
+			if (m_pCombinedArgs != NULL)
+			{
+				m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
+			}
+		}
+	}
+
+	if (bState == enTaskState::eTaskDone)
+	{
+		m_pCombineTask->CombineTaskDone();
+		SetCombineType(enCombineType::eCombineDone);
+	}else if (bState == enTaskState::eTaskFailed)
+	{
+		m_pCombineTask->OnFailed();
+		SetCombineType(enCombineType::eCombineDone);
+	}
+	else
+	{
+		SetCombineType(enCombineType::eCombineCombined);
+	}
+}
+
 void CThreadTask::OnFinish()
 {
 	enCombineType bType = GetCombineType();
@@ -119,22 +94,22 @@ void CThreadTask::OnFinish()
 		SetState(enTaskState::eTaskDone);
 		RunChildTask();
 	}
-	else if(bType == enCombineType::eCombineAccept)
+	else if(bType == enCombineType::eCombineCombined)
 	{
-		CSafeLock guard(m_combineLock);
+		{
+			CSafeLock guard(m_combineLock);
+			if (m_pCombineTask != NULL)
+			{
+				if (m_pCombinedArgs != NULL)
+				{
+					m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
+				}
+			}
+		}
+		m_pCombineTask->CombineTaskDone();
+		SetCombineType(enCombineType::eCombineDone);
 		SetState(enTaskState::eTaskDone);
 		RunChildTask();
-		if (m_pCombineTask != NULL)
-		{
-			if (m_pCombinedArgs != NULL)
-			{
-				m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
-			}
-			m_pCombineTask->CombineTaskDone();
-		}
-	}
-	else if (bType == enCombineType::eCombineApply)
-	{
 
 	}
 }
