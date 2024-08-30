@@ -35,6 +35,7 @@ public:
 	int				GetSecond() { return m_TM.tm_sec; };		//[0,59]
 	//取得当前是星期几；0表示：星期天，1～6表示：星期一～星期六
 	int				GetWeek() { return m_TM.tm_wday; };
+	static std::tm	LocalTime(const std::time_t& time_tt);
 private:
 	std::chrono::time_point<std::chrono::system_clock> m_CacheTime;
 	tm m_TM;

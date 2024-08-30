@@ -121,55 +121,6 @@ public:
 		return CApplyCombineTaskHelper(this,taskList);
 	}
 
-	/*
-	template<typename RT1, typename RT2>
-	static CApplyCombineTaskHelper ApplyCombine(CTaskHelper<RT1> task1,CTaskHelper<RT2> task2)
-	{
-		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask() };
-		return CApplyCombineTaskHelper(taskList);
-	}
-
-	template<typename RT1, typename RT2, typename RT3>
-	static CApplyCombineTaskHelper ApplyCombine(CTaskHelper<RT1> task1,
-												CTaskHelper<RT2> task2,
-												CTaskHelper<RT3> task3)
-	{
-		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask() };
-		return CApplyCombineTaskHelper(taskList);
-	}
-
-	template<typename RT1, typename RT2, typename RT3, typename RT4>
-	static CApplyCombineTaskHelper  ApplyCombine(CTaskHelper<RT1> task1,
-												 CTaskHelper<RT2> task2,
-												 CTaskHelper<RT3> task3,
-												 CTaskHelper<RT4> task4)
-	{
-		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask() };
-		return CApplyCombineTaskHelper(taskList);
-	}
-
-	template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5>
-	static CApplyCombineTaskHelper ApplyCombine(CTaskHelper<RT1> task1,
-												 CTaskHelper<RT2> task2,
-												 CTaskHelper<RT3> task3,
-												 CTaskHelper<RT4> task4,
-												 CTaskHelper<RT5> task5)
-	{
-		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask() };
-		return CApplyCombineTaskHelper(taskList);
-	}
-
-	template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5, typename RT6>
-	static CApplyCombineTaskHelper  AcceptCombine(CTaskHelper<RT1> task1,
-												  CTaskHelper<RT2> task2,
-												  CTaskHelper<RT3> task3,
-												  CTaskHelper<RT4> task4,
-												  CTaskHelper<RT5> task5,
-												  CTaskHelper<RT6> task6)
-	{
-		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask(),task6.GetTask() };
-		return CApplyCombineTaskHelper (taskList);
-	}*/
 private:
 	//°Ñ²ÎÊıÑ¹Õ»
 	void PushArgs(std::vector<TaskPtr>& taskList)

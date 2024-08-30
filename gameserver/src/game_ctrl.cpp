@@ -105,11 +105,11 @@ bool CGameCtrl::PrepareToRun()
 				CACHE_LOG(DEBUG_CACHE, "Task res :{},combineres = {}", res2, nRes);
 			});
 
-	m_pSchedulerDb->ApplyCombine(task1, task2, task3, task4)
-		.ApplyAll([]()
-			{
-				CACHE_LOG(DEBUG_CACHE, " ApplyAll ApplyAll ApplyAll ");
-			});
+// 	m_pSchedulerDb->ApplyCombine(task1, task2, task3, task4)
+// 		.ApplyAll([]()
+// 			{
+// 				CACHE_LOG(DEBUG_CACHE, " ApplyAll ApplyAll ApplyAll ");
+// 			});
 	return true;
 }
 

@@ -71,9 +71,10 @@ void CThreadScheduler::DebugTask()
 					time_t startTime = pTask->GetStartTime();
 					time_t logtime = startTime / 1000;
 					//localtime非线程安全
-					tm* p = localtime(&logtime);
+					//tm* logTime = localtime(&logtime);
+					std::tm logTime = CTimeHelper::LocalTime(logtime);
 					CACHE_LOG(THREAD_CACHE, "Thread[{}] running task[{}],task begintime[{}-{}-{} {}:{}:{}.{}] ",i, pTask->GetSignature(),
-						p->tm_year + 1900, p->tm_mon + 1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, startTime % 1000);
+						logTime.tm_year + 1900, logTime.tm_mon + 1, logTime.tm_mday, logTime.tm_hour, logTime.tm_min, logTime.tm_sec, startTime % 1000);
 				}
 			}
 		}

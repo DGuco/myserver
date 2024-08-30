@@ -44,3 +44,16 @@ void CTimeHelper::SetTime(std::chrono::time_point<std::chrono::system_clock> tim
 	m_TM = *ptm;
 }
 
+std::tm CTimeHelper::LocalTime(const std::time_t& time_tt)
+{
+	//localtime非线程安全
+	//tm* logTime = localtime(&logtime);
+#ifdef __WINDOWS__
+	std::tm tm;
+	localtime_s(&tm, &time_tt);
+#else
+	std::tm tm;
+	localtime_r(&time_tt, &tm);
+#endif
+	return tm;
+}

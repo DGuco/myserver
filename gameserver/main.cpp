@@ -177,24 +177,8 @@ void TestLua()
 	return;
 }
 
-
-template<class Func>
-void Schedule( Func&& f)
-{
-	using return_type =  typename std::result_of<Func(int)>::type;
-	std::function<int(int)> func = f;
-	return_type res = f(10);
-}
 int main(int argc, char *argv[])
 {
-	int a = 10;
-	int b = 20;
-	Schedule([a, b] (int res)
-		{
-			int ret = res + a + b;
-			printf("ret = %d\n", ret);
-			return ret;
-		});
 	TestLua();
 	//ÐÅºÅ´¦Àí×¢²á
 	CSignalHandler::GetSingletonPtr()->RegisterHandler("gameserver");
