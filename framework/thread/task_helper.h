@@ -253,12 +253,13 @@ class CTaskHelper
 {
 public:
 	CTaskHelper(TaskPtr ptr) : m_pTaskPtr (ptr)
-	{
-	}
-
+	{}
 	~CTaskHelper() 
-	{
-	}
+	{}
+// 	CTaskHelper(const CTaskHelper&) = delete;//禁止复制构造函数	
+// 	CTaskHelper& operator=(const CTaskHelper&) = delete;//禁止复制赋值运算符		
+// 	CTaskHelper(CTaskHelper&&) = delete;//禁止移动构造函数	
+// 	CTaskHelper& operator=(CTaskHelper&&) = delete;//禁止移动赋值运算符		
 
 	//template<class Scheduler,class Func, class... Args, typename return_type = std::result_of<Func(Args...)>::type>
 	/*lambda [a,b]() {},a,b作为捕获的参数列表并不是函数的参数在std::result_of<Func(Args...)>编译时，推导的Args...类型
@@ -355,20 +356,24 @@ public:
 	}
 
 	~CAcceptCombineTaskHelper()
-	{
-	}
+	{}
+
+// 	CAcceptCombineTaskHelper(const CAcceptCombineTaskHelper&) = delete;//禁止复制构造函数	
+// 	CAcceptCombineTaskHelper& operator=(const CAcceptCombineTaskHelper&) = delete;//禁止复制赋值运算符		
+// 	CAcceptCombineTaskHelper(CAcceptCombineTaskHelper&&) = delete;//禁止移动构造函数	
+// 	CAcceptCombineTaskHelper& operator=(CAcceptCombineTaskHelper&&) = delete;//禁止移动赋值运算符		
 
 	template<class Func, typename return_type = std::result_of<Func(ParamList...)>::type>
 	CTaskHelper<return_type> AcceptAll(Func&& func)
 	{
 		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAll";
-		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type,Func,ParamList...>::CreateTask(scheduler, signature, func);
+		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type,Func,ParamList...>::CreateTask(m_pScheduler, signature, func);
 		BYTE index = 0;
 		pTask->SetCombineCount(m_TaskList.size());
 		for (auto pChild : m_TaskList)
 		{
-			pChild->SetCombineTask(pTask);
+			pChild->SetCombineTask(pTask,enCombineType::eCombineAccept);
 		}
 		return CTaskHelper<return_type>(pTask);
 	}
@@ -389,6 +394,11 @@ public:
 	~CApplyCombineTaskHelper()
 	{}
 
+// 	CApplyCombineTaskHelper(const CApplyCombineTaskHelper&) = delete;//禁止复制构造函数	
+// 	CApplyCombineTaskHelper& operator=(const CApplyCombineTaskHelper&) = delete;//禁止复制赋值运算符		
+// 	CApplyCombineTaskHelper(CApplyCombineTaskHelper&&) = delete;//禁止移动构造函数	
+// 	CApplyCombineTaskHelper& operator=(CApplyCombineTaskHelper&&) = delete;//禁止移动赋值运算符		
+
 	template<class Func, typename return_type = std::result_of<Func()>::type>
 	CTaskHelper<return_type> ApplyAll(Func&& func)
 	{
@@ -398,7 +408,7 @@ public:
 		pTask->SetCombineCount(m_TaskList.size());
 		for (auto pChild : m_TaskList)
 		{
-			pChild->SetCombineTask(pTask);
+			pChild->SetCombineTask(pTask, enCombineType::eCombineApply);
 		}
 		return CTaskHelper<return_type>(pTask);
 	}

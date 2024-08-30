@@ -97,13 +97,13 @@ bool CGameCtrl::PrepareToRun()
 			return a % b;
 		});
 
-// 	CThreadScheduler::AcceptCombine(task1, task2, task3, task4)
-// 		.AcceptAll(m_pSchedulerDb, 
-// 			[](int res1, std::string res2, int res3, int res4)
-// 			{
-// 				int nRes = res1 + res3 + res4;
-// 				CACHE_LOG(DEBUG_CACHE, "Task res :{},combineres = {}", res2, nRes);
-// 			});
+	m_pSchedulerDb->AcceptCombine(task1, task2, task3, task4)
+		.AcceptAll(
+			[](int res1, std::string res2, int res3, int res4)
+			{
+				int nRes = res1 + res3 + res4;
+				CACHE_LOG(DEBUG_CACHE, "Task res :{},combineres = {}", res2, nRes);
+			});
 
 	m_pSchedulerDb->ApplyCombine(task1, task2, task3, task4)
 		.ApplyAll([]()

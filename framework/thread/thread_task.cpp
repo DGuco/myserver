@@ -16,8 +16,37 @@ CThreadTask::CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signa
 
 CThreadTask::~CThreadTask()
 {
-	RunChildTask();
-	m_pCombinedArgs.Free();
+	try 
+	{
+		enCombineType bType = GetCombineType();
+		enTaskState bState = GetState();
+		//等待执行CombineTaskDone
+		if (bType == enCombineType::eCombineAccept || bType == enCombineType::eCombineApply)
+		{
+			{
+				CSafeLock guard(m_combineLock);
+				if (m_pCombineTask != NULL &&
+					bType == enCombineType::eCombineAccept &&
+					bState == enTaskState::eTaskDone)
+				{
+					m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
+				}
+			}
+			if (bState == enTaskState::eTaskDone)
+			{
+				m_pCombineTask->CombineTaskDone();
+			}
+			else
+			{
+				m_pCombineTask->OnFailed();
+			}
+			SetCombineType(enCombineType::eCombineDone);
+		}
+		RunChildTask();
+		m_pCombinedArgs.Free();
+	}
+	catch(std::exception e)
+	{}
 }
 
 void CThreadTask::SetCombineCount(BYTE value)
@@ -27,6 +56,12 @@ void CThreadTask::SetCombineCount(BYTE value)
 
 void CThreadTask::CombineTaskDone()
 {
+	enTaskState bState = GetState();
+	//其中有一个前置任务失败了，后续的不用执行了
+	if (bState == enTaskState::eTaskFailed)
+	{
+		return;
+	}
 	int oldValue = m_combineDone.fetch_add(1);
 	//最后一个完成
 	int nTmCombineCount = m_combineCount.load(memory_order_acquire);
@@ -55,83 +90,38 @@ void CThreadTask::AddChildTask(TaskPtr pTask)
 	}
 }
 
-void CThreadTask::SetCombineTask(TaskPtr ptr)
+void CThreadTask::OnFinish()
 {
 	enCombineType bType = GetCombineType();
-	enTaskState bState = GetState();
+	//等待执行CombineTaskDone
+	if(bType == enCombineType::eCombineAccept || bType == enCombineType::eCombineApply)
 	{
-		CSafeLock guard(m_combineLock);
-		m_pCombineTask = ptr;
-		if (bState == enTaskState::eTaskDone)
 		{
-			if (m_pCombinedArgs != NULL)
+			CSafeLock guard(m_combineLock);
+			if (m_pCombineTask != NULL && bType == enCombineType::eCombineAccept)
 			{
 				m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
 			}
 		}
-	}
-
-	if (bState == enTaskState::eTaskDone)
-	{
 		m_pCombineTask->CombineTaskDone();
 		SetCombineType(enCombineType::eCombineDone);
-	}else if (bState == enTaskState::eTaskFailed)
-	{
-		m_pCombineTask->OnFailed();
-		SetCombineType(enCombineType::eCombineDone);
 	}
-	else
-	{
-		SetCombineType(enCombineType::eCombineCombined);
-	}
-}
-
-void CThreadTask::OnFinish()
-{
-	enCombineType bType = GetCombineType();
-	if (bType == enCombineType::eCombineNone)
-	{
-		SetState(enTaskState::eTaskDone);
-		RunChildTask();
-	}
-	else if(bType == enCombineType::eCombineCombined)
-	{
-		{
-			CSafeLock guard(m_combineLock);
-			if (m_pCombineTask != NULL)
-			{
-				if (m_pCombinedArgs != NULL)
-				{
-					m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
-				}
-			}
-		}
-		m_pCombineTask->CombineTaskDone();
-		SetCombineType(enCombineType::eCombineDone);
-		SetState(enTaskState::eTaskDone);
-		RunChildTask();
-
-	}
+	SetState(enTaskState::eTaskDone);
+	RunChildTask();
 }
 
 void CThreadTask::OnFailed() 
 {
-	if (m_pCombinedArgs == NULL)
+	enCombineType bType = GetCombineType();
+	//等待执行CombineTaskDone
+	if (bType == enCombineType::eCombineAccept || bType == enCombineType::eCombineApply)
 	{
-		SetState(enTaskState::eTaskFailed);
-		CACHE_LOG(THREAD_ERROR, "Task[{}] execute failed", m_TaskSignature);
-		RunChildTask();
+		m_pCombineTask->OnFailed();
+		SetCombineType(enCombineType::eCombineDone);
 	}
-	else
-	{
-		CACHE_LOG(THREAD_ERROR, "Task[{}] execute failed", m_TaskSignature);
-		RunChildTask();
-		if (m_pCombineTask != NULL)
-		{
-			m_pCombineTask->OnFailed();
-		}
-	}
-
+	SetState(enTaskState::eTaskFailed);
+	RunChildTask();
+	CACHE_LOG(THREAD_ERROR, "Task[{}] execute failed", m_TaskSignature);
 }
 
 void CThreadTask::Run()
@@ -174,5 +164,42 @@ void CThreadTask::RunChildTask()
 		{
 			ExecuteChildTask(pTask);
 		}
+	}
+}
+
+void CThreadTask::SetCombineTask(TaskPtr ptr,enCombineType combineType)
+{
+	enCombineType bType = GetCombineType();
+	if (bType != enCombineType::eCombineNone)
+	{
+		ASSERT_EX(false, "This task {%s} has been combined", m_TaskSignature.c_str());
+	}
+	enTaskState bState = GetState();
+	{
+		CSafeLock guard(m_combineLock);
+		m_pCombineTask = ptr;
+		if (bState == enTaskState::eTaskDone)
+		{
+			if (m_pCombinedArgs != NULL && combineType == enCombineType::eCombineAccept)
+			{
+				m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
+			}
+		}
+	}
+	//此时任务已经完成，则直接CombineTaskDone
+	if (bState == enTaskState::eTaskDone)
+	{
+		m_pCombineTask->CombineTaskDone();
+		SetCombineType(enCombineType::eCombineDone);
+	}
+	//此时任务失败，则直接OnFailed
+	else if (bState == enTaskState::eTaskFailed)
+	{
+		m_pCombineTask->OnFailed();
+		SetCombineType(enCombineType::eCombineDone);
+	}
+	else  //任务还没有完成，正在执行中，标记任务等待执行CombineTaskDone
+	{
+		SetCombineType(combineType);
 	}
 }

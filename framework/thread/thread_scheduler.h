@@ -39,8 +39,8 @@ public:
 	}
 
 	template<typename RT1,typename RT2>
-	CAcceptCombineTaskHelper<RT1, RT2> AcceptCombine(CTaskHelper<RT1> task1, 
-															CTaskHelper<RT2> task2)
+	CAcceptCombineTaskHelper<RT1, RT2> AcceptCombine(CTaskHelper<RT1>& task1, 
+													 CTaskHelper<RT2>& task2)
 	{
 		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2>();
 		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2>();
@@ -51,9 +51,9 @@ public:
 
 	template<typename RT1, typename RT2, typename RT3>
 	CAcceptCombineTaskHelper<RT1, RT2,RT3> AcceptCombine(
-										 CTaskHelper<RT1> task1,
-										 CTaskHelper<RT2> task2,
-										 CTaskHelper<RT3> task3)
+										 CTaskHelper<RT1>& task1,
+										 CTaskHelper<RT2>& task2,
+										 CTaskHelper<RT3>& task3)
 	{
 		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2, RT3>();
 		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3>();
@@ -64,10 +64,10 @@ public:
 
 	template<typename RT1, typename RT2, typename RT3, typename RT4>
 	CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4> AcceptCombine(
-										 CTaskHelper<RT1> task1,
-										 CTaskHelper<RT2> task2,
-										 CTaskHelper<RT3> task3,
-										 CTaskHelper<RT4> task4)
+										 CTaskHelper<RT1>& task1,
+										 CTaskHelper<RT2>& task2,
+										 CTaskHelper<RT3>& task3,
+										 CTaskHelper<RT4>& task4)
 	{
 		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2, RT3, RT4>();
 		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3, RT4>();
@@ -79,11 +79,11 @@ public:
 
 	template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5>
 	CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4,RT5> AcceptCombine(
-										 CTaskHelper<RT1> task1,
-										 CTaskHelper<RT2> task2,
-										 CTaskHelper<RT3> task3,
-										 CTaskHelper<RT4> task4,
-										 CTaskHelper<RT5> task5)
+										 CTaskHelper<RT1>& task1,
+										 CTaskHelper<RT2>& task2,
+										 CTaskHelper<RT3>& task3,
+										 CTaskHelper<RT4>& task4,
+										 CTaskHelper<RT5>& task5)
 	{
 		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2, RT3, RT4, RT5>();
 		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3, RT4, RT5>();
@@ -96,12 +96,12 @@ public:
 
 	template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5, typename RT6>
 	CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5, RT6> AcceptCombine(
-										 CTaskHelper<RT1> task1,
-										 CTaskHelper<RT2> task2,
-										 CTaskHelper<RT3> task3,
-										 CTaskHelper<RT4> task4,
-										 CTaskHelper<RT5> task5,
-										 CTaskHelper<RT6> task6)
+										 CTaskHelper<RT1>& task1,
+										 CTaskHelper<RT2>& task2,
+										 CTaskHelper<RT3>& task3,
+										 CTaskHelper<RT4>& task4,
+										 CTaskHelper<RT5>& task5,
+										 CTaskHelper<RT6>& task6)
 	{
 		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2, RT3, RT4, RT5, RT6>();
 		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3, RT4, RT5, RT6>();

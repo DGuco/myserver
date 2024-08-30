@@ -33,8 +33,9 @@ enum class enTaskState : unsigned char
 enum class enCombineType : unsigned char
 {
 	eCombineNone = 0,
-	eCombineCombined = 1,
-	eCombineDone = 2,
+	eCombineApply = 1,
+	eCombineAccept = 2,
+	eCombineDone = 3,
 };
 
 class CArgsHolder
@@ -74,7 +75,7 @@ public:
 		m_pCombinedArgs = new CTaskArgsList<combine_index, Args...>();
 	}
 	
-	void SetCombineTask(TaskPtr ptr);
+	void SetCombineTask(TaskPtr ptr,enCombineType combineType);
 	void SetCombineCount(BYTE value);
 	void CombineTaskDone();
 	void OnFinish();
