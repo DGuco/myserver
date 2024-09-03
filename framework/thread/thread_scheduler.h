@@ -19,6 +19,8 @@
 #include "my_thread.h"
 #include "my_lock.h"
 
+#define THREAD_TASK_DEBUG_TIME (20 *1000)   //任务队列调试时间间隔
+
 class CThreadScheduler
 {
 public:

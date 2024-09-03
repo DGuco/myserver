@@ -10,7 +10,7 @@ CThreadScheduler::~CThreadScheduler()
 bool CThreadScheduler::Init(size_t threads)
 {
 	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
-	debug_timer.BeginTimer(nNow, 10 * 1000);
+	debug_timer.BeginTimer(nNow, THREAD_TASK_DEBUG_TIME);
 	for (size_t i = 0; i < threads; ++i)
 	{
 		CSafePtr<CTaskThread> pTaskThread = new CTaskThread(this);

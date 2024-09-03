@@ -101,7 +101,7 @@ int CLog::InitBaseLog(const char* vLogName, const char* vLogDir, level_enum leve
 	if (async)
 	{
 		auto logger = spdlog::create_async<spdlog::sinks::basic_file_sink_mt>(vLogName, vLogDir, vAppend);
-		if (logger == nullptr)
+		if (logger == NULL)
 		{
 			return -1;
 		}

@@ -138,6 +138,7 @@ int CGameCtrl::Run()
 				);
 		}
 		m_pScheduler->DebugTask();
+		m_pSchedulerDb->DebugTask();
 		SLEEP(10);
 	}
 }
