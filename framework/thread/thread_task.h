@@ -97,9 +97,9 @@ private:
 	//combine info
 	CMyLock								m_combineLock;
 	TaskPtr								m_pCombineTask;
-	std::atomic_uchar					m_combineDone;
-	std::atomic_uchar					m_combineCount;
+	BYTE								m_combineCount;
 	enCombineType						m_combineType;
+	std::atomic_uchar					m_combineDone;
 	CSafePtr<CArgsHolder>				m_pCombinedArgs;
 protected:
 	CSafePtr<CThreadScheduler>		m_pScheduler;
@@ -202,7 +202,9 @@ public:
 	}
 
 	virtual void  ExecuteFromParent(void* pRes, bool sucess = true)
-	{}
+	{
+		ASSERT_EX(false, "<class Func, class...Args>CWithReturnTask can not ExecuteFromParent");
+	}
 
 	virtual void* GetRes()
 	{
@@ -401,7 +403,9 @@ public:
 	}
 
 	virtual void  ExecuteFromParent(void* pRes, bool sucess = true)
-	{}
+	{
+		ASSERT_EX(false, "<class Func, class...Args>CNoReturnTask can not ExecuteFromParent");
+	}
 
 	virtual void* GetRes()
 	{

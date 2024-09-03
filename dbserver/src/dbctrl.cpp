@@ -9,9 +9,14 @@ CDBCtrl::CDBCtrl()
 	wVersionRequested = MAKEWORD(2, 2);
 	WSAStartup(wVersionRequested, &wsaData);
 #endif
+	m_pDbScheduler = new CThreadScheduler("DBLogicScheduler");
 }
 
 int CDBCtrl::PrepareToRun()
 {
-	return 0;
+	if (!m_pDbScheduler->Init(DB_THREAD_MAX))
+	{
+		return 0;
+	}
+	return 1;
 }

@@ -10,12 +10,13 @@
 #include "log.h"
 #include <string>
 #include <string.h>
+#include <my_thread.h>
 
 #define MAX_QUERY_LEN   1024
 
 class QueryResult;
 
-class Database
+class Database : public CMyThread
 {
 protected:
     Database();
@@ -67,9 +68,7 @@ public:
     }
     void escape_string(std::string &str);
 
-    // must be called before first query in thread (one time for thread using one from existed Database objects)
     virtual void ThreadStart();
-    // must be called before finish thread run (one time for thread using one from existed Database objects)
     virtual void ThreadEnd();
 
 private:

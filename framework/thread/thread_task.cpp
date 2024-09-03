@@ -51,7 +51,8 @@ CThreadTask::~CThreadTask()
 
 void CThreadTask::SetCombineCount(BYTE value)
 {
-	m_combineCount.store(memory_order_release);
+	m_combineCount = value;
+	m_combineDone.store(0, memory_order_release);
 }
 
 void CThreadTask::CombineTaskDone()
@@ -64,9 +65,8 @@ void CThreadTask::CombineTaskDone()
 	}
 	int oldValue = m_combineDone.fetch_add(1);
 	//最后一个完成
-	int nTmCombineCount = m_combineCount.load(memory_order_acquire);
 	int nCombineDone = m_combineDone.load(memory_order_acquire);
-	if (nCombineDone == nTmCombineCount && oldValue == nTmCombineCount - 1)
+	if (nCombineDone == m_combineCount && oldValue == m_combineCount - 1)
 	{
 		//如果就在当前的执行shcheler中，直接执行
 		if (g_thread_data.own_scheduler == m_pScheduler)
