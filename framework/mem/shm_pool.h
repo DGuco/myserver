@@ -10,11 +10,21 @@
 #include "base.h"
 #include "safe_pointer.h"
 
+enum ShmObjStatus
+{
+	eShmObj_Free = 0,
+	eShmObj_Used = 1,
+	eShmObj_Changed = 2,
+	eShmObj_Saved = 3,
+	eShmObj_Deleted = 4,
+};
+
 template<typename T>
 struct CShmObj
 {
 	int		m_nDbVersion;  //db 版本
 	int		m_nPoolId;	   //对象池子索引位置
+	bool    m_bIsValid; 
 	T		m_Obj;
 };
 
@@ -30,6 +40,8 @@ public:
 	CSafePtr<CShmObj<T>> NewObj();
 	//
 	CSafePtr<CShmObj<T>> GetObj(int index);
+	//
+	int GetMaxSize();
 private:
 	CShmObj<T>**	m_pObjList;
 	CSharedMem		m_ShareMem;
@@ -57,7 +69,10 @@ bool CShmPool::Init(int poolkey, int poolsize)
 	int tmMemSize = sizeof(CShmObj<T>) * poolsize;
 	if (!m_ShareMem.CreateSegment(poolkey, tmMemSize))
 	{
-		return false;
+		if (!m_ShareMem.AttachSegment(poolkey, tmMemSize))
+		{
+			return  false;
+		}
 	}
 
 	m_nMaxSize = poolsize;

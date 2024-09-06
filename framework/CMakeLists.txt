@@ -70,6 +70,7 @@ set(FRAMEWORK
         "mem/shm_api.h" 
         "mem/shm.cpp"
         "mem/shm.h"
+        "mem/shm_manager.h"
         "net/statistics.h" 
         "net/statistics.cpp"
         "net/byte_buff.cpp" 

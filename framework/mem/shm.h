@@ -7,7 +7,9 @@
 
 #ifndef _SHM_H_
 #define _SHM_H_
+
 #include "platform_def.h"
+#include "common_def.h"
 #include "base.h"
 
 #define YEARSEC 31536000
@@ -61,6 +63,5 @@ private:
     //对象初始化类型
 	eShmModule				m_InitMode;
 };
-
 
 #endif

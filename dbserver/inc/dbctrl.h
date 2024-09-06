@@ -30,8 +30,6 @@ using namespace std;
 #define STATISTICSLEN                1024
 #define MAXNUMBERLEN                10
 #define SAVEINTERVAL                300
-#define DB_THREAD_MAX				(10)   //dbÏß³ÌÊý
-
 
 class CSharedMem;
 
