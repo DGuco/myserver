@@ -7,7 +7,9 @@
 #ifndef __COMMON_DEF_H__
 #define __COMMON_DEF_H__
 
-#define DB_THREAD_MAX				(8)   //db线程数
+#define DB_THREAD_MAX				(8)			//db线程数
+#define YEARSEC						(31536000)
+#define MAX_SOCKET_NUM				(65536)
 
 // 管道标识符
 enum enLockIdx

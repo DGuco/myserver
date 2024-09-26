@@ -31,8 +31,8 @@ void CTimeHelper::SetTime()
 {
 	m_CacheTime = std::chrono::system_clock::now();
 	time_t nowTime = std::chrono::system_clock::to_time_t(m_CacheTime);
-	tm* ptm = localtime(&nowTime);//获得std::tm的结构
-	m_TM = *ptm;
+	std::tm ptm = LocalTime(nowTime);//获得std::tm的结构
+	m_TM = ptm;
 }
 
 
@@ -40,11 +40,11 @@ void CTimeHelper::SetTime(std::chrono::time_point<std::chrono::system_clock> tim
 {
 	m_CacheTime = time;
 	time_t nowTime = std::chrono::system_clock::to_time_t(m_CacheTime);
-	tm* ptm = localtime(&nowTime);//获得std::tm的结构
-	m_TM = *ptm;
+	std::tm ptm = LocalTime(nowTime);//获得std::tm的结构
+	m_TM = ptm;
 }
 
-std::tm CTimeHelper::LocalTime(const std::time_t& time_tt)
+std::tm CTimeHelper::LocalTime( std::time_t& time_tt)
 {
 	//localtime非线程安全
 	//tm* logTime = localtime(&logtime);

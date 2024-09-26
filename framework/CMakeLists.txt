@@ -43,7 +43,7 @@ set(FRAMEWORK
         "../common/base.h"
         "../common/dblogin_type.h"
         "../common/platform_def.h" 
-        "../common/platform_def.cpp" 
+        "../common/platform_def.cpp"
         "base/my_assert.h"
         "base/object.h"
         "base/performance.cpp"

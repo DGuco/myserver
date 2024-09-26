@@ -143,7 +143,7 @@ bool CSharedMem::CloseSegment()
 			DISK_LOG(SHM_ERROR, "CloseSegment DetachShareMem failed nSmKey = {} error : {} errormsg : {}", m_pHead->m_nShmKey, errno, strerror(errno));
 		}
 	}
-	if (m_pHead->m_Handler != NULL)
+	if (m_pHead != NULL && m_pHead->m_Handler != NULL)
 	{
 		if (!ShareMemAPI::DestroyShareMem(m_pHead->m_Handler))
 		{

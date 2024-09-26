@@ -12,10 +12,6 @@
 #include "common_def.h"
 #include "base.h"
 
-#define YEARSEC 31536000
-
-#define MAX_SOCKET_NUM	     (65536)
-
 struct SSmHead
 {
 	//¹²ÏíÄÚ´ækey
