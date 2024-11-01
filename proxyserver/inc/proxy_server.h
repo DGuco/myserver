@@ -2,7 +2,7 @@
 * FileName:gate_server.h
 * Summary :
 * Date	  :2024-2-22
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __PROXY_SERVER_H__
 #define __PROXY_SERVER_H__

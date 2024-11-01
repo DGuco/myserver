@@ -2,7 +2,7 @@
 * FileName:log_def.h
 * Summary :
 * Date	  :2024-7-11
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __LOG_DEF_H__
 #define __LOG_DEF_H__

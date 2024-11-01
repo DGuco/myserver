@@ -2,7 +2,7 @@
 * FileName:thread.h
 * Summary :
 * Date	  :2024-7-11
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __THREAD_H__
 #define __THREAD_H__

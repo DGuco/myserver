@@ -2,7 +2,7 @@
 * FileName:safe_pointer.h
 * Summary :
 * Date	  :2023-8-4
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __SAFE_POINTER_H__
 #define __SAFE_POINTER_H__

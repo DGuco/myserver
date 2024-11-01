@@ -2,7 +2,7 @@
 * FileName:shm_pool.h
 * Summary :
 * Date	  :2024-9-4
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __SHM_POOL_H__
 #define __SHM_POOL_H__

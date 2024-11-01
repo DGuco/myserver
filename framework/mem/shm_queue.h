@@ -2,7 +2,7 @@
 * FileName:shm_queue.h
 * Summary :
 * Date	  :2024-2-26
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __SHM_QUEUE_H__
 #define __SHM_QUEUE_H__

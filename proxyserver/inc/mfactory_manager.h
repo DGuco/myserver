@@ -2,7 +2,7 @@
 * FileName:mfactory_manager.h
 * Summary :
 * Date	  :2024-3-25
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __MFACTORY_MANAGER_H__
 #define __MFACTORY_MANAGER_H__

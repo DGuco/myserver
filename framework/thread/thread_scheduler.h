@@ -2,7 +2,7 @@
 * FileName:thread_scheduler.h
 * Summary :
 * Date	  :2024-7-11
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #pragma once
 #ifndef __THREAD_SCHEDULER_H__

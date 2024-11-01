@@ -2,7 +2,7 @@
 * FileName:tcp_client.h
 * Summary :
 * Date	  :2023-8-11
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __TCP_SOCKET_H__
 #define __TCP_SOCKET_H__

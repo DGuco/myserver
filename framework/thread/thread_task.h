@@ -2,7 +2,7 @@
 * FileName:thread_task.h
 * Summary :
 * Date	  :2024-7-10
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __THREAD_TASK_H__
 #define __THREAD_TASK_H__

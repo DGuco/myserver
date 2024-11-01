@@ -2,7 +2,7 @@
 * FileName:my_lock.h
 * Summary :
 * Date	  :2024-7-12
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __MY_LOCK_H__
 #define __MY_LOCK_H__

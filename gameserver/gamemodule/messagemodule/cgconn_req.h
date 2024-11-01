@@ -2,7 +2,7 @@
 * FileName:cgconn_req.h
 * Summary :
 * Date	  :2024-3-25
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __CGCONN_REQ_H__
 #define __CGCONN_REQ_H__

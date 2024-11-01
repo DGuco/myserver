@@ -2,7 +2,7 @@
 * FileName:proxy_player.h
 * Summary :
 * Date	  :2024-3-19
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __PROXY_PLAYER_H__
 #define __PROXY_PLAYER_H__

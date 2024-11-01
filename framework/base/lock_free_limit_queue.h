@@ -2,7 +2,7 @@
 * FileName:lock_free_queue.h
 * Summary :无锁环形队列 固定长度
 * Date	  :2024-6-5
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __LOCK_FREE_LIMIT_QUEUE_H__
 #define __LOCK_FREE_LIMIT_QUEUE_H__

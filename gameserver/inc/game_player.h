@@ -2,7 +2,7 @@
 * FileName:game_player.h
 * Summary :
 * Date	  :2024-3-19
-* Author  :DGuco(1139140909@qq.com)
+* Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
 #ifndef __GAME_PLAYER_H__
 #define __GAME_PLAYER_H__
