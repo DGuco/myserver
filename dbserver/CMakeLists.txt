@@ -47,8 +47,11 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/common/message
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/mem
+        ${CMAKE_SOURCE_DIR}/framework/message
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
+        ${CMAKE_SOURCE_DIR}/framework/std
+        ${CMAKE_SOURCE_DIR}/framework/lua
         ${CMAKE_SOURCE_DIR}/dbserver/inc
 )
 

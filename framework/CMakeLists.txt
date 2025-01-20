@@ -40,7 +40,7 @@ set(LUA_BRIDGE_HEADER_FILES
         "lua/lua_bridge.h")
 
 set(FRAMEWORK
-        "../common/base.h"
+        "base/base.h"
         "../common/dblogin_type.h"
         "../common/platform_def.h" 
         "../common/platform_def.cpp"
@@ -49,12 +49,12 @@ set(FRAMEWORK
         "base/performance.cpp"
         "base/performance.h"
         "base/reflection.h"
-        "base/t_array.h"
-        "base/rb_tree.h"
-        "base/hash_function.h"
-        "base/hash_helper.h"
-        "base/rbthash_map.h"
-        "base/lock_free_limit_queue.h"
+        "std/t_array.h"
+        "std/rb_tree.h"
+        "std/hash_function.h"
+        "std/hash_helper.h"
+        "std/rbthash_map.h"
+        "std/lock_free_limit_queue.h"
         "base/time_helper.h"
         "base/time_helper.cpp"
         "base/log.h"
@@ -105,14 +105,11 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/common/message
         ${CMAKE_SOURCE_DIR}/lua-5.3.6
         ${CMAKE_SOURCE_DIR}/framework/base
-        ${CMAKE_SOURCE_DIR}/framework/const
-        ${CMAKE_SOURCE_DIR}/framework/json
-        ${CMAKE_SOURCE_DIR}/framework/log
         ${CMAKE_SOURCE_DIR}/framework/mem
         ${CMAKE_SOURCE_DIR}/framework/message
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
-        ${CMAKE_SOURCE_DIR}/framework/timer
+        ${CMAKE_SOURCE_DIR}/framework/std
 )
 
 link_directories(

@@ -53,12 +53,11 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/common/message
         ${CMAKE_SOURCE_DIR}/lua-5.3.6/
         ${CMAKE_SOURCE_DIR}/framework/base
-        ${CMAKE_SOURCE_DIR}/framework/const
-        ${CMAKE_SOURCE_DIR}/framework/json
         ${CMAKE_SOURCE_DIR}/framework/mem
+        ${CMAKE_SOURCE_DIR}/framework/message
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
-        ${CMAKE_SOURCE_DIR}/framework/lua/core
+        ${CMAKE_SOURCE_DIR}/framework/std
         ${CMAKE_SOURCE_DIR}/framework/lua
         ${CMAKE_SOURCE_DIR}/gameserver/inc
         ${CMAKE_SOURCE_DIR}/gameserver/gamemodule/datamodule
