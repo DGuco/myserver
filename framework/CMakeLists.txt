@@ -132,4 +132,3 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(framework ws2_32 spdlogd protobufd lua)
 endif()
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

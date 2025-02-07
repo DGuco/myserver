@@ -96,5 +96,3 @@ add_library(lua
         ${LUA_SOURCE_FILES})
 
 target_link_libraries(lua)
-
-set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)

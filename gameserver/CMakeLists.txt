@@ -76,6 +76,7 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
         C:/Windows/System32
         ${CMAKE_SOURCE_DIR}/lib
         ${CMAKE_SOURCE_DIR}/lib/win64
+        ${CMAKE_SOURCE_DIR}/lib/Debug
 endif()
 )
 
@@ -86,5 +87,3 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(gameserver framework)
 endif()
-
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/run/)

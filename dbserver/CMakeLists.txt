@@ -76,5 +76,3 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(dbserver framework libmysql)
 endif()
-
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/run)

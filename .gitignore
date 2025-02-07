@@ -8,11 +8,14 @@
 log
 enc_temp_folder
 out
+build
 cmake-build-debug
 /cmake-build-debug/*
 /.vs/*
 /lib/framework.lib
 /lib/lua.lib
+/lib/Debug
+/lib/*.pdb
 /run/*.exe
 /run/*.exe.*
 /run/*.ilk
