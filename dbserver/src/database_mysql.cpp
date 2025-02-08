@@ -115,7 +115,7 @@ bool DatabaseMysql::Initialize(const char *infoString, int rw_timeout, int sleep
     }
 }
 
-bool DatabaseMysql::Reconnect(void)
+bool DatabaseMysql::Reconnect()
 {
     for (int i = 0; i < m_loop; i++)
     {
@@ -130,7 +130,7 @@ bool DatabaseMysql::Reconnect(void)
     return false;
 }
 
-bool DatabaseMysql::Connect(void)
+bool DatabaseMysql::Connect()
 {
     MYSQL *mysqlInit = mysql_init(NULL);
     if (!mysqlInit)
@@ -183,6 +183,8 @@ bool DatabaseMysql::Connect(void)
                                 m_password.c_str(), m_database.c_str(), port, unix_socket, 0);
     CACHE_LOG(DB_CACHE, "host : {} ; user = {} ; password = {} ; database = {} ; port = {}", m_host.c_str(), m_user.c_str(), m_password.c_str(), m_database.c_str(), port );
 
+    mysql_options(mysqlInit, MYSQL_OPT_RECONNECT, (char*)"1");
+
     if (mMysql)
     {
         CACHE_LOG(DB_CACHE, "Connected to MySQL database at {}", m_host.c_str());
@@ -233,11 +235,32 @@ bool DatabaseMysql::Connect(void)
     }
 }
 
+bool DatabaseMysql::IsConnected() 
+{
+    if (mMysql == NULL) 
+    {
+        return false;
+    }
+
+    if (mysql_ping(mMysql) == 0) {
+        return true;
+    } else 
+    {
+        // 如果连接已经断开，尝试重新连接
+        if (Reconnect() == true) {
+            return true;
+        } else 
+        {
+            return false;
+        }
+    }
+}
+
 QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
 {
     if (!mMysql)
     {
-        if (Reconnect() == false)
+        if (IsConnected() == false)
         {
             return NULL;
         }
@@ -318,7 +341,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
 {
     if (!mMysql)
     {
-        if (Reconnect() == false)
+        if (IsConnected() == false)
         {
             return NULL;
         }
@@ -430,7 +453,7 @@ bool DatabaseMysql::DirectExecute(const char* sql )
 {
     if (!mMysql)
     {
-        if (Reconnect() == false)
+        if (IsConnected() == false)
         {
             return false;
         }
@@ -481,7 +504,7 @@ bool DatabaseMysql::RealDirectExecute(const char* sql, unsigned long len)
 {
     if (!mMysql)
     {
-        if (Reconnect() == false)
+        if (IsConnected() == false)
         {
             return false;
         }

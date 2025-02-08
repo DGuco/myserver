@@ -7,6 +7,7 @@
 #ifndef __SHM_POOL_H__
 #define __SHM_POOL_H__
 
+#include "shm.h"
 #include "base.h"
 #include "safe_pointer.h"
 
@@ -50,7 +51,7 @@ private:
 };
 
 template<typename T>
-CShmPool::CShmPool()
+CShmPool<T>::CShmPool()
 {
 	m_pObjList = NULL;
 	m_nMaxSize = 0;
@@ -58,13 +59,13 @@ CShmPool::CShmPool()
 }
 
 template<typename T>
-CShmPool::~CShmPool()
+CShmPool<T>::~CShmPool()
 {
 
 }
 
 template<typename T>
-bool CShmPool::Init(int poolkey, int poolsize)
+bool CShmPool<T>::Init(int poolkey, int poolsize)
 {
 	int tmMemSize = sizeof(CShmObj<T>) * poolsize;
 	if (!m_ShareMem.CreateSegment(poolkey, tmMemSize))
@@ -84,26 +85,34 @@ bool CShmPool::Init(int poolkey, int poolsize)
 }
 
 template<typename T>
-CSafePtr<CShmObj<T>> CShmPool::NewObj()
+CSafePtr<CShmObj<T>> CShmPool<T>::NewObj()
 {
-	if (m_nUsedIndex >= 0 && m_nUsedIndex < m_nMaxSize)
+	if (m_nUsedIndex < 0 || m_nUsedIndex >= m_nMaxSize)	
 	{
-		CSafePtr<CShmObj<T>> pObj = m_pObjList[m_nUsedIndex];
-		m_nUsedIndex++;
-		return pObj;
+		return NULL;
 	}
-	return NULL;
+	CSafePtr<CShmObj<T>> pObj = m_pObjList[m_nUsedIndex];
+	pObj->m_nPoolId = m_nUsedIndex;
+	m_nUsedIndex++;
+	return pObj;
 }
 
 
 template<typename T>
-CSafePtr<CShmObj<T>> CShmPool::GetObj(int index)
+CSafePtr<CShmObj<T>> CShmPool<T>::GetObj(int index)
 {
 	if (index >= 0 && index < m_nMaxSize)
 	{
-		return m_pObjList[m_nUsedIndex];
+		return m_pObjList[index];
 	}
 	return NULL;
 }
+
+template<typename T>
+int CShmPool<T>::GetMaxSize()
+{
+	return m_nMaxSize;
+}
+
 
 #endif //__SHM_POOL_H__

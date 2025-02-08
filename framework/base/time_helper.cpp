@@ -57,3 +57,15 @@ std::tm CTimeHelper::LocalTime( std::time_t& time_tt)
 #endif
 	return tm;
 }
+
+int CTimeHelper::DiffDay(time_t tm1, time_t tm2)
+{
+    double secondsDiff = difftime(tm2, tm1);
+    int daysDiff = static_cast<int>(secondsDiff / 86400);
+    return daysDiff;
+}
+
+int CTimeHelper::GetDayOfYear()
+{
+	return m_TM.tm_yday;
+}

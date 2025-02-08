@@ -23,8 +23,9 @@ public:
 	//! Initializes Mysql and connects to a server.
 	/*! infoString should be formated like hostname;username;password;database. */
 	bool Initialize(const char *infoString, int rw_timeout, int sleep_time, int loop);
-	bool Reconnect(void);
-	bool Connect(void);
+	bool Reconnect();
+	bool Connect();
+	bool IsConnected();
 	Tokens StrSplit(const std::string& src, const std::string& sep);
 	QueryResult *Query(const char *sql, unsigned long len);
 	QueryResult *QueryForprocedure(const char *sql, unsigned long len, int number);
