@@ -7,12 +7,12 @@
 #ifndef __SHM_MANAGER_H__
 #define __SHM_MANAGER_H__
 
+#include "shm_type.h"
 #include "shm_pool.h"
 
-template<typename T>
 class CShmManager
 {
-
+private:
 };
 
 #endif //__SHM_MANAGER_H__
