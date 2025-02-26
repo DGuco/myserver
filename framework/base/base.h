@@ -59,6 +59,7 @@
 	while(0);\
 
 typedef unsigned char BYTE;
+typedef unsigned char byte;
 typedef int int32;
 typedef short int16;
 typedef char int8;

@@ -13,6 +13,12 @@
 class CShmManager
 {
 private:
+	CShmManager();
+	~CShmManager();
+    void Init();
+    void HeartBeat();
+private:
+    CSafePtr<IShmPool> m_pShmPool[enShmType_Max];
 };
 
 #endif //__SHM_MANAGER_H__
