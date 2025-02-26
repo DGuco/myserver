@@ -100,6 +100,11 @@ public:
 	{
 		return mNextTimeout > 0;
 	}
+
+	void StopTimer()
+	{
+		mNextTimeout = 0;
+	}
 };
 
 #endif //__TIME_HELPER_H__
