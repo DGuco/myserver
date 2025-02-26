@@ -11,6 +11,7 @@
 #include "base.h"
 #include "safe_pointer.h"
 #include "time_helper.h"
+#include "shm_manager.h"
 #include <atomic>
 
 enum ShmObjStatus
@@ -63,12 +64,6 @@ struct CSavingObj
 	void SetSavingStatus(SavingStauts state)			{ m_bSavingStatus.store(m_bSavingStatus, std::memory_order_release);}
 };
 
-class IShmPool
-{
-public:
-	virtual void PrepareSave() = 0;
-	virtual void DoSaveAll() = 0;
-};
 
 template<typename T,size_t saving_size = 1>
 class CShmPool : public IShmPool
@@ -77,7 +72,7 @@ public:
 	CShmPool(int saveInterval,bool forceSaveAll);
 	virtual ~CShmPool();
 	//
-	bool Init(int poolkey, int poolsize);
+	bool Init(int poolkey, int poolsize,enShmType eShmType);
 	//
 	CSafePtr<CShmObj<T>> NewObj();
 	//
@@ -120,7 +115,7 @@ CShmPool<T,saving_size>::~CShmPool()
 }
 
 template<typename T,size_t saving_size>
-bool CShmPool<T,saving_size>::Init(int poolkey, int poolsize)
+bool CShmPool<T,saving_size>::Init(int poolkey, int poolsize,enShmType eShmType)
 {
 	int tmMemSize = sizeof(CShmObj<T>) * poolsize;
 	if (!m_ShareMem.CreateSegment(poolkey, tmMemSize))
@@ -137,6 +132,7 @@ bool CShmPool<T,saving_size>::Init(int poolkey, int poolsize)
 		m_pObjList[index] = m_ShareMem.GetSegment() + index * sizeof(CShmObj<T>);
 	}
 	m_SaveTimer.BeginTimer(m_nSaveInterval);
+	CShmManager::GetSingletonPtr()->RegisterShmPool(this,eShmType);
 	return true;
 }
 
@@ -211,7 +207,7 @@ void CShmPool<T,saving_size>::PrepareSave()
 			}
 		}
 		m_nSavingIndex = find_index + 1;
-
+		
 		//保存完晕了，重置存储定时器
 		if(m_nSavingIndex == m_nMaxSize)
 		{
@@ -226,24 +222,26 @@ void CShmPool<T,saving_size>::PrepareSave()
 template<typename T,size_t saving_size>
 void CShmPool<T,saving_size>::DoSaveAll()
 {
-	if(GetSavingStatus() == eSaveStatus_Saving)
+	for(int index = 0;index < saving_size;index++)
 	{
-		if(m_nSavingIndex >= 0 && m_nSavingIndex < m_nMaxSize)
+		CSavingObj<T>& tmSavingObj = m_SavingObjList[index];
+		if (tmSavingObj.m_bSavingStatus == eSaveStatus_Saving)	
 		{
 			try
 			{
-				bool nRet = m_SavingObj.Save();
+				bool nRet = tmSavingObj.m_SavingObj.Save();
 				if(nRet)
 				{
-					SetSavingStatus(eSaveStatus_Saved)
+					tmSavingObj.SetSavingStatus(eSaveStatus_Saved);
+
 				}else
 				{
-					SetSavingStatus(eSaveStatus_Free);
+					tmSavingObj.SetSavingStatus(eSaveStatus_Free);
 				}
 			}
 			catch(const std::exception& e)
 			{
-				SetSavingStatus(eSaveStatus_Free)
+				tmSavingObj.SetSavingStatus(eSaveStatus_Free)
 			}
 		}
 	}

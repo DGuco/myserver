@@ -7,16 +7,26 @@
 #ifndef __SHM_MANAGER_H__
 #define __SHM_MANAGER_H__
 
+#include "singleton.h"
 #include "shm_type.h"
-#include "shm_pool.h"
+#include "safe_pointer.h"
 
-class CShmManager
+class IShmPool
+{
+public:
+	virtual void      PrepareSave() = 0;
+	virtual void      DoSaveAll() = 0;
+    virtual enShmType GetShmType() = 0;
+};
+
+class CShmManager  : public CSingleton<CShmManager>
 {
 private:
 	CShmManager();
 	~CShmManager();
     void Init();
     void HeartBeat();
+    void RegisterShmPool(IShmPool *pShmPool, enShmType eShmType);
 private:
     CSafePtr<IShmPool> m_pShmPool[enShmType_Max];
 };

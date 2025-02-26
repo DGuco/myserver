@@ -5,15 +5,6 @@
 #ifndef __SERVER_TOOL_H__
 #define __SERVER_TOOL_H__
 
-#include <vector>
-#include <string>
-#include <string.h>
-#include <stdarg.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <memory>
-
 #include "safe_pointer.h"
 
 using namespace std;
