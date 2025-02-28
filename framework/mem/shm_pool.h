@@ -45,6 +45,11 @@ struct CShmObj
 
 	CShmObj()
 	{
+		Clear();
+	}
+
+	void Clear()
+	{
 		m_nDbVersion = 0;
 		m_nPoolId = -1;
 		m_bIsValid = false;
@@ -62,17 +67,28 @@ struct CSavingObj
 	SavingStauts GetSavingStatus()						{ return m_bSavingStatus.load(std::memory_order_acquire); }
 	//对原子变量y进行了release的store操作，因此y变量之前的store/load操作不能排序到y之后
 	void SetSavingStatus(SavingStauts state)			{ m_bSavingStatus.store(m_bSavingStatus, std::memory_order_release);}
+
+	CSavingObj()
+	{
+		Clear();
+	}
+
+	void Clear()
+	{
+		m_nSavingIndex = -1;
+		m_bSavingStatus = eSaveStatus_Free;
+	}
 };
 
 
-template<typename T,size_t saving_size = 1>
+template<typename T,size_t poolsize,size_t saving_size = 1>
 class CShmPool : public IShmPool
 {
 public:
 	CShmPool(int saveInterval,bool forceSaveAll);
 	virtual ~CShmPool();
 	//
-	bool Init(int poolkey, int poolsize,enShmType eShmType);
+	bool Init(int poolkey,enShmType eShmType);
 	//
 	CSafePtr<CShmObj<T>> NewObj();
 	//
@@ -84,40 +100,47 @@ public:
 	//
 	virtual void DoSaveAll();
 private:
-	CShmObj<T>**			m_pObjList;
+	CShmObj<T>*				m_pObjList[poolsize];
+	CSavingObj<T>*			m_SavingObjList[saving_size];
 	int 					m_nSaveInterval; //保存间隔时间
 	CMyTimer				m_SaveTimer;  //保存定时器
 	byte					m_bSaveAllFlag;	//保存所有对象的状态
 	bool					m_bForceSaveAll;
 	int						m_nSavingIndex;   //保存对象索引
-	CSavingObj<T>			m_SavingObjList[saving_size];
 	CSharedMem				m_ShareMem;
-	int						m_nMaxSize;
 	int						m_nUsedIndex;
 };
 
-template<typename T,size_t saving_size>
-CShmPool<T,saving_size>::CShmPool(int saveInterval,bool forceSaveAll)
+template<typename T,size_t poolsize,size_t saving_size>
+CShmPool<T,poolsize,saving_size>::CShmPool(int saveInterval,bool forceSaveAll)
 {
-	m_nMaxSize = 0;
 	m_nUsedIndex = 0;
 	m_nSavingIndex = 0;
 	m_bForceSaveAll = forceSaveAll;
 	m_nSaveInterval = saveInterval;
 	m_bSaveAllFlag = 0;	
-	m_pObjList = NULL;
+
+	for (size_t i = 0; i < poolsize; i++)
+	{
+		m_pObjList[i] = NULL;
+	}
+	
+	for (size_t i = 0; i < saving_size; i++)
+	{
+		m_SavingObjList[i] = NULL;
+	}
 }
 
-template<typename T,size_t saving_size>
-CShmPool<T,saving_size>::~CShmPool()
+template<typename T,size_t poolsize,size_t saving_size>
+CShmPool<T,poolsize,saving_size>::~CShmPool()
 {
 
 }
 
-template<typename T,size_t saving_size>
-bool CShmPool<T,saving_size>::Init(int poolkey, int poolsize,enShmType eShmType)
+template<typename T,size_t poolsize,size_t saving_size>
+bool CShmPool<T,poolsize,saving_size>::Init(int poolkey,enShmType eShmType)
 {
-	int tmMemSize = sizeof(CShmObj<T>) * poolsize;
+	int tmMemSize = sizeof(CShmObj<T>) * poolsize + sizeof(CSavingObj<T> * saving_size) ;
 	if (!m_ShareMem.CreateSegment(poolkey, tmMemSize))
 	{
 		if (!m_ShareMem.AttachSegment(poolkey, tmMemSize))
@@ -126,20 +149,30 @@ bool CShmPool<T,saving_size>::Init(int poolkey, int poolsize,enShmType eShmType)
 		}
 	}
 
-	m_nMaxSize = poolsize;
-	for (int index = 0; index < m_nMaxSize; index++)
+	for (int index = 0; index < poolsize; index++)
 	{
 		m_pObjList[index] = m_ShareMem.GetSegment() + index * sizeof(CShmObj<T>);
+		m_pObjList[index]->Clear();
+		m_pObjList[index]->m_bIsValid = true;
+		m_pObjList[index]->m_nPoolId = index;
+	}
+
+	for (int index = 0; index < saving_size; index++)
+	{
+		m_SavingObjList[index] = m_ShareMem.GetSegment() + sizeof(CShmObj<T>) * poolsize + index * sizeof(CSavingObj<T>);
+		m_SavingObjList[index]->Clear();
+		m_SavingObjList[index]->m_bSavingStatus = eSaveStatus_Free;
+		m_SavingObjList[index]->m_nSavingIndex = -1;
 	}
 	m_SaveTimer.BeginTimer(m_nSaveInterval);
 	CShmManager::GetSingletonPtr()->RegisterShmPool(this,eShmType);
 	return true;
 }
 
-template<typename T,size_t saving_size>
-CSafePtr<CShmObj<T>> CShmPool<T,saving_size>::NewObj()
+template<typename T,size_t poolsize,size_t saving_size>
+CSafePtr<CShmObj<T>> CShmPool<T,poolsize,saving_size>::NewObj()
 {
-	if (m_nUsedIndex < 0 || m_nUsedIndex >= m_nMaxSize)	
+	if (m_nUsedIndex < 0 || m_nUsedIndex >= poolsize)	
 	{
 		return NULL;
 	}
@@ -150,24 +183,24 @@ CSafePtr<CShmObj<T>> CShmPool<T,saving_size>::NewObj()
 }
 
 
-template<typename T,size_t saving_size>
-CSafePtr<CShmObj<T>> CShmPool<T,saving_size>::GetObj(int index)
+template<typename T,size_t poolsize,size_t saving_size>
+CSafePtr<CShmObj<T>> CShmPool<T,poolsize,saving_size>::GetObj(int index)
 {
-	if (index >= 0 && index < m_nMaxSize)
+	if (index >= 0 && index < poolsize)
 	{
 		return m_pObjList[index];
 	}
 	return NULL;
 }
 
-template<typename T,size_t saving_size>
-int CShmPool<T,saving_size>::GetMaxSize()
+template<typename T,size_t poolsize,size_t saving_size>
+int CShmPool<T,poolsize,saving_size>::GetMaxSize()
 {
-	return m_nMaxSize;
+	return poolsize;
 }
 
-template<typename T,size_t saving_size>
-void CShmPool<T,saving_size>::PrepareSave()
+template<typename T,size_t poolsize,size_t saving_size>
+void CShmPool<T,poolsize,saving_size>::PrepareSave()
 {
 	time_t nNow  = CTimeHelper::GetSingletonPtr()->GetMSTime();
 	if(m_SaveTimer.IsTimeout(nNow))
@@ -188,20 +221,20 @@ void CShmPool<T,saving_size>::PrepareSave()
 
 	for(int index = 0;index < saving_size;index++)
 	{
-		CSavingObj<T>& tmSavingObj = m_SavingObjList[index];
+		CSavingObj<T>* pSavingObj = m_SavingObjList[index];
 		size_t find_index = m_nSavingIndex;
-		if (tmSavingObj.m_bSavingStatus !=  eSaveStatus_Saving)	
+		if (pSavingObj->m_bSavingStatus !=  eSaveStatus_Saving)	
 		{
-			for (; find_index < m_nMaxSize; find_index++)
+			for (; find_index < poolsize; find_index++)
 			{
 				//找一个需要保存的对象
 				if(m_pObjList[find_index]->GetObjStatus() == eShmObj_Changed)
 				{
 					//拷贝对象
-					tmSavingObj.m_SavingObj = m_pObjList[find_index]->m_Obj;
+					pSavingObj->m_SavingObj = m_pObjList[find_index]->m_Obj;
 					m_pObjList[find_index]->SetObjStatus(eShmObj_Saved);
-					tmSavingObj.m_nSavingIndex = find_index;
-					tmSavingObj.SetSavingStatus(eSaveStatus_Saving);
+					pSavingObj->m_nSavingIndex = find_index;
+					pSavingObj->SetSavingStatus(eSaveStatus_Saving);
 					break;
 				}
 			}
@@ -209,7 +242,7 @@ void CShmPool<T,saving_size>::PrepareSave()
 		m_nSavingIndex = find_index + 1;
 		
 		//保存完晕了，重置存储定时器
-		if(m_nSavingIndex == m_nMaxSize)
+		if(m_nSavingIndex == poolsize)
 		{
 			m_nSavingIndex = 0;
 			m_bSaveAllFlag = 0;
@@ -219,29 +252,29 @@ void CShmPool<T,saving_size>::PrepareSave()
 	}
 }
 
-template<typename T,size_t saving_size>
-void CShmPool<T,saving_size>::DoSaveAll()
+template<typename T,size_t poolsize,size_t saving_size>
+void CShmPool<T,poolsize,saving_size>::DoSaveAll()
 {
 	for(int index = 0;index < saving_size;index++)
 	{
-		CSavingObj<T>& tmSavingObj = m_SavingObjList[index];
-		if (tmSavingObj.m_bSavingStatus == eSaveStatus_Saving)	
+		CSavingObj<T>* pSavingObj = m_SavingObjList[index];
+		if (pSavingObj->m_bSavingStatus == eSaveStatus_Saving)	
 		{
 			try
 			{
-				bool nRet = tmSavingObj.m_SavingObj.Save();
+				bool nRet = pSavingObj->m_SavingObj.Save();
 				if(nRet)
 				{
-					tmSavingObj.SetSavingStatus(eSaveStatus_Saved);
+					pSavingObj->SetSavingStatus(eSaveStatus_Saved);
 
 				}else
 				{
-					tmSavingObj.SetSavingStatus(eSaveStatus_Free);
+					pSavingObj->SetSavingStatus(eSaveStatus_Free);
 				}
 			}
 			catch(const std::exception& e)
 			{
-				tmSavingObj.SetSavingStatus(eSaveStatus_Free)
+				pSavingObj->SetSavingStatus(eSaveStatus_Free)
 			}
 		}
 	}
