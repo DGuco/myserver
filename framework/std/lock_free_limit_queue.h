@@ -135,7 +135,7 @@ namespace my_std
 
 	private:
 		size_t capacity_;
-		T* buffer_;
+		CACHE_LINE_ALIGN T* buffer_;
 
 		// [write_, writable_] 可写区间, write_ == writable_ is full.
 		// read后更新writable

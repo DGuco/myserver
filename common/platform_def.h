@@ -30,6 +30,9 @@
 #include <string>
 using namespace std;
 
+
+#define CACHE_LINE_SIZE 64
+
 #ifdef __LINUX__
     //
     #define __MEM_BARRIER \
@@ -48,6 +51,9 @@ using namespace std;
     typedef int sm_key;
 	typedef int	SOCKET;
 	typedef pthread_t	TID;
+
+    //修改字对齐规则，避免false sharing
+    #define CACHE_LINE_ALIGN  __attribute__((aligned(CACHE_LINE_SIZE)))
 #else
     std::string GetErrorMessage(int errorCode);
 
@@ -65,11 +71,8 @@ using namespace std;
 	#define INVALID_SM_HADLER (NULL)
 	typedef DWORD		TID;
 
+    #define CACHE_LINE_ALIGN __declspec(align(CACHE_LINE_SIZE))
 #endif
-
-#define CACHE_LINE_SIZE 64
-//修改字对齐规则，避免false sharing
-#define CACHE_LINE_ALIGN  __attribute__((aligned(CACHE_LINE_SIZE)))
 
 TID  MyGetCurrentThreadID();
 

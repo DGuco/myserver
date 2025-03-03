@@ -36,8 +36,8 @@ struct CShmObj
 	int					m_nDbVersion;  //db 版本
 	int					m_nPoolId;	   //对象池子索引位置
 	bool   	 			m_bIsValid; 
+	CACHE_LINE_ALIGN T	m_Obj;
 	std::atomic<byte>	m_bStatus;
-	T					m_Obj;
 	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
 	ShmObjStatus GetObjStatus()						{ return m_bStatus.load(std::memory_order_acquire); }
 	//对原子变量y进行了release的store操作，因此y变量之前的store/load操作不能排序到y之后
@@ -60,9 +60,9 @@ struct CShmObj
 template<typename T>
 struct CSavingObj
 {
-	T					m_SavingObj;      //保存对象
-	int					m_nSavingIndex;   //保存对象索引
+	CACHE_LINE_ALIGN T	m_Obj;
 	std::atomic<byte>	m_bSavingStatus;  //保存对象状态
+	int					m_nSavingIndex;   //保存对象索引
 	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
 	SavingStauts GetSavingStatus()						{ return m_bSavingStatus.load(std::memory_order_acquire); }
 	//对原子变量y进行了release的store操作，因此y变量之前的store/load操作不能排序到y之后

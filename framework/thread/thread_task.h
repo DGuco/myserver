@@ -90,7 +90,6 @@ public:
 	virtual void* GetRes() = 0;
 	virtual void* GetArgs() = 0;
 private:
-	std::atomic<enTaskState>			m_nState;
 	std::string							m_TaskSignature;	//任务签名
 	time_t								m_nExecuteStart;	//任务开始执行时间
 	LockFreeLimitQueue<TaskPtr>			m_childTaskVec;
@@ -100,6 +99,7 @@ private:
 	BYTE								m_combineCount;
 	enCombineType						m_combineType;
 	std::atomic_uchar					m_combineDone;
+	std::atomic<enTaskState>			m_nState;
 	CSafePtr<CArgsHolder>				m_pCombinedArgs;
 protected:
 	CSafePtr<CThreadScheduler>		m_pScheduler;
