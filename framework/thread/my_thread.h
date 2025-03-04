@@ -54,14 +54,14 @@ public:
 	ThreadStatus getStatus() { return m_Status; }
 	VOID SetStatus(ThreadStatus status) { m_Status = status; }
 private:
-	TID						m_TID;
-	ThreadStatus			m_Status;
-	CSafePtr<thread_data>	m_ThreadData;
-	std::atomic_bool		m_bStoped;
+	TID								m_TID;
+	CSafePtr<thread_data>			m_ThreadData;
+	CACHE_LINE_ALIGN ThreadStatus	m_Status;
+	std::atomic_bool				m_bStoped;
 #if defined(__LINUX__)
-	pthread_t				m_hThread;
+	pthread_t						m_hThread;
 #else
-	HANDLE					m_hThread;
+	HANDLE							m_hThread;
 #endif
 };
 

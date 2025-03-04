@@ -41,9 +41,8 @@ set(LUA_BRIDGE_HEADER_FILES
 
 set(FRAMEWORK
         "base/base.h"
-        "../common/dblogin_type.h"
-        "../common/platform_def.h" 
-        "../common/platform_def.cpp"
+        "base/platform_def.h" 
+        "base/platform_def.cpp"
         "base/my_assert.h"
         "base/object.h"
         "base/performance.cpp"

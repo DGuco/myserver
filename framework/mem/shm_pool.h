@@ -61,7 +61,7 @@ template<typename T>
 struct CSavingObj
 {
 	CACHE_LINE_ALIGN T	m_Obj;
-	std::atomic<byte>	m_bSavingStatus;  //保存对象状态
+	std::atomic_uchar	m_bSavingStatus;  //保存对象状态
 	int					m_nSavingIndex;   //保存对象索引
 	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
 	SavingStauts GetSavingStatus()						{ return m_bSavingStatus.load(std::memory_order_acquire); }
