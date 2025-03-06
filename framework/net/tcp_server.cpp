@@ -217,12 +217,12 @@ void CTCPServer::SelectTick()
 	timeval tvListen;
 	tvListen.tv_sec = 0;
 	tvListen.tv_usec = 100000;
-	int iMaxSocketFD = -1;
+	SOCKET iMaxSocketFD = -1;
 
 	//tcpserver 如果进行了socket监听
 	if (m_ListenSocket.IsValid())
 	{
-		int nListenFD = m_ListenSocket.GetSocket();
+		SOCKET nListenFD = m_ListenSocket.GetSocket();
 		FD_SET(nListenFD, &m_fdsRead);  // 将listen端口加入端口集
 	}
 
@@ -270,7 +270,7 @@ void CTCPServer::SelectTick()
 	//如果进行了监听，检查时候有新链接
 	if (m_ListenSocket.IsValid())
 	{
-		int nListenFD = m_ListenSocket.GetSocket();
+		SOCKET nListenFD = m_ListenSocket.GetSocket();
 		// 如果iListenSocketFD在fds_read中
 		if (FD_ISSET(nListenFD, &m_fdsRead))
 		{

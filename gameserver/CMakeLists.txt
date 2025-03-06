@@ -19,6 +19,9 @@ if(MSVC)
 endif()
 
 set(SOURCE_FILES
+        "../common/db/db_playerdata.h" 
+        "../common/db/db_playercity.h"
+        "../common/db/db_playerbase.h"
         "../common/message/message.pb.cc" 
         "../common/message/message.pb.h"
         "../common/tcp_def.h"
@@ -35,13 +38,7 @@ set(SOURCE_FILES
         "src/game_player.cpp"
         "src/mfactory_manager.cpp"
         "gamemodule/datamodule/player.h"
-        "gamemodule/datamodule/playerdata.h"
-        "gamemodule/datamodule/playerbase.h"
-        "gamemodule/datamodule/playercity.h"
         "gamemodule/datamodule/player.cpp"
-        "gamemodule/datamodule/playerbase.cpp"
-        "gamemodule/datamodule/playerdata.cpp"
-        "gamemodule/datamodule/playercity.cpp"
         "gamemodule/messagemodule/cgconn_req.h"
         "gamemodule/messagemodule/proxy_message.h"
         "main.cpp"
@@ -49,8 +46,6 @@ set(SOURCE_FILES
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
-        ${CMAKE_SOURCE_DIR}/common
-        ${CMAKE_SOURCE_DIR}/common/message
         ${CMAKE_SOURCE_DIR}/lua-5.3.6/
         ${CMAKE_SOURCE_DIR}/framework/base
         ${CMAKE_SOURCE_DIR}/framework/mem

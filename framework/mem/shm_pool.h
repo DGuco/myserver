@@ -37,7 +37,7 @@ struct CShmObj
 	int					m_nPoolId;	   //对象池子索引位置
 	bool   	 			m_bIsValid; 
 	CACHE_LINE_ALIGN T	m_Obj;
-	std::atomic<byte>	m_bStatus;
+	std::atomic_uchar	m_bStatus;
 	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
 	ShmObjStatus GetObjStatus()						{ return m_bStatus.load(std::memory_order_acquire); }
 	//对原子变量y进行了release的store操作，因此y变量之前的store/load操作不能排序到y之后
@@ -85,10 +85,10 @@ template<typename T,size_t poolsize,size_t saving_size = 1>
 class CShmPool : public IShmPool
 {
 public:
-	CShmPool(int saveInterval,bool forceSaveAll);
+	CShmPool();
 	virtual ~CShmPool();
 	//
-	bool Init(int poolkey,enShmType eShmType);
+	bool Init(int poolkey,enShmType eShmType,int saveInterval,bool forceSaveAll);
 	//
 	CSafePtr<CShmObj<T>> NewObj();
 	//
@@ -112,12 +112,12 @@ private:
 };
 
 template<typename T,size_t poolsize,size_t saving_size>
-CShmPool<T,poolsize,saving_size>::CShmPool(int saveInterval,bool forceSaveAll)
+CShmPool<T,poolsize,saving_size>::CShmPool()
 {
 	m_nUsedIndex = 0;
 	m_nSavingIndex = 0;
-	m_bForceSaveAll = forceSaveAll;
-	m_nSaveInterval = saveInterval;
+	m_bForceSaveAll = 0;
+	m_nSaveInterval = 0;
 	m_bSaveAllFlag = 0;	
 
 	for (size_t i = 0; i < poolsize; i++)
@@ -138,8 +138,10 @@ CShmPool<T,poolsize,saving_size>::~CShmPool()
 }
 
 template<typename T,size_t poolsize,size_t saving_size>
-bool CShmPool<T,poolsize,saving_size>::Init(int poolkey,enShmType eShmType)
+bool CShmPool<T,poolsize,saving_size>::Init(int poolkey,enShmType eShmType,int saveInterval,bool forceSaveAll)
 {
+	m_bForceSaveAll = saveInterval;
+	m_nSaveInterval = forceSaveAll;
 	int tmMemSize = sizeof(CShmObj<T>) * poolsize + sizeof(CSavingObj<T> * saving_size) ;
 	if (!m_ShareMem.CreateSegment(poolkey, tmMemSize))
 	{

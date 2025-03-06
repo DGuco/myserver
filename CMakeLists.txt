@@ -8,7 +8,6 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 	message("-- current platform: Windows ")
 endif()
 
-
 # …Ë÷√ ‰≥ˆƒø¬º
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/run)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
@@ -22,10 +21,25 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
+include_directories(
+        ${CMAKE_SOURCE_DIR}/thirdparty
+        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/common/db
+        ${CMAKE_SOURCE_DIR}/common/message
+        ${CMAKE_SOURCE_DIR}/lua-5.3.6
+        ${CMAKE_SOURCE_DIR}/framework/base
+        ${CMAKE_SOURCE_DIR}/framework/mem
+        ${CMAKE_SOURCE_DIR}/framework/message
+        ${CMAKE_SOURCE_DIR}/framework/net
+        ${CMAKE_SOURCE_DIR}/framework/thread
+        ${CMAKE_SOURCE_DIR}/framework/std
+)
+
 add_subdirectory(lua-5.3.6)
 add_subdirectory(framework)
 add_subdirectory(gameserver)
 add_subdirectory(proxyserver)
-#add_subdirectory(dbserver)
+add_subdirectory(dbserver)
+
 
 

@@ -16,7 +16,7 @@
 
 class QueryResult;
 
-class Database : public CMyThread
+class Database
 {
 protected:
     Database();

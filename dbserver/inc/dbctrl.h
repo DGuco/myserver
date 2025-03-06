@@ -12,6 +12,7 @@
 #include "database.h"
 #include "safe_pointer.h"
 #include "thread_scheduler.h"
+#include "shm_manager.h"
 
 //#include "protoconfig.h"
 
@@ -40,6 +41,7 @@ public:
 	int PrepareToRun();
 private:
 	CSafePtr<CThreadScheduler> m_pDbScheduler;
+	CSafePtr<CShmManager>	   m_pShmManager;
 };
 
 #endif

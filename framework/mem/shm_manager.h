@@ -7,7 +7,6 @@
 #ifndef __SHM_MANAGER_H__
 #define __SHM_MANAGER_H__
 
-#include "singleton.h"
 #include "shm_type.h"
 #include "safe_pointer.h"
 
@@ -19,7 +18,7 @@ public:
     virtual enShmType GetShmType() = 0;
 };
 
-class CShmManager  : public CSingleton<CShmManager>
+class CShmManager
 {
 private:
 	CShmManager();

@@ -19,8 +19,6 @@
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 #define STR(x)			#x
 
-#define UID_LENGTH			 (64)    // 帐号长度
-#define NAME_LENGTH          (32)    // 名字长度
 #define PATH_LENGTH			 (256)    // 文件路径字符长度
 #define ADDR_LENGTH          (32)    // IP和PORT的长度
 #define GUIDE_MAX            (100)

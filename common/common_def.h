@@ -10,7 +10,8 @@
 #define DB_THREAD_MAX				(8)			//db线程数
 #define YEARSEC						(31536000)
 #define MAX_SOCKET_NUM				(65536)
-
+#define UID_LENGTH			 		(64)    // 帐号长度
+#define NAME_LENGTH          		(32)    // 名字长度
 // 管道标识符
 enum enLockIdx
 {

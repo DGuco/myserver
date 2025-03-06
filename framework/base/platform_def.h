@@ -52,7 +52,7 @@ using namespace std;
 	typedef int	SOCKET;
 	typedef pthread_t	TID;
 
-    //修改字对齐规则，避免false sharing
+    //修改字对齐规则，避免false sharing ,splitlock
     #define CACHE_LINE_ALIGN  __attribute__((aligned(CACHE_LINE_SIZE)))
 #else
     std::string GetErrorMessage(int errorCode);
@@ -70,7 +70,8 @@ using namespace std;
     typedef void* sm_handler;
 	#define INVALID_SM_HADLER (NULL)
 	typedef DWORD		TID;
-
+    
+    //修改字对齐规则，避免false sharing ,splitlock
     #define CACHE_LINE_ALIGN __declspec(align(CACHE_LINE_SIZE))
 #endif
 
