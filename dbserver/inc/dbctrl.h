@@ -8,40 +8,24 @@
 #define _DBCTRL_HPP_
 
 #include "base.h"
-#include "query_result.h"
-#include "database.h"
-#include "safe_pointer.h"
-#include "thread_scheduler.h"
-#include "shm_manager.h"
+#include "singleton.h"
 
-//#include "protoconfig.h"
+struct Student
+{
+	int id;
+	char name[20];
+	int age;
+};
 
-using namespace std;
-
-#ifdef _ASYNC_SQL_
-#include "asqlexe.h"
-#endif
-
-#define MAXPROXYNUMBER                2                    // 最大proxy server 数目
-#define MAXHANDLENUMBER                2
-#define SECSOFONEHOUR                3600
-#define CHECKINTERVAL                10                    // 检查时间间隔，单位：秒
-#define PROXYKEEPALIVESECONDS        (3*CHECKINTERVAL)    // 与proxy的心跳超时时间
-#define MAXPROXYCODELEN                1024                // 向proxy发送纯命令的最大块长度
-#define STATISTICSLEN                1024
-#define MAXNUMBERLEN                10
-#define SAVEINTERVAL                300
-
-class CSharedMem;
-
-class CDBCtrl: public CSingleton<CDBCtrl>
+#define MAX_STUDENT_NUM 1000
+class CDBCtrl : public CSingleton<CDBCtrl>
 {
 public:
 	CDBCtrl();
-	int PrepareToRun();
+	~CDBCtrl();
+
 private:
-	CSafePtr<CThreadScheduler> m_pDbScheduler;
-	CSafePtr<CShmManager>	   m_pShmManager;
+	Student m_student[MAX_STUDENT_NUM];
 };
 
 #endif

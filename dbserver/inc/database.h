@@ -70,7 +70,7 @@ public:
 
     virtual void ThreadStart();
     virtual void ThreadEnd();
-
+    
 private:
     bool m_logSQL;
     std::string m_logsDir;

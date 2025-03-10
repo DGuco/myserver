@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.20)
 
 project(server)
 
@@ -39,7 +39,7 @@ add_subdirectory(lua-5.3.6)
 add_subdirectory(framework)
 add_subdirectory(gameserver)
 add_subdirectory(proxyserver)
-add_subdirectory(dbserver)
+#add_subdirectory(dbserver)
 
 
 
