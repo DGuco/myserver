@@ -91,5 +91,7 @@ private:
 	CSafePtr<CShmMessQueue>	m_DB2SCodeQueue;
 	//gameserver ==> dbserver
 	CSafePtr<CShmMessQueue>	m_S2DBCodeQueue;
+	//≥ı ºªØ
+	CSafePtr<CShmManager> m_pShmManager;
 };
 #endif //__DB_SERVER_H__

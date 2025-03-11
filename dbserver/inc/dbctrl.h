@@ -9,23 +9,20 @@
 
 #include "base.h"
 #include "singleton.h"
+#include "shm_manager.h"
+#include "safe_pointer.h"
+#include "my_thread.h"
 
-struct Student
-{
-	int id;
-	char name[20];
-	int age;
-};
-
-#define MAX_STUDENT_NUM 1000
 class CDBCtrl : public CSingleton<CDBCtrl>
 {
 public:
 	CDBCtrl();
 	~CDBCtrl();
-
+	//≥ı ºªØ
+	int Init();
 private:
-	Student m_student[MAX_STUDENT_NUM];
+	CSafePtr<CThreadScheduler> m_pScheduler;
+	CSafePtr<CThreadScheduler> m_pSchedulerDb;
 };
 
 #endif

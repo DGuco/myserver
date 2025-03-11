@@ -97,10 +97,10 @@ void CProxyPlayer::SetLastRecvKeepAlive(time_t value)
 
 int CProxyPlayer::ConnKey()
 {
-	return m_nServerId << 8 + m_nServerType;
+	return (m_nServerId << 8) + m_nServerType;
 }
 
 int CProxyPlayer::ConnKey(int servertype, int serverid)
 {
-	return serverid << 8 + servertype;
+	return (serverid << 8) + servertype;
 }

@@ -155,27 +155,40 @@ void CSignalHandler::DumpStack(const char* sigtype)
 		if (Size > 0)
 		{
 			FILE* f = fopen(DumpFileName().c_str(), "a");
-			char threadinfo[256] = { 0 };
-			sprintf(threadinfo, "thread = %lld raise signal,sigtype = %s \r\n", MyGetCurrentThreadID(), sigtype);
-			fwrite(threadinfo, 1, strlen(threadinfo), f);
-			for (int i = 0; i < Size; i++)
+			if(f!= NULL)
 			{
-				printf("%s\r\n", symbols[i]);
-				fwrite(symbols[i], 1, strlen(symbols[i]), f);
-				fwrite("\r\n", 1, 2, f);
+				char threadinfo[256] = { 0 };
+				sprintf(threadinfo, "thread = %lld raise signal,sigtype = %s \r\n", MyGetCurrentThreadID(), sigtype);
+				fwrite(threadinfo, 1, strlen(threadinfo), f);
+				for (int i = 0; i < Size; i++)
+				{
+					printf("%s\r\n", symbols[i]);
+					fwrite(symbols[i], 1, strlen(symbols[i]), f);
+					fwrite("\r\n", 1, 2, f);
+				}
+				fclose(f);
+			}else
+			{
+				DISK_LOG(ERROR_DISK, "Failed to open dump file: {}", DumpFileName().c_str());
 			}
-			fclose(f);
+
 		}
 		free(symbols);
 	}
 	else
 	{
 		FILE* f = fopen(DumpFileName().c_str(), "a");
-		char	buffer[256] = { 0 };
-		char threadinfo[256] = { 0 };
-		sprintf(threadinfo, "thread = %lld raise signal,sigtype = %s \r\n", MyGetCurrentThreadID(), sigtype);
-		fwrite(sigtype, 1, strlen(sigtype), f);
-		fclose(f);
+		if(f != NULL)
+		{
+			char	buffer[256] = { 0 };
+			char threadinfo[256] = { 0 };
+			sprintf(threadinfo, "thread = %lld raise signal,sigtype = %s \r\n", MyGetCurrentThreadID(), sigtype);
+			fwrite(sigtype, 1, strlen(sigtype), f);
+			fclose(f);
+		}else
+		{
+			DISK_LOG(ERROR_DISK, "Failed to open dump file: {}", DumpFileName().c_str());
+		}
 	}
 #endif
 }
@@ -189,11 +202,15 @@ std::string CSignalHandler::DumpFileName()
 
 void CSignalHandler::DumpLog(const char* msg)
 {
-	if ( msg == NULL)
-	{
-		return;
-	}
-	FILE* f = fopen(DumpFileName().c_str(), "a");
-	fwrite(msg, 1, strlen(msg), f);
-	fclose(f);
+    if ( msg == NULL)
+    {
+        return;
+    }
+    FILE* f = fopen(DumpFileName().c_str(), "a");
+    if (!f) {
+        DISK_LOG(ERROR_DISK, "Failed to open dump file: {}", DumpFileName().c_str());
+        return;
+    }
+    fwrite(msg, 1, strlen(msg), f);
+    fclose(f);
 }

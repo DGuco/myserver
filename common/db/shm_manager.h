@@ -7,20 +7,12 @@
 #ifndef __SHM_MANAGER_H__
 #define __SHM_MANAGER_H__
 
-#include "shm_type.h"
+#include "shm_def.h"
 #include "safe_pointer.h"
 
-class IShmPool
+class CShmManager : public CSingleton<CShmManager>
 {
 public:
-	virtual void      PrepareSave() = 0;
-	virtual void      DoSaveAll() = 0;
-    virtual enShmType GetShmType() = 0;
-};
-
-class CShmManager
-{
-private:
 	CShmManager();
 	~CShmManager();
     void Init();

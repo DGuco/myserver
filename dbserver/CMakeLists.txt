@@ -20,10 +20,17 @@ if(MSVC)
 endif()
 
 set(SOURCE_FILES
+        "${CMAKE_SOURCE_DIR}/common/tcp_def.h"
+        "${CMAKE_SOURCE_DIR}/common/server_config.h"
+        "${CMAKE_SOURCE_DIR}/common/server_config.cpp"
+        "${CMAKE_SOURCE_DIR}/common/db/db_playerdata.h"
+        "${CMAKE_SOURCE_DIR}/common/db/db_playercity.h"
+        "${CMAKE_SOURCE_DIR}/common/db/db_playerbase.h"
+        "${CMAKE_SOURCE_DIR}/common/db/shm_def.h"
+        "${CMAKE_SOURCE_DIR}/common/db/shm_pool.h"
+        "${CMAKE_SOURCE_DIR}/common/db/shm_manager.h"
+        "${CMAKE_SOURCE_DIR}/common/db/shm_manager.cpp"
         "main.cpp"
-        "../common/tcp_def.h"
-        "../common/server_config.h"
-        "../common/server_config.cpp"
         "inc/db_server.h"
         "inc/basedb.h"
         "inc/database.h"
@@ -45,8 +52,9 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
         ${CMAKE_SOURCE_DIR}/common
         ${CMAKE_SOURCE_DIR}/common/message
+        ${CMAKE_SOURCE_DIR}/common/db
         ${CMAKE_SOURCE_DIR}/framework/base
-        ${CMAKE_SOURCE_DIR}/framework/mem
+        ${CMAKE_SOURCE_DIR}/framework/shm
         ${CMAKE_SOURCE_DIR}/framework/message
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread

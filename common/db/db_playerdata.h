@@ -10,6 +10,7 @@
 #include "db_playerbase.h"
 #include "db_playercity.h"
 #include "shm_pool.h"
+#include "shm_def.h"
 
 struct DBPlayerData 
 {
@@ -17,11 +18,11 @@ struct DBPlayerData
     DBPlayerCity m_stPlayerCity; //城建数据
 };
 
-class PlayerBaseShmPool : public CShmPool<DBPlayerData,500,10>
+class CPlayerBaseShmPool : public CShmPool<DBPlayerData,MAX_PLAYER_POOL_SIZE,MAX_PLAYER_SAVING_SIZE>
 {
 public:
-    PlayerBaseShmPool() {};
-    virtual ~PlayerBaseShmPool() {};
+    CPlayerBaseShmPool() {};
+    virtual ~CPlayerBaseShmPool() {};
     virtual enShmType GetShmType() {return enShmType_Player;};
 }；
 

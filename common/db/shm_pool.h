@@ -80,7 +80,14 @@ struct CSavingObj
 	}
 };
 
-
+class IShmPool
+{
+public:
+	virtual void      PrepareSave() = 0;
+	virtual void      DoSaveAll() = 0;
+    virtual enShmType GetShmType() = 0;
+};
+ 
 template<typename T,size_t poolsize,size_t saving_size = 1>
 class CShmPool : public IShmPool
 {
@@ -147,7 +154,7 @@ bool CShmPool<T,poolsize,saving_size>::Init(int poolkey,enShmType eShmType,int s
 	{
 		if (!m_ShareMem.AttachSegment(poolkey, tmMemSize))
 		{
-			return  false;
+			return false;
 		}
 	}
 
@@ -167,7 +174,6 @@ bool CShmPool<T,poolsize,saving_size>::Init(int poolkey,enShmType eShmType,int s
 		m_SavingObjList[index]->m_nSavingIndex = -1;
 	}
 	m_SaveTimer.BeginTimer(m_nSaveInterval);
-	CShmManager::GetSingletonPtr()->RegisterShmPool(this,eShmType);
 	return true;
 }
 
