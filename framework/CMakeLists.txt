@@ -69,6 +69,7 @@ set(FRAMEWORK
         "shm/shm_api.h" 
         "shm/shm.cpp"
         "shm/shm.h"
+        "shm/shm_pool.h"
         "net/statistics.h" 
         "net/statistics.cpp"
         "net/byte_buff.cpp" 
@@ -94,7 +95,17 @@ set(FRAMEWORK
         "thread/my_thread.h" 
         "thread/my_thread.cpp"
         "thread/my_lock.h" 
-        "thread/task_helper.h")
+        "thread/task_helper.h"
+        "db/basedb.h"
+        "db/database.h"
+        "db/database_mysql.h"
+        "db/field.h"
+        "db/query_result.h"
+        "db/query_result_mysql.h"
+        "db/database_mysql.cpp"
+        "db/database.cpp"
+        "db/field.cpp"
+        "db/query_result_mysql.cpp")
 
 
 include_directories(
@@ -108,6 +119,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/net
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/framework/std
+        ${CMAKE_SOURCE_DIR}/framework/db
 )
 
 link_directories(

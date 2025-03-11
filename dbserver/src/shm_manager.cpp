@@ -24,14 +24,7 @@ void CShmManager::Init()
 
 void CShmManager::HeartBeat()
 {
-	for(int index = 0; index < enShmType_Max; index++)
-	{
-		CSafePtr<IShmPool> pShmPool = m_pShmPool[index];
-		if(pShmPool != NULL)
-		{
-			pShmPool->DoSaveAll();
-		}
-	}
+
 }
 
 void CShmManager::RegisterShmPool(IShmPool *pShmPool, enShmType eShmType)

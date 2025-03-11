@@ -16,6 +16,12 @@ struct DBPlayerData
 {
     DBPlayerBase m_stPlayerBase; //基础数据
     DBPlayerCity m_stPlayerCity; //城建数据
+
+    int Save()
+    {
+        int bRet = m_stPlayerBase.Save();
+        bRet = m_stPlayerCity.Save();
+    }
 };
 
 class CPlayerBaseShmPool : public CShmPool<DBPlayerData,MAX_PLAYER_POOL_SIZE,MAX_PLAYER_SAVING_SIZE>

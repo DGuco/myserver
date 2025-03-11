@@ -18,6 +18,7 @@ public:
     void Init();
     void HeartBeat();
     void RegisterShmPool(IShmPool *pShmPool, enShmType eShmType);
+    void DoSave();
 private:
     CSafePtr<IShmPool> m_pShmPool[enShmType_Max];
 };

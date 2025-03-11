@@ -47,6 +47,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/thread
         ${CMAKE_SOURCE_DIR}/framework/std
         ${CMAKE_SOURCE_DIR}/framework/lua
+        ${CMAKE_SOURCE_DIR}/framework/db
         ${CMAKE_SOURCE_DIR}/proxyserver/inc
 )
 

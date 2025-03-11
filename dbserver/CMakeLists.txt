@@ -20,47 +20,47 @@ if(MSVC)
 endif()
 
 set(SOURCE_FILES
-        "${CMAKE_SOURCE_DIR}/common/tcp_def.h"
-        "${CMAKE_SOURCE_DIR}/common/server_config.h"
-        "${CMAKE_SOURCE_DIR}/common/server_config.cpp"
-        "${CMAKE_SOURCE_DIR}/common/db/db_playerdata.h"
-        "${CMAKE_SOURCE_DIR}/common/db/db_playercity.h"
-        "${CMAKE_SOURCE_DIR}/common/db/db_playerbase.h"
-        "${CMAKE_SOURCE_DIR}/common/db/shm_def.h"
-        "${CMAKE_SOURCE_DIR}/common/db/shm_pool.h"
-        "${CMAKE_SOURCE_DIR}/common/db/shm_manager.h"
-        "${CMAKE_SOURCE_DIR}/common/db/shm_manager.cpp"
-        "main.cpp"
-        "inc/db_server.h"
-        "inc/basedb.h"
-        "inc/database.h"
-        "inc/database_mysql.h"
-        "inc/field.h"
-        "inc/query_result.h"
-        "inc/query_result_mysql.h"
-        "inc/db_server.h"
-        "inc/dbctrl.h"
-        "src/database_mysql.cpp"
-        "src/database.cpp"
-        "src/field.cpp"
-        "src/query_result_mysql.cpp"
-        "src/db_server.cpp"
-        "src/dbctrl.cpp"
-        )
+    "${CMAKE_SOURCE_DIR}/common/tcp_def.h"
+    "${CMAKE_SOURCE_DIR}/common/server_config.h"
+    "${CMAKE_SOURCE_DIR}/common/server_config.cpp"
+    "${CMAKE_SOURCE_DIR}/common/db/db_playerdata.h"
+    "${CMAKE_SOURCE_DIR}/common/db/db_playercity.h"
+    "${CMAKE_SOURCE_DIR}/common/db/db_playerbase.h"
+    "${CMAKE_SOURCE_DIR}/common/db/shm_def.h"
+    "main.cpp"
+    "inc/db_server.h"
+    "inc/basedb.h"
+    "inc/database.h"
+    "inc/database_mysql.h"
+    "inc/field.h"
+    "inc/query_result.h"
+    "inc/query_result_mysql.h"
+    "inc/db_server.h"
+    "inc/dbctrl.h"
+    "inc/shm_manager.h"
+    "src/database_mysql.cpp"
+    "src/database.cpp"
+    "src/field.cpp"
+    "src/query_result_mysql.cpp"
+    "src/db_server.cpp"
+    "src/dbctrl.cpp"
+    "src/shm_manager.cpp"
+    )
 
 include_directories(
-        ${CMAKE_SOURCE_DIR}/thirdparty
-        ${CMAKE_SOURCE_DIR}/common
-        ${CMAKE_SOURCE_DIR}/common/message
-        ${CMAKE_SOURCE_DIR}/common/db
-        ${CMAKE_SOURCE_DIR}/framework/base
-        ${CMAKE_SOURCE_DIR}/framework/shm
-        ${CMAKE_SOURCE_DIR}/framework/message
-        ${CMAKE_SOURCE_DIR}/framework/net
-        ${CMAKE_SOURCE_DIR}/framework/thread
-        ${CMAKE_SOURCE_DIR}/framework/std
-        ${CMAKE_SOURCE_DIR}/framework/lua
-        ${CMAKE_SOURCE_DIR}/dbserver/inc
+    ${CMAKE_SOURCE_DIR}/common
+    ${CMAKE_SOURCE_DIR}/common/db
+    ${CMAKE_SOURCE_DIR}/common/message
+    ${CMAKE_SOURCE_DIR}/lua-5.3.6/
+    ${CMAKE_SOURCE_DIR}/thirdparty
+    ${CMAKE_SOURCE_DIR}/framework/base
+    ${CMAKE_SOURCE_DIR}/framework/shm
+    ${CMAKE_SOURCE_DIR}/framework/net
+    ${CMAKE_SOURCE_DIR}/framework/thread
+    ${CMAKE_SOURCE_DIR}/framework/std
+    ${CMAKE_SOURCE_DIR}/framework/lua
+    ${CMAKE_SOURCE_DIR}/framework/db
+    ${CMAKE_SOURCE_DIR}/dbserver/inc
 )
 
 link_directories(

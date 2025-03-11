@@ -62,7 +62,7 @@ CByteBuff &CByteBuff::operator=(CByteBuff &byteBuff)
 
 CByteBuff::~CByteBuff()
 {
-	DELETE_ARR(m_aData);
+	SAFE_DELETE_ARR(m_aData);
 	m_nCapacity = 0;
 	m_nMinSize = 0;
 	m_nMaxSize = 0;
@@ -626,7 +626,7 @@ bool CByteBuff::ShrinkBuff(time_t mstimestamp)
 			}
 			m_nReadIndex = 0;
 			m_nWriteIndex = nCanReadLen;
-			DELETE_ARR(m_aData);
+			SAFE_DELETE_ARR(m_aData);
 			m_aData = pNewData;
 			m_nCapacity = nNewCap;
 			m_fBuffUseRate = CaclUseRate();
@@ -643,7 +643,7 @@ void CByteBuff::GrowBuff(int newsize)
 	nNewCapacity = MAX(MAX(m_nCapacity + newsize + 1, nNewCapacity),m_nMaxSize);
 	BYTE* pNewData = new BYTE[nNewCapacity];
 	memcpy(pNewData, m_aData, m_nCapacity);
-	DELETE_ARR(m_aData);
+	SAFE_DELETE_ARR(m_aData);
 	m_aData = pNewData;
 	m_nCapacity = nNewCapacity;
 }
@@ -651,7 +651,7 @@ void CByteBuff::GrowBuff(int newsize)
 
 void CByteBuff::InitBuff()
 {
-	DELETE_ARR(m_aData);
+	SAFE_DELETE_ARR(m_aData);
 	m_nCapacity = m_nMinSize;
 	m_aData = new BYTE[m_nCapacity];
 	m_nReadIndex = 0;

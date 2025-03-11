@@ -347,7 +347,7 @@ CShmMessQueue* CShmMessQueue::CreateInstance(int shmkey,size_t queuesize)
     bool bRet = pMessQueue->Init(shmkey, queuesize);
     if (!bRet)
     {
-        DELETE(pMessQueue);
+        SAFE_DELETE(pMessQueue);
         return NULL;
     }
     return pMessQueue;

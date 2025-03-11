@@ -19,6 +19,10 @@ struct DBPlayerBase
     time_t m_tLoginLimitTime;
     // ’ ∫≈
     char	m_acAccount[UID_LENGTH];
+
+    int Save()
+    {
+    }
 };
 
 

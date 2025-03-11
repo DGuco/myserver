@@ -34,7 +34,7 @@
 #define MSG_MAX_LEN                10*1024            // 接收或发送给客户端消息的最大字节数
 
 
-#define DELETE(ptr) \
+#define SAFE_DELETE(ptr) \
 	do \
 	{\
 		if(ptr != NULL)\
@@ -45,7 +45,7 @@
 	}\
 	while(0);\
 
-#define DELETE_ARR(ptr) \
+#define SAFE_DELETE_ARR(ptr) \
 	do \
 	{\
 		if(ptr != NULL)\

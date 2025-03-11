@@ -9,7 +9,7 @@
 
 #include <mysql/mysql.h>
 
-#include "../inc/basedb.h"
+#include "basedb.h"
 #include "query_result.h"
 
 class QueryResultMysql: public QueryResult

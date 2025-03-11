@@ -10,6 +10,11 @@
 struct DBPlayerCity
 {
     int m_iCityId;
+
+    int Save()
+    {
+
+    }
 };
 
 #endif //PLAYERCITY_H

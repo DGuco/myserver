@@ -22,17 +22,18 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
 include_directories(
-        ${CMAKE_SOURCE_DIR}/thirdparty
-        ${CMAKE_SOURCE_DIR}/common
-        ${CMAKE_SOURCE_DIR}/common/db
-        ${CMAKE_SOURCE_DIR}/common/message
-        ${CMAKE_SOURCE_DIR}/lua-5.3.6
-        ${CMAKE_SOURCE_DIR}/framework/base
-        ${CMAKE_SOURCE_DIR}/framework/mem
-        ${CMAKE_SOURCE_DIR}/framework/message
-        ${CMAKE_SOURCE_DIR}/framework/net
-        ${CMAKE_SOURCE_DIR}/framework/thread
-        ${CMAKE_SOURCE_DIR}/framework/std
+    ${CMAKE_SOURCE_DIR}/common
+    ${CMAKE_SOURCE_DIR}/common/db
+    ${CMAKE_SOURCE_DIR}/common/message
+    ${CMAKE_SOURCE_DIR}/lua-5.3.6/
+    ${CMAKE_SOURCE_DIR}/thirdparty
+    ${CMAKE_SOURCE_DIR}/framework/base
+    ${CMAKE_SOURCE_DIR}/framework/shm
+    ${CMAKE_SOURCE_DIR}/framework/net
+    ${CMAKE_SOURCE_DIR}/framework/thread
+    ${CMAKE_SOURCE_DIR}/framework/std
+    ${CMAKE_SOURCE_DIR}/framework/lua
+    ${CMAKE_SOURCE_DIR}/framework/db
 )
 
 add_subdirectory(lua-5.3.6)

@@ -7,11 +7,11 @@
 #ifndef __SHM_POOL_H__
 #define __SHM_POOL_H__
 
-#include "shm.h"
 #include "base.h"
 #include "safe_pointer.h"
 #include "time_helper.h"
 #include "shm_manager.h"
+#include "shm.h"
 #include <atomic>
 
 enum ShmObjStatus
@@ -83,9 +83,9 @@ struct CSavingObj
 class IShmPool
 {
 public:
-	virtual void      PrepareSave() = 0;
-	virtual void      DoSaveAll() = 0;
-    virtual enShmType GetShmType() = 0;
+	virtual void      			PrepareSave() = 0;
+    virtual enShmType 			GetShmType() = 0;
+	virtual void      			DoSave() = 0;
 };
  
 template<typename T,size_t poolsize,size_t saving_size = 1>
@@ -105,7 +105,11 @@ public:
 	//
 	virtual void PrepareSave();
 	//
-	virtual void DoSaveAll();
+	virtual void DoSave();
+	//
+	virtual int  GetSavingSize();
+	//
+	virtual void* GetSavingObj(int index);
 private:
 	CShmObj<T>*				m_pObjList[poolsize];
 	CSavingObj<T>*			m_SavingObjList[saving_size];
@@ -261,31 +265,28 @@ void CShmPool<T,poolsize,saving_size>::PrepareSave()
 }
 
 template<typename T,size_t poolsize,size_t saving_size>
-void CShmPool<T,poolsize,saving_size>::DoSaveAll()
+void CShmPool<T,poolsize,saving_size>::DoSave()
 {
-	for(int index = 0;index < saving_size;index++)
-	{
-		CSavingObj<T>* pSavingObj = m_SavingObjList[index];
-		if (pSavingObj->m_bSavingStatus == eSaveStatus_Saving)	
-		{
-			try
-			{
-				bool nRet = pSavingObj->m_SavingObj.Save();
-				if(nRet)
-				{
-					pSavingObj->SetSavingStatus(eSaveStatus_Saved);
+    int saving_size = pShmPool->GetSavingSize();
+    for(int saving_index = 0;saving_index < saving_size;saving_index++)
+    {
+        CSavingObj<T>* pSavingObj = m_SavingObjList[saving_index];
+		try
+        {
+            bool nRet = pSavingObj->m_SavingObj.Save();
+            if(nRet)
+            {
+                pSavingObj->SetSavingStatus(eSaveStatus_Saved);
 
-				}else
-				{
-					pSavingObj->SetSavingStatus(eSaveStatus_Free);
-				}
-			}
-			catch(const std::exception& e)
-			{
-				pSavingObj->SetSavingStatus(eSaveStatus_Free)
-			}
-		}
-	}
+            }else
+            {
+                pSavingObj->SetSavingStatus(eSaveStatus_Free);
+            }
+        }
+        catch(const std::exception& e)
+        {
+            pSavingObj->SetSavingStatus(eSaveStatus_Free)
+        }
+    }
 }
-
 #endif //__SHM_POOL_H__

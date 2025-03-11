@@ -175,7 +175,7 @@ public:
 	void Free()
 	{
 		Tp* pPointer = GetThrow();
-		DELETE(pPointer);
+		SAFE_DELETE(pPointer);
 		nDataH = SPO_FLAG_H;
 		nDataL = SPO_FLAG_L;
 #ifdef _DEBUG_
