@@ -40,7 +40,6 @@ set(LUA_BRIDGE_HEADER_FILES
         "lua/lua_bridge.h")
 
 set(FRAMEWORK
-        "${CMAKE_SOURCE_DIR}/common/db/shm_def.h"
         "base/base.h"
         "base/platform_def.h" 
         "base/platform_def.cpp"

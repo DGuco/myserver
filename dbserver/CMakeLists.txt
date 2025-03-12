@@ -20,18 +20,20 @@ if(MSVC)
 endif()
 
 set(SOURCE_FILES
-    "${CMAKE_SOURCE_DIR}/common/tcp_def.h"
-    "${CMAKE_SOURCE_DIR}/common/server_config.h"
-    "${CMAKE_SOURCE_DIR}/common/server_config.cpp"
-    "${CMAKE_SOURCE_DIR}/common/db/db_playerdata.h"
-    "${CMAKE_SOURCE_DIR}/common/db/db_playercity.h"
-    "${CMAKE_SOURCE_DIR}/common/db/db_playerbase.h"
-    "${CMAKE_SOURCE_DIR}/common/db/shm_def.h"
+    ${CMAKE_SOURCE_DIR}/common/tcp_def.h
+    ${CMAKE_SOURCE_DIR}/common/server_config.h
+    ${CMAKE_SOURCE_DIR}/common/server_config.cpp
+    ${CMAKE_SOURCE_DIR}/common/db/db_playercity.h
+    ${CMAKE_SOURCE_DIR}/common/db/db_playerbase.h
+    ${CMAKE_SOURCE_DIR}/common/db/db_playerdata.h
+    ${CMAKE_SOURCE_DIR}/common/db/shm_def.h
     "main.cpp"
     "inc/db_server.h"
     "inc/db_ctrl.h"
     "src/db_server.cpp"
     "src/db_ctrl.cpp"
+    "inc/shm_manager.h"
+    "src/shm_manager.cpp"
     )
 
 include_directories(

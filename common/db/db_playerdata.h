@@ -6,11 +6,9 @@
 #ifndef DB_PLAYERDATA_H
 #define DB_PLAYERDATA_H
 
-#include "base.h"
 #include "db_playerbase.h"
 #include "db_playercity.h"
 #include "shm_pool.h"
-#include "shm_def.h"
 
 struct DBPlayerData 
 {
@@ -21,6 +19,7 @@ struct DBPlayerData
     {
         int bRet = m_stPlayerBase.Save();
         bRet = m_stPlayerCity.Save();
+        return bRet;
     }
 };
 
@@ -30,7 +29,7 @@ public:
     CPlayerDataShmPool() {};
     virtual ~CPlayerDataShmPool() {};
     virtual enShmType GetShmType() {return enShmType_Player;};
-}£»
+};
 
 
 #endif //DB_PLAYERBASE_H

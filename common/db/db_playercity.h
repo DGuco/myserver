@@ -13,7 +13,7 @@ struct DBPlayerCity
 
     int Save()
     {
-
+        return 0;
     }
 };
 

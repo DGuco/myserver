@@ -10,9 +10,8 @@
 #include "base.h"
 #include "safe_pointer.h"
 #include "time_helper.h"
-#include "shm_manager.h"
-#include "shm.h"
 #include "shm_def.h"
+#include "../../framework/shm/shm.h"
 #include <atomic>
 
 enum ShmObjStatus
@@ -40,7 +39,7 @@ struct CShmObj
 	CACHE_LINE_ALIGN T	m_Obj;
 	std::atomic_uchar	m_bStatus;
 	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
-	ShmObjStatus GetObjStatus()						{ return m_bStatus.load(std::memory_order_acquire); }
+	ShmObjStatus GetObjStatus()						{ return (ShmObjStatus)m_bStatus.load(std::memory_order_acquire); }
 	//对原子变量y进行了release的store操作，因此y变量之前的store/load操作不能排序到y之后
 	void SetObjStatus(ShmObjStatus state)			{ m_bStatus.store(m_bStatus, std::memory_order_release);}
 
@@ -107,10 +106,6 @@ public:
 	virtual void PrepareSave();
 	//
 	virtual void DoSave();
-	//
-	virtual int  GetSavingSize();
-	//
-	virtual void* GetSavingObj(int index);
 private:
 	CShmObj<T>*				m_pObjList[poolsize];
 	CSavingObj<T>*			m_SavingObjList[saving_size];
@@ -154,7 +149,7 @@ bool CShmPool<T,poolsize,saving_size>::Init(int poolkey,enShmType eShmType,int s
 {
 	m_bForceSaveAll = saveInterval;
 	m_nSaveInterval = forceSaveAll;
-	int tmMemSize = sizeof(CShmObj<T>) * poolsize + sizeof(CSavingObj<T> * saving_size) ;
+	int tmMemSize = sizeof(CShmObj<T>) * poolsize + sizeof(CSavingObj<T>) * saving_size;
 	if (!m_ShareMem.CreateSegment(poolkey, tmMemSize))
 	{
 		if (!m_ShareMem.AttachSegment(poolkey, tmMemSize))
@@ -165,7 +160,7 @@ bool CShmPool<T,poolsize,saving_size>::Init(int poolkey,enShmType eShmType,int s
 
 	for (int index = 0; index < poolsize; index++)
 	{
-		m_pObjList[index] = m_ShareMem.GetSegment() + index * sizeof(CShmObj<T>);
+		m_pObjList[index] = (CShmObj<T>*)((m_ShareMem.GetSegment() + index * sizeof(CShmObj<T>)));
 		m_pObjList[index]->Clear();
 		m_pObjList[index]->m_bIsValid = true;
 		m_pObjList[index]->m_nPoolId = index;
@@ -173,12 +168,13 @@ bool CShmPool<T,poolsize,saving_size>::Init(int poolkey,enShmType eShmType,int s
 
 	for (int index = 0; index < saving_size; index++)
 	{
-		m_SavingObjList[index] = m_ShareMem.GetSegment() + sizeof(CShmObj<T>) * poolsize + index * sizeof(CSavingObj<T>);
+		m_SavingObjList[index] = (CSavingObj<T>*)(m_ShareMem.GetSegment() + sizeof(CShmObj<T>) * poolsize + index * sizeof(CSavingObj<T>));
 		m_SavingObjList[index]->Clear();
 		m_SavingObjList[index]->m_bSavingStatus = eSaveStatus_Free;
 		m_SavingObjList[index]->m_nSavingIndex = -1;
 	}
-	m_SaveTimer.BeginTimer(m_nSaveInterval);
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
+	m_SaveTimer.BeginTimer(nNow, m_nSaveInterval);
 	return true;
 }
 
@@ -244,7 +240,7 @@ void CShmPool<T,poolsize,saving_size>::PrepareSave()
 				if(m_pObjList[find_index]->GetObjStatus() == eShmObj_Changed)
 				{
 					//拷贝对象
-					pSavingObj->m_SavingObj = m_pObjList[find_index]->m_Obj;
+					pSavingObj->m_Obj = m_pObjList[find_index]->m_Obj;
 					m_pObjList[find_index]->SetObjStatus(eShmObj_Saved);
 					pSavingObj->m_nSavingIndex = find_index;
 					pSavingObj->SetSavingStatus(eSaveStatus_Saving);
@@ -259,7 +255,7 @@ void CShmPool<T,poolsize,saving_size>::PrepareSave()
 		{
 			m_nSavingIndex = 0;
 			m_bSaveAllFlag = 0;
-			m_SaveTimer.ResetTimeout();
+			m_SaveTimer.ResetTimeout(nNow);
 			break;
 		}
 	}
@@ -268,13 +264,12 @@ void CShmPool<T,poolsize,saving_size>::PrepareSave()
 template<typename T,size_t poolsize,size_t saving_size>
 void CShmPool<T,poolsize,saving_size>::DoSave()
 {
-    int saving_size = pShmPool->GetSavingSize();
     for(int saving_index = 0;saving_index < saving_size;saving_index++)
     {
         CSavingObj<T>* pSavingObj = m_SavingObjList[saving_index];
 		try
         {
-            bool nRet = pSavingObj->m_SavingObj.Save();
+            bool nRet = pSavingObj->m_Obj.Save();
             if(nRet)
             {
                 pSavingObj->SetSavingStatus(eSaveStatus_Saved);
@@ -286,7 +281,7 @@ void CShmPool<T,poolsize,saving_size>::DoSave()
         }
         catch(const std::exception& e)
         {
-            pSavingObj->SetSavingStatus(eSaveStatus_Free)
+            pSavingObj->SetSavingStatus(eSaveStatus_Free);
         }
     }
 }

@@ -22,6 +22,7 @@ struct DBPlayerBase
 
     int Save()
     {
+        return 0;
     }
 };
 
