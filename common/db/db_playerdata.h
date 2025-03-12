@@ -15,10 +15,10 @@ struct DBPlayerData
     DBPlayerBase m_stPlayerBase; //基础数据
     DBPlayerCity m_stPlayerCity; //城建数据
 
-    int Save()
+    int Save(CSafePtr<IDataBase> pDataBase)
     {
-        int bRet = m_stPlayerBase.Save();
-        bRet = m_stPlayerCity.Save();
+        int bRet = m_stPlayerBase.Save(pDataBase);
+        bRet = m_stPlayerCity.Save(pDataBase);
         return bRet;
     }
 };

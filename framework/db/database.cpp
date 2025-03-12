@@ -9,16 +9,16 @@
 #include "basedb.h"
 #include "database.h"
 
-IDatabase::IDatabase()
+IDataBase::IDataBase()
 {
 
 }
 
-IDatabase::~IDatabase()
+IDataBase::~IDataBase()
 {
 }
 
-void IDatabase::escape_string(std::string &str)
+void IDataBase::escape_string(std::string &str)
 {
 	if (str.empty())
 		return;
@@ -30,7 +30,7 @@ void IDatabase::escape_string(std::string &str)
 	buf = NULL;
 }
 
-bool IDatabase::PExecuteLog(const char *format, ...)
+bool IDataBase::PExecuteLog(const char *format, ...)
 {
 	if (!format)
 		return false;
@@ -74,7 +74,7 @@ bool IDatabase::PExecuteLog(const char *format, ...)
 	return Execute(szQuery);
 }
 
-QueryResult *IDatabase::PQuery(const char *format, ...)
+QueryResult *IDataBase::PQuery(const char *format, ...)
 {
 	if (!format) return NULL;
 
@@ -92,7 +92,7 @@ QueryResult *IDatabase::PQuery(const char *format, ...)
 	return Query(szQuery, res);
 }
 
-bool IDatabase::PExecute(const char *format, ...)
+bool IDataBase::PExecute(const char *format, ...)
 {
 	if (!format)
 		return false;
@@ -111,7 +111,7 @@ bool IDatabase::PExecute(const char *format, ...)
 	return Execute(szQuery);
 }
 
-bool IDatabase::DirectPExecute(const char *format, ...)
+bool IDataBase::DirectPExecute(const char *format, ...)
 {
 	if (!format)
 		return false;

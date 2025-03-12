@@ -15,13 +15,13 @@
 
 class QueryResult;
 
-class IDatabase
+class IDataBase
 {
 public:
     //
-    IDatabase();
+    IDataBase();
     //
-    virtual ~IDatabase();
+    virtual ~IDataBase();
     //
     virtual QueryResult *Query(const char *sql, unsigned long len) = 0;
     //

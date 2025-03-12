@@ -84,6 +84,6 @@ void CThreadScheduler::DebugTask()
 
 void CThreadScheduler::PushTask(TaskPtr pTask)
 {
-	std::lock_guard<std::mutex> guard(m_queue_mutex);
+	CSafeLock guard(m_queue_mutex);
 	m_Tasks.push(pTask);
 };

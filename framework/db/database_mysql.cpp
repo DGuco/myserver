@@ -20,7 +20,7 @@ void DatabaseMysql::ThreadEnd()
 
 size_t DatabaseMysql::db_count = 0;
 
-DatabaseMysql::DatabaseMysql() : IDatabase(), mMysql(0)
+DatabaseMysql::DatabaseMysql() : IDataBase(), mMysql(0)
 {
     // before first connection
     if( db_count++ == 0 )

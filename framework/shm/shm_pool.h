@@ -11,7 +11,8 @@
 #include "safe_pointer.h"
 #include "time_helper.h"
 #include "shm_def.h"
-#include "../../framework/shm/shm.h"
+#include "shm.h"
+#include "database.h"
 #include <atomic>
 
 enum ShmObjStatus
@@ -85,7 +86,7 @@ class IShmPool
 public:
 	virtual void      			PrepareSave() = 0;
     virtual enShmType 			GetShmType() = 0;
-	virtual void      			DoSave() = 0;
+	virtual void      			DoSave(CSafePtr<IDataBase> pDataBase) = 0;
 };
  
 template<typename T,size_t poolsize,size_t saving_size = 1>
@@ -105,7 +106,7 @@ public:
 	//
 	virtual void PrepareSave();
 	//
-	virtual void DoSave();
+	virtual void DoSave(CSafePtr<IDataBase> pDataBase);
 private:
 	CShmObj<T>*				m_pObjList[poolsize];
 	CSavingObj<T>*			m_SavingObjList[saving_size];
@@ -262,14 +263,14 @@ void CShmPool<T,poolsize,saving_size>::PrepareSave()
 }
 
 template<typename T,size_t poolsize,size_t saving_size>
-void CShmPool<T,poolsize,saving_size>::DoSave()
+void CShmPool<T,poolsize,saving_size>::DoSave(CSafePtr<IDataBase> pDataBase)
 {
     for(int saving_index = 0;saving_index < saving_size;saving_index++)
     {
         CSavingObj<T>* pSavingObj = m_SavingObjList[saving_index];
 		try
         {
-            bool nRet = pSavingObj->m_Obj.Save();
+            bool nRet = pSavingObj->m_Obj.Save(pDataBase);
             if(nRet)
             {
                 pSavingObj->SetSavingStatus(eSaveStatus_Saved);

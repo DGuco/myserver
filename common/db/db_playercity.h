@@ -5,13 +5,14 @@
 #ifndef PLAYERCITY_H
 #define PLAYERCITY_H
 
+#include "database.h"
 #include "base.h"
 
 struct DBPlayerCity
 {
     int m_iCityId;
 
-    int Save()
+    int Save(CSafePtr<IDataBase> pDataBase)
     {
         return 0;
     }

@@ -14,7 +14,7 @@
 class QueryResult;
 typedef std::vector<std::string> Tokens;
 
-class DatabaseMysql: public IDatabase
+class DatabaseMysql: public IDataBase
 {
 public:
 	//
@@ -39,7 +39,7 @@ public:
 	{ return mMysql != NULL; }
 
 	unsigned long escape_string(char *to, const char *from, unsigned long length);
-	using IDatabase::escape_string;
+	using IDataBase::escape_string;
 
 	// must be call before first query in thread
 	void ThreadStart();

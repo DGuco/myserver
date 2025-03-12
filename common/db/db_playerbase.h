@@ -20,7 +20,7 @@ struct DBPlayerBase
     // ’ ∫≈
     char	m_acAccount[UID_LENGTH];
 
-    int Save()
+    int Save(CSafePtr<IDataBase> pDataBase)
     {
         return 0;
     }
