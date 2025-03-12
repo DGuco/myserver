@@ -11,6 +11,7 @@
 #include "singleton.h"
 #include "shm_queue.h"
 #include "safe_pointer.h"
+#include "shm_manager.h"
 
 class CDBSerer : public CSingleton<CDBSerer>
 {
@@ -92,6 +93,6 @@ private:
 	//gameserver ==> dbserver
 	CSafePtr<CShmMessQueue>	m_S2DBCodeQueue;
 	//≥ı ºªØ
-	CSafePtr<CShmManager> m_pShmManager;
+	//CSafePtr<CShmManager> m_pShmManager;
 };
 #endif //__DB_SERVER_H__

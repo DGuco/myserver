@@ -18,8 +18,8 @@ class CDBCtrl : public CSingleton<CDBCtrl>
 public:
 	CDBCtrl();
 	~CDBCtrl();
-	//≥ı ºªØ
 	int Init();
+	int PrepareToRun();
 private:
 	CSafePtr<CThreadScheduler> m_pScheduler;
 	CSafePtr<CThreadScheduler> m_pSchedulerDb;

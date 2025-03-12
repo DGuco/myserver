@@ -20,7 +20,7 @@ void DatabaseMysql::ThreadEnd()
 
 size_t DatabaseMysql::db_count = 0;
 
-DatabaseMysql::DatabaseMysql() : Database(), mMysql(0)
+DatabaseMysql::DatabaseMysql() : IDatabase(), mMysql(0)
 {
     // before first connection
     if( db_count++ == 0 )
@@ -84,9 +84,6 @@ bool DatabaseMysql::Initialize(const char *infoString, int rw_timeout, int sleep
     m_rwtimeout = rw_timeout;
     m_sleeptime = sleep_time;
     m_loop = loop;
-
-    if(!Database::Initialize(infoString, m_rwtimeout, m_sleeptime, m_loop))
-        return false;
 
     Tokens tokens = StrSplit(m_hostInfoString, ";");
 

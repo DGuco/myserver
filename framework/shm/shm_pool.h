@@ -12,6 +12,7 @@
 #include "time_helper.h"
 #include "shm_manager.h"
 #include "shm.h"
+#include "shm_def.h"
 #include <atomic>
 
 enum ShmObjStatus

@@ -2,8 +2,9 @@
 // Created by DGuco on 17-7-12.
 //
 
+#include "log.h"
 #include "signal_handler.h"
-#include "dbctrl.h"
+#include "db_ctrl.h"
 
 int main(int argc, char **argv)
 {

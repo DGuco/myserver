@@ -14,14 +14,13 @@
 class QueryResult;
 typedef std::vector<std::string> Tokens;
 
-class DatabaseMysql: public Database
+class DatabaseMysql: public IDatabase
 {
 public:
+	//
 	DatabaseMysql();
-	~DatabaseMysql();
-
-	//! Initializes Mysql and connects to a server.
-	/*! infoString should be formated like hostname;username;password;database. */
+	//
+	virtual ~DatabaseMysql();
 	bool Initialize(const char *infoString, int rw_timeout, int sleep_time, int loop);
 	bool Reconnect();
 	bool Connect();
@@ -40,7 +39,7 @@ public:
 	{ return mMysql != NULL; }
 
 	unsigned long escape_string(char *to, const char *from, unsigned long length);
-	using Database::escape_string;
+	using IDatabase::escape_string;
 
 	// must be call before first query in thread
 	void ThreadStart();

@@ -1,4 +1,4 @@
-#include "dbctrl.h"
+#include "db_ctrl.h"
 #include "common_def.h"
 #include "thread_scheduler.h"
 
@@ -19,4 +19,10 @@ int CDBCtrl::Init()
     {
         return -1;
     }
+    return 0;
+}
+
+int CDBCtrl::PrepareToRun()
+{
+    return 0;
 }

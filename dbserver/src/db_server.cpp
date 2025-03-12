@@ -2,7 +2,7 @@
 // Created by DGuco on 17-7-13.
 //
 #include "db_server.h"
-#include "dbctrl.h"
+#include "db_ctrl.h"
 #include "message_factory.h"
 #include "database_mysql.h"
 

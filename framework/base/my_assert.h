@@ -1,7 +1,6 @@
 #ifndef __MY_ASSERT_H__
 #define __MY_ASSERT_H__
 
-#include <assert.h>
 #include "base.h"
 #include "log.h"
 

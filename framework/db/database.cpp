@@ -6,53 +6,19 @@
 #include <iostream>
 #include <fstream>
 #include "query_result.h"
-#include "database.h"
 #include "basedb.h"
+#include "database.h"
 
-Database::Database()
+IDatabase::IDatabase()
 {
 
 }
 
-Database::~Database()
-{
-	/*Delete objects*/
-}
-
-bool Database::Initialize(const char *, int, int, int)
-{
-	// Enable logging of SQL commands (usally only GM commands)
-	// (See method: PExecuteLog)
-	m_logSQL = true;
-	m_logsDir = std::string("../log/");
-	if (!m_logsDir.empty()) {
-		if ((m_logsDir.at(m_logsDir.length() - 1) != '/') && (m_logsDir.at(m_logsDir.length() - 1) != '\\'))
-			m_logsDir.append("/");
-	}
-
-	return true;
-}
-
-bool Database::InitLog(const char *vLogName,
-					   const char *vLogDir,
-					   level_enum vPriority,
-					   unsigned int vMaxFileSize,
-					   unsigned int vMaxBackupIndex,
-					   bool vAppend)
-{
-	m_logsName = std::string(vLogName);
-	return true;
-}
-
-void Database::ThreadStart()
+IDatabase::~IDatabase()
 {
 }
 
-void Database::ThreadEnd()
-{
-}
-
-void Database::escape_string(std::string &str)
+void IDatabase::escape_string(std::string &str)
 {
 	if (str.empty())
 		return;
@@ -64,7 +30,7 @@ void Database::escape_string(std::string &str)
 	buf = NULL;
 }
 
-bool Database::PExecuteLog(const char *format, ...)
+bool IDatabase::PExecuteLog(const char *format, ...)
 {
 	if (!format)
 		return false;
@@ -108,7 +74,7 @@ bool Database::PExecuteLog(const char *format, ...)
 	return Execute(szQuery);
 }
 
-QueryResult *Database::PQuery(const char *format, ...)
+QueryResult *IDatabase::PQuery(const char *format, ...)
 {
 	if (!format) return NULL;
 
@@ -126,7 +92,7 @@ QueryResult *Database::PQuery(const char *format, ...)
 	return Query(szQuery, res);
 }
 
-bool Database::PExecute(const char *format, ...)
+bool IDatabase::PExecute(const char *format, ...)
 {
 	if (!format)
 		return false;
@@ -145,7 +111,7 @@ bool Database::PExecute(const char *format, ...)
 	return Execute(szQuery);
 }
 
-bool Database::DirectPExecute(const char *format, ...)
+bool IDatabase::DirectPExecute(const char *format, ...)
 {
 	if (!format)
 		return false;
