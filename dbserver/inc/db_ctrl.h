@@ -9,7 +9,6 @@
 
 #include "base.h"
 #include "singleton.h"
-#include "shm_manager.h"
 #include "safe_pointer.h"
 #include "my_thread.h"
 
