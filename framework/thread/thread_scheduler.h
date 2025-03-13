@@ -25,10 +25,10 @@ class CThreadScheduler
 {
 public:
 	CThreadScheduler(std::string signature);
-	~CThreadScheduler();
-	bool Init(size_t threads);
+	virtual ~CThreadScheduler();
+	virtual void ConsumeTask();
+	virtual bool Init(size_t threads);
 	void PushTask(TaskPtr pTask);
-	void ConsumeTask();
 	void DebugTask();
 public:
 	template<class Func, typename return_type = std::result_of<Func()>::type>
@@ -143,7 +143,7 @@ private:
 		PushArgs(taskList, rest...);
 	}
 private:
-	std::vector<CSafePtr<CTaskThread>> m_Workers;
+	std::vector<CSafePtr<CMyThread>> m_Workers;
 	std::queue<TaskPtr> m_Tasks;
 	CMyLock		m_queue_mutex;
 	std::list<TaskPtr> m_WaitingTasks;

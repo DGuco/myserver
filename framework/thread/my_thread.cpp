@@ -40,6 +40,15 @@ void CMyThread::Stop()
 	m_bStoped.store(true);
 }
 
+void CMyThread::Join()
+{
+#if defined(__LINUX__)
+	pthread_join(m_hThread, NULL);	
+#else
+	::WaitForSingleObject(m_hThread, INFINITE);
+#endif
+}
+
 bool CMyThread::CreateThread()
 {
 #if defined(__LINUX__)
@@ -106,7 +115,7 @@ DWORD WINAPI ThreadProc(void* pvArgs)
 
 	pThread->Run();
 	pThread->SetStatus(CMyThread::EXITING);
-	pThread->Stop();
+	pThread->Exit();
 	pThread->SetStatus(CMyThread::EXIT);
 	return 0;	
 }

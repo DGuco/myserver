@@ -136,9 +136,9 @@ public:
 
 	Tp* operator()()
 	{
-		return Get();
+		return GetThrow();
 	}
-
+	
 	template<typename NewTp>
 	CSafePtr<NewTp> DynamicCastTo()
 	{

@@ -44,6 +44,7 @@ public:
 	virtual void			Run() = 0;
 	virtual void			Exit();
 	void					Stop();
+	void 					Join();
 	bool					CreateThread();
 	void					SetThreadData(CSafePtr<thread_data> pdata);
 	CSafePtr<thread_data>	GetThreadData();

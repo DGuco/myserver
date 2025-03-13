@@ -16,17 +16,17 @@ CShmManager::~CShmManager()
 
 int CShmManager::Init()
 {
-    CPlayerDataShmPool* pPlayerDataShmPool = new CPlayerDataShmPool();
-    ASSERT_EX(pPlayerDataShmPool,"pPlayerDataShmPool is NULL");
+    CSafePtr<CPlayerDataShmPool> pPlayerDataShmPool = new CPlayerDataShmPool();
+    ASSERT_EX(pPlayerDataShmPool != NULL,"pPlayerDataShmPool is NULL");
     int bRet = pPlayerDataShmPool->Init(10000,enShmType_Player,50000,true);
     ASSERT_EX(bRet == 0,"pPlayerDataShmPool->Init() failed");
-    RegisterShmPool(pPlayerDataShmPool);
+    RegisterShmPool(pPlayerDataShmPool.DynamicCastTo<IShmPool>());
     return 0;
 }
 
-void CShmManager::RegisterShmPool(IShmPool* pShmPool)
+void CShmManager::RegisterShmPool(CSafePtr<IShmPool> pShmPool)
 {
-    ASSERT_EX(pShmPool,"pShmPool is NULL");
+    ASSERT_EX(pShmPool != NULL,"pShmPool is NULL");
     int nShmType = pShmPool->GetShmType();
     ASSERT_EX(nShmType >= 0 && nShmType < enShmType_Max,"nShmType is invalid");
     m_ShmPool[nShmType] = pShmPool; 

@@ -5,7 +5,16 @@ CThreadScheduler::CThreadScheduler(std::string signature)
 {}
 
 CThreadScheduler::~CThreadScheduler()
-{}
+{
+	for (size_t i = 0; i < m_Workers.size(); ++i)
+	{
+		m_Workers[i]->Stop();
+		m_Workers[i]->Join();
+		m_Workers[i].Free();
+		m_Workers[i] = NULL;
+	}
+	m_Workers.clear();
+}
 
 bool CThreadScheduler::Init(size_t threads)
 {
@@ -15,7 +24,7 @@ bool CThreadScheduler::Init(size_t threads)
 	{
 		CSafePtr<CTaskThread> pTaskThread = new CTaskThread(this);
 		pTaskThread->CreateThread();
-		m_Workers.emplace_back(pTaskThread);
+		m_Workers.emplace_back(pTaskThread.DynamicCastTo<CMyThread>());
 	}
 	return true;
 }
@@ -86,4 +95,4 @@ void CThreadScheduler::PushTask(TaskPtr pTask)
 {
 	CSafeLock guard(m_queue_mutex);
 	m_Tasks.push(pTask);
-};
+}

@@ -19,7 +19,7 @@ public:
 	CShmManager();
 	~CShmManager();
     int Init();
-    void RegisterShmPool(IShmPool* pShmPool);
+    void RegisterShmPool(CSafePtr<IShmPool> pShmPool);
 private:
     CSafePtr<IShmPool> m_ShmPool[enShmType_Max];
 };
