@@ -20,8 +20,8 @@ int main(int argc, char **argv)
 	{
 		exit(-1);
 	}
-// 
-// 	CDBCtrl::GetSingletonPtr()->Run();
+ 
+ 	CDBCtrl::GetSingletonPtr()->Run();
 
 	SHUTDOWN_ALL_LOG();
 	return 0;

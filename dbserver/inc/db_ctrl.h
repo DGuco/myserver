@@ -19,6 +19,7 @@ public:
 	CDBCtrl();
 	~CDBCtrl();
 	int PrepareToRun();
+	void Run();
 private:
 	CSafePtr<CDBThreadPool<DBPlayerData>> m_pDbPlayerThreadPool;
 };

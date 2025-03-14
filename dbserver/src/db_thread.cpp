@@ -14,7 +14,7 @@ CDBThread::~CDBThread()
 bool CDBThread::PrepareToRun()
 {
     m_pDatabase->ThreadStart();
-    if(m_pDatabase->Initialize("127.0.0.1;3306;root;000000;test",2))
+    if(!m_pDatabase->Initialize("127.0.0.1;3306;root;000000;test",2))
     {
         return false;	
     }

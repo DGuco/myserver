@@ -17,3 +17,11 @@ int CDBCtrl::PrepareToRun()
     m_pDbPlayerThreadPool->Init(1);
     return 0;
 }
+
+void CDBCtrl::Run()
+{
+    while (1)
+    {
+        SLEEP(10);
+    }
+}
