@@ -31,6 +31,17 @@
             "cwd": "${fileDirname}",
             "environment": [],
             "console": "externalTerminal"
+        },
+        {
+            "name": "DbServer",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": " ${workspaceFolder}/run/dbserver.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "console": "externalTerminal"
         }
   
     ]

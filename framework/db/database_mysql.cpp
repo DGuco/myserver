@@ -20,7 +20,7 @@ void DatabaseMysql::ThreadEnd()
 
 size_t DatabaseMysql::db_count = 0;
 
-DatabaseMysql::DatabaseMysql() : IDataBase(), mMysql(0)
+DatabaseMysql::DatabaseMysql() : IDataBase(), m_pMysql(0)
 {
     // before first connection
     if( db_count++ == 0 )
@@ -36,17 +36,14 @@ DatabaseMysql::DatabaseMysql() : IDataBase(), mMysql(0)
          }
     }
 
-    // m_connflag = 0;
-    m_rwtimeout = 60;
+    m_rwtimeout = 30;
     m_sleeptime = 10;
     m_loop = 10;
 }
 
 DatabaseMysql::~DatabaseMysql()
 {
-    if (mMysql)
-        mysql_close(mMysql);
-
+    Close();
     //Free Mysql library pointers for last ~DB
     if(--db_count == 0)
         mysql_library_end();
@@ -174,19 +171,19 @@ bool DatabaseMysql::Connect()
     //mMysql = mysql_real_connect(mysqlInit, host.c_str(), user.c_str(),
     //   password.c_str(), database.c_str(), port, unix_socket, CLIENT_MULTI_STATEMENTS);
 
-    CACHE_LOG( DB_CACHE, "Connected to MySQL database : rwtimeout = {} ; sleeptime = {} ; loop = {}", m_rwtimeout, m_sleeptime, m_loop);
+    DISK_LOG( DEBUG_DISK, "Connected to MySQL database : rwtimeout = {} ; sleeptime = {} ; loop = {}", m_rwtimeout, m_sleeptime, m_loop);
 
-    mMysql = mysql_real_connect(mysqlInit, m_host.c_str(), m_user.c_str(),
+    m_pMysql = mysql_real_connect(mysqlInit, m_host.c_str(), m_user.c_str(),
                                 m_password.c_str(), m_database.c_str(), port, unix_socket, 0);
     CACHE_LOG(DB_CACHE, "host : {} ; user = {} ; password = {} ; database = {} ; port = {}", m_host.c_str(), m_user.c_str(), m_password.c_str(), m_database.c_str(), port );
 
     mysql_options(mysqlInit, MYSQL_OPT_RECONNECT, (char*)"1");
 
-    if (mMysql)
+    if (m_pMysql)
     {
         CACHE_LOG(DB_CACHE, "Connected to MySQL database at {}", m_host.c_str());
         CACHE_LOG(DB_CACHE, "MySQL client library: {}", mysql_get_client_info());
-        CACHE_LOG(DB_CACHE, "MySQL server ver: {} ", mysql_get_server_info( mMysql));
+        CACHE_LOG(DB_CACHE, "MySQL server ver: {} ", mysql_get_server_info( m_pMysql));
 
         /*----------SET AUTOCOMMIT ON---------*/
         // It seems mysql 5.0.x have enabled this feature
@@ -196,7 +193,7 @@ bool DatabaseMysql::Connect()
         // This is wrong since mangos use transactions,
         // autocommit is turned of during it.
         // Setting it to on makes atomic updates work
-        if (!mysql_autocommit(mMysql, 1))
+        if (!mysql_autocommit(m_pMysql, 1))
             CACHE_LOG(DB_CACHE, "AUTOCOMMIT SUCCESSFULLY SET TO 1");
         else
             CACHE_LOG(DB_CACHE, "AUTOCOMMIT NOT SET TO 1");
@@ -234,12 +231,12 @@ bool DatabaseMysql::Connect()
 
 bool DatabaseMysql::IsConnected() 
 {
-    if (mMysql == NULL) 
+    if (m_pMysql == NULL) 
     {
         return false;
     }
 
-    if (mysql_ping(mMysql) == 0) {
+    if (mysql_ping(m_pMysql) == 0) {
         return true;
     } else 
     {
@@ -253,9 +250,18 @@ bool DatabaseMysql::IsConnected()
     }
 }
 
+void DatabaseMysql::Close()
+{
+    if (m_pMysql)
+    {
+        mysql_close(m_pMysql);
+        m_pMysql = NULL;
+    }
+}
+
 QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
 {
-    if (!mMysql)
+    if (!m_pMysql)
     {
         if (IsConnected() == false)
         {
@@ -271,15 +277,14 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
         //--------------------------------------------------
         // int ret = mysql_real_query(mMysql, sql, len);
         //--------------------------------------------------
-        int ret = mysql_query(mMysql, sql);
+        int ret = mysql_query(m_pMysql, sql);
         if( ret )
         {
-            int nErrorNo = mysql_errno( mMysql );
+            int nErrorNo = mysql_errno( m_pMysql );
             // if mysql has gone, maybe longtime no request or mysql restarted
             if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR/* || nErrorNo == CR_PROXY_ERROR*/)
             {
-                if (mMysql)
-                    mysql_close(mMysql);
+                Close();
 
                 // reconnect mysql
                 if ( Reconnect() == true )
@@ -290,14 +295,14 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
                     //--------------------------------------------------
                     // ret =  mysql_real_query(mMysql, sql, len);
                     //--------------------------------------------------
-                    ret = mysql_query(mMysql, sql);
+                    ret = mysql_query(m_pMysql, sql);
                 }
             }
 
             if( ret )
             {
                 DISK_LOG( DB_ERROR, "SQL: {}", sql );
-                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(m_pMysql) );
                 return NULL;
             }
 
@@ -307,10 +312,10 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
             // 加入统计该sql语句执行多久
         }
 
-        result = mysql_store_result(mMysql);
+        result = mysql_store_result(m_pMysql);
 
-        rowCount = mysql_affected_rows(mMysql);
-        fieldCount = mysql_field_count(mMysql);
+        rowCount = mysql_affected_rows(m_pMysql);
+        fieldCount = mysql_field_count(m_pMysql);
         // end guarded block
     }
 
@@ -336,7 +341,7 @@ QueryResult* DatabaseMysql::Query(const char *sql, unsigned long len)
 
 QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len, int number)
 {
-    if (!mMysql)
+    if (!m_pMysql)
     {
         if (IsConnected() == false)
         {
@@ -349,21 +354,20 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
     uint32 fieldCount = 0;
 
     {
-        int ret = mysql_query(mMysql, sql);
+        int ret = mysql_query(m_pMysql, sql);
         if( ret )
         {
-            int nErrorNo = mysql_errno( mMysql );
+            int nErrorNo = mysql_errno( m_pMysql );
             // if mysql has gone, maybe longtime no request or mysql restarted
             if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR /*|| nErrorNo == CR_PROXY_ERROR*/ )
             {
-                if (mMysql)
-                    mysql_close(mMysql);
+                Close();
 
                 // reconnect mysql
                 if ( Reconnect() == true )
                 {
                     CACHE_LOG( DB_CACHE, "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
-                    ret = mysql_query(mMysql, sql);
+                    ret = mysql_query(m_pMysql, sql);
 
                     if ( !ret )
                     {
@@ -382,7 +386,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
                             }
                         }
 
-                        mysql_query(mMysql, strProcSql.c_str());
+                        mysql_query(m_pMysql, strProcSql.c_str());
                         CACHE_LOG( DB_CACHE, "SQL: {}", strProcSql.c_str() );
                     }
                 }
@@ -391,7 +395,7 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
             if( ret )
             {
                 DISK_LOG(DB_ERROR, "SQL: {}", sql );
-                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(m_pMysql) );
                 return NULL;
             }
 
@@ -413,14 +417,14 @@ QueryResult* DatabaseMysql::QueryForprocedure(const char *sql, unsigned long len
                 }
             }
 
-            mysql_query(mMysql, strProcSql.c_str());
+            mysql_query(m_pMysql, strProcSql.c_str());
             CACHE_LOG( DB_CACHE, "SQL: {}", strProcSql.c_str() );
         }
 
-        result = mysql_store_result(mMysql);
+        result = mysql_store_result(m_pMysql);
 
-        rowCount = mysql_affected_rows(mMysql);
-        fieldCount = mysql_field_count(mMysql);
+        rowCount = mysql_affected_rows(m_pMysql);
+        fieldCount = mysql_field_count(m_pMysql);
         // end guarded block
     }
 
@@ -448,7 +452,7 @@ bool DatabaseMysql::Execute(const char *sql)
 
 bool DatabaseMysql::DirectExecute(const char* sql )
 {
-    if (!mMysql)
+    if (!m_pMysql)
     {
         if (IsConnected() == false)
         {
@@ -456,35 +460,34 @@ bool DatabaseMysql::DirectExecute(const char* sql )
         }
     }
 
-    int ret = mysql_query(mMysql, sql );
+    int ret = mysql_query(m_pMysql, sql );
     if( ret )
     {
-        int nErrorNo = mysql_errno( mMysql );
+        int nErrorNo = mysql_errno( m_pMysql );
         // if mysql has gone, maybe longtime no request or mysql restarted
         if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR /*|| nErrorNo == CR_PROXY_ERROR*/ )
         {
-            if (mMysql)
-                mysql_close(mMysql);
+            Close();
 
             // reconnect mysql
             if ( Reconnect() == true )  // 重启mysql，再次查询
             {
                 CACHE_LOG(DB_CACHE, "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
                 // re querey  sql statment
-                ret =  mysql_query(mMysql, sql);
+                ret =  mysql_query(m_pMysql, sql);
             }
 
             if( ret )  // 两次出错就报告取数据失败
             {
                 DISK_LOG(DB_ERROR, "SQL: {}", sql );
-                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(m_pMysql) );
                 return false;
             }
         }
         else
         {
             DISK_LOG(DB_ERROR, "SQL: {}", sql );
-            DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+            DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(m_pMysql) );
             return false;
         }
     }
@@ -499,7 +502,7 @@ bool DatabaseMysql::DirectExecute(const char* sql )
 
 bool DatabaseMysql::RealDirectExecute(const char* sql, unsigned long len)
 {
-    if (!mMysql)
+    if (!m_pMysql)
     {
         if (IsConnected() == false)
         {
@@ -507,35 +510,35 @@ bool DatabaseMysql::RealDirectExecute(const char* sql, unsigned long len)
         }
     }
 
-    int ret = mysql_real_query(mMysql, sql, len);
+    int ret = mysql_real_query(m_pMysql, sql, len);
     if( ret )
     {
-        int nErrorNo = mysql_errno( mMysql );
+        int nErrorNo = mysql_errno( m_pMysql );
         // if mysql has gone, maybe longtime no request or mysql restarted
         if( nErrorNo == CR_SERVER_GONE_ERROR || nErrorNo == CR_SERVER_LOST || nErrorNo == CR_UNKNOWN_ERROR /*|| nErrorNo == CR_PROXY_ERROR */)
         {
-            if (mMysql)
-                mysql_close(mMysql);
+
+            Close();
 
             // reconnect mysql
             if ( Reconnect() == true )  // 重启mysql，再次查询
             {
                 CACHE_LOG(DB_CACHE, "reinit mysql success on host [{}]", m_hostInfoString.c_str() );
                 // re querey  sql statment
-                ret =  mysql_real_query(mMysql, sql, len);
+                ret =  mysql_real_query(m_pMysql, sql, len);
             }
 
             if( ret )  // 两次出错就报告取数据失败
             {
                 DISK_LOG(DB_ERROR, "SQL: {}", sql );
-                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+                DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(m_pMysql) );
                 return false;
             }
         }
         else
         {
             DISK_LOG(DB_ERROR, "SQL: {}", sql );
-            DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(mMysql) );
+            DISK_LOG(DB_ERROR, "query ERROR({}): {}", nErrorNo, mysql_error(m_pMysql) );
             return false;
         }
     }
@@ -550,10 +553,10 @@ bool DatabaseMysql::RealDirectExecute(const char* sql, unsigned long len)
 
 bool DatabaseMysql::_TransactionCmd(const char *sql)
 {
-    if (mysql_query(mMysql, sql))
+    if (mysql_query(m_pMysql, sql))
     {
         DISK_LOG(DB_ERROR, "SQL: {}", sql);
-        DISK_LOG(DB_ERROR, "SQL ERROR: {}", mysql_error(mMysql));
+        DISK_LOG(DB_ERROR, "SQL ERROR: {}", mysql_error(m_pMysql));
         return false;
     }
     else
@@ -580,9 +583,9 @@ bool DatabaseMysql::RollbackTransaction()
 
 unsigned long DatabaseMysql::escape_string(char *to, const char *from, unsigned long length)
 {
-    if (!mMysql || !to || !from || !length)
+    if (!m_pMysql || !to || !from || !length)
         return 0;
 
-    return(mysql_real_escape_string(mMysql, to, from, length));
+    return(mysql_real_escape_string(m_pMysql, to, from, length));
 }
 

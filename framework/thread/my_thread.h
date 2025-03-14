@@ -41,6 +41,7 @@ public:
 	CMyThread();
 	virtual ~CMyThread();
 	virtual bool			PrepareToRun() = 0;
+	virtual bool			PrepareEnd() = 0;
 	virtual void			Run() = 0;
 	virtual void			Exit();
 	void					Stop();
@@ -84,6 +85,11 @@ public:
 	virtual bool PrepareToRun()
 	{
 		g_thread_data.own_scheduler = m_pScheduler;
+		return true;
+	}
+	
+	virtual bool PrepareEnd()
+	{
 		return true;
 	}
 	void Run();

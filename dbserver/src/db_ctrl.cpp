@@ -4,8 +4,7 @@
 
 CDBCtrl::CDBCtrl()
 {
-    m_pScheduler = new CThreadScheduler("GameLogicScheduler");
-	m_pSchedulerDb = new CThreadScheduler("DBLogicScheduler");
+    m_pDbPlayerThreadPool = new CDBThreadPool<DBPlayerData>();
 }
 
 CDBCtrl::~CDBCtrl()
@@ -13,16 +12,8 @@ CDBCtrl::~CDBCtrl()
 
 }
 
-int CDBCtrl::Init()
-{
-    if(!m_pSchedulerDb->Init(8))
-    {
-        return -1;
-    }
-    return 0;
-}
-
 int CDBCtrl::PrepareToRun()
 {
+    m_pDbPlayerThreadPool->Init(1);
     return 0;
 }

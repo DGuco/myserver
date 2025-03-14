@@ -30,6 +30,8 @@ public:
 	int DiskLog(enDiskLog log_type, const char* vFmt, const Args &... args);
 	template<typename... Args>
 	int CacheLog(enCacheLog log_type, const char* vFmt, const Args &... args);
+	//
+	bool CreateDirectoryRecursive(const std::string& path); 
 private:
 	stLogInfo* GetLogInfo(int log_type);
 	/**

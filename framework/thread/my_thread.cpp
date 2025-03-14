@@ -86,17 +86,20 @@ void* ThreadProc(void* pvArgs)
 	if (pThread == NULL)
 		return 0;
 
-	if (pThread->PrepareToRun())
-	{
-		return NULL;
-	}
 	pThread->SetThreadData(CSafePtr<thread_data>(&g_thread_data));
 	pThread->SetStatus(CMyThread::RUNNING);
+	if (!pThread->PrepareToRun())
+	{
+		DISK_LOG(ERROR_DISK, "Thread PrepareToRun failed");
+		return 0;
+	}
+
 	pThread->Run();
 	pThread->SetStatus(CMyThread::EXITING);
-	pThread->Stop();
+	pThread->PrepareEnd();
+	pThread->Exit();
 	pThread->SetStatus(CMyThread::EXIT);
-	return NULL;
+	return 0;	
 }
 #else
 DWORD WINAPI ThreadProc(void* pvArgs)
@@ -112,9 +115,10 @@ DWORD WINAPI ThreadProc(void* pvArgs)
 		DISK_LOG(ERROR_DISK, "Thread PrepareToRun failed");
 		return 0;
 	}
-
+	
 	pThread->Run();
 	pThread->SetStatus(CMyThread::EXITING);
+	pThread->PrepareEnd();
 	pThread->Exit();
 	pThread->SetStatus(CMyThread::EXIT);
 	return 0;	

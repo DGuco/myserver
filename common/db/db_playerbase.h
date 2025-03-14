@@ -4,6 +4,7 @@
 #ifndef DB_PLAYERBASE_H
 #define DB_PLAYERBASE_H
 
+#include "database.h"
 #include "common_def.h"
 #include "base.h"
 

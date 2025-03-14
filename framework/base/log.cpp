@@ -10,12 +10,32 @@ CLog::~CLog()
 	ShutDownAll();
 }
 
+// 在 CLog 类中添加工具函数
+bool CLog::CreateDirectoryRecursive(const std::string& path) 
+{
+	#ifdef __LINUX__
+		// Linux/macOS 实现
+		mode_t mode = 0755;
+		struct stat st;
+		if (stat(path.c_str(), &st) == 0) {
+			return S_ISDIR(st.st_mode);
+		}
+		return mkdir(path.c_str(), mode) == 0 || errno == EEXIST;
+	#else
+		// Windows 实现
+		std::wstring wpath(path.begin(), path.end());
+		return CreateDirectoryW(wpath.c_str(), NULL) || 
+				GetLastError() == ERROR_ALREADY_EXISTS;
+	#endif
+}
+
 bool CLog::Init(const char* modulename)
 {
 	for (int index = ASSERT_DISK; index < DIS_LOG_MAX; index++)
 	{
 		stLogInfo logInfo = g_DisLogFile[index];
-		std::string filename = "../log/";
+		std::string filename = "../log/"+ std::string(modulename) + "/";
+		CreateDirectoryRecursive(filename);
 		filename = filename + std::string(logInfo.logName) + std::string(".") + std::string(modulename) + ".log";
 		InitHourLog(logInfo.logName, filename.c_str(), logInfo.level);
 	}
@@ -24,7 +44,8 @@ bool CLog::Init(const char* modulename)
 	for (int index = DEBUG_CACHE; index < CACHE_LOG_MAX; index++)
 	{
 		stLogInfo logInfo = g_CacheLogFile[index - DEBUG_CACHE];
-		std::string filename = "../log/";
+		std::string filename = "../log/" + std::string(modulename) + "/";
+		CreateDirectoryRecursive(filename);
 		filename = filename + std::string(logInfo.logName) + std::string(".") + std::string(modulename) + ".log";
 		InitHourLog(logInfo.logName, filename.c_str(), logInfo.level,true);
 	}

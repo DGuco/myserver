@@ -21,22 +21,37 @@ public:
 	DatabaseMysql();
 	//
 	virtual ~DatabaseMysql();
-	bool Initialize(const char *infoString, int rw_timeout, int sleep_time, int loop);
+	//
+	bool Initialize(const char *infoString, int rw_timeout = 30, int sleep_time = 30, int loop = 50);
+	//??
 	bool Reconnect();
+	//
 	bool Connect();
+	//
 	bool IsConnected();
+	//
+	void Close();
+	//
 	Tokens StrSplit(const std::string& src, const std::string& sep);
+	//
 	QueryResult *Query(const char *sql, unsigned long len);
+	//
 	QueryResult *QueryForprocedure(const char *sql, unsigned long len, int number);
+	//
 	bool Execute(const char *sql);
+	//
 	bool DirectExecute(const char *sql);
+	//
 	bool RealDirectExecute(const char *sql, unsigned long len);
+	//
 	bool BeginTransaction();
+	//
 	bool CommitTransaction();
+	//
 	bool RollbackTransaction();
 
 	operator bool() const
-	{ return mMysql != NULL; }
+	{ return m_pMysql != NULL; }
 
 	unsigned long escape_string(char *to, const char *from, unsigned long length);
 	using IDataBase::escape_string;
@@ -47,11 +62,11 @@ public:
 	void ThreadEnd();
 
 	int LastErrorNo() const
-	{ return mysql_errno(mMysql); }
+	{ return mysql_errno(m_pMysql); }
 
 private:
 
-	MYSQL *mMysql;
+	MYSQL *m_pMysql;
 
 	static size_t db_count;
 

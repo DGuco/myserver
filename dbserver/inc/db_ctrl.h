@@ -10,18 +10,17 @@
 #include "base.h"
 #include "singleton.h"
 #include "safe_pointer.h"
-#include "my_thread.h"
+#include "db_playerdata.h"
+#include "db_thread.h"
 
 class CDBCtrl : public CSingleton<CDBCtrl>
 {
 public:
 	CDBCtrl();
 	~CDBCtrl();
-	int Init();
 	int PrepareToRun();
 private:
-	CSafePtr<CThreadScheduler> m_pScheduler;
-	CSafePtr<CThreadScheduler> m_pSchedulerDb;
+	CSafePtr<CDBThreadPool<DBPlayerData>> m_pDbPlayerThreadPool;
 };
 
 #endif

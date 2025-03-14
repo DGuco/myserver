@@ -30,10 +30,12 @@ set(SOURCE_FILES
     "main.cpp"
     "inc/db_server.h"
     "inc/db_ctrl.h"
+    "inc/db_thread.h"
     "src/db_server.cpp"
     "src/db_ctrl.cpp"
     "inc/shm_manager.h"
     "src/shm_manager.cpp"
+    "src/db_thread.cpp"
     )
 
 include_directories(

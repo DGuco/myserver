@@ -35,6 +35,10 @@ public:
     //
     virtual bool DirectExecute(const char *sql) = 0;
     //
+    virtual void ThreadStart() = 0;
+	//
+    virtual void ThreadEnd() = 0;
+    //
     virtual bool RealDirectExecute(const char *sql, unsigned long len) = 0;
     //
     bool DirectPExecute(const char *format, ...);
