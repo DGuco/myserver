@@ -63,6 +63,8 @@ set(FRAMEWORK
         "std/rbthash_map.h"
         "std/lock_free_limit_queue.h"
         "std/safe_pointer.h"
+        "std/my_new.h"
+        "std/my_new.cpp"
         "shm/shm_queue.h"
         "shm/shm_queue.cpp" 
         "shm/shm_api.cpp"

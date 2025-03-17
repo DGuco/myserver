@@ -13,6 +13,7 @@
 #include <csignal>
 #include <stdio.h>
 #include "platform_def.h"
+#include "my_new.h"
 
 #define MIN(a,b)((a) <= (b) ? (a) : (b))
 #define MAX(a,b)((a) >= (b) ? (a) : (b))
@@ -33,7 +34,7 @@
 #define MSG_HEAD_LEN 8  // 接收或发送给客户端消息的消息头字节数
 #define MSG_MAX_LEN                10*1024            // 接收或发送给客户端消息的最大字节数
 
-
+#define new MY_NEW
 #define SAFE_DELETE(ptr) \
 	do \
 	{\

@@ -105,7 +105,10 @@ class CallOnceInitializedMutex {
 
  private:
   T& get() {
+#pragma push_macro("new")
+#undef new
     std::call_once(flag_, [&] { ::new (static_cast<void*>(&buf_)) T(); });
+#pragma pop_macro("new")
     return reinterpret_cast<T&>(buf_);
   }
 

@@ -26,7 +26,10 @@ bool CShmMessQueue::Init(sm_key shmKey,size_t size)
         return false;
     }
 	m_pQueueAddr = m_ShareMem.GetSegment();
+#pragma push_macro("new")
+#undef new
 	m_stMemTrunk = new (m_pQueueAddr) stMemTrunk();
+#pragma pop_macro("new")
 	m_pQueueAddr += sizeof(stMemTrunk);
 	m_stMemTrunk->m_iBegin = 0;
 	m_stMemTrunk->m_iEnd = 0;

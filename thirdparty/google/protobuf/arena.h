@@ -483,7 +483,11 @@ class PROTOBUF_EXPORT PROTOBUF_ALIGNAS(8) Arena final {
 
     template <typename... Args>
     static T* Construct(void* ptr, Args&&... args) {
-      return new (ptr) T(static_cast<Args&&>(args)...);
+#pragma push_macro("new")
+#undef new
+        return new (ptr) T(static_cast<Args&&>(args)...);
+#pragma pop_macro("new")
+
     }
 
     static inline PROTOBUF_ALWAYS_INLINE T* New() {
@@ -721,8 +725,12 @@ class PROTOBUF_EXPORT PROTOBUF_ALIGNAS(8) Arena final {
       auto destructor =
           internal::ObjectDestructor<std::is_trivially_destructible<T>::value,
                                      T>::destructor;
-      return new (arena->AllocateInternal(sizeof(T), alignof(T), destructor,
-                                          RTTI_TYPE_ID(T)))
+#pragma push_macro("new")
+#undef new
+  return new (arena->AllocateInternal(sizeof(T), alignof(T), destructor,
+  RTTI_TYPE_ID(T)))
+#pragma pop_macro("new")
+
           T(std::forward<Args>(args)...);
     }
   }

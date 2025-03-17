@@ -396,7 +396,10 @@ const char *LuaBridge::Call(const char *func, const char *sig, ...)
 template<typename T>
 int LuaBridge::PushSharedObjToLua(lua_State *L, std::shared_ptr<T> ptr)
 {
+#pragma push_macro("new")
+#undef new
     new(lua_newuserdata(L, sizeof(UserdataShared<std::shared_ptr<T>>))) UserdataShared<std::shared_ptr<T>>(ptr);
+#pragma pop_macro("new")
     lua_rawgetp(L, LUA_REGISTRYINDEX, ClassInfo<T>::GetClassKey());
     LUA_ASSERT(L, lua_istable(L, -1), "UserdataSharedHelper::push<T*> lua_istable failed");
     lua_setmetatable(L, -2);

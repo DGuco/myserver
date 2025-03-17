@@ -109,7 +109,11 @@ namespace internal {
 class PROTOBUF_EXPORT InlinedStringField {
  public:
   InlinedStringField() { Init(); }
+#pragma push_macro("new")
+#undef new
   inline void Init() { new (get_mutable()) std::string(); }
+#pragma pop_macro("new")
+
   // Add the dummy parameter just to make InlinedStringField(nullptr)
   // unambiguous.
   constexpr InlinedStringField(
@@ -386,7 +390,10 @@ inline const std::string* InlinedStringField::get_const() const {
 
 inline InlinedStringField::InlinedStringField(
     const std::string& default_value) {
+#pragma push_macro("new")
+#undef new
   new (get_mutable()) std::string(default_value);
+#pragma pop_macro("new")
 }
 
 

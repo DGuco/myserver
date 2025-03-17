@@ -261,7 +261,10 @@ public:
     */
     static UserdataValue<T> *Place(lua_State *const L)
     {
+#pragma push_macro("new")
+#undef new        
         UserdataValue<T> *const ud = new(lua_newuserdata(L, sizeof(UserdataValue<T>))) UserdataValue<T>();
+#pragma pop_macro("new")
         lua_rawgetp(L, LUA_REGISTRYINDEX, ClassInfo<T>::GetClassKey());
         if (!lua_istable(L, -1)) {
             LUA_ASSERT(L, false, "The class is not registered in LuaBridge")
@@ -315,7 +318,11 @@ private:
     */
     static void push(lua_State *L, const void *p, void const *const key)
     {
+#pragma push_macro("new")
+#undef new
         new(lua_newuserdata(L, sizeof(UserdataPtr))) UserdataPtr(const_cast <void *> (p));
+#pragma pop_macro("new")
+
         lua_rawgetp(L, LUA_REGISTRYINDEX, key);
         if (!lua_istable(L, -1)) {
             throw std::logic_error("The class is not registered in LuaBridge");
@@ -434,7 +441,10 @@ struct UserdataSharedHelper
     static void push(lua_State *L, T *const t)
     {
         if (t) {
+#pragma push_macro("new")
+#undef new
             new(lua_newuserdata(L, sizeof(UserdataShared<C>))) UserdataShared<C>(t);
+#pragma pop_macro("new")
             lua_rawgetp(L, LUA_REGISTRYINDEX, ClassInfo<T>::GetClassKey());
             // If this goes off it means the class T is unregistered!
             LUA_ASSERT(L, lua_istable(L, -1), "UserdataSharedHelper::push<T*> lua_istable failed");

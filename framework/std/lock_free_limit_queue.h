@@ -65,7 +65,10 @@ namespace my_std
 				std::memory_order_acq_rel, std::memory_order_relaxed));
 
 			// 2.数据写入
+#pragma push_macro("new")
+#undef new
 			new (buffer_ + write) T(std::forward<U>(t));
+#pragma pop_macro("new")
 
 			// 3.更新readable
 			uint_t readable;

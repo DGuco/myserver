@@ -15,6 +15,8 @@
 #ifndef RAPIDJSON_DOCUMENT_H_
 #define RAPIDJSON_DOCUMENT_H_
 
+#pragma push_macro("new")
+#undef new
 /*! \file document.h */
 
 #include "reader.h"
@@ -46,6 +48,7 @@ RAPIDJSON_DIAG_OFF(effc++)
 #if RAPIDJSON_HAS_CXX11_RVALUE_REFS
 #include <utility> // std::move
 #endif
+
 
 RAPIDJSON_NAMESPACE_BEGIN
 
@@ -2678,5 +2681,8 @@ private:
 
 RAPIDJSON_NAMESPACE_END
 RAPIDJSON_DIAG_POP
+
+
+#pragma pop_macro("new")
 
 #endif // RAPIDJSON_DOCUMENT_H_

@@ -443,9 +443,13 @@ struct CFunc
     {
         static void add(lua_State *L, char const *name, MemFnPtr mf)
         {
+#pragma push_macro("new")
+#undef new
             new(lua_newuserdata(L, sizeof(MemFnPtr))) MemFnPtr(mf);
             lua_pushcclosure(L, &CallMember<MemFnPtr>::f, 1);
             LuaHelper::RawSetField(L, -3, name); // class table
+#pragma pop_macro("new")
+
         }
     };
 
