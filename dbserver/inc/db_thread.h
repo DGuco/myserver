@@ -34,9 +34,11 @@ public:
 	virtual ~CDBThreadPool();
 	bool Init(size_t threads);
 	virtual void Save(CSafePtr<IDataBase> pDatabase);
-	void PushSavingObj(CSafePtr<T> pObj);
+	void PushSavingObj(CSafePtr<CSavingObj<T>> pObj);
+	void AddSaveShmType(enShmType shmType);
 private:
 	std::vector<CSafePtr<CMyThread>> m_Workers;
+	std::vector<enShmType> m_SaveShmTypes;
 	CMyLock		m_queue_mutex;
 	std::queue<CSafePtr<CSavingObj<T>>> m_SavingQueue;
 };
@@ -69,20 +71,13 @@ bool CDBThreadPool<T>::Init(size_t threads)
 template<typename T>
 void CDBThreadPool<T>::Save(CSafePtr<IDataBase> pDatabase)
 {
-	bool needsleep = false;
 	while (true)
 	{
-		if (needsleep)
-		{
-			needsleep = false;
-			SLEEP(10);
-		}
 		CSafePtr<CSavingObj<T>> pSavingObj;
 		{
 			CSafeLock guard(m_queue_mutex);
 			if (m_SavingQueue.empty())
 			{
-				needsleep = true;
 				break;
 			}
 			pSavingObj = this->m_SavingQueue.front();
@@ -99,6 +94,19 @@ void CDBThreadPool<T>::Save(CSafePtr<IDataBase> pDatabase)
 			}
 		}
 	}
+}
+
+template<typename T>
+void CDBThreadPool<T>::PushSavingObj(CSafePtr<CSavingObj<T>> pObj)
+{
+	CSafeLock guard(m_queue_mutex);
+	m_SavingQueue.push(pObj);
+}
+
+template<typename T>
+void CDBThreadPool<T>::AddSaveShmType(enShmType shmType)
+{
+	m_SaveShmTypes.push_back(shmType);
 }
 
 #endif

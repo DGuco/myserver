@@ -87,7 +87,7 @@ public:
 		g_thread_data.own_scheduler = m_pScheduler;
 		return true;
 	}
-	
+
 	virtual bool PrepareEnd()
 	{
 		return true;

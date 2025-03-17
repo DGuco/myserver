@@ -8,7 +8,7 @@ CDBThread::CDBThread(IDBThreadPool* pThreadPool)
 
 CDBThread::~CDBThread()
 {
-
+    m_pDatabase.Free();
 }
 
 bool CDBThread::PrepareToRun()

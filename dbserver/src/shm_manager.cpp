@@ -31,3 +31,12 @@ void CShmManager::RegisterShmPool(CSafePtr<IShmPool> pShmPool)
     ASSERT_EX(nShmType >= 0 && nShmType < enShmType_Max,"nShmType is invalid");
     m_ShmPool[nShmType] = pShmPool; 
 }
+
+void CShmManager::DoSave(enShmType shmType,CSafePtr<IDataBase> pDataBase)
+{
+    ASSERT_EX(shmType >= 0 && shmType < enShmType_Max,"shmType is invalid");
+    if(m_ShmPool[shmType] != NULL)
+    {
+        m_ShmPool[shmType]->DoSave(pDataBase);
+    }
+}

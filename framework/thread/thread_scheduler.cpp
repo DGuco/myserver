@@ -31,20 +31,13 @@ bool CThreadScheduler::Init(size_t threads)
 
 void CThreadScheduler::ConsumeTask()
 {
-	bool needsleep = false;
 	while (true)
 	{
-		if (needsleep)
-		{
-			needsleep = false;
-			SLEEP(10);
-		}
 		TaskPtr pTask;
 		{
 			CSafeLock guard(m_queue_mutex);
 			if (m_Tasks.empty())
 			{
-				needsleep = true;
 				break;
 			}
 			pTask = this->m_Tasks.front();

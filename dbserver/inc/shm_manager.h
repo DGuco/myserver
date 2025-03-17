@@ -16,10 +16,16 @@
 class CShmManager : public CSingleton<CShmManager>
 {
 public:
+    //
 	CShmManager();
-	~CShmManager();
+	//
+    ~CShmManager();
+    //
     int Init();
+    //
     void RegisterShmPool(CSafePtr<IShmPool> pShmPool);
+    //
+    void DoSave(enShmType shmType,CSafePtr<IDataBase> pDataBase);
 private:
     CSafePtr<IShmPool> m_ShmPool[enShmType_Max];
 };
