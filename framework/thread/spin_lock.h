@@ -67,14 +67,28 @@ public:
 
     inline void WLock()
     {
+        //实现1 必须等待没有任何读和写存在才设置写标志位
+        /*
         uint32_t expected = 0;
         // 自旋直到设置写标志位（最高位）
         while (!state.compare_exchange_weak(expected, 
                                           0x80000000,
                                           std::memory_order_acquire)) {
             expected = 0;
-        }
-        // 等待所有读锁释放
+        }*/
+ 
+        //实现2  没有写的时候先抢占写锁，设置写标志时允许有读锁存在，后面再等待读锁释放
+        uint32_t expected;
+        do {
+            expected = state.load(std::memory_order_acquire);
+            // 仅检查写标志位，保留读计数
+            if (expected & 0x80000000) continue;
+            // 尝试设置写标志位（最高位），同时保留当前读计数
+        } while (!state.compare_exchange_weak(expected, 
+                                            expected | 0x80000000,  // 只设置写标志位
+                                            std::memory_order_acquire));
+
+        // 等待现有读锁释放（此时新读锁已被写标志阻挡）
         while ((state.load(std::memory_order_acquire) & 0x7FFFFFFF) != 0);
     }
 
