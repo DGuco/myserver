@@ -98,6 +98,7 @@ set(FRAMEWORK
         "thread/my_thread.cpp"
         "thread/my_lock.h" 
         "thread/task_helper.h"
+        "thread/spin_lock.h"
         "db/basedb.h"
         "db/database.h"
         "db/database_mysql.h"

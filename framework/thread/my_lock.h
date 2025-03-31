@@ -123,56 +123,10 @@ private:
 	CMyRWLock* m_pLock;
 };
 #else
-
-#define CMyLock std::mutex 
-#define CSafeLock std::lock_guard<std::mutex>
-#define CSafeRLock std::lock_guard<std::mutex>
-#define CSafeWLock std::lock_guard<std::mutex>
-
+	#define CMyLock std::mutex 
+	#define CSafeLock std::lock_guard<std::mutex>
+	#define CSafeRLock std::lock_guard<std::mutex>
+	#define CSafeWLock std::lock_guard<std::mutex>
 #endif
 
-#include <atomic>
-class CSpinLock
-{
-public:
-	CSpinLock() : flag{ false }
-	{
-	}
-
-	inline void Lock()
-	{
-		while (flag.test_and_set(std::memory_order_acquire));
-	}
-
-	inline bool TryLock()
-	{
-		return !flag.test_and_set(std::memory_order_acquire);
-	}
-
-	inline void UnLock()
-	{
-		flag.clear(std::memory_order_release);
-	}
-private:
-	std::atomic_flag flag;
-};
-
-//自动加锁解锁器
-class CSafeSpLock
-{
-public:
-	CSafeSpLock() = delete;
-	CSafeSpLock(CSpinLock& rLock)
-	{
-		m_pLock = &rLock;
-		m_pLock->Lock();
-	}
-
-	~CSafeSpLock()
-	{
-		m_pLock->UnLock();
-	}
-private:
-	CSpinLock* m_pLock;
-};
 #endif //__MY_LOCK_H__
