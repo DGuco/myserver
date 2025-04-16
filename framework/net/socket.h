@@ -10,6 +10,7 @@
 #include <string>
 #include "t_array.h"
 #include "base.h"
+#include "common_def.h"
 
 using namespace my_std;
 

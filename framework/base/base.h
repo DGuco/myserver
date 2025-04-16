@@ -12,6 +12,7 @@
 #include <string>
 #include <csignal>
 #include <stdio.h>
+#include <atomic>
 #include "platform_def.h"
 #include "my_new.h"
 
@@ -19,20 +20,6 @@
 #define MAX(a,b)((a) >= (b) ? (a) : (b))
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 #define STR(x)			#x
-
-#define PATH_LENGTH			 (256)    // 文件路径字符长度
-#define ADDR_LENGTH          (32)    // IP和PORT的长度
-#define GUIDE_MAX            (100)
-#define MAX_BROADCAST_NUM    (1000)            // 单词最大广播数量
-
-#define	TCP_BACK_LOG		 (1024)
-#define RECVBUFLENGTH        (1024*1024*6)        // 接收缓冲区大小
-#define POSTBUFLENGTH        (1024*1024*6)        // 发送缓冲区大小
-#define RECV_BUF_LEN         (8 * 1024)   // 接收客户端信息的缓冲区
-#define SECOND_ABOVE_CONVERSION_UNIT    60                // 秒以上换算单位
-#define SECOND_UNDER_CONVERSION_UNIT    1000            // 秒以下换算单位
-#define MSG_HEAD_LEN 8  // 接收或发送给客户端消息的消息头字节数
-#define MSG_MAX_LEN                10*1024            // 接收或发送给客户端消息的最大字节数
 
 #define new MY_NEW
 #define SAFE_DELETE(ptr) \
@@ -83,5 +70,18 @@ typedef unsigned char uint8;
 #define True   1
 #endif
 
+//对原子变量y进行acquire的load操作，确保在读取原子变量之前所有之前的写操作都已经完成,确保读取操作能够看到最新的数据
+template<typename T>
+inline T load_acquire(std::atomic<T>& atomic_value) 
+{
+	return atomic_value.load(std::memory_order_acquire);
+}
+
+//对原子变量y进行了release的store操作，确保在写操作之后，所有之后的读操作都能看到这个写操作的结果
+template<typename T>
+inline void store_release(std::atomic<T>& atomic_value,T value)
+{
+	atomic_value.store(value,std::memory_order_relaxed);
+}
 
 #endif // __BASE_H__
