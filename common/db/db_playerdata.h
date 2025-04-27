@@ -23,7 +23,7 @@ struct DBPlayerData
     }
 };
 
-class CPlayerDataShmPool : public CShmPool<DBPlayerData,MAX_PLAYER_POOL_SIZE>
+class CPlayerDataShmPool : public CShmPool<DBPlayerData,MAX_PLAYER_POOL_SIZE,MAX_PLAYER_CACHE_SIZE>
 {
 public:
     CPlayerDataShmPool() {};
