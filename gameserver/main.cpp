@@ -203,7 +203,11 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	CGameCtrl::GetSingletonPtr()->Run();
+	if(!CGameCtrl::GetSingletonPtr()->Run())
+	{
+		DISK_LOG(ERROR_DISK, "CGateCtrl Run failed,get exception");
+		exit(0);
+	}
 	SHUTDOWN_ALL_LOG();
 	return 0;
 }

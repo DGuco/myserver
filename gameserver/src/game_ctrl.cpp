@@ -36,6 +36,11 @@ bool CGameCtrl::PrepareToRun()
 		return false;
 	}
 
+	return true;
+}
+
+bool CGameCtrl::Run()
+{
 	if (!m_pScheduler->Init(1, ThreadFuncParamWrapper(&CGameCtrl::InitTcp, NULL), ThreadFuncParamWrapper(&CGameCtrl::TcpTick, NULL)))
 	{
 		return false;
@@ -106,11 +111,6 @@ bool CGameCtrl::PrepareToRun()
 // 			{
 // 				CACHE_LOG(DEBUG_CACHE, " ApplyAll ApplyAll ApplyAll ");
 // 			});
-	return true;
-}
-
-void CGameCtrl::Run()
-{
 	while (true)
 	{
 		SLEEP(10);

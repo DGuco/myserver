@@ -20,7 +20,7 @@ public:
 	//×¼±¸run
 	bool PrepareToRun();
 	//run
-	void Run();
+	bool Run();
 	//
 	bool ReadConfig();
 	//
