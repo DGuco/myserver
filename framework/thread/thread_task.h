@@ -16,7 +16,6 @@
 #include "log.h"
 #include "task_helper.h"
 
-#define EMPTY_VOID_FUNC = []{}
 #define MAX_CHILD_TASK_COUNT (5)
 using namespace my_std;
 

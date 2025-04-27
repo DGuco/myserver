@@ -20,9 +20,13 @@ public:
 	//×¼±¸run
 	bool PrepareToRun();
 	//run
-	int Run();
+	void Run();
 	//
 	bool ReadConfig();
+	//
+	static void TcpTick(void* args);
+	//
+	static void InitTcp(void* args);
 private:
 	CSafePtr<CThreadScheduler> m_pScheduler;
 	CSafePtr<CThreadScheduler> m_pSchedulerDb;

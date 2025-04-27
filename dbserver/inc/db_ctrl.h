@@ -21,7 +21,7 @@ public:
 	int PrepareToRun();
 	void Run();
 private:
-	CSafePtr<CDBThreadPool<DBPlayerData>> m_pDbPlayerThreadPool;
+	//CSafePtr<CDBThreadPool<DBPlayerData>> m_pDbPlayerThreadPool;
 };
 
 #endif

@@ -16,7 +16,9 @@ CThreadScheduler::~CThreadScheduler()
 	m_Workers.clear();
 }
 
-bool CThreadScheduler::Init(size_t threads)
+bool CThreadScheduler::Init(size_t threads,
+							ThreadFuncParamWrapper initFunc,
+							ThreadFuncParamWrapper tickFunc)
 {
 	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
 	debug_timer.BeginTimer(nNow, THREAD_TASK_DEBUG_TIME);
@@ -24,6 +26,8 @@ bool CThreadScheduler::Init(size_t threads)
 	{
 		CSafePtr<CTaskThread> pTaskThread = new CTaskThread(this);
 		pTaskThread->CreateThread();
+		pTaskThread->SetThreadInitFunc(initFunc);
+		pTaskThread->SetThreadTickFunc(tickFunc);
 		m_Workers.emplace_back(pTaskThread.DynamicCastTo<CMyThread>());
 	}
 	return true;

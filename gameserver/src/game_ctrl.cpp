@@ -36,7 +36,7 @@ bool CGameCtrl::PrepareToRun()
 		return false;
 	}
 
-	if (!m_pScheduler->Init(1))
+	if (!m_pScheduler->Init(1, ThreadFuncParamWrapper(&CGameCtrl::InitTcp, NULL), ThreadFuncParamWrapper(&CGameCtrl::TcpTick, NULL)))
 	{
 		return false;
 	}
@@ -52,10 +52,6 @@ bool CGameCtrl::PrepareToRun()
 	m_pScheduler->Schedule("InitTcpServer",
 		[a, b]
 		{
-			if (!CGameServer::GetSingletonPtr()->InitTcp())
-			{
-				exit(0);
-			}
 			return a + b;
 		}
 		)
@@ -113,32 +109,10 @@ bool CGameCtrl::PrepareToRun()
 	return true;
 }
 
-int CGameCtrl::Run()
+void CGameCtrl::Run()
 {
-	std::atomic_bool bDone = false;
 	while (true)
 	{
-		if (!bDone.load())
-		{
-			bDone = true;
-			m_pScheduler->Schedule("GameLogic",
-				[&bDone]
-				{
-					time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
-					try
-					{
-						CGameServer::GetSingletonPtr()->TcpTick(nNow);
-					}
-					catch (const std::exception& e)
-					{
-						CACHE_LOG(ERROR_CACHE, "CGameServer TcpTick  cache execption msg {]", e.what());
-					}
-					bDone = false;
-				}
-				);
-		}
-		m_pScheduler->DebugTask();
-		m_pSchedulerDb->DebugTask();
 		SLEEP(10);
 	}
 }
@@ -152,4 +126,27 @@ bool CGameCtrl::ReadConfig()
 		return false;
 	}
 	return true;
+}
+
+void CGameCtrl::TcpTick(void* args)
+{
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
+	try
+	{
+		CGameServer::GetSingletonPtr()->TcpTick(nNow);
+	}
+	catch (const std::exception& e)
+	{
+		CACHE_LOG(ERROR_CACHE, "CGameServer TcpTick  cache execption msg {]", e.what());
+	}
+}
+
+//
+void CGameCtrl::InitTcp(void* args)
+{
+	if (!CGameServer::GetSingletonPtr()->InitTcp())
+	{
+		DISK_LOG(ERROR_DISK, "CGameServer::GetSingletonPtr()->InitTcp failed");
+		exit(0);
+	}
 }

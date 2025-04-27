@@ -9,6 +9,7 @@
 
 #include <mutex>
 #include <atomic>
+#include <functional>
 #include "base.h"
 #include "my_lock.h"
 #include "time_helper.h"
@@ -23,6 +24,22 @@ struct thread_data
 	CMyLock							task_mutex;
 	TaskPtr							curren_task;
 	CSafePtr<CThreadScheduler>		own_scheduler;
+};
+
+typedef std::function<void(void*)> ThreadFuncParam;
+struct ThreadFuncParamWrapper 
+{
+	ThreadFuncParam func;
+	void* args;
+	ThreadFuncParamWrapper(): func(), args(NULL) {}
+	ThreadFuncParamWrapper(ThreadFuncParam f, void* a) : func(f), args(a) {}
+	void operator()() const 
+	{
+		if(func != NULL)
+		{
+			func(args); 
+		}
+	}
 };
 
 extern thread_local thread_data g_thread_data;
@@ -50,6 +67,8 @@ public:
 	void					SetThreadData(CSafePtr<thread_data> pdata);
 	CSafePtr<thread_data>	GetThreadData();
 	bool					IsStoped();
+	void					SetThreadInitFunc(ThreadFuncParamWrapper func);
+	void 					SetThreadTickFunc(ThreadFuncParamWrapper func);
 public:
 	TID getTID() { return m_TID; }
 
@@ -64,6 +83,9 @@ private:
 	pthread_t						m_hThread;
 #else
 	HANDLE							m_hThread;
+protected:
+	ThreadFuncParamWrapper			m_funcInit;
+	ThreadFuncParamWrapper			m_funcTick;
 #endif
 };
 
@@ -85,6 +107,7 @@ public:
 	virtual bool PrepareToRun()
 	{
 		g_thread_data.own_scheduler = m_pScheduler;
+		m_funcInit();
 		return true;
 	}
 

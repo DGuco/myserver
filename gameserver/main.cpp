@@ -190,7 +190,6 @@ int main(int argc, char *argv[])
 
 	try
 	{
-
 		int iTmpRet = CGameCtrl::GetSingletonPtr()->PrepareToRun();
 		if (!iTmpRet)
 		{
@@ -206,7 +205,6 @@ int main(int argc, char *argv[])
 
 	CGameCtrl::GetSingletonPtr()->Run();
 	SHUTDOWN_ALL_LOG();
-
 	return 0;
 }
 

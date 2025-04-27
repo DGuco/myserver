@@ -4,7 +4,7 @@
 
 CDBCtrl::CDBCtrl()
 {
-    m_pDbPlayerThreadPool = new CDBThreadPool<DBPlayerData>();
+    //m_pDbPlayerThreadPool = new CDBThreadPool<DBPlayerData>();
 }
 
 CDBCtrl::~CDBCtrl()
@@ -14,7 +14,7 @@ CDBCtrl::~CDBCtrl()
 
 int CDBCtrl::PrepareToRun()
 {
-    m_pDbPlayerThreadPool->Init(1);
+    //m_pDbPlayerThreadPool->Init(1);
     return 0;
 }
 

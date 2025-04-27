@@ -14,6 +14,9 @@
 #include <string>
 #include <fstream>
 #include <set>
+#include <cerrno>  // 新增头文件
+#include <cstring> // 新增头文件
+#include "log.h"
 
 using namespace std;
 using rapidjson::Value;
@@ -34,6 +37,7 @@ public:
 			fp.open(filename.c_str());
 			if (!fp.is_open())
 			{
+				DISK_LOG(ERROR_DISK, "Open file {} failed: {}", filename.c_str(), strerror(errno)); // 新增错误日志
 				return -1;
 			}
 			std::string data;

@@ -26,7 +26,9 @@ public:
 	CThreadScheduler(std::string signature);
 	virtual ~CThreadScheduler();
 	virtual void ConsumeTask();
-	virtual bool Init(size_t threads);
+	virtual bool Init(size_t threads,
+					  ThreadFuncParamWrapper initFunc = ThreadFuncParamWrapper(),
+					  ThreadFuncParamWrapper tickFunc = ThreadFuncParamWrapper());
 	void PushTask(TaskPtr pTask);
 	void DebugTask();
 public:

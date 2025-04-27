@@ -79,6 +79,16 @@ bool CMyThread::IsStoped()
 	return m_bStoped.load() == true;
 }
 
+void CMyThread::SetThreadInitFunc(ThreadFuncParamWrapper func)
+{
+	m_funcInit = func;
+}
+
+void CMyThread::SetThreadTickFunc(ThreadFuncParamWrapper func)
+{
+	m_funcTick = func;	
+}
+
 #if defined(__LINUX__)
 void* ThreadProc(void* pvArgs)
 {
@@ -128,9 +138,11 @@ void CTaskThread::Run()
 {
 	while (!IsStoped())
 	{
+		m_funcTick();
 		m_pScheduler->ConsumeTask();
 		//
 		SLEEP(1);
 	}
 }
+
 #endif
