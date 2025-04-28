@@ -17,9 +17,10 @@
             "program": " ${workspaceFolder}/run/proxyserver.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            //"cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/run", //固定工作目录，否则调试程序运行时的工作目录不正确，从而影响文件读取、日志生成等。
             "environment": [],
-            "console": "externalTerminal"
+            "console": "externalTerminal",
         },
         {
             "name": "GameServer",
@@ -28,7 +29,7 @@
             "program": " ${workspaceFolder}/run/gameserver.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/run",
             "environment": [],
             "console": "externalTerminal"
         },
@@ -39,7 +40,7 @@
             "program": " ${workspaceFolder}/run/dbserver.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/run",
             "environment": [],
             "console": "externalTerminal"
         }
