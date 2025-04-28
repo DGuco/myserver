@@ -7,12 +7,13 @@
 #ifndef __DB_SERVER_H__
 #define __DB_SERVER_H__
 
-#include "database_mysql.h"
 #include "singleton.h"
+#include "tcp_server.h"
+#include "database_mysql.h"
 #include "shm_queue.h"
 #include "safe_pointer.h"
 
-class CDBSerer : public CSingleton<CDBSerer>
+class CDBSerer : public CTCPServer,public CSingleton<CDBSerer>
 {
 public:
 	// 运行标志
@@ -38,6 +39,13 @@ public:
 	void ClearRunFlag(int iFlag);
 	//运行标志是否设置
 	bool IsRunFlagSet(int iFlag);
+	// 
+	bool InitTcp();
+public:
+	//新链接回调
+	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);
+	//
+	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket socket);
 // 	//转发笑傲析
 // 	int SendMessageTo(CProxyMessage* pMsg);
 // 	//处理数据

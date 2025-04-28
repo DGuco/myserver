@@ -1,0 +1,67 @@
+#include "db_client.h"
+#include "db_server.h"
+
+CDBClient::CDBClient()
+	:CTCPClient(SERVER_CLIENT_RECV_BUFF,
+				SERVER_CLIENT_SEND_BUFF,
+				SERVER_CLIENT_RECV_BUFF_MAX,
+				SERVER_CLIENT_SEND_BUFF_MAX)
+{}
+
+CDBClient::~CDBClient()
+{}
+
+int CDBClient::DoRecvLogic()
+{
+	int tmCurPacketLen = m_pReadBuff->CanReadLen();
+	//包头前两个字节为数据总长度，如果数据长度小于两个字节返回0
+	if (tmCurPacketLen < sizeof(mshead_size))
+	{
+		return ERR_SOCKE_OK;
+	}
+	mshead_size tmPacketLen = m_pReadBuff->ReadT<mshead_size>(true);
+	int tmFullPacketLen = tmPacketLen + sizeof(mshead_size);
+	//数据不完整
+	if (tmFullPacketLen > tmCurPacketLen)
+	{
+		return ERR_SOCKE_OK;
+	}
+	//有完整的数据包，读取处理
+	//CDBSerer::GetSingletonPtr()->ProcessServerMessage(this);
+	return ERR_SOCKE_OK;
+}
+
+int CDBClient::DoWriteLogic()
+{
+	return ERR_SOCKE_OK;
+}
+
+int CDBClient::DoClosingLogic(int errcode)
+{
+	return 0;
+}
+
+void CDBClient::DoTick(time_t nNow)
+{
+	return;
+}
+
+void CDBClient::SetLastRecvKeepLive(time_t nKeepAliveTime)
+{
+	m_nLastRecvKeepLiveAnswer = nKeepAliveTime;
+}
+
+time_t CDBClient::GetLastRecvKeepLive()
+{
+	return m_nLastRecvKeepLiveAnswer;
+}
+
+void CDBClient::SetLastSendKeepLive(time_t nKeepAliveTime)
+{
+	m_nLastSendKeepLive = nKeepAliveTime;
+}
+
+time_t CDBClient::GetLastSendKeepLive()
+{
+	return m_nLastSendKeepLive;
+}

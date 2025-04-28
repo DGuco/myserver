@@ -11,6 +11,7 @@
 
 enum enShmType
 {
+    enShmType_Invalid = -1,
 	enShmType_Player = 0,
     enShmType_Max,
 };

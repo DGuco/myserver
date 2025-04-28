@@ -31,6 +31,7 @@ public:
 					  ThreadFuncParamWrapper tickFunc = ThreadFuncParamWrapper());
 	void PushTask(TaskPtr pTask);
 	void DebugTask();
+	int  ThreddCount() { return m_Workers.size(); }
 public:
 	template<class Func, typename return_type = std::result_of<Func()>::type>
 	CTaskHelper<return_type> Schedule(std::string signature, Func&& f)

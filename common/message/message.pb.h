@@ -103,8 +103,9 @@ inline bool CGonnReq_Msg_Parse(
 enum enServerType : int {
   FE_INVALID = 0,
   FE_GAMESERVER = 1,
-  FE_PROXYSERVER = 2,
-  FE_WEBSERVER = 3
+  FE_DBSERVER = 2,
+  FE_PROXYSERVER = 3,
+  FE_WEBSERVER = 4
 };
 bool enServerType_IsValid(int value);
 constexpr enServerType enServerType_MIN = FE_INVALID;

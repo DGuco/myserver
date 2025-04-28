@@ -5,6 +5,8 @@
 #include "db_ctrl.h"
 #include "message_factory.h"
 #include "database_mysql.h"
+#include "server_config.h"
+#include "db_client.h"
 
 CDBSerer::CDBSerer()
 {
@@ -29,6 +31,47 @@ void CDBSerer::ClearRunFlag(int iFlag)
 bool CDBSerer::IsRunFlagSet(int iFlag)
 {
 	return iFlag == m_iRunFlag;
+}
+
+bool CDBSerer::InitTcp()
+{
+	CSafePtr<CServerConfig> pConfig = CServerConfig::GetSingletonPtr();
+	CSafePtr<ServerInfo> pDBInfo = pConfig->GetServerInfo(enServerType::FE_DBSERVER);
+	int nRet = InitTcpServer(eTcpEpoll, pDBInfo->m_sHost.c_str(), pDBInfo->m_iPort);
+	if (nRet == 0)
+	{
+		DISK_LOG(DEBUG_DISK, "CDBSerer InitTcpServer success at {} : {}", pDBInfo->m_sHost.c_str(), pDBInfo->m_iPort);
+		return true;
+	}
+	else
+	{
+		DISK_LOG(DEBUG_DISK, "CDBSerer InitTcpServer at {} : {} failed,failed reason {]", pDBInfo->m_sHost.c_str(),
+		pDBInfo->m_iPort, strerror(errno));
+		return false;
+	}
+
+	CSafePtr<ServerInfo> pRroxyInfo = pConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
+	CSafePtr<CDBClient> pConn = new CDBClient();
+	if (!ConnectTo(pConn.DynamicCastTo<CTCPClient>(), pRroxyInfo->m_sHost.c_str(), pRroxyInfo->m_iPort, false))
+	{
+		pConn.Free();
+	}
+	return true;
+}
+
+void CDBSerer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
+{
+	// CSafePtr<CGamePlayer> pConn = pConnn.DynamicCastTo<CGamePlayer>();
+	// if (pConnn != NULL)
+	// {}
+}
+
+//
+CSafePtr<CTCPConn> CDBSerer::CreateTcpConn(CSocket socket)
+{
+	// CSafePtr<CGamePlayer> pConn = new CGamePlayer(socket);
+	// return pConn.DynamicCastTo<CTCPConn>();
+	return NULL;
 }
 
 // int CDBSerer::SendMessageTo(CProxyMessage* pMsg)

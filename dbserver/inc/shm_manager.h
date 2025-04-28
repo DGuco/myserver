@@ -12,6 +12,21 @@
 #include "shm_pool.h"
 #include "safe_pointer.h"
 #include "shm_def.h"
+#include "safe_pointer.h"
+#include "thread_scheduler.h"
+
+struct CShmPoolnfo
+{
+    enShmType                   shmType;
+    CSafePtr<CThreadScheduler>  ownScheduler;
+    CSafePtr<IShmPool>          shmPool;
+    CShmPoolnfo()
+    {
+        shmType = enShmType_Invalid;
+        ownScheduler.Reset();
+        shmPool.Reset();
+    }
+};
 
 class CShmManager : public CSingleton<CShmManager>
 {
@@ -25,7 +40,9 @@ public:
     //
     void RegisterShmPool(CSafePtr<IShmPool> pShmPool);
     //
-    void DoSave(enShmType shmType,CSafePtr<IDataBase> pDataBase);
+    void DoSavePlayer(CSafePtr<IDataBase> pDataBase);
+    //
+    void DoSaveGlobal(CSafePtr<IDataBase> pDataBase);
 private:
     CSafePtr<IShmPool> m_ShmPool[enShmType_Max];
 };

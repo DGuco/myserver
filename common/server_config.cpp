@@ -35,6 +35,13 @@ int CServerConfig::Parse()
 	proxyServer.m_sHost = proxyinfo["host"].GetString();
 	m_mServerMap[enServerType::FE_PROXYSERVER] = proxyServer;
 
+	ServerInfo dbServer;
+	Value& dbinfo = m_Obj["dbinfo"];
+	dbServer.m_iServerId = dbinfo["serverid"].GetInt();
+	dbServer.m_iPort = dbinfo["port"].GetInt();
+	dbServer.m_sHost = dbinfo["host"].GetString();
+	m_mServerMap[enServerType::FE_DBSERVER] = dbServer;
+
 	m_sDblInfo = m_Obj["mysqlinfo"].GetString();
 	m_iDbSleepTime = m_Obj["sleeptime"].GetInt();
 	m_iDbLoop = m_Obj["loop"].GetInt();

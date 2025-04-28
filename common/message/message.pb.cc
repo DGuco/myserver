@@ -115,15 +115,15 @@ const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "\004buff\030\010 \001(\014\"\021\n\003Msg\022\n\n\005MsgID\020\220N\"`\n\010CGonnR"
   "eq\022\017\n\007Account\030\001 \002(\t\022\020\n\010Password\030\002 \001(\t\022\r\n"
   "\005PFrom\030\003 \001(\005\022\017\n\007Session\030\004 \002(\t\"\021\n\003Msg\022\n\n\005"
-  "MsgID\020\221N*W\n\014enServerType\022\016\n\nFE_INVALID\020\000"
-  "\022\021\n\rFE_GAMESERVER\020\001\022\022\n\016FE_PROXYSERVER\020\002\022"
-  "\020\n\014FE_WEBSERVER\020\003*E\n\014enMessageCmd\022\016\n\nMES"
-  "S_LOGIC\020\000\022\021\n\rMESS_REGISTER\020\001\022\022\n\016MESS_KEE"
-  "PALIVE\020\002B\002H\001"
+  "MsgID\020\221N*h\n\014enServerType\022\016\n\nFE_INVALID\020\000"
+  "\022\021\n\rFE_GAMESERVER\020\001\022\017\n\013FE_DBSERVER\020\002\022\022\n\016"
+  "FE_PROXYSERVER\020\003\022\020\n\014FE_WEBSERVER\020\004*E\n\014en"
+  "MessageCmd\022\016\n\nMESS_LOGIC\020\000\022\021\n\rMESS_REGIS"
+  "TER\020\001\022\022\n\016MESS_KEEPALIVE\020\002B\002H\001"
   ;
 static ::_pbi::once_flag descriptor_table_message_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_message_2eproto = {
-    false, false, 452, descriptor_table_protodef_message_2eproto,
+    false, false, 469, descriptor_table_protodef_message_2eproto,
     "message.proto",
     &descriptor_table_message_2eproto_once, nullptr, 0, 2,
     schemas, file_default_instances, TableStruct_message_2eproto::offsets,
@@ -184,6 +184,7 @@ bool enServerType_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+    case 4:
       return true;
     default:
       return false;

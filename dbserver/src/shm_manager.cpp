@@ -1,6 +1,7 @@
 #include "shm_manager.h"
 #include "db_playerdata.h"
 #include "my_assert.h"
+#include "shm_manager.h"
 
 CShmManager::CShmManager()
 {
@@ -32,11 +33,23 @@ void CShmManager::RegisterShmPool(CSafePtr<IShmPool> pShmPool)
     m_ShmPool[nShmType] = pShmPool; 
 }
 
-void CShmManager::DoSave(enShmType shmType,CSafePtr<IDataBase> pDataBase)
+void CShmManager::DoSavePlayer(CSafePtr<IDataBase> pDataBase)
 {
-    ASSERT_EX(shmType >= 0 && shmType < enShmType_Max,"shmType is invalid");
-    if(m_ShmPool[shmType] != NULL)
+    if(m_ShmPool[enShmType_Player] != NULL)
     {
-        m_ShmPool[shmType]->DoSave(pDataBase);
+        m_ShmPool[enShmType_Player]->DoSave(pDataBase);
     }
 }
+
+void CShmManager::DoSaveGlobal(CSafePtr<IDataBase> pDataBase)
+{
+    for (size_t i = 0; i < enShmType_Max; i++)
+    {
+        if (m_ShmPool[i] != NULL && m_ShmPool[i]->GetShmType() != enShmType_Player)
+        {
+            m_ShmPool[i]->DoSave(pDataBase);
+        }
+        
+    }
+}
+

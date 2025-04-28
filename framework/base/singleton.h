@@ -2,8 +2,8 @@
 // Created by DGcuo on 17-7-5.
 //
 
-#ifndef __SERVER_TOOL_H__
-#define __SERVER_TOOL_H__
+#ifndef __SINGLE_TOOL_H__
+#define __SINGLE_TOOL_H__
 
 #include "safe_pointer.h"
 
@@ -28,5 +28,5 @@ public:
 		return &intance;
 	}
 };
-#endif // __SERVER_TOOL_H__
+#endif // __SINGLE_TOOL_H__
 

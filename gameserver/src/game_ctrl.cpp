@@ -137,7 +137,7 @@ void CGameCtrl::TcpTick(void* args)
 	}
 	catch (const std::exception& e)
 	{
-		CACHE_LOG(ERROR_CACHE, "CGameServer TcpTick  cache execption msg {]", e.what());
+		CACHE_LOG(ERROR_CACHE, "CGameCtrl TcpTick  cache execption msg {]", e.what());
 	}
 }
 
@@ -146,7 +146,7 @@ void CGameCtrl::InitTcp(void* args)
 {
 	if (!CGameServer::GetSingletonPtr()->InitTcp())
 	{
-		DISK_LOG(ERROR_DISK, "CGameServer::GetSingletonPtr()->InitTcp failed");
+		DISK_LOG(ERROR_DISK, "CGameCtrl::GetSingletonPtr()->InitTcp failed");
 		exit(0);
 	}
 }

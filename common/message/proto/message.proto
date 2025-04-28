@@ -5,9 +5,10 @@ option optimize_for = SPEED;
 enum enServerType
 {
 	FE_INVALID				= 0;		// 无效
-	FE_GAMESERVER			= 1;		// 代理服务器
-	FE_PROXYSERVER			= 2;		// 代理服务器
-	FE_WEBSERVER			= 3;		// http服务器
+	FE_GAMESERVER			= 1;		// Game服务器
+	FE_DBSERVER				= 2;		// DB服务器
+	FE_PROXYSERVER			= 3;		// 代理服务器
+	FE_WEBSERVER			= 4;		// http服务器
 };
 
 enum enMessageCmd
