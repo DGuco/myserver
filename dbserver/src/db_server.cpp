@@ -41,7 +41,6 @@ bool CDBSerer::InitTcp()
 	if (nRet == 0)
 	{
 		DISK_LOG(DEBUG_DISK, "CDBSerer InitTcpServer success at {} : {}", pDBInfo->m_sHost.c_str(), pDBInfo->m_iPort);
-		return true;
 	}
 	else
 	{

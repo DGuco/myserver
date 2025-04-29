@@ -262,7 +262,7 @@ void CTCPServer::SelectTick()
 	{
 		if (iTmp < 0)
 		{
-			CACHE_LOG(TCP_ERROR, "Select error, {}.", strerror(errno));
+			CACHE_LOG(TCP_ERROR, "Select error, {}.", strerror(socket_error));
 		}
 		return;
 	}
@@ -293,7 +293,7 @@ void CTCPServer::SelectTick()
 			}
 			else
 			{
-				CACHE_LOG(TCP_ERROR, "Accept new socket error,listenfd = {},erromsg =  %s.", strerror(errno));
+				CACHE_LOG(TCP_ERROR, "Accept new socket error,listenfd = {},erromsg =  %s.", strerror(socket_error));
 			}
 		}
 	}
@@ -501,7 +501,7 @@ int CTCPServer::InitEpoll(const char* ip, int port)
 		}
 		if ((m_nEpollFd = epoll_create(MAX_SOCKET_NUM)) < 0)
 		{
-			CACHE_LOG(TCP_ERROR, "epoll_create Error : {}", strerror(errno));
+			CACHE_LOG(TCP_ERROR, "epoll_create Error : {}", strerror(socket_error));
 			return -1;
 		}
 
@@ -573,8 +573,8 @@ int CTCPServer::EpollTick()
 			if (!tmConnSocket.IsValid())
 			{
 				// 客户端连接上来以后又立即关闭了
-				CACHE_LOG(TCP_ERROR, "client connected port {} and disconnected! errno({} : {})",
-					tmConnSocket.GetHost().c_str(), errno, strerror(errno));
+				CACHE_LOG(TCP_ERROR, "client connected port {} and disconnected! socket_error({} : {})",
+					tmConnSocket.GetHost().c_str(), socket_error, strerror(socket_error));
 				continue;
 			}
 

@@ -106,7 +106,7 @@ int CTCPSocket::CheckConnectedOk()
 	int n = select(nSocketFd + 1, &readfds, &writefds, &execpfds, &tv);
 	if (n < 0)
 	{
-		DISK_LOG(ERROR_DISK, "select error({}:{})", errno, strerror(errno));
+		DISK_LOG(ERROR_DISK, "select error({}:{})", socket_error, strerror(socket_error));
 		Close();
 		return -2;
 	}
@@ -125,7 +125,7 @@ int CTCPSocket::CheckConnectedOk()
 
 	if (m_Socket.IsSocketError())
 	{
-		DISK_LOG(ERROR_DISK, "connect failure on SOCKET {} error:{} msg:{}.", m_Socket.GetSocket(), errno, strerror(errno));
+		DISK_LOG(ERROR_DISK, "connect failure on SOCKET {} error:{} msg:{}.", m_Socket.GetSocket(), socket_error, strerror(socket_error));
 		Close();
 		return -4;
 	}

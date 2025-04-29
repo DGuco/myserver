@@ -18,7 +18,7 @@ bool CSocket::Open(int nProtocolFamily, int nType, int nProtocol)
 	m_nSocket = socket(nProtocolFamily, nType, nProtocol);
 	if (m_nSocket == INVALID_SOCKET)
 	{
-		CACHE_LOG(TCP_ERROR, "CreateSocket failed with error : {},errormsg : {} \n", errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "CreateSocket failed with error : {},errormsg : {} \n", socket_error, strerror(socket_error));
 		return false;
 	}
 	memset(&m_SocketAddr, 0, sizeof(m_SocketAddr));
@@ -77,7 +77,7 @@ bool CSocket::Bind(int port)
 	{
 		Close();
 		m_nSocket = INVALID_SOCKET;
-		CACHE_LOG(TCP_ERROR, "bind failed with error : {},errormsg : {} \n", errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "bind failed with error : {},errormsg : {} \n", socket_error, strerror(socket_error));
 		return false;
 	}
 	return true;
@@ -95,7 +95,7 @@ bool CSocket::Bind(const char* ipaddr, int port)
 	{
 		Close();
 		m_nSocket = INVALID_SOCKET;
-		CACHE_LOG(TCP_ERROR, "bind failed error : {},errormsg : {} \n", errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "bind failed error : {},errormsg : {} \n", socket_error, strerror(socket_error));
 		return false;
 	}
 	return 0;
@@ -109,16 +109,18 @@ int CSocket::Conn(const char* ipaddr, int port, bool block)
 
 	m_Host = ipaddr;
 	m_nPort = port;
-	if (connect(m_nSocket, reinterpret_cast<const sockaddr*>(&m_SocketAddr), sizeof(sockaddr)) == SOCKET_ERROR)
+	int iRet = connect(m_nSocket, reinterpret_cast<const sockaddr*>(&m_SocketAddr), sizeof(sockaddr));
+	if (iRet == SOCKET_ERROR)
 	{
-		if (!block && errno == SOCKET_CONNECTING)
+		int errcode = socket_error;
+		if (!block && errcode == SOCKET_CONNECTING)
 		{
 			return 1;
 		}
 
-		Close();
 		m_nSocket = INVALID_SOCKET;
-		CACHE_LOG(TCP_ERROR, "connect {}:{} failed error : {},errormsg : {} \n", ipaddr, port, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "connect {}:{} failed error : {},errormsg : {} \n", ipaddr, port, socket_error, strerror(socket_error));
+		Close();
 		return SOCKET_ERROR;
 	}
 	return 0;
@@ -128,7 +130,7 @@ bool CSocket::Listen()
 {
 	if (listen(m_nSocket, TCP_BACK_LOG) == SOCKET_ERROR)
 	{
-		CACHE_LOG(TCP_ERROR, "Listen failed error : {},errormsg : {} \n", errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "Listen failed error : {},errormsg : {} \n", socket_error, strerror(socket_error));
 		Close();
 		return false;
 	}
@@ -166,7 +168,7 @@ int CSocket::Read(char* data, int len)
 		}
 		else
 		{
-			if (0 > iRecvBytes && errno == EINTR)
+			if (0 > iRecvBytes && socket_error == EINTR)
 			{
 				continue;
 			}
@@ -179,18 +181,18 @@ int CSocket::Read(char* data, int len)
 	{
 		CNetAddr tmAddr;
 		GetRemoteAddress(tmAddr);
-		CACHE_LOG(TCP_ERROR, "Socket recved 0 from {}:{} , fd = {}, errno : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
-			tmAddr.m_uPort, m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "Socket recved 0 from {}:{} , fd = {}, socket_error : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
+			tmAddr.m_uPort, m_nSocket, socket_error, strerror(socket_error));
 		return ERR_SOCKE_REMOTE_CLOSED;
 	}
 	else if (iRecvedBytes < 0)
 	{
-		if (errno != OPT_WOULD_BLOCK)
+		if (socket_error != OPT_WOULD_BLOCK)
 		{
 			CNetAddr tmAddr;
 			GetRemoteAddress(tmAddr);
-			CACHE_LOG(TCP_ERROR, "recv error! from {}:{} , fd = {}, errno : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
-				tmAddr.m_uPort, m_nSocket, errno, strerror(errno));
+			CACHE_LOG(TCP_ERROR, "recv error! from {}:{} , fd = {}, socket_error : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
+				tmAddr.m_uPort, m_nSocket, socket_error, strerror(socket_error));
 			return ERR_SOCKE_WOULD_BLOCK;
 		}
 		else
@@ -214,7 +216,7 @@ int CSocket::Write(char* data, int len)
 		}
 		else
 		{
-			if (0 >= iSendBytes && EINTR == errno)
+			if (0 >= iSendBytes && EINTR == socket_error)
 			{
 				continue;
 			}
@@ -241,7 +243,7 @@ int CSocket::Write(char* data, int len)
 	int iBytesSent = send(m_nSocket, (const char*)data, len, flag);
 	if (iBytesSent < 0)
 	{
-		if (errno == OPT_WOULD_BLOCK)
+		if (socket_error == OPT_WOULD_BLOCK)
 		{
 			return ERR_SOCKE_WOULD_BLOCK;
 		}
@@ -249,8 +251,8 @@ int CSocket::Write(char* data, int len)
 		{
 			CNetAddr tmAddr;
 			GetRemoteAddress(tmAddr);
-			CACHE_LOG(TCP_ERROR, "send error! to {}:{} , fd = {}, errno : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
-				tmAddr.m_uPort, m_nSocket, errno, strerror(errno));
+			CACHE_LOG(TCP_ERROR, "send error! to {}:{} , fd = {}, socket_error : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
+				tmAddr.m_uPort, m_nSocket, socket_error, strerror(socket_error));
 			return ERR_SOCKE_OTHER_ERROR;
 		}
 	}
@@ -278,7 +280,7 @@ bool CSocket::SetSendBufSize(int size)
 {
 	if (SetSocketOpt(SOL_SOCKET, SO_SNDBUF,&size, sizeof(size)) == SOCKET_ERROR)
 	{
-		CACHE_LOG(TCP_ERROR, "SetSendBufSize error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "SetSendBufSize error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 		return false;
 	}
 	return true;
@@ -290,7 +292,7 @@ int CSocket::GetSendBuffSize()
 	int nSize = sizeof(nBuffLen);
 	if (GetSocketOpt(SOL_SOCKET, SO_SNDBUF, &nBuffLen, &nSize) == SOCKET_ERROR)
 	{
-		CACHE_LOG(TCP_ERROR, "GetSendBuffSize error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "GetSendBuffSize error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 		return -1;
 	}
 	return nBuffLen;
@@ -300,7 +302,7 @@ bool CSocket::SetRecvBufSize(int size)
 {
 	if (SetSocketOpt(SOL_SOCKET, SO_RCVBUF, &size, sizeof(size)) == SOCKET_ERROR)
 	{
-		CACHE_LOG(TCP_ERROR, "SetRecvBufSize error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "SetRecvBufSize error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 		return false;
 	}
 	return true;
@@ -312,7 +314,7 @@ int CSocket::GetRecvBuffSize()
 	int nSize = sizeof(nBuffLen);
 	if (GetSocketOpt(SOL_SOCKET, SO_RCVBUF, &nBuffLen, &nSize) == SOCKET_ERROR)
 	{
-		CACHE_LOG(TCP_ERROR, "GetRecvBuffSize error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "GetRecvBuffSize error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 		return -1;
 	}
 	return nBuffLen;
@@ -353,14 +355,14 @@ bool CSocket::SetSocketNoBlock()
 		&& ((flags = fcntl(m_nSocket, F_GETFL, 0)) < 0
 		|| fcntl(m_nSocket, F_SETFL, flags | O_NONBLOCK) < 0))
 	{
-		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 		return 0;
 	}
 #else
 	unsigned long cmd = 1;
 	if (ioctlsocket(m_nSocket, FIONBIO, &cmd) == SOCKET_ERROR)
 	{
-		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 		return false;
 	}
 	return true;
@@ -372,7 +374,7 @@ bool CSocket::SetReuseAddr()
 	int iReusePortFlag = 1;
 	if (SetSocketOpt(SOL_SOCKET, SO_REUSEADDR, &iReusePortFlag, sizeof(iReusePortFlag)) == SOCKET_ERROR)
 	{
-		CACHE_LOG(TCP_ERROR, "SetReuseAddr error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "SetReuseAddr error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 		return false;
 	}
 	return true;
@@ -396,7 +398,7 @@ bool CSocket::SetLinger(int lingertime)
 	}
 	if (SetSocketOpt(SOL_SOCKET, SO_LINGER, &ling, sizeof(ling)) == INVALID_SOCKET)
 	{
-		CACHE_LOG(TCP_ERROR, "SetLinger error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "SetLinger error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 		return false;
 	}
 	return true;
@@ -416,7 +418,7 @@ bool CSocket::SetKeepAlive()
 	int nKeepAlive = 1;
 	if (SetSocketOpt(SOL_SOCKET, SO_KEEPALIVE, &nKeepAlive, sizeof(nKeepAlive)) == SOCKET_ERROR)
 	{
-		CACHE_LOG(TCP_ERROR, "SetKeepAlive error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "SetKeepAlive error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 		return false;
 	}
 	return true;
@@ -435,7 +437,7 @@ bool CSocket::SetTcpNoDelay()
 	int nNoDelay = 1;
 	if (SetSocketOpt(IPPROTO_TCP, TCP_NODELAY, &nNoDelay, sizeof(nNoDelay)) == SOCKET_ERROR)
 	{
-		CACHE_LOG(TCP_ERROR, "SetTcpNoDelay error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "SetTcpNoDelay error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 		return false;
 	}
 	return true;
@@ -459,14 +461,14 @@ unsigned int  CSocket::CanReadLen()
 	int available = 0;
 	if (ioctl(m_nSocket FIONREAD, &available) < 0)
 	{
-		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 	}
 	return available;
 #else
 	unsigned long available;
 	if (ioctlsocket(m_nSocket, FIONREAD, &available) == SOCKET_ERROR)
 	{
-		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, errno : {},errormsg :{}.", m_nSocket, errno, strerror(errno));
+		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 	}
 	return available;
 #endif

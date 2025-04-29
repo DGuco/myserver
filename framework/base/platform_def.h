@@ -46,6 +46,7 @@ using namespace std;
     #define SOCKET_CONNECTING  (EINPROGRESS)
     #define SLEEP(miseconds) sleep(miseconds)
 	#define INVALID_SM_HADLER (-1)
+    #define socket_error (errno)
 
     typedef int sm_handler;
     typedef int sm_key;
@@ -65,7 +66,7 @@ using namespace std;
     #define OPT_WOULD_BLOCK   (WSAEWOULDBLOCK)
     #define SOCKET_CONNECTING  (WSAEWOULDBLOCK)
     #define SLEEP(miseconds) Sleep(miseconds)
-
+    #define socket_error (WSAGetLastError())
     typedef int sm_key;
     typedef void* sm_handler;
 	#define INVALID_SM_HADLER (NULL)
