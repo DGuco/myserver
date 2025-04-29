@@ -15,25 +15,29 @@
 #include "database_mysql.h"
 #include "thread_scheduler.h"
 
-enum enDBThreadSchedulerType
+#define MAX_SAVEHUMAN_DB_THREAD 1
+#define MAX_QUERY_DB_THREAD 4
+#define MAX_SAVE_GLOBAL_DB_THREAD 1
+
+enum enDBThreadType
 {
-    enDBScheduler_Invalid = -1,
-	enDBScheduler_SaveHuman = 0,
-    enDBScheduler_SaveGlobal = 1,
-    enDBScheduler_Query = 2,
+    enDBThread_Invalid = -1,
+	enDBThread_SaveHuman = 0,
+    enDBThread_SaveGlobal = 1,
+    enDBThread_Query = 2,
 };
 
-struct CBThreadSchedulerInfo
+struct CDBThreadInfo
 {	
-	CSafePtr<CThreadScheduler> m_pScheduler;
-	CSafePtr<DatabaseMysql>    m_pDatabase;
-	enDBThreadSchedulerType    m_eSchedulerType;
+	CSafePtr<DatabaseMysql>     m_pDatabase;
+	enDBThreadType    			m_eSchedulerType;
+	int 						m_nThreadIndex;
 
-	CBThreadSchedulerInfo(std::string signature,enDBThreadSchedulerType type)
+	CDBThreadInfo()
 	{
-		m_eSchedulerType = type;
-		m_pScheduler = new CThreadScheduler(signature);
-		m_pDatabase = new DatabaseMysql();
+		m_eSchedulerType = enDBThread_Invalid;
+		m_pDatabase.Reset();
+		m_nThreadIndex = -1;
 	}
 };
 
@@ -58,12 +62,18 @@ public:
 private:
 	//????
 	CSafePtr<CThreadScheduler> m_pTcpScheduler;
+	//????
+	CSafePtr<CThreadScheduler> m_pSaveHumanDbScheduler;
+	//????
+	CSafePtr<CThreadScheduler> m_pSaveGlobalDbScheduler;
+	//????
+	CSafePtr<CThreadScheduler> m_pQueryDbScheduler;
 	//db??
-	CBThreadSchedulerInfo m_SaveHumanDbScheduler;
+	CDBThreadInfo* m_SaveHumanDbThread[MAX_SAVEHUMAN_DB_THREAD];
 	//db??
-	CBThreadSchedulerInfo m_SaveGlobalDbScheduler;
+	CDBThreadInfo* m_SaveGlobalDbThread[MAX_QUERY_DB_THREAD];
 	//db??
-	CBThreadSchedulerInfo m_QueryDbScheduler;
+	CDBThreadInfo* m_QueryDbThread[MAX_SAVE_GLOBAL_DB_THREAD];
 };
 
 #endif

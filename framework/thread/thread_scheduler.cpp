@@ -17,17 +17,37 @@ CThreadScheduler::~CThreadScheduler()
 }
 
 bool CThreadScheduler::Init(size_t threads,
-							ThreadFuncParamWrapper initFunc,
-							ThreadFuncParamWrapper tickFunc)
+							ThreadFuncParam initFunc,
+							ThreadFuncParam tickFunc,
+							void**		    initFuncArgs,
+							void**		    tickFuncArgs)
 {
 	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
 	debug_timer.BeginTimer(nNow, THREAD_TASK_DEBUG_TIME);
 	for (size_t i = 0; i < threads; ++i)
 	{
 		CSafePtr<CTaskThread> pTaskThread = new CTaskThread(this);
+		ThreadFuncParamWrapper initFuncWrapper;
+		if(initFuncArgs == NULL)
+		{
+			initFuncWrapper.args = NULL;	
+		}else
+		{
+			initFuncWrapper.args = initFuncArgs[i];
+		}
+		initFuncWrapper.func = initFunc;
+		pTaskThread->SetThreadInitFunc(initFuncWrapper);
+		ThreadFuncParamWrapper tickFuncWrapper;
+		if(tickFuncArgs == NULL)
+		{
+			tickFuncWrapper.args = NULL;
+		}else
+		{
+			tickFuncWrapper.args = tickFuncArgs[i];	
+		}
+		tickFuncWrapper.func = tickFunc;
+		pTaskThread->SetThreadTickFunc(tickFuncWrapper);
 		pTaskThread->CreateThread();
-		pTaskThread->SetThreadInitFunc(initFunc);
-		pTaskThread->SetThreadTickFunc(tickFunc);
 		m_Workers.emplace_back(pTaskThread.DynamicCastTo<CMyThread>());
 	}
 	return true;

@@ -27,8 +27,11 @@ public:
 	virtual ~CThreadScheduler();
 	virtual void ConsumeTask();
 	virtual bool Init(size_t threads,
-					  ThreadFuncParamWrapper initFunc = ThreadFuncParamWrapper(),
-					  ThreadFuncParamWrapper tickFunc = ThreadFuncParamWrapper());
+					ThreadFuncParam initFunc = NULL,
+					ThreadFuncParam tickFunc= NULL,
+					void**		    initFuncArgs = NULL,
+					void**		    tickFuncArgs = NULL);
+					
 	void PushTask(TaskPtr pTask);
 	void DebugTask();
 	int  ThreddCount() { return m_Workers.size(); }

@@ -41,7 +41,7 @@ bool CGameCtrl::PrepareToRun()
 
 bool CGameCtrl::Run()
 {
-	if (!m_pScheduler->Init(1, ThreadFuncParamWrapper(&CGameCtrl::InitTcp, NULL), ThreadFuncParamWrapper(&CGameCtrl::TcpTick, NULL)))
+	if (!m_pScheduler->Init(1, &CGameCtrl::InitTcp,&CGameCtrl::TcpTick, NULL, NULL))
 	{
 		return false;
 	}

@@ -4,18 +4,67 @@
 #include "shm_manager.h"
 #include "server_config.h"
 #include "thread_scheduler.h"
+#include "base.h"
 
-CDBCtrl::CDBCtrl() : 
-    m_SaveHumanDbScheduler("SaveHumanDbScheduler",enDBScheduler_SaveHuman),
-    m_SaveGlobalDbScheduler("SaveGlobalDbScheduler",enDBScheduler_SaveGlobal),
-    m_QueryDbScheduler("QueryDbScheduler",enDBScheduler_Query)
+CDBCtrl::CDBCtrl() :
+     m_pTcpScheduler(NULL),
+     m_pSaveHumanDbScheduler(NULL), 
+     m_pSaveGlobalDbScheduler(NULL), 
+     m_pQueryDbScheduler(NULL)
 {
     m_pTcpScheduler = new CThreadScheduler("DBTcpScheduler");
+    m_pSaveHumanDbScheduler = new CThreadScheduler("SaveHumanDbScheduler");
+    m_pSaveGlobalDbScheduler = new CThreadScheduler("SaveGlobalDbScheduler");
+    m_pQueryDbScheduler = new CThreadScheduler("QueryDbScheduler");
+   
+    for (int i = 0; i < MAX_SAVEHUMAN_DB_THREAD; i++)
+    {
+        m_SaveHumanDbThread[i] = new CDBThreadInfo();
+        m_SaveHumanDbThread[i]->m_eSchedulerType = enDBThread_SaveHuman;
+        m_SaveHumanDbThread[i]->m_pDatabase = new DatabaseMysql();
+        m_SaveHumanDbThread[i]->m_nThreadIndex = i;
+    }
+
+    for (int i = 0; i < MAX_SAVE_GLOBAL_DB_THREAD; i++)
+    {
+        m_SaveGlobalDbThread[i] = new CDBThreadInfo();
+        m_SaveGlobalDbThread[i]->m_eSchedulerType = enDBThread_SaveGlobal;
+        m_SaveGlobalDbThread[i]->m_pDatabase = new DatabaseMysql();
+        m_SaveGlobalDbThread[i]->m_nThreadIndex = i;
+    }
+
+    for (int i = 0; i < MAX_QUERY_DB_THREAD; i++)
+    {
+        m_QueryDbThread[i] = new CDBThreadInfo();
+        m_QueryDbThread[i]->m_eSchedulerType = enDBThread_Query;
+        m_QueryDbThread[i]->m_pDatabase = new DatabaseMysql();
+        m_QueryDbThread[i]->m_nThreadIndex = i;
+    }
 }
 
 CDBCtrl::~CDBCtrl()
 {
+    m_pTcpScheduler.Free();
+    m_pSaveHumanDbScheduler.Free();
+    m_pSaveGlobalDbScheduler.Free();
+    m_pQueryDbScheduler.Free();
+    for (int i = 0; i < MAX_SAVEHUMAN_DB_THREAD; i++)
+    {
+        m_SaveHumanDbThread[i]->m_pDatabase.Free();
+        delete m_SaveHumanDbThread[i];
+    }
 
+    for (int i = 0; i < MAX_SAVE_GLOBAL_DB_THREAD; i++)
+    {
+        m_SaveGlobalDbThread[i]->m_pDatabase.Free();
+        delete m_SaveGlobalDbThread[i];
+    }
+
+    for (int i = 0; i < MAX_QUERY_DB_THREAD; i++)
+    {
+        m_QueryDbThread[i]->m_pDatabase.Free();
+        delete m_QueryDbThread[i];
+    }
 }
 
 int CDBCtrl::PrepareToRun()
@@ -31,32 +80,37 @@ int CDBCtrl::PrepareToRun()
 	}
 
 	return true;
-    return 0;
 }
 
 bool CDBCtrl::Run()
 {
-    if (!m_pTcpScheduler->Init(1, ThreadFuncParamWrapper(&CDBCtrl::InitTcp, NULL), ThreadFuncParamWrapper(&CDBCtrl::TcpTick, NULL)))
+    if (!m_pTcpScheduler->Init(1, &CDBCtrl::InitTcp,&CDBCtrl::TcpTick,NULL,NULL))
 	{
 		return false;
 	}
-    if (!m_SaveHumanDbScheduler.m_pScheduler->Init(1, 
-        ThreadFuncParamWrapper(&CDBCtrl::DBThreadInit, (void*)(&m_SaveHumanDbScheduler)), 
-        ThreadFuncParamWrapper(&CDBCtrl::DBThreadTick, (void*)(&m_SaveHumanDbScheduler))))
-	{
-		return false;
-	}
-
-    if (!m_SaveGlobalDbScheduler.m_pScheduler->Init(1, 
-        ThreadFuncParamWrapper(&CDBCtrl::DBThreadInit, (void*)(&m_SaveGlobalDbScheduler)), 
-        ThreadFuncParamWrapper(&CDBCtrl::DBThreadTick, (void*)(&m_SaveGlobalDbScheduler))))
+    if (!m_pSaveHumanDbScheduler->Init(MAX_SAVEHUMAN_DB_THREAD, 
+                                        &CDBCtrl::DBThreadInit, 
+                                        &CDBCtrl::DBThreadTick, 
+                                        (void**)&m_SaveHumanDbThread,
+                                        (void**)&m_SaveHumanDbThread))
 	{
 		return false;
 	}
 
-    if (!m_QueryDbScheduler.m_pScheduler->Init(4,   
-        ThreadFuncParamWrapper(&CDBCtrl::DBThreadInit, NULL), 
-        ThreadFuncParamWrapper(&CDBCtrl::DBThreadTick, NULL)))
+    if (!m_pSaveGlobalDbScheduler->Init(MAX_SAVE_GLOBAL_DB_THREAD, 
+                                        &CDBCtrl::DBThreadInit,
+                                        &CDBCtrl::DBThreadTick,
+                                        (void**)&m_SaveGlobalDbThread, 
+                                        (void**)&m_SaveGlobalDbThread))
+	{
+		return false;
+	}
+
+    if (!m_pQueryDbScheduler->Init(MAX_QUERY_DB_THREAD, 
+                                    &CDBCtrl::DBThreadInit,
+                                    &CDBCtrl::DBThreadTick,
+                                    (void**)&m_QueryDbThread, 
+                                    (void**)&m_QueryDbThread))
 	{
 		return false;
 	}
@@ -74,7 +128,7 @@ void CDBCtrl::DBThreadInit(void* args)
 		DISK_LOG(ERROR_DISK, "CDBCtrl::DBThreadInit failed, args == NULL");
         exit(0);
     }
-    CBThreadSchedulerInfo* pInfo = (CBThreadSchedulerInfo*)args;
+    CDBThreadInfo* pInfo = (CDBThreadInfo*)args;
     if(pInfo->m_pDatabase == NULL)
     {
         DISK_LOG(ERROR_DISK, "CDBCtrl::DBThreadInit failed, m_pDatabase == NULL");
@@ -94,19 +148,23 @@ void CDBCtrl::DBThreadTick(void* args)
     {
 		return;
     }
-    CBThreadSchedulerInfo* pInfo = (CBThreadSchedulerInfo*)args;
+    CDBThreadInfo* pInfo = (CDBThreadInfo*)args;
     if(pInfo->m_pDatabase == NULL)
     {
         return;
     }
 
-    if(pInfo->m_eSchedulerType == enDBScheduler_SaveHuman)
+    if(pInfo->m_eSchedulerType == enDBThread_SaveHuman)
     {
         CShmManager::GetSingletonPtr()->DoSavePlayer(pInfo->m_pDatabase.DynamicCastTo<IDataBase>());
-    }else if(pInfo->m_eSchedulerType == enDBScheduler_SaveGlobal)
+    }else if(pInfo->m_eSchedulerType == enDBThread_SaveGlobal)
     {
         CShmManager::GetSingletonPtr()->DoSaveGlobal(pInfo->m_pDatabase.DynamicCastTo<IDataBase>());
+    }else
+    {
+        return;
     }
+    return;
 }
 
 void CDBCtrl::TcpTick(void* args)
