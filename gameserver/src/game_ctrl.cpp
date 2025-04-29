@@ -41,7 +41,7 @@ bool CGameCtrl::PrepareToRun()
 
 bool CGameCtrl::Run()
 {
-	if (!m_pScheduler->Init(1, &CGameCtrl::InitTcp,&CGameCtrl::TcpTick, NULL, NULL))
+	if (!m_pScheduler->Init(1, &CGameCtrl::GameServerInit,&CGameCtrl::GameServerTick, NULL, NULL))
 	{
 		return false;
 	}
@@ -128,7 +128,7 @@ bool CGameCtrl::ReadConfig()
 	return true;
 }
 
-void CGameCtrl::TcpTick(void* args)
+void CGameCtrl::GameServerTick(void* args)
 {
 	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
 	try
@@ -142,7 +142,7 @@ void CGameCtrl::TcpTick(void* args)
 }
 
 //
-void CGameCtrl::InitTcp(void* args)
+void CGameCtrl::GameServerInit(void* args)
 {
 	if (!CGameServer::GetSingletonPtr()->InitTcp())
 	{

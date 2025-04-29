@@ -56,12 +56,12 @@ public:
 	//
 	static void DBThreadTick(void* args);
 	//
-	static void TcpTick(void* args);
+	static void DBServerInit(void* args);
 	//
-	static void InitTcp(void* args);
+	static void DBServerLogic(void* args);
 private:
 	//????
-	CSafePtr<CThreadScheduler> m_pTcpScheduler;
+	CSafePtr<CThreadScheduler> m_pLogicScheduler;
 	//????
 	CSafePtr<CThreadScheduler> m_pSaveHumanDbScheduler;
 	//????

@@ -24,9 +24,9 @@ public:
 	//
 	bool ReadConfig();
 	//
-	static void TcpTick(void* args);
+	static void GameServerTick(void* args);
 	//
-	static void InitTcp(void* args);
+	static void GameServerInit(void* args);
 private:
 	CSafePtr<CThreadScheduler> m_pScheduler;
 	CSafePtr<CThreadScheduler> m_pSchedulerDb;

@@ -7,12 +7,12 @@
 #include "base.h"
 
 CDBCtrl::CDBCtrl() :
-     m_pTcpScheduler(NULL),
+    m_pLogicScheduler(NULL),
      m_pSaveHumanDbScheduler(NULL), 
      m_pSaveGlobalDbScheduler(NULL), 
      m_pQueryDbScheduler(NULL)
 {
-    m_pTcpScheduler = new CThreadScheduler("DBTcpScheduler");
+    m_pLogicScheduler = new CThreadScheduler("LogicScheduler");
     m_pSaveHumanDbScheduler = new CThreadScheduler("SaveHumanDbScheduler");
     m_pSaveGlobalDbScheduler = new CThreadScheduler("SaveGlobalDbScheduler");
     m_pQueryDbScheduler = new CThreadScheduler("QueryDbScheduler");
@@ -44,7 +44,7 @@ CDBCtrl::CDBCtrl() :
 
 CDBCtrl::~CDBCtrl()
 {
-    m_pTcpScheduler.Free();
+    m_pLogicScheduler.Free();
     m_pSaveHumanDbScheduler.Free();
     m_pSaveGlobalDbScheduler.Free();
     m_pQueryDbScheduler.Free();
@@ -84,7 +84,7 @@ int CDBCtrl::PrepareToRun()
 
 bool CDBCtrl::Run()
 {
-    if (!m_pTcpScheduler->Init(1, &CDBCtrl::InitTcp,&CDBCtrl::TcpTick,NULL,NULL))
+    if (!m_pLogicScheduler->Init(1, &CDBCtrl::DBServerInit,&CDBCtrl::DBServerLogic,NULL,NULL))
 	{
 		return false;
 	}
@@ -167,7 +167,7 @@ void CDBCtrl::DBThreadTick(void* args)
     return;
 }
 
-void CDBCtrl::TcpTick(void* args)
+void CDBCtrl::DBServerLogic(void* args)
 {
     time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
 	try
@@ -180,7 +180,7 @@ void CDBCtrl::TcpTick(void* args)
 	}
 }
 
-void CDBCtrl::InitTcp(void* args)
+void CDBCtrl::DBServerInit(void* args)
 {
     if (!CDBSerer::GetSingletonPtr()->InitTcp())
 	{
