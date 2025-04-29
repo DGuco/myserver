@@ -136,7 +136,7 @@ bool CShmPool<T,poolsize,cachesize>::Init(int poolkey,enShmType eShmType,int sav
 {
 	m_bForceSaveAll = saveInterval;
 	m_nSaveInterval = forceSaveAll;
-	int tmMemSize = sizeof(CShmObj<T>) * poolsize + sizeof(CSavingObj<T>);
+	int tmMemSize = sizeof(CShmObj<T>) * poolsize + sizeof(CSavingObj<T>) * cachesize;
 	if (!m_ShareMem.CreateSegment(poolkey, tmMemSize))
 	{
 		if (!m_ShareMem.AttachSegment(poolkey, tmMemSize))

@@ -79,6 +79,11 @@ int CDBCtrl::PrepareToRun()
 		return false;
 	}
 
+	if (!CShmManager::GetSingletonPtr()->Init())
+	{
+		return false;
+	}
+
 	return true;
 }
 

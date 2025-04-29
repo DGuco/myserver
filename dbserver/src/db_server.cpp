@@ -486,21 +486,7 @@ time_t CDBSerer::GetLastRecvKeepAlive() const
 
 int CDBSerer::PrepareToRun()
 {
-// 	const string filepath = "../config/serverinfo.json";
-// 	if (-1 == m_pServerConfig->LoadFromFile(filepath)) {
-// 		LOG_ERROR("default", "Get TcpserverConfig failed");
-// 		return -1;
-// 	}
-// 
-// 	if (ConnectToProxyServer() < 0)  // 连接到proxy服务器
-// 	{
-// 		LOG_ERROR("default", "Error: in CDBSerer::PrepareToRun connect proxy  server  failed!\n");
-// 		return -1;
-// 	}
-// 	m_pDatabase->Initialize(m_pServerConfig->GetDbInfo().c_str(), 0, 0, 0);
-// 	m_pNetWork->RegisterSignalHandler(SIGPIPE, &CDBSerer::lcb_OnSigPipe, 0);
-// 	return 0;
-	return 0;
+	return 1;
 }
 
 // int CDBSerer::Run()

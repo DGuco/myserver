@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
-	if (CDBCtrl::GetSingletonPtr()->PrepareToRun() < 0)  // 创建处理线程
+	if (CDBCtrl::GetSingletonPtr()->PrepareToRun() == 0)  // 创建处理线程
 	{
 		exit(-1);
 	}
