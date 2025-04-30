@@ -188,6 +188,22 @@ CSafePtr<CTCPConn> CTCPServer::FindTcpConn(SOCKET socket)
 	return NULL;
 }
 
+void CTCPServer::OnAccept(CSocket newSocket)
+{
+	CSafePtr<CTCPConn> pConn = CreateTcpConn(newSocket);
+	if (pConn != NULL && pConn->IsValid())
+	{
+		m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
+		OnNewConnect(pConn);
+		CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+	}
+	else
+	{
+		CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+		newSocket.Close();
+	}
+}
+
 //
 CSafePtr<CTCPClient>   CTCPServer::FindTcpClient(SOCKET socket)
 {
@@ -278,18 +294,7 @@ void CTCPServer::SelectTick()
 			CSocket newSocket = m_ListenSocket.Accept();
 			if (newSocket.IsValid())
 			{
-				CSafePtr<CTCPConn> pConn = CreateTcpConn(newSocket);
-				if (pConn != NULL && pConn->IsValid())
-				{
-					m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
-					OnNewConnect(pConn);
-					CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
-				}
-				else
-				{
-					CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
-					newSocket.Close();
-				}
+				OnAccept(newSocket);
 			}
 			else
 			{

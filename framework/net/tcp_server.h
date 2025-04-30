@@ -48,6 +48,9 @@ private:
 	void CheckSocketResize();
 	//
 	int PrepareToRun();
+private:
+	//新的连接来了
+	virtual void OnAccept(CSocket newSocket);
 	//
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn) = 0;
 	//

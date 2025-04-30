@@ -13,6 +13,7 @@
 #include "tcp_server.h"
 #include "safe_pointer.h"
 #include "server_config.h"
+#include "thread_scheduler.h"
 
 class CProxyCtrl: public CSingleton<CProxyCtrl>
 {
@@ -28,6 +29,11 @@ public:
 private:
 	//读取配置文件
 	bool ReadConfig();
+private:
+	//tcp管理器
+	CSafePtr<CThreadScheduler> m_pTcpManagerScheduler;
+	//消息传输线程
+	CSafePtr<CThreadScheduler> m_pMesTransferScheduler;
 };
 
 #endif
