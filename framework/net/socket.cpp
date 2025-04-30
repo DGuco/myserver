@@ -235,10 +235,10 @@ int CSocket::Write(char* data, int len)
 	无论是使用write()函数还是send()函数，都需要根据具体应用场景来进行选择.在Socket编程中，一般使用send()函数进行数据发送，因为
 	它提供了更多的控制方式，并且更适合Socket编程的需求。
 	*/
-#if defined(__WINDOWS__)
-	uint32 flag = MSG_DONTROUTE;
-#elif defined(__LINUX__)
+#if defined(__LINUX__)
 	uint32 flag = MSG_NOSIGNAL;
+#else
+	uint32 flag = MSG_DONTROUTE;
 #endif
 	int iBytesSent = send(m_nSocket, (const char*)data, len, flag);
 	if (iBytesSent < 0)
