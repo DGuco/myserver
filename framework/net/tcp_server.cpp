@@ -141,6 +141,16 @@ int CTCPServer::PrepareToRun()
 #endif
 }
 
+void CTCPServer::AcceptIncomingConnect()
+{
+	CSafeLock lock(m_ConnectingListLock);
+	for (auto it = m_ConnectingList.begin(); it!= m_ConnectingList.end(); it++)
+	{
+		OnAccept(*it);
+	}
+	m_ConnectingList.clear();
+}
+
 void CTCPServer::TcpTick(time_t now)
 {
 	//在缓冲区数据发送出去之前，检查缓冲区利用率
@@ -190,6 +200,35 @@ CSafePtr<CTCPConn> CTCPServer::FindTcpConn(SOCKET socket)
 
 void CTCPServer::OnAccept(CSocket newSocket)
 {
+	if(!newSocket.IsValid())
+	{
+		return;
+	}
+#ifdef __LINUX__
+	CSafePtr<CTCPConn> pConn = CreateTcpConn(tmConnSocket);
+	if (pConn != NULL)
+	{
+		m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
+		if (m_nRunModule == eTcpSelect)
+		{
+			if (EpollAddSocket(newSocket.GetSocket()) != 0)
+			{
+				CACHE_LOG(TCP_ERROR, "error: EpollAddSocket failed ,fd = {}", iNewSocket);
+				pConn->DoClosingLogic(socket_error);
+				pConn->Close(false);
+				return;
+			}
+		}
+		OnNewConnect(pConn);
+		CACHE_LOG(TCP_ERROR, "Accept new socket fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
+	}
+	else
+	{
+		CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
+		tmConnSocket.Close();
+		return;
+	}
+#else
 	CSafePtr<CTCPConn> pConn = CreateTcpConn(newSocket);
 	if (pConn != NULL && pConn->IsValid())
 	{
@@ -200,8 +239,10 @@ void CTCPServer::OnAccept(CSocket newSocket)
 	else
 	{
 		CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
-		newSocket.Close();
+		pConn->DoClosingLogic(socket_error);
+		pConn->Close(false);
 	}
+#endif
 }
 
 //
@@ -213,6 +254,15 @@ CSafePtr<CTCPClient>   CTCPServer::FindTcpClient(SOCKET socket)
 		return itcleint->second;
 	}
 	return NULL;
+}
+
+void CTCPServer::AddNewIncomingConn(CSocket newSocket)
+{
+	if(newSocket.IsValid())
+	{
+		CSafeLock lock(m_ConnectingListLock);
+		m_ConnectingList.push_back(newSocket);
+	}
 }
 
 int CTCPServer::InitSelect(const char* ip, int port)
@@ -513,10 +563,13 @@ int CTCPServer::InitEpoll(const char* ip, int port)
 		return 0;
 	}
 
-	if (!BeginListen(ip, port))
+	if(ip != NULL && strlen(ip) > 0 && port > 0)
 	{
-		ClearEpoll();
-		return -2;
+		if (!BeginListen(ip, port))
+		{
+			ClearEpoll();
+			return -2;
+		}
 	}
 
 	if (m_ListenSocket.IsValid())
@@ -596,26 +649,8 @@ int CTCPServer::EpollTick()
 				tmConnSocket.Close();
 				continue;
 			}
-
-			CSafePtr<CTCPConn> pConn = CreateTcpConn(tmConnSocket);
-			if (pConn != NULL && pConn->IsValid())
-			{
-				if (EpollAddSocket(iNewSocket) != 0)
-				{
-					CACHE_LOG(TCP_ERROR, "error: EpollAddSocket failed ,fd = {}", iNewSocket);
-					tmConnSocket.Close();
-					continue;
-				}
-				m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
-				CACHE_LOG(TCP_ERROR, "Accept new socket fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
-				OnNewConnect(pConn);
-			}
-			else
-			{
-				CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
-				tmConnSocket.Close();
-				continue;
-			}
+			//新的连接
+			OnAccept(tmConnSocket);
 		//可读
 		}else if(EPOLLIN & cevents->events)
 		{

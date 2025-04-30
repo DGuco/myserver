@@ -11,6 +11,7 @@
 #include "tcp_socket.h"
 #include "tcp_conn.h"
 #include "tcp_client.h"
+#include "my_lock.h"
 #include <unordered_map>
 
 enum eTcpServerModule
@@ -41,6 +42,8 @@ public:
 	CSafePtr<CTCPConn>     FindTcpConn(SOCKET socket);
 	//
 	CSafePtr<CTCPClient>   FindTcpClient(SOCKET socket);
+	//添加一个新来的连接
+	void AddNewIncomingConn(CSocket newSocket);
 private:
 	//socket tick
 	void SocketTick(time_t now);
@@ -48,12 +51,14 @@ private:
 	void CheckSocketResize();
 	//
 	int PrepareToRun();
-private:
+	// 注册新的连接
+	void AcceptIncomingConnect();
 	//新的连接来了
 	virtual void OnAccept(CSocket newSocket);
-	//
+private:
+	//连接成功回调
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn) = 0;
-	//
+	//创建新的连接
 	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket tmSocket) = 0;
 private:
 	//
@@ -66,7 +71,7 @@ private:
 	bool BeginListen(std::string addrress, int port);
 #ifdef __LINUX__
 	//
-	int InitEpoll(const char* ip, int port);
+	int InitEpoll(const char* ip = NULL, int port = -1);
 	//
 	void EpollTick();
 	//
@@ -85,6 +90,8 @@ private:
 	ConnMap				 m_ConnMap;
 	fd_set				 m_fdsRead;
 	fd_set				 m_fdsWrite;
+	std::list<CSocket>   m_ConnectingList;
+	CMyLock			     m_ConnectingListLock;
 #ifdef __LINUX__
 	struct epoll_event*	 m_pEpollEventList;
 	int                  m_nEpollFd;
