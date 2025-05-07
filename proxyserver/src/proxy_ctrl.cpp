@@ -73,6 +73,18 @@ int CProxyCtrl::Run()
     }
 }
 
+void CProxyCtrl::SelectTransferThread(CSocket socket)
+{
+	if(socket.IsValid() == false)
+	{
+		return;
+	}
+	int nIndex = socket.GetSocket() % MAX_TRANSFER_THREAD;
+	m_TransferThread[nIndex]->m_pTransfer->AddNewIncomingConn(socket);
+	CACHE_LOG(TCP_DEBUG,"CProxyCtrl::SelectTransferThread new socket nIndex = {},socket = {},host = {},port = {}",
+		nIndex,socket.GetSocket(),socket.GetHost().c_str(),socket.GetPort());
+}
+
 bool CProxyCtrl::ReadConfig()
 {
 	string filePath = "../config/serverinfo.json";
@@ -122,10 +134,14 @@ void CProxyCtrl::TransferThreadLogic(void* args)
         return;
     }
 
-	if (!pInfo->m_pTransfer->InitTcpServer(eTcpEpoll))
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+	try
 	{
-		DISK_LOG(ERROR_DISK, "CProxyCtrl::TransferThreadLogic() InitTcp failed");
-		exit(0);
+		pInfo->m_pTransfer->TcpTick(nNow);
+	}
+	catch (const std::exception& e)
+	{
+		CACHE_LOG(ERROR_CACHE,"CProxyCtrl::TransferThreadLogic TcpTick cache execption msg {]", e.what());
 	}
     return;
 }
@@ -143,21 +159,14 @@ void CProxyCtrl::TransferThreadInit(void* args)
         return;
     }
 
-	if (!pInfo->m_pTransfer->InitTcpServer(eTcpEpoll))
+	int nRet = pInfo->m_pTransfer->InitTcpServer(eTcpEpoll);
+	if (nRet != 0)
 	{
-		DISK_LOG(ERROR_DISK, "CProxyCtrl::TransferThreadLogic() InitTcp failed");
+		DISK_LOG(ERROR_DISK, "CProxyCtrl::TransferThreadLogic() InitTcp failed,nRet = {}",nRet);
 		exit(0);
-	}
-
-	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
-	try
+	}else
 	{
-		pInfo->m_pTransfer->TcpTick(nNow);
+		DISK_LOG(DEBUG_DISK, "CProxyCtrl::TransferThreadLogic() InitTcp ok,threadindex = {}",pInfo->m_nThreadIndex);
 	}
-	catch (const std::exception& e)
-	{
-		CACHE_LOG(ERROR_CACHE,"CProxyCtrl::TransferThreadLogic TcpTick cache execption msg {]", e.what());
-	}
-
     return;
 }

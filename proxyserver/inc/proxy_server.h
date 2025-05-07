@@ -35,6 +35,8 @@ public:
 	void TransferMessage(CSafePtr<CProxyPlayer> pGamePlayer,int servertype, int serverid, shared_ptr<ProxyMessage> pMessage);
 	//
 	void CheckKickConn(time_t now);
+	//新的连接来了
+	virtual void OnAccept(CSocket newSocket);
 public:
 	//新链接回调
 	virtual void OnNewConnect(CSafePtr<CTCPConn> pConnn);

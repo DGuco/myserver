@@ -31,7 +31,11 @@ void CSocket::Close()
 {
 	if (m_nSocket != INVALID_SOCKET)
 	{
+#if defined(__WINDOWS__) || defined(_WIN32)
+		closesocket(m_nSocket);
+#else
 		close(m_nSocket);
+#endif
 		m_nSocket = INVALID_SOCKET;
 	}
 }
@@ -42,7 +46,11 @@ void CSocket::Shutdown()
 	if (m_nSocket != INVALID_SOCKET)
 	{
 		shutdown(m_nSocket, 2);
+#if defined(__WINDOWS__) || defined(_WIN32)
+		closesocket(m_nSocket);
+#else
 		close(m_nSocket);
+#endif
 		m_nSocket = INVALID_SOCKET;
 	}
 }
@@ -193,11 +201,11 @@ int CSocket::Read(char* data, int len)
 			GetRemoteAddress(tmAddr);
 			CACHE_LOG(TCP_ERROR, "recv error! from {}:{} , fd = {}, socket_error : {},errormsg :{}.", tmAddr.m_szAddr.c_str(),
 				tmAddr.m_uPort, m_nSocket, socket_error, strerror(socket_error));
-			return ERR_SOCKE_WOULD_BLOCK;
+			return ERR_SOCKE_OTHER_ERROR;
 		}
 		else
 		{
-			return ERR_SOCKE_OTHER_ERROR;
+			return ERR_SOCKE_WOULD_BLOCK;
 		}
 	}
 	return iRecvedBytes;

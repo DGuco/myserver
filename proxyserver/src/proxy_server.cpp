@@ -6,6 +6,7 @@
 #include "server_config.h"
 #include "my_assert.h"
 #include "time_helper.h"
+#include "proxy_ctrl.h"
 #include "mfactory_manager.h"
 
 CProxyServer::CProxyServer() : CTCPServer()
@@ -165,6 +166,11 @@ void CProxyServer::CheckKickConn(time_t now)
 		}
 		it++;
 	}
+}
+
+void CProxyServer::OnAccept(CSocket newSocket)
+{
+	CProxyCtrl::GetSingletonPtr()->SelectTransferThread(newSocket);
 }
 
 void CProxyServer::RemoveConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError)

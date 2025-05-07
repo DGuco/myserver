@@ -39,6 +39,8 @@ public:
 	bool PrepareToRun();
 	//run
 	int Run();
+	//选择一个线程管理transfer
+	void SelectTransferThread(CSocket socket);
 private:
 	//读取配置文件
 	bool ReadConfig();
