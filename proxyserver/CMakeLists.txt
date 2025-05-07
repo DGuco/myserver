@@ -27,13 +27,15 @@ set(SOURCE_FILES
     "inc/proxy_ctrl.h" 
     "inc/proxy_def.h"
     "inc/proxy_server.h" 
+    "inc/proxy_player.h"
+    "inc/proxy_message.h"
+    "inc/mfactory_manager.h"
+    "inc/proxy_transfer.h"
     "src/proxy_ctrl.cpp" 
     "src/proxy_server.cpp"
-    "inc/proxy_player.h"
     "src/proxy_player.cpp"
-    "inc/mfactory_manager.h" 
     "src/mfactory_manager.cpp"
-    "inc/proxy_message.h")
+    "src/proxy_transfer.cpp")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty

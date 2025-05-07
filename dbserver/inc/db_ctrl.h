@@ -50,6 +50,10 @@ public:
 	//
 	bool Run();
 	//
+	void Stop();
+	//
+	void Exit();
+	//
 	bool ReadConfig();
 	//
 	static void DBThreadInit(void* args);
@@ -60,13 +64,15 @@ public:
 	//
 	static void DBServerLogic(void* args);
 private:
-	//????
+    // 
+	bool m_bStop;
+	//
 	CSafePtr<CThreadScheduler> m_pLogicScheduler;
-	//????
+	//
 	CSafePtr<CThreadScheduler> m_pSaveHumanDbScheduler;
-	//????
+	//
 	CSafePtr<CThreadScheduler> m_pSaveGlobalDbScheduler;
-	//????
+	//
 	CSafePtr<CThreadScheduler> m_pQueryDbScheduler;
 	//db??
 	CDBThreadInfo* m_SaveHumanDbThread[MAX_SAVEHUMAN_DB_THREAD];

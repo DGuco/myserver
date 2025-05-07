@@ -1,5 +1,5 @@
 /*****************************************************************
-* FileName:gate_server.h
+* FileName:proxy_transfer.h
 * Summary :
 * Date	  :2024-2-22
 * Author  :DGuco(1139140929@qq.com)
@@ -13,16 +13,16 @@
 #include "proxy_player.h"
 #include "shm_queue.h"
 
-class CProxyServer : public CTCPServer,public CSingleton<CProxyServer>
+class CProxyTransfer : public CTCPServer
 {
 public:
 	//构造函数
-	CProxyServer();
+	CProxyTransfer();
 	//析构函数
-	virtual ~CProxyServer();
+	virtual ~CProxyTransfer();
 public:
-	//InnitTcp
-	bool InitTcp();
+	//准备run
+	bool PrepareToRun();
 	//通知gameserver client 断开连接
 	void RemoveConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError);
 	//

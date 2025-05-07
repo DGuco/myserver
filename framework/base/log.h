@@ -73,7 +73,7 @@ int CLog::DiskLog(enDiskLog log_type, const char* vFmt, const Args &... args)
 	{
 		return -1;
 	}
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) || defined(_WIN32)
 	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
 	if (consoleLog)
 	{
@@ -97,7 +97,7 @@ int CLog::CacheLog(enCacheLog log_type, const char* vFmt, const Args &... args)
 	{
 		return -1;
 	}
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) || defined(_WIN32)
 	auto consoleLog = spdlog::get(CONSOLE_LOG_NAME);
 	if (consoleLog)
 	{

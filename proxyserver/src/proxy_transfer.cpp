@@ -1,43 +1,40 @@
-//
-// Created by dguco on 18-1-30.
-//
-#include "proxy_server.h"
+#include "proxy_transfer.h"
 #include "proxy_def.h"
 #include "server_config.h"
 #include "my_assert.h"
 #include "time_helper.h"
 #include "mfactory_manager.h"
 
-CProxyServer::CProxyServer() : CTCPServer()
+CProxyTransfer::CProxyTransfer() : CTCPServer()
 {
 	m_ConnMap.clear();
 }
 
-CProxyServer::~CProxyServer()
+CProxyTransfer::~CProxyTransfer()
 {
 	m_ConnMap.clear();
 }
 
-bool CProxyServer::InitTcp()
+bool CProxyTransfer::PrepareToRun()
 {
 	CSafePtr<CServerConfig> tmpConfig = CServerConfig::GetSingletonPtr();
 	CSafePtr<ServerInfo> gateInfo = tmpConfig->GetServerInfo(enServerType::FE_PROXYSERVER);
 	int nRet = InitTcpServer(eTcpEpoll, gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
 	if (nRet == 0)
 	{
-		DISK_LOG(DEBUG_DISK, "CProxyServer InitTcp success at {} : {}", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
+		DISK_LOG(DEBUG_DISK, "Server PrepareToRun success at {} : {}", gateInfo->m_sHost.c_str(), gateInfo->m_iPort);
 		return true;
 	}
 	else
 	{
-		DISK_LOG(DEBUG_DISK,"CProxyServer InitTcp at {} : {} failed,failed reason {]", gateInfo->m_sHost.c_str(),
-			gateInfo->m_iPort, strerror(socket_error));
+		DISK_LOG(DEBUG_DISK,"Server PrepareToRun at {} : {} failed,failed reason {]", gateInfo->m_sHost.c_str(),
+			gateInfo->m_iPort, strerror(errno));
 		return false;
 	}
 	return true;
 }
 
-void CProxyServer::ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer)
+void CProxyTransfer::ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer)
 {
 	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
 	mshead_size packLen = pRecvBuff->ReadT<mshead_size>();
@@ -95,7 +92,7 @@ void CProxyServer::ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer)
 	return;
 }
 
-void CProxyServer::RegisterNewConn(CSafePtr<CProxyPlayer> pGamePlayer)
+void CProxyTransfer::RegisterNewConn(CSafePtr<CProxyPlayer> pGamePlayer)
 {
 	ASSERT(pGamePlayer != NULL);
 	ConnMap::iterator it = m_ConnMap.find(pGamePlayer->ConnKey());
@@ -110,7 +107,7 @@ void CProxyServer::RegisterNewConn(CSafePtr<CProxyPlayer> pGamePlayer)
 }
 
 //
-CSafePtr<CProxyPlayer> CProxyServer::FindProxyPlayer(int servertype, int serverid)
+CSafePtr<CProxyPlayer> CProxyTransfer::FindProxyPlayer(int servertype, int serverid)
 {
 	ConnMap::iterator it = m_ConnMap.find(CProxyPlayer::ConnKey(servertype,serverid));
 	if (it != m_ConnMap.end())
@@ -121,30 +118,30 @@ CSafePtr<CProxyPlayer> CProxyServer::FindProxyPlayer(int servertype, int serveri
 }
 
 //
-void CProxyServer::TransferMessage(CSafePtr<CProxyPlayer> pGamePlayer,int servertype, int serverid, shared_ptr<ProxyMessage> pMessage)
+void CProxyTransfer::TransferMessage(CSafePtr<CProxyPlayer> pGamePlayer,int servertype, int serverid, shared_ptr<ProxyMessage> pMessage)
 {
-	ASSERT(pGamePlayer != NULL && pMessage != NULL);
-	//转发消息
-	CSafePtr<CProxyPlayer> pDestPlayer = CProxyServer::GetSingletonPtr()->FindProxyPlayer(servertype, serverid);
-	if (pDestPlayer == NULL)
-	{
-		CACHE_LOG(TCP_ERROR, "Transform packet target not find from {}:{} to {}:{},packetid {}", 
-			pGamePlayer->GetServerType(), pGamePlayer->GetServerId(), servertype, serverid, pMessage->packetid());
-		return;
-	}
-	bool bRet = pMessage->SerializePartialToArray(m_CacheData, MAX_PACKAGE_LEN);
-	if (!bRet)
-	{
-		CACHE_LOG(TCP_ERROR, "Transform packet SerializePartialToArray failed from {}:{} to {}:{},packetid {}",
-			pGamePlayer->GetServerType(), pGamePlayer->GetServerId(), servertype, serverid, pMessage->packetid());
-		//连接踢掉
-		pGamePlayer->SetProxyState(eProKicking);
-		return;
-	}
-	pDestPlayer->Write(m_CacheData, pMessage->GetCachedSize());
+	// ASSERT(pGamePlayer != NULL && pMessage != NULL);
+	// //转发消息
+	// CSafePtr<CProxyPlayer> pDestPlayer = CProxyTransfer::GetSingletonPtr()->FindProxyPlayer(servertype, serverid);
+	// if (pDestPlayer == NULL)
+	// {
+	// 	CACHE_LOG(TCP_ERROR, "Transform packet target not find from {}:{} to {}:{},packetid {}", 
+	// 		pGamePlayer->GetServerType(), pGamePlayer->GetServerId(), servertype, serverid, pMessage->packetid());
+	// 	return;
+	// }
+	// bool bRet = pMessage->SerializePartialToArray(m_CacheData, MAX_PACKAGE_LEN);
+	// if (!bRet)
+	// {
+	// 	CACHE_LOG(TCP_ERROR, "Transform packet SerializePartialToArray failed from {}:{} to {}:{},packetid {}",
+	// 		pGamePlayer->GetServerType(), pGamePlayer->GetServerId(), servertype, serverid, pMessage->packetid());
+	// 	//连接踢掉
+	// 	pGamePlayer->SetProxyState(eProKicking);
+	// 	return;
+	// }
+	// pDestPlayer->Write(m_CacheData, pMessage->GetCachedSize());
 }
 
-void CProxyServer::CheckKickConn(time_t now)
+void CProxyTransfer::CheckKickConn(time_t now)
 {
 	ConnMap::iterator it = m_ConnMap.begin();
 	for (; it != m_ConnMap.end();)
@@ -167,7 +164,7 @@ void CProxyServer::CheckKickConn(time_t now)
 	}
 }
 
-void CProxyServer::RemoveConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
+void CProxyTransfer::RemoveConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
 	ConnMap::iterator it = m_ConnMap.find(pGamePlayer->ConnKey());
@@ -178,7 +175,7 @@ void CProxyServer::RemoveConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iErro
 	return;
 }
 
-void CProxyServer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
+void CProxyTransfer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
 {
 	CSafePtr<CProxyPlayer> pConn = pConnn.DynamicCastTo<CProxyPlayer>();
 	if (pConnn != NULL)
@@ -186,7 +183,7 @@ void CProxyServer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
 }
 
 //
-CSafePtr<CTCPConn> CProxyServer::CreateTcpConn(CSocket socket)
+CSafePtr<CTCPConn> CProxyTransfer::CreateTcpConn(CSocket socket)
 {
 	CSafePtr<CProxyPlayer> pConn = new CProxyPlayer(socket);
 	pConn->SetProxyState(eProConnected);

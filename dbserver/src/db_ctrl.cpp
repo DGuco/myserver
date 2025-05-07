@@ -10,8 +10,16 @@ CDBCtrl::CDBCtrl() :
     m_pLogicScheduler(NULL),
      m_pSaveHumanDbScheduler(NULL), 
      m_pSaveGlobalDbScheduler(NULL), 
-     m_pQueryDbScheduler(NULL)
+     m_pQueryDbScheduler(NULL),
+     m_bStop(false)
 {
+#if defined(__WINDOWS__) || defined(_WIN32)
+	WORD wVersionRequested;
+	WSADATA wsaData;
+	int err;
+	wVersionRequested = MAKEWORD(2, 2);
+	WSAStartup(wVersionRequested, &wsaData);
+#endif
     m_pLogicScheduler = new CThreadScheduler("LogicScheduler");
     m_pSaveHumanDbScheduler = new CThreadScheduler("SaveHumanDbScheduler");
     m_pSaveGlobalDbScheduler = new CThreadScheduler("SaveGlobalDbScheduler");
@@ -65,6 +73,11 @@ CDBCtrl::~CDBCtrl()
         m_QueryDbThread[i]->m_pDatabase.Free();
         delete m_QueryDbThread[i];
     }
+
+
+#if defined(__WINDOWS__) || defined(_WIN32)
+	WSACleanup();
+#endif
 }
 
 int CDBCtrl::PrepareToRun()
@@ -120,10 +133,23 @@ bool CDBCtrl::Run()
 		return false;
 	}
 
-    while (1)
+    while (!m_bStop)
     {
+        //todo Ö÷Ïß³ÌÂß¼­
         SLEEP(10);
     }
+
+    Exit();
+}
+
+void CDBCtrl::Stop()
+{
+    m_bStop = true;	
+}
+
+void CDBCtrl::Exit()
+{
+  
 }
 
 void CDBCtrl::DBThreadInit(void* args)

@@ -48,7 +48,7 @@ std::tm CTimeHelper::LocalTime( std::time_t& time_tt)
 {
 	//localtime非线程安全
 	//tm* logTime = localtime(&logtime);
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) || defined(_WIN32)
 	std::tm tm;
 	localtime_s(&tm, &time_tt);
 #else

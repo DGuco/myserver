@@ -6,7 +6,7 @@
 
 CGameCtrl::CGameCtrl()
 {
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) || defined(_WIN32)
 	WORD wVersionRequested;
 	WSADATA wsaData;
 	int err;
@@ -19,7 +19,7 @@ CGameCtrl::CGameCtrl()
 
 CGameCtrl::~CGameCtrl()
 {
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) || defined(_WIN32)
 	WSACleanup();
 #endif
 }

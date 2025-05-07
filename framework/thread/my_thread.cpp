@@ -9,7 +9,7 @@ CMyThread::CMyThread()
 	m_TID = 0;
 	m_Status = CMyThread::READY;
 	m_bStoped.store(false);
-#if defined(__WINDOWS__)
+#if defined(__WINDOWS__) || defined(_WIN32)
 	m_hThread = NULL;
 #endif
 }

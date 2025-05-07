@@ -13,7 +13,7 @@
 
 CProxyCtrl::CProxyCtrl()
 {
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) || defined(_WIN32)
 	WORD wVersionRequested;
 	WSADATA wsaData;
 	int err;
@@ -24,7 +24,7 @@ CProxyCtrl::CProxyCtrl()
 
 CProxyCtrl::~CProxyCtrl()
 {
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) || defined(_WIN32)
 	WSACleanup();
 #endif
 }
@@ -38,11 +38,6 @@ bool CProxyCtrl::PrepareToRun()
 		return false;
 	}
 
-	if (!CProxyServer::GetSingletonPtr()->PrepareToRun())
-	{
-		return false;
-	}
-
 	//消息工厂注册
 	CMessageFactoryManager::GetSingletonPtr()->Init();
 	return true;
@@ -50,6 +45,11 @@ bool CProxyCtrl::PrepareToRun()
 
 int CProxyCtrl::Run()
 {
+	if (!m_pTcpManagerScheduler->Init(1, &CProxyCtrl::ProxyServerInit,&CProxyCtrl::ProxyServerLogic,NULL,NULL))
+	{
+		return false;
+	}
+
 	long long nTick = 0;
 	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
 	while (true)
@@ -79,4 +79,37 @@ bool CProxyCtrl::ReadConfig()
 		return false;
 	}
 	return true;
+}
+
+void CProxyCtrl::ProxyServerLogic(void* args)
+{
+    time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
+	try
+	{
+		CProxyServer::GetSingletonPtr()->TcpTick(nNow);
+	}
+	catch (const std::exception& e)
+	{
+		CACHE_LOG(ERROR_CACHE, "CProxyCtrl TcpTick catch execption msg {]", e.what());
+	}
+}
+
+void CProxyCtrl::ProxyServerInit(void* args)
+{
+    if (!CProxyServer::GetSingletonPtr()->InitTcp())
+	{
+		DISK_LOG(ERROR_DISK, "CDBCtrl::GetSingletonPtr()->InitTcp failed");
+		exit(0);
+	}
+}
+
+
+void CProxyCtrl::TransferThreadLogic(void* args)
+{
+  
+}
+
+void CProxyCtrl::TransferThreadInit(void* args)
+{
+
 }

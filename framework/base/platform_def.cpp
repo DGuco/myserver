@@ -27,7 +27,7 @@
 
 TID  MyGetCurrentThreadID()
 {
-#if defined(__WINDOWS__)
+#if defined(__WINDOWS__) || defined(_WIN32)
 		return GetCurrentThreadId();
 #elif defined(__LINUX__)
 		return pthread_self();

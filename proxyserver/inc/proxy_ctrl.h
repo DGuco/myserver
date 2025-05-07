@@ -15,6 +15,17 @@
 #include "server_config.h"
 #include "thread_scheduler.h"
 
+#define MAX_TRANSFER_THREAD
+
+struct CDBThreadInfo
+{	
+	int 						m_nThreadIndex;
+	CDBThreadInfo()
+	{
+		m_nThreadIndex = -1;
+	}
+};
+
 class CProxyCtrl: public CSingleton<CProxyCtrl>
 {
 public:
@@ -29,9 +40,19 @@ public:
 private:
 	//读取配置文件
 	bool ReadConfig();
+	//
+	static void ProxyServerLogic(void* args);
+	//
+	static void ProxyServerInit(void* args);
+	//
+	static void TransferThreadLogic(void* args);
+	//
+	static void TransferThreadInit(void* args);
 private:
 	//tcp管理器
 	CSafePtr<CThreadScheduler> m_pTcpManagerScheduler;
+	//tcp管理器
+	CSafePtr<CThreadScheduler> m_pTransferScheduler;
 	//消息传输线程
 	CSafePtr<CThreadScheduler> m_pMesTransferScheduler;
 };
