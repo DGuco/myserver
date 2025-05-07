@@ -13,14 +13,16 @@
 #include "tcp_server.h"
 #include "safe_pointer.h"
 #include "server_config.h"
+#include "proxy_transfer.h"
 #include "thread_scheduler.h"
 
-#define MAX_TRANSFER_THREAD
+#define MAX_TRANSFER_THREAD 4
 
-struct CDBThreadInfo
+struct CTransferThreadInfo
 {	
 	int 						m_nThreadIndex;
-	CDBThreadInfo()
+	CSafePtr<CProxyTransfer>    m_pTransfer;
+	CTransferThreadInfo()
 	{
 		m_nThreadIndex = -1;
 	}
@@ -53,8 +55,8 @@ private:
 	CSafePtr<CThreadScheduler> m_pTcpManagerScheduler;
 	//tcp管理器
 	CSafePtr<CThreadScheduler> m_pTransferScheduler;
-	//消息传输线程
-	CSafePtr<CThreadScheduler> m_pMesTransferScheduler;
+	//
+	CTransferThreadInfo* m_TransferThread[MAX_TRANSFER_THREAD];
 };
 
 #endif

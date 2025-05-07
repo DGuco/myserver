@@ -4,8 +4,9 @@
 * Date	  :2024-2-22
 * Author  :DGuco(1139140929@qq.com)
 ******************************************************************/
-#ifndef __PROXY_SERVER_H__
-#define __PROXY_SERVER_H__
+#ifndef __PROXY_TRANSFER_H__
+#define __PROXY_TRANSFER_H__
+
 #include "safe_pointer.h"
 #include "tcp_server.h"
 #include "singleton.h"
@@ -46,5 +47,5 @@ private:
 	BYTE					m_CacheData[MAX_PACKAGE_LEN];
 };
 
-#endif //__GATE_SERVER_H__
+#endif //__PROXY_TRANSFER_H__
 

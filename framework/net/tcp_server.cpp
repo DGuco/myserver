@@ -13,6 +13,15 @@ CTCPServer::CTCPServer()
 #endif
 }
 
+CTCPServer::CTCPServer(eTcpServerModule module)
+	: m_nRunModule(module)
+{
+#ifdef __LINUX__
+	m_pEpollEventList = NULL;
+	m_nEpollFd = -1;
+#endif	
+}
+
 CTCPServer::~CTCPServer()
 {
 #ifdef __LINUX__

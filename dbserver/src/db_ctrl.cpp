@@ -135,7 +135,6 @@ bool CDBCtrl::Run()
 
     while (!m_bStop)
     {
-        //todo Ö÷Ïß³ÌÂß¼­
         SLEEP(10);
     }
 

@@ -29,6 +29,8 @@ public:
 	//
 	CTCPServer();
 	//
+	CTCPServer(eTcpServerModule module);
+	//
 	virtual ~CTCPServer();
 	//
 	int InitTcpServer(eTcpServerModule module,const char* ipAddr = "", u_short unPort = 0);

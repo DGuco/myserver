@@ -20,6 +20,14 @@ CProxyCtrl::CProxyCtrl()
 	wVersionRequested = MAKEWORD(2, 2);
 	WSAStartup(wVersionRequested, &wsaData);
 #endif
+	m_pTcpManagerScheduler = new CThreadScheduler("TcpManagerScheduler");
+	m_pTransferScheduler = new CThreadScheduler("TransferScheduler");
+	for (int i = 0; i < MAX_TRANSFER_THREAD; i++)
+	{
+		m_TransferThread[i] = new CTransferThreadInfo();
+		m_TransferThread[i]->m_nThreadIndex = i;
+        m_TransferThread[i]->m_pTransfer = new CProxyTransfer();
+	}
 }
 
 CProxyCtrl::~CProxyCtrl()
@@ -50,24 +58,19 @@ int CProxyCtrl::Run()
 		return false;
 	}
 
-	long long nTick = 0;
-	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
-	while (true)
+	if (!m_pTransferScheduler->Init(MAX_TRANSFER_THREAD, 
+		&CProxyCtrl::TransferThreadInit, 
+		&CProxyCtrl::TransferThreadLogic, 
+		(void**)&m_TransferThread,
+		(void**)&m_TransferThread))
 	{
-		try
-		{
-			CProxyServer::GetSingletonPtr()->TcpTick(nNow);
-		}
-		catch (const std::exception& e)
-		{
-			CACHE_LOG(ERROR_CACHE,"CProxyServer TcpTick  cache execption msg {]", e.what());
-		}
-
-		CProxyServer::GetSingletonPtr()->CheckKickConn(nNow);
-		nTick++;
-		CACHE_LOG(DEBUG_CACHE, "CProxyServer::Run tick {}", nTick);
-		SLEEP(1000);
+		return false;
 	}
+
+	while (true)
+    {
+        SLEEP(10);
+    }
 }
 
 bool CProxyCtrl::ReadConfig()
@@ -83,15 +86,17 @@ bool CProxyCtrl::ReadConfig()
 
 void CProxyCtrl::ProxyServerLogic(void* args)
 {
-    time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
 	try
 	{
 		CProxyServer::GetSingletonPtr()->TcpTick(nNow);
 	}
 	catch (const std::exception& e)
 	{
-		CACHE_LOG(ERROR_CACHE, "CProxyCtrl TcpTick catch execption msg {]", e.what());
+		CACHE_LOG(ERROR_CACHE,"CProxyServer TcpTick  cache execption msg {]", e.what());
 	}
+
+	CProxyServer::GetSingletonPtr()->CheckKickConn(nNow);
 }
 
 void CProxyCtrl::ProxyServerInit(void* args)
@@ -106,10 +111,53 @@ void CProxyCtrl::ProxyServerInit(void* args)
 
 void CProxyCtrl::TransferThreadLogic(void* args)
 {
-  
+	if(args == NULL)
+    {
+		return;
+    }
+
+    CTransferThreadInfo* pInfo = (CTransferThreadInfo*)args;
+    if(pInfo->m_pTransfer == NULL)
+    {
+        return;
+    }
+
+	if (!pInfo->m_pTransfer->InitTcpServer(eTcpEpoll))
+	{
+		DISK_LOG(ERROR_DISK, "CProxyCtrl::TransferThreadLogic() InitTcp failed");
+		exit(0);
+	}
+    return;
 }
 
 void CProxyCtrl::TransferThreadInit(void* args)
 {
+	if(args == NULL)
+    {
+		return;
+    }
+	
+    CTransferThreadInfo* pInfo = (CTransferThreadInfo*)args;
+    if(pInfo->m_pTransfer == NULL)
+    {
+        return;
+    }
 
+	if (!pInfo->m_pTransfer->InitTcpServer(eTcpEpoll))
+	{
+		DISK_LOG(ERROR_DISK, "CProxyCtrl::TransferThreadLogic() InitTcp failed");
+		exit(0);
+	}
+
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetANSITime();
+	try
+	{
+		pInfo->m_pTransfer->TcpTick(nNow);
+	}
+	catch (const std::exception& e)
+	{
+		CACHE_LOG(ERROR_CACHE,"CProxyCtrl::TransferThreadLogic TcpTick cache execption msg {]", e.what());
+	}
+
+    return;
 }
