@@ -232,11 +232,11 @@ void CTCPServer::OnAccept(CSocket newSocket)
 			}
 		}
 		OnNewConnect(pConn);
-		CACHE_LOG(TCP_ERROR, "Accept new socket fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
+		CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
 	}
 	else
 	{
-		CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
+		CACHE_LOG(TCP_DEBUG, "CreateTcpConn failed fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
 		tmConnSocket.Close();
 		return;
 	}

@@ -77,6 +77,7 @@
         "queue": "cpp",
         "set": "cpp",
         "unordered_set": "cpp",
-        "*.inc": "cpp"
+        "*.inc": "cpp",
+        "coroutine": "cpp"
     }
 }

@@ -82,7 +82,14 @@ private:
 	int EpollAddSocket(SOCKET socket);
 	//
 	int ClearEpoll();
+private:
+	struct epoll_event*	 m_pEpollEventList;
+	int                  m_nEpollFd;
 #endif
+private:
+	//其他监听者的socket
+	std::list<CSocket>   m_ConnectingList;
+	CMyLock			     m_ConnectingListLock;
 private:
 	CSocket			     m_ListenSocket;
 	eTcpServerModule     m_nRunModule;
@@ -92,12 +99,6 @@ private:
 	ConnMap				 m_ConnMap;
 	fd_set				 m_fdsRead;
 	fd_set				 m_fdsWrite;
-	std::list<CSocket>   m_ConnectingList;
-	CMyLock			     m_ConnectingListLock;
-#ifdef __LINUX__
-	struct epoll_event*	 m_pEpollEventList;
-	int                  m_nEpollFd;
-#endif
 };
 
 #endif //__TCP_SERVER_H__
