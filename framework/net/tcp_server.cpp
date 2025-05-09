@@ -358,16 +358,25 @@ void CTCPServer::SelectTick()
 		// 如果iListenSocketFD在fds_read中
 		if (FD_ISSET(nListenFD, &m_fdsRead))
 		{
-			//新的连接
-			CSocket newSocket = m_ListenSocket.Accept();
-			if (newSocket.IsValid())
+			do
 			{
+				CSocket newSocket = m_ListenSocket.Accept();
+				if (!newSocket.IsValid())
+				{
+					// 客户端连接上来以后又立即关闭了
+					CACHE_LOG(TCP_ERROR, "Accept  invalid socket socket_error({} : {})",socket_error, strerror(socket_error));
+					break;
+				}
+
+				if (!newSocket.SetSocketNoBlock())
+				{
+					CACHE_LOG(TCP_ERROR, "Accept error: socket set noblock failed ,fd = {},host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+					newSocket.Close();
+					break;
+				}
+
 				OnAccept(newSocket);
-			}
-			else
-			{
-				CACHE_LOG(TCP_ERROR, "Accept new socket error,listenfd = {},erromsg =  %s.", strerror(socket_error));
-			}
+			} while (0);
 		}
 	}
 
@@ -377,66 +386,18 @@ void CTCPServer::SelectTick()
 		{
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsRead))
 			{
-				//接受tcp数据
-				int nRet = it->second->Recv();
-				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
+				if(!TcpConnDoRecv(it->second))
 				{
-					it->second->DoClosingLogic(nRet);
-					it->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Conn Socket recv error ready to close,fd = {},nRet = {},host = {},port = {}", it->second->GetSocketFD(), nRet, it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
 					continue;
 				}
-				try
-				{
-					//处理数据
-					nRet = it->second->DoRecvLogic();
-					if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
-					{
-						it->second->DoClosingLogic(nRet);
-						it->second->Close(false);
-						CACHE_LOG(TCP_ERROR, "Conn Socket DoRecvLogic error,fd = {},nRet = {},host = {},port = {}", it->second->GetSocketFD(), nRet, it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
-						continue;
-					}
-				}
-				catch(const std::exception& e)
-				{
-					it->second->DoClosingLogic(socket_error);
-					it->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Conn Socket DoRecvLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),it->second->GetSocketFD(), e.what(), it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
-				}
-				continue;
 			}
 
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsWrite))
 			{
-				//把缓冲区数据发送出去
-				int nRet =  it->second->Flush();
-				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
+				if(!TcpConnDoFlush(it->second))
 				{
-					it->second->DoClosingLogic(nRet);
-					it->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Conn Socket Flush error ready to close,fd = {},nRet = {},host = {},port = {}", it->second->GetSocketFD(), nRet, it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
 					continue;
 				}
-				try
-				{
-					//发送完成后逻辑
-					nRet = it->second->DoWriteLogic();
-					if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
-					{
-						it->second->DoClosingLogic(nRet);
-						it->second->Close(false);
-						CACHE_LOG(TCP_ERROR, "Conn Socket DoWriteLogic error ready to close,fd = {},nRet = {},host = {},port = {}", it->second->GetSocketFD(), nRet, it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
-						continue;
-					}
-				}
-				catch(const std::exception& e)
-				{
-					it->second->DoClosingLogic(socket_error);
-					it->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Conn Socket DoWriteLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),it->second->GetSocketFD(), e.what(), it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
-				}
-				continue;
 			}
 		}
 	}
@@ -447,70 +408,163 @@ void CTCPServer::SelectTick()
 		{
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsRead))
 			{
-				//接受tcp数据
-				int nRet = it->second->Recv();
-				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
+				if(!TcpClientDoRecv(it->second))
 				{
-					it->second->DoClosingLogic(nRet);
-					it->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Client Socket Recv error ready to close,fd = {},nRet = {},host = {},port = {}", it->second->GetSocketFD(), nRet, it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
 					continue;
 				}
-				try
-				{
-					//处理数据
-					nRet = it->second->DoRecvLogic();
-					if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
-					{
-						it->second->DoClosingLogic(nRet);
-						it->second->Close(false);
-						CACHE_LOG(TCP_ERROR, "Client Socket DoRecvLogic error ready to close,fd = {},nRet = {},host = {},port = {}", it->second->GetSocketFD(), nRet, it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
-						continue;
-					}
-				}
-				catch(const std::exception& e)
-				{
-					it->second->DoClosingLogic(socket_error);
-					it->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Client Socket DoRecvLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),it->second->GetSocketFD(), e.what(), it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
-				}
-				continue;
 			}
 
 			if (FD_ISSET(it->second->GetSocketFD(), &m_fdsWrite))
 			{
-				//把缓冲区数据发送出去
-				int nRet = it->second->Flush();
-				if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
+				if(!TcpClientDoFlush(it->second))
 				{
-					it->second->DoClosingLogic(nRet);
-					it->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Client Socket Flush error ready to close,fd = {},nRet = {},host = {},port = {}", it->second->GetSocketFD(), nRet, it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
 					continue;
 				}
-				try
-				{
-					//发送完成后逻辑
-					nRet = it->second->DoWriteLogic();
-					if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
-					{
-						it->second->DoClosingLogic(nRet);
-						it->second->Close(false);
-						CACHE_LOG(TCP_ERROR, "Client Socket DoWriteLogic error ready to close,fd = {},nRet = {},host = {},port = {}", it->second->GetSocketFD(), nRet, it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
-						continue;
-					}
-				}
-				catch(const std::exception& e)
-				{
-					it->second->DoClosingLogic(socket_error);
-					it->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Client Socket DoWriteLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),it->second->GetSocketFD(), e.what(), it->second->GetSocket().GetHost().c_str(), it->second->GetSocket().GetPort());
-				}
-				continue;
 			}
 		}
 	}
 	return;
+}
+
+
+bool CTCPServer::TcpConnDoRecv(CSafePtr<CTCPConn> pConn)
+{
+	//接受tcp数据
+	int nRet = pConn->Recv();
+	if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
+	{
+		pConn->DoClosingLogic(nRet);
+		pConn->Close(false);
+		CACHE_LOG(TCP_ERROR, "Conn Socket recv error ready to close,fd = {},nRet = {},host = {},port = {}", pConn->GetSocketFD(), nRet, pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
+		return false;
+	}
+
+	try
+	{
+		//处理数据
+		nRet = pConn->DoRecvLogic();
+	}
+	catch(const std::exception& e)
+	{
+		pConn->DoClosingLogic(socket_error);
+		pConn->Close(false);
+		CACHE_LOG(TCP_ERROR, "Conn Socket DoRecvLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),pConn->GetSocketFD(), e.what(), pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
+		return false;
+	}
+
+	if (nRet != ERR_SOCKE_OK)
+	{
+		pConn->DoClosingLogic(nRet);
+		pConn->Close(false);
+		CACHE_LOG(TCP_ERROR, "Conn Socket DoRecvLogic error,fd = {},nRet = {},host = {},port = {}", pConn->GetSocketFD(), nRet, pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
+		return false;;
+	}
+	return true;
+}
+
+bool CTCPServer::TcpConnDoFlush(CSafePtr<CTCPConn> pConn)
+{
+	//把缓冲区数据发送出去
+	int nRet =  pConn->Flush();
+	if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
+	{
+		pConn->DoClosingLogic(nRet);
+		pConn->Close(false);
+		CACHE_LOG(TCP_ERROR, "Conn Socket Flush error ready to close,fd = {},nRet = {},host = {},port = {}", pConn->GetSocketFD(), nRet, pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
+		return false;
+	}
+
+	try
+	{
+		//发送完成后逻辑
+		nRet = pConn->DoWriteLogic();
+	}
+	catch(const std::exception& e)
+	{
+		pConn->DoClosingLogic(socket_error);
+		pConn->Close(false);
+		CACHE_LOG(TCP_ERROR, "Conn Socket DoWriteLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),pConn->GetSocketFD(), e.what(), pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
+		return false;
+	}
+
+	if (nRet != ERR_SOCKE_OK)
+	{
+		pConn->DoClosingLogic(nRet);
+		pConn->Close(false);
+		CACHE_LOG(TCP_ERROR, "Conn Socket DoWriteLogic error ready to close,fd = {},nRet = {},host = {},port = {}", pConn->GetSocketFD(), nRet, pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
+		return false;
+	}
+	return true;
+}
+
+bool CTCPServer::TcpClientDoRecv(CSafePtr<CTCPClient> pClient)
+{
+	//接受tcp数据
+	int nRet = pClient->Recv();
+	if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
+	{
+		pClient->DoClosingLogic(nRet);
+		pClient->Close(false);
+		CACHE_LOG(TCP_ERROR, "Client Socket recv error ready to close,fd = {},nRet = {},host = {},port = {}", pClient->GetSocketFD(), nRet, pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
+		return false;
+	}
+
+	try
+	{
+		//处理数据
+		nRet = pClient->DoRecvLogic();
+	}
+	catch(const std::exception& e)
+	{
+		pClient->DoClosingLogic(socket_error);
+		pClient->Close(false);
+		CACHE_LOG(TCP_ERROR, "Client Socket DoRecvLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),pClient->GetSocketFD(), e.what(), pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
+		return false;
+	}
+
+	if (nRet != ERR_SOCKE_OK)
+	{
+		pClient->DoClosingLogic(nRet);
+		pClient->Close(false);
+		CACHE_LOG(TCP_ERROR, "Client Socket DoRecvLogic error,fd = {},nRet = {},host = {},port = {}", pClient->GetSocketFD(), nRet, pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
+		return false;;
+	}
+	return true;
+}
+
+bool CTCPServer::TcpClientDoFlush(CSafePtr<CTCPClient> pClient)
+{
+	//把缓冲区数据发送出去
+	int nRet =  pClient->Flush();
+	if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
+	{
+		pClient->DoClosingLogic(nRet);
+		pClient->Close(false);
+		CACHE_LOG(TCP_ERROR, "Client Socket Flush error ready to close,fd = {},nRet = {},host = {},port = {}", pClient->GetSocketFD(), nRet, pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
+		return false;
+	}
+
+	try
+	{
+		//发送完成后逻辑
+		nRet = pClient->DoWriteLogic();
+	}
+	catch(const std::exception& e)
+	{
+		pClient->DoClosingLogic(socket_error);
+		pClient->Close(false);
+		CACHE_LOG(TCP_ERROR, "Client Socket DoWriteLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),pClient->GetSocketFD(), e.what(), pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
+		return false;
+	}
+
+	if (nRet != ERR_SOCKE_OK)
+	{
+		pClient->DoClosingLogic(nRet);
+		pClient->Close(false);
+		CACHE_LOG(TCP_ERROR, "Client Socket DoWriteLogic error ready to close,fd = {},nRet = {},host = {},port = {}", pClient->GetSocketFD(), nRet, pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
+		return false;
+	}
+	return true;
 }
 
 void CTCPServer::FreeClosingSocket()
@@ -521,6 +575,12 @@ void CTCPServer::FreeClosingSocket()
 		if (it->second->GetStatus() == eSocketClosing)
 		{
 			CACHE_LOG(TCP_DEBUG, "FreeClosingSocket tcpconn socket fd = {} ,host = {},port = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort());
+#ifdef __LINUX__
+			if (m_nRunModule == eTcpEpoll)
+			{
+				EpollDelSocket(tmSocket.GetSocket());
+			}
+#endif		
 			it->second->Close();
 			//回收内存
 			it->second.Free();
@@ -538,6 +598,12 @@ void CTCPServer::FreeClosingSocket()
 		if (it->second->GetStatus() == eSocketClosing)
 		{
 			CACHE_LOG(TCP_DEBUG, "FreeClosingSocket tcp client socket fd = {} ,host = {},port = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort());
+#ifdef __LINUX__
+			if (m_nRunModule == eTcpEpoll)
+			{
+				EpollDelSocket(tmSocket.GetSocket());
+			}
+#endif
 			it->second->Close();
 			it->second.Free();
 			it = m_ClientMap.erase(it);
@@ -662,44 +728,30 @@ int CTCPServer::EpollTick()
 		SOCKET nTmFd = cevents->data.fd;
 		if (0 >= nTmFd)
 		{
-			CACHE_LOG(TCP_ERROR, "Error cevents->data.fd = {}!", cevents->data.fd);
+			CACHE_LOG(TCP_ERROR, "epoll_wait Error cevents->data.fd = {}!", cevents->data.fd);
 			continue;
 		}
 
 		if (0 != (EPOLLERR & cevents->events))
 		{
-			CACHE_LOG(TCP_ERROR, "cevents->events generate error event!");
+			CACHE_LOG(TCP_ERROR, "epoll_wait Error cevents->events generate error event {}",EPOLLERR & cevents->events);
 			continue;
 		}
 		
-// 		if (0 == (EPOLLIN & cevents->events))
-// 		{
-// 			LOG_ERROR("default", "cevents->events is not input event!");
-// 			continue;
-// 		}
-
 		//监听描述符
-		if (m_ListenSocket.IsValid() && nTmFd == m_ListenSocket.GetSocket())
+		if (nTmFd == m_ListenSocket.GetSocket())
 		{
 			CSocket tmConnSocket = m_ListenSocket.Accept();
 			if (!tmConnSocket.IsValid())
 			{
 				// 客户端连接上来以后又立即关闭了
-				CACHE_LOG(TCP_ERROR, "client connected port {} and disconnected! socket_error({} : {})",
-					tmConnSocket.GetHost().c_str(), socket_error, strerror(socket_error));
+				CACHE_LOG(TCP_ERROR, "Accept  invalid socket socket_error({} : {})",socket_error, strerror(socket_error));
 				continue;
 			}
 
-// 			SOCKET iNewSocket = tmConnSocket.GetSocket();
-// 			if (MAX_SOCKET_NUM <= iNewSocket)
-// 			{
-// 				CACHE_LOG(TCP_ERROR, "error: socket id is so big {}", iNewSocket);
-//			tmConnSocket.Close();
-// 				continue;
-// 			}
 			if (!tmConnSocket.SetSocketNoBlock())
 			{
-				CACHE_LOG(TCP_ERROR, "error: socket set noblock failed ,fd = {}", iNewSocket);
+				CACHE_LOG(TCP_ERROR, "Accept error: socket set noblock failed ,fd = {},host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
 				tmConnSocket.Close();
 				continue;
 			}
@@ -711,51 +763,13 @@ int CTCPServer::EpollTick()
 			ClientMap::iterator itcleint = m_ClientMap.find(nTmFd);
 			if (itcleint != m_ClientMap.end())
 			{
-				//接受tcp数据
-				int retCode = it->second->RecvData();
-				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
-				{
-					itcleint->second->DoClosingLogic(retCode);
-					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), retCode);
-					continue;
-				}
-				//处理数据
-				retCode = it->second->DoRecvLogic();
-				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
-				{
-					itcleint->second->DoClosingLogic(retCode);
-					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), retCode);
-					continue;
-				}
+				TcpClientDoRecv(itcleint->second);
 				continue;
 			}
 			ConnMap::iterator itconn = m_ConnMap.find(nTmFd);
-			if (itcleint != m_ConnMap.end())
+			if (itconn != m_ConnMap.end())
 			{
-				//接受tcp数据
-				int retCode = it->second->RecvData();
-				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
-				{
-					itcleint->second->DoClosingLogic(retCode);
-					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), retCode);
-					continue;
-				}
-				//处理数据
-				retCode = itcleint->second->DoRecvLogic();
-				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
-				{
-					itcleint->second->DoClosingLogic(retCode);
-					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), retCode);
-					continue;
-				}
+				TcpConnDoRecv(itconn->second);
 				continue;
 			}
 		}
@@ -765,51 +779,13 @@ int CTCPServer::EpollTick()
 			ClientMap::iterator itcleint = m_ClientMap.find(nTmFd);
 			if (itcleint != m_ClientMap.end())
 			{
-				//把缓冲区数据发送出去
-				int retCode = itcleint->second->Flush();
-				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
-				{
-					itcleint->second->DoClosingLogic(retCode);
-					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
-					continue;
-				}
-				//发送完成后逻辑
-				retCode = itcleint->second->DoWriteLogic();
-				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
-				{
-					itcleint->second->DoClosingLogic(retCode);
-					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
-					continue;
-				}
+				TcpClientDoFlush(itcleint->second);
 				continue;
 			}
 			ConnMap::iterator itconn = m_ConnMap.find(nTmFd);
-			if (itcleint != m_ConnMap.end())
+			if (itconn != m_ConnMap.end())
 			{
-				//把缓冲区数据发送出去
-				int retCode = itcleint->second->Flush();
-				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
-				{
-					itcleint->second->DoClosingLogic(retCode);
-					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
-					continue;
-				}
-				//发送完成后逻辑
-				retCode = itcleint->second->DoWriteLogic();
-				if (retCode != ERR_SOCKE_OK && retCode != ERR_SOCKE_WOULD_BLOCK)
-				{
-					itcleint->second->DoClosingLogic(retCode);
-					EpollDelSocket(itcleint->second->GetSocketFD());
-					itcleint->second->Close(false);
-					CACHE_LOG(TCP_ERROR, "Socket error ready to close,fd = {},nRet =  %d.", it->second->GetSocketFD(), nRet);
-					continue;
-				}
+				TcpConnDoFlush(itconn->second);
 				continue;
 			}
 		}

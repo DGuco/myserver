@@ -71,6 +71,14 @@ private:
 	void FreeClosingSocket();
 	//
 	bool BeginListen(std::string addrress, int port);
+	//
+	bool TcpConnDoRecv(CSafePtr<CTCPConn> pConn);
+	//
+	bool TcpConnDoFlush(CSafePtr<CTCPConn> pConn);
+	//
+	bool TcpClientDoRecv(CSafePtr<CTCPClient> pClient);
+	//
+	bool TcpClientDoFlush(CSafePtr<CTCPClient> pClient);
 #ifdef __LINUX__
 	//
 	int InitEpoll(const char* ip = NULL, int port = -1);
