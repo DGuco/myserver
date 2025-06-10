@@ -11,6 +11,13 @@
 #include <tuple>
 #include "thread_task.h"
 
+struct Student
+{
+	int age;
+	std::string name;
+	int sex;
+};
+
 using namespace std;
 int main(int argc, char **argv)
 {

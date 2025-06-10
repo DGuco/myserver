@@ -7,7 +7,7 @@ CThreadTask::CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signa
 	m_childTaskVec(5)
 {
 	SetState(enTaskState::eTaskInit);
-	SetCombineType(enCombineType::eCombineNone);
+	SetCombineType(enCombineType::eCombineInit);
 	m_combineCount = 0;
 	m_combineDone = 0;
 	m_pCombineTask = NULL;
@@ -170,7 +170,7 @@ void CThreadTask::RunChildTask()
 void CThreadTask::SetCombineTask(TaskPtr ptr,enCombineType combineType)
 {
 	enCombineType bType = GetCombineType();
-	if (bType != enCombineType::eCombineNone)
+	if (bType != enCombineType::eCombineInit)
 	{
 		ASSERT_EX(false, "This task {%s} has been combined", m_TaskSignature.c_str());
 	}

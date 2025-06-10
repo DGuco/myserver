@@ -31,7 +31,7 @@ enum class enTaskState : unsigned char
 
 enum class enCombineType : unsigned char
 {
-	eCombineNone = 0,
+	eCombineInit = 0,
 	eCombineApply = 1,
 	eCombineAccept = 2,
 	eCombineDone = 3,
