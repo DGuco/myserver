@@ -11,7 +11,7 @@
 #include "tcp_server.h"
 #include "singleton.h"
 #include "message.pb.h"
-#include "proxy_player.h"
+#include "proxy_conn.h"
 #include "shm_queue.h"
 
 class CProxyTransfer : public CTCPServer
@@ -25,15 +25,15 @@ public:
 	//准备run
 	bool PrepareToRun();
 	//通知gameserver client 断开连接
-	void RemoveConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError);
+	void RemoveConnect(CSafePtr<CProxyConn> pGamePlayer, short iError);
 	//
-	void ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer);
+	void ProcessServerMessage(CSafePtr<CProxyConn> pGamePlayer);
 	//
-	void RegisterNewConn(CSafePtr<CProxyPlayer> pGamePlayer);
+	void RegisterNewConn(CSafePtr<CProxyConn> pGamePlayer);
 	//
-	CSafePtr<CProxyPlayer> FindProxyPlayer(int servertype, int serverid);
+	CSafePtr<CProxyConn> FindProxyPlayer(int servertype, int serverid);
 	//
-	void TransferMessage(CSafePtr<CProxyPlayer> pGamePlayer,int servertype, int serverid, shared_ptr<ProxyMessage> pMessage);
+	void TransferMessage(CSafePtr<CProxyConn> pGamePlayer,int servertype, int serverid, shared_ptr<ProxyMessage> pMessage);
 	//
 	void CheckKickConn(time_t now);
 public:
@@ -42,7 +42,7 @@ public:
 	//
 	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket socket);
 private:
-	typedef std::unordered_map<int, CSafePtr<CProxyPlayer>> ConnMap;
+	typedef std::unordered_map<int, CSafePtr<CProxyConn>> ConnMap;
 	ConnMap					m_ConnMap;
 	BYTE					m_CacheData[MAX_PACKAGE_LEN];
 };

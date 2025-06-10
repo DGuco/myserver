@@ -6,8 +6,8 @@
 #include "server_config.h"
 #include "my_assert.h"
 #include "time_helper.h"
-#include "proxy_ctrl.h"
 #include "mfactory_manager.h"
+#include "proxy_ctrl.h"
 
 CProxyServer::CProxyServer() : CTCPServer()
 {
@@ -38,7 +38,7 @@ bool CProxyServer::InitTcp()
 	return true;
 }
 
-void CProxyServer::ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer)
+void CProxyServer::ProcessServerMessage(CSafePtr<CProxyConn> pGamePlayer)
 {
 	CSafePtr<CByteBuff> pRecvBuff = pGamePlayer->GetReadBuff();
 	mshead_size packLen = pRecvBuff->ReadT<mshead_size>();
@@ -96,7 +96,7 @@ void CProxyServer::ProcessServerMessage(CSafePtr<CProxyPlayer> pGamePlayer)
 	return;
 }
 
-void CProxyServer::RegisterNewConn(CSafePtr<CProxyPlayer> pGamePlayer)
+void CProxyServer::RegisterNewConn(CSafePtr<CProxyConn> pGamePlayer)
 {
 	ASSERT(pGamePlayer != NULL);
 	ConnMap::iterator it = m_ConnMap.find(pGamePlayer->ConnKey());
@@ -111,9 +111,9 @@ void CProxyServer::RegisterNewConn(CSafePtr<CProxyPlayer> pGamePlayer)
 }
 
 //
-CSafePtr<CProxyPlayer> CProxyServer::FindProxyPlayer(int servertype, int serverid)
+CSafePtr<CProxyConn> CProxyServer::FindProxyPlayer(int servertype, int serverid)
 {
-	ConnMap::iterator it = m_ConnMap.find(CProxyPlayer::ConnKey(servertype,serverid));
+	ConnMap::iterator it = m_ConnMap.find(CProxyConn::ConnKey(servertype,serverid));
 	if (it != m_ConnMap.end())
 	{
 		return it->second;
@@ -122,11 +122,11 @@ CSafePtr<CProxyPlayer> CProxyServer::FindProxyPlayer(int servertype, int serveri
 }
 
 //
-void CProxyServer::TransferMessage(CSafePtr<CProxyPlayer> pGamePlayer,int servertype, int serverid, shared_ptr<ProxyMessage> pMessage)
+void CProxyServer::TransferMessage(CSafePtr<CProxyConn> pGamePlayer,int servertype, int serverid, shared_ptr<ProxyMessage> pMessage)
 {
 	ASSERT(pGamePlayer != NULL && pMessage != NULL);
 	//转发消息
-	CSafePtr<CProxyPlayer> pDestPlayer = CProxyServer::GetSingletonPtr()->FindProxyPlayer(servertype, serverid);
+	CSafePtr<CProxyConn> pDestPlayer = CProxyServer::GetSingletonPtr()->FindProxyPlayer(servertype, serverid);
 	if (pDestPlayer == NULL)
 	{
 		CACHE_LOG(TCP_ERROR, "Transform packet target not find from {}:{} to {}:{},packetid {}", 
@@ -157,7 +157,7 @@ void CProxyServer::CheckKickConn(time_t now)
 			it = m_ConnMap.erase(it);
 			continue;
 		}
-		if (now - it->second->GetLastRecvKeepAlive() > TCP_CONN_TIME_OUT)
+		if (now - it->second->GetLastRecvHeartbeatTime() > TCP_CONN_TIME_OUT)
 		{
 			CACHE_LOG(TCP_DEBUG, "Kick tcp timeount conn {}:{} to {}:{}", it->second->GetServerType(), it->second->GetServerId());
 			it->second->Close(false);
@@ -173,7 +173,7 @@ void CProxyServer::OnAccept(CSocket newSocket)
 	CProxyCtrl::GetSingletonPtr()->SelectTransferThread(newSocket);
 }
 
-void CProxyServer::RemoveConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iError)
+void CProxyServer::RemoveConnect(CSafePtr<CProxyConn> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);
 	ConnMap::iterator it = m_ConnMap.find(pGamePlayer->ConnKey());
@@ -186,7 +186,7 @@ void CProxyServer::RemoveConnect(CSafePtr<CProxyPlayer> pGamePlayer, short iErro
 
 void CProxyServer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
 {
-	CSafePtr<CProxyPlayer> pConn = pConnn.DynamicCastTo<CProxyPlayer>();
+	CSafePtr<CProxyConn> pConn = pConnn.DynamicCastTo<CProxyConn>();
 	if (pConnn != NULL)
 	{}
 }
@@ -194,7 +194,7 @@ void CProxyServer::OnNewConnect(CSafePtr<CTCPConn> pConnn)
 //
 CSafePtr<CTCPConn> CProxyServer::CreateTcpConn(CSocket socket)
 {
-	CSafePtr<CProxyPlayer> pConn = new CProxyPlayer(socket);
+	CSafePtr<CProxyConn> pConn = new CProxyConn(socket);
 	pConn->SetProxyState(eProConnected);
 	return pConn.DynamicCastTo<CTCPConn>();
 }

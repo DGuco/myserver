@@ -24,10 +24,6 @@ public:
 	virtual int		DoWriteLogic();
 	virtual int		DoClosingLogic(int errcode);
 	virtual void	DoTick(time_t nNow);
-private:
-	CMyTimer m_SendKeepAliveTimer;	//发送心跳包定时器
-	time_t	 m_nLastSendKeepLive; //
-	time_t	 m_nLastRecvKeepLiveAnswer; //
 };
 
 #endif //__SERVER_CLIENT_H__

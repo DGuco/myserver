@@ -14,7 +14,7 @@
 #define		KEEP_ALIVE_TIME				(1 * 60 * 1000)   //发送
 #define		KICK_TIME_OUT_TIME			(4 * 60 * 1000)   //
 #define		CHECK_TIME_OUT_TIME			(2 * 60 * 1000)   //
-#define		TCP_CONN_TIME_OUT			(2 * 60)  //TCP超时时间2分钟
+#define		TCP_CONN_TIME_OUT			(2 * 60 * 1000)  //TCP超时时间2分钟
 #define		TCP_CHECK_BUFF_RESIZE		(5 * 60)  //缓冲区回收时间5分钟
 #define     GAMEPLAYER_RECV_BUFF_LEN    (1024 * 1024 * 1)  //1mb
 #define     GAMEPLAYER_SEND_BUFF_LEN    (1024 * 1024 * 1)  //1mb

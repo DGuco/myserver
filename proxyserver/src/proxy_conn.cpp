@@ -1,8 +1,8 @@
-#include "proxy_player.h"
+#include "proxy_conn.h"
 #include "singleton.h"
 #include "proxy_server.h"
 
-CProxyPlayer::CProxyPlayer(CSocket socket)
+CProxyConn::CProxyConn(CSocket socket)
 	:CTCPConn(socket,
 				PROXY_SERVER_RECV_BUFF,
 				PROXY_SERVER_SEND_BUFF,
@@ -14,12 +14,12 @@ CProxyPlayer::CProxyPlayer(CSocket socket)
 	m_nServerId   = 0;
 }
 
-CProxyPlayer::~CProxyPlayer()
+CProxyConn::~CProxyConn()
 {
 
 }
 
-int CProxyPlayer::DoRecvLogic()
+int CProxyConn::DoRecvLogic()
 {
 	int tmCurPacketLen = m_pReadBuff->CanReadLen();
 	//包头前两个字节为数据总长度，如果数据长度小于两个字节返回0
@@ -39,68 +39,58 @@ int CProxyPlayer::DoRecvLogic()
 	return 0;
 }
 
-int CProxyPlayer::DoWriteLogic()
+int CProxyConn::DoWriteLogic()
 {
 	return ERR_SOCKE_OK;
 }
 
-int CProxyPlayer::DoClosingLogic(int errcode)
+int CProxyConn::DoClosingLogic(int errcode)
 {
 	CProxyServer::GetSingletonPtr()->RemoveConnect(this, errcode);
 	return 0;
 }
 
-void CProxyPlayer::DoTick(time_t now)
+void CProxyConn::DoTick(time_t now)
 {
 
 }
 
-void CProxyPlayer::SetProxyState(short state)
+void CProxyConn::SetProxyState(short state)
 {
 	m_nProxyState = state;
 }
 
-void CProxyPlayer::SetServerId(int serverid)
+void CProxyConn::SetServerId(int serverid)
 {
 	m_nServerId = serverid;
 }
 
-void CProxyPlayer::SetServerType(enServerType servertype)
+void CProxyConn::SetServerType(enServerType servertype)
 {
 	m_nServerType = servertype;
 }
 
-short CProxyPlayer::GetProxyState()
+short CProxyConn::GetProxyState()
 {
 	return m_nProxyState;
 }
 
-int CProxyPlayer::GetServerId()
+int CProxyConn::GetServerId()
 {
 	return m_nServerId;
 }
 
-enServerType CProxyPlayer::GetServerType()
+enServerType CProxyConn::GetServerType()
 {
 	return m_nServerType;
 }
 
-time_t CProxyPlayer::GetLastRecvKeepAlive()
-{
-	return m_nLastRecvKeepAlive;
-}
-
-void CProxyPlayer::SetLastRecvKeepAlive(time_t value)
-{
-	m_nLastRecvKeepAlive = value;
-}
-
-int CProxyPlayer::ConnKey()
+int CProxyConn::ConnKey()
 {
 	return (m_nServerId << 8) + m_nServerType;
 }
 
-int CProxyPlayer::ConnKey(int servertype, int serverid)
+int CProxyConn::ConnKey(int servertype, int serverid)
 {
 	return (serverid << 8) + servertype;
 }

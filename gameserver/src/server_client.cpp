@@ -46,23 +46,3 @@ void CServerClient::DoTick(time_t nNow)
 {
 	return;
 }
-
-void CServerClient::SetLastRecvKeepLive(time_t nKeepAliveTime)
-{
-	m_nLastRecvKeepLiveAnswer = nKeepAliveTime;
-}
-
-time_t CServerClient::GetLastRecvKeepLive()
-{
-	return m_nLastRecvKeepLiveAnswer;
-}
-
-void CServerClient::SetLastSendKeepLive(time_t nKeepAliveTime)
-{
-	m_nLastSendKeepLive = nKeepAliveTime;
-}
-
-time_t CServerClient::GetLastSendKeepLive()
-{
-	return m_nLastSendKeepLive;
-}

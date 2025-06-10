@@ -27,13 +27,13 @@ set(SOURCE_FILES
     "inc/proxy_ctrl.h" 
     "inc/proxy_def.h"
     "inc/proxy_server.h" 
-    "inc/proxy_player.h"
+    "inc/proxy_conn.h"
     "inc/proxy_message.h"
     "inc/mfactory_manager.h"
     "inc/proxy_transfer.h"
     "src/proxy_ctrl.cpp" 
     "src/proxy_server.cpp"
-    "src/proxy_player.cpp"
+    "src/proxy_conn.cpp"
     "src/mfactory_manager.cpp"
     "src/proxy_transfer.cpp")
 

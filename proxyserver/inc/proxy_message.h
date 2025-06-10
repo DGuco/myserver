@@ -9,7 +9,7 @@
 
 #include "safe_pointer.h"
 #include "message.pb.h"
-#include "proxy_player.h"
+#include "proxy_conn.h"
 #include "message_factory.h"
 #include "time_helper.h"
 #include "proxy_server.h"
@@ -40,7 +40,7 @@ int	CProxyMessageFactory::MessId()
 
 int CProxyMessageFactory::Execute(CSafePtr<CTCPSocket> pSocket)
 {
-	CSafePtr<CProxyPlayer> pProxyPlayer = pSocket.DynamicCastTo<CProxyPlayer>();
+	CSafePtr<CProxyConn> pProxyPlayer = pSocket.DynamicCastTo<CProxyConn>();
 	ASSERT(pProxyPlayer != NULL && m_pMessage != NULL);
 	int nFromT = m_pMessage->srcfe();
 	int nFromId = m_pMessage->srcid();
@@ -73,7 +73,7 @@ int CProxyMessageFactory::Execute(CSafePtr<CTCPSocket> pSocket)
 		return 0;
 	}
 
-	pProxyPlayer->SetLastRecvKeepAlive(CTimeHelper::GetSingletonPtr()->GetANSITime());
+	pProxyPlayer->SetLastRecvHeartbeatTime(CTimeHelper::GetSingletonPtr()->GetANSITime());
 	//ÐÄÌø
 	if (nCmdId == enMessageCmd::MESS_KEEPALIVE)
 	{
