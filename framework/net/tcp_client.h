@@ -15,7 +15,7 @@ class CTCPClient : public CTCPSocket
 {	
 public:
 	//
-	CTCPClient(int RecvBufLen_,int SendBufLen_, int MaxRecvBufLen_, int MaxSendBufLen_);
+	CTCPClient(int RecvBufLen_,int SendBufLen_, int MaxRecvBufLen_, int MaxSendBufLen_,int sendHeartbeatCD_ = KEEP_ALIVE_TIME);
 	//
 	virtual ~CTCPClient();
 public:
@@ -27,5 +27,10 @@ public:
 	uint64			MapKey();
 	static uint64   MapKey(int socket, int clientKey);
 public:
+	time_t  	 	GetLastSendHeartbeatTime() { return m_nLastSendHeartbeatTime; }
+	void  			SetLastSendHeartbeatTime(time_t time) { m_nLastSendHeartbeatTime = time; }
+private:
+	int 			m_nSendHeartbeatCD;
+	time_t 			m_nLastSendHeartbeatTime;
 };
 #endif //__TCP_CLIENT_H__

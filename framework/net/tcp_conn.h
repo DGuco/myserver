@@ -26,9 +26,11 @@ public:
 	virtual int		DoWriteLogic() = 0;
 	virtual int		DoClosingLogic(int errcode) = 0;
 	virtual void	DoTick(time_t now) = 0;
-	int   GetLastRecvHeartbeatTime() { return m_nLastRecvHeartbeatTime; }
-	void  SetLastRecvHeartbeatTime(int time) { m_nLastRecvHeartbeatTime = time; }
+public:
+	//int 	 SendHeartbeatCallBack();
+	time_t   GetLastRecvHeartbeatTime() { return m_nLastRecvHeartbeatTime; }
+	void  	 SetLastRecvHeartbeatTime(time_t time) { m_nLastRecvHeartbeatTime = time; }
 private:
-    int m_nLastRecvHeartbeatTime;
+    time_t m_nLastRecvHeartbeatTime;
 };
 #endif //__TCP_CONN_H__

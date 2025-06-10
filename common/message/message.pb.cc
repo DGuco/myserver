@@ -55,8 +55,21 @@ struct CGonnReqDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CGonnReqDefaultTypeInternal _CGonnReq_default_instance_;
-static ::_pb::Metadata file_level_metadata_message_2eproto[2];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_message_2eproto[4];
+PROTOBUF_CONSTEXPR HeartBeatMsg::HeartBeatMsg(
+    ::_pbi::ConstantInitialized)
+  : beattype_(0)
+{}
+struct HeartBeatMsgDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR HeartBeatMsgDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~HeartBeatMsgDefaultTypeInternal() {}
+  union {
+    HeartBeatMsg _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 HeartBeatMsgDefaultTypeInternal _HeartBeatMsg_default_instance_;
+static ::_pb::Metadata file_level_metadata_message_2eproto[3];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_message_2eproto[6];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_message_2eproto = nullptr;
 
 const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -96,15 +109,25 @@ const uint32_t TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   1,
   3,
   2,
+  PROTOBUF_FIELD_OFFSET(::HeartBeatMsg, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::HeartBeatMsg, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::HeartBeatMsg, beattype_),
+  0,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 14, -1, sizeof(::ProxyMessage)},
   { 22, 32, -1, sizeof(::CGonnReq)},
+  { 36, 43, -1, sizeof(::HeartBeatMsg)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
   &::_ProxyMessage_default_instance_._instance,
   &::_CGonnReq_default_instance_._instance,
+  &::_HeartBeatMsg_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -115,17 +138,21 @@ const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "\004buff\030\010 \001(\014\"\021\n\003Msg\022\n\n\005MsgID\020\220N\"`\n\010CGonnR"
   "eq\022\017\n\007Account\030\001 \002(\t\022\020\n\010Password\030\002 \001(\t\022\r\n"
   "\005PFrom\030\003 \001(\005\022\017\n\007Session\030\004 \002(\t\"\021\n\003Msg\022\n\n\005"
-  "MsgID\020\221N*h\n\014enServerType\022\016\n\nFE_INVALID\020\000"
-  "\022\021\n\rFE_GAMESERVER\020\001\022\017\n\013FE_DBSERVER\020\002\022\022\n\016"
-  "FE_PROXYSERVER\020\003\022\020\n\014FE_WEBSERVER\020\004*E\n\014en"
-  "MessageCmd\022\016\n\nMESS_LOGIC\020\000\022\021\n\rMESS_REGIS"
-  "TER\020\001\022\022\n\016MESS_KEEPALIVE\020\002B\002H\001"
+  "MsgID\020\221N\"E\n\014HeartBeatMsg\022\"\n\010beatType\030\001 \002"
+  "(\0162\020.enHeartBeatType\"\021\n\003Msg\022\n\n\005MsgID\020\222N*"
+  "h\n\014enServerType\022\016\n\nFE_INVALID\020\000\022\021\n\rFE_GA"
+  "MESERVER\020\001\022\017\n\013FE_DBSERVER\020\002\022\022\n\016FE_PROXYS"
+  "ERVER\020\003\022\020\n\014FE_WEBSERVER\020\004*E\n\014enMessageCm"
+  "d\022\016\n\nMESS_LOGIC\020\000\022\021\n\rMESS_REGISTER\020\001\022\022\n\016"
+  "MESS_KEEPALIVE\020\002*B\n\017enHeartBeatType\022\022\n\016M"
+  "ESS_HEARTBEAT\020\000\022\033\n\027MESS_HEARTBEAT_CALLBA"
+  "CK\020\001B\002H\001"
   ;
 static ::_pbi::once_flag descriptor_table_message_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_message_2eproto = {
-    false, false, 469, descriptor_table_protodef_message_2eproto,
+    false, false, 608, descriptor_table_protodef_message_2eproto,
     "message.proto",
-    &descriptor_table_message_2eproto_once, nullptr, 0, 2,
+    &descriptor_table_message_2eproto_once, nullptr, 0, 3,
     schemas, file_default_instances, TableStruct_message_2eproto::offsets,
     file_level_metadata_message_2eproto, file_level_enum_descriptors_message_2eproto,
     file_level_service_descriptors_message_2eproto,
@@ -174,9 +201,28 @@ constexpr CGonnReq_Msg CGonnReq::Msg_MIN;
 constexpr CGonnReq_Msg CGonnReq::Msg_MAX;
 constexpr int CGonnReq::Msg_ARRAYSIZE;
 #endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* enServerType_descriptor() {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* HeartBeatMsg_Msg_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_message_2eproto);
   return file_level_enum_descriptors_message_2eproto[2];
+}
+bool HeartBeatMsg_Msg_IsValid(int value) {
+  switch (value) {
+    case 10002:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
+constexpr HeartBeatMsg_Msg HeartBeatMsg::MsgID;
+constexpr HeartBeatMsg_Msg HeartBeatMsg::Msg_MIN;
+constexpr HeartBeatMsg_Msg HeartBeatMsg::Msg_MAX;
+constexpr int HeartBeatMsg::Msg_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* enServerType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_message_2eproto);
+  return file_level_enum_descriptors_message_2eproto[3];
 }
 bool enServerType_IsValid(int value) {
   switch (value) {
@@ -193,13 +239,27 @@ bool enServerType_IsValid(int value) {
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* enMessageCmd_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_message_2eproto);
-  return file_level_enum_descriptors_message_2eproto[3];
+  return file_level_enum_descriptors_message_2eproto[4];
 }
 bool enMessageCmd_IsValid(int value) {
   switch (value) {
     case 0:
     case 1:
     case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* enHeartBeatType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_message_2eproto);
+  return file_level_enum_descriptors_message_2eproto[5];
+}
+bool enHeartBeatType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
       return true;
     default:
       return false;
@@ -1038,6 +1098,197 @@ void CGonnReq::InternalSwap(CGonnReq* other) {
       file_level_metadata_message_2eproto[1]);
 }
 
+// ===================================================================
+
+class HeartBeatMsg::_Internal {
+ public:
+  using HasBits = decltype(std::declval<HeartBeatMsg>()._has_bits_);
+  static void set_has_beattype(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static bool MissingRequiredFields(const HasBits& has_bits) {
+    return ((has_bits[0] & 0x00000001) ^ 0x00000001) != 0;
+  }
+};
+
+HeartBeatMsg::HeartBeatMsg(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  // @@protoc_insertion_point(arena_constructor:HeartBeatMsg)
+}
+HeartBeatMsg::HeartBeatMsg(const HeartBeatMsg& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _has_bits_(from._has_bits_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  beattype_ = from.beattype_;
+  // @@protoc_insertion_point(copy_constructor:HeartBeatMsg)
+}
+
+inline void HeartBeatMsg::SharedCtor() {
+beattype_ = 0;
+}
+
+HeartBeatMsg::~HeartBeatMsg() {
+  // @@protoc_insertion_point(destructor:HeartBeatMsg)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void HeartBeatMsg::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void HeartBeatMsg::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void HeartBeatMsg::Clear() {
+// @@protoc_insertion_point(message_clear_start:HeartBeatMsg)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  beattype_ = 0;
+  _has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* HeartBeatMsg::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // required .enHeartBeatType beatType = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          if (PROTOBUF_PREDICT_TRUE(::enHeartBeatType_IsValid(val))) {
+            _internal_set_beattype(static_cast<::enHeartBeatType>(val));
+          } else {
+            ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(1, val, mutable_unknown_fields());
+          }
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* HeartBeatMsg::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:HeartBeatMsg)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _has_bits_[0];
+  // required .enHeartBeatType beatType = 1;
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      1, this->_internal_beattype(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:HeartBeatMsg)
+  return target;
+}
+
+size_t HeartBeatMsg::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:HeartBeatMsg)
+  size_t total_size = 0;
+
+  // required .enHeartBeatType beatType = 1;
+  if (_internal_has_beattype()) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_beattype());
+  }
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData HeartBeatMsg::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    HeartBeatMsg::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*HeartBeatMsg::GetClassData() const { return &_class_data_; }
+
+void HeartBeatMsg::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<HeartBeatMsg *>(to)->MergeFrom(
+      static_cast<const HeartBeatMsg &>(from));
+}
+
+
+void HeartBeatMsg::MergeFrom(const HeartBeatMsg& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:HeartBeatMsg)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_beattype()) {
+    _internal_set_beattype(from._internal_beattype());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void HeartBeatMsg::CopyFrom(const HeartBeatMsg& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:HeartBeatMsg)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool HeartBeatMsg::IsInitialized() const {
+  if (_Internal::MissingRequiredFields(_has_bits_)) return false;
+  return true;
+}
+
+void HeartBeatMsg::InternalSwap(HeartBeatMsg* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_has_bits_[0], other->_has_bits_[0]);
+  swap(beattype_, other->beattype_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata HeartBeatMsg::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_message_2eproto_getter, &descriptor_table_message_2eproto_once,
+      file_level_metadata_message_2eproto[2]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::ProxyMessage*
@@ -1047,6 +1298,10 @@ Arena::CreateMaybeMessage< ::ProxyMessage >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::CGonnReq*
 Arena::CreateMaybeMessage< ::CGonnReq >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CGonnReq >(arena);
+}
+template<> PROTOBUF_NOINLINE ::HeartBeatMsg*
+Arena::CreateMaybeMessage< ::HeartBeatMsg >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::HeartBeatMsg >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

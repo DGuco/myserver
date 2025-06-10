@@ -48,11 +48,15 @@ extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table
 class CGonnReq;
 struct CGonnReqDefaultTypeInternal;
 extern CGonnReqDefaultTypeInternal _CGonnReq_default_instance_;
+class HeartBeatMsg;
+struct HeartBeatMsgDefaultTypeInternal;
+extern HeartBeatMsgDefaultTypeInternal _HeartBeatMsg_default_instance_;
 class ProxyMessage;
 struct ProxyMessageDefaultTypeInternal;
 extern ProxyMessageDefaultTypeInternal _ProxyMessage_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::CGonnReq* Arena::CreateMaybeMessage<::CGonnReq>(Arena*);
+template<> ::HeartBeatMsg* Arena::CreateMaybeMessage<::HeartBeatMsg>(Arena*);
 template<> ::ProxyMessage* Arena::CreateMaybeMessage<::ProxyMessage>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
@@ -99,6 +103,28 @@ inline bool CGonnReq_Msg_Parse(
     ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CGonnReq_Msg* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CGonnReq_Msg>(
     CGonnReq_Msg_descriptor(), name, value);
+}
+enum HeartBeatMsg_Msg : int {
+  HeartBeatMsg_Msg_MsgID = 10002
+};
+bool HeartBeatMsg_Msg_IsValid(int value);
+constexpr HeartBeatMsg_Msg HeartBeatMsg_Msg_Msg_MIN = HeartBeatMsg_Msg_MsgID;
+constexpr HeartBeatMsg_Msg HeartBeatMsg_Msg_Msg_MAX = HeartBeatMsg_Msg_MsgID;
+constexpr int HeartBeatMsg_Msg_Msg_ARRAYSIZE = HeartBeatMsg_Msg_Msg_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* HeartBeatMsg_Msg_descriptor();
+template<typename T>
+inline const std::string& HeartBeatMsg_Msg_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, HeartBeatMsg_Msg>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function HeartBeatMsg_Msg_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    HeartBeatMsg_Msg_descriptor(), enum_t_value);
+}
+inline bool HeartBeatMsg_Msg_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, HeartBeatMsg_Msg* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<HeartBeatMsg_Msg>(
+    HeartBeatMsg_Msg_descriptor(), name, value);
 }
 enum enServerType : int {
   FE_INVALID = 0,
@@ -149,6 +175,29 @@ inline bool enMessageCmd_Parse(
     ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, enMessageCmd* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<enMessageCmd>(
     enMessageCmd_descriptor(), name, value);
+}
+enum enHeartBeatType : int {
+  MESS_HEARTBEAT = 0,
+  MESS_HEARTBEAT_CALLBACK = 1
+};
+bool enHeartBeatType_IsValid(int value);
+constexpr enHeartBeatType enHeartBeatType_MIN = MESS_HEARTBEAT;
+constexpr enHeartBeatType enHeartBeatType_MAX = MESS_HEARTBEAT_CALLBACK;
+constexpr int enHeartBeatType_ARRAYSIZE = enHeartBeatType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* enHeartBeatType_descriptor();
+template<typename T>
+inline const std::string& enHeartBeatType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, enHeartBeatType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function enHeartBeatType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    enHeartBeatType_descriptor(), enum_t_value);
+}
+inline bool enHeartBeatType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, enHeartBeatType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<enHeartBeatType>(
+    enHeartBeatType_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -692,6 +741,189 @@ class CGonnReq final :
   int32_t pfrom_;
   friend struct ::TableStruct_message_2eproto;
 };
+// -------------------------------------------------------------------
+
+class HeartBeatMsg final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:HeartBeatMsg) */ {
+ public:
+  inline HeartBeatMsg() : HeartBeatMsg(nullptr) {}
+  ~HeartBeatMsg() override;
+  explicit PROTOBUF_CONSTEXPR HeartBeatMsg(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  HeartBeatMsg(const HeartBeatMsg& from);
+  HeartBeatMsg(HeartBeatMsg&& from) noexcept
+    : HeartBeatMsg() {
+    *this = ::std::move(from);
+  }
+
+  inline HeartBeatMsg& operator=(const HeartBeatMsg& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline HeartBeatMsg& operator=(HeartBeatMsg&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const HeartBeatMsg& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const HeartBeatMsg* internal_default_instance() {
+    return reinterpret_cast<const HeartBeatMsg*>(
+               &_HeartBeatMsg_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(HeartBeatMsg& a, HeartBeatMsg& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(HeartBeatMsg* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(HeartBeatMsg* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  HeartBeatMsg* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<HeartBeatMsg>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const HeartBeatMsg& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const HeartBeatMsg& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(HeartBeatMsg* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "HeartBeatMsg";
+  }
+  protected:
+  explicit HeartBeatMsg(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef HeartBeatMsg_Msg Msg;
+  static constexpr Msg MsgID =
+    HeartBeatMsg_Msg_MsgID;
+  static inline bool Msg_IsValid(int value) {
+    return HeartBeatMsg_Msg_IsValid(value);
+  }
+  static constexpr Msg Msg_MIN =
+    HeartBeatMsg_Msg_Msg_MIN;
+  static constexpr Msg Msg_MAX =
+    HeartBeatMsg_Msg_Msg_MAX;
+  static constexpr int Msg_ARRAYSIZE =
+    HeartBeatMsg_Msg_Msg_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  Msg_descriptor() {
+    return HeartBeatMsg_Msg_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& Msg_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, Msg>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function Msg_Name.");
+    return HeartBeatMsg_Msg_Name(enum_t_value);
+  }
+  static inline bool Msg_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      Msg* value) {
+    return HeartBeatMsg_Msg_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kBeatTypeFieldNumber = 1,
+  };
+  // required .enHeartBeatType beatType = 1;
+  bool has_beattype() const;
+  private:
+  bool _internal_has_beattype() const;
+  public:
+  void clear_beattype();
+  ::enHeartBeatType beattype() const;
+  void set_beattype(::enHeartBeatType value);
+  private:
+  ::enHeartBeatType _internal_beattype() const;
+  void _internal_set_beattype(::enHeartBeatType value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:HeartBeatMsg)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  int beattype_;
+  friend struct ::TableStruct_message_2eproto;
+};
 // ===================================================================
 
 
@@ -1204,9 +1436,44 @@ inline void CGonnReq::set_allocated_session(std::string* session) {
   // @@protoc_insertion_point(field_set_allocated:CGonnReq.Session)
 }
 
+// -------------------------------------------------------------------
+
+// HeartBeatMsg
+
+// required .enHeartBeatType beatType = 1;
+inline bool HeartBeatMsg::_internal_has_beattype() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool HeartBeatMsg::has_beattype() const {
+  return _internal_has_beattype();
+}
+inline void HeartBeatMsg::clear_beattype() {
+  beattype_ = 0;
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline ::enHeartBeatType HeartBeatMsg::_internal_beattype() const {
+  return static_cast< ::enHeartBeatType >(beattype_);
+}
+inline ::enHeartBeatType HeartBeatMsg::beattype() const {
+  // @@protoc_insertion_point(field_get:HeartBeatMsg.beatType)
+  return _internal_beattype();
+}
+inline void HeartBeatMsg::_internal_set_beattype(::enHeartBeatType value) {
+  assert(::enHeartBeatType_IsValid(value));
+  _has_bits_[0] |= 0x00000001u;
+  beattype_ = value;
+}
+inline void HeartBeatMsg::set_beattype(::enHeartBeatType value) {
+  _internal_set_beattype(value);
+  // @@protoc_insertion_point(field_set:HeartBeatMsg.beatType)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 
@@ -1225,6 +1492,11 @@ template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::CGonnReq_Msg>() {
   return ::CGonnReq_Msg_descriptor();
 }
+template <> struct is_proto_enum< ::HeartBeatMsg_Msg> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::HeartBeatMsg_Msg>() {
+  return ::HeartBeatMsg_Msg_descriptor();
+}
 template <> struct is_proto_enum< ::enServerType> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::enServerType>() {
@@ -1234,6 +1506,11 @@ template <> struct is_proto_enum< ::enMessageCmd> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::enMessageCmd>() {
   return ::enMessageCmd_descriptor();
+}
+template <> struct is_proto_enum< ::enHeartBeatType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::enHeartBeatType>() {
+  return ::enHeartBeatType_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

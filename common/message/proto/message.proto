@@ -47,3 +47,19 @@ message CGonnReq
 	optional	int32	PFrom			= 3;		// 平台ID(预留字段,为以后多平台合服同一个帐号不同平台做区分)
 	required	string	Session			= 4;		// 平台的session
 };
+
+
+enum enHeartBeatType
+{	
+	MESS_HEARTBEAT				= 0;	// 心跳
+	MESS_HEARTBEAT_CALLBACK		= 1;	// 心跳回复
+}
+
+message HeartBeatMsg
+{
+	enum Msg
+	{
+	    MsgID	= 10002;
+	}
+	required enHeartBeatType beatType	= 1;			// 指令类型
+};

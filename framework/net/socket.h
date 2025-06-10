@@ -33,6 +33,7 @@ enum eSocketErrs
 	ERR_SOCKE_NODATA = -8,
 	ERR_SOCKE_NOBUFF = -9,
 	ERR_SOCKE_UNKNOW_ERROR = -10,
+	ERR_SOCKE_SERIAL_ERROR = -11,
 };
 
 class CSocket

@@ -11,7 +11,7 @@
 #define		PIPE_SIZE					(0x1000000)    // 共享内存管道大小 16M
 #define		DB2S_SHM_KEY				(20000000)
 #define		S2DB_SHM_KEY				(20000001)
-#define		KEEP_ALIVE_TIME				(2 * 60 * 1000)   //发送
+#define		KEEP_ALIVE_TIME				(1 * 60 * 1000)   //发送
 #define		KICK_TIME_OUT_TIME			(4 * 60 * 1000)   //
 #define		CHECK_TIME_OUT_TIME			(2 * 60 * 1000)   //
 #define		TCP_CONN_TIME_OUT			(2 * 60)  //TCP超时时间2分钟
