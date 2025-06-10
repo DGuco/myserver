@@ -63,10 +63,12 @@ void CThreadTask::CombineTaskDone()
 	{
 		return;
 	}
-	int oldValue = m_combineDone.fetch_add(1);
-	//最后一个完成
-	int nCombineDone = m_combineDone.load(memory_order_acquire);
-	if (nCombineDone == m_combineCount && oldValue == m_combineCount - 1)
+	
+	// fetch_add(1) 保证原子性递增
+    const int oldValue = m_combineDone.fetch_add(1, std::memory_order_release);
+    const int newValue = oldValue + 1;
+    // 修改判断条件为严格相等
+    if (newValue == m_combineCount) 
 	{
 		//如果就在当前的执行shcheler中，直接执行
 		if (g_thread_data.own_scheduler == m_pScheduler)
