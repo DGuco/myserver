@@ -8,8 +8,6 @@
 #ifndef __BASE_H__
 #define __BASE_H__
 
-#include <vector>
-#include <string>
 #include <csignal>
 #include <stdio.h>
 #include <atomic>
