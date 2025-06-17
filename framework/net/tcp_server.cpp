@@ -632,6 +632,7 @@ void CTCPServer::FreeClosingSocket()
 				EpollDelSocket(tmSocket.GetSocket());
 			}
 #endif		
+			m_ConnSecondMap.erase(it->second->ConnKey());
 			it->second->Close();
 			//»ØÊÕÄÚ´æ
 			it->second.Free();
