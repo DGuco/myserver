@@ -20,9 +20,6 @@ enum eTcpServerModule
 	eTcpEpoll = 1,
 };
 
-typedef std::unordered_map<SOCKET, CSafePtr<CTCPConn>>   ConnMap;
-typedef std::unordered_map<SOCKET, CSafePtr<CTCPClient>> ClientMap;
-
 class CTCPServer
 {
 public:
@@ -39,13 +36,17 @@ public:
 	//
 	void TcpTick(time_t now);
 	//
-	void KickIllegalConn();
+	void KickIllegalConn(time_t nNowAns);
 	//
 	CSafePtr<CTCPConn>     FindTcpConn(SOCKET socket);
 	//
 	CSafePtr<CTCPClient>   FindTcpClient(SOCKET socket);
 	//添加一个新来的连接
 	void AddNewIncomingConn(CSocket newSocket);
+	//
+	void RegisterNewConn(CSafePtr<CTCPConn> pConn);
+	//
+	CSafePtr<CTCPConn> FindRegisterConn(int secondKey);
 private:
 	//socket tick
 	void SocketTick(time_t now);
@@ -98,6 +99,10 @@ private:
 	//其他监听者的socket
 	std::list<CSocket>   m_ConnectingList;
 	CMyLock			     m_ConnectingListLock;
+public:
+	typedef std::unordered_map<SOCKET, CSafePtr<CTCPConn>>   ConnMap;
+	typedef std::unordered_map<int, CSafePtr<CTCPConn>>      ConnSecondMap;
+	typedef std::unordered_map<SOCKET, CSafePtr<CTCPClient>> ClientMap;
 private:
 	CSocket			     m_ListenSocket;
 	eTcpServerModule     m_nRunModule;
@@ -105,6 +110,7 @@ private:
 	int					 m_nPort;
 	ClientMap			 m_ClientMap;
 	ConnMap				 m_ConnMap;
+	ConnSecondMap		 m_ConnSecondMap;
 	fd_set				 m_fdsRead;
 	fd_set				 m_fdsWrite;
 };

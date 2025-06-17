@@ -107,8 +107,6 @@ void CProxyCtrl::ProxyServerLogic(void* args)
 	{
 		CACHE_LOG(ERROR_CACHE,"CProxyServer TcpTick  cache execption msg {]", e.what());
 	}
-
-	CProxyServer::GetSingletonPtr()->CheckKickConn(nNow);
 }
 
 void CProxyCtrl::ProxyServerInit(void* args)

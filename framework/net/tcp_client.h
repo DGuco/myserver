@@ -7,6 +7,10 @@
 #ifndef __TCP_CLIENT_H__
 #define __TCP_CLIENT_H__
 #include "tcp_socket.h"
+#include <string>
+
+
+using namespace std;
 
 /**
  * 发起的tcp连接
@@ -19,18 +23,18 @@ public:
 	//
 	virtual ~CTCPClient();
 public:
-	virtual int		DoRecvLogic() = 0;
-	virtual int		DoWriteLogic() = 0;
-	virtual int		DoClosingLogic(int errcode) = 0;
-	virtual void	DoTick(time_t now) = 0;
-	virtual int	    ClientKey();
-	uint64			MapKey();
-	static uint64   MapKey(int socket, int clientKey);
+	virtual int				DoRecvLogic() = 0;
+	virtual int				DoWriteLogic() = 0;
+	virtual void			DoTick(time_t now) = 0;
+	virtual std::string	    ClientInfo() {return "Null";};
 public:
 	time_t  	 	GetLastSendHeartbeatTime() { return m_nLastSendHeartbeatTime; }
 	void  			SetLastSendHeartbeatTime(time_t time) { m_nLastSendHeartbeatTime = time; }
+	time_t  	 	GetLastRecvHeartbeatTime() { return m_nLastRecvHeartbeatTime; }
+	void  			SetLastRecvHeartbeatTime(time_t time) { m_nLastRecvHeartbeatTime = time; }
 private:
 	int 			m_nSendHeartbeatCD;
-	time_t 			m_nLastSendHeartbeatTime;
+	time_t 			m_nLastSendHeartbeatTime;  //上次发送心跳的时间
+	time_t 			m_nLastRecvHeartbeatTime;  //上次收到心跳恢复的时间
 };
 #endif //__TCP_CLIENT_H__

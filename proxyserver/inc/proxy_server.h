@@ -23,18 +23,14 @@ public:
 public:
 	//InnitTcp
 	bool InitTcp();
-	//通知gameserver client 断开连接
-	void RemoveConnect(CSafePtr<CProxyConn> pGamePlayer, short iError);
 	//
 	void ProcessServerMessage(CSafePtr<CProxyConn> pGamePlayer);
 	//
-	void RegisterNewConn(CSafePtr<CProxyConn> pGamePlayer);
+	void RegisterNewProxyConn(CSafePtr<CProxyConn> pProxyConn);
 	//
 	CSafePtr<CProxyConn> FindProxyPlayer(int servertype, int serverid);
 	//
 	void TransferMessage(CSafePtr<CProxyConn> pGamePlayer,int servertype, int serverid, shared_ptr<ProxyMessage> pMessage);
-	//
-	void CheckKickConn(time_t now);
 	//新的连接来了
 	virtual void OnAccept(CSocket newSocket);
 public:
@@ -43,8 +39,6 @@ public:
 	//
 	virtual CSafePtr<CTCPConn> CreateTcpConn(CSocket socket);
 private:
-	typedef std::unordered_map<int, CSafePtr<CProxyConn>> ConnMap;
-	ConnMap					m_ConnMap;
 	BYTE					m_CacheData[MAX_PACKAGE_LEN];
 };
 

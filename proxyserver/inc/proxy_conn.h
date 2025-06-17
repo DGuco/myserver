@@ -18,6 +18,8 @@ enum enProxyState
 	eProKicking = 2,   //非法连接等待踢掉
 };
 
+using namespace std;
+
 class CProxyConn : public CTCPConn
 {
 public:
@@ -25,7 +27,6 @@ public:
 	virtual ~CProxyConn();
 	virtual int		DoRecvLogic();
 	virtual int		DoWriteLogic();
-	virtual int		DoClosingLogic(int errcode);
 	virtual void	DoTick(time_t now);
 	void			SetProxyState(short state);
 	void			SetServerId(int serverid);
@@ -33,7 +34,8 @@ public:
 	short			GetProxyState();
 	int				GetServerId();
 	enServerType	GetServerType();
-	int				ConnKey();
+	virtual int		ConnKey();
+	virtual string	ConnInfo() 	 {return std::to_string(m_nServerType) + "_" + std::to_string(m_nServerId);};
 	static int		ConnKey(int servertype, int serverid);
 private:
 	short			m_nProxyState;

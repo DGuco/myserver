@@ -44,12 +44,6 @@ int CProxyConn::DoWriteLogic()
 	return ERR_SOCKE_OK;
 }
 
-int CProxyConn::DoClosingLogic(int errcode)
-{
-	CProxyServer::GetSingletonPtr()->RemoveConnect(this, errcode);
-	return 0;
-}
-
 void CProxyConn::DoTick(time_t now)
 {
 

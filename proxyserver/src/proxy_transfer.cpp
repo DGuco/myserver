@@ -141,29 +141,6 @@ void CProxyTransfer::TransferMessage(CSafePtr<CProxyConn> pGamePlayer,int server
 	// pDestPlayer->Write(m_CacheData, pMessage->GetCachedSize());
 }
 
-void CProxyTransfer::CheckKickConn(time_t now)
-{
-	ConnMap::iterator it = m_ConnMap.begin();
-	for (; it != m_ConnMap.end();)
-	{
-		if (it->second->GetProxyState() == eProKicking)
-		{
-			CACHE_LOG(TCP_DEBUG, "Kick tcp conn {}:{} to {}:{}", it->second->GetServerType(), it->second->GetServerId());
-			it->second->Close(false);
-			it = m_ConnMap.erase(it);
-			continue;
-		}
-		if (now - it->second->GetLastRecvHeartbeatTime() > TCP_CONN_TIME_OUT)
-		{
-			CACHE_LOG(TCP_DEBUG, "Kick tcp timeount conn {}:{} to {}:{}", it->second->GetServerType(), it->second->GetServerId());
-			it->second->Close(false);
-			it = m_ConnMap.erase(it);
-			continue;
-		}
-		it++;
-	}
-}
-
 void CProxyTransfer::RemoveConnect(CSafePtr<CProxyConn> pGamePlayer, short iError)
 {
 	ASSERT(pGamePlayer != NULL);

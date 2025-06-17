@@ -62,7 +62,7 @@ int CProxyMessageFactory::Execute(CSafePtr<CTCPSocket> pSocket)
 		pProxyPlayer->SetServerId((enServerType)nFromId);
 		pProxyPlayer->SetProxyState(eProRegistered);
 		//×¢²áÁ¬½Ó
-		CProxyServer::GetSingletonPtr()->RegisterNewConn(pProxyPlayer);
+		CProxyServer::GetSingletonPtr()->RegisterNewProxyConn(pProxyPlayer);
 		return 0;
 	}
 

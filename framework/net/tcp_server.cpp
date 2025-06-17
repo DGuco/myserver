@@ -161,6 +161,42 @@ void CTCPServer::AcceptIncomingConnect()
 	m_ConnectingList.clear();
 }
 
+//
+void CTCPServer::RegisterNewConn(CSafePtr<CTCPConn> pConn)
+{
+	if(pConn == NULL)
+	{
+		return;
+	}
+
+	if(pConn->ConnKey() <= 0)
+	{
+		return;
+	}
+
+	if(FindTcpConn(pConn->GetSocket().GetSocket()) == NULL)
+	{
+		return;
+	}
+
+	auto it = m_ConnSecondMap.find(pConn->ConnKey());
+	if(it == m_ConnSecondMap.end())
+	{
+		m_ConnSecondMap.insert(std::make_pair(pConn->ConnKey(), pConn));
+		CACHE_LOG(TCP_DEBUG, "RegisterNewConn socket fd = {},ConnKey = {},ConnInfo = {}", pConn->GetSocket().GetSocket(),pConn->ConnKey(),pConn->ConnInfo());
+	}
+}
+
+CSafePtr<CTCPConn> CTCPServer::FindRegisterConn(int secondKey)
+{
+	auto it = m_ConnSecondMap.find(secondKey);
+	if(it != m_ConnSecondMap.end())
+	{
+		return it->second;
+	}
+	return NULL;
+}
+
 void CTCPServer::TcpTick(time_t now)
 {
 	//在缓冲区数据发送出去之前，检查缓冲区利用率
@@ -191,12 +227,40 @@ void CTCPServer::TcpTick(time_t now)
 	FreeClosingSocket();
 	//tcp tick
 	SocketTick(now);
+	//
+	KickIllegalConn(now);
 	return;
 }
 
-void CTCPServer::KickIllegalConn()
+void CTCPServer::KickIllegalConn(time_t nNowAns)
 {
-
+	ConnMap::iterator it = m_ConnMap.begin();
+	for (; it != m_ConnMap.end();)
+	{
+		CSocket& tmSocket = it->second->GetSocket();
+		SOCKET nSocketFD = tmSocket.GetSocket();
+		if (it->second->GetStatus() == eSocketClosing)
+		{
+			CACHE_LOG(TCP_DEBUG, "KickIllegalConn Conn socket fd = {} ,host = {},port = {},connKey = {},connInfo = {}", 
+				tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort(),it->second->ConnKey(),it->second->ConnInfo());
+			m_ConnSecondMap.erase(it->second->ConnKey());
+			it->second->Close();
+			it->second.Free();
+			it = m_ConnMap.erase(it);
+			continue;
+		}
+		if (nNowAns - it->second->GetLastRecvHeartbeatTime() > TCP_CONN_TIME_OUT)
+		{
+			CACHE_LOG(TCP_DEBUG, "KickIllegalConn timeount Conn socket fd = {} ,host = {},port = {},connKey = {},connInfo = {}", 
+				tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort(),it->second->ConnKey(),it->second->ConnInfo());
+			it->second->Close();
+			it->second.Free();
+			m_ConnSecondMap.erase(it->second->ConnKey());
+			it = m_ConnMap.erase(it);
+			continue;
+		}
+		it++;
+	}
 }
 
 //
@@ -251,7 +315,6 @@ void CTCPServer::OnAccept(CSocket newSocket)
 	else
 	{
 		CACHE_LOG(TCP_ERROR, "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
-		pConn->DoClosingLogic(socket_error);
 		pConn->Close(false);
 	}
 #endif
@@ -433,7 +496,6 @@ bool CTCPServer::TcpConnDoRecv(CSafePtr<CTCPConn> pConn)
 	int nRet = pConn->Recv();
 	if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 	{
-		pConn->DoClosingLogic(nRet);
 		pConn->Close(false);
 		CACHE_LOG(TCP_ERROR, "Conn Socket recv error ready to close,fd = {},nRet = {},host = {},port = {}", pConn->GetSocketFD(), nRet, pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
 		return false;
@@ -446,7 +508,6 @@ bool CTCPServer::TcpConnDoRecv(CSafePtr<CTCPConn> pConn)
 	}
 	catch(const std::exception& e)
 	{
-		pConn->DoClosingLogic(socket_error);
 		pConn->Close(false);
 		CACHE_LOG(TCP_ERROR, "Conn Socket DoRecvLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),pConn->GetSocketFD(), e.what(), pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
 		return false;
@@ -454,7 +515,6 @@ bool CTCPServer::TcpConnDoRecv(CSafePtr<CTCPConn> pConn)
 
 	if (nRet != ERR_SOCKE_OK)
 	{
-		pConn->DoClosingLogic(nRet);
 		pConn->Close(false);
 		CACHE_LOG(TCP_ERROR, "Conn Socket DoRecvLogic error,fd = {},nRet = {},host = {},port = {}", pConn->GetSocketFD(), nRet, pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
 		return false;;
@@ -468,7 +528,6 @@ bool CTCPServer::TcpConnDoFlush(CSafePtr<CTCPConn> pConn)
 	int nRet =  pConn->Flush();
 	if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 	{
-		pConn->DoClosingLogic(nRet);
 		pConn->Close(false);
 		CACHE_LOG(TCP_ERROR, "Conn Socket Flush error ready to close,fd = {},nRet = {},host = {},port = {}", pConn->GetSocketFD(), nRet, pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
 		return false;
@@ -481,7 +540,6 @@ bool CTCPServer::TcpConnDoFlush(CSafePtr<CTCPConn> pConn)
 	}
 	catch(const std::exception& e)
 	{
-		pConn->DoClosingLogic(socket_error);
 		pConn->Close(false);
 		CACHE_LOG(TCP_ERROR, "Conn Socket DoWriteLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),pConn->GetSocketFD(), e.what(), pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
 		return false;
@@ -489,7 +547,6 @@ bool CTCPServer::TcpConnDoFlush(CSafePtr<CTCPConn> pConn)
 
 	if (nRet != ERR_SOCKE_OK)
 	{
-		pConn->DoClosingLogic(nRet);
 		pConn->Close(false);
 		CACHE_LOG(TCP_ERROR, "Conn Socket DoWriteLogic error ready to close,fd = {},nRet = {},host = {},port = {}", pConn->GetSocketFD(), nRet, pConn->GetSocket().GetHost().c_str(), pConn->GetSocket().GetPort());
 		return false;
@@ -503,7 +560,6 @@ bool CTCPServer::TcpClientDoRecv(CSafePtr<CTCPClient> pClient)
 	int nRet = pClient->Recv();
 	if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 	{
-		pClient->DoClosingLogic(nRet);
 		pClient->Close(false);
 		CACHE_LOG(TCP_ERROR, "Client Socket recv error ready to close,fd = {},nRet = {},host = {},port = {}", pClient->GetSocketFD(), nRet, pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
 		return false;
@@ -516,7 +572,6 @@ bool CTCPServer::TcpClientDoRecv(CSafePtr<CTCPClient> pClient)
 	}
 	catch(const std::exception& e)
 	{
-		pClient->DoClosingLogic(socket_error);
 		pClient->Close(false);
 		CACHE_LOG(TCP_ERROR, "Client Socket DoRecvLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),pClient->GetSocketFD(), e.what(), pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
 		return false;
@@ -524,7 +579,6 @@ bool CTCPServer::TcpClientDoRecv(CSafePtr<CTCPClient> pClient)
 
 	if (nRet != ERR_SOCKE_OK)
 	{
-		pClient->DoClosingLogic(nRet);
 		pClient->Close(false);
 		CACHE_LOG(TCP_ERROR, "Client Socket DoRecvLogic error,fd = {},nRet = {},host = {},port = {}", pClient->GetSocketFD(), nRet, pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
 		return false;;
@@ -538,7 +592,6 @@ bool CTCPServer::TcpClientDoFlush(CSafePtr<CTCPClient> pClient)
 	int nRet =  pClient->Flush();
 	if (nRet != ERR_SOCKE_OK && nRet != ERR_SOCKE_WOULD_BLOCK)
 	{
-		pClient->DoClosingLogic(nRet);
 		pClient->Close(false);
 		CACHE_LOG(TCP_ERROR, "Client Socket Flush error ready to close,fd = {},nRet = {},host = {},port = {}", pClient->GetSocketFD(), nRet, pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
 		return false;
@@ -551,7 +604,6 @@ bool CTCPServer::TcpClientDoFlush(CSafePtr<CTCPClient> pClient)
 	}
 	catch(const std::exception& e)
 	{
-		pClient->DoClosingLogic(socket_error);
 		pClient->Close(false);
 		CACHE_LOG(TCP_ERROR, "Client Socket DoWriteLogic catch execption: {},fd = {},msg = {},host = {},port = {}",e.what(),pClient->GetSocketFD(), e.what(), pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
 		return false;
@@ -559,7 +611,6 @@ bool CTCPServer::TcpClientDoFlush(CSafePtr<CTCPClient> pClient)
 
 	if (nRet != ERR_SOCKE_OK)
 	{
-		pClient->DoClosingLogic(nRet);
 		pClient->Close(false);
 		CACHE_LOG(TCP_ERROR, "Client Socket DoWriteLogic error ready to close,fd = {},nRet = {},host = {},port = {}", pClient->GetSocketFD(), nRet, pClient->GetSocket().GetHost().c_str(), pClient->GetSocket().GetPort());
 		return false;

@@ -78,6 +78,8 @@
         "set": "cpp",
         "unordered_set": "cpp",
         "*.inc": "cpp",
-        "coroutine": "cpp"
+        "coroutine": "cpp",
+        "*.rh": "cpp",
+        "regex": "cpp"
     }
 }
