@@ -253,9 +253,9 @@ void CTCPServer::KickIllegalConn(time_t nNowAns)
 		{
 			CACHE_LOG(TCP_DEBUG, "KickIllegalConn timeount Conn socket fd = {} ,host = {},port = {},connKey = {},connInfo = {}", 
 				tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort(),it->second->ConnKey(),it->second->ConnInfo());
+			m_ConnSecondMap.erase(it->second->ConnKey());
 			it->second->Close();
 			it->second.Free();
-			m_ConnSecondMap.erase(it->second->ConnKey());
 			it = m_ConnMap.erase(it);
 			continue;
 		}
