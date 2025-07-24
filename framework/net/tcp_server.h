@@ -36,8 +36,6 @@ public:
 	//
 	void TcpTick(time_t now);
 	//
-	void KickIllegalConn(time_t nNowAns);
-	//
 	CSafePtr<CTCPConn>     FindTcpConn(SOCKET socket);
 	//
 	CSafePtr<CTCPClient>   FindTcpClient(SOCKET socket);
@@ -80,6 +78,8 @@ private:
 	bool TcpClientDoRecv(CSafePtr<CTCPClient> pClient);
 	//
 	bool TcpClientDoFlush(CSafePtr<CTCPClient> pClient);
+	//
+	void KickIllegalConn(time_t nNowAns);
 #ifdef __LINUX__
 	//
 	int InitEpoll(const char* ip = NULL, int port = -1);

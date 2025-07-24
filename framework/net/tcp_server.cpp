@@ -232,37 +232,6 @@ void CTCPServer::TcpTick(time_t now)
 	return;
 }
 
-void CTCPServer::KickIllegalConn(time_t nNowAns)
-{
-	ConnMap::iterator it = m_ConnMap.begin();
-	for (; it != m_ConnMap.end();)
-	{
-		CSocket& tmSocket = it->second->GetSocket();
-		SOCKET nSocketFD = tmSocket.GetSocket();
-		if (it->second->GetStatus() == eSocketClosing)
-		{
-			CACHE_LOG(TCP_DEBUG, "KickIllegalConn Conn socket fd = {} ,host = {},port = {},connKey = {},connInfo = {}", 
-				tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort(),it->second->ConnKey(),it->second->ConnInfo());
-			m_ConnSecondMap.erase(it->second->ConnKey());
-			it->second->Close();
-			it->second.Free();
-			it = m_ConnMap.erase(it);
-			continue;
-		}
-		if (nNowAns - it->second->GetLastRecvHeartbeatTime() > TCP_CONN_TIME_OUT)
-		{
-			CACHE_LOG(TCP_DEBUG, "KickIllegalConn timeount Conn socket fd = {} ,host = {},port = {},connKey = {},connInfo = {}", 
-				tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort(),it->second->ConnKey(),it->second->ConnInfo());
-			m_ConnSecondMap.erase(it->second->ConnKey());
-			it->second->Close();
-			it->second.Free();
-			it = m_ConnMap.erase(it);
-			continue;
-		}
-		it++;
-	}
-}
-
 //
 CSafePtr<CTCPConn> CTCPServer::FindTcpConn(SOCKET socket)
 {
@@ -625,7 +594,9 @@ void CTCPServer::FreeClosingSocket()
 		CSocket tmSocket = it->second->GetSocket();
 		if (it->second->GetStatus() == eSocketClosing)
 		{
-			CACHE_LOG(TCP_DEBUG, "FreeClosingSocket tcpconn socket fd = {} ,host = {},port = {}", tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort());
+			CACHE_LOG(TCP_DEBUG, "FreeClosingSocket tcpconn socket fd = {} ,host = {},port = {},connKey = {},connInfo = {}",
+				 tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort(),it->second->ConnKey(),it->second->ConnInfo());
+
 #ifdef __LINUX__
 			if (m_nRunModule == eTcpEpoll)
 			{
@@ -664,6 +635,37 @@ void CTCPServer::FreeClosingSocket()
 		{
 			it++;
 		}
+	}
+}
+
+void CTCPServer::KickIllegalConn(time_t nNowAns)
+{
+	ConnMap::iterator it = m_ConnMap.begin();
+	for (; it != m_ConnMap.end();)
+	{
+		CSocket& tmSocket = it->second->GetSocket();
+		SOCKET nSocketFD = tmSocket.GetSocket();
+		if (it->second->GetStatus() == eSocketClosing)
+		{
+			CACHE_LOG(TCP_DEBUG, "KickIllegalConn Conn socket fd = {} ,host = {},port = {},connKey = {},connInfo = {}", 
+				tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort(),it->second->ConnKey(),it->second->ConnInfo());
+			m_ConnSecondMap.erase(it->second->ConnKey());
+			it->second->Close();
+			it->second.Free();
+			it = m_ConnMap.erase(it);
+			continue;
+		}
+		if (nNowAns - it->second->GetLastRecvHeartbeatTime() > TCP_CONN_TIME_OUT)
+		{
+			CACHE_LOG(TCP_DEBUG, "KickIllegalConn timeount Conn socket fd = {} ,host = {},port = {},connKey = {},connInfo = {}", 
+				tmSocket.GetSocket(), tmSocket.GetHost().c_str(), tmSocket.GetPort(),it->second->ConnKey(),it->second->ConnInfo());
+			m_ConnSecondMap.erase(it->second->ConnKey());
+			it->second->Close();
+			it->second.Free();
+			it = m_ConnMap.erase(it);
+			continue;
+		}
+		it++;
 	}
 }
 

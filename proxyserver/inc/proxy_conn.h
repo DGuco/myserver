@@ -28,15 +28,15 @@ public:
 	virtual int		DoRecvLogic();
 	virtual int		DoWriteLogic();
 	virtual void	DoTick(time_t now);
+	virtual int		ConnKey();
+	virtual string	ConnInfo() 	 {return std::to_string(m_nServerType) + "_" + std::to_string(m_nServerId);};
+	static int		ConnKey(int servertype, int serverid);
 	void			SetProxyState(short state);
 	void			SetServerId(int serverid);
 	void			SetServerType(enServerType servertype);
 	short			GetProxyState();
 	int				GetServerId();
 	enServerType	GetServerType();
-	virtual int		ConnKey();
-	virtual string	ConnInfo() 	 {return std::to_string(m_nServerType) + "_" + std::to_string(m_nServerId);};
-	static int		ConnKey(int servertype, int serverid);
 private:
 	short			m_nProxyState;
 	int				m_nServerId;
