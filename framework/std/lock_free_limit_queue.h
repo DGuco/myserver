@@ -25,11 +25,11 @@ namespace my_std
 
 		// 多申请一个typename T的空间, 便于判断full和empty.
 		explicit LockFreeLimitQueue(uint_t capacity)
-			: capacity_(reCapacity(capacity))
-			, readable_{ 0 }
-			, write_{ 0 }
-			, read_{ 0 }
-			, writable_{ uint_t(capacity_ - 1) }
+			: capacity_(capacity)
+			, readable_(0 )
+			, write_(0 )
+			, read_(0 )
+			, writable_(capacity)
 		{
 			buffer_ = (T*)malloc(sizeof(T) * capacity_);
 		}
@@ -52,7 +52,11 @@ namespace my_std
 		{
 			LockFreeResult result;
 
-			// 1.write_步进1.
+			/* 初始状态 
+				--      --      --      --      --      --      --      --      --      --
+		      r_|ra_|w_												                    wa_ 
+			*/
+			// 1.write_步进1.先占一个可写的位置
 			uint_t write, writable;
 			do {
 				write = relaxed(write_);
@@ -64,19 +68,27 @@ namespace my_std
 			} while (!write_.compare_exchange_weak(write, mod(write + 1),
 				std::memory_order_acq_rel, std::memory_order_relaxed));
 
-			// 2.数据写入
 #pragma push_macro("new")
 #undef new
 			new (buffer_ + write) T(std::forward<U>(t));
 #pragma pop_macro("new")
+			/* 此时状态，注意此时write并没有重新读取 write = write_ - 1
+				--      --      --      --      --      --      --      --      --      --
+		       r_|ra_   w_											                    wa_ 
+			*/
+			// 2.数据写入
 
-			// 3.更新readable
+			// 3.更新readable_，标记此位置可以pop
 			uint_t readable;
 			do {
 				readable = relaxed(readable_);
-			} while (!readable_.compare_exchange_weak(write, mod(readable + 1),
+			} while (!readable_.compare_exchange_weak(readable, mod(readable + 1),
 				std::memory_order_acq_rel, std::memory_order_relaxed));
 
+			/* 最终状态，注意此时readable并没有重新读取 readable = ra_ - 1 
+				--      --      --      --      --      --      --      --      --      --
+		        r_     ra_|w_											                wa_ 
+			*/
 			// 4.检查写入时是否empty
 			result.notify = (write == mod(writable + 1));
 			result.success = true;
@@ -86,6 +98,10 @@ namespace my_std
 		LockFreeResult Pop(T& t) {
 			LockFreeResult result;
 
+			/* 初始状态 
+				--      --      --      --      --      --      --      --      --      --
+		        r_             ra_|w_								                    wa_ 
+			*/
 			// 1.read_步进1.
 			uint_t read, readable;
 			do {
@@ -102,13 +118,21 @@ namespace my_std
 			t = std::move(buffer_[read]);
 			buffer_[read].~T();
 
-			// 3.更新writable
-			// update condition: mod(writable_ + 1) == read_
-			//               as: writable_ == mod(read_ + capacity_ - 1)
-			uint_t check = mod(read + capacity_ - 1);
-			while (!writable_.compare_exchange_weak(check, read,
+			/* 此时状态 ，注意此时read并没有重新读取 read = read_ - 1 
+				--      --      --      --      --      --      --      --      --      --
+		               r_     ra_|w_								                    wa_ 
+			*/
+			// 3.更新writable_,空出已经出栈的位置
+			uint_t writable;
+			do {
+				writable = relaxed(writable_);
+			} while (!writable_.compare_exchange_weak(writable, mod(writable + 1),
 				std::memory_order_acq_rel, std::memory_order_relaxed));
 
+			/* 此时状态 
+				--      --      --      --      --      --      --      --      --      --
+		        wa_     r_     ra_|w_								                    
+			*/
 			// 4.检查读取时是否full
 			result.notify = (read == mod(readable_ + 1));
 			result.success = true;
@@ -131,11 +155,7 @@ namespace my_std
 		inline uint_t mod(uint_t val) {
 			return val % capacity_;
 		}
-
-		inline size_t reCapacity(uint_t capacity) {
-			return (size_t)capacity + 1;
-		}
-
+		
 	private:
 		T* buffer_;
 		CACHE_LINE_ALIGN size_t capacity_;

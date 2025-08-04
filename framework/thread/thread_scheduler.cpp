@@ -90,16 +90,25 @@ void CThreadScheduler::DebugTask()
 		{
 			if (m_Workers[i]->GetThreadData() != NULL)
 			{
-				CSafeLock guard(m_Workers[i]->GetThreadData()->task_mutex);
-				TaskPtr pTask = m_Workers[i]->GetThreadData()->curren_task;
-				if (pTask != NULL)
+				time_t startTime = 0;
+				std::string tmSignature;
 				{
-					time_t startTime = pTask->GetStartTime();
+					CSafeLock guard(m_Workers[i]->GetThreadData()->task_mutex);
+					TaskPtr pTask = m_Workers[i]->GetThreadData()->curren_task;
+					if(pTask != NULL)
+					{
+						tmSignature = pTask->GetSignature();
+						startTime = pTask->GetStartTime();
+					}
+				}
+
+				if(startTime > 0)
+				{
 					time_t logtime = startTime / 1000;
 					//localtime非线程安全
 					//tm* logTime = localtime(&logtime);
 					std::tm logTime = CTimeHelper::LocalTime(logtime);
-					CACHE_LOG(THREAD_CACHE, "Thread[{}] running task[{}],task begintime[{}-{}-{} {}:{}:{}.{}] ",i, pTask->GetSignature(),
+					CACHE_LOG(THREAD_CACHE, "Thread[{}] running task[{}],task begintime[{}-{}-{} {}:{}:{}.{}] ",i, tmSignature,
 						logTime.tm_year + 1900, logTime.tm_mon + 1, logTime.tm_mday, logTime.tm_hour, logTime.tm_min, logTime.tm_sec, startTime % 1000);
 				}
 			}
