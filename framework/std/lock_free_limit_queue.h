@@ -37,8 +37,8 @@ namespace my_std
 		~LockFreeLimitQueue() 
 		{
 			// destory elements.
-			uint_t read = consume(read_);
-			uint_t readable = consume(readable_);
+			uint_t read = acquire(read_);
+			uint_t readable = acquire(readable_);
 			for (; read < readable; ++read) 
 			{
 				buffer_[read].~T();
@@ -60,7 +60,7 @@ namespace my_std
 			uint_t write, writable;
 			do {
 				write = relaxed(write_);
-				writable = consume(writable_);
+				writable = acquire(writable_);
 				//满了，无法继续push
 				if (write == writable)
 					return result;
@@ -106,7 +106,7 @@ namespace my_std
 			uint_t read, readable;
 			do {
 				read = relaxed(read_);
-				readable = consume(readable_);
+				readable = acquire(readable_);
 				//空了，没有元素可以pop了
 				if (read == readable)
 					return result;
@@ -148,14 +148,10 @@ namespace my_std
 			return val.load(std::memory_order_acquire);
 		}
 
-		inline uint_t consume(atomic_t& val) {
-			return val.load(std::memory_order_consume);
-		}
-
 		inline uint_t mod(uint_t val) {
 			return val % capacity_;
 		}
-		
+
 	private:
 		T* buffer_;
 		CACHE_LINE_ALIGN size_t capacity_;
