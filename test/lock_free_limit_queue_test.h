@@ -51,7 +51,7 @@ struct Bench : public Timer
 };
 
 #define IS_UNIT_TEST 1
-#define IS_DEBUG 1
+#define IS_DEBUG 0
 
 struct A
 {
@@ -100,7 +100,7 @@ void test(int count, int rThreads, int wThreads)
 {
     LockFreeLimitQueue<T,cap> queue;
     std::atomic_int lastCount{0};
-    volatile bool done = false;
+    atomic<bool> done = false;
 
 #if IS_UNIT_TEST
     AssertCount(0, (T*)nullptr);
@@ -125,15 +125,19 @@ void test(int count, int rThreads, int wThreads)
                         uint32_t threadNumber = l >> 32;
                         uint32_t idx = l & 0xffffffff;
 #if IS_DEBUG
-		                CACHE_LOG(DEBUG_CACHE, "pop thread = {}, idx = {} ",threadNumber, idx);
+		                CACHE_LOG(DEBUG_CACHE, "pop thread = {}, idx = {},value = {} ",threadNumber, idx,val);
 #endif
-                        if (idx == count) {
+
+#if IS_UNIT_TEST
+                        ASSERT_EX(threadNumber >= 0 && threadNumber < wThreads, "threadNumber OVERFLOW");
+                        *check[threadNumber] += idx;
+#endif
+                        if (idx == count) 
+                        {
+		                    CACHE_LOG(DEBUG_CACHE, "threadsum = {}, value = {} ",threadNumber, *check[threadNumber]);
                             if (++lastCount == wThreads)
                                 done = true;
                         }
-#if IS_UNIT_TEST
-                        *check[threadNumber] += idx;
-#endif
                     }
                 });
         tg.push_back(t);
@@ -143,10 +147,10 @@ void test(int count, int rThreads, int wThreads)
     for (int i = 0; i < wThreads; ++i) {
         thread *t = new thread([&, i]{
                     for (int j = 1; j <= count; ++j) {
-                        T val((uint32_t)j | (uint32_t)i << 32);
+                        T val((uint64_t)j | (uint64_t)i << 32);
                         while (!queue.Push(std::move(val)).success) ;
 #if IS_DEBUG
-		                CACHE_LOG(DEBUG_CACHE, "push thread = {}, idx = {} ",i, j);
+		                CACHE_LOG(DEBUG_CACHE, "push thread = {}, idx = {},value = {} ",i, j,val);
 #endif
                     }
                 });
@@ -173,12 +177,12 @@ void TestLockFreeLimitQueue()
 {
     {
         Timer t;
-        test<A,10000>(10000, 10, 10);
+        test<uint64_t,10000>(10000, 10, 10);
     }
 
     {
         Timer t;
-        test<long,10000>(10000, 10, 10);
+        //test<A,10000>(10000, 10, 10);
     }
 }
 

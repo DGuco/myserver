@@ -8,6 +8,7 @@
 #define __LOCK_FREE_LIMIT_QUEUE_H__
 
 #include "my_assert.h"
+#include "my_lock.h"
 
 namespace my_std
 {
@@ -140,6 +141,8 @@ public:
 		template <typename U>
 		LockFreeResult Push(U&& t) 
 		{
+
+			//CSafeLock lock(lock_);
 			LockFreeResult result;
 
 			/* 初始状态 
@@ -157,12 +160,13 @@ public:
 				if (write == writable)
 					return result;
 			} while (!write_.compare_exchange_weak(expected, (write + 1).value(),
-				std::memory_order_acq_rel, std::memory_order_acquire));
+				std::memory_order_seq_cst, std::memory_order_acquire));
 
 #pragma push_macro("new")
 #undef new
 			// 在数据写入后添加内存屏障
 			new (buffer_ + write.mod()) T(std::forward<U>(t));
+			//std::atomic_thread_fence(std::memory_order_release);
 #pragma pop_macro("new")
 			/* 此时状态，注意此时write并没有重新读取 write = write_ - 1
 				--      --      --      --      --      --      --      --      --      --
@@ -177,7 +181,7 @@ public:
 				readable = acquire(readable_);
 				expected_ra = readable.value();
 			} while (!readable_.compare_exchange_weak(expected_ra, (readable + 1).value(),
-				std::memory_order_acq_rel, std::memory_order_acquire));
+				std::memory_order_seq_cst, std::memory_order_acquire));
 
 			/* 最终状态，注意此时readable并没有重新读取 readable = ra_ - 1 
 				--      --      --      --      --      --      --      --      --      --
@@ -190,6 +194,8 @@ public:
 		}
 
 		LockFreeResult Pop(T& t) {
+			//CSafeLock lock(lock_);
+
 			LockFreeResult result;
 
 			/* 初始状态 
@@ -208,7 +214,7 @@ public:
 					return result;
 
 			} while (!read_.compare_exchange_weak(expected,(read + 1).value(),
-				std::memory_order_acq_rel, std::memory_order_acquire));
+				std::memory_order_seq_cst, std::memory_order_acquire));
 
 			// 2.读数据
 			t = std::move(buffer_[read.mod()]);
@@ -225,7 +231,7 @@ public:
 				writable = acquire(writable_);
 				expected_wr = writable.value();
 			} while (!writable_.compare_exchange_weak(expected_wr, (writable + 1).value(),
-				std::memory_order_acq_rel, std::memory_order_acquire));
+				std::memory_order_seq_cst, std::memory_order_acquire));
 
 			/* 此时状态 
 				--      --      --      --      --      --      --      --      --      --
@@ -256,6 +262,8 @@ public:
 		// write后更新readable
 		atomic_t read_;
 		atomic_t readable_;
+
+		CMyLock lock_;
 	};
 }
 
