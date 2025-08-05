@@ -58,26 +58,18 @@ public:
 				return index % Cap;
 			}
 
-			IndexWithVersion operator++()
-			{
-				int noldver = index / Cap;
-				index++;
-				int newver = index / Cap;
-				if(noldver != newver)
-					version++;
-				index = index % Cap;
-				return IndexWithVersion(index,version);
-			}
-
 			IndexWithVersion operator+(int value)
 			{
-				int noldver = index / Cap;
-				index += value;
-				int newver = index / Cap;
+				ASSERT_EX(value >= 0,"IndexWithVersion value must be >= 0");
+				IndexWithVersion iv(index,version);
+				int noldver = iv.index / Cap;
+				iv.index += value;
+				int newver = iv.index / Cap;
 				if(noldver != newver)
-					version++;
-				index = index % Cap;
-				return IndexWithVersion(index,version);
+					iv.version++;
+				iv.index = iv.index % Cap;
+				ASSERT_EX(iv.version < INT32_MAX,"IndexWithVersion version overflow");
+				return IndexWithVersion(iv.index,iv.version);
 			}
 
 			bool operator==(const IndexWithVersion& other)
@@ -92,13 +84,12 @@ public:
 			}
 		};
 
-		// 多申请一个typename T的空间, 便于判断full和empty.
 		explicit LockFreeLimitQueue()
-			:capacity_(Cap)
-			,readable_(0 )
+			: capacity_(Cap)
+			, readable_(0 )
 			, write_(0 )
 			, read_(0 )
-			, writable_(Cap)
+			, writable_(Cap -1)
 		{
 			buffer_ = (T*)malloc(sizeof(T) * capacity_);
 		}
@@ -165,13 +156,12 @@ public:
 				//满了，无法继续push
 				if (write == writable)
 					return result;
-
-				index_type expect = write.value();
 			} while (!write_.compare_exchange_weak(expected, (write + 1).value(),
 				std::memory_order_acq_rel, std::memory_order_acquire));
 
 #pragma push_macro("new")
 #undef new
+			// 在数据写入后添加内存屏障
 			new (buffer_ + write.mod()) T(std::forward<U>(t));
 #pragma pop_macro("new")
 			/* 此时状态，注意此时write并没有重新读取 write = write_ - 1
@@ -204,7 +194,7 @@ public:
 
 			/* 初始状态 
 				--      --      --      --      --      --      --      --      --      --
-		        r_             ra_|w_								                    wa_ 
+		        r_     ra_|w_								                            wa_ 
 			*/
 			// 1.read_步进1.
 			IndexWithVersion read, readable;
@@ -226,7 +216,7 @@ public:
 
 			/* 此时状态 ，注意此时read并没有重新读取 read = read_ - 1 
 				--      --      --      --      --      --      --      --      --      --
-		               r_     ra_|w_								                    wa_ 
+		             r_|ra_|w_								                            wa_ 
 			*/
 			// 3.更新writable_,空出已经出栈的位置
 			IndexWithVersion writable;
@@ -239,7 +229,7 @@ public:
 
 			/* 此时状态 
 				--      --      --      --      --      --      --      --      --      --
-		        wa_     r_     ra_|w_								                    
+		        wa_   r_|ra_|w_								                    
 			*/
 			// 4.检查读取时是否full
 			result.notify = (read == readable_ + 1);
@@ -268,4 +258,5 @@ public:
 		atomic_t readable_;
 	};
 }
+
 #endif //__LOCK_FREE_LIMIT_QUEUE_H__

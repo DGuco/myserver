@@ -1,16 +1,12 @@
-//
-//  main.cpp
-//  gateserver
-//  Created by DGuco on 16/12/8.
-//  Copyright ? 2016年 DGuco. All rights reserved.
-//
+#ifndef __LOCK_FREE_LIMIT_QUEUE_TEST_H__
+#define __LOCK_FREE_LIMIT_QUEUE_TEST_H__
 
-#include "proxy_ctrl.h"
-#include "signal_handler.h"
 #include <functional>
 #include <tuple>
 #include <iomanip>
+#include <iostream>
 #include "thread_task.h"
+#include "log.h"
 #include "lock_free_limit_queue.h"
 
 using namespace std;
@@ -173,46 +169,17 @@ void test(int count, int rThreads, int wThreads)
 #endif
 }
 
-using namespace std;
-int main(int argc, char **argv)
+void TestLockFreeLimitQueue()
 {
-	{
-		{
-			Timer t;
-			test<A,10000>(10000, 10, 10);
-		}
+    {
+        Timer t;
+        test<A,10000>(10000, 10, 10);
+    }
 
-		{
-			Timer t;
-			test<long,10000>(10000, 10, 10);
-		}
-	}
-	//信号处理注册
-	CSignalHandler::GetSingletonPtr()->RegisterHandler("proxyserver");
-
-	if (!INIT_LOG("proxyserver"))
-	{
-		exit(0);
-	}
-
-	try
-	{
-		int iTmpRet = CProxyCtrl::GetSingletonPtr()->PrepareToRun();
-		if (!iTmpRet)
-		{
-			DISK_LOG(ERROR_DISK, "CGateCtrl PrepareToRun failed,iRet = {}", iTmpRet);
-			exit(0);
-		}
-	}
-	catch (const std::exception& e)
-	{
-		DISK_LOG(ERROR_DISK, "CGateCtrl PrepareToRun failed,get exception = {}", e.what());
-		exit(0);
-	}
-
-	CProxyCtrl::GetSingletonPtr()->Run();
-	// 关闭日志
-	SHUTDOWN_ALL_LOG();
-	return 0;
+    {
+        Timer t;
+        test<long,10000>(10000, 10, 10);
+    }
 }
 
+#endif
