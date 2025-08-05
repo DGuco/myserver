@@ -7,6 +7,8 @@
 #ifndef __LOCK_FREE_LIMIT_QUEUE_H__
 #define __LOCK_FREE_LIMIT_QUEUE_H__
 
+#include "my_assert.h"
+
 namespace my_std
 {
 	struct LockFreeResult 
@@ -16,20 +18,87 @@ namespace my_std
 	};
 
 	// 无锁环形队列
-	template <typename T, typename SizeType = size_t>
+	template <typename T,typename size_t Cap = 5>
 	class LockFreeLimitQueue
 	{
-	public:
-		typedef SizeType uint_t;
-		typedef std::atomic<uint_t> atomic_t;
+public:
+		typedef uint64_t index_type;
+		typedef std::atomic<uint64_t> atomic_t;
+
+		struct IndexWithVersion 
+		{
+			uint32_t version;// 高32位存储版本号
+			uint32_t index;  // 低32位存储索引
+
+			IndexWithVersion()
+			{
+				index = 0;
+				version = 0;
+			}
+
+			IndexWithVersion(uint64_t iv)
+			{
+				version = iv >> 32;
+				index = iv & 0xFFFFFFFF;
+			}
+
+			IndexWithVersion(uint32_t index, uint32_t version)
+			{
+				this->index = index;
+				this->version = version;
+			}
+			
+			index_type value()
+			{
+				return (uint64_t)version << 32 | index;
+			}
+
+			uint32_t mod()
+			{
+				return index % Cap;
+			}
+
+			IndexWithVersion operator++()
+			{
+				int noldver = index / Cap;
+				index++;
+				int newver = index / Cap;
+				if(noldver != newver)
+					version++;
+				index = index % Cap;
+				return IndexWithVersion(index,version);
+			}
+
+			IndexWithVersion operator+(int value)
+			{
+				int noldver = index / Cap;
+				index += value;
+				int newver = index / Cap;
+				if(noldver != newver)
+					version++;
+				index = index % Cap;
+				return IndexWithVersion(index,version);
+			}
+
+			bool operator==(const IndexWithVersion& other)
+			{
+				return index == other.index;
+			}
+
+			bool operator==(index_type other)
+			{
+				IndexWithVersion iv(other);
+				return index == iv.index;
+			}
+		};
 
 		// 多申请一个typename T的空间, 便于判断full和empty.
-		explicit LockFreeLimitQueue(uint_t capacity)
-			: capacity_(capacity)
-			, readable_(0 )
+		explicit LockFreeLimitQueue()
+			:capacity_(Cap)
+			,readable_(0 )
 			, write_(0 )
 			, read_(0 )
-			, writable_(capacity)
+			, writable_(Cap)
 		{
 			buffer_ = (T*)malloc(sizeof(T) * capacity_);
 		}
@@ -37,16 +106,46 @@ namespace my_std
 		~LockFreeLimitQueue() 
 		{
 			// destory elements.
-			uint_t read = acquire(read_);
-			uint_t readable = acquire(readable_);
-			for (; read < readable; ++read) 
+			IndexWithVersion read = acquire(read_);
+			IndexWithVersion readable = acquire(readable_);
+			
+			uint32_t read_mod = read.mod();
+			uint32_t readable_mod = readable.mod();
+			for (; read_mod < readable_mod; ++read_mod) 
 			{
-				buffer_[read].~T();
+				buffer_[read_mod].~T();
 			}
 
 			free(buffer_);
 		}
 
+		/*为了避免aba问题，所有的索引只会累加，在使用索引到数组的未知的时候，需要使用mod来获取实际的索引
+		ABA问题 示例
+		write_ = 0（原子指针）
+		readable_ = 0（原子计数器）
+		1 线程1执行Push操作：
+		1.1 读取write_=0，readable_=0
+		1.2 计算writable = mod(0 + 0) = 0
+		1.3 此时发生线程切换
+		1.4 线程2完成Push操作：
+
+		2 成功CAS将write_从0更新到1
+		2.1 更新readable_到1
+		2.2 再次Push：CAS将write_从1更新到2
+		2.3 更新readable_到2
+		2.4 再次Push：CAS将write_从2更新到0（循环队列）
+		2.5 更新readable_到3
+
+		3 线程1恢复执行：
+		3.1 检查write_当前值仍然是0（因循环队列）
+		3.2 执行CAS(0 → 1)成功
+		3.3 此时实际队列状态：
+		write_=1（已被线程2修改过）
+		readable_=3
+		这会导致：
+		1 线程1的写入位置0会覆盖线程2第三次Push写入的数据
+		2 readable_计数器从3被错误地更新为1（应该为4）
+		*/
 		template <typename U>
 		LockFreeResult Push(U&& t) 
 		{
@@ -57,20 +156,23 @@ namespace my_std
 		      r_|ra_|w_												                    wa_ 
 			*/
 			// 1.write_步进1.先占一个可写的位置
-			uint_t write, writable;
+			IndexWithVersion write, writable;
+			index_type expected;
 			do {
-				write = relaxed(write_);
+				write = acquire(write_);
 				writable = acquire(writable_);
+				expected = write.value();
 				//满了，无法继续push
 				if (write == writable)
 					return result;
 
-			} while (!write_.compare_exchange_weak(write, mod(write + 1),
-				std::memory_order_acq_rel, std::memory_order_relaxed));
+				index_type expect = write.value();
+			} while (!write_.compare_exchange_weak(expected, (write + 1).value(),
+				std::memory_order_acq_rel, std::memory_order_acquire));
 
 #pragma push_macro("new")
 #undef new
-			new (buffer_ + write) T(std::forward<U>(t));
+			new (buffer_ + write.mod()) T(std::forward<U>(t));
 #pragma pop_macro("new")
 			/* 此时状态，注意此时write并没有重新读取 write = write_ - 1
 				--      --      --      --      --      --      --      --      --      --
@@ -79,18 +181,20 @@ namespace my_std
 			// 2.数据写入
 
 			// 3.更新readable_，标记此位置可以pop
-			uint_t readable;
+			IndexWithVersion readable;
+			index_type expected_ra;
 			do {
-				readable = relaxed(readable_);
-			} while (!readable_.compare_exchange_weak(readable, mod(readable + 1),
-				std::memory_order_acq_rel, std::memory_order_relaxed));
+				readable = acquire(readable_);
+				expected_ra = readable.value();
+			} while (!readable_.compare_exchange_weak(expected_ra, (readable + 1).value(),
+				std::memory_order_acq_rel, std::memory_order_acquire));
 
 			/* 最终状态，注意此时readable并没有重新读取 readable = ra_ - 1 
 				--      --      --      --      --      --      --      --      --      --
 		        r_     ra_|w_											                wa_ 
 			*/
 			// 4.检查写入时是否empty
-			result.notify = (write == mod(writable + 1));
+			result.notify = (write == writable + 1);
 			result.success = true;
 			return result;
 		}
@@ -103,53 +207,50 @@ namespace my_std
 		        r_             ra_|w_								                    wa_ 
 			*/
 			// 1.read_步进1.
-			uint_t read, readable;
+			IndexWithVersion read, readable;
+			index_type expected;
 			do {
-				read = relaxed(read_);
+				read = acquire(read_);
 				readable = acquire(readable_);
+				expected = read.value();
 				//空了，没有元素可以pop了
 				if (read == readable)
 					return result;
 
-			} while (!read_.compare_exchange_weak(read, mod(read + 1),
-				std::memory_order_acq_rel, std::memory_order_relaxed));
+			} while (!read_.compare_exchange_weak(expected,(read + 1).value(),
+				std::memory_order_acq_rel, std::memory_order_acquire));
 
 			// 2.读数据
-			t = std::move(buffer_[read]);
-			buffer_[read].~T();
+			t = std::move(buffer_[read.mod()]);
+			buffer_[read.mod()].~T();
 
 			/* 此时状态 ，注意此时read并没有重新读取 read = read_ - 1 
 				--      --      --      --      --      --      --      --      --      --
 		               r_     ra_|w_								                    wa_ 
 			*/
 			// 3.更新writable_,空出已经出栈的位置
-			uint_t writable;
+			IndexWithVersion writable;
+			index_type expected_wr;
 			do {
-				writable = relaxed(writable_);
-			} while (!writable_.compare_exchange_weak(writable, mod(writable + 1),
-				std::memory_order_acq_rel, std::memory_order_relaxed));
+				writable = acquire(writable_);
+				expected_wr = writable.value();
+			} while (!writable_.compare_exchange_weak(expected_wr, (writable + 1).value(),
+				std::memory_order_acq_rel, std::memory_order_acquire));
 
 			/* 此时状态 
 				--      --      --      --      --      --      --      --      --      --
 		        wa_     r_     ra_|w_								                    
 			*/
 			// 4.检查读取时是否full
-			result.notify = (read == mod(readable_ + 1));
+			result.notify = (read == readable_ + 1);
 			result.success = true;
 			return result;
 		}
 
 	private:
-		inline uint_t relaxed(atomic_t& val) {
-			return val.load(std::memory_order_relaxed);
-		}
-
-		inline uint_t acquire(atomic_t& val) {
-			return val.load(std::memory_order_acquire);
-		}
-
-		inline uint_t mod(uint_t val) {
-			return val % capacity_;
+		inline IndexWithVersion acquire(atomic_t& val) 
+		{
+			return IndexWithVersion(val.load(std::memory_order_acquire));
 		}
 
 	private:

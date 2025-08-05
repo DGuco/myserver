@@ -3,8 +3,7 @@
 
 CThreadTask::CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signature)
 	:m_pScheduler(scheduler),
-	m_TaskSignature(signature),
-	m_childTaskVec(5)
+	m_TaskSignature(signature)
 {
 	SetState(enTaskState::eTaskInit);
 	SetCombineType(enCombineType::eCombineInit);

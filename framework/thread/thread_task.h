@@ -91,7 +91,7 @@ public:
 private:
 	std::string							m_TaskSignature;	//任务签名
 	time_t								m_nExecuteStart;	//任务开始执行时间
-	LockFreeLimitQueue<TaskPtr>			m_childTaskVec;
+	LockFreeLimitQueue<TaskPtr,5>		m_childTaskVec;
 	//combine info
 	CMyLock								m_combineLock;
 	TaskPtr								m_pCombineTask;

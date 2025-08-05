@@ -99,10 +99,10 @@ void AssertCount(long c, T*) {
     (void)c;
 }
 
-template <typename T = long>
-void test(int cap, int count, int rThreads, int wThreads)
+template <typename T = long,typename int cap = 5>
+void test(int count, int rThreads, int wThreads)
 {
-    LockFreeLimitQueue<T> queue(cap);
+    LockFreeLimitQueue<T,cap> queue;
     std::atomic_int lastCount{0};
     volatile bool done = false;
 
@@ -179,12 +179,12 @@ int main(int argc, char **argv)
 	{
 		{
 			Timer t;
-			test<A>(10000, 10000, 10, 10);
+			test<A,10000>(10000, 10, 10);
 		}
 
 		{
 			Timer t;
-			test(10000, 10000, 10, 10);
+			test<long,10000>(10000, 10, 10);
 		}
 	}
 	//ÐÅºÅ´¦Àí×¢²á
