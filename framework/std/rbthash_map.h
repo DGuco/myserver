@@ -11,6 +11,7 @@
 #include "hash_function.h"
 
 using namespace std;
+using namespace rbt_hash;
 
 namespace my_std
 {

@@ -80,6 +80,7 @@
         "*.inc": "cpp",
         "coroutine": "cpp",
         "*.rh": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "hash_map": "cpp"
     }
 }

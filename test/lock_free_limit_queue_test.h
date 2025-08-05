@@ -125,7 +125,7 @@ void test(int count, int rThreads, int wThreads)
                         uint32_t threadNumber = l >> 32;
                         uint32_t idx = l & 0xffffffff;
 #if IS_DEBUG
-		                CACHE_LOG(DEBUG_CACHE, "pop thread = {}, idx = {} \n ",threadNumber, idx);
+		                CACHE_LOG(DEBUG_CACHE, "pop thread = {}, idx = {} ",threadNumber, idx);
 #endif
                         if (idx == count) {
                             if (++lastCount == wThreads)
@@ -146,7 +146,7 @@ void test(int count, int rThreads, int wThreads)
                         T val((uint32_t)j | (uint32_t)i << 32);
                         while (!queue.Push(std::move(val)).success) ;
 #if IS_DEBUG
-		                CACHE_LOG(DEBUG_CACHE, "push thread = {}, idx = {} \n ",i, j);
+		                CACHE_LOG(DEBUG_CACHE, "push thread = {}, idx = {} ",i, j);
 #endif
                     }
                 });

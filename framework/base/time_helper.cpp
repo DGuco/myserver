@@ -27,6 +27,11 @@ uint64 CTimeHelper::GetMSTime()
 	return duration_cast<milliseconds>(tmTime.time_since_epoch()).count();
 }
 
+time_t CTimeHelper::GetMicroTime()
+{
+	return duration_cast<microseconds>(m_CacheTime.time_since_epoch()).count();
+}
+
 void CTimeHelper::SetTime()
 {
 	m_CacheTime = std::chrono::system_clock::now();

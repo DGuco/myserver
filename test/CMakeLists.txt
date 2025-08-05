@@ -19,7 +19,8 @@ endif()
 
 set(SOURCE_FILES
     "main.cpp" 
-    "lock_free_limit_queue_test.h")
+    "lock_free_limit_queue_test.h"
+    "rbt_hash_map_test.h")
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
@@ -56,6 +57,6 @@ add_executable(test ${SOURCE_FILES})
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries(test framework)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(test framework)
+    target_link_libraries(test framework psapi)
 endif()
 

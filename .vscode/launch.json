@@ -43,6 +43,17 @@
             "cwd": "${workspaceFolder}/run",
             "environment": [],
             "console": "externalTerminal"
+        },
+        {
+            "name": "Test",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": " ${workspaceFolder}/run/test.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/run",
+            "environment": [],
+            "console": "externalTerminal"
         }
   
     ]

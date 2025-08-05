@@ -23,6 +23,8 @@ public:
 	time_t			GetANSITime();
 	//毫秒
 	uint64			GetMSTime();
+	//微妙
+	time_t			GetMicroTime();
 	//更新缓存时间
 	void			SetTime();
 	//更新缓存时间

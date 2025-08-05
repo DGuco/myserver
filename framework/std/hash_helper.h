@@ -641,7 +641,10 @@ private:
             IndexType_ index = p->get_data();
             if(index > 0 && index <= Cap_)
             {
-                new(data_array_[index - 1].data) ValueType_(v.second);
+#pragma push_macro("new")
+#undef new
+			new(data_array_[index - 1].data) ValueType_(v.second);
+#pragma pop_macro("new")
             }
             p->init_rb();
             return p;
