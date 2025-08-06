@@ -249,14 +249,14 @@ public:
 			*/
         	uint32_t expected_wrindex = mod(read.index + capacity_ - 1);
 			index_type expected_wr;
-			if(read.index < IndexWithVersion(writable_).index)
+			if(read.index < readable.index)
 			{
 				expected_wr = IndexWithVersion(expected_wrindex, read.version).value();
 			}else
 			{
 				/*
 				--      --      --      --      --      --      --      --      --      --
-		             	w				wa_     r_                      ra_    
+		        ra_     w				wa_     r_                          
 				*/
 				expected_wr = IndexWithVersion(expected_wrindex, read.version + 1).value();
 			}
