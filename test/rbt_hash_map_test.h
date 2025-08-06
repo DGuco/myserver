@@ -96,7 +96,7 @@ int Test_RbtHashMap()
         pMyMap->insert(i * HASH_CONFLICT_RATE,MapValue(i * HASH_CONFLICT_RATE));
     }
     end = GetUSTime();
-    printf("my::hash_map<int,int,TEST_COUNT> insert use  %ld ms\n",(end - start) / 1000);
+    printf("my::hash_map<int,int,TEST_COUNT> insert use  %lld ms\n",(end - start) / 1000);
  
 //    my::hash_map<int,MapValue,TEST_COUNT>* pMyMap1 = new my::hash_map<int,MapValue,TEST_COUNT>();
 //    memcpy(pMyMap1,pMyMap,sizeof(my::hash_map<int,int,TEST_COUNT>));
@@ -106,7 +106,8 @@ int Test_RbtHashMap()
         res += pMyMap->find(i * HASH_CONFLICT_RATE)->second->a;
     }
     end = GetUSTime();
-    printf("my::hash_map<int,int,TEST_COUNT> find use  %ld ms,res = %llu,cap = %lu,mem = %f MB\n",
+    printf("my::hash_map<int,int,TEST_COUNT> find use  %lld ms,res = %llu,cap = %lu,mem = %f MB\n",
+
             (end - start) / 1000,res,pMyMap->cap(),memend - memstart);
  
  
@@ -120,7 +121,8 @@ int Test_RbtHashMap()
     }
     memend = GetMemoryUsage();
     end = GetUSTime();
-    printf("std::map<int,int> insert use  %ld ms\n",(end - start) / 1000);
+    printf("std::map<int,int> insert use  %lld ms\n",(end - start) / 1000);
+
     start = GetUSTime();
     res = 0;
     for(int i = 0;i < TEST_COUNT;i++)
@@ -128,7 +130,8 @@ int Test_RbtHashMap()
         res += testMap.find(i * HASH_CONFLICT_RATE)->second.a;
     }
     end = GetUSTime();
-    printf("std::map<int,int> find use  %ld ms,res = %llu,cap = %lu,mem = %f MB\n",
+    printf("std::map<int,int> find use  %lld ms,res = %llu,cap = %lu,mem = %f MB\n",
+
             (end - start) / 1000,res,testMap.max_size(),memend - memstart);
  
 
@@ -143,7 +146,8 @@ int Test_RbtHashMap()
     }
     memend = GetMemoryUsage();
     end = GetUSTime();
-    printf("__gnu_cxx::hash_map<int,int> insert use  %ld ms\n",(end - start) / 1000);
+    printf("__gnu_cxx::hash_map<int,int> insert use  %lld ms\n",(end - start) / 1000);
+
     start = GetUSTime();
     res = 0;
     for(int i = 0;i < TEST_COUNT;i++)
@@ -151,7 +155,8 @@ int Test_RbtHashMap()
         res += testGnuMap.find(i * HASH_CONFLICT_RATE)->second.a;
     }
     end = GetUSTime();
-    printf("__gnu_cxx::hash_map<int,int> find use  %ld ms,res = %llu,cap = %lu,mem = %f MB\n",
+    printf("__gnu_cxx::hash_map<int,int> find use  %lld ms,res = %llu,cap = %lu,mem = %f MB\n",
+
             (end - start) / 1000,res,testGnuMap.max_size(),memend - memstart);
  #endif
  
@@ -165,7 +170,8 @@ int Test_RbtHashMap()
     }
     memend = GetMemoryUsage();
     end = GetUSTime();
-    printf("std::unordered_map<int,int> insert use  %ld ms\n",(end - start) / 1000);
+    printf("std::unordered_map<int,int> insert use  %lld ms\n",(end - start) / 1000);
+
     start = GetUSTime();
     res = 0;
     for(int i = 0;i < TEST_COUNT;i++)
@@ -173,7 +179,8 @@ int Test_RbtHashMap()
         res += testUnorderMap.find(i * HASH_CONFLICT_RATE)->second.a;
     }
     end = GetUSTime();
-    printf("std::unordered_map<int,int> find use  %ld ms,res = %llu,cap = %lu,mem = %f MB\n",
+    printf("std::unordered_map<int,int> find use  %lld ms,res = %llu,cap = %lu,mem = %f MB\n",
+
             (end - start) / 1000,res,testUnorderMap.max_size(),memend - memstart);
     printf("------------------------------------------------------------------------\n");
  
