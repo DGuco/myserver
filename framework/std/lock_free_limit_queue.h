@@ -22,10 +22,38 @@ namespace my_std
 	template <typename T,typename size_t Cap = 5>
 	class LockFreeLimitQueue
 	{
+		static_assert(Cap > 0 && Cap <= UINT32_MAX, "LockFreeLimitQueue Cap OVERFLOW");
 public:
 		typedef uint64_t index_type;
 		typedef std::atomic<uint64_t> atomic_t;
 
+		/*为了避免aba问题，所有的索引只会累加，在使用索引到数组的未知的时候，需要使用mod来获取实际的索引
+		ABA问题 示例
+		write_ = 0（原子指针）
+		readable_ = 0（原子计数器）
+		1 线程1执行Push操作：
+		1.1 读取write_=0，readable_=0
+		1.2 计算writable = mod(0 + 0) = 0
+		1.3 此时发生线程切换
+		1.4 线程2完成Push操作：
+
+		2 成功CAS将write_从0更新到1
+		2.1 更新readable_到1
+		2.2 再次Push：CAS将write_从1更新到2
+		2.3 更新readable_到2
+		2.4 再次Push：CAS将write_从2更新到0（循环队列）
+		2.5 更新readable_到3
+
+		3 线程1恢复执行：
+		3.1 检查write_当前值仍然是0（因循环队列）
+		3.2 执行CAS(0 → 1)成功
+		3.3 此时实际队列状态：
+		write_=1（已被线程2修改过）
+		readable_=3
+		这会导致：
+		1 线程1的写入位置0会覆盖线程2第三次Push写入的数据
+		2 readable_计数器从3被错误地更新为1（应该为4）
+		*/
 		struct IndexWithVersion 
 		{
 			uint32_t version;// 高32位存储版本号
@@ -111,33 +139,6 @@ public:
 			free(buffer_);
 		}
 
-		/*为了避免aba问题，所有的索引只会累加，在使用索引到数组的未知的时候，需要使用mod来获取实际的索引
-		ABA问题 示例
-		write_ = 0（原子指针）
-		readable_ = 0（原子计数器）
-		1 线程1执行Push操作：
-		1.1 读取write_=0，readable_=0
-		1.2 计算writable = mod(0 + 0) = 0
-		1.3 此时发生线程切换
-		1.4 线程2完成Push操作：
-
-		2 成功CAS将write_从0更新到1
-		2.1 更新readable_到1
-		2.2 再次Push：CAS将write_从1更新到2
-		2.3 更新readable_到2
-		2.4 再次Push：CAS将write_从2更新到0（循环队列）
-		2.5 更新readable_到3
-
-		3 线程1恢复执行：
-		3.1 检查write_当前值仍然是0（因循环队列）
-		3.2 执行CAS(0 → 1)成功
-		3.3 此时实际队列状态：
-		write_=1（已被线程2修改过）
-		readable_=3
-		这会导致：
-		1 线程1的写入位置0会覆盖线程2第三次Push写入的数据
-		2 readable_计数器从3被错误地更新为1（应该为4）
-		*/
 		template <typename U>
 		LockFreeResult Push(U&& t) 
 		{
@@ -160,13 +161,12 @@ public:
 				if (write == writable)
 					return result;
 			} while (!write_.compare_exchange_weak(expected, (write + 1).value(),
-				std::memory_order_seq_cst, std::memory_order_acquire));
+				std::memory_order_acq_rel, std::memory_order_relaxed));
 
 #pragma push_macro("new")
 #undef new
 			// 在数据写入后添加内存屏障
 			new (buffer_ + write.mod()) T(std::forward<U>(t));
-			//std::atomic_thread_fence(std::memory_order_release);
 #pragma pop_macro("new")
 			/* 此时状态，注意此时write并没有重新读取 write = write_ - 1
 				--      --      --      --      --      --      --      --      --      --
@@ -176,12 +176,28 @@ public:
 
 			// 3.更新readable_，标记此位置可以pop
 			IndexWithVersion readable;
-			index_type expected_ra;
+			index_type expected_ra = write.value();
 			do {
 				readable = acquire(readable_);
-				expected_ra = readable.value();
+			/*readable_的更新期待值是write = write_ - 1 不是readable_
+				write_ = 0（原子指针）
+				readable_ = 0（原子计数器）
+				1 线程1执行Push操作：
+				1.1 读取write_=0，readable_=0
+				1.2 write_步进1.先占一个可写的位置 write_=1，readable_=0
+				1.3 此时发生线程切换
+				1.4 线程2执行Push操作：
+				1.5 write_步进1.先占一个可写的位置 write_=2，readable_=0
+				1.6 此时发生线程切换
+				1.7 线程3执行Push操作：
+				1.8 write_步进1.先占一个可写的位置 write_=3，readable_=0
+				1.9 线程3写入数据
+				1.10 线程3更新readable_，标记此位置可以pop readable_=1,但是写入的数据位置实际上是3
+				    这样就会导致读出的数据实际上是线程1还未写入的数据
+			  总结就是在占了写入位置后，在更新readable_之前不允许其他写入者提前更新readable_
+			*/
 			} while (!readable_.compare_exchange_weak(expected_ra, (readable + 1).value(),
-				std::memory_order_seq_cst, std::memory_order_acquire));
+				std::memory_order_acq_rel, std::memory_order_relaxed));
 
 			/* 最终状态，注意此时readable并没有重新读取 readable = ra_ - 1 
 				--      --      --      --      --      --      --      --      --      --
@@ -214,24 +230,42 @@ public:
 					return result;
 
 			} while (!read_.compare_exchange_weak(expected,(read + 1).value(),
-				std::memory_order_seq_cst, std::memory_order_acquire));
-
-			// 2.读数据
-			t = std::move(buffer_[read.mod()]);
-			buffer_[read.mod()].~T();
-
+				std::memory_order_acq_rel, std::memory_order_relaxed));
+			
 			/* 此时状态 ，注意此时read并没有重新读取 read = read_ - 1 
 				--      --      --      --      --      --      --      --      --      --
 		             r_|ra_|w_								                            wa_ 
 			*/
-			// 3.更新writable_,空出已经出栈的位置
-			IndexWithVersion writable;
+
+			
+			// 2.读数据
+			t = std::move(buffer_[read.mod()]);
+			buffer_[read.mod()].~T();
+			/*
+				和Push时更新readable_一个道理防止占read_步进1占了位置后还未读出数据线程切走，
+				其他新城read_又步进1，读出数据，然后步进1更新writable_让出可写位置，但是这个位置
+				实际上数据还并未pop就标记了可写
+				所以writable_的更新条件是：mod(writable_ + 1) == read，即 writable_ == mod(read_ + capacity_ - 1)
+			*/
+        	uint32_t expected_wrindex = mod(read.index + capacity_ - 1);
 			index_type expected_wr;
+			if(read.index < IndexWithVersion(writable_).index)
+			{
+				expected_wr = IndexWithVersion(expected_wrindex, read.version).value();
+			}else
+			{
+				/*
+				--      --      --      --      --      --      --      --      --      --
+		             	w				wa_     r_                      ra_    
+				*/
+				expected_wr = IndexWithVersion(expected_wrindex, read.version + 1).value();
+			}
+			IndexWithVersion writable;
+			// 3.更新writable_,空出已经出栈的位置
 			do {
 				writable = acquire(writable_);
-				expected_wr = writable.value();
 			} while (!writable_.compare_exchange_weak(expected_wr, (writable + 1).value(),
-				std::memory_order_seq_cst, std::memory_order_acquire));
+				std::memory_order_acq_rel, std::memory_order_relaxed));
 
 			/* 此时状态 
 				--      --      --      --      --      --      --      --      --      --
@@ -248,6 +282,11 @@ public:
 		{
 			return IndexWithVersion(val.load(std::memory_order_acquire));
 		}
+
+		inline uint32_t mod(uint32_t val) 
+		{
+        	return val % capacity_;
+    	}
 
 	private:
 		T* buffer_;
