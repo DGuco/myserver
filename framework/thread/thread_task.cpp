@@ -84,11 +84,13 @@ void CThreadTask::CombineTaskDone()
 
 void CThreadTask::AddChildTask(TaskPtr pTask)
 {
-	if (!m_childTaskVec.Push(pTask).success)
-	{
-		CACHE_LOG(ERROR_CACHE, "task is full,can not add");
-		ASSERT_EX(false, "task is full,can not add");
-	}
+	CSafeLock guard(m_childTaskLock);
+	m_childTaskQueue.push(pTask);
+	// if (!m_childTaskQueue.push(pTask).success)
+	// {
+	// 	CACHE_LOG(ERROR_CACHE, "task is full,can not add");
+	// 	ASSERT_EX(false, "task is full,can not add");
+	// }
 }
 
 void CThreadTask::OnFinish()
@@ -156,10 +158,14 @@ void CThreadTask::RunChildTask()
 	LockFreeResult result;
 	while (true)
 	{
-		result = m_childTaskVec.Pop(pTask);
-		if (!result.success)
 		{
-			break;
+			CSafeLock guard(m_childTaskLock);
+			if (m_childTaskQueue.empty())
+			{
+				break;
+			}
+			pTask = m_childTaskQueue.front();
+			m_childTaskQueue.pop();
 		}
 		if (pTask != NULL)
 		{

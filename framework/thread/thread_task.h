@@ -11,6 +11,7 @@
 #include <tuple>
 #include <memory>
 #include <atomic>
+#include <queue>
 #include "my_thread.h"
 #include "lock_free_limit_queue.h"
 #include "log.h"
@@ -91,7 +92,8 @@ public:
 private:
 	std::string							m_TaskSignature;	//任务签名
 	time_t								m_nExecuteStart;	//任务开始执行时间
-	LockFreeLimitQueue<TaskPtr,5>		m_childTaskVec;
+	std::queue<TaskPtr>					m_childTaskQueue;
+	CMyLock								m_childTaskLock;
 	//combine info
 	CMyLock								m_combineLock;
 	TaskPtr								m_pCombineTask;
