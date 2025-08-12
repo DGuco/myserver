@@ -6,6 +6,8 @@
 
 const int TEST_ROUNDS = 10000;
 const int THREAD_PAIRS = 100;
+const int TEST_DELAY = 10;
+
 // 全局原子变量
 std::atomic<bool> x[THREAD_PAIRS]{false};
 std::atomic<bool> y[THREAD_PAIRS]{false};
@@ -54,9 +56,12 @@ void thread_store(int index)
     短延迟（1-100ns）可触发CPU微架构级重排序（如StoreLoad重排）
     长延迟（1-10us）可触发系统级重排序（如总线事务重排） 在足够多的测试轮次下，这些场景的重排概率会被显著放大。
     */
-    // 随机延迟增加重排序概率
-    int delay = rand() % 100;
-    std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
+    if(TEST_DELAY > 0)
+    {
+        // 随机延迟增加重排序概率
+        int delay = rand() % TEST_DELAY;
+        std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
+    }
 
     x[index].store(true, std::memory_order_relaxed);
     // 关键存储操作: 若发生重排序，可能先于x的存储被观察到
@@ -68,14 +73,17 @@ void thread_load(int index)
 {
     bool y_loaded, x_loaded;
     do {
-        x_loaded = x[index].load(std::memory_order_relaxed);
-
-        // 随机延迟增加观察窗口
-        int delay = rand() % 100;
-        std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
-
+        
         y_loaded = y[index].load(std::memory_order_relaxed);
 
+        // if(TEST_DELAY > 0)
+        // {
+        //     // 随机延迟增加观察窗口
+        //     int delay = rand() % TEST_DELAY;
+        //     std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
+        // }
+
+        x_loaded = x[index].load(std::memory_order_relaxed);
         // 检测重排序现象: y已被设置但x未被设置
         if (y_loaded && !x_loaded) 
         {
@@ -90,14 +98,17 @@ void thread_load(int index)
 // 线程1: 存储x→存储y
 void thread_store_release(int index) 
 {
-    xx_[index].store(false, std::memory_order_relaxed);
+    xx_[index].store(false, std::memory_order_release);
     yy_[index].store(false, std::memory_order_release);
 
-    // 随机延迟增加重排序概率
-    int delay = rand() % 100;
-    std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
+    if(TEST_DELAY > 0)
+    {
+        // 随机延迟增加重排序概率
+        int delay = rand() % TEST_DELAY;
+        std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
+    }
 
-    xx_[index].store(true, std::memory_order_relaxed);
+    xx_[index].store(true, std::memory_order_release);
     // 关键存储操作: 若发生重排序，可能先于x的存储被观察到
     yy_[index].store(true, std::memory_order_release);
 }
@@ -107,13 +118,16 @@ void thread_load_acquire(int index)
 {
     bool y_loaded, x_loaded;
     do {
-        x_loaded = xx_[index].load(std::memory_order_relaxed);
-
-        // 随机延迟增加观察窗口
-        int delay = rand() % 100;
-        std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
-
         y_loaded = yy_[index].load(std::memory_order_acquire);
+
+        // if(TEST_DELAY > 0)
+        // {
+        //     // 随机延迟增加观察窗口
+        //     int delay = rand() % TEST_DELAY;
+        //     std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
+        // }
+
+        x_loaded = xx_[index].load(std::memory_order_acquire);
 
         // 检测重排序现象: y已被设置但x未被设置
         if (y_loaded && !x_loaded) 
