@@ -17,7 +17,6 @@
 #include "log.h"
 #include "task_helper.h"
 
-#define MAX_CHILD_TASK_COUNT (5)
 using namespace my_std;
 
 class CThreadScheduler;

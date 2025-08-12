@@ -19,7 +19,7 @@
 #define __MY_FILE__ ((strrchr(__FILE__, '/') == NULL) ? __FILE__ : strrchr(__FILE__, '/') + 1)
 #define STR(x)			#x
 
-#define new MY_NEW
+//#define new MY_NEW
 #define SAFE_DELETE(ptr) \
 	do \
 	{\
@@ -79,7 +79,7 @@ inline T load_acquire(std::atomic<T>& atomic_value)
 template<typename T>
 inline void store_release(std::atomic<T>& atomic_value,T value)
 {
-	atomic_value.store(value,std::memory_order_relaxed);
+	atomic_value.store(value,std::memory_order_release);
 }
 
 #endif // __BASE_H__

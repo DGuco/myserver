@@ -56,6 +56,7 @@ set(FRAMEWORK
         "base/signal_handler.cpp"
         "base/message_factory.h"
         "base/message_factory.cpp" 
+        "base/base_header.h"
         "std/t_array.h"
         "std/rb_tree.h"
         "std/hash_function.h"

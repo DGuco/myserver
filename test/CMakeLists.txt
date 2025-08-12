@@ -20,7 +20,9 @@ endif()
 set(SOURCE_FILES
     "main.cpp" 
     "lock_free_limit_queue_test.h"
-    "rbt_hash_map_test.h")
+    "rbt_hash_map_test.h"
+    "atomic_test.h")
+
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
