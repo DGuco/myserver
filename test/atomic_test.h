@@ -28,7 +28,7 @@ std::atomic<int> total_runs_xx{0};
 // 线程1: 存储x→存储y
 void thread_store(int index) 
 {
-    x[index] = true;
+    x[index] = false;
     /*
     1. 打破执行节奏的确定性
     无延迟时，线程1和线程2的操作可能呈现固定时序关系（如严格交替执行），CPU重排序难以被观测：
@@ -66,6 +66,7 @@ void thread_store(int index)
     {
         volatile int tmp = cache_filler[i]; // 干扰CPU缓存
     }
+    x[index] = true;
     // 关键存储操作: 若发生重排序，可能先于x的存储被观察到
     y[index].store(true, std::memory_order_relaxed);
 }
@@ -148,6 +149,12 @@ void test_memory_order_relaxed()
         std::thread t1[THREAD_PAIRS];
         std::thread t2[THREAD_PAIRS];
 
+        for(int j = 0; j < THREAD_PAIRS; ++j)
+        {
+            x[j] = false;
+            y[j] = false;
+        }
+
         for (int j = 0; j < THREAD_PAIRS; ++j) 
         {
             t1[j] = std::thread(thread_store, j);
@@ -174,6 +181,12 @@ void test_memory_order_release_acquire()
     {
         std::thread t1[THREAD_PAIRS];
         std::thread t2[THREAD_PAIRS];
+        
+        for(int j = 0; j < THREAD_PAIRS; ++j)
+        {
+            xx_[j] = false;
+            yy_[j] = false;
+        }
 
         for (int j = 0; j < THREAD_PAIRS; ++j) 
         {
