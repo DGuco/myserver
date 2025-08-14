@@ -6,21 +6,32 @@
 
 const int TEST_ROUNDS = 10000;
 const int THREAD_PAIRS = 100;
-const int TEST_DELAY = 100;
+const int TEST_DELAY = 0;
+
+struct TestData
+{
+    bool x;
+    std::atomic<bool> y;
+    TestData() : x(false), y(false) {}
+
+    void Reset()
+    {
+        x = false;
+        y.store(false, std::memory_order_relaxed);
+    }
+};
 
 // 全局原子变量
-bool x[THREAD_PAIRS]{false};
-std::atomic<bool> y[THREAD_PAIRS]{false};
+TestData x[THREAD_PAIRS];
 int cache_filler[1000]{0};
+
+// 全局原子变量
+TestData xx_[THREAD_PAIRS];
 
 // 结果统计
 std::atomic<int> reorder_count{0};
 std::atomic<int> total_runs{0};
 
-
-// 全局原子变量
-bool xx_[THREAD_PAIRS]{false};
-std::atomic<bool> yy_[THREAD_PAIRS]{false};
 // 结果统计
 std::atomic<int> reorder_count_xx{0};
 std::atomic<int> total_runs_xx{0};
@@ -28,7 +39,12 @@ std::atomic<int> total_runs_xx{0};
 // 线程1: 存储x→存储y
 void thread_store(int index) 
 {
-    x[index] = false;
+    x[index].x = false;
+    for (int i = 0; i < 1000; ++i) 
+    {
+        cache_filler[i] = x[index].x; // 干扰CPU缓存
+    }
+    x[index].x = true;
     /*
     1. 打破执行节奏的确定性
     无延迟时，线程1和线程2的操作可能呈现固定时序关系（如严格交替执行），CPU重排序难以被观测：
@@ -62,13 +78,8 @@ void thread_store(int index)
         int delay = rand() % TEST_DELAY;
         std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
     }
-    for (int i = 0; i < 1000; ++i) 
-    {
-        volatile int tmp = cache_filler[i]; // 干扰CPU缓存
-    }
-    x[index] = true;
     // 关键存储操作: 若发生重排序，可能先于x的存储被观察到
-    y[index].store(true, std::memory_order_relaxed);
+    x[index].y.store(true, std::memory_order_relaxed);
 }
 
 // 线程2: 加载y→加载x
@@ -77,7 +88,7 @@ void thread_load(int index)
     bool y_loaded, x_loaded;
     do {
         
-        y_loaded = y[index].load(std::memory_order_relaxed);
+        y_loaded = x[index].y.load(std::memory_order_relaxed);
 
         if(TEST_DELAY > 0)
         {
@@ -86,7 +97,8 @@ void thread_load(int index)
             std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
         }
 
-        x_loaded = x[index];
+        x_loaded = x[index].x;
+
         // 检测重排序现象: y已被设置但x未被设置
         if (y_loaded && !x_loaded) 
         {
@@ -101,19 +113,21 @@ void thread_load(int index)
 // 线程1: 存储x→存储y
 void thread_store_release(int index) 
 {
-    xx_[index] = true;
+
+    xx_[index].x = false;
+    for (int i = 0; i < 1000; ++i) 
+    {
+        cache_filler[i] = x[index].x; // 干扰CPU缓存
+    }
+    xx_[index].x = true;
     if(TEST_DELAY > 0)
     {
         // 随机延迟增加重排序概率
         int delay = rand() % TEST_DELAY;
         std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
     }
-    for (int i = 0; i < 1000; ++i) 
-    {
-        volatile int tmp = cache_filler[i]; // 干扰CPU缓存
-    }
     // 关键存储操作: 若发生重排序，可能先于x的存储被观察到
-    yy_[index].store(true, std::memory_order_release);
+    xx_[index].y.store(true, std::memory_order_release);
 }
 
 // 线程2: 加载y→加载x
@@ -122,14 +136,14 @@ void thread_load_acquire(int index)
     bool y_loaded, x_loaded;
     do 
     {
-        y_loaded = yy_[index].load(std::memory_order_acquire);
+        y_loaded = xx_[index].y.load(std::memory_order_acquire);
         if(TEST_DELAY > 0)
         {
             // 随机延迟增加重排序概率
             int delay = rand() % TEST_DELAY;
             std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
         }
-        x_loaded = xx_[index];
+        x_loaded = xx_[index].x;
         // 检测重排序现象: y已被设置但x未被设置
         if (y_loaded && !x_loaded) 
         {
@@ -151,8 +165,7 @@ void test_memory_order_relaxed()
 
         for(int j = 0; j < THREAD_PAIRS; ++j)
         {
-            x[j] = false;
-            y[j] = false;
+            x[j].Reset();
         }
 
         for (int j = 0; j < THREAD_PAIRS; ++j) 
@@ -181,11 +194,10 @@ void test_memory_order_release_acquire()
     {
         std::thread t1[THREAD_PAIRS];
         std::thread t2[THREAD_PAIRS];
-        
+
         for(int j = 0; j < THREAD_PAIRS; ++j)
         {
-            xx_[j] = false;
-            yy_[j] = false;
+            xx_[j].Reset();
         }
 
         for (int j = 0; j < THREAD_PAIRS; ++j) 
