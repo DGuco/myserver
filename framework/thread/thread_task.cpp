@@ -51,7 +51,7 @@ CThreadTask::~CThreadTask()
 void CThreadTask::SetCombineCount(BYTE value)
 {
 	m_combineCount = value;
-	m_combineDone.store(0, memory_order_release);
+	store_release(m_combineDone,(unsigned char)(0));
 }
 
 void CThreadTask::CombineTaskDone()
@@ -64,7 +64,7 @@ void CThreadTask::CombineTaskDone()
 	}
 	
 	// fetch_add(1) 保证原子性递增
-    const int oldValue = m_combineDone.fetch_add(1, std::memory_order_release);
+    const int oldValue = m_combineDone.fetch_add(1, std::memory_order_acq_rel);
     const int newValue = oldValue + 1;
     // 修改判断条件为严格相等
     if (newValue == m_combineCount) 
@@ -155,7 +155,6 @@ void CThreadTask::Run()
 void CThreadTask::RunChildTask()
 {
 	TaskPtr pTask;
-	LockFreeResult result;
 	while (true)
 	{
 		{

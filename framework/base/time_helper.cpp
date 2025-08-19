@@ -12,23 +12,34 @@ CTimeHelper::~CTimeHelper()
 }
 
 // 得到标准时间
-time_t CTimeHelper::GetANSITime()
+time_t CTimeHelper::GetANSITime(bool realTime)
 {
-	std::chrono::time_point<std::chrono::system_clock> tmTime = std::chrono::system_clock::now();
-	SetTime(tmTime);
-	return std::chrono::system_clock::to_time_t(tmTime);
+	if (realTime)
+	{
+		std::chrono::time_point<std::chrono::system_clock> tmTime = std::chrono::system_clock::now();
+		SetTime(tmTime);
+	}
+	return std::chrono::system_clock::to_time_t(m_CacheTime);
 }
 
 //毫秒
-uint64 CTimeHelper::GetMSTime()
+uint64 CTimeHelper::GetMSTime(bool realTime)
 {
-	std::chrono::time_point<std::chrono::system_clock> tmTime = std::chrono::system_clock::now();
-	SetTime(tmTime);
-	return duration_cast<milliseconds>(tmTime.time_since_epoch()).count();
+	if (realTime)
+	{
+		std::chrono::time_point<std::chrono::system_clock> tmTime = std::chrono::system_clock::now();
+		SetTime(tmTime);
+	}
+	return duration_cast<milliseconds>(m_CacheTime.time_since_epoch()).count();
 }
 
-time_t CTimeHelper::GetMicroTime()
+time_t CTimeHelper::GetMicroTime(bool realTime)
 {
+	if (realTime)
+	{
+		std::chrono::time_point<std::chrono::system_clock> tmTime = std::chrono::system_clock::now();
+		SetTime(tmTime);
+	}
 	return duration_cast<microseconds>(m_CacheTime.time_since_epoch()).count();
 }
 

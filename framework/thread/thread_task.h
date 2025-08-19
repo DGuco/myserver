@@ -13,14 +13,13 @@
 #include <atomic>
 #include <queue>
 #include "my_thread.h"
-#include "lock_free_limit_queue.h"
 #include "log.h"
 #include "task_helper.h"
+#include "t_array.h"
 
 using namespace my_std;
 
 class CThreadScheduler;
-class CThreadTask;
 enum class enTaskState : unsigned char
 {
 	eTaskInit = 0,
@@ -89,17 +88,25 @@ public:
 	virtual void* GetRes() = 0;
 	virtual void* GetArgs() = 0;
 private:
+	CMyLock								m_childTaskLock;
 	std::string							m_TaskSignature;	//任务签名
 	time_t								m_nExecuteStart;	//任务开始执行时间
+	//任务执行完成后，需要执行的后续子任务
 	std::queue<TaskPtr>					m_childTaskQueue;
-	CMyLock								m_childTaskLock;
+	//当前任务的执行状态
+	std::atomic<enTaskState>			m_nState;
+private:
 	//combine info
 	CMyLock								m_combineLock;
+	//如果当前任务是合并任务前置任务之一，所有前置任务完成后待执行的子任务
 	TaskPtr								m_pCombineTask;
-	BYTE								m_combineCount;
+	//如果当前任务是合并任务前置任务之一，前置任务完成的数量
+	uint16								m_combineCount;
+	//如果当前任务是合并任务之一(前置任务或者后续子任务)，合并任务的类型
 	enCombineType						m_combineType;
+	//如果当前任务是一组合并任务的后续子任务，前置任务已完成的数量
 	std::atomic_uchar					m_combineDone;
-	std::atomic<enTaskState>			m_nState;
+	//如果当前任务是一组合并任务的后续子任务，子任务的参数列表
 	CSafePtr<CArgsHolder>				m_pCombinedArgs;
 protected:
 	CSafePtr<CThreadScheduler>		m_pScheduler;
@@ -120,6 +127,7 @@ public:
 		return true;
 	}
 };
+
 template<BYTE combineIndex, class... Args>
 class CTaskArgsList : public CArgsHolder
 {
@@ -156,6 +164,7 @@ public:
 		return false;
 	}
 };
+
 template<class Func, class...Args>
 class CWithReturnTask : public CThreadTask
 {

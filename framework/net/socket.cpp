@@ -1,6 +1,7 @@
 #include "my_assert.h"
 #include "socket.h"
 #include "log.h"
+#include "c_string.h"
 
 CSocket::CSocket()	: m_nSocket(INVALID_SOCKET)
 {}

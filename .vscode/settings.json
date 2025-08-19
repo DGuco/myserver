@@ -81,6 +81,11 @@
         "coroutine": "cpp",
         "*.rh": "cpp",
         "regex": "cpp",
-        "hash_map": "cpp"
+        "hash_map": "cpp",
+        "cassert": "cpp",
+        "cerrno": "cpp",
+        "cfloat": "cpp",
+        "climits": "cpp",
+        "string_view": "cpp"
     }
 }

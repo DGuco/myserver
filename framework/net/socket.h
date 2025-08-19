@@ -11,6 +11,7 @@
 #include "t_array.h"
 #include "base.h"
 #include "common_def.h"
+#include "c_string.h"
 
 using namespace my_std;
 

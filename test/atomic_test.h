@@ -6,7 +6,7 @@
 
 const int TEST_ROUNDS = 10000;
 const int THREAD_PAIRS = 100;
-const int TEST_DELAY = 0;
+const int TEST_DELAY = 10;
 
 struct TestData
 {
@@ -78,6 +78,7 @@ void thread_store(int index)
         int delay = rand() % TEST_DELAY;
         std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
     }
+    
     // 关键存储操作: 若发生重排序，可能先于x的存储被观察到
     x[index].y.store(true, std::memory_order_relaxed);
 }

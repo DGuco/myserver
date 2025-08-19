@@ -20,11 +20,11 @@ public:
 	~CTimeHelper();
 
 	//格林威治时间1970年01月01日00时00分00秒(北京时间1970年01月01日08时00分00秒)起至现在的总秒数
-	time_t			GetANSITime();
+	time_t			GetANSITime(bool realTime = false);
 	//毫秒
-	uint64			GetMSTime();
+	uint64			GetMSTime(bool realTime = false);
 	//微妙
-	time_t			GetMicroTime();
+	time_t			GetMicroTime(bool realTime = false);
 	//更新缓存时间
 	void			SetTime();
 	//更新缓存时间

@@ -1,7 +1,7 @@
 #include "base.h"
 #include "log.h"
-#include "t_array.h"
 #include "shm_api.h"
+#include "c_string.h"
 
 using namespace my_std;
 
