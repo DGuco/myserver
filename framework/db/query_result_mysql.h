@@ -16,8 +16,7 @@ class QueryResultMysql: public QueryResult
 {
 public:
 	QueryResultMysql(MYSQL_RES *result, uint64 rowCount, uint32 fieldCount);
-
-	~QueryResultMysql();
+	virtual ~QueryResultMysql();
 
 	bool NextRow();
 

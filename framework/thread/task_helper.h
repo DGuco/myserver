@@ -10,6 +10,7 @@
 #include "safe_pointer.h"
 #include "thread_task.h"
 
+class CThreadScheduler;
 template<size_t NUM_PARAMS, typename return_type, typename... Args>
 struct TaskCaller
 {
@@ -182,25 +183,25 @@ public:
 	}
 };
 
-template<typename return_type, class Func,typename ...Args>
+template<int combine_count,typename return_type, class Func,typename ...Args>
 struct CombineTaskCreater
 {
 	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
 								std::string signature,
 								const Func f)
 	{
-		return std::make_shared<CWithReturnTask<Func, Args...>>(scheduler, signature, f);
+		return std::make_shared<CWithReturnTask<combine_count,Func, Args...>>(scheduler, signature, f);
 	}
 };
 
-template<class Func, typename ...Args>
-struct CombineTaskCreater<void,Func,Args...>
+template<int combine_count,class Func, typename ...Args>
+struct CombineTaskCreater<combine_count,void,Func,Args...>
 {
 	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
 								std::string signature,
 								const Func f)
 	{
-		return std::make_shared<CNoReturnTask<Func, Args...>>(scheduler, signature, f);
+		return std::make_shared<CNoReturnTask<combine_count,Func, Args...>>(scheduler, signature, f);
 	}
 };
 
@@ -211,7 +212,7 @@ struct TaskCreater
 								std::string signature,
 								const Func f)
 	{
-		return std::make_shared<CWithReturnTask<Func,Par>>(scheduler, signature, f);
+		return std::make_shared<CWithReturnTask<0,Func,Par>>(scheduler, signature, f);
 	}
 };
 
@@ -222,7 +223,7 @@ struct TaskCreater<void, Par, Func>
 								std::string signature,
 								const Func f)
 	{
-		return std::make_shared<CNoReturnTask<Func,Par>>(scheduler, signature, f);
+		return std::make_shared<CNoReturnTask<0,Func,Par>>(scheduler, signature, f);
 	}
 };
 
@@ -233,7 +234,7 @@ struct TaskCreater<return_type, void, Func>
 								std::string signature,
 								const Func f)
 	{
-		return std::make_shared<CWithReturnTask<Func, void>>(scheduler, signature, f);
+		return std::make_shared<CWithReturnTask<0,Func, void>>(scheduler, signature, f);
 	}
 };
 
@@ -244,13 +245,15 @@ struct TaskCreater<void, void, Func>
 								std::string signature,
 								const Func f)
 	{
-		return std::make_shared<CNoReturnTask<Func,void>>(scheduler, signature, f);
+		return std::make_shared<CNoReturnTask<0,Func,void>>(scheduler, signature, f);
 	}
 };
 
 template<typename Res>
 class CTaskHelper
 {
+public:
+	using ReturnType = Res;  // 添加此行用于类型推导
 public:
 	CTaskHelper(TaskPtr ptr) : m_pTaskPtr (ptr)
 	{}
@@ -261,14 +264,14 @@ public:
 // 	CTaskHelper(CTaskHelper&&) = delete;//禁止移动构造函数	
 // 	CTaskHelper& operator=(CTaskHelper&&) = delete;//禁止移动赋值运算符		
 
-	//template<class Scheduler,class Func, class... Args, typename return_type = std::result_of<Func(Args...)>::type>
+	//template<class Func, class... Args, typename return_type = std::result_of<Func(Args...)>::type>
 	/*lambda [a,b]() {},a,b作为捕获的参数列表并不是函数的参数在std::result_of<Func(Args...)>编译时，推导的Args...类型
 	实际上是空 在C++11中，std::result_of<F(Args...)>::type用于推导出调用F类型的函数对象实例并传递Args类型的参数后
 	的返回类型。std::result_of<F(Args...)>::type无法推导出[](int param) {}这个有参数的lambda表达式，是因为没有提
 	供参数类型。在使用std::result_of时，需要提供函数的参数类型，如std::result_of<decltype(lambda)(int)>::type，
 	这样std::result_of就能正确推导出有参数的lambda表达式的返回类型了*/
-	template<class Scheduler,class Func,typename return_type = std::result_of<Func(Res)>::type>
-	CTaskHelper<return_type> ThenAccept(CSafePtr<Scheduler> scheduler,Func&& func)
+	template<class Func,typename return_type = std::result_of<Func(Res)>::type>
+	CTaskHelper<return_type> ThenAccept(CSafePtr<CThreadScheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenAccept";
 		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler, signature, func);
@@ -284,8 +287,8 @@ public:
 		return CTaskHelper<return_type>(pChildTask);
 	}
 
-	template<class Scheduler, class Func, typename return_type = std::result_of<Func()>::type>
-	CTaskHelper<return_type> ThenApply(CSafePtr<Scheduler> scheduler, Func&& func)
+	template<class Func, typename return_type = std::result_of<Func()>::type>
+	CTaskHelper<return_type> ThenApply(CSafePtr<CThreadScheduler> scheduler, Func&& func)
 	{
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenApply";
 		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, void, Func>::CreateTask(scheduler, signature, func);
@@ -305,6 +308,14 @@ public:
 	TaskPtr GetTask()
 	{
 		return m_pTaskPtr;
+	}
+
+	void Run()
+	{
+		if(m_pTaskPtr != NULL)
+		{
+			m_pTaskPtr->AddToSchedulerQueue();
+		}
 	}
 private:
 	TaskPtr m_pTaskPtr;
@@ -332,15 +343,15 @@ struct ParmHolder<void>
 	typedef fake_void type;
 };
 
-template<class... ParamList>
+template<class... Args>
 class CAcceptCombineTaskHelper
 {
 	enum
 	{
 		//参数个数
-		arity = sizeof...(ParamList)
+		arity = sizeof...(Args)
 	};
-	using ParamTypeElement = typename std::tuple<ParamList...>;
+	using ParamTypeElement = typename std::tuple<Args...>;
 	//每个参数的类型
 	template<size_t I>
 	struct args
@@ -349,9 +360,8 @@ class CAcceptCombineTaskHelper
 		using type = typename std::tuple_element<I, ParamTypeElement>::type;
 	};
 public:
-	CAcceptCombineTaskHelper(CSafePtr<CThreadScheduler>	scheduler,std::vector<TaskPtr> taskList)
+	CAcceptCombineTaskHelper(std::vector<TaskPtr> taskList)
 	{
-		m_pScheduler = scheduler;
 		m_TaskList = taskList;
 	}
 
@@ -363,31 +373,29 @@ public:
 // 	CAcceptCombineTaskHelper(CAcceptCombineTaskHelper&&) = delete;//禁止移动构造函数	
 // 	CAcceptCombineTaskHelper& operator=(CAcceptCombineTaskHelper&&) = delete;//禁止移动赋值运算符		
 
-	template<class Func, typename return_type = std::result_of<Func(ParamList...)>::type>
-	CTaskHelper<return_type> AcceptAll(Func&& func)
+	template<class Func, typename return_type = std::result_of<Func(Args...)>::type>
+	CTaskHelper<return_type> AcceptAll(CSafePtr<CThreadScheduler> scheduler,Func&& func)
 	{
 		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAll";
-		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type,Func,ParamList...>::CreateTask(m_pScheduler, signature, func);
-		BYTE index = 0;
-		pTask->SetCombineCount(m_TaskList.size());
-		for (auto pChild : m_TaskList)
+		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<arity,return_type,Func,Args...>::CreateTask(scheduler,signature, func);
+		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
-			pChild->SetCombineTask(pTask,enCombineType::eCombineAccept);
+			pTask->SetCombineTask(index, m_TaskList[index]);
 		}
+
 		return CTaskHelper<return_type>(pTask);
 	}
 private:
-	CSafePtr<CThreadScheduler>	m_pScheduler;
 	std::vector<TaskPtr>		m_TaskList;
 };
 
+template<int combine_count>
 class CApplyCombineTaskHelper
 {
 public:
-	CApplyCombineTaskHelper(CSafePtr<CThreadScheduler>	scheduler, std::vector<TaskPtr> taskList)
+	CApplyCombineTaskHelper(std::vector<TaskPtr> taskList)
 	{
-		m_pScheduler = scheduler;
 		m_TaskList = taskList;
 	}
 
@@ -400,12 +408,11 @@ public:
 // 	CApplyCombineTaskHelper& operator=(CApplyCombineTaskHelper&&) = delete;//禁止移动赋值运算符		
 
 	template<class Func, typename return_type = std::result_of<Func()>::type>
-	CTaskHelper<return_type> ApplyAll(Func&& func)
+	CTaskHelper<return_type> ApplyAll(CSafePtr<CThreadScheduler> scheduler,Func&& func)
 	{
 		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAll";
-		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<return_type, Func, void>::CreateTask(m_pScheduler, signature, func);
-		pTask->SetCombineCount(m_TaskList.size());
+		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler, signature, func);
 		for (auto pChild : m_TaskList)
 		{
 			pChild->SetCombineTask(pTask, enCombineType::eCombineApply);
@@ -413,7 +420,6 @@ public:
 		return CTaskHelper<return_type>(pTask);
 	}
 private:
-	CSafePtr<CThreadScheduler>	m_pScheduler;
 	std::vector<TaskPtr>		m_TaskList;
 };
 

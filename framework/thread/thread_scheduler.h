@@ -34,119 +34,84 @@ public:
 					
 	void PushTask(TaskPtr pTask);
 	void DebugTask();
-	int  ThreddCount() { return m_Workers.size(); }
+	int  ThreadCount() { return m_Workers.size(); }
 public:
-	template<class Func, typename return_type = std::result_of<Func()>::type>
-	CTaskHelper<return_type> Schedule(std::string signature, Func&& f)
+	void Schedule(TaskPtr pTask)
 	{
-		TaskPtr pTask = TaskCreater<return_type, void, Func>::CreateTask(this, signature, f);
+		if(pTask->GetState() != enTaskState::eTaskInit)
+		{
+			ASSERT_EX(false,"CThreadScheduler Schedule task failed,the task has been scheduled");
+			return;
+		}
+		pTask->SetState(enTaskState::eTaskWaitingFoDoing);
 		std::lock_guard<std::mutex> guard(m_queue_mutex);
 		m_Tasks.push(pTask);
+	}
+
+	template<class Func, typename return_type = std::result_of<Func()>::type>
+	void Schedule(std::string signature, Func&& f)
+	{
+		TaskPtr pTask = TaskCreater<return_type, void, Func>::CreateTask(this, signature, f);
+		Schedule(pTask);
+	}
+
+	template<class Func, typename return_type = std::result_of<Func()>::type>
+	static CTaskHelper<return_type> CreateTask(CSafePtr<CThreadScheduler> pScheduler, std::string signature, Func&& f)
+	{
+		TaskPtr pTask = TaskCreater<return_type, void, Func>::CreateTask(pScheduler, signature, f);
 		return CTaskHelper<return_type>(pTask);
 	}
 
-	template<typename RT1,typename RT2>
-	CAcceptCombineTaskHelper<RT1, RT2> AcceptCombine(CTaskHelper<RT1>& task1, 
-													 CTaskHelper<RT2>& task2)
+	template<typename ...Args,int combine_count = sizeof...(Args)>
+	static CApplyCombineTaskHelper<combine_count> ApplyCombine(Args... args)
 	{
-		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2>();
-		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2>();
-		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask() };
-		return CAcceptCombineTaskHelper<RT1, RT2>(this, taskList);
+		std::vector<TaskPtr> taskList = {args...};
+		return CApplyCombineTaskHelper<combine_count>(taskList);
 	}
 
+    // template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5>
+    // static CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4,RT5> AcceptCombine(
+    //                                      CTaskHelper<RT1>& task1,
+    //                                      CTaskHelper<RT2>& task2,
+    //                                      CTaskHelper<RT3>& task3,
+    //                                      CTaskHelper<RT4>& task4,
+    //                                      CTaskHelper<RT5>& task5)
+    // {
+    //     task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2, RT3, RT4, RT5>();
+    //     task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3, RT4, RT5>();
+    //     task3.GetTask()->SetAcceptCombineInfo<2, RT1, RT2, RT3, RT4, RT5>();
+    //     task4.GetTask()->SetAcceptCombineInfo<3, RT1, RT2, RT3, RT4, RT5>();
+    //     task5.GetTask()->SetAcceptCombineInfo<4, RT1, RT2, RT3, RT4, RT5>();
+    //     std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask() };
+    //     return CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5>(this, taskList);
+    // }
 
-	template<typename RT1, typename RT2, typename RT3>
-	CAcceptCombineTaskHelper<RT1, RT2,RT3> AcceptCombine(
-										 CTaskHelper<RT1>& task1,
-										 CTaskHelper<RT2>& task2,
-										 CTaskHelper<RT3>& task3)
+	// 1. 可变参数主模板
+	template<typename... TaskHelpers>
+	static auto AcceptCombine(TaskHelpers&... tasks) 
 	{
-		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2, RT3>();
-		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3>();
-		task3.GetTask()->SetAcceptCombineInfo<2, RT1, RT2, RT3>();
-		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask()};
-		return CAcceptCombineTaskHelper<RT1, RT2, RT3>(this, taskList);
-	}
-
-	template<typename RT1, typename RT2, typename RT3, typename RT4>
-	CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4> AcceptCombine(
-										 CTaskHelper<RT1>& task1,
-										 CTaskHelper<RT2>& task2,
-										 CTaskHelper<RT3>& task3,
-										 CTaskHelper<RT4>& task4)
-	{
-		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2, RT3, RT4>();
-		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3, RT4>();
-		task3.GetTask()->SetAcceptCombineInfo<2, RT1, RT2, RT3, RT4>();
-		task4.GetTask()->SetAcceptCombineInfo<3, RT1, RT2, RT3, RT4>();
-		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask() };
-		return CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4>(this, taskList);
-	}
-
-	template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5>
-	CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4,RT5> AcceptCombine(
-										 CTaskHelper<RT1>& task1,
-										 CTaskHelper<RT2>& task2,
-										 CTaskHelper<RT3>& task3,
-										 CTaskHelper<RT4>& task4,
-										 CTaskHelper<RT5>& task5)
-	{
-		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2, RT3, RT4, RT5>();
-		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3, RT4, RT5>();
-		task3.GetTask()->SetAcceptCombineInfo<2, RT1, RT2, RT3, RT4, RT5>();
-		task4.GetTask()->SetAcceptCombineInfo<3, RT1, RT2, RT3, RT4, RT5>();
-		task5.GetTask()->SetAcceptCombineInfo<4, RT1, RT2, RT3, RT4, RT5>();
-		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask() };
-		return CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5>(this, taskList);
+		constexpr size_t TaskCount = sizeof...(TaskHelpers);
+		//参数包展开
+		std::vector<TaskPtr> taskList = {tasks.GetTask()...};
+		return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(taskList);
+		//return AcceptCombineImpl(tasks..., std::make_index_sequence<TaskCount>{});
 	}
 
-	template<typename RT1, typename RT2, typename RT3, typename RT4, typename RT5, typename RT6>
-	CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5, RT6> AcceptCombine(
-										 CTaskHelper<RT1>& task1,
-										 CTaskHelper<RT2>& task2,
-										 CTaskHelper<RT3>& task3,
-										 CTaskHelper<RT4>& task4,
-										 CTaskHelper<RT5>& task5,
-										 CTaskHelper<RT6>& task6)
-	{
-		task1.GetTask()->SetAcceptCombineInfo<0, RT1, RT2, RT3, RT4, RT5, RT6>();
-		task2.GetTask()->SetAcceptCombineInfo<1, RT1, RT2, RT3, RT4, RT5, RT6>();
-		task3.GetTask()->SetAcceptCombineInfo<2, RT1, RT2, RT3, RT4, RT5, RT6>();
-		task4.GetTask()->SetAcceptCombineInfo<3, RT1, RT2, RT3, RT4, RT5, RT6>();
-		task5.GetTask()->SetAcceptCombineInfo<4, RT1, RT2, RT3, RT4, RT5, RT6>();
-		task6.GetTask()->SetAcceptCombineInfo<5, RT1, RT2, RT3, RT4, RT5, RT6>();
-		std::vector<TaskPtr> taskList{ task1.GetTask(),task2.GetTask(),task3.GetTask(),task4.GetTask(),task5.GetTask(),task6.GetTask() };
-		return CAcceptCombineTaskHelper<RT1, RT2, RT3, RT4, RT5, RT6>(this, taskList);
-	}
+	// // 2. 实现模板（利用索引序列展开）
+	// template<typename... TaskHelpers, size_t... Indices>
+	// static auto AcceptCombineImpl(TaskHelpers&... tasks, std::index_sequence<Indices...>) 
+	// {
+	// 	// 为每个任务设置组合信息（自动生成索引和类型列表）
+	// 	(tasks.GetTask()->SetAcceptCombineInfo<Indices, typename TaskHelpers::ReturnType...>(), ...);
+		
+	// 	// 收集任务指针到向量（参数包展开）
+	// 	std::vector<TaskPtr> taskList = {tasks.GetTask()...};
+		
+	// 	// 返回对应数量的组合任务助手
+	// 	return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(this, taskList);
+	// }		
 
-	template<typename ...Args>
-	CApplyCombineTaskHelper ApplyCombine(Args... args)
-	{
-		std::vector<TaskPtr> taskList;
-		PushArgs(taskList, args...);
-		return CApplyCombineTaskHelper(this,taskList);
-	}
-
-private:
-	//把参数压栈
-	void PushArgs(std::vector<TaskPtr>& taskList)
-	{
-		return;
-	}
-	template<typename T>
-	void PushArgs(std::vector<TaskPtr>& taskList, const T& t)
-	{
-		taskList.push_back(t.GetTask());
-		t.GetTask().
-	}
-
-	template<typename First, typename... Rest>
-	void PushArgs(std::vector<TaskPtr>& taskList, First& first, Rest &...rest)
-	{
-		taskList.push_back(first.GetTask());
-		PushArgs(taskList, rest...);
-	}
+	
 private:
 	std::vector<CSafePtr<CMyThread>> m_Workers;
 	std::queue<TaskPtr> m_Tasks;

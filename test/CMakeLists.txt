@@ -21,7 +21,9 @@ set(SOURCE_FILES
     "main.cpp" 
     "lock_free_limit_queue_test.h"
     "rbt_hash_map_test.h"
-    "atomic_test.h")
+    "atomic_test.h"
+    "scheduler_test.h"
+    )
 
 
 include_directories(

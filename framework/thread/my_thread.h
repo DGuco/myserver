@@ -10,6 +10,7 @@
 #include <mutex>
 #include <atomic>
 #include <functional>
+#include <memory>
 #include "base.h"
 #include "my_lock.h"
 #include "time_helper.h"
@@ -19,6 +20,7 @@ class CMyThread;
 class CThreadTask;
 class CThreadScheduler;
 typedef std::shared_ptr<CThreadTask> TaskPtr;
+typedef std::weak_ptr<CThreadTask> WeakTaskPtr;
 struct thread_data
 {
 	CMyLock							task_mutex;
