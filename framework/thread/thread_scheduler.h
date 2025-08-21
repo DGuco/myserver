@@ -49,16 +49,18 @@ public:
 	}
 
 	template<class Func, typename return_type = std::result_of<Func()>::type>
-	void Schedule(std::string signature, Func&& f)
+	CTaskHelper<return_type> Schedule(std::string signature, Func&& f)
 	{
 		TaskPtr pTask = TaskCreater<return_type, void, Func>::CreateTask(this, signature, f);
 		Schedule(pTask);
+		return CTaskHelper<return_type>(pTask);
 	}
 
 	template<class Func, typename return_type = std::result_of<Func()>::type>
-	static CTaskHelper<return_type> CreateTask(CSafePtr<CThreadScheduler> pScheduler, std::string signature, Func&& f)
+	static CTaskHelper<return_type> Schedule(CSafePtr<CThreadScheduler> pScheduler, std::string signature, Func&& f)
 	{
 		TaskPtr pTask = TaskCreater<return_type, void, Func>::CreateTask(pScheduler, signature, f);
+		pScheduler->Schedule(pTask);
 		return CTaskHelper<return_type>(pTask);
 	}
 
@@ -88,29 +90,44 @@ public:
 
 	// 1. 可变参数主模板
 	template<typename... TaskHelpers>
-	static auto AcceptCombine(TaskHelpers&... tasks) 
+	static CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...> AcceptCombine(TaskHelpers&... tasks) 
 	{
 		constexpr size_t TaskCount = sizeof...(TaskHelpers);
-		//参数包展开
 		std::vector<TaskPtr> taskList = {tasks.GetTask()...};
+		CombineArgs<0>(tasks...);
 		return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(taskList);
-		//return AcceptCombineImpl(tasks..., std::make_index_sequence<TaskCount>{});
 	}
 
 	// // 2. 实现模板（利用索引序列展开）
 	// template<typename... TaskHelpers, size_t... Indices>
-	// static auto AcceptCombineImpl(TaskHelpers&... tasks, std::index_sequence<Indices...>) 
+	// static CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...> AcceptCombineImpl(TaskHelpers&... tasks, std::index_sequence<Indices...>) 
 	// {
 	// 	// 为每个任务设置组合信息（自动生成索引和类型列表）
 	// 	(tasks.GetTask()->SetAcceptCombineInfo<Indices, typename TaskHelpers::ReturnType...>(), ...);
-		
 	// 	// 收集任务指针到向量（参数包展开）
 	// 	std::vector<TaskPtr> taskList = {tasks.GetTask()...};
-		
 	// 	// 返回对应数量的组合任务助手
 	// 	return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(this, taskList);
-	// }		
+	// }	
+	
+private:
+	template<int N>
+    static void CombineArgs()
+    {
+        return;
+    }
+    template<int N,typename T>
+    static void CombineArgs(const T& t)
+    {
+  		t.GetTask()->SetAcceptCombineInfo<N,T::ReturnType>();
+    }
 
+    template<int N,typename First, typename... Rest>
+    static void CombineArgs(First& first, Rest &...rest)
+    {
+		first.GetTask()->SetAcceptCombineInfo<N,First::ReturnType>();
+        CombineArgs<N+1>(rest...);
+    }
 	
 private:
 	std::vector<CSafePtr<CMyThread>> m_Workers;

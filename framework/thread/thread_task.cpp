@@ -94,7 +94,7 @@ void CThreadTask::RunChildTask()
 		{
 			if(pTask->IsCombinedTask())
 			{
-				pTask->CombineTaskDone();
+				pTask->CombineTaskDone(GetShared());
 			}else
 			{
 				ExecuteChildTask(pTask);

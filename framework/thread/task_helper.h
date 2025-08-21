@@ -275,14 +275,12 @@ public:
 	{
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenAccept";
 		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler, signature, func);
-		//如果前置任务已完成
+		m_pTaskPtr->AddChildTask(pChildTask);
+		//有可能子任务添加到队列之前，前置任务就已经完成了，后续任务没有执行，再次尝试执行
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone 
 			|| m_pTaskPtr->GetState() == enTaskState::eTaskFailed)
-		{
-			m_pTaskPtr->ExecuteChildTask(pChildTask);
-		}else
-		{
-			m_pTaskPtr->AddChildTask(pChildTask);
+		{ 
+			m_pTaskPtr->RunChildTask();
 		}
 		return CTaskHelper<return_type>(pChildTask);
 	}
@@ -292,15 +290,12 @@ public:
 	{
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenApply";
 		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, void, Func>::CreateTask(scheduler, signature, func);
-		//如果前置任务已完成
+		m_pTaskPtr->AddChildTask(pChildTask);
+		//有可能子任务添加到队列之前，前置任务就已经完成了，后续任务没有执行，再次尝试执行
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone
 			|| m_pTaskPtr->GetState() == enTaskState::eTaskFailed)
 		{
-			m_pTaskPtr->ExecuteChildTask(pChildTask);
-		}
-		else
-		{
-			m_pTaskPtr->AddChildTask(pChildTask);
+			m_pTaskPtr->RunChildTask();
 		}
 		return CTaskHelper<return_type>(pChildTask);
 	}
@@ -310,13 +305,6 @@ public:
 		return m_pTaskPtr;
 	}
 
-	void Run()
-	{
-		if(m_pTaskPtr != NULL)
-		{
-			m_pTaskPtr->AddToSchedulerQueue();
-		}
-	}
 private:
 	TaskPtr m_pTaskPtr;
 };
@@ -381,7 +369,14 @@ public:
 		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<arity,return_type,Func,Args...>::CreateTask(scheduler,signature, func);
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
+			m_TaskList[index]->AddChildTask(pTask);
 			pTask->SetCombineTask(index, m_TaskList[index]);
+			//有可能子任务添加到队列之前，前置任务就已经完成了，后续任务没有执行，再次尝试执行
+			if (m_TaskList[index]->GetState() == enTaskState::eTaskDone
+				|| m_TaskList[index]->GetState() == enTaskState::eTaskFailed)
+			{
+				m_TaskList[index]->RunChildTask();
+			}
 		}
 
 		return CTaskHelper<return_type>(pTask);
@@ -413,9 +408,10 @@ public:
 		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAll";
 		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler, signature, func);
-		for (auto pChild : m_TaskList)
+		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
-			pChild->SetCombineTask(pTask, enCombineType::eCombineApply);
+			m_TaskList[index]->AddChildTask(pTask);
+			pTask->SetCombineTask(index, m_TaskList[index]);
 		}
 		return CTaskHelper<return_type>(pTask);
 	}

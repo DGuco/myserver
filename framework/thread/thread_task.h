@@ -28,14 +28,6 @@ enum class enTaskState : unsigned char
 	eTaskFailed = 4,
 };
 
-enum class enCombineType : unsigned char
-{
-	eCombineInit = 0,
-	eCombineApply = 1,
-	eCombineAccept = 2,
-	eCombineDone = 3,
-};
-
 class IArgsHolder
 {
 public:
@@ -45,35 +37,35 @@ public:
 	virtual bool  Empty() = 0;
 };
 
-template<BYTE combineIndex,class... Args>
-class CArgsHolder 
+template<int combineIndex,typename ArgType>
+class CArgsHolder : public IArgsHolder
 {
-	enum
-	{
-		//参数个数
-		arity = sizeof...(Args)
-	};
-	using ParamTypeElement = typename std::tuple<Args...>;
-	//每个参数的类型
-	template<size_t I>
-	struct args
-	{
-		static_assert(I < arity, "index is out of range, index must less than sizeof Args");
-		using type = typename std::tuple_element<I, ParamTypeElement>::type;
-	};
+	// enum
+	// {
+	// 	//参数个数
+	// 	arity = sizeof...(Args)
+	// };
+	// using ParamTypeElement = typename std::tuple<Args...>;
+	// //每个参数的类型
+	// template<size_t I>
+	// struct args
+	// {
+	// 	static_assert(I < arity, "index is out of range, index must less than sizeof Args");
+	// 	using type = typename std::tuple_element<I, ParamTypeElement>::type;
+	// };
 public:
 	virtual void  FillWaitTaskParm(TaskPtr pTask,TaskPtr pWaitTask)
 	{
-		void* pRes = pTask->GetRes();
-		void* pArgs = pWaitTask->GetArgs();
-		if (pRes == NULL || pArgs == NULL)
-		{
-			return;
-		}
-		ParamTypeElement& tmArgs = *(ParamTypeElement*)(pArgs);
-		using ArgType = args<combineIndex>::type;
-		ArgType& tmRes = *(ArgType*)(pRes);
-		std::get<combineIndex>(tmArgs) = tmRes;
+		// void* pRes = pTask->GetRes();
+		// void* pArgs = pWaitTask->GetArgs();
+		// if (pRes == NULL || pArgs == NULL)
+		// {
+		// 	return;
+		// }
+		// ParamTypeElement& tmArgs = *(ParamTypeElement*)(pArgs);
+		// using ArgType = args<combineIndex>::type;
+		// ArgType& tmRes = *(ArgType*)(pRes);
+		// std::get<combineIndex>(tmArgs) = tmRes;
 	}
 
 	virtual bool Empty()
@@ -114,23 +106,23 @@ public:
 	void AddToSchedulerQueue();
 	//添加子任务
 	void AddChildTask(TaskPtr pTask);
+	//执行子任务
+	void RunChildTask();
 protected:
 	void SetStartTime(time_t time)				{ m_nExecuteStart = time; }
 	void SetState(enTaskState state)			{ m_nState.store(state, std::memory_order_release);}
 	virtual void OnFinish();
 	virtual void OnFailed();
 	void Run();
-	void RunChildTask();
 public:
-	template<BYTE combine_index, class... Args>
+	template<int combine_index, typename ArgType>
 	void SetAcceptCombineInfo()
 	{
-		CSafeLock guard(m_combineLock);
 		if (m_pCombinedArgs != NULL)
 		{
 			ASSERT_EX(false, "This Task has combined once");
 		}
-		m_pCombinedArgs = new CArgsHolder<combine_index, Args...>();
+		m_pCombinedArgs = new CArgsHolder<combine_index, ArgType>();
 	}
 	
 public:
@@ -141,7 +133,7 @@ public:
 	virtual void* GetArgs() = 0;
 public:
 	virtual bool  IsCombinedTask() {return false;}
-	virtual void  CombineTaskDone()  {ASSERT_EX(false,"NOT Combinetask call CombineTaskDone illegal");}
+	virtual void  CombineTaskDone(TaskPtr pParentTask)  {ASSERT_EX(false,"NOT Combinetask call CombineTaskDone illegal");}
 	virtual void  SetCombineTask(int index,TaskPtr pTask) {ASSERT_EX(false,"NOT Combinetask call SetCombineTask illegal");}
 protected:
 	CMyLock								m_childTaskLock;
@@ -163,7 +155,6 @@ public:
 	CCombineTask(CSafePtr<CThreadScheduler> scheduler, std::string signature)
 		: CThreadTask(scheduler, signature)
 	{
-		SetCombineType(enCombineType::eCombineInit);
 		m_combineDone = 0;
 	}
 	
@@ -171,27 +162,7 @@ public:
 	{
 		try 
 		{
-			enCombineType bType = GetCombineType();
 			enTaskState bState = GetState();
-			//等待执行CombineTaskDone
-			// {
-			// 	CSafeLock guard(m_combineLock);
-			// 	if (m_pCombineTask != NULL &&
-			// 		bType == enCombineType::eCombineAccept &&
-			// 		bState == enTaskState::eTaskDone)
-			// 	{
-			// 		m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
-			// 	}
-			// }
-			if (bState == enTaskState::eTaskDone)
-			{
-				//m_pCombineTask->CombineTaskDone();
-			}
-			else
-			{
-				//m_pCombineTask->OnFailed();
-			}
-			SetCombineType(enCombineType::eCombineDone);
 			RunChildTask();
 		}
 		catch(std::exception e)
@@ -200,34 +171,16 @@ public:
 
 	virtual void OnFinish()
 	{
-		enCombineType bType = GetCombineType();
-		// //等待执行CombineTaskDone
-		// {
-		// 	CSafeLock guard(m_combineLock);
-		// 	if (m_pCombineTask != NULL && bType == enCombineType::eCombineAccept)
-		// 	{
-		// 		m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
-		// 	}
-		// }
-		// m_pCombineTask->CombineTaskDone();
-		SetCombineType(enCombineType::eCombineDone);
 		SetState(enTaskState::eTaskDone);
 		RunChildTask();
 	}
 
 	virtual void OnFailed() 
 	{
-		enCombineType bType = GetCombineType();
-		//等待执行CombineTaskDone
-		//m_pCombineTask->OnFailed();
-		SetCombineType(enCombineType::eCombineDone);
 		SetState(enTaskState::eTaskFailed);
 		RunChildTask();
 		CACHE_LOG(THREAD_ERROR, "Task[{}] execute failed", m_TaskSignature);
 	}
-
-	enCombineType GetCombineType()				{ return m_combineType; }
-	void SetCombineType(enCombineType state)	{ m_combineType = state; }
 
 	virtual void  SetCombineTask(int index,TaskPtr pTask)
 	{
@@ -245,46 +198,16 @@ public:
 			ASSERT_EX(false,"SetCombineTask index overflow");
 		}
 	}
-
-	// void SetCombineTask(TaskPtr ptr,enCombineType combineType)
-	// {
-	// 	enCombineType bType = GetCombineType();
-	// 	if (bType != enCombineType::eCombineInit)
-	// 	{
-	// 		ASSERT_EX(false, "This task {%s} has been combined", m_TaskSignature.c_str());
-	// 	}
-	// 	enTaskState bState = GetState();
-	// 	{
-	// 		CSafeLock guard(m_combineLock);
-	// 		m_pCombineTask = ptr;
-	// 		if (bState == enTaskState::eTaskDone)
-	// 		{
-	// 			if (m_pCombinedArgs != NULL && combineType == enCombineType::eCombineAccept)
-	// 			{
-	// 				m_pCombinedArgs->FillWaitTaskParm(GetShared(), m_pCombineTask);
-	// 			}
-	// 		}
-	// 	}
-	// 	//此时任务已经完成，则直接CombineTaskDone
-	// 	if (bState == enTaskState::eTaskDone)
-	// 	{
-	// 		m_pCombineTask->CombineTaskDone();
-	// 		SetCombineType(enCombineType::eCombineDone);
-	// 	}
-	// 	//此时任务失败，则直接OnFailed
-	// 	else if (bState == enTaskState::eTaskFailed)
-	// 	{
-	// 		m_pCombineTask->OnFailed();
-	// 		SetCombineType(enCombineType::eCombineDone);
-	// 	}
-	// 	else  //任务还没有完成，正在执行中，标记任务等待执行CombineTaskDone
-	// 	{
-	// 		SetCombineType(combineType);
-	// 	}
-	// }
 	
-	virtual void CombineTaskDone()
+	virtual void CombineTaskDone(TaskPtr pParentTask)
 	{
+		//前置任务执行失败了
+		if(pParentTask->GetState() == enTaskState::eTaskFailed)
+		{
+			OnFailed();
+			return;
+		}
+
 		enTaskState bState = GetState();
 		//其中有一个前置任务失败了，后续的不用执行了
 		if (bState == enTaskState::eTaskFailed)
@@ -317,8 +240,6 @@ private:
 	CMyLock								m_combineLock;
 	//前置任务列表
 	TArray<WeakTaskPtr,combine_count>	m_pCombineTask;
-	//如果当前任务是合并任务之一(前置任务或者后续子任务)，合并任务的类型
-	enCombineType						m_combineType;
 	//如果当前任务是一组合并任务的后续子任务，前置任务已完成的数量
 	std::atomic_int						m_combineDone;
 };

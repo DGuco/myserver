@@ -9,7 +9,7 @@
                 "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
                 "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
                 "D:/software/vs2019/VC/Tools/MSVC/14.29.30133/include",
-                "D:/software/vs2019/VC/Tools/MSVC/14.29.30133/atlmfc/include",
+                "D:/software/vs2019/VC/Tools/MSVC/14.29.30133/atlmfc/include"
             ],
             "defines": [
                 "_DEBUG",

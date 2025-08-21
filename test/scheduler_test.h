@@ -14,7 +14,7 @@ void schedler_test()
 	int b = 2;
 	int c = 10;
 	int d = 20;
-	CThreadScheduler::CreateTask(g_LogicScheduler, "InitTcpServer",
+	g_LogicScheduler->Schedule("InitTcpServer",
 		[a, b]
 		{
 			return a + b;
@@ -34,30 +34,29 @@ void schedler_test()
 				int finres = c + d;
 				printf("finres = %d\n", finres);
                 return finres;
-			})
-        .Run();
+			});
 
 
-	auto task1 = CThreadScheduler::CreateTask(g_LogicScheduler, "CombineTask1",
+	auto task1 = CThreadScheduler::Schedule(g_LogicScheduler, "CombineTask1",
 		[a, b]
 		{
 			return a + b;
 		});
 
-	auto task2 = CThreadScheduler::CreateTask(g_LogicScheduler, "CombineTask2",
+	auto task2 = CThreadScheduler::Schedule(g_LogicScheduler, "CombineTask2",
 		[]
 		{
 			return "Task2 execute done ";
 		});
 
-	auto task3 = CThreadScheduler::CreateTask(g_DBScheduler, "CombineTask3",
+	auto task3 = CThreadScheduler::Schedule(g_DBScheduler, "CombineTask3",
 
 		[a, b]
 		{
 			return a / b;
 		});
 
-	auto task4 = CThreadScheduler::CreateTask(g_DBScheduler, "CombineTask4",
+	auto task4 = CThreadScheduler::Schedule(g_DBScheduler, "CombineTask4",
 		[a, b]
 		{
 			return a % b;
@@ -69,8 +68,7 @@ void schedler_test()
 			{
 				int nRes = res1 + res3 + res4;
 				CACHE_LOG(DEBUG_CACHE, "Task res :{},combineres = {}", res2, nRes);
-			})
-        .Run();
+			});
 }
 
 #endif
