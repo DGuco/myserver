@@ -94,7 +94,7 @@ public:
 	{
 		constexpr size_t TaskCount = sizeof...(TaskHelpers);
 		std::vector<TaskPtr> taskList = {tasks.GetTask()...};
-		CombineArgs<0>(tasks...);
+		CombineArgs<0,typename TaskHelpers::ReturnType...>(tasks...);
 		return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(taskList);
 	}
 
@@ -111,22 +111,22 @@ public:
 	// }	
 	
 private:
-	template<int N>
+	template<int N,typename ...Args>
     static void CombineArgs()
     {
         return;
     }
-    template<int N,typename T>
+    template<int N,typename ...Args,typename T>
     static void CombineArgs(const T& t)
     {
-  		t.GetTask()->SetAcceptCombineInfo<N,T::ReturnType>();
+  		t.GetTask()->SetAcceptCombineInfo<N,Args...>();
     }
 
-    template<int N,typename First, typename... Rest>
+    template<int N,typename ...Args,typename First, typename... Rest>
     static void CombineArgs(First& first, Rest &...rest)
     {
-		first.GetTask()->SetAcceptCombineInfo<N,First::ReturnType>();
-        CombineArgs<N+1>(rest...);
+		first.GetTask()->SetAcceptCombineInfo<N,Args...>();
+        CombineArgs<N+1,Args...>(rest...);
     }
 	
 private:

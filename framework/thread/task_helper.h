@@ -10,10 +10,34 @@
 #include "safe_pointer.h"
 #include "thread_task.h"
 
+// 首先添加C++11兼容索引序列实现（放在文件开头）
+template <size_t... Ints>
+struct IndexSequence { using type = IndexSequence; };
+
+template <size_t N, size_t... Ints>
+struct MakeIndexSequence : MakeIndexSequence<N-1, N-1, Ints...> {};
+
+template <size_t... Ints>
+struct MakeIndexSequence<0, Ints...> : IndexSequence<Ints...> {};
+
 class CThreadScheduler;
+
 template<size_t NUM_PARAMS, typename return_type, typename... Args>
 struct TaskCaller
 {
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	static return_type invoke(function_type func, std::tuple<Args...>& args) 
+	{
+		using Indices = typename MakeIndexSequence<sizeof...(Args)>::type;
+		return invokeImpl(func, args, Indices());
+	}
+
+	template <size_t... Indices>
+	static return_type invokeImpl(function_type func, std::tuple<Args...>& args, IndexSequence<Indices...>) 
+	{
+		return func(std::get<Indices>(args)...);
+	}
 };
 
 template<typename return_type>
@@ -38,150 +62,17 @@ public:
 	}
 };
 
-template<typename return_type, typename... Args>
-struct TaskCaller<2, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<3, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<4, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<5, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<6, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<7, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<8, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args));
-		return func(arg);
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<9, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args),
-			std::get<8>(args));
-	}
-};
-
-template<typename return_type, typename... Args>
-struct TaskCaller<10, return_type, Args...>
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args)
-	{
-		return func(std::get<0>(args),
-			std::get<1>(args),
-			std::get<2>(args),
-			std::get<3>(args),
-			std::get<4>(args),
-			std::get<5>(args),
-			std::get<6>(args),
-			std::get<7>(args),
-			std::get<8>(args),
-			std::get<9>(args));
-	}
-};
+// template<typename return_type, typename... Args>
+// struct TaskCaller<2, return_type, Args...>
+// {
+//     using function_type = typename std::function<return_type(Args...)>;
+// public:
+//     static return_type invoke(function_type func, std::tuple<Args...>& args)
+//     {
+//         return func(std::get<0>(args),
+//             std::get<1>(args));
+//     }
+// };
 
 template<int combine_count,typename return_type, class Func,typename ...Args>
 struct CombineTaskCreater

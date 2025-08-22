@@ -37,35 +37,33 @@ public:
 	virtual bool  Empty() = 0;
 };
 
-template<int combineIndex,typename ArgType>
+template<int combineIndex,typename ...Args>
 class CArgsHolder : public IArgsHolder
 {
-	// enum
-	// {
-	// 	//参数个数
-	// 	arity = sizeof...(Args)
-	// };
-	// using ParamTypeElement = typename std::tuple<Args...>;
-	// //每个参数的类型
-	// template<size_t I>
-	// struct args
-	// {
-	// 	static_assert(I < arity, "index is out of range, index must less than sizeof Args");
-	// 	using type = typename std::tuple_element<I, ParamTypeElement>::type;
-	// };
+	enum
+    {
+        arity = sizeof...(Args)
+    };
+    using ParamTypeElement = typename std::tuple<Args...>;
+    template<size_t I>
+    struct args
+    {
+        static_assert(I < arity, "index is out of range, index must less than sizeof Args");
+        using type = typename std::tuple_element<I, ParamTypeElement>::type;
+    };
 public:
-	virtual void  FillWaitTaskParm(TaskPtr pTask,TaskPtr pWaitTask)
+	virtual void  FillWaitTaskParm(TaskPtr pParentTask,TaskPtr pChildTask)
 	{
-		// void* pRes = pTask->GetRes();
-		// void* pArgs = pWaitTask->GetArgs();
-		// if (pRes == NULL || pArgs == NULL)
-		// {
-		// 	return;
-		// }
-		// ParamTypeElement& tmArgs = *(ParamTypeElement*)(pArgs);
-		// using ArgType = args<combineIndex>::type;
-		// ArgType& tmRes = *(ArgType*)(pRes);
-		// std::get<combineIndex>(tmArgs) = tmRes;
+		void* pRes = pParentTask->GetRes();
+		void* pArgs = pChildTask->GetArgs();
+		if (pRes == NULL || pArgs == NULL)
+		{
+			return;
+		}
+		ParamTypeElement& tmArgs = *(ParamTypeElement*)(pArgs);
+		using ArgType = args<combineIndex>::type;
+		ArgType& tmRes = *(ArgType*)(pRes);
+		std::get<combineIndex>(tmArgs) = tmRes;
 	}
 
 	virtual bool Empty()
@@ -115,16 +113,24 @@ protected:
 	virtual void OnFailed();
 	void Run();
 public:
-	template<int combine_index, typename ArgType>
+	template<int combine_index, typename ...Args>
 	void SetAcceptCombineInfo()
 	{
 		if (m_pCombinedArgs != NULL)
 		{
 			ASSERT_EX(false, "This Task has combined once");
 		}
-		m_pCombinedArgs = new CArgsHolder<combine_index, ArgType>();
+		m_pCombinedArgs = new CArgsHolder<combine_index, Args...>();
 	}
-	
+
+	void  FillCombineTaskArgs(TaskPtr pChildTask)
+	{
+		if (m_pCombinedArgs != NULL)
+		{
+			m_pCombinedArgs->FillWaitTaskParm(GetShared(),pChildTask);
+		}
+	}
+
 public:
 	virtual void  Execute() = 0;
 	virtual void  ExecuteChildTask(TaskPtr pChildTask) = 0;
@@ -215,6 +221,9 @@ public:
 			return;
 		}
 		
+		//增加任务完成数量之前先把前置任务的返回值写到子任务的参数列表中
+		pParentTask->FillCombineTaskArgs(GetShared());
+
 		// fetch_add(1) 保证原子性递增
 		const int oldValue = m_combineDone.fetch_add(1, std::memory_order_acq_rel);
 		const int newValue = oldValue + 1;
@@ -311,6 +320,12 @@ public:
 	{
 		return (void*)(&m_ArgTuple);
 	}
+
+	virtual void  FillCombineTaskArgs(TaskPtr pChildTask)
+	{
+		m_pCombinedArgs->FillWaitTaskParm(GetShared(),pChildTask);
+	}
+
 private:
 	function_type				m_Func;
 	ArgsTubleType				m_ArgTuple;
@@ -379,6 +394,7 @@ public:
 	{
 		return NULL;
 	}
+
 private:
 	function_type				m_Func;
 	return_type					m_Res;
@@ -449,6 +465,7 @@ public:
 	{
 		return NULL;
 	}
+
 private:
 	function_type				m_Func;
 	return_type					m_Res;
@@ -513,6 +530,7 @@ public:
 	{
 		return (void*)(&m_ArgTuple);
 	}
+
 private:
 	function_type				m_Func;
 	ArgsTubleType				m_ArgTuple;
@@ -646,6 +664,7 @@ public:
 	{
 		return NULL;
 	}
+	
 private:
 	function_type			m_Func;
 };

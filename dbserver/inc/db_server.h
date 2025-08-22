@@ -12,6 +12,7 @@
 #include "database_mysql.h"
 #include "shm_queue.h"
 #include "safe_pointer.h"
+#include "query_result.h"
 
 class CDBSerer : public CTCPServer,public CSingleton<CDBSerer>
 {

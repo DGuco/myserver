@@ -27,6 +27,9 @@ int main(int argc, char **argv)
 
 	// πÿ±’»’÷æ
 	SHUTDOWN_ALL_LOG();
-    getchar();
+    while (1)
+    {
+        SLEEP(10);
+    }
 	return 0;
 }

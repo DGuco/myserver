@@ -10,6 +10,22 @@ CSafePtr<CThreadScheduler> g_HttpScheduler = new CThreadScheduler("DBScheduler")
 
 void schedler_test()
 {
+	if (!g_LogicScheduler->Init(1))
+	{
+		return;
+	}
+
+	if (!g_DBScheduler->Init(1))
+	{
+		return ;
+	}
+
+	
+	if (!g_HttpScheduler->Init(1))
+	{
+		return ;
+	}
+
     int a = 1;
 	int b = 2;
 	int c = 10;
@@ -67,7 +83,7 @@ void schedler_test()
 			[](int res1, std::string res2, int res3, int res4)
 			{
 				int nRes = res1 + res3 + res4;
-				CACHE_LOG(DEBUG_CACHE, "Task res :{},combineres = {}", res2, nRes);
+				printf("fTask res :{%s},combineres = {%d}\n", res2.c_str(), nRes);
 			});
 }
 
