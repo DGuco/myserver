@@ -14,7 +14,10 @@ CThreadTask::~CThreadTask()
 	try 
 	{
 		enTaskState bState = GetState();
-		RunChildTask();
+		if(bState == enTaskState::eTaskDone || bState == enTaskState::eTaskFailed)
+		{
+			RunChildTask();
+		}
 		m_pCombinedArgs.Free();
 	}
 	catch(std::exception e)
