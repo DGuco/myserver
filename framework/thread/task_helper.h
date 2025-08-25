@@ -263,7 +263,6 @@ public:
 	template<class Func, typename return_type = std::result_of<Func(Args...)>::type>
 	CTaskHelper<return_type> AcceptAll(CSafePtr<CThreadScheduler> scheduler,Func&& func)
 	{
-		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAll";
 		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<arity,return_type,Func,Args...>::CreateTask(scheduler,signature, func);
 		for(int index = 0; index < m_TaskList.size(); ++index)
@@ -304,7 +303,6 @@ public:
 	template<class Func, typename return_type = std::result_of<Func()>::type>
 	CTaskHelper<return_type> ApplyAll(CSafePtr<CThreadScheduler> scheduler,Func&& func)
 	{
-		ASSERT(m_TaskList.size() > 0 && m_TaskList.size() < UCHAR_MAX);
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAll";
 		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler, signature, func);
 		for(int index = 0; index < m_TaskList.size(); ++index)
