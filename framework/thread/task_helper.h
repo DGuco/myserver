@@ -10,7 +10,17 @@
 #include "safe_pointer.h"
 #include "thread_task.h"
 
-// 首先添加C++11兼容索引序列实现（放在文件开头）
+class CThreadScheduler;
+
+/*
+MakeIndexSequence<5> : public MakeIndexSequence<4,4>
+MakeIndexSequence<4,4> : public MakeIndexSequence<3,3,4>
+MakeIndexSequence<3,3,4> : public MakeIndexSequence<2,2,3,4>
+MakeIndexSequence<2,2,3,4> : public MakeIndexSequence<1,1,2,3,4>
+MakeIndexSequence<1,1,2,3,4> : public MakeIndexSequence<0,0,1,2,3,4>
+MakeIndexSequence<0,0,1,2,3,4> : public IndexSequence<0,1,2,3,4>
+IndexSequence<0,1,2,3,4> 
+*/
 template <size_t... Ints>
 struct IndexSequence { using type = IndexSequence; };
 
@@ -19,8 +29,6 @@ struct MakeIndexSequence : MakeIndexSequence<N-1, N-1, Ints...> {};
 
 template <size_t... Ints>
 struct MakeIndexSequence<0, Ints...> : IndexSequence<Ints...> {};
-
-class CThreadScheduler;
 
 template<size_t NUM_PARAMS, typename return_type, typename... Args>
 struct TaskCaller

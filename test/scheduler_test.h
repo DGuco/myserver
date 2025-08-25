@@ -34,8 +34,7 @@ void schedler_test()
 		[a, b]
 		{
 			return a + b;
-		}
-		)
+		})
 	    .ThenAccept(g_DBScheduler,
 			[c, d] (int res)
 			{
@@ -84,6 +83,7 @@ void schedler_test()
 			{
 				int nRes = res1 + res3 + res4;
 				printf("fTask res :{%s},combineres = {%d}\n", res2.c_str(), nRes);
+				return nRes;
 			});
 }
 
