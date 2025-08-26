@@ -109,7 +109,10 @@ public:
 	// 	// 返回对应数量的组合任务助手
 	// 	return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(this, taskList);
 	// }	
-	
+
+	void StopScheduler();
+
+	void Join(); 
 private:
 	template<int N,typename ...Args>
     static void CombineArgs()

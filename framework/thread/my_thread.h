@@ -21,8 +21,11 @@ class CThreadTask;
 class CThreadScheduler;
 typedef std::shared_ptr<CThreadTask> TaskPtr;
 typedef std::weak_ptr<CThreadTask> WeakTaskPtr;
+
 struct thread_data
 {
+	std::tm 						m_CacheTime;	
+	TimePoint						m_CacheTimePoint;
 	CMyLock							task_mutex;
 	TaskPtr							curren_task;
 	CSafePtr<CThreadScheduler>		own_scheduler;

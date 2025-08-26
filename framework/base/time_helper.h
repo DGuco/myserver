@@ -13,6 +13,8 @@
 #include "base.h"
 #include "singleton.h"
 
+typedef std::chrono::time_point<std::chrono::system_clock> TimePoint;
+
 class CTimeHelper : public CSingleton<CTimeHelper>
 {
 public:
@@ -27,24 +29,19 @@ public:
 	time_t			GetMicroTime(bool realTime = false);
 	//更新缓存时间
 	void			SetTime();
-	//更新缓存时间
-	void			SetTime(std::chrono::time_point<std::chrono::system_clock> time);
 	//取得设置时间时候的“年、月、日、小时、分、秒、星期的值”
-	int				GetYear() { return m_TM.tm_year + 1900; };	//[1900,????]
-	int				GetMonth() { return m_TM.tm_mon; };		//[0,11]
-	int				GetDay() { return m_TM.tm_mday; };		//[1,31]
-	int				GetHour() { return m_TM.tm_hour; };		//[0,23]
-	int				GetMinute() { return m_TM.tm_min; };		//[0,59]
-	int				GetSecond() { return m_TM.tm_sec; };		//[0,59]
+	int				GetYear();	//[1900,????]
+	int				GetMonth();		//[0,11]
+	int				GetDay();		//[1,31]
+	int				GetHour();		//[0,23]
+	int				GetMinute();		//[0,59]
+	int				GetSecond();		//[0,59]
 	//取得当前是星期几；0表示：星期天，1～6表示：星期一～星期六
-	int				GetWeek() { return m_TM.tm_wday; };
+	int				GetWeek();
 	static std::tm	LocalTime( std::time_t& time_tt);
 	//获取天数差
 	int 			DiffDay(time_t tm1, time_t tm2);
 	int				GetDayOfYear();
-private:
-	std::chrono::time_point<std::chrono::system_clock> m_CacheTime;
-	std::tm m_TM;
 };
 
 

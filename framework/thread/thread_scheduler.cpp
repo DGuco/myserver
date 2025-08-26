@@ -122,3 +122,19 @@ void CThreadScheduler::PushTask(TaskPtr pTask)
 	CSafeLock guard(m_queue_mutex);
 	m_Tasks.push(pTask);
 }
+
+void CThreadScheduler::StopScheduler()
+{
+	for (size_t i = 0; i < m_Workers.size(); ++i)
+	{
+		m_Workers[i]->Stop();
+	}
+}
+
+void CThreadScheduler::Join()
+{
+	for (size_t i = 0; i < m_Workers.size(); ++i)
+	{
+		m_Workers[i]->Join();
+	}
+}

@@ -267,8 +267,8 @@ public:
 		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<arity,return_type,Func,Args...>::CreateTask(scheduler,signature, func);
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
-			m_TaskList[index]->AddChildTask(pTask);
 			pTask->SetCombineTask(index, m_TaskList[index]);
+			m_TaskList[index]->AddChildTask(pTask);
 			//有可能子任务添加到队列之前，前置任务就已经完成了，后续任务没有执行，再次尝试执行
 			if (m_TaskList[index]->GetState() == enTaskState::eTaskDone
 				|| m_TaskList[index]->GetState() == enTaskState::eTaskFailed)

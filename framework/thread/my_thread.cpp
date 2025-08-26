@@ -1,6 +1,7 @@
 #include "my_thread.h"
 #include "thread_scheduler.h"
 #include "log.h"
+#include "time_helper.h"
 
 thread_local thread_data g_thread_data;
 
@@ -138,6 +139,8 @@ void CTaskThread::Run()
 {
 	while (!IsStoped())
 	{
+		//更新线程的缓存时间
+		CTimeHelper::GetSingletonPtr()->SetTime();
 		m_funcTick();
 		m_pScheduler->ConsumeTask();
 		//
