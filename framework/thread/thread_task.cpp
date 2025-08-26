@@ -63,6 +63,7 @@ void CThreadTask::Run()
 			CSafeLock guard(g_thread_data.task_mutex);
 			g_thread_data.curren_task = GetShared();
 		}
+		SetState(enTaskState::eTaskDoing);
 		SetStartTime(CTimeHelper::GetSingletonPtr()->GetMSTime());
 		Execute();
 		OnFinish();

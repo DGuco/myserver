@@ -11,7 +11,7 @@
 #include <thread>
 #include <functional>
 #include <list>
-#include <safe_pointer.h>
+#include "safe_pointer.h"
 #include "thread_task.h"
 #include "task_helper.h"
 #include "time_helper.h"
@@ -44,8 +44,14 @@ public:
 			return;
 		}
 		pTask->SetState(enTaskState::eTaskWaitingFoDoing);
-		std::lock_guard<std::mutex> guard(m_queue_mutex);
-		m_Tasks.push(pTask);
+		//如果就在当前的执行shcheler中，直接执行
+		if (g_thread_data.own_scheduler == pTask->GetScheduler())
+		{
+			pTask->Run();
+		}else
+		{
+			PushTask(pTask);
+		}
 	}
 
 	template<class Func, typename return_type = std::result_of<Func()>::type>
