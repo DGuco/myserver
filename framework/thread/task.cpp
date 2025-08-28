@@ -1,7 +1,7 @@
-#include "thread_task.h"
+#include "task.h"
 #include "thread_scheduler.h"
 
-CThreadTask::CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signature)
+CTask::CTask(CSafePtr<CTaskScheduler> scheduler, std::string signature)
 	:m_pScheduler(scheduler),
 	m_TaskSignature(signature)
 {
@@ -9,7 +9,7 @@ CThreadTask::CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signa
 	m_pCombinedArgs = NULL;
 };
 
-CThreadTask::~CThreadTask()
+CTask::~CTask()
 {
 	try 
 	{
@@ -26,35 +26,26 @@ CThreadTask::~CThreadTask()
 	}
 }
 
-//添加到执行队列
-void CThreadTask::AddToSchedulerQueue()
-{
-	if(m_pScheduler != NULL)
-	{
-		m_pScheduler->Schedule(GetShared());
-	}
-}
-
-void CThreadTask::AddChildTask(TaskPtr pTask)
+void CTask::AddChildTask(TaskPtr pTask)
 {
 	CSafeLock guard(m_childTaskLock);
 	m_childTaskQueue.push(pTask);
 }
 
-void CThreadTask::OnFinish()
+void CTask::OnFinish()
 {
 	SetState(enTaskState::eTaskDone);
 	RunChildTask();
 }
 
-void CThreadTask::OnFailed() 
+void CTask::OnFailed() 
 {
 	SetState(enTaskState::eTaskFailed);
 	RunChildTask();
 	CACHE_LOG(THREAD_ERROR, "Task[{}] execute failed", m_TaskSignature);
 }
 
-void CThreadTask::Run()
+void CTask::Run()
 {
 	bool bFinish = false;
 	try
@@ -80,7 +71,7 @@ void CThreadTask::Run()
 	}
 }
 
-void CThreadTask::RunChildTask()
+void CTask::RunChildTask()
 {
 	TaskPtr pTask;
 	while (true)

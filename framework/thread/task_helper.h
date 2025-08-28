@@ -8,9 +8,9 @@
 #define __TASK_HELPER_H__
 #include "my_assert.h"
 #include "safe_pointer.h"
-#include "thread_task.h"
+#include "task.h"
 
-class CThreadScheduler;
+class CTaskScheduler;
 
 /*
 MakeIndexSequence<5> : public MakeIndexSequence<4,4>
@@ -85,7 +85,7 @@ public:
 template<int combine_count,typename return_type, class Func,typename ...Args>
 struct CombineTaskCreater
 {
-	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
+	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
 								const Func f)
 	{
@@ -96,7 +96,7 @@ struct CombineTaskCreater
 template<int combine_count,class Func, typename ...Args>
 struct CombineTaskCreater<combine_count,void,Func,Args...>
 {
-	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
+	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
 								const Func f)
 	{
@@ -107,7 +107,7 @@ struct CombineTaskCreater<combine_count,void,Func,Args...>
 template<typename return_type, typename Par, class Func>
 struct TaskCreater
 {
-	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
+	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
 								const Func f)
 	{
@@ -118,7 +118,7 @@ struct TaskCreater
 template<typename Par, class Func>
 struct TaskCreater<void, Par, Func>
 {
-	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
+	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
 								const Func f)
 	{
@@ -129,7 +129,7 @@ struct TaskCreater<void, Par, Func>
 template<typename return_type, class Func>
 struct TaskCreater<return_type, void, Func>
 {
-	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
+	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
 								const Func f)
 	{
@@ -140,7 +140,7 @@ struct TaskCreater<return_type, void, Func>
 template<class Func>
 struct TaskCreater<void, void, Func>
 {
-	static TaskPtr CreateTask(CSafePtr<CThreadScheduler> scheduler,
+	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
 								const Func f)
 	{
@@ -169,11 +169,11 @@ public:
 	的返回类型。std::result_of<F(Args...)>::type无法推导出[](int param) {}这个有参数的lambda表达式，是因为没有提
 	供参数类型。在使用std::result_of时，需要提供函数的参数类型，如std::result_of<decltype(lambda)(int)>::type，
 	这样std::result_of就能正确推导出有参数的lambda表达式的返回类型了*/
-	template<class Func,typename return_type = std::result_of<Func(Res)>::type>
-	CTaskHelper<return_type> ThenAccept(CSafePtr<CThreadScheduler> scheduler,Func&& func)
+	template<class Scheduler,class Func,typename return_type = std::result_of<Func(Res)>::type>
+	CTaskHelper<return_type> ThenAccept(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenAccept";
-		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler, signature, func);
+		std::shared_ptr<CTask> pChildTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler.Get(), signature, func);
 		m_pTaskPtr->AddChildTask(pChildTask);
 		//有可能子任务添加到队列之前，前置任务就已经完成了，后续任务没有执行，再次尝试执行
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone 
@@ -184,11 +184,11 @@ public:
 		return CTaskHelper<return_type>(pChildTask);
 	}
 
-	template<class Func, typename return_type = std::result_of<Func()>::type>
-	CTaskHelper<return_type> ThenApply(CSafePtr<CThreadScheduler> scheduler, Func&& func)
+	template<class Scheduler,class Func, typename return_type = std::result_of<Func()>::type>
+	CTaskHelper<return_type> ThenApply(CSafePtr<Scheduler> scheduler, Func&& func)
 	{
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenApply";
-		std::shared_ptr<CThreadTask> pChildTask = TaskCreater<return_type, void, Func>::CreateTask(scheduler, signature, func);
+		std::shared_ptr<CTask> pChildTask = TaskCreater<return_type, void, Func>::CreateTask(scheduler.Get(), signature, func);
 		m_pTaskPtr->AddChildTask(pChildTask);
 		//有可能子任务添加到队列之前，前置任务就已经完成了，后续任务没有执行，再次尝试执行
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone
@@ -260,11 +260,11 @@ public:
 // 	CAcceptCombineTaskHelper(CAcceptCombineTaskHelper&&) = delete;//禁止移动构造函数	
 // 	CAcceptCombineTaskHelper& operator=(CAcceptCombineTaskHelper&&) = delete;//禁止移动赋值运算符		
 
-	template<class Func, typename return_type = std::result_of<Func(Args...)>::type>
-	CTaskHelper<return_type> AcceptAll(CSafePtr<CThreadScheduler> scheduler,Func&& func)
+	template<class Scheduler,class Func, typename return_type = std::result_of<Func(Args...)>::type>
+	CTaskHelper<return_type> AcceptAll(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAll";
-		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<arity,return_type,Func,Args...>::CreateTask(scheduler,signature, func);
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<arity,return_type,Func,Args...>::CreateTask(scheduler.Get(),signature, func);
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
 			pTask->SetCombineTask(index, m_TaskList[index]);
@@ -300,11 +300,11 @@ public:
 // 	CApplyCombineTaskHelper(CApplyCombineTaskHelper&&) = delete;//禁止移动构造函数	
 // 	CApplyCombineTaskHelper& operator=(CApplyCombineTaskHelper&&) = delete;//禁止移动赋值运算符		
 
-	template<class Func, typename return_type = std::result_of<Func()>::type>
-	CTaskHelper<return_type> ApplyAll(CSafePtr<CThreadScheduler> scheduler,Func&& func)
+	template<class Scheduler,class Func, typename return_type = std::result_of<Func()>::type>
+	CTaskHelper<return_type> ApplyAll(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAll";
-		std::shared_ptr<CThreadTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler, signature, func);
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler.Get(), signature, func);
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
 			m_TaskList[index]->AddChildTask(pTask);

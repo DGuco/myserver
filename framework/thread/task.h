@@ -18,7 +18,7 @@
 
 using namespace my_std;
 
-class CThreadScheduler;
+class CTaskScheduler;
 enum class enTaskState : unsigned char
 {
 	eTaskInit = 0,
@@ -87,26 +87,24 @@ public:
 	}
 };
 
-class CThreadTask : public enable_shared_from_this<CThreadTask>
+class CTask : public enable_shared_from_this<CTask>
 {
-	friend class CThreadScheduler;
+	friend class CTaskScheduler;
 public:
-	CThreadTask(CSafePtr<CThreadScheduler> scheduler, std::string signature);
-	virtual ~CThreadTask();
+	CTask(CSafePtr<CTaskScheduler> scheduler, std::string signature);
+	virtual ~CTask();
 	time_t GetStartTime()						{ return m_nExecuteStart; }
 	const std::string& GetSignature()			{ return m_TaskSignature; }
 	TaskPtr GetShared()							{ return shared_from_this(); }
-	CSafePtr<CThreadScheduler>   GetScheduler() { return m_pScheduler; }
+	CSafePtr<CTaskScheduler>   GetScheduler()   { return m_pScheduler; }
 	//对原子变量y进行了release的store操作，因此y变量之前的store/load操作不能排序到y之后
 	//对原子变量y进行acquire的load操作，因此变量y之后的store/load操作不能排序到y之前
 	enTaskState GetState()						{ return m_nState.load(std::memory_order_acquire); }
-	//添加到执行队列
-	void AddToSchedulerQueue();
 	//添加子任务
 	void AddChildTask(TaskPtr pTask);
 	//执行子任务
 	void RunChildTask();
-protected:
+public:
 	void SetStartTime(time_t time)				{ m_nExecuteStart = time; }
 	void SetState(enTaskState state)			{ m_nState.store(state, std::memory_order_release);}
 	virtual void OnFinish();
@@ -151,15 +149,15 @@ protected:
 	std::atomic<enTaskState>			m_nState;
 	//如果当前任务是一组合任务的前置任务，保存作为前置任务的参数的位置信息
 	CSafePtr<IArgsHolder>				m_pCombinedArgs;
-	CSafePtr<CThreadScheduler>			m_pScheduler;
+	CSafePtr<CTaskScheduler>			m_pScheduler;
 };
 
 template<int combine_count>
-class CCombineTask : public CThreadTask
+class CCombineTask : public CTask
 {
 public:
-	CCombineTask(CSafePtr<CThreadScheduler> scheduler, std::string signature)
-		: CThreadTask(scheduler, signature)
+	CCombineTask(CSafePtr<CTaskScheduler> scheduler, std::string signature)
+		: CTask(scheduler, signature)
 	{
 		m_combineDone = 0;
 	}
@@ -254,11 +252,11 @@ private:
 };
 
 template<>
-class CCombineTask<0> : public CThreadTask
+class CCombineTask<0> : public CTask
 {
 public:
-	CCombineTask(CSafePtr<CThreadScheduler> scheduler, std::string signature)
-		: CThreadTask(scheduler, signature)
+	CCombineTask(CSafePtr<CTaskScheduler> scheduler, std::string signature)
+		: CTask(scheduler, signature)
 	{}
 };
 
@@ -281,7 +279,7 @@ class CWithReturnTask : public CCombineTask<combine_count>
 		using type = typename std::tuple_element<I, ArgsTubleType>::type;
 	};
 public:
-	CWithReturnTask(CSafePtr<CThreadScheduler> scheduler,
+	CWithReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
 		const Func& func)
 		: CCombineTask<combine_count>(scheduler, signature)
@@ -338,7 +336,7 @@ class CWithReturnTask<combine_count,Func,Par> : public CCombineTask<combine_coun
 	using return_type = typename std::result_of<Func(Par)>::type;
 	using function_type = typename std::function<return_type(Par)>;
 public:
-	CWithReturnTask(CSafePtr<CThreadScheduler> scheduler,
+	CWithReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
 		const Func& func)
 		: CCombineTask<combine_count>(scheduler, signature)
@@ -407,7 +405,7 @@ class CWithReturnTask<combine_count,Func,void> : public CCombineTask<combine_cou
 	using return_type = typename std::result_of<Func()>::type;
 	using function_type = typename std::function<return_type()>;
 public:
-	CWithReturnTask(CSafePtr<CThreadScheduler> scheduler,
+	CWithReturnTask(CSafePtr<CTaskScheduler> scheduler,
 					std::string signature,
 					const Func& func)
 		: CCombineTask<combine_count>(scheduler, signature)
@@ -489,7 +487,7 @@ class CNoReturnTask : public CCombineTask<combine_count>
 		using type = typename std::tuple_element<I, ArgsTubleType>::type;
 	};
 public:
-	CNoReturnTask(CSafePtr<CThreadScheduler> scheduler,
+	CNoReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
 		const Func& func)
 		: CCombineTask<combine_count>(scheduler, signature)
@@ -541,7 +539,7 @@ class CNoReturnTask<combine_count,Func,Par> : public CCombineTask<combine_count>
 {
 	using function_type = typename std::function<void(Par)>;
 public:
-	CNoReturnTask(CSafePtr<CThreadScheduler> scheduler,
+	CNoReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
 		const Func& func)
 		:CCombineTask<combine_count>(scheduler, signature)
@@ -609,7 +607,7 @@ class CNoReturnTask<combine_count,Func,void> : public CCombineTask<combine_count
 {
 	using function_type = typename std::function<void()>;
 public:
-	CNoReturnTask(CSafePtr<CThreadScheduler> scheduler,
+	CNoReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
 		const Func& func)
 		:CCombineTask<combine_count>(scheduler, signature)

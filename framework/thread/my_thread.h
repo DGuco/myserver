@@ -1,5 +1,5 @@
 /*****************************************************************
-* FileName:thread.h
+* FileName:my_thread.h
 * Summary :
 * Date	  :2024-7-11
 * Author  :DGuco(1139140929@qq.com)
@@ -17,10 +17,10 @@
 #include "safe_pointer.h"
 
 class CMyThread;
-class CThreadTask;
-class CThreadScheduler;
-typedef std::shared_ptr<CThreadTask> TaskPtr;
-typedef std::weak_ptr<CThreadTask> WeakTaskPtr;
+class CTask;
+class CTaskScheduler;
+typedef std::shared_ptr<CTask> TaskPtr;
+typedef std::weak_ptr<CTask> WeakTaskPtr;
 
 struct thread_data
 {
@@ -28,7 +28,7 @@ struct thread_data
 	TimePoint						m_CacheTimePoint;
 	CMyLock							task_mutex;
 	TaskPtr							curren_task;
-	CSafePtr<CThreadScheduler>		own_scheduler;
+	CSafePtr<CTaskScheduler>		own_scheduler;
 };
 
 typedef std::function<void(void*)> ThreadFuncParam;
@@ -104,7 +104,7 @@ DWORD WINAPI ThreadProc(void* pvArgs);
 class CTaskThread : public CMyThread
 {
 public:
-	CTaskThread(CSafePtr<CThreadScheduler> scheduler)
+	CTaskThread(CSafePtr<CTaskScheduler> scheduler)
 		: m_pScheduler(scheduler)
 	{}
 	virtual ~CTaskThread()
@@ -122,6 +122,6 @@ public:
 	}
 	void Run();
 private:
-	CSafePtr<CThreadScheduler>	m_pScheduler;
+	CSafePtr<CTaskScheduler>	m_pScheduler;
 };
 #endif //__THREAD_H__

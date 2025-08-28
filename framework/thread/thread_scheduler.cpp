@@ -1,7 +1,7 @@
 #include "thread_scheduler.h"
 
 CThreadScheduler::CThreadScheduler(std::string signature)
-	:m_Signature(signature)
+	:CTaskScheduler(signature)
 {}
 
 CThreadScheduler::~CThreadScheduler()
@@ -53,27 +53,6 @@ bool CThreadScheduler::Init(size_t threads,
 	return true;
 }
 
-void CThreadScheduler::ConsumeTask()
-{
-	while (true)
-	{
-		TaskPtr pTask;
-		{
-			CSafeLock guard(m_queue_mutex);
-			if (m_Tasks.empty())
-			{
-				break;
-			}
-			pTask = this->m_Tasks.front();
-			this->m_Tasks.pop();
-		}
-		if (pTask != NULL)
-		{
-			pTask->Run();
-		}
-	}
-}
-
 void CThreadScheduler::DebugTask()
 {
 	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
@@ -117,12 +96,6 @@ void CThreadScheduler::DebugTask()
 	}
 }
 
-void CThreadScheduler::PushTask(TaskPtr pTask)
-{
-	CSafeLock guard(m_queue_mutex);
-	m_Tasks.push(pTask);
-}
-
 void CThreadScheduler::StopScheduler()
 {
 	for (size_t i = 0; i < m_Workers.size(); ++i)
@@ -136,5 +109,24 @@ void CThreadScheduler::Join()
 	for (size_t i = 0; i < m_Workers.size(); ++i)
 	{
 		m_Workers[i]->Join();
+	}
+}
+
+
+void CThreadScheduler::ScheduleTask(TaskPtr pTask)
+{
+	if(pTask->GetState() != enTaskState::eTaskInit)
+	{
+		ASSERT_EX(false,"CThreadScheduler Schedule task failed,the task has been scheduled");
+		return;
+	}
+	pTask->SetState(enTaskState::eTaskWaitingFoDoing);
+	//如果就在当前的执行shcheler中，直接执行
+	if (g_thread_data.own_scheduler == pTask->GetScheduler())
+	{
+		pTask->Run();
+	}else
+	{
+		PushTask(pTask);
 	}
 }
