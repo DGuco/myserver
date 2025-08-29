@@ -5,7 +5,14 @@ CTaskScheduler::CTaskScheduler(std::string signature)
 {}
 
 CTaskScheduler::~CTaskScheduler()
-{}
+{
+    while (!m_Tasks.empty())
+    {
+        TaskPtr pTask = m_Tasks.front();
+        m_Tasks.pop();
+        pTask = NULL;
+    }
+}
 
 void CTaskScheduler::ConsumeTask()
 {
