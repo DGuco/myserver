@@ -312,6 +312,19 @@ public:
 		}
 		return CTaskHelper<return_type>(pTask);
 	}
+
+	template<class Scheduler,class Func, typename return_type = std::result_of<Func()>::type>
+	CTaskHelper<return_type> ApplyAny(CSafePtr<Scheduler> scheduler,Func&& func)
+	{
+		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAny";
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler.Get(), signature, func);
+		for(int index = 0; index < m_TaskList.size(); ++index)
+		{
+			m_TaskList[index]->AddChildTask(pTask);
+			pTask->SetCombineTask(index, m_TaskList[index]);
+		}
+		return CTaskHelper<return_type>(pTask);
+	}
 private:
 	std::vector<TaskPtr>		m_TaskList;
 };

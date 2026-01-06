@@ -70,6 +70,14 @@ int CTimeHelper::DiffDay(time_t tm1, time_t tm2)
     return daysDiff;
 }
 
+//获取周数差
+int CTimeHelper::DiffWeek(time_t tm1, time_t tm2)
+{
+    int daysDiff = DiffDay(tm1, tm2);
+    int weeksDiff = daysDiff / 7;
+    return weeksDiff;
+}
+
 int CTimeHelper::GetDayOfYear()
 {
 	return g_thread_data.m_CacheTime.tm_yday;

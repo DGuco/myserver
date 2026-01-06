@@ -12,6 +12,13 @@ int main(int argc, char **argv)
 		exit(0);
 	}
     
+    float count = 0;
+    for(int i = 0; i < 70; ++i)
+    {
+        float count_ = 1 * 20 / 100.0f;
+        count += count_;
+    }
+    int final_count = (int)count;
     // ²âÊÔlock_free_limit_queue
     //TestLockFreeLimitQueue();
 

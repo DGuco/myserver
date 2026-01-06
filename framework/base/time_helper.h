@@ -41,6 +41,9 @@ public:
 	static std::tm	LocalTime( std::time_t& time_tt);
 	//获取天数差
 	int 			DiffDay(time_t tm1, time_t tm2);
+	//
+	int				DiffWeek(time_t tm1, time_t tm2);
+	//
 	int				GetDayOfYear();
 };
 

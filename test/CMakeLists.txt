@@ -23,6 +23,12 @@ set(SOURCE_FILES
     "rbt_hash_map_test.h"
     "atomic_test.h"
     "scheduler_test.h"
+    "test_common/test_common.h"
+    "test_common/dbcfile.h"
+    "homelogic/table_init.h"
+    "homelogic/table_init.cpp"
+    "homelogic/homeplant_manager.h"
+    "homelogic/homeplant_manager.cpp"
     )
 
 
@@ -39,7 +45,9 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/framework/std
         ${CMAKE_SOURCE_DIR}/framework/lua
         ${CMAKE_SOURCE_DIR}/framework/db
-        ${CMAKE_SOURCE_DIR}/proxyserver/inc
+        ${CMAKE_SOURCE_DIR}/test/test_common
+        ${CMAKE_SOURCE_DIR}/test/homelogic
+
 )
 
 link_directories(
