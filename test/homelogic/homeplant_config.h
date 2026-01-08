@@ -2,7 +2,7 @@
 #define __TABLE_INIT_H__
 
 #include "base.h"
-#include "test_common.h"
+#include "FB_BaseType.h"
 #include <string.h>
 #include <stdio.h>
 

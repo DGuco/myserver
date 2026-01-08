@@ -23,11 +23,20 @@ set(SOURCE_FILES
     "rbt_hash_map_test.h"
     "atomic_test.h"
     "scheduler_test.h"
-    "test_common/test_common.h"
+    "test_common/FB_BaseType.h"
+    "homelogic/db_struct.h"
     "homelogic/homeplant_config.h"
     "homelogic/homeplant_config.cpp"
     "homelogic/homeplant_manager.h"
     "homelogic/homeplant_manager.cpp"
+    "homelogic/cgaskhomeplant.h"
+    "homelogic/cgaskhomeplant.cpp"
+    "homelogic/cgaskhomeplanthandler.cpp"
+    "homelogic/gcrethomeplant.h"
+    "homelogic/gcrethomeplant.cpp"
+    "homelogic/gwghomeplantopt.h"
+    "homelogic/gwghomeplantopt.cpp"
+    "homelogic/gwghomeplantopthandler.cpp"
     )
 
 

@@ -16,6 +16,7 @@ typedef short			SHORT;			//标准short
 typedef unsigned long	ULONG;			//标准无符号LONG(不推荐使用)
 typedef long			LONG;			//标准LONG(不推荐使用)
 typedef float			FLOAT;			//标准float
+typedef INT				ScriptID_t;			//脚本
 
 typedef UCHAR			uchar;
 typedef USHORT			ushort;
@@ -90,12 +91,36 @@ struct GUID64_t
         return true;
     }
 
-    bool Write(SocketOutputStream& outputStream)
+    bool Write(SocketOutputStream& outputStream) const
     {
         outputStream.Write(m_High, sizeof(m_High));
         outputStream.Write(m_Low, sizeof(m_Low));
         return true;
     }
+};
+
+class LuaInterface
+{
+public:
+	LuaInterface();
+	~LuaInterface();
+	INT		ExeScript( ScriptID_t scriptid, CHAR* funcname ) {return 0;};
+	INT		ExeScript_D( ScriptID_t scriptid, CHAR* funcname, INT Param0 ) {return 0;};
+	INT		ExeScript_DD( ScriptID_t scriptid, CHAR* funcname, INT Param0, INT Param1 ) {return 0;};
+	INT		ExeScript_DDD( ScriptID_t scriptid, CHAR* funcname, INT Param0, INT Param1, INT Param2 ) {return 0;};
+	INT		ExeScript_DDDD( ScriptID_t scriptid, CHAR* funcname, INT Param0, INT Param1, INT Param2, INT Param3 ) {return 0;};
+	INT		ExeScript_DDDDD( ScriptID_t scriptid, CHAR* funcname, INT Param0, INT Param1, INT Param2, INT Param3, INT Param4 ) {return 0;};
+	INT		ExeScript_DDDDDD( ScriptID_t scriptid, CHAR* funcname, INT Param0, INT Param1, INT Param2, INT Param3, INT Param4, INT Param5 ) {return 0;};
+	INT		ExeScript_DDDDDDD( ScriptID_t scriptid, CHAR* funcname, INT Param0, INT Param1, INT Param2, INT Param3, INT Param4, INT Param5, INT Param6 ) {return 0;};
+	INT		ExeScript_DDDDDDDD( ScriptID_t scriptid, CHAR* funcname, INT Param0, INT Param1, INT Param2, INT Param3, INT Param4, INT Param5, INT Param6, INT Param7 ) {return 0;};
+};
+
+class Scene
+{
+public:
+    LuaInterface* GetLuaInterface() { return NULL; }
+    INT           SceneID() { return 0; }
+    BOOL VerifyExecuteThread() { return true; }
 };
 
 class Obj_Human
@@ -108,8 +133,61 @@ public:
 
     VOID SendNoticeMsg(const CHAR *szMsg)
     {}
+
+    GUID64_t GetGUID() { return m_GUID; }
+    Scene* getScene() { return NULL; }
+
 public:
     GUID64_t m_GUID;
 };
+
+class GamePlayer
+{
+public :
+	GamePlayer( BOOL bIsServer=FALSE ) ;
+	~GamePlayer( ) ;
+    Obj_Human* GetHuman() { return NULL; }
+};
+
+class Packet;
+class Player : public GamePlayer
+{
+public :
+	Player( BOOL bIsServer=FALSE ) ;
+	~Player( ) ;
+	virtual BOOL SendPacket( Packet* pPacket ) ;
+};
+
+class PacketFactory 
+{
+public :
+	virtual ~PacketFactory ()  {}
+	virtual Packet*		CreatePacket ()  = 0;
+	virtual PacketID_t	GetPacketID ()const  = 0;
+	virtual UINT		GetPacketMaxSize ()const  = 0;
+};
+
+class Packet
+{
+public :
+	Packet( ) {};
+	virtual ~Packet( ) {} ;
+	virtual VOID	CleanUp( ){} ;
+	virtual BOOL	Read( SocketInputStream& iStream ) = 0 ;
+	virtual BOOL	Write( SocketOutputStream& oStream ) const = 0;
+	virtual UINT		Execute( Player* pPlayer ) = 0 ;
+	virtual	PacketID_t	GetPacketID( ) const = 0 ;
+	virtual	UINT		GetPacketSize( ) const = 0 ;
+};
+
+enum PACKET_EXE
+{
+	PACKET_EXE_ERROR = 0 ,
+	PACKET_EXE_BREAK ,
+	PACKET_EXE_CONTINUE ,
+	PACKET_EXE_NOTREMOVE ,
+	PACKET_EXE_NOTREMOVE_ERROR ,
+};
+
 
 #endif
