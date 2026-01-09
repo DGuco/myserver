@@ -24,6 +24,7 @@ set(SOURCE_FILES
     "atomic_test.h"
     "scheduler_test.h"
     "test_common/FB_BaseType.h"
+    "test_common/FB_BaseType.cpp"
     "homelogic/db_struct.h"
     "homelogic/homeplant_config.h"
     "homelogic/homeplant_config.cpp"

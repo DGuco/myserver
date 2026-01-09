@@ -27,9 +27,9 @@ public:
 	//关闭所有日志
 	int ShutDownAll();
 	template<typename... Args>
-	int DiskLog(enDiskLog log_type, const char* vFmt, const Args &... args);
+	int DiskLog(int log_type, const char* vFmt, const Args &... args);
 	template<typename... Args>
-	int CacheLog(enCacheLog log_type, const char* vFmt, const Args &... args);
+	int CacheLog(int log_type, const char* vFmt, const Args &... args);
 	//
 	bool CreateDirectoryRecursive(const std::string& path); 
 private:
@@ -66,9 +66,9 @@ private:
 };
 
 template<typename... Args>
-int CLog::DiskLog(enDiskLog log_type, const char* vFmt, const Args &... args)
+int CLog::DiskLog(int log_type, const char* vFmt, const Args &... args)
 {
-	stLogInfo* pLogInfo = GetLogInfo((int)log_type);
+	stLogInfo* pLogInfo = GetLogInfo(log_type);
 	if (pLogInfo == NULL)
 	{
 		return -1;
@@ -90,9 +90,9 @@ int CLog::DiskLog(enDiskLog log_type, const char* vFmt, const Args &... args)
 }
 
 template<typename... Args>
-int CLog::CacheLog(enCacheLog log_type, const char* vFmt, const Args &... args)
+int CLog::CacheLog(int log_type, const char* vFmt, const Args &... args)
 {
-	stLogInfo* pLogInfo = GetLogInfo((int)log_type);
+	stLogInfo* pLogInfo = GetLogInfo(log_type);
 	if (pLogInfo == NULL)
 	{
 		return -1;

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "safe_pointer.h"
 #include "t_array.h"
+#include "log.h"
 
 #define SafePointer     CSafePtr
 #define VOID			void			//±ê×¼¿Õ
@@ -31,8 +32,25 @@ typedef UCHAR			BYTE;
 #define __LEAVE_FUNCTION } catch (...) { }
 
 #define Assert(x) if(!(x)) { printf("Assert failed: %s, line %d\n", __FILE__, __LINE__); }
-#define Disk64Log(a,b)  {;} 
+#define AssertEx(x,msg) if(!(x)) { printf("Assert failed: %s, line %d\n", __FILE__, __LINE__); }
+#define Disk64Log  CLog::GetSingletonPtr()->DiskLog
+#define CacheGuid64Log  CLog::GetSingletonPtr()->CacheLog
 
+enum LogFileId
+{
+    LOG_FILE_LOGIN = 0,
+    LOG_FILE_DEBUG = 1,
+    LOG_FILE_ERROR = 2,
+    LOG_FILE_WORLD = 3,
+    LOG_FILE_AUDIT = 4,
+};
+
+enum DisLogFileId
+{
+    LOGIN_LOG_FILE = 0,
+    WORLD_LOG_FILE = 3,
+    SERVER_LOG_FILE = 4,
+};
 
 class SocketInputStream
 {
@@ -136,9 +154,18 @@ public:
 
     GUID64_t GetGUID() { return m_GUID; }
     Scene* getScene() { return NULL; }
-
-public:
+    INT GetZoneWorldID() { return 0; }
+private:
     GUID64_t m_GUID;
+};
+
+class GUID64String
+{
+public:
+    GUID64String(GUID64_t guid) : m_GUID(guid) {}
+    ~GUID64String() {}
+    GUID64_t m_GUID;
+    const char* GetString() { return m_GUID.m_High == 0 && m_GUID.m_Low == 0 ? "NULL" : "GUID64_t"; }
 };
 
 class GamePlayer
@@ -167,6 +194,20 @@ public :
 	virtual UINT		GetPacketMaxSize ()const  = 0;
 };
 
+class PacketFactoryManager
+{
+public :
+    Packet* CreatePacket(PacketID_t packetID) {  return NULL;}
+};
+extern PacketFactoryManager* g_pPacketFactoryManager;
+
+class ServerManager
+{
+public :
+   BOOL PushAsyncPacket(Packet* pPacket,int zoneWorldID) { return true; }
+};
+extern ServerManager* g_pServerManager;
+
 class Packet
 {
 public :
@@ -189,5 +230,21 @@ enum PACKET_EXE
 	PACKET_EXE_NOTREMOVE_ERROR ,
 };
 
+class USER
+{
+public:
+    USER() {}
+    ~USER() {}
+};
+
+class OnlineUser
+{
+public:
+    OnlineUser() {}
+    ~OnlineUser() {}
+
+    USER* FindUser(GUID64_t guid) { return NULL; }
+};
+extern OnlineUser* g_OnlineUser;
 
 #endif

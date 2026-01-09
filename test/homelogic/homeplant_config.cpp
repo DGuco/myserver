@@ -26,7 +26,7 @@ VOID HomePlantConfig::InitMissionDialogTable()
 		g_MissionDialogTable.m_MissionDialog[i].nDialogID		= ThirdFile.Search_Posistion(i, DialogIdx_DialogID)->iValue;
 		strncpy( g_MissionDialogTable.m_MissionDialog[i].szMissionName, ThirdFile.Search_Posistion(i,DialogIdx_MissionName)->pString, sizeof( g_MissionDialogTable.m_MissionDialog[i].szMissionName ) - 1 );
 	}
-    Disk64Log( 111, "Load MissionDialog.txt ... OK! " ) ;
+    Disk64Log( SERVER_LOG_FILE, "Load MissionDialog.txt ... OK! " ) ;
     __LEAVE_FUNCTION
 }
 
@@ -64,7 +64,7 @@ VOID HomePlantConfig::InitPlantingGuideTable()
 		g_PlantingGuideTable.m_PlantingGuide[i].m_nBaseIcon = ThirdFile.Search_Posistion(i, PlantingGuideIdx_BaseIcon)->iValue;
 		g_PlantingGuideTable.m_PlantingGuide[i].m_nCropIcon = ThirdFile.Search_Posistion(i, PlantingGuideIdx_CropIcon)->iValue;
 	}
-    Disk64Log( 111, "Load PlantingGuide.txt ... OK! " ) ;
+    Disk64Log( SERVER_LOG_FILE, "Load PlantingGuide.txt ... OK! " ) ;
     __LEAVE_FUNCTION
 }
 
@@ -118,7 +118,7 @@ VOID HomePlantConfig::InitSeedBaseTable()
 		g_SeedBaseTable.m_SeedBase[i].m_nMonsterID2 = ThirdFile.Search_Posistion(i, SeedBaseIdx_MonsterID2)->iValue;
 		g_SeedBaseTable.m_SeedBase[i].m_nMonsterID3 = ThirdFile.Search_Posistion(i, SeedBaseIdx_MonsterID3)->iValue;
 	}
-    Disk64Log( 111, "Load SeedBase.txt ... OK! " ) ;
+    Disk64Log( SERVER_LOG_FILE, "Load SeedBase.txt ... OK! " ) ;
     __LEAVE_FUNCTION
 }
 
@@ -157,7 +157,7 @@ VOID HomePlantConfig::InitCropBaseTable()
 		strncpy( g_CropBaseTable.m_CropBase[i].m_aDesc, ThirdFile.Search_Posistion(i, CropBaseIdx_Desc)->pString, sizeof( g_CropBaseTable.m_CropBase[i].m_aDesc ) - 1 );
 		g_CropBaseTable.m_CropBase[i].m_nLayerNum = ThirdFile.Search_Posistion(i, CropBaseIdx_LayerNum)->iValue;
 	}
-    Disk64Log( 111, "Load CropBase.txt ... OK! " ) ;
+    Disk64Log( SERVER_LOG_FILE, "Load CropBase.txt ... OK! " ) ;
     __LEAVE_FUNCTION
 }
 
@@ -208,7 +208,7 @@ VOID HomePlantConfig::InitPlantingGuideStarTable()
 		g_PlantingGuideStarTable.m_PlantingGuideStar[i].m_nNum3 = ThirdFile.Search_Posistion(i, PlantingGuideStarIdx_Num3)->iValue;
 		g_PlantingGuideStarTable.m_PlantingGuideStar[i].m_nNum4 = ThirdFile.Search_Posistion(i, PlantingGuideStarIdx_Num4)->iValue;
 	}
-    Disk64Log( 111, "Load PlantingGuideStar.txt ... OK! " ) ;
+    Disk64Log( SERVER_LOG_FILE, "Load PlantingGuideStar.txt ... OK! " ) ;
     __LEAVE_FUNCTION
 }
 
@@ -257,7 +257,7 @@ VOID HomePlantConfig::InitPlantingGuideWeightTable()
 		g_PlantingGuideWeightTable.m_PlantingGuideWeight[i].m_nWeight3 = ThirdFile.Search_Posistion(i, PlantingGuideLevelIdx_Weight3)->iValue;
 		g_PlantingGuideWeightTable.m_PlantingGuideWeight[i].m_nWeight4 = ThirdFile.Search_Posistion(i, PlantingGuideLevelIdx_Weight4)->iValue;
 	}
-    Disk64Log( 111, "Load PlantingGuideWeight.txt ... OK! " ) ;
+    Disk64Log( SERVER_LOG_FILE, "Load PlantingGuideWeight.txt ... OK! " ) ;
     __LEAVE_FUNCTION
 }
 
@@ -295,7 +295,7 @@ void HomePlantConfig::InitPlantingGuideLevelTable()
         pdata++;
     }
 
-    Disk64Log( 111, "Load PlantingGuideLevel.txt ... OK! " ) ;
+    Disk64Log( SERVER_LOG_FILE, "Load PlantingGuideLevel.txt ... OK! " ) ;
 }
 
 // 全局变量定义
@@ -337,5 +337,5 @@ void HomePlantConfig::InitPlantGroupTable()
         g_PlantGroupTable.m_pPlantGroupT[i].m_nCompanionPlanting4 = ThirdFile.Search_Posistion(i, PlantGroupIdx_CompanionPlanting4)->iValue;
     }
 
-    Disk64Log(111, "Load PlantGroup.txt ... OK! ");
+    Disk64Log(SERVER_LOG_FILE, "Load PlantGroup.txt ... OK! ");
 }

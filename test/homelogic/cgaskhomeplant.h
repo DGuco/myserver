@@ -25,6 +25,9 @@ public:
     // Ö´ÐÐ
     PacketID_t GetPacketID() const   {  return PACKET_CG_ASK_HOME_PLANT; }
     UINT GetPacketSize() const  {   return sizeof(CGAskHomePlant); }
+    BYTE GetOpt() const { return m_bOpt; }
+    INT GetTrunkID() const { return m_nTrunkID; }
+    INT GetSlotID() const { return m_nSlotID; }
 private:
     BYTE m_bOpt;
     INT  m_nTrunkID;

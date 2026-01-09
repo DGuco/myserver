@@ -13,6 +13,8 @@ public:
     UINT Execute(Player* pPlayer);
     PacketID_t GetPacketID() const { return PACKET_GC_RET_HOME_PLANT; }
     UINT GetPacketSize() const { return sizeof(GCRetHomePlant); }
+    VOID SetOpt(BYTE bOpt) { m_bOpt = bOpt; }
+    HomePlant* GetHomePlant() { return &m_HomePlant; }
 private:
     BYTE m_bOpt;
     HomePlant m_HomePlant;
