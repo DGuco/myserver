@@ -205,6 +205,7 @@ class ServerManager
 {
 public :
    BOOL PushAsyncPacket(Packet* pPacket,int zoneWorldID) { return true; }
+   BOOL DirectSendPacket(Packet* pPacket,int zoneWorldID) { return true; }
 };
 extern ServerManager* g_pServerManager;
 
@@ -235,6 +236,7 @@ class USER
 public:
     USER() {}
     ~USER() {}
+    INT GetServerID() { return 0; }
 };
 
 class OnlineUser

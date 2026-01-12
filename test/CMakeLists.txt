@@ -35,9 +35,12 @@ set(SOURCE_FILES
     "homelogic/cgaskhomeplanthandler.cpp"
     "homelogic/gcrethomeplant.h"
     "homelogic/gcrethomeplant.cpp"
-    "homelogic/gwghomeplantopt.h"
-    "homelogic/gwghomeplantopt.cpp"
-    "homelogic/gwghomeplantopthandler.cpp"
+    "homelogic/gwhomeplantopt.h"
+    "homelogic/gwhomeplantopt.cpp"
+    "homelogic/gwhomeplantopthandler.cpp"
+    "homelogic/wghomeplantopt.h"
+    "homelogic/wghomeplantopt.cpp"
+    "homelogic/wghomeplantopt_handler.cpp"
     )
 
 

@@ -1,44 +1,51 @@
-#ifndef GWGHOMEPLANTOPT_H
-#define GWGHOMEPLANTOPT_H
+#ifndef GW_HOMEPLANTOPT_H
+#define GW_HOMEPLANTOPT_H
 
 #include "DB_Struct.h"
 #include "FB_BaseType.h"
 
 #define PACKET_GW_HOME_PLANT_OPT    0x00000002
 
-class GWGHomePlantOpt : public Packet
+enum enGWGHomePlantOpt
+{
+    GWG_HOME_PLANT_OPT_ASK = 0,   // 询问植物信息
+    GWG_HOME_PLANT_OPT_UNLOCK_TRUNK = 1, // 解锁 trunk
+    GWG_HOME_PLANT_OPT_WATER = 2, // 浇水
+    GWG_HOME_PLANT_OPT_FERTILIZE = 3, // 施肥
+    GWG_HOME_PLANT_OPT_RET_PLANT_INFO = 4, // 返回植物信息
+};
+
+class GWHomePlantOpt : public Packet
 {
 public:
-    GWGHomePlantOpt();
-    virtual ~GWGHomePlantOpt();
+    GWHomePlantOpt();
+    virtual ~GWHomePlantOpt();
     BOOL Read(SocketInputStream& is);
     BOOL Write(SocketOutputStream& os) const;
     UINT Execute(Player* pPlayer);
     PacketID_t GetPacketID() const { return PACKET_GW_HOME_PLANT_OPT; }
-    UINT GetPacketSize() const { return sizeof(GWGHomePlantOpt); }
+    UINT GetPacketSize() const { return sizeof(GWHomePlantOpt); }
     GUID64_t GetGUID() const { return m_GUID; }
     BYTE GetOpt() const { return m_bOpt; }
-    HomePlant* GetHomePlant() { return &m_HomePlant; }
     VOID SetGUID(GUID64_t guid) { m_GUID = guid; }
     VOID SetOpt(BYTE opt) { m_bOpt = opt; }
 private:
     GUID64_t m_GUID;
     BYTE m_bOpt;
-    HomePlant m_HomePlant;
 };
 
-class GWGHomePlantOptFactory : public PacketFactory
+class GWHomePlantOptFactory : public PacketFactory
 {
 public:
-    GWGHomePlantOptFactory()
+    GWHomePlantOptFactory()
     {
     }
-    ~GWGHomePlantOptFactory()
+    ~GWHomePlantOptFactory()
     {
     }
     Packet* CreatePacket() 
     {
-        return new GWGHomePlantOpt();
+        return new GWHomePlantOpt();
     }
     PacketID_t GetPacketID() const 
     {
@@ -46,15 +53,15 @@ public:
     }
     UINT GetPacketMaxSize() const 
     {
-        return sizeof(GWGHomePlantOpt);
+        return sizeof(GWHomePlantOpt);
     }
 };
 
 
-class GWGHomePlantOptHandler
+class GWHomePlantOptHandler
 {
 public:
-    static UINT Execute(GWGHomePlantOpt* pPacket,Player* pPlayer);
+    static UINT Execute(GWHomePlantOpt* pPacket,Player* pPlayer);
 };
 
 #endif // GWGHOMEPLANTOPT_H

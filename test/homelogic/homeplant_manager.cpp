@@ -1,5 +1,7 @@
 #include "homeplant_manager.h"
 
+HomePlantManager* g_HomePlantManager = NULL;
+
 SafePointer<Home> HomePlantManager::GetHome(GUID64_t ownerID)
 {
     __ENTER_FUNCTION
@@ -70,5 +72,22 @@ VOID HomePlantManager::WateringTrunk(Obj_Human* pOwner, SHORT nTrunkID)
     Assert(pLuaInterface != NULL && pScene != NULL);
     pHome->m_HomePlant.m_TrunkArray[nTrunkID].m_bState = 2;
     pLuaInterface->ExeScript_DD(HONE_PLANT_SCEIPT_ID,"OnPlantTrunkWatering", pScene->SceneID(), nTrunkID);
+    __LEAVE_FUNCTION
+}
+
+// ÃÓ≥‰º“‘∞–≈œ¢
+VOID HomePlantManager::FillHomePlatMsg(WGHomePlantOpt* pMsg, GUID64_t ownerID)
+{
+    __ENTER_FUNCTION
+    if(pMsg == NULL)
+    {
+        return;
+    }
+    SafePointer<Home> pHome = GetHome(ownerID);
+    if(pHome == NULL)
+    {
+        return;
+    }
+    pMsg->SetHomePlant(pHome->m_HomePlant);
     __LEAVE_FUNCTION
 }
