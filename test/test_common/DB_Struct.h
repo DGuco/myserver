@@ -7,10 +7,11 @@ using namespace my_std;
 #define MAX_TRANK_GRIDE 4 // 每个地块4个种植格子
 #define MAX_TRANK_GRIDE_PLANT 4 // 每个地块4个种植格子，每个格子可以种1个植物
 #define MAX_TRANK_PLANT (MAX_TRANK_GRIDE * MAX_TRANK_GRIDE_PLANT) // 每个地块最多可以种16个植物
-#define MAX_HOME_TRANK 8  // 每个家园最多可以有8个地块儿
+#define MAX_HOME_PLANT_TRANK 8  // 每个家园最多可以有8个地块儿
 #define MAX_PLANT_ITEM 100 //最多可以有100个物品
 #define MAX_PLANT_GUIDE 16 //最多可以有16个植物图鉴
-#define MAX_HOME_PLANT_COUNT 1024 //最大家园数量
+#define MAX_HOME_COUNT 1024 //最大家园数量
+#define MAX_HOME_PLANT_COUNT (MAX_HOME_PLANT_TRANK * MAX_TRANK_PLANT) // 每个家园最多可以种64个植物
 #define HONE_PLANT_SCEIPT_ID (1111111)
 
 // 植物状态
@@ -162,7 +163,7 @@ struct PlantGuideInfo
 struct HomePlant
 {   
     GUID64_t m_OwnerID; // 家园主人
-    TArray<PlantTrunk, MAX_HOME_TRANK> m_TrunkArray; // 家园上的地块儿数组
+    TArray<PlantTrunk, MAX_HOME_PLANT_TRANK> m_TrunkArray; // 家园上的地块儿数组
     TArray<PlantItemInfo, MAX_PLANT_ITEM> m_ItemArray; // 家园上的物品数组
     TArray<PlantGuideInfo, MAX_PLANT_GUIDE> m_GuideArray; // 家园上的植物图鉴
     USHORT  m_nWateringTimes; // 浇水次数
@@ -175,7 +176,7 @@ struct HomePlant
     bool Read(SocketInputStream& inputStream)
     {
         m_OwnerID.Read(inputStream);
-        for(int i = 0; i < MAX_HOME_TRANK; ++i)
+        for(int i = 0; i < MAX_HOME_PLANT_TRANK; ++i)
         {
             m_TrunkArray[i].Read(inputStream);
         }
@@ -198,7 +199,7 @@ struct HomePlant
     bool Write(SocketOutputStream& outputStream) const
     {
         m_OwnerID.Write(outputStream);
-        for(int i = 0; i < MAX_HOME_TRANK; ++i)
+        for(int i = 0; i < MAX_HOME_PLANT_TRANK; ++i)
         {
             m_TrunkArray[i].Write(outputStream);
         }
@@ -230,7 +231,24 @@ struct HomePlant
 //家园
 struct Home
 {
+    //需要保存db
     HomePlant m_HomePlant; // 家园上的植物
+    //运行时数据不需要存db
+    TArray<INT, MAX_HOME_PLANT_TRANK> m_TrunkMonsterObj; // 家园地块monster
+    TArray<INT, MAX_HOME_PLANT_COUNT> m_PlantMonsterObj; // 家园地块植物monster
+
+    Home()
+    {
+        for(int i = 0; i < MAX_HOME_PLANT_TRANK; ++i)
+        {
+            m_TrunkMonsterObj[i] = -1;
+        }
+
+        for(int i = 0; i < MAX_HOME_PLANT_COUNT; ++i)
+        {
+            m_PlantMonsterObj[i] = -1;
+        }
+    }
 };
 
 #endif

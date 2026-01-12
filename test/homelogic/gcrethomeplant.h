@@ -21,13 +21,13 @@ private:
     HomePlant m_HomePlant;
 };
 
-class CRetHomePlantFactory : public PacketFactory
+class GCRetHomePlantFactory : public PacketFactory
 {
 public:
-    CRetHomePlantFactory()
+    GCRetHomePlantFactory()
     {
     }
-    ~CRetHomePlantFactory()
+    ~GCRetHomePlantFactory()
     {
     }
     Packet* CreatePacket() 
@@ -44,16 +44,14 @@ public:
     }
 };
 
-class CRetHomePlantHandler
+class GCRetHomePlantHandler
 {
 public:
-    static UINT Execute(GCRetHomePlant* pPacket,Player* pPlayer);
+    static UINT Execute(GCRetHomePlant* pPacket,Player* pPlayer)
+    {
+        __ENTER_FUNCTION
+        return PACKET_EXE_CONTINUE;
+        __LEAVE_FUNCTION
+        return PACKET_EXE_ERROR;
+    }
 };
-
-
-UINT CRetHomePlantHandler::Execute(GCRetHomePlant* pPacket, Player* pPlayer)
-{
-    __ENTER_FUNCTION
-    return PACKET_EXE_CONTINUE;
-    __LEAVE_FUNCTION
-}

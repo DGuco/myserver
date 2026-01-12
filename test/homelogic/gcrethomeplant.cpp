@@ -33,7 +33,7 @@ BOOL GCRetHomePlant::Write(SocketOutputStream& os) const
 UINT GCRetHomePlant::Execute(Player* pPlayer)
 {
     __ENTER_FUNCTION
-    return CRetHomePlantHandler::Execute(this, pPlayer);
+    return GCRetHomePlantHandler::Execute(this, pPlayer);
     __LEAVE_FUNCTION
     return 0;
 }

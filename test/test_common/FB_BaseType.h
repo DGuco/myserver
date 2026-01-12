@@ -134,6 +134,20 @@ public:
 	INT		ExeScript_DDDDDDDD( ScriptID_t scriptid, CHAR* funcname, INT Param0, INT Param1, INT Param2, INT Param3, INT Param4, INT Param5, INT Param6, INT Param7 ) {return 0;};
 };
 
+class Player;
+class Packet
+{
+public :
+	Packet( ) {};
+	virtual ~Packet( ) {} ;
+	virtual VOID	CleanUp( ){} ;
+	virtual BOOL	Read( SocketInputStream& iStream ) = 0 ;
+	virtual BOOL	Write( SocketOutputStream& oStream ) const = 0;
+	virtual UINT		Execute( Player* pPlayer ) = 0 ;
+	virtual	PacketID_t	GetPacketID( ) const = 0 ;
+	virtual	UINT		GetPacketSize( ) const = 0 ;
+};
+
 class Scene
 {
 public:
@@ -158,7 +172,7 @@ public:
     Scene* getScene() { return NULL; }
     INT GetZoneWorldID() { return 0; }
     const char* GetName() { return "NULL"; }
-	BOOL SendPacket( Packet& pPacket ) ;
+	BOOL SendPacket( Packet& pPacket )  {return true;};
 private:
     GUID64_t m_GUID;
 };
@@ -181,7 +195,6 @@ public :
     BOOL IsCanLogic() { return true; }
 };
 
-class Packet;
 class Player : public GamePlayer
 {
 public :
@@ -216,19 +229,6 @@ public :
    BOOL VerifyExecuteThread() { return true; }
 };
 extern ServerManager* g_pServerManager;
-
-class Packet
-{
-public :
-	Packet( ) {};
-	virtual ~Packet( ) {} ;
-	virtual VOID	CleanUp( ){} ;
-	virtual BOOL	Read( SocketInputStream& iStream ) = 0 ;
-	virtual BOOL	Write( SocketOutputStream& oStream ) const = 0;
-	virtual UINT		Execute( Player* pPlayer ) = 0 ;
-	virtual	PacketID_t	GetPacketID( ) const = 0 ;
-	virtual	UINT		GetPacketSize( ) const = 0 ;
-};
 
 enum PACKET_EXE
 {
