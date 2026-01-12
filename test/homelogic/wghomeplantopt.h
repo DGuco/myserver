@@ -24,10 +24,13 @@ public:
     VOID SetHomePlant(HomePlant& homePlant) { m_HomePlant = homePlant; }
     VOID SetGUID(GUID64_t guid) { m_GUID = guid; }
     VOID SetOpt(BYTE opt) { m_bOpt = opt; }
+    VOID SetPlayerID(PlayerID_t playerID) { m_nPlayerID = playerID; }
+    PlayerID_t GetPlayerID() const { return m_nPlayerID; }
 private:
-    GUID64_t m_GUID;
-    BYTE m_bOpt;
-    HomePlant m_HomePlant;
+    GUID64_t    m_GUID;
+    PlayerID_t  m_nPlayerID;
+    BYTE        m_bOpt;
+    HomePlant   m_HomePlant;
 };
 
 

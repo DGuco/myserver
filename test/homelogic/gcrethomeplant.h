@@ -15,6 +15,7 @@ public:
     UINT GetPacketSize() const { return sizeof(GCRetHomePlant); }
     VOID SetOpt(BYTE bOpt) { m_bOpt = bOpt; }
     HomePlant* GetHomePlant() { return &m_HomePlant; }
+    VOID SetHomePlant(HomePlant& homePlant) { m_HomePlant = homePlant; }
 private:
     BYTE m_bOpt;
     HomePlant m_HomePlant;

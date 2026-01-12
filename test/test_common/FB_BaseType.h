@@ -27,6 +27,7 @@ typedef ULONG			IP_t;
 typedef USHORT			PacketID_t;
 typedef INT				BOOL;
 typedef UCHAR			BYTE;
+typedef short			PlayerID_t;
 
 #define __ENTER_FUNCTION try {
 #define __LEAVE_FUNCTION } catch (...) { }
@@ -139,6 +140,7 @@ public:
     LuaInterface* GetLuaInterface() { return NULL; }
     INT           SceneID() { return 0; }
     BOOL VerifyExecuteThread() { return true; }
+    BOOL PushAsyncPacket(Packet* pPacket,int zoneWorldID) { return true; }
 };
 
 class Obj_Human
@@ -155,6 +157,8 @@ public:
     GUID64_t GetGUID() { return m_GUID; }
     Scene* getScene() { return NULL; }
     INT GetZoneWorldID() { return 0; }
+    const char* GetName() { return "NULL"; }
+	BOOL SendPacket( Packet& pPacket ) ;
 private:
     GUID64_t m_GUID;
 };
@@ -174,6 +178,7 @@ public :
 	GamePlayer( BOOL bIsServer=FALSE ) ;
 	~GamePlayer( ) ;
     Obj_Human* GetHuman() { return NULL; }
+    BOOL IsCanLogic() { return true; }
 };
 
 class Packet;
@@ -183,6 +188,8 @@ public :
 	Player( BOOL bIsServer=FALSE ) ;
 	~Player( ) ;
 	virtual BOOL SendPacket( Packet* pPacket ) ;
+    virtual BOOL IsServerPlayer() { return false; }
+    virtual BOOL IsGamePlayer() { return false; }
 };
 
 class PacketFactory 
@@ -206,6 +213,7 @@ class ServerManager
 public :
    BOOL PushAsyncPacket(Packet* pPacket,int zoneWorldID) { return true; }
    BOOL DirectSendPacket(Packet* pPacket,int zoneWorldID) { return true; }
+   BOOL VerifyExecuteThread() { return true; }
 };
 extern ServerManager* g_pServerManager;
 
@@ -248,5 +256,15 @@ public:
     USER* FindUser(GUID64_t guid) { return NULL; }
 };
 extern OnlineUser* g_OnlineUser;
+
+class PlayerPool
+{
+public:
+    PlayerPool() {}
+    ~PlayerPool() {}
+    GamePlayer* GetPlayer(PlayerID_t playerID) { return NULL; }
+};
+
+extern PlayerPool* g_pPlayerPool;
 
 #endif

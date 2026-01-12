@@ -13,6 +13,7 @@ BOOL WGHomePlantOpt::Read(SocketInputStream& is)
 {
     __ENTER_FUNCTION
     m_GUID.Read(is);
+    is.Read(m_nPlayerID, sizeof(PlayerID_t));
     is.Read(m_bOpt, sizeof(BYTE));
     if(m_bOpt == GWG_HOME_PLANT_OPT_RET_PLANT_INFO)
     {
@@ -27,6 +28,7 @@ BOOL WGHomePlantOpt::Write(SocketOutputStream& os) const
 {
     __ENTER_FUNCTION
     m_GUID.Write(os);
+    os.Write(m_nPlayerID, sizeof(PlayerID_t));
     os.Write(m_bOpt, sizeof(BYTE));
     if(m_bOpt == GWG_HOME_PLANT_OPT_RET_PLANT_INFO)
     {
