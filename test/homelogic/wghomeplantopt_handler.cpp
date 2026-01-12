@@ -28,13 +28,15 @@ __ENTER_FUNCTION
 	}
 
 	if( pPlayer->IsServerPlayer() )
-	{//服务器收到世界服务器发来的数据
+	{
+        //服务器收到世界服务器发来的数据
 		AssertEx(g_pServerManager->VerifyExecuteThread(), "WGHomePlantOptHandler::Execute g_pServerManager->VerifyExecuteThread() == FALSE");
 		pScene->PushAsyncPacket( pPacket, PlayerID );
 		return PACKET_EXE_NOTREMOVE;
 	}
 	else if( pPlayer->IsGamePlayer() )
-	{//场景收到Cache里的消息
+	{
+        //场景收到Cache里的消息
 		AssertEx(pScene->VerifyExecuteThread(), "WGHomePlantOptHandler::Execute pScene->VerifyExecuteThread() == FALSE");
         if(!pGamePlayer->IsCanLogic())
         {
@@ -70,7 +72,6 @@ __ENTER_FUNCTION
         break;
     }
 	return PACKET_EXE_CONTINUE;
-
     __LEAVE_FUNCTION
 	return PACKET_EXE_ERROR;
 }

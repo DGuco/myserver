@@ -14,7 +14,6 @@ public:
     {
 
     }
-
     // 获取家园
     SafePointer<Home> GetHome(GUID64_t ownerID);
     //解锁地块
@@ -23,8 +22,10 @@ public:
     VOID WateringTrunk(Obj_Human* pOwner,SHORT nTrunkID);
     // 填充家园信息
     VOID FillHomePlatMsg(WGHomePlantOpt* pMsg, GUID64_t ownerID);
+    // 初始化家园地块植物monster
+    VOID InitHomePlantMonster(Scene* pScene,GUID64_t ownerID);
 private:
-    TArray<Home, MAX_HOME_PLANT_COUNT> m_HomeArray; // 家园上的植物数组
+    TArray<Home, MAX_HOME_COUNT> m_HomeArray; // 家园上的植物数组
     std::map<GUID64_t, Home*> m_HomeMap; // 家园上的植物映射表
 };
 
