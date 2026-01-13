@@ -18,27 +18,6 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif()
 
-set(LUA_BRIDGE_HEADER_FILES
-        "lua/core/func_traits.h"
-        "lua/core/class_key.h"
-        "lua/core/constructor.h"
-        "lua/core/lua_functions.h"
-        "lua/core/lua_exception.h"
-        "lua/core/lua_helpers.h"
-        "lua/core/lua_ref.h"
-        "lua/core/lua_space.h"
-        "lua/core/lua_vm.h"
-        "lua/core/security.h"
-        "lua/core/type_list.h"
-        "lua/core/type_traits.h"
-        "lua/core/user_data.h"
-        "lua/core/lua_library.h"
-        "lua/core/lua_stack.h"
-        "lua/core/caller.h"
-        "lua/core/lua_class.h"
-        "lua/lua_file.h"
-        "lua/lua_bridge.h")
-
 set(FRAMEWORK
         "base/base.h"
         "base/platform_def.h" 
@@ -114,6 +93,13 @@ set(FRAMEWORK
         "db/field.cpp"
         "db/query_result_mysql.cpp")
 
+file(GLOB_RECURSE LUA_BRIDGE_HEADER_FILES 
+        "lua/core/*.h"
+        "lua/lua_file.h"
+        "lua/lua_bridge.h"
+        )
+
+list(APPEND FRAMEWORK ${LUA_BRIDGE_HEADER_FILES})
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/thirdparty
