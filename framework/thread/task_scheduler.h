@@ -75,13 +75,24 @@ public:
 
 	// 1. 可变参数主模板
 	template<typename... TaskHelpers>
-	static CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...> AcceptCombine(TaskHelpers&... tasks) 
+	static CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...> AcceptAllCombine(TaskHelpers&... tasks) 
 	{
 		constexpr size_t TaskCount = sizeof...(TaskHelpers);
 		std::vector<TaskPtr> taskList = {tasks.GetTask()...};
 		CombineArgs<0,typename TaskHelpers::ReturnType...>(tasks...);
 		return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(taskList);
 	}
+
+		// 1. 可变参数主模板
+	template<typename... TaskHelpers>
+	static CAcceptAnyCombineTaskHelper<typename TaskHelpers::ReturnType...> AcceptAnyCombine(TaskHelpers&... tasks) 
+	{
+		constexpr size_t TaskCount = sizeof...(TaskHelpers);
+		std::vector<TaskPtr> taskList = {tasks.GetTask()...};
+		CombineArgs<0,typename TaskHelpers::ReturnType...>(tasks...);
+		return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(taskList);
+	}
+
 
 	// // 2. 实现模板（利用索引序列展开）
 	// template<typename... TaskHelpers, size_t... Indices>

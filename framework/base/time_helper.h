@@ -45,6 +45,12 @@ public:
 	int				DiffWeek(time_t tm1, time_t tm2);
 	//
 	int				GetDayOfYear();
+	//20260306把日期转换为固定格式YYYYMMDD
+	unsigned int 	Time2Day();
+	//当月有多少天
+	int 			GetMonthDay(int year,int month);
+	//20260306根据日期和天数差计算新的日期
+	unsigned int    Time2DayAfter(unsigned int time2day,INT diffDay);
 };
 
 

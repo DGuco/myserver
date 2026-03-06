@@ -28,6 +28,12 @@ enum class enTaskState : unsigned char
 	eTaskFailed = 4,
 };
 
+enum class enCombineType : unsigned char
+{
+	eCombineAll = 0,
+	eCombineAny = 1,
+};
+
 class IArgsHolder
 {
 public:
@@ -156,10 +162,13 @@ template<int combine_count>
 class CCombineTask : public CTask
 {
 public:
-	CCombineTask(CSafePtr<CTaskScheduler> scheduler, std::string signature)
+	CCombineTask(CSafePtr<CTaskScheduler> scheduler, 
+					std::string signature,
+					enCombineType combineType = enCombineType::eCombineAll)
 		: CTask(scheduler, signature)
 	{
 		m_combineDone = 0;
+		m_combineType = combineType;
 	}
 	
 	virtual ~CCombineTask()
@@ -222,11 +231,26 @@ public:
 		//增加任务完成数量之前先把前置任务的返回值写到子任务的参数列表中
 		pParentTask->FillCombineTaskArgs(GetShared());
 
-		// fetch_add(1) 保证原子性递增
-		const int oldValue = m_combineDone.fetch_add(1, std::memory_order_acq_rel);
-		const int newValue = oldValue + 1;
-		// 修改判断条件为严格相等
-		if (newValue == combine_count) 
+		if(m_combineType == enCombineType::eCombineAll)
+		{
+			// fetch_add(1) 保证原子性递增
+			const int oldValue = m_combineDone.fetch_add(1, std::memory_order_acq_rel);
+			const int newValue = oldValue + 1;
+			// 修改判断条件为严格相等
+			if (newValue == combine_count) 
+			{
+				//如果就在当前的执行shcheler中，直接执行
+				if (g_thread_data.own_scheduler == m_pScheduler)
+				{
+					Run();
+				}
+				else
+				{
+					//push 到对应scheduler的队列中
+					m_pScheduler->PushTask(GetShared());
+				}
+			}
+		}else if(m_combineType == enCombineType::eCombineAny)
 		{
 			//如果就在当前的执行shcheler中，直接执行
 			if (g_thread_data.own_scheduler == m_pScheduler)
@@ -241,6 +265,7 @@ public:
 		}
 	}
 
+public:
 	virtual bool  IsCombinedTask() {return true;}
 private:
 	//combine info
@@ -249,13 +274,16 @@ private:
 	TArray<WeakTaskPtr,combine_count>	m_pCombineTask;
 	//如果当前任务是一组合并任务的后续子任务，前置任务已完成的数量
 	std::atomic_int						m_combineDone;
+	//合并类型
+	enCombineType						m_combineType;
 };
 
 template<>
 class CCombineTask<0> : public CTask
 {
 public:
-	CCombineTask(CSafePtr<CTaskScheduler> scheduler, std::string signature)
+	CCombineTask(CSafePtr<CTaskScheduler> scheduler, std::string signature,
+					enCombineType combineType = enCombineType::eCombineAll)
 		: CTask(scheduler, signature)
 	{}
 };
@@ -281,8 +309,9 @@ class CWithReturnTask : public CCombineTask<combine_count>
 public:
 	CWithReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
-		const Func& func)
-		: CCombineTask<combine_count>(scheduler, signature)
+		const Func& func,
+		enCombineType combineType = enCombineType::eCombineAll)
+		: CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
 		m_Func = func;
 	}
@@ -338,8 +367,9 @@ class CWithReturnTask<combine_count,Func,Par> : public CCombineTask<combine_coun
 public:
 	CWithReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
-		const Func& func)
-		: CCombineTask<combine_count>(scheduler, signature)
+		const Func& func,
+		enCombineType combineType = enCombineType::eCombineAll)
+		: CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
 		m_Func = func;
 	}
@@ -407,8 +437,9 @@ class CWithReturnTask<combine_count,Func,void> : public CCombineTask<combine_cou
 public:
 	CWithReturnTask(CSafePtr<CTaskScheduler> scheduler,
 					std::string signature,
-					const Func& func)
-		: CCombineTask<combine_count>(scheduler, signature)
+					const Func& func,
+					enCombineType combineType = enCombineType::eCombineAll)
+		: CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
 		m_Func = func;
 	}
@@ -489,8 +520,9 @@ class CNoReturnTask : public CCombineTask<combine_count>
 public:
 	CNoReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
-		const Func& func)
-		: CCombineTask<combine_count>(scheduler, signature)
+		const Func& func,
+		enCombineType combineType = enCombineType::eCombineAll)
+		: CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
 		m_Func = func;
 	}
@@ -541,8 +573,9 @@ class CNoReturnTask<combine_count,Func,Par> : public CCombineTask<combine_count>
 public:
 	CNoReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
-		const Func& func)
-		:CCombineTask<combine_count>(scheduler, signature)
+		const Func& func,
+		enCombineType combineType = enCombineType::eCombineAll)
+		:CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
 		m_Func = func;
 	}
@@ -609,8 +642,9 @@ class CNoReturnTask<combine_count,Func,void> : public CCombineTask<combine_count
 public:
 	CNoReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
-		const Func& func)
-		:CCombineTask<combine_count>(scheduler, signature)
+		const Func& func,
+		enCombineType combineType = enCombineType::eCombineAll)
+		:CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
 		m_Func = func;
 	}

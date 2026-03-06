@@ -6,11 +6,23 @@
 ******************************************************************/
 #ifndef __TASK_HELPER_H__
 #define __TASK_HELPER_H__
+#include <type_traits>
 #include "my_assert.h"
 #include "safe_pointer.h"
 #include "task.h"
 
 class CTaskScheduler;
+
+// 首先定义一个辅助traits模板来检查所有类型是否相同
+template<typename... Args> struct are_all_same;
+
+// 基本情况：单个类型总是返回true
+template<typename T> struct are_all_same<T> : std::true_type {};
+
+// 递归情况：检查第一个和第二个类型是否相同，然后递归检查剩余类型
+template<typename T, typename U, typename... Rest>
+struct are_all_same<T, U, Rest...> : 
+    std::bool_constant<std::is_same_v<T, U> && are_all_same<T, Rest...>::value> {};
 
 /*
 MakeIndexSequence<5> : public MakeIndexSequence<4,4>
@@ -87,9 +99,10 @@ struct CombineTaskCreater
 {
 	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
-								const Func f)
+								const Func f,
+								enCombineType combineType = enCombineType::eCombineAll)
 	{
-		return std::make_shared<CWithReturnTask<combine_count,Func, Args...>>(scheduler, signature, f);
+		return std::make_shared<CWithReturnTask<combine_count,Func, Args...>>(scheduler, signature, f, combineType);
 	}
 };
 
@@ -98,9 +111,10 @@ struct CombineTaskCreater<combine_count,void,Func,Args...>
 {
 	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
-								const Func f)
+								const Func f,
+								enCombineType combineType = enCombineType::eCombineAll)
 	{
-		return std::make_shared<CNoReturnTask<combine_count,Func, Args...>>(scheduler, signature, f);
+		return std::make_shared<CNoReturnTask<combine_count,Func, Args...>>(scheduler, signature, f, combineType);
 	}
 };
 
@@ -283,6 +297,48 @@ private:
 	std::vector<TaskPtr>		m_TaskList;
 };
 
+
+template<class Arg>
+class CAcceptAnyCombineTaskHelper
+{
+public:
+	CAcceptAnyCombineTaskHelper(std::vector<TaskPtr> taskList)
+	{
+		m_TaskList = taskList;
+	}
+
+	~CAcceptAnyCombineTaskHelper()
+	{}
+
+// 	CAcceptCombineTaskHelper(const CAcceptCombineTaskHelper&) = delete;//禁止复制构造函数	
+// 	CAcceptCombineTaskHelper& operator=(const CAcceptCombineTaskHelper&) = delete;//禁止复制赋值运算符		
+// 	CAcceptCombineTaskHelper(CAcceptCombineTaskHelper&&) = delete;//禁止移动构造函数	
+// 	CAcceptCombineTaskHelper& operator=(CAcceptCombineTaskHelper&&) = delete;//禁止移动赋值运算符		
+
+	template<class Scheduler,class Func, typename return_type = std::result_of<Func(Arg)>::type>
+	CTaskHelper<return_type> AcceptAny(CSafePtr<Scheduler> scheduler,Func&& func)
+	{
+		// 检查所有参数类型是否相同
+    	static_assert(are_all_same<Args...>::value, "AcceptAny All arguments must be the same type");
+		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAny";
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<arity,return_type,Func,Args...>::CreateTask(scheduler.Get(),signature, func);
+		for(int index = 0; index < m_TaskList.size(); ++index)
+		{
+			pTask->SetCombineTask(index, m_TaskList[index]);
+			m_TaskList[index]->AddChildTask(pTask);
+			//有可能子任务添加到队列之前，前置任务就已经完成了，后续任务没有执行，再次尝试执行
+			if (m_TaskList[index]->GetState() == enTaskState::eTaskDone
+				|| m_TaskList[index]->GetState() == enTaskState::eTaskFailed)
+			{
+				m_TaskList[index]->RunChildTask();
+			}
+		}
+		return CTaskHelper<return_type>(pTask);
+	}
+private:
+	std::vector<TaskPtr>		m_TaskList;
+};
+
 template<int combine_count>
 class CApplyCombineTaskHelper
 {
@@ -317,7 +373,7 @@ public:
 	CTaskHelper<return_type> ApplyAny(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAny";
-		std::shared_ptr<CTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler.Get(), signature, func);
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler.Get(), signature, func, enCombineType::eCombineAny);
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
 			m_TaskList[index]->AddChildTask(pTask);

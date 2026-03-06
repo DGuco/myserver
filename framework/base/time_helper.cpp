@@ -118,3 +118,88 @@ int  CTimeHelper::GetWeek()
 {
 	return g_thread_data.m_CacheTime.tm_wday;
 }
+
+//当月有多少天
+int CTimeHelper::GetMonthDay(int year,int month)
+{
+	if (month < 1 || month > 12)
+	{
+		return 0;
+	}
+	if (month == 2)
+	{
+		return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0) ? 29 : 28;
+	}
+	if (month == 4 || month == 6 || month == 9 || month == 11)
+	{
+		return 30;
+	}
+	return 31;
+}
+
+//20260306把日期转换为固定格式YYYYMMDD
+unsigned int CTimeHelper::Time2Day()
+{
+	unsigned int year = GetYear();
+	unsigned int month = GetMonth() + 1;
+	unsigned int day = GetDay();
+	return year * 10000 + month * 100 + day;
+}
+
+//20260306根据日期和天数差计算新的日期
+unsigned int CTimeHelper::Time2DayAfter(unsigned int time2day,int diffDay)
+{
+    // 假设 day 是一个格式为 YYYYMMDD 的整数
+    int year = time2day / 10000;
+    int month = (time2day % 10000) / 100;
+    int dayOfMonth = time2day % 100;
+
+    // 处理天数差异
+    dayOfMonth += diffDay;
+
+    // 处理月份进位和退位
+    while (true)
+    {
+        // 获取当前月份的天数
+        int daysInMonth = GetMonthDay(year, month);
+
+        if (dayOfMonth > 0 && dayOfMonth <= daysInMonth)
+        {
+            // 天数在有效范围内，退出循环
+            break;
+        }
+
+        if (dayOfMonth > daysInMonth)
+        {
+            // 天数超过当前月份，处理进位
+            dayOfMonth -= daysInMonth;
+            month++;
+            
+            if (month > 12)
+            {
+                // 月份超过12，年份加1，月份重置为1
+                year++;
+                month = 1;
+            }
+        }
+        else
+        {
+            // 天数为负数或0，处理退位
+            month--;
+            
+            if (month < 1)
+            {
+                // 月份小于1，年份减1，月份重置为12
+                year--;
+                month = 12;
+            }
+            
+            // 获取上一个月的天数
+            daysInMonth = GetMonthDay(year, month);
+            dayOfMonth += daysInMonth;
+        }
+    }
+
+    // 重新组合成 YYYYMMDD 格式并返回
+    return year * 10000 + month * 100 + dayOfMonth;
+}

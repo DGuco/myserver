@@ -2,7 +2,20 @@
 #include "rbt_hash_map_test.h"
 #include "atomic_test.h"
 #include "scheduler_test.h"
+#include "time_helper.h"
 
+#pragma pack(push, 8)
+struct  AAA
+{
+    int a;
+    char a_;
+    double d;
+    int b;
+    char b_;
+};
+#pragma pack(pop)
+
+char arr[1];
 
 using namespace std;
 int main(int argc, char **argv)
@@ -11,7 +24,8 @@ int main(int argc, char **argv)
 	{
 		exit(0);
 	}
-    
+    AAA aaa;
+    int size = sizeof(arr);
     float count = 0;
     for(int i = 0; i < 70; ++i)
     {
@@ -29,9 +43,9 @@ int main(int argc, char **argv)
     //test_memory_order();
 
     // 测试线程调度器
-    schedler_test();
+    //schedler_test();
 
-
+    INT testDay = CTimeHelper::GetSingletonPtr()->Time2DayAfter(20260101, -40);
 	// 关闭日志
 	SHUTDOWN_ALL_LOG();
     
