@@ -231,11 +231,11 @@ public:
 		//增加任务完成数量之前先把前置任务的返回值写到子任务的参数列表中
 		pParentTask->FillCombineTaskArgs(GetShared());
 
+		// fetch_add(1) 保证原子性递增
+		const int oldValue = m_combineDone.fetch_add(1, std::memory_order_acq_rel);
+		const int newValue = oldValue + 1;
 		if(m_combineType == enCombineType::eCombineAll)
 		{
-			// fetch_add(1) 保证原子性递增
-			const int oldValue = m_combineDone.fetch_add(1, std::memory_order_acq_rel);
-			const int newValue = oldValue + 1;
 			// 修改判断条件为严格相等
 			if (newValue == combine_count) 
 			{
@@ -252,15 +252,18 @@ public:
 			}
 		}else if(m_combineType == enCombineType::eCombineAny)
 		{
-			//如果就在当前的执行shcheler中，直接执行
-			if (g_thread_data.own_scheduler == m_pScheduler)
+			if (newValue == 1)
 			{
-				Run();
-			}
-			else
-			{
-				//push 到对应scheduler的队列中
-				m_pScheduler->PushTask(GetShared());
+				//如果就在当前的执行shcheler中，直接执行
+				if (g_thread_data.own_scheduler == m_pScheduler)
+				{
+					Run();
+				}
+				else
+				{
+					//push 到对应scheduler的队列中
+					m_pScheduler->PushTask(GetShared());
+				}
 			}
 		}
 	}

@@ -293,35 +293,14 @@ public:
 
 		return CTaskHelper<return_type>(pTask);
 	}
-private:
-	std::vector<TaskPtr>		m_TaskList;
-};
 
-
-template<class Arg>
-class CAcceptAnyCombineTaskHelper
-{
-public:
-	CAcceptAnyCombineTaskHelper(std::vector<TaskPtr> taskList)
-	{
-		m_TaskList = taskList;
-	}
-
-	~CAcceptAnyCombineTaskHelper()
-	{}
-
-// 	CAcceptCombineTaskHelper(const CAcceptCombineTaskHelper&) = delete;//禁止复制构造函数	
-// 	CAcceptCombineTaskHelper& operator=(const CAcceptCombineTaskHelper&) = delete;//禁止复制赋值运算符		
-// 	CAcceptCombineTaskHelper(CAcceptCombineTaskHelper&&) = delete;//禁止移动构造函数	
-// 	CAcceptCombineTaskHelper& operator=(CAcceptCombineTaskHelper&&) = delete;//禁止移动赋值运算符		
-
-	template<class Scheduler,class Func, typename return_type = std::result_of<Func(Arg)>::type>
+	template<class Scheduler, class Func, typename FirstArg = args<0>::type,typename return_type = std::result_of<Func(FirstArg)>::type>  
 	CTaskHelper<return_type> AcceptAny(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		// 检查所有参数类型是否相同
     	static_assert(are_all_same<Args...>::value, "AcceptAny All arguments must be the same type");
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAny";
-		std::shared_ptr<CTask> pTask = CombineTaskCreater<arity,return_type,Func,Args...>::CreateTask(scheduler.Get(),signature, func);
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<arity,return_type,Func,FirstArg>::CreateTask(scheduler.Get(),signature, func);
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
 			pTask->SetCombineTask(index, m_TaskList[index]);
