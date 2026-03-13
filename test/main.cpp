@@ -43,7 +43,7 @@ int main(int argc, char **argv)
     //test_memory_order();
 
     // 测试线程调度器
-    //schedler_test();
+    schedler_test();
 
     INT testDay = CTimeHelper::GetSingletonPtr()->Time2DayAfter(20260101, -40);
 	// 关闭日志

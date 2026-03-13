@@ -23,14 +23,14 @@ CSafePtr<CThreadScheduler> RandomScheduler()
 }
 
 
-CTaskHelper<int> test_scheduler_task()
+CTaskHelper<int> test_scheduler_task(int value = 0)
 {
 	return RandomScheduler()->Schedule("test_scheduler_task", 
-	[]
+	[value]
 	{
-		int value = 0;
-		value++;
-		return value; //1
+		int ret = value;
+		ret++;
+		return ret; //1
 	}).ThenAccept(RandomScheduler(),[](int value)
 	{
 		value++;
@@ -126,6 +126,32 @@ void schedler_test()
 				{
 					CACHE_LOG(DEBUG_CACHE, "index = {} count = {} count_ok = {}",index,count,count_ok);
 				}
+			});
+
+		CTimeHelper::GetSingletonPtr()->SetTime();
+		for (size_t i = 0; i < MAX_TEST_SCHEDULER; i++)
+		{
+			g_SchedulerList[i]->DebugTask();
+		}
+	}
+
+	for (int index = 0; index < MAX_TEST_COUNT; index++)
+	{
+		auto task1 = test_scheduler_task(index * 10);
+		auto task2 = test_scheduler_task(index * 10);
+		auto task3 = test_scheduler_task(index * 10);
+		auto task4 = test_scheduler_task(index * 10);
+		auto task5 = test_scheduler_task(index * 10);
+		auto task6 = test_scheduler_task(index * 10);
+		auto task7 = test_scheduler_task(index * 10);
+		auto task8 = test_scheduler_task(index * 10);
+		auto task9 = test_scheduler_task(index * 10);
+		auto task10 = test_scheduler_task(index * 10);
+		CThreadScheduler::AcceptAnyCombine(task1,task2,task3,task4,task5,task6,task7,task8,task9,task10)
+			.AcceptAny(RandomScheduler(),
+			[](int value)
+			{
+				CACHE_LOG(DEBUG_CACHE, "AcceptAny test  value = {}",value);
 			});
 
 		CTimeHelper::GetSingletonPtr()->SetTime();
