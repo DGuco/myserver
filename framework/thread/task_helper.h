@@ -300,7 +300,7 @@ public:
 		// 检查所有参数类型是否相同
     	static_assert(are_all_same<Args...>::value, "AcceptAny All arguments must be the same type");
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAny";
-		std::shared_ptr<CTask> pTask = CombineTaskCreater<arity,return_type,Func,FirstArg>::CreateTask(scheduler.Get(),signature, func);
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<arity,return_type,Func,FirstArg>::CreateTask(scheduler.Get(),signature, func, enCombineType::eCombineAny);
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
 			pTask->SetCombineTask(index, m_TaskList[index]);

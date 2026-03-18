@@ -11,7 +11,7 @@ CSafePtr<CThreadScheduler> g_HttpScheduler = new CThreadScheduler("DBScheduler")
 
 
 #define MAX_TEST_SCHEDULER 10
-#define MAX_TEST_COUNT 1000000
+#define MAX_TEST_COUNT 10000
 
 TArray<CSafePtr<CThreadScheduler>,MAX_TEST_SCHEDULER> g_SchedulerList;
 

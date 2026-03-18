@@ -30,8 +30,9 @@ enum class enTaskState : unsigned char
 
 enum class enCombineType : unsigned char
 {
-	eCombineAll = 0,
-	eCombineAny = 1,
+	eCombineNone = 0,
+	eCombineAll = 1,
+	eCombineAny = 2,
 };
 
 class IArgsHolder
@@ -142,7 +143,7 @@ public:
 	virtual void* GetRes() = 0;
 	virtual void* GetArgs() = 0;
 public:
-	virtual bool  IsCombinedTask() {return false;}
+	virtual enCombineType  CombinedType() {return enCombineType::eCombineNone;}
 	virtual void  CombineTaskDone(TaskPtr pParentTask)  {ASSERT_EX(false,"NOT Combinetask call CombineTaskDone illegal");}
 	virtual void  SetCombineTask(int index,TaskPtr pTask) {ASSERT_EX(false,"NOT Combinetask call SetCombineTask illegal");}
 protected:
@@ -250,26 +251,23 @@ public:
 					m_pScheduler->PushTask(GetShared());
 				}
 			}
-		}else if(m_combineType == enCombineType::eCombineAny)
+		}
+		else if(m_combineType == enCombineType::eCombineAny)
 		{
+			//任意一个前置任务完成了，后续的不用执行了
 			if (newValue == 1)
 			{
-				//如果就在当前的执行shcheler中，直接执行
-				if (g_thread_data.own_scheduler == m_pScheduler)
-				{
-					Run();
-				}
-				else
-				{
-					//push 到对应scheduler的队列中
-					m_pScheduler->PushTask(GetShared());
-				}
+				pParentTask->ExecuteChildTask(GetShared());
 			}
+			// else
+			// {
+			// 	int aaa = 0;
+			// }
 		}
 	}
 
 public:
-	virtual bool  IsCombinedTask() {return true;}
+	virtual enCombineType  CombinedType() {return m_combineType;}
 private:
 	//combine info
 	CMyLock								m_combineLock;

@@ -87,7 +87,7 @@ void CTask::RunChildTask()
 		}
 		if (pTask != NULL)
 		{
-			if(pTask->IsCombinedTask())
+			if(pTask->CombinedType() != enCombineType::eCombineNone)
 			{
 				pTask->CombineTaskDone(GetShared());
 			}else
