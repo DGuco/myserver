@@ -50,10 +50,6 @@ void CTask::Run()
 	bool bFinish = false;
 	try
 	{
-		{
-			CSafeLock guard(g_thread_data.task_mutex);
-			g_thread_data.curren_task = GetShared();
-		}
 		SetState(enTaskState::eTaskDoing);
 		SetStartTime(CTimeHelper::GetSingletonPtr()->GetMSTime());
 		Execute();
@@ -63,11 +59,6 @@ void CTask::Run()
 	{
 		CACHE_LOG(THREAD_ERROR, "Task[{}] caught exception,exception msg:{}",m_TaskSignature,e.what());
 		OnFailed();
-	}
-
-	{
-		CSafeLock guard(g_thread_data.task_mutex);
-		g_thread_data.curren_task = NULL;
 	}
 }
 

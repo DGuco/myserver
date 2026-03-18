@@ -26,8 +26,6 @@ struct thread_data
 {
 	std::tm 						m_CacheTime;	
 	TimePoint						m_CacheTimePoint;
-	CMyLock							task_mutex;
-	TaskPtr							curren_task;
 	CSafePtr<CTaskScheduler>		own_scheduler;
 };
 

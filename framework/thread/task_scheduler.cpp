@@ -2,7 +2,10 @@
 
 CTaskScheduler::CTaskScheduler(std::string signature)
 	:m_Signature(signature)
-{}
+{
+    time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
+	debug_timer.BeginTimer(nNow, THREAD_TASK_DEBUG_TIME);
+}
 
 CTaskScheduler::~CTaskScheduler()
 {
@@ -32,6 +35,7 @@ void CTaskScheduler::ConsumeTask()
 		{
 			pTask->Run();
 		}
+        DebugTask();
 	}
 }
 
@@ -50,12 +54,21 @@ void CTaskScheduler::ScheduleTask(TaskPtr pTask)
     }
     pTask->SetState(enTaskState::eTaskWaitingFoDoing);
     PushTask(pTask);
-    // //如果就在当前的执行shcheler中，直接执行
-    // if (g_thread_data.own_scheduler == pTask->GetScheduler())
-    // {
-    // 	pTask->Run();
-    // }else
-    // {
-    // 	PushTask(pTask);
-    // }
+}
+
+
+void CTaskScheduler::DebugTask()
+{
+	time_t nNow = CTimeHelper::GetSingletonPtr()->GetMSTime();
+	if (debug_timer.IsTimeout(nNow))
+	{
+		int nSize = 0;
+		{
+			CSafeLock guard(m_queue_mutex);
+			nSize = m_Tasks.size();
+		}
+		CACHE_LOG(THREAD_CACHE, "=========================Begin===============================");
+		CACHE_LOG(THREAD_CACHE, "Scheduler[{}] : Thread task queuesize = {}",m_Signature,nSize);
+		CACHE_LOG(THREAD_CACHE, "=========================End================================");
+	}
 }

@@ -19,7 +19,6 @@
 #include "my_lock.h"
 #include "task_scheduler.h"
 
-#define THREAD_TASK_DEBUG_TIME (20 *1000)   //任务队列调试时间间隔
 class CThreadScheduler : public CTaskScheduler
 {
 public:
@@ -30,7 +29,6 @@ public:
 					ThreadFuncParam tickFunc= NULL,
 					void**		    initFuncArgs = NULL,
 					void**		    tickFuncArgs = NULL);
-	void DebugTask();
 	//
 	int  ThreadCount() { return m_Workers.size(); }
 	//
@@ -40,7 +38,6 @@ public:
 	void Join(); 	
 private:
 	std::vector<CSafePtr<CMyThread>> m_Workers;
-	CMyTimer						 debug_timer;	//线程详情debug timer
 	bool 							 stop;
 	//std::condition_variable condition;
 };

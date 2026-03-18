@@ -20,6 +20,8 @@
 #include "my_thread.h"
 #include "my_lock.h"
 
+#define THREAD_TASK_DEBUG_TIME (20 *1000)   //任务队列调试时间间隔
+
 class CTaskScheduler
 {
 public:
@@ -32,6 +34,8 @@ public:
     void ConsumeTask();
 	//添加任务
     void PushTask(TaskPtr pTask);
+	//调试任务
+	void DebugTask();
 public:
 	template<class Func, typename return_type = std::result_of<Func()>::type>
 	CTaskHelper<return_type> Schedule(std::string signature, Func&& f)
@@ -129,6 +133,7 @@ protected:
 	std::queue<TaskPtr> m_Tasks;
 	CMyLock		        m_queue_mutex;
 	std::string         m_Signature;	//任务签名
+	CMyTimer			debug_timer;	//线程详情debug timer
 	bool stop;
 };
 
