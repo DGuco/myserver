@@ -51,6 +51,18 @@ class CArgsHolder : public IArgsHolder
     {
         arity = sizeof...(Args)
     };
+
+	/*
+		Args... 已经支持右值引用：Args... 作为模板参数包，可以接受包括右值引用在内的任意类型。
+		Args&&... 的作用：Args&&... 通常用于函数参数中，作为通用引用的参数包，用于接收任意数量
+		的参数并保持它们的值类别。但在 CArgsHolder 类中，Args... 是用于定义 std::tuple 的类型，
+		而不是作为函数参数，因此不需要使用 Args&&...。
+		在以下情况下，您需要使用 Args&&...：
+		template <typename... Args>
+		void forwarder(Args&&... args) {
+			function_that_needs_args(std::forward<Args>(args)...);
+		}
+	*/
     using ParamTypeElement = typename std::tuple<Args...>;
     template<size_t I>
     struct args
@@ -70,7 +82,8 @@ public:
 		ParamTypeElement& tmArgs = *(ParamTypeElement*)(pArgs);
 		using ArgType = args<combineIndex>::type;
 		ArgType& tmRes = *(ArgType*)(pRes);
-		std::get<combineIndex>(tmArgs) = tmRes;
+        // 使用 std::forward 保持值类别
+        std::get<combineIndex>(tmArgs) = std::forward<ArgType>(tmRes);
 	}
 
 	virtual bool Empty()
@@ -83,7 +96,7 @@ template<int combineIndex>
 class CArgsHolder<combineIndex,void>
 {
 public:
-	void FillWaitTaskParm(TaskPtr pTask, TaskPtr pWaitTask)
+	virtual void FillWaitTaskParm(TaskPtr pTask, TaskPtr pWaitTask)
 	{
 		return;
 	}
@@ -283,7 +296,8 @@ template<>
 class CCombineTask<0> : public CTask
 {
 public:
-	CCombineTask(CSafePtr<CTaskScheduler> scheduler, std::string signature,
+	CCombineTask(CSafePtr<CTaskScheduler> scheduler,
+					std::string signature,
 					enCombineType combineType = enCombineType::eCombineAll)
 		: CTask(scheduler, signature)
 	{}
@@ -310,11 +324,11 @@ class CWithReturnTask : public CCombineTask<combine_count>
 public:
 	CWithReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
-		const Func& func,
+		Func&& func,
 		enCombineType combineType = enCombineType::eCombineAll)
 		: CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
-		m_Func = func;
+		m_Func = std::forward<Func>(func);
 	}
 	virtual ~CWithReturnTask()
 	{}
@@ -368,11 +382,11 @@ class CWithReturnTask<combine_count,Func,Par> : public CCombineTask<combine_coun
 public:
 	CWithReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
-		const Func& func,
+		Func&& func,
 		enCombineType combineType = enCombineType::eCombineAll)
 		: CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
-		m_Func = func;
+		m_Func = std::forward<Func>(func);
 	}
 	virtual ~CWithReturnTask()
 	{}
@@ -438,11 +452,11 @@ class CWithReturnTask<combine_count,Func,void> : public CCombineTask<combine_cou
 public:
 	CWithReturnTask(CSafePtr<CTaskScheduler> scheduler,
 					std::string signature,
-					const Func& func,
+					Func&& func,
 					enCombineType combineType = enCombineType::eCombineAll)
 		: CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
-		m_Func = func;
+		m_Func = std::forward<Func>(func);
 	}
 
 	virtual ~CWithReturnTask()
@@ -521,11 +535,11 @@ class CNoReturnTask : public CCombineTask<combine_count>
 public:
 	CNoReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
-		const Func& func,
+		Func&& func,
 		enCombineType combineType = enCombineType::eCombineAll)
 		: CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
-		m_Func = func;
+		m_Func = std::forward<Func>(func);
 	}
 	virtual ~CNoReturnTask()
 	{}
@@ -574,11 +588,11 @@ class CNoReturnTask<combine_count,Func,Par> : public CCombineTask<combine_count>
 public:
 	CNoReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
-		const Func& func,
+		Func&& func,
 		enCombineType combineType = enCombineType::eCombineAll)
 		:CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
-		m_Func = func;
+		m_Func = std::forward<Func>(func);
 	}
 	virtual ~CNoReturnTask()
 	{}
@@ -643,11 +657,11 @@ class CNoReturnTask<combine_count,Func,void> : public CCombineTask<combine_count
 public:
 	CNoReturnTask(CSafePtr<CTaskScheduler> scheduler,
 		std::string signature,
-		const Func& func,
+		Func&& func,
 		enCombineType combineType = enCombineType::eCombineAll)
 		:CCombineTask<combine_count>(scheduler, signature, combineType)
 	{
-		m_Func = func;
+		m_Func = std::forward<Func>(func);
 	}
 	virtual ~CNoReturnTask()
 	{}

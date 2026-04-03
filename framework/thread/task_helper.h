@@ -47,14 +47,18 @@ struct TaskCaller
 {
 	using function_type = typename std::function<return_type(Args...)>;
 public:
-	static return_type invoke(function_type func, std::tuple<Args...>& args) 
+	/**
+	 不是通用引用：function_type&& 是具体类型的右值引用，不是通用引用（T&&），
+	 所以 std::forward<function_type> 在这里没有意义,不需要完美转发
+	 */
+	static return_type invoke(function_type& func, std::tuple<Args...>& args) 
 	{
 		using Indices = typename MakeIndexSequence<sizeof...(Args)>::type;
 		return invokeImpl(func, args, Indices());
 	}
 
 	template <size_t... Indices>
-	static return_type invokeImpl(function_type func, std::tuple<Args...>& args, IndexSequence<Indices...>) 
+	static return_type invokeImpl(function_type& func, std::tuple<Args...>& args, IndexSequence<Indices...>) 
 	{
 		return func(std::get<Indices>(args)...);
 	}
@@ -65,7 +69,7 @@ struct TaskCaller<0, return_type>
 {
 	using function_type = typename std::function<return_type()>;
 public:
-	static return_type invoke(function_type func)
+	static return_type invoke(function_type& func)
 	{
 		return func();
 	}
@@ -76,7 +80,7 @@ struct TaskCaller<1, return_type, Arg>
 {
 	using function_type = typename std::function<return_type(Arg)>;
 public:
-	static return_type invoke(function_type func, Arg arg)
+	static return_type invoke(function_type& func, Arg& arg)
 	{
 		return func(arg);
 	}
@@ -99,10 +103,10 @@ struct CombineTaskCreater
 {
 	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
-								const Func f,
+								Func&& f,
 								enCombineType combineType = enCombineType::eCombineAll)
 	{
-		return std::make_shared<CWithReturnTask<combine_count,Func, Args...>>(scheduler, signature, f, combineType);
+		return std::make_shared<CWithReturnTask<combine_count,Func, Args...>>(scheduler, signature, std::forward<Func>(f), combineType);
 	}
 };
 
@@ -111,10 +115,10 @@ struct CombineTaskCreater<combine_count,void,Func,Args...>
 {
 	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
-								const Func f,
+								Func&& f,
 								enCombineType combineType = enCombineType::eCombineAll)
 	{
-		return std::make_shared<CNoReturnTask<combine_count,Func, Args...>>(scheduler, signature, f, combineType);
+		return std::make_shared<CNoReturnTask<combine_count,Func, Args...>>(scheduler, signature, std::forward<Func>(f), combineType);
 	}
 };
 
@@ -123,9 +127,9 @@ struct TaskCreater
 {
 	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
-								const Func f)
+								Func&& f)
 	{
-		return std::make_shared<CWithReturnTask<0,Func,Par>>(scheduler, signature, f);
+		return std::make_shared<CWithReturnTask<0,Func,Par>>(scheduler, signature, std::forward<Func>(f));
 	}
 };
 
@@ -134,9 +138,9 @@ struct TaskCreater<void, Par, Func>
 {
 	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
-								const Func f)
+								Func&& f)
 	{
-		return std::make_shared<CNoReturnTask<0,Func,Par>>(scheduler, signature, f);
+		return std::make_shared<CNoReturnTask<0,Func,Par>>(scheduler, signature, std::forward<Func>(f));
 	}
 };
 
@@ -145,9 +149,9 @@ struct TaskCreater<return_type, void, Func>
 {
 	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
-								const Func f)
+								Func&& f)
 	{
-		return std::make_shared<CWithReturnTask<0,Func, void>>(scheduler, signature, f);
+		return std::make_shared<CWithReturnTask<0,Func, void>>(scheduler, signature, std::forward<Func>(f));
 	}
 };
 
@@ -156,9 +160,9 @@ struct TaskCreater<void, void, Func>
 {
 	static TaskPtr CreateTask(CSafePtr<CTaskScheduler> scheduler,
 								std::string signature,
-								const Func f)
+								Func&& f)
 	{
-		return std::make_shared<CNoReturnTask<0,Func,void>>(scheduler, signature, f);
+		return std::make_shared<CNoReturnTask<0,Func,void>>(scheduler, signature, std::forward<Func>(f));
 	}
 };
 
@@ -187,7 +191,7 @@ public:
 	CTaskHelper<return_type> ThenAccept(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenAccept";
-		std::shared_ptr<CTask> pChildTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler.Get(), signature, func);
+		std::shared_ptr<CTask> pChildTask = TaskCreater<return_type, Res,Func>::CreateTask(scheduler.Get(), signature, std::forward<Func>(func));
 		m_pTaskPtr->AddChildTask(pChildTask);
 		//有可能子任务添加到队列之前，前置任务就已经完成了，后续任务没有执行，再次尝试执行
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone 
@@ -202,7 +206,7 @@ public:
 	CTaskHelper<return_type> ThenApply(CSafePtr<Scheduler> scheduler, Func&& func)
 	{
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenApply";
-		std::shared_ptr<CTask> pChildTask = TaskCreater<return_type, void, Func>::CreateTask(scheduler.Get(), signature, func);
+		std::shared_ptr<CTask> pChildTask = TaskCreater<return_type, void, Func>::CreateTask(scheduler.Get(), signature, std::forward<Func>(func));
 		m_pTaskPtr->AddChildTask(pChildTask);
 		//有可能子任务添加到队列之前，前置任务就已经完成了，后续任务没有执行，再次尝试执行
 		if (m_pTaskPtr->GetState() == enTaskState::eTaskDone
@@ -278,7 +282,7 @@ public:
 	CTaskHelper<return_type> AcceptAll(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAll";
-		std::shared_ptr<CTask> pTask = CombineTaskCreater<arity,return_type,Func,Args...>::CreateTask(scheduler.Get(),signature, func);
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<arity,return_type,Func,Args...>::CreateTask(scheduler.Get(),signature, std::forward<Func>(func));
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
 			pTask->SetCombineTask(index, m_TaskList[index]);
@@ -300,7 +304,7 @@ public:
 		// 检查所有参数类型是否相同
     	static_assert(are_all_same<Args...>::value, "AcceptAny All arguments must be the same type");
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAny";
-		std::shared_ptr<CTask> pTask = CombineTaskCreater<arity,return_type,Func,FirstArg>::CreateTask(scheduler.Get(),signature, func, enCombineType::eCombineAny);
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<arity,return_type,Func,FirstArg>::CreateTask(scheduler.Get(),signature, std::forward<Func>(func), enCombineType::eCombineAny);
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
 			pTask->SetCombineTask(index, m_TaskList[index]);
@@ -339,7 +343,7 @@ public:
 	CTaskHelper<return_type> ApplyAll(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAll";
-		std::shared_ptr<CTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler.Get(), signature, func);
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler.Get(), signature, std::forward<Func>(func));
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
 			m_TaskList[index]->AddChildTask(pTask);
@@ -352,7 +356,7 @@ public:
 	CTaskHelper<return_type> ApplyAny(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAny";
-		std::shared_ptr<CTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler.Get(), signature, func, enCombineType::eCombineAny);
+		std::shared_ptr<CTask> pTask = CombineTaskCreater<combine_count,return_type, Func, void>::CreateTask(scheduler.Get(), signature, std::forward<Func>(func), enCombineType::eCombineAny);
 		for(int index = 0; index < m_TaskList.size(); ++index)
 		{
 			m_TaskList[index]->AddChildTask(pTask);

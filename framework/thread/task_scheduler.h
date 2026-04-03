@@ -40,7 +40,7 @@ public:
 	template<class Func, typename return_type = std::result_of<Func()>::type>
 	CTaskHelper<return_type> Schedule(std::string signature, Func&& f)
 	{
-		TaskPtr pTask = TaskCreater<return_type, void, Func>::CreateTask(this, signature, f);
+		TaskPtr pTask = TaskCreater<return_type, void, Func>::CreateTask(this, signature, std::forward<Func>(f));
 		ScheduleTask(pTask);
 		return CTaskHelper<return_type>(pTask);
 	}
@@ -48,15 +48,15 @@ public:
 	template<class Func, typename return_type = std::result_of<Func()>::type>
 	static CTaskHelper<return_type> Schedule(CSafePtr<CTaskScheduler> pScheduler, std::string signature, Func&& f)
 	{
-		TaskPtr pTask = TaskCreater<return_type, void, Func>::CreateTask(pScheduler, signature, f);
+		TaskPtr pTask = TaskCreater<return_type, void, Func>::CreateTask(pScheduler, signature, std::forward<Func>(f));
 		pScheduler->ScheduleTask(pTask);
 		return CTaskHelper<return_type>(pTask);
 	}
 
 	template<typename ...Args,int combine_count = sizeof...(Args)>
-	static CApplyCombineTaskHelper<combine_count> ApplyCombine(Args... args)
+	static CApplyCombineTaskHelper<combine_count> ApplyCombine(Args&&... args)
 	{
-		std::vector<TaskPtr> taskList = {args...};
+		std::vector<TaskPtr> taskList = {std::forward<Args>(args)......};
 		return CApplyCombineTaskHelper<combine_count>(taskList);
 	}
 
