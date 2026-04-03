@@ -78,21 +78,20 @@ public:
     // }
 
 	// 1. 可变参数主模板
-	template<typename... TaskHelpers>
-	static CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...> AcceptAllCombine(TaskHelpers&... tasks) 
+    template<typename... TaskHelpers>
+    static CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...> AcceptAllCombine(TaskHelpers&... tasks) 
 	{
-		std::vector<TaskPtr> taskList = {tasks.GetTask()...};
+        std::vector<TaskPtr> taskList = {tasks.GetTask()...};
 		CombineArgs<0,typename TaskHelpers::ReturnType...>(tasks...);
-		return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(taskList);
+        return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(taskList);
 	}
 
-	// 1. 可变参数主模板
-	template<typename... TaskHelpers>
-	static CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...> AcceptAnyCombine(TaskHelpers&... tasks) 
+    template<typename... TaskHelpers>
+    static CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...> AcceptAnyCombine(TaskHelpers&... tasks) 
 	{
-		std::vector<TaskPtr> taskList = {tasks.GetTask()...};
+        std::vector<TaskPtr> taskList = {tasks.GetTask()...};
 		CombineArgs<0,typename TaskHelpers::ReturnType...>(tasks...);
-		return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(taskList);
+        return CAcceptCombineTaskHelper<typename TaskHelpers::ReturnType...>(taskList);
 	}
 
 	// // 2. 实现模板（利用索引序列展开）
@@ -117,16 +116,16 @@ private:
         return;
     }
     template<int N,typename ...Args,typename T>
-    static void CombineArgs(const T& t)
+    static void CombineArgs(T&& t)
     {
-  		t.GetTask()->SetAcceptCombineInfo<N,Args...>();
+  		std::forward<T>(t).GetTask()->SetAcceptCombineInfo<N,Args...>();
     }
 
     template<int N,typename ...Args,typename First, typename... Rest>
-    static void CombineArgs(First& first, Rest &...rest)
+    static void CombineArgs(First&& first, Rest&&...rest)
     {
-		first.GetTask()->SetAcceptCombineInfo<N,Args...>();
-        CombineArgs<N+1,Args...>(rest...);
+		std::forward<First>(first).GetTask()->SetAcceptCombineInfo<N,Args...>();
+        CombineArgs<N+1,Args...>(std::forward<Rest>(rest)...);
     }
 	
 protected:

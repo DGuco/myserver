@@ -100,7 +100,7 @@ void schedler_test()
 		auto task8 = test_scheduler_task();
 		auto task9 = test_scheduler_task();
 		auto task10 = test_scheduler_task();
-		CThreadScheduler::AcceptAllCombine(task1,task2,task3,task4,task5,task6,task7,task8,task9,task10)
+		CTaskScheduler::AcceptAllCombine(task1,task2,task3,task4,task5,task6,task7,task8,task9,task10)
 			.AcceptAll(RandomScheduler(),
 			[&count,&count_ok,index](int value1,int value2,int value3,int value4,int value5,int value6,int value7,int value8,int value9,int value10)
 			{
@@ -147,7 +147,7 @@ void schedler_test()
 		auto task8 = test_scheduler_task(index * 10);
 		auto task9 = test_scheduler_task(index * 10);
 		auto task10 = test_scheduler_task(index * 10);
-		CThreadScheduler::AcceptAnyCombine(task1,task2,task3,task4,task5,task6,task7,task8,task9,task10)
+		CTaskScheduler::AcceptAnyCombine(task1,task2,task3,task4,task5,task6,task7,task8,task9,task10)
 			.AcceptAny(RandomScheduler(),
 			[](int value)
 			{
