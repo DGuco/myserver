@@ -69,13 +69,13 @@ eShmModule CSharedMem::GetInitMode()
 bool CSharedMem::CreateSegment(sm_key nSmKey, size_t nSize)
 {
 	size_t smSize = nSize + sizeof(SSmHead);
-	sm_handler handler = ShareMemAPI::CreateShareMem(nSmKey, smSize);
+	sm_handler handler = CreateShareMem(nSmKey, smSize);
 	if (handler == INVALID_SM_HADLER)
 	{
 		DISK_LOG(SHM_ERROR, "CreateSegment CreateShareMem failed nSmKey = {} error : {} errormsg : {}", nSmKey,errno,strerror(errno));
 		return false;
 	}
-	BYTE* pAddr = ShareMemAPI::AttachShareMem(handler);
+	BYTE* pAddr = AttachShareMem(handler);
 	if (pAddr == NULL)
 	{
 		DISK_LOG(SHM_ERROR, "AttachShareMem AttachShareMem failed nSmKey = {} error : {} errormsg : {}", nSmKey, errno,strerror(errno));
@@ -95,13 +95,13 @@ bool CSharedMem::CreateSegment(sm_key nSmKey, size_t nSize)
 bool CSharedMem::AttachSegment(sm_key nSmKey, size_t nSize)
 {
 	size_t smSize = nSize + sizeof(SSmHead);
-	sm_handler handler = ShareMemAPI::OpenShareMem(nSmKey, smSize);
+	sm_handler handler = OpenShareMem(nSmKey, smSize);
 	if (handler == INVALID_SM_HADLER)
 	{
 		DISK_LOG(SHM_ERROR, "AttachSegment OpenShareMem failed nSmKey = {} error : {} errormsg : {}", nSmKey, errno, strerror(errno));
 		return false;
 	}
-	BYTE* pAddr = ShareMemAPI::AttachShareMem(handler);
+	BYTE* pAddr = AttachShareMem(handler);
 	if (pAddr == NULL)
 	{
 		DISK_LOG(SHM_ERROR, "AttachSegment AttachShareMem failed nSmKey = {} error : {} errormsg : {}", nSmKey, errno, strerror(errno));
@@ -122,7 +122,7 @@ bool CSharedMem::DetachSegment()
 {
 	if (m_pHead != NULL)
 	{
-		if (!ShareMemAPI::DetachShareMem(m_pHead->m_pSegment))
+		if (!DetachShareMem(m_pHead->m_pSegment))
 		{
 			DISK_LOG(SHM_ERROR, "DetachSegment DetachShareMem failed nSmKey = {} error : {} errormsg : {}", m_pHead->m_nShmKey, errno, strerror(errno));
 			return false;
@@ -138,14 +138,14 @@ bool CSharedMem::CloseSegment()
 	if (m_pHead != NULL)
 	{
 		//ÏÈdetach ÄÚ´æÓ³Éä
-		if (!ShareMemAPI::DetachShareMem(m_pHead->m_pSegment))
+		if (!DetachShareMem(m_pHead->m_pSegment))
 		{
 			DISK_LOG(SHM_ERROR, "CloseSegment DetachShareMem failed nSmKey = {} error : {} errormsg : {}", m_pHead->m_nShmKey, errno, strerror(errno));
 		}
 	}
 	if (m_pHead != NULL && m_pHead->m_Handler != NULL)
 	{
-		if (!ShareMemAPI::DestroyShareMem(m_pHead->m_Handler))
+		if (!DestroyShareMem(m_pHead->m_Handler))
 		{
 			DISK_LOG(SHM_ERROR, "CloseSegment DestroyShareMem failed nSmKey = {} error : {} errormsg : {}", m_pHead->m_nShmKey, errno, strerror(errno));
 		}

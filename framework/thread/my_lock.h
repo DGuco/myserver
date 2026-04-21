@@ -25,12 +25,12 @@ public:
 		pthread_mutex_destroy(&m_Mutex);
 	}
 
-	VOID	Lock() 
+	void	Lock() 
 	{
 		pthread_mutex_lock(&m_Mutex);
 	}
 
-	VOID	Unlock()
+	void	Unlock()
 	{ 
 		pthread_mutex_unlock(&m_Mutex); 
 	}
@@ -59,12 +59,12 @@ private:
 class CMyRWLock
 {
 public:
-	CMyLock()
+	CMyRWLock()
 	{
 		pthread_rwlock_init(&m_Mutex, NULL);
 	}
 
-	~CMyLock()
+	~CMyRWLock()
 	{
 		pthread_rwlock_destroy(&m_Mutex);
 	}
@@ -115,7 +115,7 @@ public:
 		m_pLock = &rLock;
 		m_pLock->WLock();
 	}
-	~CSafeRLock()
+	~CSafeWLock()
 	{
 		m_pLock->Unlock();
 	}

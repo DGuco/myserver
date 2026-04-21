@@ -3,18 +3,21 @@
 #include "platform_def.h"
 
 #ifdef __LINUX__
+#include <signal.h>
+#include <execinfo.h>
+
 struct stSinInfo
 {
 	int			sig_;
-	const char* signame_;
+	char* 		signame_;
 };
 
 static char g_MyStackMem[SIGSTKSZ];
 static stSinInfo g_SigInfoList[] =
 {
 	{SIGHUP,"SIGHUP"},
-	{SIGINI,,"SIGINI"},
-	{SIGQUIT,,"SIGQUIT"},
+	{SIGINT,"SIGINT"},
+	{SIGQUIT,"SIGQUIT"},
 	{SIGILL,"SIGILL"},
 	{SIGABRT,"SIGABRT"},
 	{SIGFPE,"SIGFPE"},
@@ -47,24 +50,24 @@ static stSinInfo g_SigInfoList[] =
 
 void SigHandler(int sig, siginfo_t* siginfo, void* data)
 {
-	char* signame = "";
+	const char* signame = "";
 	for (int index = 0; index < sizeof(g_SigInfoList) / sizeof(stSinInfo); index++)
 	{
-		if (siginfo->sig_ == sig)
+		if (g_SigInfoList[index].sig_ == sig)
 		{
-			signame = siginfo->signame_;
+			signame = g_SigInfoList[index].signame_;
 			break;
 		}
 	}
 
-	CSignalHandler::GetSingletonPtr()->DumpLog("------------------CoreDump Start------------------")
+	CSignalHandler::GetSingletonPtr()->DumpLog("------------------CoreDump Start------------------");
 	CSignalHandler::GetSingletonPtr()->DumpStack(signame);
-	CSignalHandler::GetSingletonPtr()->DumpLog("-------------------Core Dump End------------------")
+	CSignalHandler::GetSingletonPtr()->DumpLog("-------------------Core Dump End------------------");
 	//设置系统默认函数
 	struct sigaction sigopt;
-	sigemptyset(&sigopt.sa_mask)
-	act.sa_flags = SA_NODEFER | SA_ONSTACK | SA_RESETHAND;
-	act.sa_handler = SIG_DFL;
+	sigemptyset(&sigopt.sa_mask);
+	sigopt.sa_flags = SA_NODEFER | SA_ONSTACK | SA_RESETHAND;
+	sigopt.sa_handler = SIG_DFL;
 	sigaction(sig, &sigopt, NULL);
 	kill(getpid(), sig);
 }

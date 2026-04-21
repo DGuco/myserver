@@ -67,8 +67,8 @@ void CTaskScheduler::DebugTask()
 			CSafeLock guard(m_queue_mutex);
 			nSize = m_Tasks.size();
 		}
-		CACHE_LOG(THREAD_CACHE, "=========================Begin===============================");
+		//CACHE_LOG(THREAD_CACHE, "=========================Begin===============================");
 		CACHE_LOG(THREAD_CACHE, "Scheduler[{}] : Thread task queuesize = {}",m_Signature,nSize);
-		CACHE_LOG(THREAD_CACHE, "=========================End================================");
+		//CACHE_LOG(THREAD_CACHE, "=========================End================================");
 	}
 }

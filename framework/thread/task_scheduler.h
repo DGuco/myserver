@@ -133,7 +133,7 @@ protected:
 	CMyLock		        m_queue_mutex;
 	std::string         m_Signature;	//任务签名
 	CMyTimer			debug_timer;	//线程详情debug timer
-	bool stop;
+	bool 				stop;
 };
 
 #endif

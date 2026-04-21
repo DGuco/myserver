@@ -76,7 +76,7 @@ public:
 	TID getTID() { return m_TID; }
 
 	ThreadStatus getStatus() { return m_Status; }
-	VOID SetStatus(ThreadStatus status) { m_Status = status; }
+	void SetStatus(ThreadStatus status) { m_Status = status; }
 private:
 	TID								m_TID;
 	CSafePtr<thread_data>			m_ThreadData;
@@ -86,10 +86,10 @@ private:
 	pthread_t						m_hThread;
 #else
 	HANDLE							m_hThread;
+#endif
 protected:
 	ThreadFuncParamWrapper			m_funcInit;
 	ThreadFuncParamWrapper			m_funcTick;
-#endif
 };
 
 #if defined(__LINUX__)

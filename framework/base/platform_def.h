@@ -55,6 +55,10 @@ using namespace std;
 
     //修改字对齐规则，避免false sharing ,splitlock
     #define CACHE_LINE_ALIGN  __attribute__((aligned(CACHE_LINE_SIZE)))
+    // Linux 平台使用 snprintf 作为替代
+    #define sprintf_s(buffer, size, format, ...) snprintf(buffer, size, format, ##__VA_ARGS__)
+    #define INVALID_SOCKET          (-1)       
+    #define SOCKET_ERROR            (-1)
 #else
     std::string GetErrorMessage(int errorCode);
 

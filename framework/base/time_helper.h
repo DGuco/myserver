@@ -50,7 +50,7 @@ public:
 	//当月有多少天
 	int 			GetMonthDay(int year,int month);
 	//20260306根据日期和天数差计算新的日期
-	unsigned int    Time2DayAfter(unsigned int time2day,INT diffDay);
+	unsigned int    Time2DayAfter(unsigned int time2day,int diffDay);
 };
 
 
