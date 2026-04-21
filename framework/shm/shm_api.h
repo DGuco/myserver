@@ -4,10 +4,10 @@
 //  Created by DGuco on 17/03/23.
 //  Copyright ? 2016Äê DGuco. All rights reserved.
 //
-#ifndef __SHARE_MEM_H__
-#define __SHARE_MEM_H__
+#ifndef __SHARE_MEM_API_H__
+#define __SHARE_MEM_API_H__
 
-#include "platform_def.h"
+#include "base.h"
 
 namespace ShareMemAPI
 {

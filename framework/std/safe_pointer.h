@@ -27,6 +27,7 @@
 #endif
 
 #include <stdexcept>
+#include <stdio.h>
 #include "base.h"
 
 /**
@@ -159,7 +160,7 @@ public:
 		Tp* pPointer = GetThrow();
 		if (pPointer != NULL)
 		{
-			return CSafePtr<NewTp>(static_cast<NewTp>(pPointer))
+			return CSafePtr<NewTp>(static_cast<NewTp>(pPointer));
 		}
 		else
 		{

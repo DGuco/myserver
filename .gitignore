@@ -16,6 +16,7 @@ cmake-build-debug
 /lib/lua.lib
 /lib/Debug
 /lib/*.pdb
+/lib/liblua.a
 /run/*.exe
 /run/*.exe.*
 /run/*.ilk

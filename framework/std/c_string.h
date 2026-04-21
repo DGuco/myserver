@@ -77,7 +77,7 @@ namespace my_std
 		bool operator==(const char* pstr)
 		{
 
-			return std::string(TArray<char, Len_>::m_data) == std::string(other.GetData());
+			return std::string(TArray<char, Len_>::m_data) == std::string(pstr);
 		}
 
 		template<int LenFrom_>
@@ -88,7 +88,7 @@ namespace my_std
 
 		const char* c_str() const
 		{
-			return m_data;
+			return TArray<char, Len_>::m_data;
 		}
 	};
 

@@ -62,7 +62,7 @@ namespace ShareMemAPI
 			return (sm_handler)-1;
 		}
 #ifdef __LINUX__
-		iShmID = shmget(iKey, 0, 0666);
+		int iShmID = shmget(iKey, 0, 0666);
 		return iShmID;
 #else
 		CString<64> sKey(std::to_string((long long)iKey));

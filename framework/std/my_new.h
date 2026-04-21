@@ -18,13 +18,13 @@ inline void* operator new(size_t size, const char *file, unsigned int line)
 #pragma warning(push)
 #pragma warning(disable:4595)
 
-inline void operator delete(void *ptr) 
+inline void operator delete(void *ptr) noexcept
 {
     operator_delete_log(ptr);
     free(ptr);
 }
 
-inline void operator delete[](void *ptr) 
+inline void operator delete[](void *ptr) noexcept
 {
     operator_delete_arr_log(ptr);
     free(ptr);
