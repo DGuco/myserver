@@ -76,12 +76,5 @@ void CThreadScheduler::ScheduleTask(TaskPtr pTask)
 		return;
 	}
 	pTask->SetState(enTaskState::eTaskWaitingFoDoing);
-	//如果就在当前的执行shcheler中，直接执行
-	if (g_thread_data.own_scheduler == pTask->GetScheduler())
-	{
-		pTask->Run();
-	}else
-	{
-		PushTask(pTask);
-	}
+	pTask->Run();
 }
