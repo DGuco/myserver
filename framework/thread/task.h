@@ -19,6 +19,9 @@
 using namespace my_std;
 
 class CTaskScheduler;
+typedef std::shared_ptr<CTask> TaskPtr;
+typedef std::weak_ptr<CTask> WeakTaskPtr;
+
 enum class enTaskState : unsigned char
 {
 	eTaskInit = 0,
@@ -35,78 +38,7 @@ enum class enCombineType : unsigned char
 	eCombineAny = 2,
 };
 
-class IArgsHolder
-{
-public:
-	IArgsHolder() {};
-	virtual ~IArgsHolder() {};
-	virtual void  FillWaitTaskParm(TaskPtr pTask,TaskPtr pWaitTask) = 0;
-	virtual bool  Empty() = 0;
-};
-
-template<int combineIndex,typename ...Args>
-class CArgsHolder : public IArgsHolder
-{
-	enum
-    {
-        arity = sizeof...(Args)
-    };
-
-	/*
-		Args... 已经支持右值引用：Args... 作为模板参数包，可以接受包括右值引用在内的任意类型。
-		Args&&... 的作用：Args&&... 通常用于函数参数中，作为通用引用的参数包，用于接收任意数量
-		的参数并保持它们的值类别。但在 CArgsHolder 类中，Args... 是用于定义 std::tuple 的类型，
-		而不是作为函数参数，因此不需要使用 Args&&...。
-		在以下情况下，您需要使用 Args&&...：
-		template <typename... Args>
-		void forwarder(Args&&... args) {
-			function_that_needs_args(std::forward<Args>(args)...);
-		}
-	*/
-    using ParamTypeElement = typename std::tuple<Args...>;
-    template<size_t I>
-    struct args
-    {
-        static_assert(I < arity, "index is out of range, index must less than sizeof Args");
-        using type = typename std::tuple_element<I, ParamTypeElement>::type;
-    };
-public:
-	virtual void  FillWaitTaskParm(TaskPtr pParentTask,TaskPtr pChildTask)
-	{
-		void* pRes = pParentTask->GetRes();
-		void* pArgs = pChildTask->GetArgs();
-		if (pRes == NULL || pArgs == NULL)
-		{
-			return;
-		}
-		ParamTypeElement& tmArgs = *(ParamTypeElement*)(pArgs);
-		using ArgType = args<combineIndex>::type;
-		ArgType& tmRes = *(ArgType*)(pRes);
-        // 使用 std::forward 保持值类别
-        std::get<combineIndex>(tmArgs) = std::forward<ArgType>(tmRes);
-	}
-
-	virtual bool Empty()
-	{
-		return false;
-	}
-};
-
-template<int combineIndex>
-class CArgsHolder<combineIndex,void>
-{
-public:
-	virtual void FillWaitTaskParm(TaskPtr pTask, TaskPtr pWaitTask)
-	{
-		return;
-	}
-
-	virtual bool  Empty()
-	{
-		return true;
-	}
-};
-
+class IArgsHolder;
 class CTask : public enable_shared_from_this<CTask>
 {
 	friend class CTaskScheduler;
@@ -131,24 +63,8 @@ public:
 	virtual void OnFailed();
 	void Run();
 public:
-	template<int combine_index, typename ...Args>
-	void SetAcceptCombineInfo()
-	{
-		if (m_pCombinedArgs != NULL)
-		{
-			ASSERT_EX(false, "This Task has combined once");
-		}
-		m_pCombinedArgs = new CArgsHolder<combine_index, Args...>();
-	}
-
-	void  FillCombineTaskArgs(TaskPtr pChildTask)
-	{
-		if (m_pCombinedArgs != NULL)
-		{
-			m_pCombinedArgs->FillWaitTaskParm(GetShared(),pChildTask);
-		}
-	}
-
+	void SetAcceptCombineInfo(CSafePtr<IArgsHolder> pArgs);
+	void FillCombineTaskArgs(TaskPtr pChildTask);
 public:
 	virtual void  Execute() = 0;
 	virtual void  ExecuteChildTask(TaskPtr pChildTask) = 0;
@@ -253,16 +169,7 @@ public:
 			// 修改判断条件为严格相等
 			if (newValue == combine_count) 
 			{
-				//如果就在当前的执行shcheler中，直接执行
-				if (g_thread_data.own_scheduler == m_pScheduler)
-				{
-					Run();
-				}
-				else
-				{
-					//push 到对应scheduler的队列中
-					m_pScheduler->PushTask(GetShared());
-				}
+				Run();
 			}
 		}
 		else if(m_combineType == enCombineType::eCombineAny)
@@ -411,16 +318,7 @@ public:
 		if (pRes != NULL && sucess)
 		{
 			m_Param = *(Par*)(pRes);
-			//如果就在当前的执行shcheler中，直接执行
-			if (g_thread_data.own_scheduler == m_pScheduler)
-			{
-				Run();
-			}
-			else
-			{
-				//push 到对应scheduler的队列中
-				m_pScheduler->PushTask(GetShared());
-			}
+			Run();
 		}
 		else
 		{
@@ -483,16 +381,7 @@ public:
 	{
 		if (sucess)
 		{
-			//如果就在当前的执行shcheler中，直接执行
-			if (g_thread_data.own_scheduler == m_pScheduler)
-			{
-				Run();
-			}
-			else
-			{
-				//push 到对应scheduler的队列中
-				m_pScheduler->PushTask(GetShared());
-			}
+			Run();
 		}
 		else
 		{
@@ -619,16 +508,7 @@ public:
 		if (pRes != NULL && sucess)
 		{
 			m_Param = *(Par*)(pRes);
-			//如果就在当前的执行shcheler中，直接执行
-			if (g_thread_data.own_scheduler == m_pScheduler)
-			{
-				Run();
-			}
-			else
-			{
-				//push 到对应scheduler的队列中
-				m_pScheduler->PushTask(GetShared());
-			}
+			Run();
 		}
 		else
 		{
@@ -686,16 +566,7 @@ public:
 	{
 		if (sucess)
 		{
-			//如果就在当前的执行shcheler中，直接执行
-			if (g_thread_data.own_scheduler == m_pScheduler)
-			{
-				Run();
-			}
-			else
-			{
-				//push 到对应scheduler的队列中
-				m_pScheduler->PushTask(GetShared());
-			}
+			Run();
 		}
 		else
 		{

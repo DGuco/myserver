@@ -47,13 +47,19 @@ void CTask::OnFailed()
 
 void CTask::Run()
 {
-	bool bFinish = false;
 	try
 	{
-		SetState(enTaskState::eTaskDoing);
-		SetStartTime(CTimeHelper::GetSingletonPtr()->GetMSTime());
-		Execute();
-		OnFinish();
+		//如果就在当前的执行shcheler中，直接执行
+		if(g_thread_data.own_scheduler == m_pScheduler)
+		{
+			SetState(enTaskState::eTaskDoing);
+			SetStartTime(CTimeHelper::GetSingletonPtr()->GetMSTime());
+			Execute();
+			OnFinish();
+		}else//不在当前的执行shcheler中，push到对应scheduler的队列中
+		{
+			m_pScheduler->PushTask(GetShared());
+		}
 	}
 	catch (std::exception e)
 	{
@@ -86,5 +92,22 @@ void CTask::RunChildTask()
 				ExecuteChildTask(pTask);
 			}
 		}
+	}
+}
+
+void CTask::SetAcceptCombineInfo(CSafePtr<IArgsHolder> pArgs)
+{
+	if (m_pCombinedArgs != NULL)
+	{
+		ASSERT_EX(false, "This Task has combined once");
+	}
+	m_pCombinedArgs = pArgs;
+}
+
+void CTask::FillCombineTaskArgs(TaskPtr pChildTask)
+{
+	if (m_pCombinedArgs != NULL)
+	{
+		m_pCombinedArgs->FillWaitTaskParm(GetShared(),pChildTask);
 	}
 }

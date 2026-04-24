@@ -19,8 +19,6 @@
 class CMyThread;
 class CTask;
 class CTaskScheduler;
-typedef std::shared_ptr<CTask> TaskPtr;
-typedef std::weak_ptr<CTask> WeakTaskPtr;
 
 struct thread_data
 {
