@@ -13,6 +13,7 @@
 #include "tcp_client.h"
 #include "my_lock.h"
 #include <unordered_map>
+#include <list>
 
 enum eTcpServerModule
 {

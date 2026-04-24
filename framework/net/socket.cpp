@@ -153,7 +153,7 @@ CSocket CSocket::Accept()
 		return CSocket();
 	}
 	CSocket newSocket;
-	int iAddrLength = sizeof(sockaddr_in);
+	socklen_t iAddrLength = sizeof(sockaddr_in);
 	SOCKET iNewSocketFD = accept(m_nSocket, (struct sockaddr*)&(newSocket.m_SocketAddr), &iAddrLength);
 	newSocket.m_nSocket = iNewSocketFD;
 	if (newSocket.IsValid())
@@ -274,7 +274,7 @@ bool CSocket::GetRemoteAddress(CNetAddr & addr) const
 	if (INVALID_SOCKET == m_nSocket)
 		return false;
 	sockaddr_in asiAddress;
-	int nSize = sizeof(asiAddress);
+	socklen_t nSize = sizeof(asiAddress);
 	memset(&asiAddress, 0, sizeof(asiAddress));
 	if (getpeername(m_nSocket, reinterpret_cast<sockaddr *>(&asiAddress), &nSize)) 
 	{
@@ -298,7 +298,7 @@ bool CSocket::SetSendBufSize(int size)
 int CSocket::GetSendBuffSize()
 {
 	int nBuffLen = 0;
-	int nSize = sizeof(nBuffLen);
+	socklen_t nSize = sizeof(nBuffLen);
 	if (GetSocketOpt(SOL_SOCKET, SO_SNDBUF, &nBuffLen, &nSize) == SOCKET_ERROR)
 	{
 		CACHE_LOG(TCP_ERROR, "GetSendBuffSize error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
@@ -320,7 +320,7 @@ bool CSocket::SetRecvBufSize(int size)
 int CSocket::GetRecvBuffSize()
 {
 	int nBuffLen = 0;
-	int nSize = sizeof(nBuffLen);
+	socklen_t nSize = sizeof(nBuffLen);
 	if (GetSocketOpt(SOL_SOCKET, SO_RCVBUF, &nBuffLen, &nSize) == SOCKET_ERROR)
 	{
 		CACHE_LOG(TCP_ERROR, "GetRecvBuffSize error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
@@ -343,10 +343,10 @@ int CSocket::SetSocketOpt(int sol, int type, const void* value, int size)
 #endif
 }
 
-int CSocket::GetSocketOpt(int sol, int type,void* value, int* size)
+int CSocket::GetSocketOpt(int sol, int type,void* value, socklen_t* size)
 {
 #ifdef __LINUX__
-	return getsockopt(m_nSocket, sol, type, value, (socklen_t*)size);
+	return getsockopt(m_nSocket, sol, type, value, size);
 #else
 	return getsockopt(m_nSocket, sol, type, (char*)value, (int*)size);
 #endif
@@ -360,7 +360,7 @@ bool CSocket::SetSocketNoBlock()
 	}
 #ifdef __LINUX__
 	int flags;
-	if (ioctl(m_nSocket FIONBIO, &flags)
+	if (ioctl(m_nSocket, FIONBIO, &flags)
 		&& ((flags = fcntl(m_nSocket, F_GETFL, 0)) < 0
 		|| fcntl(m_nSocket, F_SETFL, flags | O_NONBLOCK) < 0))
 	{
@@ -392,7 +392,7 @@ bool CSocket::SetReuseAddr()
 bool CSocket::IsReuseAddr()
 {
 	int resuaddr = 0;
-	INT nSize = sizeof(resuaddr);
+	socklen_t nSize = sizeof(resuaddr);
 	GetSocketOpt(SOL_SOCKET, SO_REUSEADDR, &resuaddr, &(nSize));
 	return resuaddr == 1;
 }
@@ -417,7 +417,7 @@ bool CSocket::SetLinger(int lingertime)
 int CSocket::GetLinger()
 {
 	struct linger ling = { 0, 0 };
-	int len = sizeof(ling);
+	socklen_t len = sizeof(ling);
 	GetSocketOpt(SOL_SOCKET, SO_LINGER, &ling, &(len));
 	return ling.l_linger;
 }
@@ -436,7 +436,7 @@ bool CSocket::SetKeepAlive()
 bool CSocket::IsKeepAlive()
 {
 	int nKeepAlive = 0;
-	int nSize = sizeof(nKeepAlive);
+	socklen_t nSize = sizeof(nKeepAlive);
 	GetSocketOpt(SOL_SOCKET, SO_KEEPALIVE, &nKeepAlive, &(nSize));
 	return nKeepAlive == 1;
 }
@@ -455,7 +455,7 @@ bool CSocket::SetTcpNoDelay()
 bool CSocket::IsTcpNoDelay()
 {
 	int nNoDelay = 0;
-	int nSize = sizeof(nNoDelay);
+	socklen_t nSize = sizeof(nNoDelay);
 	GetSocketOpt(IPPROTO_TCP, TCP_NODELAY, &nNoDelay, &(nSize));
 	return nNoDelay == 1;
 }
@@ -467,8 +467,8 @@ unsigned int  CSocket::CanReadLen()
 		return 0;
 	}
 #ifdef __LINUX__
-	int available = 0;
-	if (ioctl(m_nSocket FIONREAD, &available) < 0)
+	unsigned int available = 0;
+	if (ioctl(m_nSocket, FIONREAD, &available) < 0)
 	{
 		CACHE_LOG(TCP_ERROR, "ioctlsocket error , fd = {}, socket_error : {},errormsg :{}.", m_nSocket, socket_error, strerror(socket_error));
 	}
@@ -491,7 +491,7 @@ bool CSocket::IsValid()
 bool CSocket::IsSocketError()
 {
 	int nError = 0;
-	int nSize = sizeof(nError);
+	socklen_t nSize = sizeof(nError);
 	if (GetSocketOpt(SOL_SOCKET, SO_ERROR, &nError, &(nSize)) == SOCKET_ERROR )
 	{
 		return true;

@@ -27,6 +27,7 @@ public:
 public:
 	virtual int			DoRecvLogic() = 0;
 	virtual int			DoWriteLogic() = 0;
+	virtual int			DoClosingLogic(int errcode) {return 0;}
 	virtual void		DoTick(time_t now) = 0;
 	virtual int     	ConnKey()  {return 0;}
 	virtual string		ConnInfo() 	 {return "Null";};

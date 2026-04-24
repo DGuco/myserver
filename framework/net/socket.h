@@ -83,7 +83,7 @@ public:
 	//set opt
 	int SetSocketOpt(int sol, int type,const void* value, int size);
 	//get opt
-	int GetSocketOpt(int sol, int type,void* value, int* size);
+	int GetSocketOpt(int sol, int type,void* value, socklen_t* size);
 	//设置非阻塞
 	bool SetSocketNoBlock();
 	//socket 重用

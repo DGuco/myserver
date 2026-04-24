@@ -62,7 +62,10 @@ bool CTCPServer::ConnectTo(CSafePtr<CTCPClient> pClient,const char* szLocalAddr,
 	}
 	else
 	{
-		EpollAddSocket(tcpClient->GetSocketFD());
+		if(!EpollAddSocket(pClient->GetSocket().GetSocket()))
+		{
+			return false;
+		}
 	}
 #else
 #endif
@@ -250,7 +253,7 @@ void CTCPServer::OnAccept(CSocket newSocket)
 		return;
 	}
 #ifdef __LINUX__
-	CSafePtr<CTCPConn> pConn = CreateTcpConn(tmConnSocket);
+	CSafePtr<CTCPConn> pConn = CreateTcpConn(newSocket);
 	if (pConn != NULL)
 	{
 		m_ConnMap.insert(std::make_pair(pConn->GetSocketFD(), pConn));
@@ -258,19 +261,19 @@ void CTCPServer::OnAccept(CSocket newSocket)
 		{
 			if (EpollAddSocket(newSocket.GetSocket()) != 0)
 			{
-				CACHE_LOG(TCP_ERROR, "error: EpollAddSocket failed ,fd = {}", iNewSocket);
+				CACHE_LOG(TCP_ERROR, "error: EpollAddSocket failed ,fd = {}", newSocket.GetSocket());
 				pConn->DoClosingLogic(socket_error);
 				pConn->Close(false);
 				return;
 			}
 		}
 		OnNewConnect(pConn);
-		CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
+		CACHE_LOG(TCP_DEBUG, "Accept new socket fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
 	}
 	else
 	{
-		CACHE_LOG(TCP_DEBUG, "CreateTcpConn failed fd = {} ,host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
-		tmConnSocket.Close();
+		CACHE_LOG(TCP_DEBUG, "CreateTcpConn failed fd = {} ,host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+		newSocket.Close();
 		return;
 	}
 #else
@@ -748,7 +751,7 @@ int CTCPServer::InitEpoll(const char* ip, int port)
 
 	if (m_ListenSocket.IsValid())
 	{
-		if (epoll_ctl(m_ListenSocket.GetSocket(), EPOLL_CTL_ADD, sfd, &m_stEpollEvent) < 0)
+		if(EpollAddSocket(m_ListenSocket.GetSocket()))
 		{
 			ClearEpoll();
 			m_ListenSocket.Close();
@@ -758,7 +761,7 @@ int CTCPServer::InitEpoll(const char* ip, int port)
 	return 0;
 }
 
-int CTCPServer::EpollTick()
+void CTCPServer::EpollTick()
 {
 	int       	iTempRet;
 	int       	i;
@@ -805,7 +808,7 @@ int CTCPServer::EpollTick()
 
 			if (!tmConnSocket.SetSocketNoBlock())
 			{
-				CACHE_LOG(TCP_ERROR, "Accept error: socket set noblock failed ,fd = {},host = {},port = {}", newSocket.GetSocket(), newSocket.GetHost().c_str(), newSocket.GetPort());
+				CACHE_LOG(TCP_ERROR, "Accept error: socket set noblock failed ,fd = {},host = {},port = {}", tmConnSocket.GetSocket(), tmConnSocket.GetHost().c_str(), tmConnSocket.GetPort());
 				tmConnSocket.Close();
 				continue;
 			}

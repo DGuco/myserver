@@ -4,7 +4,7 @@ project(test)
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     set(CMAKE_C_COMPILER gcc)
     set(CMAKE_CXX_COMPILER g++)
-    add_compile_options(-Wall -ggdb -pipe -std=c++11)
+    add_compile_options(-Wall -ggdb -pipe -std=c++11 -fsanitize=address)
 
     add_definitions(-D__LINUX__ -DSPDLOG_NO_NAME -DCOMPILE_LUA_WITH_CXX)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")

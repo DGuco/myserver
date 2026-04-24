@@ -11,21 +11,26 @@
 #ifdef __LINUX__
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
+#include <sys/ioctl.h>
+#include <sys/select.h>
+#include <sys/errno.h>
+#include <sys/epoll.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <pthread.h>
 #include <unistd.h>
-#include <sys/shm.h>
-#include <sys/ipc.h>
 #include <string.h>
 #else            
 #include <WinSock2.h>
 #include <Windows.h>
 #include <WinBase.h>
+#include <WS2tcpip.h>
 #endif
 #include <string>
 using namespace std;
