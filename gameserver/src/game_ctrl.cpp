@@ -50,6 +50,11 @@ bool CGameCtrl::Run()
 	{
 		return false;
 	}
+
+	while (true)
+    {
+        SLEEP(10);
+    }
 }
 
 bool CGameCtrl::ReadConfig()
