@@ -23,6 +23,8 @@ cmake-build-debug
 /run/*.pdb
 /run/*.dll
 /run/*.lib
+/common/message/*.pb.h
+/common/message/*.pb.cc
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
