@@ -13,10 +13,11 @@ cmake-build-debug
 /cmake-build-debug/*
 /.vs/*
 /lib/framework.lib
+/lib/libframework.lib
 /lib/lua.lib
+/lib/liblua.a
 /lib/Debug
 /lib/*.pdb
-/lib/liblua.a
 /run/*.exe
 /run/*.exe.*
 /run/*.ilk
