@@ -13,8 +13,7 @@
 
 #define EXTRA_BYTE (8)
 
-#pragma pack(CACHE_LINE_SIZE)                  
-struct stMemTrunk
+struct CACHE_LINE_ALIGN stMemTrunk 
 {
     /**
      * 0) 单线程读单线程写模型　https://blog.csdn.net/D_Guco/article/details/100066985

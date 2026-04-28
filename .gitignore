@@ -13,7 +13,7 @@ cmake-build-debug
 /cmake-build-debug/*
 /.vs/*
 /lib/framework.lib
-/lib/libframework.lib
+/lib/libframework.a
 /lib/lua.lib
 /lib/liblua.a
 /lib/Debug
@@ -24,8 +24,10 @@ cmake-build-debug
 /run/*.pdb
 /run/*.dll
 /run/*.lib
-/common/message/*.pb.h
-/common/message/*.pb.cc
+/run/gameserver
+/run/proxyserver
+/run/dbserver
+/run/test
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 

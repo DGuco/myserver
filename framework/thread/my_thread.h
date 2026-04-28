@@ -82,6 +82,7 @@ private:
 	std::atomic_bool				m_bStoped;
 #if defined(__LINUX__)
 	pthread_t						m_hThread;
+	pthread_attr_t					m_stAttr;  // 添加这一行
 #else
 	HANDLE							m_hThread;
 #endif
@@ -95,29 +96,4 @@ void* ThreadProc(void* pvArgs);
 #else
 DWORD WINAPI ThreadProc(void* pvArgs);
 #endif
-
-
-class CTaskThread : public CMyThread
-{
-public:
-	CTaskThread(CSafePtr<CTaskScheduler> scheduler)
-		: m_pScheduler(scheduler)
-	{}
-	virtual ~CTaskThread()
-	{}
-	virtual bool PrepareToRun()
-	{
-		g_thread_data.own_scheduler = m_pScheduler;
-		m_funcInit();
-		return true;
-	}
-
-	virtual bool PrepareEnd()
-	{
-		return true;
-	}
-	void Run();
-private:
-	CSafePtr<CTaskScheduler>	m_pScheduler;
-};
 #endif //__THREAD_H__

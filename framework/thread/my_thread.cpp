@@ -20,7 +20,7 @@ CMyThread::~CMyThread()
 {
 }
 
-VOID CMyThread::Exit()
+void CMyThread::Exit()
 {
 	try
 	{
@@ -133,19 +133,6 @@ DWORD WINAPI ThreadProc(void* pvArgs)
 	pThread->Exit();
 	pThread->SetStatus(CMyThread::EXIT);
 	return 0;	
-}
-
-void CTaskThread::Run()
-{
-	while (!IsStoped())
-	{
-		//更新线程的缓存时间
-		CTimeHelper::GetSingletonPtr()->SetTime();
-		m_funcTick();
-		m_pScheduler->ConsumeTask();
-		//
-		SLEEP(1);
-	}
 }
 
 #endif

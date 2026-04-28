@@ -7,6 +7,7 @@
 #ifndef __THREAD_TASK_H__
 #define __THREAD_TASK_H__
 #include <functional>
+#include <type_traits>
 #include <string>
 #include <tuple>
 #include <memory>
@@ -37,6 +38,92 @@ enum class enCombineType : unsigned char
 	eCombineAll = 1,
 	eCombineAny = 2,
 };
+
+// 首先定义一个辅助traits模板来检查所有类型是否相同
+template<typename... Args> struct are_all_same;
+
+// 基本情况：单个类型总是返回true
+template<typename T> struct are_all_same<T> : std::true_type {};
+
+// 递归情况：检查第一个和第二个类型是否相同，然后递归检查剩余类型
+template<typename T, typename U, typename... Rest>
+struct are_all_same<T, U, Rest...> : 
+	std::integral_constant<bool, std::is_same<T, U>::value && are_all_same<T, Rest...>::value> {};
+
+/*
+MakeIndexSequence<5> : public MakeIndexSequence<4,4>
+MakeIndexSequence<4,4> : public MakeIndexSequence<3,3,4>
+MakeIndexSequence<3,3,4> : public MakeIndexSequence<2,2,3,4>
+MakeIndexSequence<2,2,3,4> : public MakeIndexSequence<1,1,2,3,4>
+MakeIndexSequence<1,1,2,3,4> : public MakeIndexSequence<0,0,1,2,3,4>
+MakeIndexSequence<0,0,1,2,3,4> : public IndexSequence<0,1,2,3,4>
+IndexSequence<0,1,2,3,4> 
+*/
+template <size_t... Ints>
+struct IndexSequence { using type = IndexSequence; };
+
+template <size_t N, size_t... Ints>
+struct MakeIndexSequence : MakeIndexSequence<N-1, N-1, Ints...> {};
+
+template <size_t... Ints>
+struct MakeIndexSequence<0, Ints...> : IndexSequence<Ints...> {};
+
+template<size_t NUM_PARAMS, typename return_type, typename... Args>
+struct TaskCaller
+{
+	using function_type = typename std::function<return_type(Args...)>;
+public:
+	/**
+	 不是通用引用：function_type&& 是具体类型的右值引用，不是通用引用（T&&），
+	 所以 std::forward<function_type> 在这里没有意义,不需要完美转发
+	 */
+	static return_type invoke(function_type& func, std::tuple<Args...>& args) 
+	{
+		using Indices = typename MakeIndexSequence<sizeof...(Args)>::type;
+		return invokeImpl(func, args, Indices());
+	}
+
+	template <size_t... Indices>
+	static return_type invokeImpl(function_type& func, std::tuple<Args...>& args, IndexSequence<Indices...>) 
+	{
+		return func(std::get<Indices>(args)...);
+	}
+};
+
+template<typename return_type>
+struct TaskCaller<0, return_type>
+{
+	using function_type = typename std::function<return_type()>;
+public:
+	static return_type invoke(function_type& func)
+	{
+		return func();
+	}
+};
+
+template<typename return_type, typename Arg>
+struct TaskCaller<1, return_type, Arg>
+{
+	using function_type = typename std::function<return_type(Arg)>;
+public:
+	static return_type invoke(function_type& func, Arg& arg)
+	{
+		return func(arg);
+	}
+};
+
+// template<typename return_type, typename... Args>
+// struct TaskCaller<2, return_type, Args...>
+// {
+//     using function_type = typename std::function<return_type(Args...)>;
+// public:
+//     static return_type invoke(function_type func, std::tuple<Args...>& args)
+//     {
+//         return func(std::get<0>(args),
+//             std::get<1>(args));
+//     }
+// };
+
 
 class IArgsHolder;
 class CTask : public enable_shared_from_this<CTask>
@@ -102,15 +189,7 @@ public:
 	}
 	
 	virtual ~CCombineTask()
-	{
-		try 
-		{
-			enTaskState bState = GetState();
-			RunChildTask();
-		}
-		catch(std::exception e)
-		{}
-	}
+	{}
 
 	virtual void OnFinish()
 	{
@@ -246,7 +325,7 @@ public:
 
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
-		if (GetState() == enTaskState::eTaskDone)
+		if (this->GetState() == enTaskState::eTaskDone)
 		{
 			pChildTask->ExecuteFromParent((void*)(&m_Res));
 		}
@@ -272,7 +351,7 @@ public:
 
 	virtual void  FillCombineTaskArgs(TaskPtr pChildTask)
 	{
-		m_pCombinedArgs->FillWaitTaskParm(GetShared(),pChildTask);
+		this->m_pCombinedArgs->FillWaitTaskParm(this->GetShared(),pChildTask);
 	}
 
 private:
@@ -304,7 +383,7 @@ public:
 
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
-		if (GetState() == enTaskState::eTaskDone)
+		if (this->GetState() == enTaskState::eTaskDone)
 		{
 			pChildTask->ExecuteFromParent((void*)(&m_Res));
 		}else
@@ -318,11 +397,11 @@ public:
 		if (pRes != NULL && sucess)
 		{
 			m_Param = *(Par*)(pRes);
-			Run();
+			this->Run();
 		}
 		else
 		{
-			OnFailed();
+			this->OnFailed();
 		}
 	}
 
@@ -367,7 +446,7 @@ public:
 
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
-		if (GetState() == enTaskState::eTaskDone)
+		if (this->GetState() == enTaskState::eTaskDone)
 		{
 			pChildTask->ExecuteFromParent((void*)(&m_Res));
 		}
@@ -381,11 +460,11 @@ public:
 	{
 		if (sucess)
 		{
-			Run();
+			this->Run();
 		}
 		else
 		{
-			OnFailed();
+			this->OnFailed();
 		}
 	}
 
@@ -440,7 +519,7 @@ public:
 
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
-		if (GetState() == enTaskState::eTaskDone)
+		if (this->GetState() == enTaskState::eTaskDone)
 		{
 			pChildTask->ExecuteFromParent(NULL);
 		}
@@ -493,7 +572,7 @@ public:
 	
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
-		if (GetState() == enTaskState::eTaskDone)
+		if (this->GetState() == enTaskState::eTaskDone)
 		{
 			pChildTask->ExecuteFromParent(NULL);
 		}
@@ -508,11 +587,11 @@ public:
 		if (pRes != NULL && sucess)
 		{
 			m_Param = *(Par*)(pRes);
-			Run();
+			this->Run();
 		}
 		else
 		{
-			OnFailed();
+			this->OnFailed();
 		}
 	}
 
@@ -552,7 +631,7 @@ public:
 
 	virtual void ExecuteChildTask(TaskPtr pChildTask)
 	{
-		if (GetState() == enTaskState::eTaskDone)
+		if (this->GetState() == enTaskState::eTaskDone)
 		{
 			pChildTask->ExecuteFromParent(NULL);
 		}
@@ -566,11 +645,11 @@ public:
 	{
 		if (sucess)
 		{
-			Run();
+			this->Run();
 		}
 		else
 		{
-			OnFailed();
+			this->OnFailed();
 		}
 	}
 	virtual void* GetRes()

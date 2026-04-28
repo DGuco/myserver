@@ -24,7 +24,7 @@ bool CThreadScheduler::Init(size_t threads,
 {
 	for (size_t i = 0; i < threads; ++i)
 	{
-		CSafePtr<CTaskThread> pTaskThread = new CTaskThread(this);
+		CSafePtr<CTaskThread> pTaskThread = new CTaskThread(dynamic_cast<CTaskScheduler*>(this));
 		ThreadFuncParamWrapper initFuncWrapper;
 		if(initFuncArgs == NULL)
 		{

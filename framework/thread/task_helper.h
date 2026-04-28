@@ -6,97 +6,11 @@
 ******************************************************************/
 #ifndef __TASK_HELPER_H__
 #define __TASK_HELPER_H__
-#include <type_traits>
 #include "my_assert.h"
 #include "safe_pointer.h"
 #include "task.h"
 
 class CTaskScheduler;
-
-// 首先定义一个辅助traits模板来检查所有类型是否相同
-template<typename... Args> struct are_all_same;
-
-// 基本情况：单个类型总是返回true
-template<typename T> struct are_all_same<T> : std::true_type {};
-
-// 递归情况：检查第一个和第二个类型是否相同，然后递归检查剩余类型
-template<typename T, typename U, typename... Rest>
-struct are_all_same<T, U, Rest...> : 
-    std::bool_constant<std::is_same_v<T, U> && are_all_same<T, Rest...>::value> {};
-
-/*
-MakeIndexSequence<5> : public MakeIndexSequence<4,4>
-MakeIndexSequence<4,4> : public MakeIndexSequence<3,3,4>
-MakeIndexSequence<3,3,4> : public MakeIndexSequence<2,2,3,4>
-MakeIndexSequence<2,2,3,4> : public MakeIndexSequence<1,1,2,3,4>
-MakeIndexSequence<1,1,2,3,4> : public MakeIndexSequence<0,0,1,2,3,4>
-MakeIndexSequence<0,0,1,2,3,4> : public IndexSequence<0,1,2,3,4>
-IndexSequence<0,1,2,3,4> 
-*/
-template <size_t... Ints>
-struct IndexSequence { using type = IndexSequence; };
-
-template <size_t N, size_t... Ints>
-struct MakeIndexSequence : MakeIndexSequence<N-1, N-1, Ints...> {};
-
-template <size_t... Ints>
-struct MakeIndexSequence<0, Ints...> : IndexSequence<Ints...> {};
-
-template<size_t NUM_PARAMS, typename return_type, typename... Args>
-struct TaskCaller
-{
-	using function_type = typename std::function<return_type(Args...)>;
-public:
-	/**
-	 不是通用引用：function_type&& 是具体类型的右值引用，不是通用引用（T&&），
-	 所以 std::forward<function_type> 在这里没有意义,不需要完美转发
-	 */
-	static return_type invoke(function_type& func, std::tuple<Args...>& args) 
-	{
-		using Indices = typename MakeIndexSequence<sizeof...(Args)>::type;
-		return invokeImpl(func, args, Indices());
-	}
-
-	template <size_t... Indices>
-	static return_type invokeImpl(function_type& func, std::tuple<Args...>& args, IndexSequence<Indices...>) 
-	{
-		return func(std::get<Indices>(args)...);
-	}
-};
-
-template<typename return_type>
-struct TaskCaller<0, return_type>
-{
-	using function_type = typename std::function<return_type()>;
-public:
-	static return_type invoke(function_type& func)
-	{
-		return func();
-	}
-};
-
-template<typename return_type, typename Arg>
-struct TaskCaller<1, return_type, Arg>
-{
-	using function_type = typename std::function<return_type(Arg)>;
-public:
-	static return_type invoke(function_type& func, Arg& arg)
-	{
-		return func(arg);
-	}
-};
-
-// template<typename return_type, typename... Args>
-// struct TaskCaller<2, return_type, Args...>
-// {
-//     using function_type = typename std::function<return_type(Args...)>;
-// public:
-//     static return_type invoke(function_type func, std::tuple<Args...>& args)
-//     {
-//         return func(std::get<0>(args),
-//             std::get<1>(args));
-//     }
-// };
 
 template<int combine_count,typename return_type, class Func,typename ...Args>
 struct CombineTaskCreater
@@ -187,7 +101,7 @@ public:
 	的返回类型。std::result_of<F(Args...)>::type无法推导出[](int param) {}这个有参数的lambda表达式，是因为没有提
 	供参数类型。在使用std::result_of时，需要提供函数的参数类型，如std::result_of<decltype(lambda)(int)>::type，
 	这样std::result_of就能正确推导出有参数的lambda表达式的返回类型了*/
-	template<class Scheduler,class Func,typename return_type = std::result_of<Func(Res)>::type>
+	template<class Scheduler,class Func,typename return_type = typename std::result_of<Func(Res)>::type>
 	CTaskHelper<return_type> ThenAccept(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenAccept";
@@ -202,7 +116,7 @@ public:
 		return CTaskHelper<return_type>(pChildTask);
 	}
 
-	template<class Scheduler,class Func, typename return_type = std::result_of<Func()>::type>
+	template<class Scheduler,class Func, typename return_type = typename std::result_of<Func()>::type>
 	CTaskHelper<return_type> ThenApply(CSafePtr<Scheduler> scheduler, Func&& func)
 	{
 		std::string signature = m_pTaskPtr->GetSignature() + "_ThenApply";
@@ -278,7 +192,7 @@ public:
 // 	CAcceptCombineTaskHelper(CAcceptCombineTaskHelper&&) = delete;//禁止移动构造函数	
 // 	CAcceptCombineTaskHelper& operator=(CAcceptCombineTaskHelper&&) = delete;//禁止移动赋值运算符		
 
-	template<class Scheduler,class Func, typename return_type = std::result_of<Func(Args...)>::type>
+	template<class Scheduler,class Func, typename return_type = typename std::result_of<Func(Args...)>::type>
 	CTaskHelper<return_type> AcceptAll(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_TaskList[0]->GetSignature() + "_AcceptAll";
@@ -298,7 +212,7 @@ public:
 		return CTaskHelper<return_type>(pTask);
 	}
 
-	template<class Scheduler, class Func, typename FirstArg = args<0>::type,typename return_type = std::result_of<Func(FirstArg)>::type>  
+	template<class Scheduler, class Func, typename FirstArg = typename args<0>::type,typename return_type = typename std::result_of<Func(FirstArg)>::type>  
 	CTaskHelper<return_type> AcceptAny(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		// 检查所有参数类型是否相同
@@ -339,7 +253,7 @@ public:
 // 	CApplyCombineTaskHelper(CApplyCombineTaskHelper&&) = delete;//禁止移动构造函数	
 // 	CApplyCombineTaskHelper& operator=(CApplyCombineTaskHelper&&) = delete;//禁止移动赋值运算符		
 
-	template<class Scheduler,class Func, typename return_type = std::result_of<Func()>::type>
+	template<class Scheduler,class Func, typename return_type = typename std::result_of<Func()>::type>
 	CTaskHelper<return_type> ApplyAll(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAll";
@@ -352,7 +266,7 @@ public:
 		return CTaskHelper<return_type>(pTask);
 	}
 
-	template<class Scheduler,class Func, typename return_type = std::result_of<Func()>::type>
+	template<class Scheduler,class Func, typename return_type = typename std::result_of<Func()>::type>
 	CTaskHelper<return_type> ApplyAny(CSafePtr<Scheduler> scheduler,Func&& func)
 	{
 		std::string signature = m_TaskList[0]->GetSignature() + "_ApplyAny";
@@ -413,7 +327,7 @@ public:
 			return;
 		}
 		ParamTypeElement& tmArgs = *(ParamTypeElement*)(pArgs);
-		using ArgType = args<combineIndex>::type;
+		using ArgType = typename args<combineIndex>::type;
 		ArgType& tmRes = *(ArgType*)(pRes);
         // 使用 std::forward 保持值类别
         std::get<combineIndex>(tmArgs) = std::forward<ArgType>(tmRes);
