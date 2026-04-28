@@ -69,7 +69,7 @@ bool CGameServer::InitTcp()
 	}
 	else
 	{
-		DISK_LOG(DEBUG_DISK, "CGameServer PrepareToRun at {} : {} failed,failed reason {]", pGameInfo->m_sHost.c_str(),
+		DISK_LOG(DEBUG_DISK, "CGameServer InitTcpServer at {} : {} failed,failed reason {]", pGameInfo->m_sHost.c_str(),
 			pGameInfo->m_iPort, strerror(errno));
 		return false;
 	}

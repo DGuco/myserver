@@ -179,7 +179,7 @@ void TestLua()
 
 int main(int argc, char *argv[])
 {
-	TestLua();
+	//TestLua();
 	//ÐÅºÅ´¦Àí×¢²á
 	CSignalHandler::GetSingletonPtr()->RegisterHandler("gameserver");
 	
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
 
 	if(!CGameCtrl::GetSingletonPtr()->Run())
 	{
-		DISK_LOG(ERROR_DISK, "CGateCtrl Run failed,get exception");
+		DISK_LOG(ERROR_DISK, "CGateCtrl Run failed");
 		exit(0);
 	}
 	SHUTDOWN_ALL_LOG();
