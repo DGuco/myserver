@@ -45,7 +45,7 @@ int main(int argc, char **argv)
     // 测试线程调度器
     schedler_test();
 
-    INT testDay = CTimeHelper::GetSingletonPtr()->Time2DayAfter(20260101, -40);
+    int testDay = CTimeHelper::GetSingletonPtr()->Time2DayAfter(20260101, -40);
 	// 关闭日志
 	SHUTDOWN_ALL_LOG();
     

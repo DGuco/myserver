@@ -13,6 +13,8 @@
 #include <map>
 #include "rb_tree.h"
 
+using namespace my_std;
+
 namespace rbt_hash
 {
 

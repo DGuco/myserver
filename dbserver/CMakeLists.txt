@@ -71,7 +71,7 @@ endif()
 add_executable(dbserver ${SOURCE_FILES})
 
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-    target_link_libraries(dbserver framework libmysql)
+    target_link_libraries(dbserver framework mysqlclient)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(dbserver framework libmysql)
 endif()

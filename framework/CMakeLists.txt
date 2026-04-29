@@ -41,7 +41,6 @@ set(FRAMEWORK
         "std/hash_function.h"
         "std/hash_helper.h"
         "std/rbthash_map.h"
-        "std/lock_free_limit_queue.h"
         "std/safe_pointer.h"
         "std/my_new.h"
         "std/my_new.cpp"

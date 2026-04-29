@@ -41,7 +41,7 @@ double GetMemoryUsage()
         char file_name[64] = { 0 };
         FILE* fd;
         char line_buff[512] = { 0 };
-        sprintf(file_name, "/proc/%d/status", pid);
+        sprintf(file_name, "/proc/%d/status", curpid);
     
         fd = fopen(file_name, "r");
         if (nullptr == fd)
