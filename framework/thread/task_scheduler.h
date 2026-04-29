@@ -119,14 +119,14 @@ private:
     static void CombineArgs(T&& t)
     {
 		CArgsHolder<N,Args...>* argsHolder = new CArgsHolder<N,Args...>();
-  		std::forward<T>(t).GetTask()->template SetAcceptCombineInfo<N,Args...>(argsHolder);
+  		std::forward<T>(t).GetTask()->SetAcceptCombineInfo(argsHolder);
     }
 
     template<int N,typename ...Args,typename First, typename... Rest>
     static void CombineArgs(First&& first, Rest&&...rest)
     {
 		CArgsHolder<N,Args...>* argsHolder = new CArgsHolder<N,Args...>();
-		std::forward<First>(first).GetTask()->template SetAcceptCombineInfo<N,Args...>(argsHolder);
+		std::forward<First>(first).GetTask()->SetAcceptCombineInfo(argsHolder);
         CombineArgs<N+1,Args...>(std::forward<Rest>(rest)...);
     }
 	

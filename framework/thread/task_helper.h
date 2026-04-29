@@ -116,6 +116,26 @@ public:
 		return CTaskHelper<return_type>(pChildTask);
 	}
 
+	TaskPtr GetTask()
+	{
+		return m_pTaskPtr;
+	}
+
+private:
+	TaskPtr m_pTaskPtr;
+};
+
+template<>
+class CTaskHelper<void>
+{
+public:
+	using ReturnType = void;  // 添加此行用于类型推导
+public:
+	CTaskHelper(TaskPtr ptr) : m_pTaskPtr (ptr)
+	{}
+	~CTaskHelper() 
+	{}
+
 	template<class Scheduler,class Func, typename return_type = typename std::result_of<Func()>::type>
 	CTaskHelper<return_type> ThenApply(CSafePtr<Scheduler> scheduler, Func&& func)
 	{
@@ -135,11 +155,9 @@ public:
 	{
 		return m_pTaskPtr;
 	}
-
 private:
 	TaskPtr m_pTaskPtr;
 };
-
 template<class Func, class ...Args>
 struct ReturnHolder
 {

@@ -4,7 +4,7 @@ project(dbserver)
 if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     set(CMAKE_C_COMPILER gcc)
     set(CMAKE_CXX_COMPILER g++)
-    add_compile_options(-Wall -ggdb -pipe -std=c++11)
+    add_compile_options(-ggdb -std=c++11 -O2 -fPIC -Wall -pipe -rdynamic -fno-omit-frame-pointer -ldl)
 
     add_definitions(-D__LINUX__ -D_DEBUG_ -DSPDLOG_NO_NAME)
 elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
