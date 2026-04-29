@@ -245,46 +245,6 @@ int CByteBuff::WriteBytes(BYTE* pInCode, int tmLen)
 	return 0;
 }
 
-template<class T,int len_>
-T CByteBuff::ReadT(bool ispeek)
-{
-	BYTE tmpData[len_];
-	ReadBytes(&tmpData[0], len_, ispeek);
-	//因为不知道发送方是大端还是小端，所以默认发送方必须转换成大端发送(网络字节流默认以大端形式发送)，
-	//如果本机是小端，接收到数据后把大端字节流转换成小端然后再使用
-	/* plus
-	  字符，字符串 都是以字符为单位的，所以读写数据时不会有大小端问题；
-	  数值(short / int / float / double / ......)，有多个字符组成，在读写时会有大小端；
-	  字符串可以理解为单字节的字符数组，字符之间没有直接关联，不存在字节序问题；
-	*/
-	if (IsLittleEndian( )) 
-	{
-		Reverse(tmpData, len_);
-	}
-	T result = *(T *) tmpData;
-	return result;
-}
-
-template<class T, int len_>
-void CByteBuff::WriteT(T t, int offset)
-{
-	BYTE tmpData[len_];
-	*(T *) tmpData = t;
-	BYTE* pSendStr = tmpData;
-	//因为不知道接收方是大端还是小端，所以默认发送方必须转换成大端发送(网络字节流默认以大端形式发送)，
-	//如果本机是小端，发送前把小端内存序转换为大端字网络流序再发送
-	/* plus
-	  字符，字符串 都是以字符为单位的，所以读写数据时不会有大小端问题；
-	  数值(short / int / float / double / ......)，有多个字符组成，在读写时会有大小端；
-	  字符串可以理解为单字节的字符数组，字符之间没有直接关联，不存在字节序问题；
-	*/
-	if (IsLittleEndian()) 
-	{
-		Reverse(pSendStr, len_);
-	}
-	WriteBytes(pSendStr, len_);
-}
-
 void CByteBuff::Copy(const CByteBuff& srcBuff)
 {
 	m_nCapacity = srcBuff.m_nCapacity;
@@ -392,7 +352,7 @@ int CByteBuff::CanWriteLen() const
 
 BYTE* CByteBuff::Flip(BYTE* netStr, size_t len)
 {
-	if (IsLittleEndian()) {
+	if (CByteBuff::IsLittleEndian()) {
 		Reverse(netStr, len);
 	}
 	return netStr;
@@ -400,7 +360,7 @@ BYTE* CByteBuff::Flip(BYTE* netStr, size_t len)
 
 bool CByteBuff::IsLittleEndian()
 {
-	return m_bIsLittleEndian;
+	return CByteBuff::m_bIsLittleEndian;
 }
 
 void CByteBuff::Reverse(BYTE*str, size_t len)
