@@ -50,6 +50,6 @@ int main(int argc, char **argv)
 	SHUTDOWN_ALL_LOG();
     
     getchar();
-
+    printf("testDay = %d\n", testDay);
 	return 0;
 }

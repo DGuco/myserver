@@ -66,15 +66,3 @@ void CThreadScheduler::Join()
 		m_Workers[i]->Join();
 	}
 }
-
-
-void CThreadScheduler::ScheduleTask(TaskPtr pTask)
-{
-	if(pTask->GetState() != enTaskState::eTaskInit)
-	{
-		ASSERT_EX(false,"CThreadScheduler Schedule task failed,the task has been scheduled");
-		return;
-	}
-	pTask->SetState(enTaskState::eTaskWaitingFoDoing);
-	pTask->Run();
-}

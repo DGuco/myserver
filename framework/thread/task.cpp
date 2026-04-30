@@ -22,7 +22,10 @@ CTask::~CTask()
 	}
 	catch(std::exception e)
 	{
-		m_pCombinedArgs.Free();
+		if (m_pCombinedArgs != NULL)
+		{
+			m_pCombinedArgs.Free();
+		}
 	}
 }
 

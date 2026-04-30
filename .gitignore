@@ -9,6 +9,7 @@ log
 enc_temp_folder
 out
 build
+build_linux
 cmake-build-debug
 /cmake-build-debug/*
 /.vs/*

@@ -206,6 +206,7 @@ public:
 
 	virtual void  SetCombineTask(int index,TaskPtr pTask)
 	{
+		CSafeLock lock(m_combineLock);
 		if(index >= 0 && index < combine_count)
 		{
 			if(m_pCombineTask[index].lock() == NULL)

@@ -31,8 +31,6 @@ public:
 					void**		    tickFuncArgs = NULL);
 	//
 	int  ThreadCount() { return m_Workers.size(); }
-	//
-	virtual void ScheduleTask(TaskPtr pTask);
 public:
 	void StopScheduler();
 	void Join(); 	

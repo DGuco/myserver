@@ -49,7 +49,7 @@ void CTaskScheduler::ScheduleTask(TaskPtr pTask)
 {
     if(pTask->GetState() != enTaskState::eTaskInit)
     {
-        ASSERT_EX(false,"CThreadScheduler Schedule task failed,the task has been scheduled");
+        ASSERT_EX(false,"CThreadScheduler[{}] Schedule task failed,the task[{}] has been scheduled",m_Signature,pTask->GetSignature());
         return;
     }
     pTask->SetState(enTaskState::eTaskWaitingFoDoing);

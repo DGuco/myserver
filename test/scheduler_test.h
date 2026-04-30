@@ -12,6 +12,7 @@ CSafePtr<CThreadScheduler> g_HttpScheduler = new CThreadScheduler("DBScheduler")
 
 #define MAX_TEST_SCHEDULER 10
 #define MAX_TEST_COUNT 10000
+#define MAX_TEST_ANY_COUNT 100
 
 TArray<CSafePtr<CThreadScheduler>,MAX_TEST_SCHEDULER> g_SchedulerList;
 
@@ -114,20 +115,21 @@ void schedler_test()
 				}
 				count++;
 
-				if(count == MAX_TEST_COUNT)
+				//每执行1000个任务，打印一次日志
+				if(count % 1000 == 0)
+				{
+					CACHE_LOG(DEBUG_CACHE, "index = {} count = {} count_ok = {}",index,count,count_ok);
+				}
+
+				if(count == MAX_TEST_COUNT + MAX_TEST_ANY_COUNT)
 				{
 					for (size_t i = 0; i < MAX_TEST_SCHEDULER; i++)
 					{
 						g_SchedulerList[i]->StopScheduler();
 					}
 				}
-
-				if(count % 1000 == 0)
-				{
-					CACHE_LOG(DEBUG_CACHE, "index = {} count = {} count_ok = {}",index,count,count_ok);
-				}
 			});
-
+		
 		CTimeHelper::GetSingletonPtr()->SetTime();
 		for (size_t i = 0; i < MAX_TEST_SCHEDULER; i++)
 		{
@@ -135,7 +137,7 @@ void schedler_test()
 		}
 	}
 
-	for (int index = 0; index < MAX_TEST_COUNT; index++)
+	for (int index = 0; index < MAX_TEST_ANY_COUNT; index++)
 	{
 		auto task1 = test_scheduler_task(index * 10);
 		auto task2 = test_scheduler_task(index * 10);
@@ -149,9 +151,17 @@ void schedler_test()
 		auto task10 = test_scheduler_task(index * 10);
 		CTaskScheduler::AcceptAnyCombine(task1,task2,task3,task4,task5,task6,task7,task8,task9,task10)
 			.AcceptAny(RandomScheduler(),
-			[](int value)
+			[&count,&count_ok,index](int value)
 			{
-				CACHE_LOG(DEBUG_CACHE, "AcceptAny test  value = {}",value);
+				CACHE_LOG(DEBUG_CACHE, "AcceptAny test  index = {} value = {}",index,value);
+				count++;
+				if(count == MAX_TEST_COUNT + MAX_TEST_ANY_COUNT)
+				{
+					for (size_t i = 0; i < MAX_TEST_SCHEDULER; i++)
+					{
+						g_SchedulerList[i]->StopScheduler();
+					}
+				}
 			});
 
 		CTimeHelper::GetSingletonPtr()->SetTime();
