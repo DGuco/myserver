@@ -218,20 +218,20 @@ public:
 
 	virtual void  SetCombineTask(int index,TaskPtr pTask)
 	{
-		CSafeLock lock(m_combineLock);
-		if(index >= 0 && index < combine_count)
-		{
-			if(m_pCombineTask[index].lock() == NULL)
-			{
-				m_pCombineTask[index] = pTask;
-			}else
-			{
-				ASSERT_EX(false,"SetCombineTask index has set");
-			}
-		}else
-		{
-			ASSERT_EX(false,"SetCombineTask index overflow");
-		}
+		// CSafeLock lock(m_combineLock);
+		// if(index >= 0 && index < combine_count)
+		// {
+		// 	if(m_pCombineTask[index].lock() == NULL)
+		// 	{
+		// 		m_pCombineTask[index] = pTask;
+		// 	}else
+		// 	{
+		// 		ASSERT_EX(false,"SetCombineTask index has set");
+		// 	}
+		// }else
+		// {
+		// 	ASSERT_EX(false,"SetCombineTask index overflow");
+		// }
 	}
 	
 	virtual void CombineTaskDone(TaskPtr pParentTask)
@@ -282,9 +282,9 @@ public:
 	virtual enCombineType  CombinedType() {return m_combineType;}
 private:
 	//combine info
-	CMyLock								m_combineLock;
+	//CMyLock								m_combineLock;
 	//前置任务列表
-	TArray<WeakTaskPtr,combine_count>	m_pCombineTask;
+	//TArray<WeakTaskPtr,combine_count>	m_pCombineTask;
 	//如果当前任务是一组合并任务的后续子任务，前置任务已完成的数量
 	std::atomic_int						m_combineDone;
 	//合并类型
