@@ -300,17 +300,17 @@ private:
 	std::vector<TaskPtr>		m_TaskList;
 };
 
-class IArgsHolder
+class IArgsTypeInfo
 {
 public:
-	IArgsHolder() {};
-	virtual ~IArgsHolder() {};
+	IArgsTypeInfo() {};
+	virtual ~IArgsTypeInfo() {};
 	virtual void  FillWaitTaskParm(TaskPtr pTask,TaskPtr pWaitTask) = 0;
 	virtual bool  Empty() = 0;
 };
 
 template<int combineIndex,typename ...Args>
-class CArgsHolder : public IArgsHolder
+class CArgsTypeList : public IArgsTypeInfo
 {
 	enum
     {
@@ -339,7 +339,7 @@ public:
 	virtual void  FillWaitTaskParm(TaskPtr pParentTask,TaskPtr pChildTask)
 	{
 		void* pRes = pParentTask->GetRes();
-		void* pArgs = pChildTask->GetArgs();
+		void* pArgs = pChildTask->GetCombinedArgsTuple();
 		if (pRes == NULL || pArgs == NULL)
 		{
 			return;
@@ -358,7 +358,7 @@ public:
 };
 
 template<int combineIndex>
-class CArgsHolder<combineIndex,void>
+class CArgsTypeList<combineIndex,void>
 {
 public:
 	virtual void FillWaitTaskParm(TaskPtr pTask, TaskPtr pWaitTask)

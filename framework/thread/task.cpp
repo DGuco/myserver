@@ -6,7 +6,7 @@ CTask::CTask(CSafePtr<CTaskScheduler> scheduler, std::string signature)
 	m_TaskSignature(signature)
 {
 	SetState(enTaskState::eTaskInit);
-	m_pCombinedArgs = NULL;
+	m_pArgsTypeList = NULL;
 };
 
 CTask::~CTask()
@@ -18,13 +18,13 @@ CTask::~CTask()
 		{
 			RunChildTask();
 		}
-		m_pCombinedArgs.Free();
+		m_pArgsTypeList.Free();
 	}
 	catch(std::exception e)
 	{
-		if (m_pCombinedArgs != NULL)
+		if (m_pArgsTypeList != NULL)
 		{
-			m_pCombinedArgs.Free();
+			m_pArgsTypeList.Free();
 		}
 	}
 }
@@ -98,19 +98,19 @@ void CTask::RunChildTask()
 	}
 }
 
-void CTask::SetAcceptCombineInfo(CSafePtr<IArgsHolder> pArgs)
+void CTask::SetAcceptCombineInfo(CSafePtr<IArgsTypeInfo> pArgs)
 {
-	if (m_pCombinedArgs != NULL)
+	if (m_pArgsTypeList != NULL)
 	{
 		ASSERT_EX(false, "This Task has combined once");
 	}
-	m_pCombinedArgs = pArgs;
+	m_pArgsTypeList = pArgs;
 }
 
 void CTask::FillCombineTaskArgs(TaskPtr pChildTask)
 {
-	if (m_pCombinedArgs != NULL)
+	if (m_pArgsTypeList != NULL)
 	{
-		m_pCombinedArgs->FillWaitTaskParm(GetShared(),pChildTask);
+		m_pArgsTypeList->FillWaitTaskParm(GetShared(),pChildTask);
 	}
 }

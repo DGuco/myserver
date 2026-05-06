@@ -125,7 +125,7 @@ public:
 // };
 
 
-class IArgsHolder;
+class IArgsTypeInfo;
 class CTask : public enable_shared_from_this<CTask>
 {
 	friend class CTaskScheduler;
@@ -154,7 +154,7 @@ public:
 	//任务执行
 	void Run();
 	//设置任务是否接受组合任务的参数
-	void SetAcceptCombineInfo(CSafePtr<IArgsHolder> pArgs);
+	void SetAcceptCombineInfo(CSafePtr<IArgsTypeInfo> pArgs);
 	//填充组合任务的参数
 	void FillCombineTaskArgs(TaskPtr pChildTask);
 public:
@@ -166,9 +166,10 @@ public:
 	virtual void  ExecuteFromParent(void* pRes,bool sucess = true) = 0;
 	//获取任务执行结果
 	virtual void* GetRes() = 0;
-	//获取任务执行参数
-	virtual void* GetArgs() = 0;
 public:
+	//获取任务执行参数
+	virtual void* GetCombinedArgsTuple() {return NULL;};
+	//组合类型
 	virtual enCombineType  CombinedType() {return enCombineType::eCombineNone;}
 	//组合任务执行完成
 	virtual void  CombineTaskDone(TaskPtr pParentTask)  {ASSERT_EX(false,"NOT Combinetask call CombineTaskDone illegal");}
@@ -183,7 +184,7 @@ protected:
 	//当前任务的执行状态
 	std::atomic<enTaskState>			m_nState;
 	//如果当前任务是一组合任务的前置任务，保存作为前置任务的参数的位置信息
-	CSafePtr<IArgsHolder>				m_pCombinedArgs;
+	CSafePtr<IArgsTypeInfo>				m_pArgsTypeList;
 	CSafePtr<CTaskScheduler>			m_pScheduler;
 };
 
@@ -357,7 +358,7 @@ public:
 	{
 		return (void*)(&m_Res);
 	}
-	virtual void* GetArgs()
+	virtual void* GetCombinedArgsTuple()
 	{
 		return (void*)(&m_ArgTuple);
 	}
@@ -423,7 +424,7 @@ public:
 		return (void*)(&m_Res);
 	}
 
-	virtual void* GetArgs()
+	virtual void* GetCombinedArgsTuple()
 	{
 		return NULL;
 	}
@@ -486,7 +487,7 @@ public:
 		return (void*)(&m_Res);
 	}
 
-	virtual void* GetArgs()
+	virtual void* GetCombinedArgsTuple()
 	{
 		return NULL;
 	}
@@ -552,7 +553,7 @@ public:
 		return NULL;
 	}
 
-	virtual void* GetArgs()
+	virtual void* GetCombinedArgsTuple()
 	{
 		return (void*)(&m_ArgTuple);
 	}
@@ -613,7 +614,7 @@ public:
 		return NULL;
 	}
 
-	virtual void* GetArgs()
+	virtual void* GetCombinedArgsTuple()
 	{
 		return NULL;
 	}
@@ -670,7 +671,7 @@ public:
 		return NULL;
 	}
 
-	virtual void* GetArgs()
+	virtual void* GetCombinedArgsTuple()
 	{
 		return NULL;
 	}
