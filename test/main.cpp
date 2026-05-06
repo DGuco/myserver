@@ -3,6 +3,7 @@
 #include "atomic_test.h"
 #include "scheduler_test.h"
 #include "time_helper.h"
+#include <tuple>
 
 #pragma pack(push, 8)
 struct  AAA
@@ -24,15 +25,7 @@ int main(int argc, char **argv)
 	{
 		exit(0);
 	}
-    AAA aaa;
-    int size = sizeof(arr);
-    float count = 0;
-    for(int i = 0; i < 70; ++i)
-    {
-        float count_ = 1 * 20 / 100.0f;
-        count += count_;
-    }
-    int final_count = (int)count;
+    std::tuple<bool, int, double, std::string>  a(true, 1, 3.0, "1112222");
     // ≤‚ ‘lock_free_limit_queue
     //TestLockFreeLimitQueue();
 

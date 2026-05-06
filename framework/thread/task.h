@@ -143,24 +143,36 @@ public:
 	void AddChildTask(TaskPtr pTask);
 	//执行子任务
 	void RunChildTask();
-public:
+	//设置任务开始执行时间
 	void SetStartTime(time_t time)				{ m_nExecuteStart = time; }
+	//设置任务执行状态
 	void SetState(enTaskState state)			{ m_nState.store(state, std::memory_order_release);}
+	//任务执行完成
 	virtual void OnFinish();
+	//任务执行失败
 	virtual void OnFailed();
+	//任务执行
 	void Run();
-public:
+	//设置任务是否接受组合任务的参数
 	void SetAcceptCombineInfo(CSafePtr<IArgsHolder> pArgs);
+	//填充组合任务的参数
 	void FillCombineTaskArgs(TaskPtr pChildTask);
 public:
+	//任务执行
 	virtual void  Execute() = 0;
+	//执行子任务
 	virtual void  ExecuteChildTask(TaskPtr pChildTask) = 0;
+	//从父任务执行
 	virtual void  ExecuteFromParent(void* pRes,bool sucess = true) = 0;
+	//获取任务执行结果
 	virtual void* GetRes() = 0;
+	//获取任务执行参数
 	virtual void* GetArgs() = 0;
 public:
 	virtual enCombineType  CombinedType() {return enCombineType::eCombineNone;}
+	//组合任务执行完成
 	virtual void  CombineTaskDone(TaskPtr pParentTask)  {ASSERT_EX(false,"NOT Combinetask call CombineTaskDone illegal");}
+	//设置组合任务的子任务
 	virtual void  SetCombineTask(int index,TaskPtr pTask) {ASSERT_EX(false,"NOT Combinetask call SetCombineTask illegal");}
 protected:
 	CMyLock								m_childTaskLock;
