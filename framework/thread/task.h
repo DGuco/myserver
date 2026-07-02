@@ -351,6 +351,7 @@ public:
 
 	virtual void  ExecuteFromParent(void* pRes, bool sucess = true)
 	{
+		//多参数任务不会从父任务接收参数，这里只有一个参数的任务会从父任务执行
 		ASSERT_EX(false, "<class Func, class...Args>CWithReturnTask can not ExecuteFromParent");
 	}
 
@@ -545,6 +546,7 @@ public:
 
 	virtual void  ExecuteFromParent(void* pRes, bool sucess = true)
 	{
+		//多参数任务不会从父任务接收参数，这里只有一个参数的任务会从父任务执行
 		ASSERT_EX(false, "<class Func, class...Args>CNoReturnTask can not ExecuteFromParent");
 	}
 
