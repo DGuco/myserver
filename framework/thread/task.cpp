@@ -64,7 +64,7 @@ void CTask::Run()
 			m_pScheduler->PushTask(GetShared());
 		}
 	}
-	catch (std::exception e)
+	catch (std::exception& e)
 	{
 		CACHE_LOG(THREAD_ERROR, "Task[{}] caught exception,exception msg:{}",m_TaskSignature,e.what());
 		OnFailed();
