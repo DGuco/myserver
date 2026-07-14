@@ -17,7 +17,6 @@
 #include "task.h"
 #include "task_helper.h"
 #include "time_helper.h"
-#include "my_thread.h"
 #include "my_lock.h"
 
 #define THREAD_TASK_DEBUG_TIME (20 *1000)   //任务队列调试时间间隔
@@ -138,15 +137,4 @@ protected:
 	bool 				stop;
 };
 
-class CTaskThread : public CMyThread
-{
-public:
-	CTaskThread(CSafePtr<CTaskScheduler> scheduler);
-	virtual ~CTaskThread();
-	virtual bool PrepareToRun();
-	virtual bool PrepareEnd();
-	virtual void Run();
-private:
-	CSafePtr<CTaskScheduler>	m_pScheduler;
-};
 #endif

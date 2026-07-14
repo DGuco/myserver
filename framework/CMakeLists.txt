@@ -78,6 +78,8 @@ set(FRAMEWORK
         "thread/my_lock.h" 
         "thread/task_helper.h"
         "thread/spin_lock.h"
+        "thread/task_thread.h"
+        "thread/task_thread.cpp"
         "thread/task_scheduler.h"
         "thread/task_scheduler.cpp"
         "db/basedb.h"

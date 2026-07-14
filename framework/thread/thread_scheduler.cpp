@@ -1,4 +1,5 @@
 #include "thread_scheduler.h"
+#include "task_thread.h"
 
 CThreadScheduler::CThreadScheduler(std::string signature)
 	:CTaskScheduler(signature)
